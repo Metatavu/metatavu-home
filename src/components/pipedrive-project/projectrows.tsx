@@ -83,18 +83,17 @@ const ProjectRow = ({ title, rowtype }: RowProps) => {
                                 sx={
                                     {
                                         width: '100%',
-
-                                        height: '10rem',
+                                        minHeight: '100%',
                                         "&:hover": {
                                             background: "#efefef"
                                         }
                                     }}>
                                 <CardContent>
-                                    <Typography><strong>ID:</strong> {id}</Typography>
                                     <Typography><strong>Title:</strong> {title}</Typography>
+                                    <Typography variant="caption" sx={{ color: "grey" }}><strong>ID:</strong> {id}</Typography>
                                 </CardContent>
-                                <CardActions sx={{ flexFlow: "row-reverse" }}>
-                                    <Button onClick={() => { Iminterested() }} size="small" >I'm interested</Button>
+                                <CardActions sx={{ flexFlow: "row-reverse", }}>
+                                    <Button onClick={() => { Iminterested() }} size="small" variant="outlined" sx={{ "&:hover": { background: "#000000", color: 'white' }}}>I'm interested</Button>
                                 </CardActions>
                             </Card>
                         )
