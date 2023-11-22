@@ -13,6 +13,7 @@ import Layout from "./components/layout/layout";
 import ErrorHandler from "./components/contexts/error-handler";
 import ErrorScreen from "./components/screens/error-screen";
 import PipedriveScreen from "./components/screens/pipedrive-screen";
+import SalesProjectData from "./components/pipedrive-project/salesproject-data";
 
 /**
  * Application component
@@ -42,7 +43,12 @@ const App = () => {
         {
           path: "/salesview",
           element: <PipedriveScreen />,
-          errorElement: <ErrorScreen />
+          errorElement: <ErrorScreen />,
+        },
+        {
+          path: "/salesview/:id",
+          element: <SalesProjectData />,
+          errorElement: <ErrorScreen />,
         }
       ]
     }

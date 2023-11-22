@@ -26,7 +26,7 @@ interface RowProps {
 const ProjectRow = ({ title, rowtype }: RowProps) => {
 
     const [items, setItems] = useState([]);
-
+    const [isEmpty, setIsEmpty] = useState(false);
     const persons = useAtomValue(personsAtom);
     const userProfile = useAtomValue(userProfileAtom);
     const [loading, setLoading] = useState(false);
@@ -56,18 +56,24 @@ const ProjectRow = ({ title, rowtype }: RowProps) => {
         await axios.get(`http://localhost:3000/dev/${rowtype}`) // Update the URL for the you AWS API
             .then((res) => {
                 // Handles the successful response
-                setItems(res.data.data.data);
+
+                if (res.data.data.data.length === 0) {
+                    setIsEmpty(true);
+                }
+                else {
+                    setItems(res.data.data.data);
+                }
                 setLoading(false);
             })
             .catch((error) => {
                 // Handles errors
-                console.log(error)
+                console.log(error);
                 setItems([]);
             });
     }
 
-    const Iminterested = async () => {
-        console.log(`User with id ${userProfile?.id} is interested to work on this project.`)
+    const Iminterested = async (id: number) => {
+        console.log(`User with id ${userProfile?.id} is interested to work on projectwith ${id}.`)
     }
 
     const ItemRow = () => {
@@ -79,23 +85,24 @@ const ProjectRow = ({ title, rowtype }: RowProps) => {
                     items.map((item: any, index: number) => {
                         const { id, title } = item;
                         return (
-                            <Card key={index}
-                                sx={
-                                    {
-                                        width: '100%',
-                                        minHeight: '100%',
-                                        "&:hover": {
-                                            background: "#efefef"
-                                        }
-                                    }}>
-                                <CardContent>
-                                    <Typography><strong>Title:</strong> {title}</Typography>
-                                    <Typography variant="caption" sx={{ color: "grey" }}><strong>ID:</strong> {id}</Typography>
-                                </CardContent>
-                                <CardActions sx={{ flexFlow: "row-reverse", }}>
-                                    <Button onClick={() => { Iminterested() }} size="small" variant="outlined" sx={{ "&:hover": { background: "#000000", color: 'white' }}}>I'm interested</Button>
-                                </CardActions>
-                            </Card>
+                            <Link to={"/salesview/:" + id} key={index} style={{ textDecoration: "none", width: '100%'}}>
+                                <Card sx={
+                                        {
+                                            width: '100%',
+                                            minHeight: '100%',
+                                            "&:hover": {
+                                                background: "#efefef"
+                                            }
+                                        }}>
+                                    <CardContent>
+                                        <Typography><strong>Title:</strong> {title}</Typography>
+                                        <Typography variant="caption" sx={{ color: "grey" }}><strong>ID:</strong> {id}</Typography>
+                                    </CardContent>
+                                    <CardActions sx={{ flexFlow: "row-reverse", }}>
+                                        <Button onClick={() => { Iminterested(id) }} size="small" variant="outlined" sx={{ "&:hover": { background: "#000000", color: 'white' } }}>I'm interested</Button>
+                                    </CardActions>
+                                </Card>
+                            </Link>
                         )
                     })
                 }
@@ -119,13 +126,24 @@ const ProjectRow = ({ title, rowtype }: RowProps) => {
             </Grid>
             <Grid item >
                 {
-                    loading ? 
-                    ( <Skeleton /> ) : 
-                    (
-                    <Stack spacing={3} justifyContent="space-evenly" alignItems="flex-start">
-                        <ItemRow />
-                    </Stack>
-                    )
+                    loading ?
+                        (<Skeleton />) :
+                        (<>
+                            {
+                                isEmpty ?
+                                    (
+                                        <Stack spacing={3} justifyContent="center" alignItems="center">
+                                            <Typography variant="subtitle1" textAlign="center">No {title} found!</Typography>
+                                        </Stack>
+                                    ) : (
+                                        <Stack spacing={3} justifyContent="space-evenly" alignItems="flex-start">
+                                            <ItemRow />
+                                        </Stack>
+                                    )
+                            }
+
+                        </>
+                        )
                 }
             </Grid>
         </Grid>
