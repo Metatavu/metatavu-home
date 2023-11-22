@@ -1,15 +1,11 @@
 import { Button, Card, CardActions, CardContent, Divider, Grid, Paper, Skeleton, Typography, useMediaQuery } from "@mui/material";
-import ProjectRow from "../pipedrive-project/projectrows";
 import { useAtomValue } from "jotai";
 import axios from 'axios';
 import { useEffect, useState } from "react";
 import { userProfileAtom } from "../../atoms/auth";
 import { personsAtom } from "../../atoms/person";
 import { useParams } from "react-router";
-import { Title } from "@mui/icons-material";
-import { set } from "react-hook-form";
 
-const interested = "9f6a98bf5664693aa24a0e5473bef88e1fae3cb3";
 
 interface User {
     id: number;
@@ -44,6 +40,20 @@ const SalesProjectData = () => {
     const userid = userProfile?.id;
     const projectID = params.id?.slice(1);
 
+
+    const getPersons = async () => {
+        if (persons.length) {
+            console.log("this");
+            console.log(userProfile?.id)
+            console.log(userProfile?.username)
+            console.log(userProfile?.id)
+            console.log(persons);
+        }
+        else {
+            console.log("Person < 0 : " + persons);
+        }
+    };
+
     const getData = async () => {
         setLoading(true);
         //const did = params.id.trimEnd();
@@ -63,7 +73,8 @@ const SalesProjectData = () => {
                     // console.log(projectData);
                     console.log("setprojectdata res.data.data.data");
                     console.log(res.data.data.data);
-                    setItem(res.data.data.data)
+                    setItem(res.data.data.data["9f6a98bf5664693aa24a0e5473bef88e1fae3cb3"])
+                    console.log(item);
                     const response = JSON.stringify(res.data.data.data);
                     const jsonResponse = response;
                     
@@ -137,12 +148,18 @@ const SalesProjectData = () => {
             pid: projectID,
             pack: item,
         }
-        await axios.put(`http://localhost:3000/dev/putAddInterested/${projectID}`, requestBody); // Update the URL for the you AWS API
+        await axios.put(`http://localhost:3000/dev/addInterested/${projectID}`, requestBody); // Update the URL for the you AWS API
     };
 
     useEffect(() => {
+        getPersons();
         getData();
     }, []);
+
+
+
+
+
 
 
     return (
