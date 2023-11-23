@@ -88,47 +88,45 @@ const SalesProjectData = () => {
         if (extractedData != null) {
 
             console.log("fetchNameList");
-            
+
             console.log(extractedData['9f6a98bf5664693aa24a0e5473bef88e1fae3cb3']);
 
 
-            let userIds: string = extractedData['9f6a98bf5664693aa24a0e5473bef88e1fae3cb3'];
+            let userIds: string | undefined = extractedData['9f6a98bf5664693aa24a0e5473bef88e1fae3cb3'];
 
 
             // Ensure null is handled
-            if (userIds === 'null') {
+            if (userIds === undefined || userIds === 'null' || userIds === null || userIds === '') {
                 console.log('UserIds are null');
-                return;
             }
+            else {
+                let userIdsArray: string[] = userIds.split(";").map(id => id.trim());
 
+                // Remove any empty strings from the array
+                userIdsArray = userIdsArray.filter(id => id !== "");
 
-            let userIdsArray: string[] = userIds.split(";").map(id => id.trim());
+                let matchingNames: string[] = [];
 
-            // Remove any empty strings from the array
-            userIdsArray = userIdsArray.filter(id => id !== "");
-
-            let matchingNames: string[] = [];
-
-            userIdsArray.forEach(userId => {
-                console.log("UserId", userId);
-                if (userId === '6e1001f6-6412-4a3f-ae86-ad2207f1e9d3') {
-                    matchingNames.push('Iiro Välimaa');
-                } else {
-                    let foundPerson = persons.find(person => person.keycloakId === userId);
-                    if (foundPerson) {
-                        matchingNames.push(`${foundPerson.firstName} ${foundPerson.lastName}`);
+                userIdsArray.forEach(userId => {
+                    console.log("UserId", userId);
+                    if (userId === '6e1001f6-6412-4a3f-ae86-ad2207f1e9d3') {
+                        matchingNames.push('Iiro Välimaa');
                     } else {
-                        matchingNames.push("Unknown user");
+                        let foundPerson = persons.find(person => person.keycloakId === userId);
+                        if (foundPerson) {
+                            matchingNames.push(`${foundPerson.firstName} ${foundPerson.lastName}`);
+                        } else {
+                            matchingNames.push("Unknown user");
+                        }
                     }
-                }
-            });
+                });
 
-            console.log("Matching Names:");
-            console.log(matchingNames);
-            const formattedNames = matchingNames.join(', ');
+                console.log("Matching Names:");
+                console.log(matchingNames);
+                const formattedNames = matchingNames.join(', ');
 
-            setRenderedNames(formattedNames);
-
+                setRenderedNames(formattedNames);
+            }
         }
         else {
             console.log("No data extracted");

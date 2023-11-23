@@ -98,9 +98,9 @@ const ProjectRow = ({ title, rowtype }: RowProps) => {
                                         <Typography><strong>Title:</strong> {title}</Typography>
                                         <Typography variant="caption" sx={{ color: "grey" }}><strong>ID:</strong> {id}</Typography>
                                     </CardContent>
-                                    <CardActions sx={{ flexFlow: "row-reverse", }}>
+                                    {/* <CardActions sx={{ flexFlow: "row-reverse", }}>
                                         <Button onClick={() => { Iminterested(id) }} size="small" variant="outlined" sx={{ "&:hover": { background: "#000000", color: 'white' } }}>I'm interested</Button>
-                                    </CardActions>
+                                    </CardActions> */}
                                 </Card>
                             </Link>
                         )
