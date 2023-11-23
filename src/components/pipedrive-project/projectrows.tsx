@@ -85,7 +85,7 @@ const ProjectRow = ({ title, rowtype }: RowProps) => {
                     items.map((item: any, index: number) => {
                         const { id, title } = item;
                         return (
-                            <Link to={"/salesview/:" + id} key={index} style={{ textDecoration: "none", width: '100%'}}>
+                            <Link to={`/salesview/:${rowtype}/:${id}`} key={index} style={{ textDecoration: "none", width: '100%'}}>
                                 <Card sx={
                                         {
                                             width: '100%',

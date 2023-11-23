@@ -46,10 +46,23 @@ const App = () => {
           errorElement: <ErrorScreen />,
         },
         {
-          path: "/salesview/:id",
+          path: "/salesview/:rowtype/:id",
           element: <SalesProjectData />,
           errorElement: <ErrorScreen />,
         }
+        /*
+        ,
+        {
+          path: "/salesview/:deals/:id",
+          element: <SalesProjectData />,
+          errorElement: <ErrorScreen />,
+        },
+        {
+          path: "/salesview/:dealswon/:id",
+          element: <SalesProjectData />,
+          errorElement: <ErrorScreen />,
+        }
+        */
       ]
     }
   ]);
