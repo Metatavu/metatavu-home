@@ -53,17 +53,18 @@ const SalesProjectData = () => {
     //  Used to check if user has laptop/PC sized screen or not.
     const notMobileScreen = useMediaQuery('(min-width: 768px)');
 
-    const [interestedString, setInterestedString] = useState([]); //    TODO: change to string format
+    const [interestedString, setInterestedString] = useState<string>('');
     const [isEmpty, setIsEmpty] = useState(false);
     const persons = useAtomValue(personsAtom);
     const userProfile = useAtomValue(userProfileAtom);
     const [loading, setLoading] = useState(false);
     const params = useParams();
-    const userid = userProfile?.id;
-    const rowtype = params.rowtype?.slice(1);
-    const projectID = params.id?.slice(1);
+    const userid: string | undefined = userProfile?.id;
+    const rowtype = params.rowtype?.slice(1); // Removes the : from the :rowtype
+    const projectID = params.id?.slice(1); // Removes the : from the :id
     const [personsList, setPersonsList] = useState<Person[]>([]);
-    const [renderedNames, setRenderedNames] = useState('');
+    const [renderedNames, setRenderedNames] = useState<string>('');
+    const [ids, setIds] = useState<string[]>([]);
 
 
     const getPersons = async () => {
@@ -124,7 +125,7 @@ const SalesProjectData = () => {
                 console.log("Matching Names:");
                 console.log(matchingNames);
                 const formattedNames = matchingNames.join(', ');
-
+                setIds(userIdsArray);
                 setRenderedNames(formattedNames);
             }
         }
@@ -143,9 +144,16 @@ const SalesProjectData = () => {
             .then((res) => {
                 if (res.data.length === 0 || res.data == null) {
                     setIsEmpty(true);
+
                 }
                 else {
-                    setInterestedString(res.data.data.data["9f6a98bf5664693aa24a0e5473bef88e1fae3cb3"]);
+                    if (res.data.data.data["9f6a98bf5664693aa24a0e5473bef88e1fae3cb3"] === null || res.data.data.data["9f6a98bf5664693aa24a0e5473bef88e1fae3cb3"] === "null" || res.data.data.data["9f6a98bf5664693aa24a0e5473bef88e1fae3cb3"] === undefined || res.data.data.data["9f6a98bf5664693aa24a0e5473bef88e1fae3cb3"] === "") {
+                        setInterestedString("");
+                    }
+                    else {
+                        setInterestedString(res.data.data.data["9f6a98bf5664693aa24a0e5473bef88e1fae3cb3"]);
+                    }
+
                     console.log("this");
                     console.log(res.data.data.data["9f6a98bf5664693aa24a0e5473bef88e1fae3cb3"]);
                     const response = JSON.stringify(res.data.data.data);
@@ -166,24 +174,52 @@ const SalesProjectData = () => {
             .catch((error) => {
                 // Handles errors
                 console.log(error);
-                setInterestedString([]);
+                setInterestedString("");
             });
     };
 
 
 
-    const Iminterested = async (id: any) => {
+    const AddInterest = async (id: any) => {
         console.log(`User with id ${userProfile?.id} is interested to work on projectwith ${id}.`);
         console.log("ProjectId: " + projectID);
         const requestBody = {
             rowtype: rowtype,
             uid: userid,
             pid: projectID,
-            pack: interestedString,
+            existingInterest: interestedString,
+        };
+        console.log(requestBody);
+        if (rowtype === ("deals" || "dealswon")) {
+            await axios.put(`http://localhost:3000/dev/addDealInterest/${projectID}`, requestBody); // Update the URL to your AWS API
         }
-        await axios.put(`http://localhost:3000/dev/addInterested/${projectID}`, requestBody); // Update the URL for the you AWS API
+        else if (rowtype === "leads") {
+            await axios.patch(`http://localhost:3000/dev/addLeadInterest/${projectID}`, requestBody); // Update the URL to your AWS API
+        }
         window.location.reload();
     };
+
+
+    const RemoveInterest = async (id: any) => {
+        console.log(`User with id ${userProfile?.id} wants to remove interest from project with id: ${id}.`);
+        console.log("ProjectId: " + projectID);
+        const requestBody = {
+            rowtype: rowtype,
+            uid: userid,
+            pid: projectID,
+            existingInterest: interestedString,
+        };
+        console.log(requestBody);
+        if (rowtype === ("deals" || "dealswon")) {
+            await axios.put(`http://localhost:3000/dev/removeDealInterest/${projectID}`, requestBody); // Update the URL to your AWS API
+        }
+        else if (rowtype === "leads") {
+            await axios.patch(`http://localhost:3000/dev/removeLeadInterest/${projectID}`, requestBody); // Update the URL to your AWS API
+        }
+        window.location.reload();
+    };
+
+
 
     useEffect(() => {
         console.log("Rowtype:")
@@ -193,7 +229,7 @@ const SalesProjectData = () => {
             await getPersons();
         }
         fetcData();
-    }, [personsList]);
+    }, [persons, personsList]);
 
 
 
@@ -250,15 +286,28 @@ const SalesProjectData = () => {
                             </CardContent>
                             <CardActions >
                                 {
-                                    loading ?
-                                        (<Grid sx={{ width: "100%", display: "flex", flexDirection: "row-reverse" }}>
-                                            <Skeleton sx={{ width: "10em" }} />
-                                        </Grid>) :
-                                        (<Grid sx={{ width: "100%", display: "flex", flexDirection: "row-reverse" }}>
-                                            <Button onClick={() => { Iminterested(projectID) }} size="small" variant="outlined" sx={{ "&:hover": { background: "#000000", color: 'white' } }}>
-                                                I'm interested
-                                            </Button>
-                                        </Grid>
+                                    (loading || userid === undefined) ?
+                                        (
+                                            <Grid sx={{ width: "100%", display: "flex", flexDirection: "row-reverse" }}>
+                                                <Skeleton sx={{ width: "10em" }} />
+                                            </Grid>
+                                        ) :
+                                        (
+                                            <Grid sx={{ width: "100%", display: "flex", flexDirection: "row-reverse" }}>
+                                                {
+                                                    ids.includes(userid) ?
+                                                        (
+                                                            <Button onClick={() => { RemoveInterest(projectID) }} size="small" variant="outlined" sx={{ "&:hover": { background: "#000000", color: 'white' } }}>
+                                                                Remove Interest
+                                                            </Button>
+                                                        ) :
+                                                        (
+                                                            <Button onClick={() => { AddInterest(projectID) }} size="small" variant="outlined" sx={{ "&:hover": { background: "#000000", color: 'white' } }}>
+                                                                I'm interested
+                                                            </Button>
+                                                        )
+                                                }
+                                            </Grid>
                                         )
 
                                 }

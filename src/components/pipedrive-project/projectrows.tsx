@@ -90,6 +90,7 @@ const ProjectRow = ({ title, rowtype }: RowProps) => {
                                         {
                                             width: '100%',
                                             minHeight: '100%',
+                                            backgroundColor: "#ffffff",
                                             "&:hover": {
                                                 background: "#efefef"
                                             }
@@ -98,7 +99,7 @@ const ProjectRow = ({ title, rowtype }: RowProps) => {
                                         <Typography><strong>Title:</strong> {title}</Typography>
                                         <Typography variant="caption" sx={{ color: "grey" }}><strong>ID:</strong> {id}</Typography>
                                     </CardContent>
-                                    {/* <CardActions sx={{ flexFlow: "row-reverse", }}>
+                                {/* <CardActions sx={{ flexFlow: "row-reverse", }}>
                                         <Button onClick={() => { Iminterested(id) }} size="small" variant="outlined" sx={{ "&:hover": { background: "#000000", color: 'white' } }}>I'm interested</Button>
                                     </CardActions> */}
                                 </Card>
@@ -118,7 +119,7 @@ const ProjectRow = ({ title, rowtype }: RowProps) => {
     }, []);
 
     return (
-        <Grid container direction="column" width="100%" className="thisandthat">
+        <Grid container direction="column" width="100%">
             <Grid item >
                 <Divider component="h4" style={{ "marginBlock": "20px" }}>
                     {title}
@@ -135,7 +136,9 @@ const ProjectRow = ({ title, rowtype }: RowProps) => {
                                         <Stack spacing={3} justifyContent="center" alignItems="center">
                                             <Typography variant="subtitle1" textAlign="center">No {title} found!</Typography>
                                         </Stack>
-                                    ) : (
+                                    ) 
+                                    : 
+                                    (
                                         <Stack spacing={3} justifyContent="space-evenly" alignItems="flex-start">
                                             <ItemRow />
                                         </Stack>
