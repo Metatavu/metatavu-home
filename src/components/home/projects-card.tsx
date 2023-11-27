@@ -43,7 +43,7 @@ const ProjectsCard = () => {
                         }
 
                         <Grid item xs={12} sm={12} md={3.5}>
-                        <ProjectcardData title='Deals' rowtype='deals'/>
+                            <ProjectcardData title='Deals' rowtype='deals'/>
                         </Grid>
 
 
@@ -62,7 +62,7 @@ const ProjectsCard = () => {
 
 
                         <Grid item xs={12} sm={12} md={3.5}>
-                        <ProjectcardData title='Projects' rowtype='dealswon'/>
+                            <ProjectcardData title='Projects' rowtype='dealswon'/>
                         </Grid>
 
 

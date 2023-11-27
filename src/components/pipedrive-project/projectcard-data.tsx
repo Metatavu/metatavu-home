@@ -48,7 +48,7 @@ const ProjectcardData = ({ title, rowtype }: RowProps) => {
                     }
                 >
                     <CardContent sx={{paddingBottom: '16px !important'}}>
-                        <Typography>{`Currently ${itemCount} ongoing ${title}.`}</Typography>
+                        <Typography>Currently <strong>{`${itemCount}`} ongoing </strong> {`${title}.`}</Typography>
                     </CardContent>
                 </Card>
             </>

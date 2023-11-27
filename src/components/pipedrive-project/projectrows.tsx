@@ -1,18 +1,10 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from 'axios';
-import { Box, Card, CardActions, CardContent, Divider, Grid, Skeleton, Stack, Typography } from "@mui/material";
-import Button from '@mui/material/Button';
-import { getHoursAndMinutes } from "../../utils/time-utils";
-import strings from "../../localization/strings";
-import ScheduleIcon from "@mui/icons-material/Schedule";
-import { errorAtom } from "../../atoms/error";
-import { useAtom, useAtomValue, useSetAtom } from "jotai";
-import { useApi } from "../../hooks/use-api";
-import { Person, PersonTotalTime, Timespan } from "../../generated/client";
-import { personsAtom, personTotalTimeAtom, timespanAtom } from "../../atoms/person";
+import { Box, Card, CardActions, CardContent, Chip, Divider, Grid, Skeleton, Stack, Tooltip, Typography } from "@mui/material";
+import { useAtomValue} from "jotai";
+import { personsAtom } from "../../atoms/person";
 import { Link } from "react-router-dom";
 import { userProfileAtom } from "../../atoms/auth";
-import config from "../../app/config";
 
 
 
@@ -25,11 +17,11 @@ interface RowProps {
 
 const ProjectRow = ({ title, rowtype }: RowProps) => {
 
-    const [items, setItems] = useState([]);
-    const [isEmpty, setIsEmpty] = useState(false);
+    const [items, setItems] = useState<any[]>([]);
+    const [isEmpty, setIsEmpty] = useState<boolean>(false);
     const persons = useAtomValue(personsAtom);
     const userProfile = useAtomValue(userProfileAtom);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState<boolean>(false);
 
     /**
      * Initialize logged in person's time data.
@@ -55,26 +47,20 @@ const ProjectRow = ({ title, rowtype }: RowProps) => {
         setLoading(true);
         await axios.get(`http://localhost:3000/dev/${rowtype}`) // Update the URL for the you AWS API
             .then((res) => {
-                // Handles the successful response
-
                 if (res.data.data.data.length === 0) {
                     setIsEmpty(true);
                 }
                 else {
                     setItems(res.data.data.data);
+                    console.log(res.data.data.data);
                 }
                 setLoading(false);
             })
             .catch((error) => {
-                // Handles errors
                 console.log(error);
                 setItems([]);
             });
-    }
-
-    const Iminterested = async (id: number) => {
-        console.log(`User with id ${userProfile?.id} is interested to work on projectwith ${id}.`)
-    }
+    };
 
     const ItemRow = () => {
 
@@ -82,26 +68,70 @@ const ProjectRow = ({ title, rowtype }: RowProps) => {
             <>
 
                 {
-                    items.map((item: any, index: number) => {
-                        const { id, title } = item;
+                    items.map((item: { '9f6a98bf5664693aa24a0e5473bef88e1fae3cb3': string, '97561cf8673be155bc0939f90efb1679ae8795be': string, id: any, title: string}, index: number) => {
+
+                        // Handles interested users
+                        let interestCount: number = 0;
+                        if (item['9f6a98bf5664693aa24a0e5473bef88e1fae3cb3']) {
+                            const interestedUsers = item['9f6a98bf5664693aa24a0e5473bef88e1fae3cb3'].split(";");
+                            const filteredUsers = interestedUsers.filter((user: string) => user.trim() !== '');
+                            interestCount = filteredUsers.length;
+                        } else {
+                            interestCount = 0;
+                        }
+
+
+                        // Handles programming laguages
+                        let usedProgLang: string[] = [];
+                        if (item['97561cf8673be155bc0939f90efb1679ae8795be']) {
+                            usedProgLang = item['97561cf8673be155bc0939f90efb1679ae8795be'].split(";").map((id: string) => id.trim());
+                            usedProgLang = usedProgLang.filter(lang => lang !== '');
+                        } else {
+                            console.log("Unexpected error happened while trying to fetch languages!")
+                            usedProgLang = [];
+                        }
+
+                        const renderedChips = usedProgLang.slice(0, 2).map((lang: string, index: number) => (
+                            <Chip key={index} label={lang} sx={{ height: 'auto', maxWidth: 'auto'}} />
+                        ));
+
+                        const remainingLanguages = usedProgLang.slice(2);
+                        const remainingLanguagesChip = (
+                            <Chip
+                                key="remaining-languages"
+                                label={`+${remainingLanguages.length} more`}
+                                sx={{ height: 'auto', maxWidth: 'auto', marginRight: 1, cursor: 'pointer' }}
+                            />
+                        );
+
                         return (
-                            <Link to={`/salesview/:${rowtype}/:${id}`} key={index} style={{ textDecoration: "none", width: '100%'}}>
+                            <Link to={`/salesview/:${rowtype}/:${item.id}`} key={index} style={{ textDecoration: "none", minWidth: "100%", maxWidth: "10em" }}>
                                 <Card sx={
-                                        {
-                                            width: '100%',
-                                            minHeight: '100%',
-                                            backgroundColor: "#ffffff",
-                                            "&:hover": {
-                                                background: "#efefef"
-                                            }
-                                        }}>
-                                    <CardContent>
-                                        <Typography><strong>Title:</strong> {title}</Typography>
-                                        <Typography variant="caption" sx={{ color: "grey" }}><strong>ID:</strong> {id}</Typography>
+                                    {
+                                        width: '100%',
+                                        minHeight: '100%',
+                                        backgroundColor: "#ffffff",
+                                        "&:hover": {
+                                            background: "#efefef"
+                                        }
+                                    }}>
+                                    <CardContent sx={{ marginBottom: "-14px" }}>
+                                        <Typography><strong>{item.title}</strong></Typography>
+                                        <Typography variant="caption" sx={{ color: "grey" }}>{interestCount} people are interested on this project</Typography>
                                     </CardContent>
-                                {/* <CardActions sx={{ flexFlow: "row-reverse", }}>
-                                        <Button onClick={() => { Iminterested(id) }} size="small" variant="outlined" sx={{ "&:hover": { background: "#000000", color: 'white' } }}>I'm interested</Button>
-                                    </CardActions> */}
+                                    <CardActions sx={{ height: "auto", maxWidth: "100%", paddingInline: "16px"}}>
+                                        
+                                        <>
+                                            {renderedChips}
+                                            {remainingLanguages.length > 0 && (
+                                                <Tooltip title={remainingLanguages.join(', ')} placement="top">
+                                                    {remainingLanguagesChip}
+                                                </Tooltip>
+                                            )}
+                                        </>
+
+
+                                    </CardActions>
                                 </Card>
                             </Link>
                         )
@@ -110,7 +140,7 @@ const ProjectRow = ({ title, rowtype }: RowProps) => {
 
             </>
         );
-    }
+    };
 
 
     useEffect(() => {
@@ -136,10 +166,10 @@ const ProjectRow = ({ title, rowtype }: RowProps) => {
                                         <Stack spacing={3} justifyContent="center" alignItems="center">
                                             <Typography variant="subtitle1" textAlign="center">No {title} found!</Typography>
                                         </Stack>
-                                    ) 
-                                    : 
+                                    )
+                                    :
                                     (
-                                        <Stack spacing={3} justifyContent="space-evenly" alignItems="flex-start">
+                                        <Stack spacing={3} justifyContent="space-evenly" alignItems="flex-start" maxWidth="100%">
                                             <ItemRow />
                                         </Stack>
                                     )

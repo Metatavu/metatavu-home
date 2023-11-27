@@ -252,7 +252,8 @@ const SalesProjectData = () => {
                                 (<>
                                     <Typography variant="h3" sx={{ fontSize: "2em", textAlign: "" }}>Projekti: {extractedData.title}</Typography>
                                     <p><strong>ID:</strong> {extractedData.id}</p>
-                                    <p><strong>Interested: </strong> {renderedNames}</p>
+                                    <p><strong>Interested: </strong>
+                                    {renderedNames.length === 0 ? "No one has show interest yet.": renderedNames }</p>
                                     {/* <p><strong>Interested: </strong> {extractedData['9f6a98bf5664693aa24a0e5473bef88e1fae3cb3']}</p> */}
                                     <p><strong>Add time:</strong> {extractedData.add_time}</p>
                                     <p><strong>Update time:</strong> {extractedData.update_time}</p>
