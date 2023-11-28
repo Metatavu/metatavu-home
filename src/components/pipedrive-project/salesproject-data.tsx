@@ -1,4 +1,5 @@
-import { Button, Card, CardActions, CardContent, Divider, Grid, Paper, Skeleton, Typography, dividerClasses, useMediaQuery } from "@mui/material";
+import { Card, CardActions, CardContent, Divider, Grid, Paper, Skeleton, Typography, dividerClasses, useMediaQuery } from "@mui/material";
+import Button from "@mui/material/Button";
 import { useAtomValue } from "jotai";
 import axios from 'axios';
 import { useEffect, useState } from "react";
@@ -250,10 +251,13 @@ const SalesProjectData = () => {
 
                             {extractedData &&
                                 (<>
-                                    <Typography variant="h3" sx={{ fontSize: "2em", textAlign: "" }}>Projekti: {extractedData.title}</Typography>
-                                    <p><strong>ID:</strong> {extractedData.id}</p>
+                                    <Typography variant="h3" sx={{ fontSize: "2em", textAlign: "" }}>{extractedData.title}</Typography>
+
+                                    <Divider sx={{}} />
+
+                                    <Typography variant="caption" color="grey">ID: {extractedData.id}</Typography>
                                     <p><strong>Interested: </strong>
-                                    {renderedNames.length === 0 ? "No one has show interest yet.": renderedNames }</p>
+                                        {renderedNames.length === 0 ? "No one has show interest yet." : renderedNames}</p>
                                     {/* <p><strong>Interested: </strong> {extractedData['9f6a98bf5664693aa24a0e5473bef88e1fae3cb3']}</p> */}
                                     <p><strong>Add time:</strong> {extractedData.add_time}</p>
                                     <p><strong>Update time:</strong> {extractedData.update_time}</p>
@@ -268,15 +272,6 @@ const SalesProjectData = () => {
 
 
     return (
-        // 
-        <Card>
-
-            <CardContent>
-                <h3 style={{ marginTop: 6 }}>{/*strings.tableToolbar.myRequests*/}{ }</h3>
-                <p>Here you can see more informations about project. You can indicate your interest towards project by clicking the "I'm interested"-button.</p>
-                <Divider sx={{ marginBottom: "20px" }} />
-
-                <Grid container direction="row" spacing={3} justifyContent="space-evenly">
 
                     <Grid item sx={{ width: "100%" }}>
                         <Card>
@@ -285,27 +280,31 @@ const SalesProjectData = () => {
                                     <Item />
                                 </Grid>
                             </CardContent>
-                            <CardActions >
+                            <CardActions sx={{ padding:"16px", width: "50%", margin: "auto" }}>
                                 {
                                     (loading || userid === undefined) ?
                                         (
-                                            <Grid sx={{ width: "100%", display: "flex", flexDirection: "row-reverse" }}>
+                                            <Grid container direction="column" spacing={0}>
                                                 <Skeleton sx={{ width: "10em" }} />
                                             </Grid>
                                         ) :
                                         (
-                                            <Grid sx={{ width: "100%", display: "flex", flexDirection: "row-reverse" }}>
+                                            <Grid container direction="column" spacing={0}>
                                                 {
                                                     ids.includes(userid) ?
                                                         (
-                                                            <Button onClick={() => { RemoveInterest(projectID) }} size="small" variant="outlined" sx={{ "&:hover": { background: "#000000", color: 'white' } }}>
-                                                                Remove Interest
-                                                            </Button>
+                                                            <div>
+                                                                <Button onClick={() => { RemoveInterest(projectID) }} color="error" size="small" variant="outlined" sx={{ "&:hover::after": { color: 'error' } }}>
+                                                                    Remove Interest
+                                                                </Button>
+                                                            </div>
                                                         ) :
                                                         (
-                                                            <Button onClick={() => { AddInterest(projectID) }} size="small" variant="outlined" sx={{ "&:hover": { background: "#000000", color: 'white' } }}>
-                                                                I'm interested
-                                                            </Button>
+                                                            <div>
+                                                                <Button onClick={() => { AddInterest(projectID) }} color="success" size="small" variant="contained" sx={{ "&:hover": { background: "#000000", color: 'white' } }}>
+                                                                    I'm interested
+                                                                </Button>
+                                                            </div>
                                                         )
                                                 }
                                             </Grid>
@@ -316,10 +315,6 @@ const SalesProjectData = () => {
                         </Card>
                     </Grid>
 
-                </Grid>
-
-            </CardContent>
-        </Card>
     );
 
 };
