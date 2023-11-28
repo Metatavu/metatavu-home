@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from 'axios';
 import { Box, Card, CardActions, CardContent, Chip, Divider, Grid, Skeleton, Stack, Tooltip, Typography } from "@mui/material";
-import { useAtomValue} from "jotai";
+import { useAtomValue } from "jotai";
 import { personsAtom } from "../../atoms/person";
 import { Link } from "react-router-dom";
 import { userProfileAtom } from "../../atoms/auth";
@@ -11,11 +11,13 @@ import { userProfileAtom } from "../../atoms/auth";
 interface RowProps {
     rowtype: string;
     title: string;
+    sorting: string;
+    filter: string[];
 }
 
 
 
-const ProjectRow = ({ title, rowtype }: RowProps) => {
+const ProjectRow = ({ title, rowtype, sorting, filter }: RowProps) => {
 
     const [items, setItems] = useState<any[]>([]);
     const [isEmpty, setIsEmpty] = useState<boolean>(false);
@@ -64,11 +66,26 @@ const ProjectRow = ({ title, rowtype }: RowProps) => {
 
     const ItemRow = () => {
 
+
+
+        //  Handles sorting
+        let sortedItems: any[] = items;
+        if (sorting === 'recent' && sortedItems != undefined) {
+            sortedItems = sortedItems.slice().reverse();            
+        }
+        else if (sorting === 'old' && sortedItems != undefined) {
+            sortedItems = items;
+        }
+        else{
+            sortedItems = items;
+        }
+
+
         return (
             <>
 
                 {
-                    items.map((item: { '9f6a98bf5664693aa24a0e5473bef88e1fae3cb3': string, '97561cf8673be155bc0939f90efb1679ae8795be': string, id: any, title: string}, index: number) => {
+                    sortedItems.map((item: { '9f6a98bf5664693aa24a0e5473bef88e1fae3cb3': string, '97561cf8673be155bc0939f90efb1679ae8795be': string, id: any, title: string }, index: number) => {
 
                         // Handles interested users
                         let interestCount: number = 0;
@@ -92,7 +109,7 @@ const ProjectRow = ({ title, rowtype }: RowProps) => {
                         }
 
                         const renderedChips = usedProgLang.slice(0, 2).map((lang: string, index: number) => (
-                            <Chip key={index} label={lang} sx={{ height: 'auto', maxWidth: 'auto'}} />
+                            <Chip key={index} label={lang} sx={{ height: 'auto', maxWidth: 'auto' }} />
                         ));
 
                         const remainingLanguages = usedProgLang.slice(2);
@@ -119,8 +136,8 @@ const ProjectRow = ({ title, rowtype }: RowProps) => {
                                         <Typography><strong>{item.title}</strong></Typography>
                                         <Typography variant="caption" sx={{ color: "grey" }}>{interestCount} people are interested on this project</Typography>
                                     </CardContent>
-                                    <CardActions sx={{ height: "auto", maxWidth: "100%", paddingInline: "16px"}}>
-                                        
+                                    <CardActions sx={{ height: "auto", maxWidth: "100%", paddingInline: "16px" }}>
+
                                         <>
                                             {renderedChips}
                                             {remainingLanguages.length > 0 && (
