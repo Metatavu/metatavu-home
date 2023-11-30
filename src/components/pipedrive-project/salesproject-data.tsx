@@ -20,7 +20,7 @@ interface User {
 
 
 interface LeadStruct {
-    id: number;
+    id: string;
     title: string;
     '9f6a98bf5664693aa24a0e5473bef88e1fae3cb3': string;
     add_time: string;
@@ -28,7 +28,7 @@ interface LeadStruct {
     // Other deal-related fields
 }
 interface DealStruct {
-    id: number;
+    id: string;
     title: string;
     '9f6a98bf5664693aa24a0e5473bef88e1fae3cb3': string;
     add_time: string;

@@ -10,7 +10,7 @@ const PipedriveScreen = () => {
     //  Used to check if user has laptop/PC sized screen or not.
     const notMobileScreen = useMediaQuery('(min-width: 768px)');
     const [sort, setSort] = useState('recent');
-    const [usedTech, setUsedTech] = useState<string[]>([]);
+    const [usedTechList, setUsedTechList] = useState<string[]>([]);
 
     const techList = [
         'all',
@@ -30,14 +30,17 @@ const PipedriveScreen = () => {
         await setSort(event.target.value as string);
     };
 
-    const handleFilter = (event: SelectChangeEvent<typeof usedTech>) => {
+    const handleFilter = (event: SelectChangeEvent<typeof usedTechList>) => {
         const {
           target: { value },
         } = event;
-        setUsedTech(
+        setUsedTechList(
           // On autofill we get a stringified value.
           typeof value === 'string' ? value.split(', ') : value,
         );
+
+        console.log("usedTechList");
+        console.log(usedTechList);
       };
 
 
@@ -48,7 +51,7 @@ const PipedriveScreen = () => {
 
 
                     <Grid item xs={12} sm={12} md={3.5}>
-                        <ProjectRow title='Leads' rowtype='leads' sorting={sort} filter={usedTech} />
+                        <ProjectRow title='Leads' rowtype='leads' sorting={sort} usedTech={usedTechList} />
                     </Grid>
                     {
                         // Creates a divider if screen width > 768px
@@ -63,7 +66,7 @@ const PipedriveScreen = () => {
                     }
 
                     <Grid item xs={12} sm={12} md={3.5}>
-                        <ProjectRow title='Deals' rowtype='deals' sorting={sort} filter={usedTech} />
+                        <ProjectRow title='Deals' rowtype='deals' sorting={sort} usedTech={usedTechList} />
                     </Grid>
 
 
@@ -82,7 +85,7 @@ const PipedriveScreen = () => {
 
 
                     <Grid item xs={12} sm={12} md={3.5}>
-                        <ProjectRow title='Projects' rowtype='dealswon' sorting={sort} filter={usedTech} />
+                        <ProjectRow title='Projects' rowtype='dealswon' sorting={sort} usedTech={usedTechList} />
                     </Grid>
 
 
@@ -94,7 +97,7 @@ const PipedriveScreen = () => {
     useEffect(() => {
         console.log("Sort:")
         console.log(sort);
-    }, [sort, usedTech]);
+    }, [sort, usedTechList]);
 
     return (
         // 
@@ -133,7 +136,7 @@ const PipedriveScreen = () => {
                                     labelId="demo-multiple-checkbox-label"
                                     id="demo-multiple-checkbox"
                                     multiple
-                                    value={usedTech}
+                                    value={usedTechList}
                                     onChange={handleFilter}
                                     input={<OutlinedInput label="Tag" />}
                                     renderValue={(selected) => selected.join(', ')}
@@ -141,7 +144,7 @@ const PipedriveScreen = () => {
                                 >
                                     {techList.map((name) => (
                                         <MenuItem key={name} value={name}>
-                                            <Checkbox checked={usedTech.indexOf(name) > -1} />
+                                            <Checkbox checked={usedTechList.indexOf(name) > -1} />
                                             <ListItemText primary={name} />
                                         </MenuItem>
                                     ))}
