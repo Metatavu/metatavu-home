@@ -66,7 +66,7 @@ const PipedriveScreen = () => {
                     }
 
                     <Grid item xs={12} sm={12} md={3.5}>
-                        <ProjectRow title='Deals' rowtype='deals' sorting={sort} usedTech={usedTechList} />
+                        <ProjectRow title='Open Deals' rowtype='deals' sorting={sort} usedTech={usedTechList} />
                     </Grid>
 
 
@@ -85,7 +85,7 @@ const PipedriveScreen = () => {
 
 
                     <Grid item xs={12} sm={12} md={3.5}>
-                        <ProjectRow title='Projects' rowtype='dealswon' sorting={sort} usedTech={usedTechList} />
+                        <ProjectRow title='Won Deals' rowtype='dealswon' sorting={sort} usedTech={usedTechList} />
                     </Grid>
 
 
