@@ -49,21 +49,57 @@ const ProjectRow = ({ title, rowtype, sorting, usedTech }: RowProps) => {
 
     const getItems = async () => {
         setLoading(true);
-        await axios.get(`http://localhost:3000/dev/${rowtype}`) // Update the URL for the you AWS API
-            .then((res) => {
-                if (res.data.data.data.length === 0) {
-                    setIsEmpty(true);
-                }
-                else {
-                    setItems(res.data.data.data);
-                    console.log(res.data.data.data);
-                }
-                setLoading(false);
-            })
-            .catch((error) => {
-                console.log(error);
-                setItems([]);
-            });
+        if (rowtype === "leads") {
+            await axios.get(`http://localhost:3000/dev/${rowtype}`) // Update the URL for the you AWS API
+                .then((res) => {
+                    if (res.data.data.data.length === 0) {
+                        setIsEmpty(true);
+                    }
+                    else {
+                        setItems(res.data.data.data);
+                        console.log(res.data.data.data);
+                    }
+                    setLoading(false);
+                })
+                .catch((error) => {
+                    console.log(error);
+                    setItems([]);
+                });
+        }
+        else if (rowtype === "deals") {
+            await axios.get(`http://localhost:3000/dev/deals/open`) // Update the URL for the you AWS API
+                .then((res) => {
+                    if (res.data.data.data.length === 0) {
+                        setIsEmpty(true);
+                    }
+                    else {
+                        setItems(res.data.data.data);
+                        console.log(res.data.data.data);
+                    }
+                    setLoading(false);
+                })
+                .catch((error) => {
+                    console.log(error);
+                    setItems([]);
+                });
+        }
+        else {
+            await axios.get(`http://localhost:3000/dev/deals/won`) // Update the URL for the you AWS API
+                .then((res) => {
+                    if (res.data.data.data.length === 0) {
+                        setIsEmpty(true);
+                    }
+                    else {
+                        setItems(res.data.data.data);
+                        console.log(res.data.data.data);
+                    }
+                    setLoading(false);
+                })
+                .catch((error) => {
+                    console.log(error);
+                    setItems([]);
+                });
+        }
     };
 
     const ItemRow = () => {
@@ -188,35 +224,66 @@ const ProjectRow = ({ title, rowtype, sorting, usedTech }: RowProps) => {
                 // HANDLES IF NO FILTER
                 else {
                     return (
-                        <Link to={`/salesview/:${rowtype}/:${item.id}`} key={index} style={{ textDecoration: "none", minWidth: "100%", maxWidth: "10em" }}>
-                            <Card sx={
-                                {
-                                    width: '100%',
-                                    minHeight: '100%',
-                                    backgroundColor: "#ffffff",
-                                    "&:hover": {
-                                        background: "#efefef"
-                                    }
-                                }}>
-                                <CardContent sx={{ marginBottom: "-14px" }}>
-                                    <Typography><strong>{item.title}</strong></Typography>
-                                    <Typography variant="caption" sx={{ color: "grey" }}>{interestCount} people are interested on this project</Typography>
-                                </CardContent>
-                                <CardActions sx={{ height: "auto", maxWidth: "100%", paddingInline: "16px" }}>
+                        (rowtype == "leads") ? (
+                            <Link to={`/salesview/:leads/:${item.id}`} key={index} style={{ textDecoration: "none", minWidth: "100%", maxWidth: "10em" }}>
+                                <Card sx={
+                                    {
+                                        width: '100%',
+                                        minHeight: '100%',
+                                        backgroundColor: "#ffffff",
+                                        "&:hover": {
+                                            background: "#efefef"
+                                        }
+                                    }}>
+                                    <CardContent sx={{ marginBottom: "-14px" }}>
+                                        <Typography><strong>{item.title}</strong></Typography>
+                                        <Typography variant="caption" sx={{ color: "grey" }}>{interestCount} people are interested on this project</Typography>
+                                    </CardContent>
+                                    <CardActions sx={{ height: "auto", maxWidth: "100%", paddingInline: "16px" }}>
 
-                                    <>
-                                        {renderedChips}
-                                        {remainingLanguages.length > 0 && (
-                                            <Tooltip title={remainingLanguages.join(', ')} placement="top">
-                                                {remainingLanguagesChip}
-                                            </Tooltip>
-                                        )}
-                                    </>
+                                        <>
+                                            {renderedChips}
+                                            {remainingLanguages.length > 0 && (
+                                                <Tooltip title={remainingLanguages.join(', ')} placement="top">
+                                                    {remainingLanguagesChip}
+                                                </Tooltip>
+                                            )}
+                                        </>
 
 
-                                </CardActions>
-                            </Card>
-                        </Link>
+                                    </CardActions>
+                                </Card>
+                            </Link>) : (
+                            <Link to={`/salesview/:deals/:${item.id}`} key={index} style={{ textDecoration: "none", minWidth: "100%", maxWidth: "10em" }}>
+                                <Card sx={
+                                    {
+                                        width: '100%',
+                                        minHeight: '100%',
+                                        backgroundColor: "#ffffff",
+                                        "&:hover": {
+                                            background: "#efefef"
+                                        }
+                                    }}>
+                                    <CardContent sx={{ marginBottom: "-14px" }}>
+                                        <Typography><strong>{item.title}</strong></Typography>
+                                        <Typography variant="caption" sx={{ color: "grey" }}>{interestCount} people are interested on this project</Typography>
+                                    </CardContent>
+                                    <CardActions sx={{ height: "auto", maxWidth: "100%", paddingInline: "16px" }}>
+
+                                        <>
+                                            {renderedChips}
+                                            {remainingLanguages.length > 0 && (
+                                                <Tooltip title={remainingLanguages.join(', ')} placement="top">
+                                                    {remainingLanguagesChip}
+                                                </Tooltip>
+                                            )}
+                                        </>
+
+
+                                    </CardActions>
+                                </Card>
+                            </Link>)
+
                     );
                 }
 

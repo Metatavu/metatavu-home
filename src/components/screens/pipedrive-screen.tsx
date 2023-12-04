@@ -4,11 +4,13 @@ import { SortByAlpha } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import { MenuProps } from "react-select";
 
+/**
+ * 
+ * @returns The main element of the Pipedrive project management app
+ */
 const PipedriveScreen = () => {
 
-
-    //  Used to check if user has laptop/PC sized screen or not.
-    const notMobileScreen = useMediaQuery('(min-width: 768px)');
+    const notMobileScreen = useMediaQuery('(min-width: 768px)'); //  Used to check if user has laptop/PC sized screen or not.
     const [sort, setSort] = useState('recent');
     const [usedTechList, setUsedTechList] = useState<string[]>([]);
 
@@ -30,20 +32,30 @@ const PipedriveScreen = () => {
         await setSort(event.target.value as string);
     };
 
+    /**
+     * @summary
+     * Function is from Material UI and is used to change the filter bars text when selecting items
+     * 
+     * @param event 
+     */
     const handleFilter = (event: SelectChangeEvent<typeof usedTechList>) => {
         const {
-          target: { value },
+            target: { value },
         } = event;
         setUsedTechList(
-          // On autofill we get a stringified value.
-          typeof value === 'string' ? value.split(', ') : value,
+            // On autofill we get a stringified value.
+            typeof value === 'string' ? value.split(', ') : value,
         );
 
         console.log("usedTechList");
         console.log(usedTechList);
-      };
+    };
 
 
+    /**
+     * 
+     * @returns The lead, open deal and deals won columns to the Pipedrive project management app
+     */
     const SalesColumns = () => {
         return (
             <>
@@ -140,7 +152,7 @@ const PipedriveScreen = () => {
                                     onChange={handleFilter}
                                     input={<OutlinedInput label="Tag" />}
                                     renderValue={(selected) => selected.join(', ')}
-                                    // MenuProps={MenuProps}
+                                // MenuProps={MenuProps}
                                 >
                                     {techList.map((name) => (
                                         <MenuItem key={name} value={name}>

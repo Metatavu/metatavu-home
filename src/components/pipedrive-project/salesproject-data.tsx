@@ -141,7 +141,8 @@ const SalesProjectData = () => {
         setLoading(true);
         //const did = params.id.trimEnd();
 
-        await axios.get(`http://localhost:3000/dev/getDealById/${rowtype}/${projectID}`) // Update the URL for the you AWS API
+        if(rowtype === "leads"){
+            await axios.get(`http://localhost:3000/dev/getLeadById/${projectID}`) // Update the URL for the you AWS API
             .then((res) => {
                 if (res.data.length === 0 || res.data == null) {
                     setIsEmpty(true);
@@ -177,6 +178,47 @@ const SalesProjectData = () => {
                 console.log(error);
                 setInterestedString("");
             });
+        }
+        else if(rowtype === "deals"){
+            await axios.get(`http://localhost:3000/dev/getDealById/${projectID}`) // Update the URL for the you AWS API
+            .then((res) => {
+                if (res.data.length === 0 || res.data == null) {
+                    setIsEmpty(true);
+
+                }
+                else {
+                    if (res.data.data.data["9f6a98bf5664693aa24a0e5473bef88e1fae3cb3"] === null || res.data.data.data["9f6a98bf5664693aa24a0e5473bef88e1fae3cb3"] === "null" || res.data.data.data["9f6a98bf5664693aa24a0e5473bef88e1fae3cb3"] === undefined || res.data.data.data["9f6a98bf5664693aa24a0e5473bef88e1fae3cb3"] === "") {
+                        setInterestedString("");
+                    }
+                    else {
+                        setInterestedString(res.data.data.data["9f6a98bf5664693aa24a0e5473bef88e1fae3cb3"]);
+                    }
+
+                    console.log("this");
+                    console.log(res.data.data.data["9f6a98bf5664693aa24a0e5473bef88e1fae3cb3"]);
+                    const response = JSON.stringify(res.data.data.data);
+                    const jsonResponse = response;
+                    const parsedResponse: DealStruct = JSON.parse(jsonResponse);
+                    const extractedInfo: DealStruct = {
+                        id: parsedResponse.id,
+                        title: parsedResponse.title,
+                        '9f6a98bf5664693aa24a0e5473bef88e1fae3cb3': parsedResponse['9f6a98bf5664693aa24a0e5473bef88e1fae3cb3'],
+                        add_time: parsedResponse.add_time,
+                        update_time: parsedResponse.update_time,
+                    };
+                    setExtractedData(extractedInfo);
+                    fetchNameList();
+                }
+                setLoading(false);
+            })
+            .catch((error) => {
+                // Handles errors
+                console.log(error);
+                setInterestedString("");
+            });
+        }
+
+        
     };
 
 
