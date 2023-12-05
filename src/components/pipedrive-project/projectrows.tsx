@@ -50,7 +50,7 @@ const ProjectRow = ({ title, rowtype, sorting, usedTech }: RowProps) => {
     const getItems = async () => {
         setLoading(true);
         if (rowtype === "leads") {
-            await axios.get(`http://localhost:3000/dev/${rowtype}`) // Update the URL for the you AWS API
+            await axios.get(`http://localhost:3000/dev/leads`) // Update the URL for the you AWS API
                 .then((res) => {
                     if (res.data.data.data.length === 0) {
                         setIsEmpty(true);

@@ -22,7 +22,30 @@ const ProjectcardData = ({ title, rowtype }: RowProps) => {
 
     const getItems = async () => {
         setLoading(true);
-        await axios.get(`http://localhost:3000/dev/${rowtype}`) // Update the URL for the you AWS API
+        if (rowtype === "leads") {
+            await axios.get(`http://localhost:3000/dev/${rowtype}`) // Update the URL for the you AWS API
+                .then((res) => {
+                    setItemCount(res.data.data.data.length);    // Could this be done in serverless?
+                    setLoading(false);
+                })
+                .catch((error) => {
+                    console.log(error)
+                    setItemCount(0);
+                });
+        } 
+        else if (rowtype === "deals") {
+            await axios.get(`http://localhost:3000/dev/deals/open`) // Update the URL for the you AWS API
+                .then((res) => {
+                    setItemCount(res.data.data.data.length);    // Could this be done in serverless?
+                    setLoading(false);
+                })
+                .catch((error) => {
+                    console.log(error)
+                    setItemCount(0);
+                });
+        }
+        else if(rowtype === "dealswon"){
+            await axios.get(`http://localhost:3000/dev/deals/won`) // Update the URL for the you AWS API
             .then((res) => {
                 setItemCount(res.data.data.data.length);    // Could this be done in serverless?
                 setLoading(false);
@@ -31,6 +54,7 @@ const ProjectcardData = ({ title, rowtype }: RowProps) => {
                 console.log(error)
                 setItemCount(0);
             });
+        }
     }
 
 
@@ -47,7 +71,7 @@ const ProjectcardData = ({ title, rowtype }: RowProps) => {
                         }
                     }
                 >
-                    <CardContent sx={{paddingBottom: '16px !important'}}>
+                    <CardContent sx={{ paddingBottom: '16px !important' }}>
                         <Typography>Currently <strong>{`${itemCount}`} ongoing </strong> {`${title}.`}</Typography>
                     </CardContent>
                 </Card>
