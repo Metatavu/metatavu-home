@@ -63,6 +63,10 @@ const App = () => {
         {
           path: "/admin/vacations",
           element: <VacationRequestsScreen />
+        },
+        {
+          path: "/admin/timebank",
+          element: <TimebankScreen />
         }
       ]
     }

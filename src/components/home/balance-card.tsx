@@ -90,7 +90,7 @@ const BalanceCard = () => {
   };
 
   return (
-    <Link to={"/timebank"} style={{ textDecoration: "none" }}>
+    <Link to={ adminMode ? "/admin/timebank" : "/timebank"} style={{ textDecoration: "none" }}>
       <Card
         sx={{
           "&:hover": {

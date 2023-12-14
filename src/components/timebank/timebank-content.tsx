@@ -31,8 +31,11 @@ import {
   personTotalTimeAtom,
   personDailyEntryAtom,
   dailyEntriesAtom,
-  timespanAtom
+  timespanAtom,
+  personsAtom
 } from "../../atoms/person";
+import UserRoleUtils from "../../utils/user-role-utils";
+import { userProfileAtom } from "../../atoms/auth";
 
 /**
  * Component properties
@@ -48,6 +51,7 @@ interface Props {
  * @param props Component properties
  */
 const TimebankContent = (props: Props) => {
+  const userProfile = useAtomValue(userProfileAtom);
   const { handleDailyEntryChange, loading } = props;
 
   const [selectedEntries, setSelectedEntries] = useState<DailyEntry[]>([]);
@@ -55,9 +59,14 @@ const TimebankContent = (props: Props) => {
     dailyEntries: false
   });
   const personTotalTime = useAtomValue(personTotalTimeAtom);
+  const persons = useAtomValue(personsAtom);
   const [timespan, setTimespan] = useAtom(timespanAtom);
   const personDailyEntry = useAtomValue(personDailyEntryAtom);
   const dailyEntries = useAtomValue(dailyEntriesAtom);
+  const adminMode = UserRoleUtils.adminMode();
+  const [selectedEmployee, setSelectedEmployee] = useState<number | null>(
+    userProfile?.id ? Number(localStorage.getItem("selectedEmployee") || userProfile.id) : null
+  );
   const todayOrEarlier = DateTime.fromJSDate(
     dailyEntries.filter((item) => item.date <= new Date() && item.logged)[0].date
   );
@@ -175,6 +184,28 @@ const TimebankContent = (props: Props) => {
 
   return (
     <>
+      {adminMode && (
+      <Grow in>
+        <Card sx={{ p: "1%", display: "flex", justifyContent: "center", marginBottom: "24px" }}>
+          <FormControl fullWidth>
+            <InputLabel id="employee-select-label">Select Employee</InputLabel>
+            <Select
+              labelId="employee-select-label"
+              id="employee-select"
+              value={selectedEmployee}
+              onChange={(event) => setSelectedEmployee(Number(event.target.value))}
+              label="Select Employee"
+            >
+              {persons.map((person) => (
+                <MenuItem key={person.id} value={person.id}>
+                  {`${person.firstName} ${person.lastName}`}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Card>
+      </Grow>
+    )}
       <Grow in>
         <Card sx={{ border: "2px solid #bdbdbd;" }}>
           <Typography
