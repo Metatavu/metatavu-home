@@ -1,8 +1,6 @@
-import { Box, Card, CardContent, Checkbox, Divider, FormControl, Grid, InputLabel, ListItemText, MenuItem, NativeSelect, OutlinedInput, Select, SelectChangeEvent, Typography, useMediaQuery } from "@mui/material";
+import { Box, Card, CardContent, Checkbox, Divider, FormControl, Grid, InputLabel, ListItemText, MenuItem, OutlinedInput, Select, SelectChangeEvent, Typography, useMediaQuery } from "@mui/material";
 import ProjectRow from "../pipedrive-project/projectrows";
-import { SortByAlpha } from "@mui/icons-material";
 import { useEffect, useState } from "react";
-import { MenuProps } from "react-select";
 
 /**
  * 

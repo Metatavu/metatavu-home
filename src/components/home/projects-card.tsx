@@ -1,7 +1,6 @@
-import { Box, Card, CardContent, Divider, Grid, Skeleton, useMediaQuery } from "@mui/material";
+import { Card, CardContent, Divider, Grid, useMediaQuery } from "@mui/material";
 import { Link } from "react-router-dom";
 import strings from "../../localization/strings";
-import ProjectRow from "../pipedrive-project/projectrows";
 import ProjectcardData from "../pipedrive-project/projectcard-data";
 
 const ProjectsCard = () => {

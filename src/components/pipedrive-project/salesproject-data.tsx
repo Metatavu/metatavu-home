@@ -1,4 +1,4 @@
-import { Card, CardActions, CardContent, Divider, Grid, Paper, Skeleton, Typography, dividerClasses, useMediaQuery } from "@mui/material";
+import { Card, CardActions, CardContent, Divider, Grid, Skeleton, Typography, useMediaQuery } from "@mui/material";
 import Button from "@mui/material/Button";
 import { useAtomValue } from "jotai";
 import axios from 'axios';
