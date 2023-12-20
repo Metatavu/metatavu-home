@@ -1,8 +1,13 @@
 import { Card, CardContent, Divider, Grid, useMediaQuery } from "@mui/material";
 import { Link } from "react-router-dom";
 import strings from "../../localization/strings";
-import ProjectcardData from "../pipedrive-project/projectcard-data";
+import ProjectcardData from "../pipedrive-project/project-card-data";
 
+/**
+ * The frontpage card that leads to the pipedrive app at the /salesview
+ * 
+ * @returns The card containing all three columns
+ */
 const ProjectsCard = () => {
 
 
@@ -22,12 +27,10 @@ const ProjectsCard = () => {
             >
                 <CardContent>
                     <h3 style={{ marginTop: 6 }}>{/*strings.tableToolbar.myRequests*/}Sales Projects</h3>
-
                     <Grid container direction="row" spacing={3} justifyContent="space-evenly">
 
-
                         <Grid item xs={12} sm={12} md={3.5}>
-                            <ProjectcardData title='Leads' rowtype='leads'/>
+                            <ProjectcardData title='Leads' columntype='leads'/>
                         </Grid>
                         {
                             // Creates a divider if screen width > 768px
@@ -42,10 +45,8 @@ const ProjectsCard = () => {
                         }
 
                         <Grid item xs={12} sm={12} md={3.5}>
-                            <ProjectcardData title='Deals' rowtype='deals'/>
+                            <ProjectcardData title='Deals' columntype='deals'/>
                         </Grid>
-
-
 
                         {
                             // Creates a divider if screen width > 768px
@@ -59,11 +60,9 @@ const ProjectsCard = () => {
                                 (null)
                         }
 
-
                         <Grid item xs={12} sm={12} md={3.5}>
-                            <ProjectcardData title='Projects' rowtype='dealswon'/>
+                            <ProjectcardData title='Projects' columntype='dealswon'/>
                         </Grid>
-
 
                     </Grid>
 

@@ -1,5 +1,5 @@
 import { Box, Card, CardContent, Checkbox, Divider, FormControl, Grid, InputLabel, ListItemText, MenuItem, OutlinedInput, Select, SelectChangeEvent, Typography, useMediaQuery } from "@mui/material";
-import ProjectRow from "../pipedrive-project/projectrows";
+import ProjectColumn from "../pipedrive-project/project-column";
 import { useEffect, useState } from "react";
 
 /**
@@ -61,7 +61,7 @@ const PipedriveScreen = () => {
 
 
                     <Grid item xs={12} sm={12} md={3.5}>
-                        <ProjectRow title='Leads' rowtype='leads' sorting={sort} usedTech={usedTechList} />
+                        <ProjectColumn title='Leads' columntype='leads' sorting={sort} usedTech={usedTechList} />
                     </Grid>
                     {
                         // Creates a divider if screen width > 768px
@@ -76,7 +76,7 @@ const PipedriveScreen = () => {
                     }
 
                     <Grid item xs={12} sm={12} md={3.5}>
-                        <ProjectRow title='Open Deals' rowtype='deals' sorting={sort} usedTech={usedTechList} />
+                        <ProjectColumn title='Open Deals' columntype='deals' sorting={sort} usedTech={usedTechList} />
                     </Grid>
 
 
@@ -95,7 +95,7 @@ const PipedriveScreen = () => {
 
 
                     <Grid item xs={12} sm={12} md={3.5}>
-                        <ProjectRow title='Won Deals' rowtype='dealswon' sorting={sort} usedTech={usedTechList} />
+                        <ProjectColumn title='Won Deals' columntype='dealswon' sorting={sort} usedTech={usedTechList} />
                     </Grid>
 
 

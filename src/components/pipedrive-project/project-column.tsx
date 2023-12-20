@@ -1,110 +1,72 @@
 import { useEffect, useState } from "react";
-import axios from 'axios';
 import { Card, CardActions, CardContent, Chip, Divider, Grid, Skeleton, Stack, Tooltip, Typography } from "@mui/material";
 import { useAtomValue } from "jotai";
 import { personsAtom } from "../../atoms/person";
 import { Link } from "react-router-dom";
 import { userProfileAtom } from "../../atoms/auth";
+import { useLambdaApi } from "../../hooks/use-api";
 
-
-
-interface RowProps {
-    rowtype: string;
+interface ColumnProps {
+    columntype: string;
     title: string;
     sorting: string;
     usedTech: string[];
 }
 
+/**
+ * 
+ * @param param0 
+ * @returns 
+ */
+const ProjectColumn = ({ title, columntype, sorting, usedTech }: ColumnProps) => {
 
-
-const ProjectRow = ({ title, rowtype, sorting, usedTech }: RowProps) => {
-
+    const { leadsApi, dealsApi } = useLambdaApi();
     const [items, setItems] = useState<any[]>([]);
     const [isEmpty, setIsEmpty] = useState<boolean>(false);
     const [atleastOne, setAtleastOne] = useState<boolean>(false);
     const [columnIsEmpty, setColumnIsEmpty] = useState<boolean>(false);
-    const persons = useAtomValue(personsAtom);
-    const userProfile = useAtomValue(userProfileAtom);
     const [loading, setLoading] = useState<boolean>(false);
-
-    /**
-     * Initialize logged in person's time data.
-     */
-    const getPersons = async () => {
-        if (persons.length) {
-            console.log("this");
-            console.log(userProfile?.id)
-            console.log(userProfile?.username)
-            console.log(userProfile?.id)
-            console.log(persons);
-        }
-        else {
-            console.log("Person < 0 : " + persons);
-        }
-    };
-
-
-
-
 
     const getItems = async () => {
         setLoading(true);
-        if (rowtype === "leads") {
-            await axios.get(`http://localhost:3000/dev/leads`) // Update the URL for the you AWS API
-                .then((res) => {
-                    if (res.data.data.data.length === 0) {
-                        setIsEmpty(true);
-                    }
-                    else {
-                        setItems(res.data.data.data);
-                        console.log(res.data.data.data);
-                    }
-                    setLoading(false);
-                })
-                .catch((error) => {
-                    console.log(error);
-                    setItems([]);
+        if (columntype === "leads") {
+            await leadsApi.listSalesLeads().then((res) => {
+                if (res.length === 0) {
+                    setIsEmpty(true);
+                }
+                else {
+                    setItems(res);
+                    console.log("LEADS RES: ", res);
+                }
+                setLoading(false);
+            })
+                .catch(() => {
+                    console.log("Error while fetching leads!")
                 });
         }
-        else if (rowtype === "deals") {
-            await axios.get(`http://localhost:3000/dev/deals/open`) // Update the URL for the you AWS API
-                .then((res) => {
-                    if (res.data.data.data.length === 0) {
-                        setIsEmpty(true);
-                    }
-                    else {
-                        setItems(res.data.data.data);
-                        console.log(res.data.data.data);
-                    }
-                    setLoading(false);
+        else if (columntype === "deals") {
+            await dealsApi.listSalesDeals({ status: "open" }).then((res) => {
+                setItems(res);
+                console.log("DEALS RES: ", res);
+                setLoading(false);
+            })
+                .catch(() => {
+                    console.log("Error while fetching deals!")
                 })
-                .catch((error) => {
-                    console.log(error);
-                    setItems([]);
-                });
         }
-        else {
-            await axios.get(`http://localhost:3000/dev/deals/won`) // Update the URL for the you AWS API
-                .then((res) => {
-                    if (res.data.data.data.length === 0) {
-                        setIsEmpty(true);
-                    }
-                    else {
-                        setItems(res.data.data.data);
-                        console.log(res.data.data.data);
-                    }
-                    setLoading(false);
+        else if (columntype === "dealswon") {
+            await dealsApi.listSalesDeals({ status: "won" }).then((res) => {
+                setItems(res);
+                console.log("DEALS RES: ", res);
+                setLoading(false);
+            })
+                .catch(() => {
+                    console.log("Error while fetching deals!")
                 })
-                .catch((error) => {
-                    console.log(error);
-                    setItems([]);
-                });
         }
     };
 
-    const ItemRow = () => {
-
-
+    const ItemColumn = () => {
 
         //  Handles sorting
         let sortedItems: any[] = items;
@@ -133,7 +95,6 @@ const ProjectRow = ({ title, rowtype, sorting, usedTech }: RowProps) => {
                     interestCount = 0;
                 }
 
-
                 // Handles programming laguages
                 let usedProgLang: string[] = [];
                 if (item['97561cf8673be155bc0939f90efb1679ae8795be']) {
@@ -157,11 +118,7 @@ const ProjectRow = ({ title, rowtype, sorting, usedTech }: RowProps) => {
                     />
                 );
 
-
                 const lowercaseProgLang = usedProgLang.map(str => str.toLowerCase());
-                console.log(lowercaseProgLang);
-                console.log(usedTech);
-
 
                 // Checks if any of the used techs match with item techs
                 if (usedTech.length > 0) {
@@ -170,7 +127,7 @@ const ProjectRow = ({ title, rowtype, sorting, usedTech }: RowProps) => {
                             console.log("Item found with one tech selected as filter");
                             setAtleastOne(true);
                             return (
-                                <Link to={`/salesview/:${rowtype}/:${item.id}`} key={index} style={{ textDecoration: "none", minWidth: "100%", maxWidth: "10em" }}>
+                                <Link to={`/salesview/:${columntype}/:${item.id}`} key={index} style={{ textDecoration: "none", minWidth: "100%", maxWidth: "10em" }}>
                                     <Card sx={
                                         {
                                             width: '100%',
@@ -211,12 +168,12 @@ const ProjectRow = ({ title, rowtype, sorting, usedTech }: RowProps) => {
 
                     });
                     if (false) {
-                        console.log("atLeastOne == " + atleastOne + rowtype + " ", matchingItem);
+                        console.log("atLeastOne == " + atleastOne + columntype + " ", matchingItem);
                         setColumnIsEmpty(true);
                         return (null);
                     }
                     else {
-                        console.log("atLeastOne == " + atleastOne + rowtype + " ", matchingItem);
+                        console.log("atLeastOne == " + atleastOne + columntype + " ", matchingItem);
                         return (<>{matchingItem}</>);
                     }
 
@@ -224,7 +181,7 @@ const ProjectRow = ({ title, rowtype, sorting, usedTech }: RowProps) => {
                 // HANDLES IF NO FILTER
                 else {
                     return (
-                        (rowtype == "leads") ? (
+                        (columntype == "leads") ? (
                             <Link to={`/salesview/:leads/:${item.id}`} key={index} style={{ textDecoration: "none", minWidth: "100%", maxWidth: "10em" }}>
                                 <Card sx={
                                     {
@@ -289,17 +246,6 @@ const ProjectRow = ({ title, rowtype, sorting, usedTech }: RowProps) => {
 
             });
 
-
-
-
-
-
-
-
-
-
-
-
             if (oneColumn) {
                 console.log("mätsää oneColumn", oneColumn);
                 return (<>{oneColumn}</>);
@@ -332,7 +278,6 @@ const ProjectRow = ({ title, rowtype, sorting, usedTech }: RowProps) => {
 
 
     useEffect(() => {
-        getPersons();
         getItems();
     }, [usedTech]);
 
@@ -358,7 +303,7 @@ const ProjectRow = ({ title, rowtype, sorting, usedTech }: RowProps) => {
                                     :
                                     (
                                         <Stack spacing={3} justifyContent="space-evenly" alignItems="flex-start" maxWidth="100%" className="notEmptyStack">
-                                            <ItemRow />
+                                            <ItemColumn />
                                         </Stack>
                                     )
                             }
@@ -371,4 +316,4 @@ const ProjectRow = ({ title, rowtype, sorting, usedTech }: RowProps) => {
     );
 }
 
-export default ProjectRow;
+export default ProjectColumn;

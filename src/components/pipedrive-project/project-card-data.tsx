@@ -1,63 +1,58 @@
 import { useEffect, useState } from "react";
-import axios from 'axios';
+import { useLambdaApi } from "../../hooks/use-api";
 import { Card, CardContent, Divider, Grid, Skeleton, Stack, Typography } from "@mui/material";
 
 
 
-interface RowProps {
-    rowtype: string;
+interface ColumnProps {
+    columntype: string;
     title: string;
 }
 
 
-
-const ProjectcardData = ({ title, rowtype }: RowProps) => {
-
+/**
+ * 
+ * @param param0 object containing title of the column, and the type of column
+ * @returns One Project Card containing Project title, count of people interested in the project and tech used in the project
+ */
+const ProjectcardData = ({ title, columntype }: ColumnProps) => {
+    const { leadsApi, dealsApi} = useLambdaApi();
     const [itemCount, setItemCount] = useState(0);
     const [loading, setLoading] = useState(false);
 
-
-
-
-
     const getItems = async () => {
         setLoading(true);
-        if (rowtype === "leads") {
-            await axios.get(`http://localhost:3000/dev/${rowtype}`) // Update the URL for the you AWS API
-                .then((res) => {
-                    setItemCount(res.data.data.data.length);    // Could this be done in serverless?
-                    setLoading(false);
-                })
-                .catch((error) => {
-                    console.log(error)
-                    setItemCount(0);
-                });
-        } 
-        else if (rowtype === "deals") {
-            await axios.get(`http://localhost:3000/dev/deals/open`) // Update the URL for the you AWS API
-                .then((res) => {
-                    setItemCount(res.data.data.data.length);    // Could this be done in serverless?
-                    setLoading(false);
-                })
-                .catch((error) => {
-                    console.log(error)
-                    setItemCount(0);
-                });
-        }
-        else if(rowtype === "dealswon"){
-            await axios.get(`http://localhost:3000/dev/deals/won`) // Update the URL for the you AWS API
-            .then((res) => {
-                setItemCount(res.data.data.data.length);    // Could this be done in serverless?
+        if (columntype === "leads") {
+            await leadsApi.listSalesLeads().then((res) => {
+                setItemCount(res.length)
+                console.log(res)
                 setLoading(false);
             })
-            .catch((error) => {
-                console.log(error)
+            .catch(() => {
                 setItemCount(0);
             });
+        } 
+        else if (columntype === "deals") {
+            await dealsApi.listSalesDeals({status: "open"}).then((res) => {
+                setItemCount(res.length);
+                console.log("DEALS RES: ", res);
+                setLoading(false);
+            })
+            .catch(() => {
+                setItemCount(0);
+            })
+        }
+        else if(columntype === "dealswon"){
+            await dealsApi.listSalesDeals({status: "won"}).then((res) => {
+                setItemCount(res.length);
+                console.log("DEALS RES: ", res);
+                setLoading(false);
+            })
+            .catch(() => {
+                setItemCount(0);
+            })
         }
     }
-
-
 
     const ItemSummary = () => {
 

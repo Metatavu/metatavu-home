@@ -7,26 +7,8 @@ import { userProfileAtom } from "../../atoms/auth";
 import { personsAtom } from "../../atoms/person";
 import { useParams } from "react-router";
 import { Person } from "../../generated/client";
+import { useLambdaApi } from "../../hooks/use-api";
 
-interface ItemProps {
-    rowtype: string;
-}
-interface User {
-    id: number;
-    name: string;
-    email: string;
-    // Other user-related fields
-}
-
-
-interface LeadStruct {
-    id: string;
-    title: string;
-    '9f6a98bf5664693aa24a0e5473bef88e1fae3cb3': string;
-    add_time: string;
-    update_time: string;
-    // Other deal-related fields
-}
 interface DealStruct {
     id: string;
     title: string;
@@ -36,24 +18,24 @@ interface DealStruct {
     // Other deal-related fields
 }
 
-
-interface ProjectStruct {
-    id: number;
+interface UpdatedDealStruct {
+    dealId: number;
     title: string;
-    '9f6a98bf5664693aa24a0e5473bef88e1fae3cb3': string;
-    add_time: string;
-    update_time: string;
+    interested: string;
+    addTime: Date;
+    updateTime: Date;
     // Other deal-related fields
 }
 
-
+/**
+ * Function builds the detailed data and button to add or remove interest into element.
+ * 
+ * @returns Card element with detailed data and button to add or remove interest
+ */
 const SalesProjectData = () => {
 
-    const [extractedData, setExtractedData] = useState<DealStruct>();
-
-    //  Used to check if user has laptop/PC sized screen or not.
-    const notMobileScreen = useMediaQuery('(min-width: 768px)');
-
+    const [extractedData, setExtractedData] = useState<UpdatedDealStruct>();
+    const { leadByIdApi, dealByIdApi, interestApi } = useLambdaApi();
     const [interestedString, setInterestedString] = useState<string>('');
     const [isEmpty, setIsEmpty] = useState(false);
     const persons = useAtomValue(personsAtom);
@@ -62,69 +44,55 @@ const SalesProjectData = () => {
     const params = useParams();
     const userid: string | undefined = userProfile?.id;
     const rowtype = params.rowtype?.slice(1); // Removes the : from the :rowtype
-    const projectID = params.id?.slice(1); // Removes the : from the :id
+    const projectID: any = params.id?.slice(1); // Removes the : from the :id
     const [personsList, setPersonsList] = useState<Person[]>([]);
     const [renderedNames, setRenderedNames] = useState<string>('');
     const [ids, setIds] = useState<string[]>([]);
 
-
+    /**
+     * Fetches eployee list
+     */
     const getPersons = async () => {
-
         if (persons) {
-            // console.log("this");
-            // console.log(userProfile?.id)
-            // console.log(userProfile?.username)
-            // console.log(userProfile?.id)
-            // console.log(persons);
             setPersonsList(persons);
-            console.log("personsList");
-            console.log(personsList);
         }
         else {
-            console.log("Person < 0 : " + persons);
+            console.log("NO persons found!");
         }
     };
 
+    /**
+     * Fetches the list of interested from API. Goes through it and creates new array containing the employee names based on the fetched list of interest.
+     *  
+     */
     const fetchNameList = async () => {
 
         if (extractedData != null) {
+            let userIds: string | undefined = extractedData.interested;
 
-            console.log("fetchNameList");
-
-            console.log(extractedData['9f6a98bf5664693aa24a0e5473bef88e1fae3cb3']);
-
-
-            let userIds: string | undefined = extractedData['9f6a98bf5664693aa24a0e5473bef88e1fae3cb3'];
-
-
-            // Ensure null is handled
+            // Handles null answer
             if (userIds === undefined || userIds === 'null' || userIds === null || userIds === '') {
                 console.log('UserIds are null');
             }
             else {
                 let userIdsArray: string[] = userIds.split(";").map(id => id.trim());
-
                 // Remove any empty strings from the array
                 userIdsArray = userIdsArray.filter(id => id !== "");
-
                 let matchingNames: string[] = [];
-
                 userIdsArray.forEach(userId => {
                     console.log("UserId", userId);
                     if (userId === '6e1001f6-6412-4a3f-ae86-ad2207f1e9d3') {
-                        matchingNames.push('Iiro Välimaa');
+                        matchingNames.push('Iiro Välimaa'); //This been used as debuging as my profile is not on the list
                     } else {
+                        // Actuall nameList checking
                         let foundPerson = persons.find(person => person.keycloakId === userId);
                         if (foundPerson) {
                             matchingNames.push(`${foundPerson.firstName} ${foundPerson.lastName}`);
                         } else {
-                            matchingNames.push("Unknown user");
+                            matchingNames.push("Unknown user");//This been used on debuging for IDs that I've written myself to the Pipedrive
                         }
                     }
                 });
-
-                console.log("Matching Names:");
-                console.log(matchingNames);
                 const formattedNames = matchingNames.join(', ');
                 setIds(userIdsArray);
                 setRenderedNames(formattedNames);
@@ -133,99 +101,60 @@ const SalesProjectData = () => {
         else {
             console.log("No data extracted");
         }
-
     }
 
-
+    /**
+     * Fetches lead or deal by ID
+     */
     const getData = async () => {
         setLoading(true);
         //const did = params.id.trimEnd();
 
-        if(rowtype === "leads"){
-            await axios.get(`http://localhost:3000/dev/getLeadById/${projectID}`) // Update the URL for the you AWS API
-            .then((res) => {
-                if (res.data.length === 0 || res.data == null) {
+        if (rowtype === "leads" && projectID != undefined) {
+
+            await leadByIdApi.getLeadById({ leadId: projectID }).then((res) => {
+                console.log("GET LEAD BY ID RES: ", res);
+                if (res.length === 0 || res === null) {
                     setIsEmpty(true);
-
                 }
-                else {
-                    if (res.data.data.data["9f6a98bf5664693aa24a0e5473bef88e1fae3cb3"] === null || res.data.data.data["9f6a98bf5664693aa24a0e5473bef88e1fae3cb3"] === "null" || res.data.data.data["9f6a98bf5664693aa24a0e5473bef88e1fae3cb3"] === undefined || res.data.data.data["9f6a98bf5664693aa24a0e5473bef88e1fae3cb3"] === "") {
-                        setInterestedString("");
-                    }
-                    else {
-                        setInterestedString(res.data.data.data["9f6a98bf5664693aa24a0e5473bef88e1fae3cb3"]);
-                    }
-
-                    console.log("this");
-                    console.log(res.data.data.data["9f6a98bf5664693aa24a0e5473bef88e1fae3cb3"]);
-                    const response = JSON.stringify(res.data.data.data);
-                    const jsonResponse = response;
-                    const parsedResponse: DealStruct = JSON.parse(jsonResponse);
-                    const extractedInfo: DealStruct = {
-                        id: parsedResponse.id,
+            })
+                .catch(() => {
+                });
+        }
+        else if (rowtype === "deals" && projectID != undefined) {
+            console.log("projectID", projectID)
+            await dealByIdApi.getDealById(projectID).then((res) => {
+                console.log("GET DEAL BY ID RES: ", res);
+                if (res.length === 0 || res === null) {
+                    setIsEmpty(true);
+                } else {
+                    const parsedResponse: UpdatedDealStruct = res[0];
+                    const extractedInfo: UpdatedDealStruct = {
+                        dealId: parsedResponse.dealId,
                         title: parsedResponse.title,
-                        '9f6a98bf5664693aa24a0e5473bef88e1fae3cb3': parsedResponse['9f6a98bf5664693aa24a0e5473bef88e1fae3cb3'],
-                        add_time: parsedResponse.add_time,
-                        update_time: parsedResponse.update_time,
+                        interested: parsedResponse.interested,
+                        addTime: parsedResponse.addTime,
+                        updateTime: parsedResponse.updateTime,
                     };
                     setExtractedData(extractedInfo);
                     fetchNameList();
                 }
                 setLoading(false);
             })
-            .catch((error) => {
-                // Handles errors
-                console.log(error);
-                setInterestedString("");
-            });
-        }
-        else if(rowtype === "deals"){
-            await axios.get(`http://localhost:3000/dev/getDealById/${projectID}`) // Update the URL for the you AWS API
-            .then((res) => {
-                if (res.data.length === 0 || res.data == null) {
-                    setIsEmpty(true);
-
-                }
-                else {
-                    if (res.data.data.data["9f6a98bf5664693aa24a0e5473bef88e1fae3cb3"] === null || res.data.data.data["9f6a98bf5664693aa24a0e5473bef88e1fae3cb3"] === "null" || res.data.data.data["9f6a98bf5664693aa24a0e5473bef88e1fae3cb3"] === undefined || res.data.data.data["9f6a98bf5664693aa24a0e5473bef88e1fae3cb3"] === "") {
-                        setInterestedString("");
-                    }
-                    else {
-                        setInterestedString(res.data.data.data["9f6a98bf5664693aa24a0e5473bef88e1fae3cb3"]);
-                    }
-
-                    console.log("this");
-                    console.log(res.data.data.data["9f6a98bf5664693aa24a0e5473bef88e1fae3cb3"]);
-                    const response = JSON.stringify(res.data.data.data);
-                    const jsonResponse = response;
-                    const parsedResponse: DealStruct = JSON.parse(jsonResponse);
-                    const extractedInfo: DealStruct = {
-                        id: parsedResponse.id,
-                        title: parsedResponse.title,
-                        '9f6a98bf5664693aa24a0e5473bef88e1fae3cb3': parsedResponse['9f6a98bf5664693aa24a0e5473bef88e1fae3cb3'],
-                        add_time: parsedResponse.add_time,
-                        update_time: parsedResponse.update_time,
-                    };
-                    setExtractedData(extractedInfo);
-                    fetchNameList();
-                }
-                setLoading(false);
-            })
-            .catch((error) => {
-                // Handles errors
-                console.log(error);
-                setInterestedString("");
-            });
+                .catch(() => {
+                });
         }
 
-        
+
     };
 
 
-
+    /**
+     * Used to add interest to project
+     * @param id The id of the project
+     */
     const AddInterest = async (id: any) => {
-        console.log(`User with id ${userProfile?.id} is interested to work on projectwith ${id}.`);
-        console.log("ProjectId: " + projectID);
+        console.log(`User with id ${userProfile?.id} is interested to work on project with id: ${id}.`);
         const requestBody = {
             rowtype: rowtype,
             uid: userid,
@@ -234,15 +163,22 @@ const SalesProjectData = () => {
         };
         console.log(requestBody);
         if (rowtype === ("deals" || "dealswon")) {
-            await axios.put(`http://localhost:3000/dev/addDealInterest/${projectID}`, requestBody); // Update the URL to your AWS API
+            await interestApi.addDealInterestDealIdPut(projectID);
+            // Following function has been used previously
+            // await axios.put(`http://localhost:3000/dev/removeDealInterest/${projectID}`, requestBody); // Update the URL to your AWS API
         }
         else if (rowtype === "leads") {
-            await axios.patch(`http://localhost:3000/dev/addLeadInterest/${projectID}`, requestBody); // Update the URL to your AWS API
+            await interestApi.addDealInterestDealIdPut(projectID);
+            // Following function has been used previously
+            // await axios.patch(`http://localhost:3000/dev/removeLeadInterest/${projectID}`, requestBody); // Update the URL to your AWS API
         }
         window.location.reload();
     };
 
-
+    /**
+     * Used to remove interest from project
+     * @param id The id of the project
+     */
     const RemoveInterest = async (id: any) => {
         console.log(`User with id ${userProfile?.id} wants to remove interest from project with id: ${id}.`);
         console.log("ProjectId: " + projectID);
@@ -252,21 +188,21 @@ const SalesProjectData = () => {
             pid: projectID,
             existingInterest: interestedString,
         };
-        console.log(requestBody);
+
+        //  DOESNT WORK ATM AS THE requestBody CANNOT BE ATTACHED
         if (rowtype === ("deals" || "dealswon")) {
-            await axios.put(`http://localhost:3000/dev/removeDealInterest/${projectID}`, requestBody); // Update the URL to your AWS API
+            await interestApi.removeDealInterestDealIdPut(projectID);
+            // Following function has been used previously
+            // await axios.put(`http://localhost:3000/dev/removeDealInterest/${projectID}`, requestBody); // Update the URL to your AWS API
         }
         else if (rowtype === "leads") {
-            await axios.patch(`http://localhost:3000/dev/removeLeadInterest/${projectID}`, requestBody); // Update the URL to your AWS API
+            await interestApi.removeLeadInterestLeadIdPatch(projectID);
+            // Following function has been used previously
+            // await axios.patch(`http://localhost:3000/dev/removeLeadInterest/${projectID}`, requestBody); // Update the URL to your AWS API
         }
         window.location.reload();
     };
-
-
-
     useEffect(() => {
-        console.log("Rowtype:")
-        console.log(rowtype);
         const fetcData = async () => {
             await getData();
             await getPersons();
@@ -274,8 +210,11 @@ const SalesProjectData = () => {
         fetcData();
     }, [persons, personsList]);
 
-
-
+    /**
+     * Information area of the project
+     * 
+     * @returns Detailed information of specific salesproject
+     */
     const Item = () => {
 
         return (
@@ -290,19 +229,17 @@ const SalesProjectData = () => {
                             <Skeleton />
                         </div>) :
                         <div>
-
                             {extractedData &&
                                 (<>
                                     <Typography variant="h3" sx={{ fontSize: "2em", textAlign: "" }}>{extractedData.title}</Typography>
-
-                                    <Divider sx={{}} />
-
-                                    <Typography variant="caption" color="grey">ID: {extractedData.id}</Typography>
-                                    <p><strong>Interested: </strong>
-                                        {renderedNames.length === 0 ? "No one has show interest yet." : renderedNames}</p>
-                                    {/* <p><strong>Interested: </strong> {extractedData['9f6a98bf5664693aa24a0e5473bef88e1fae3cb3']}</p> */}
-                                    <p><strong>Add time:</strong> {extractedData.add_time}</p>
-                                    <p><strong>Update time:</strong> {extractedData.update_time}</p>
+                                    <Divider/>
+                                    <Typography variant="caption" color="grey">ID: {extractedData.dealId}</Typography>
+                                    <p>
+                                        <strong>Interested: </strong>
+                                        {renderedNames.length === 0 ? "No one has show interest yet." : renderedNames}
+                                    </p>
+                                    <p><strong>Add time:</strong> {extractedData.addTime.toDateString()}</p>
+                                    <p><strong>Update time:</strong> {extractedData.updateTime.toDateString()}</p>
                                 </>)
                             }
                         </div>
@@ -311,51 +248,49 @@ const SalesProjectData = () => {
         );
     }
 
-
-
     return (
 
-                    <Grid item sx={{ width: "100%" }}>
-                        <Card>
-                            <CardContent sx={{ width: "50%", margin: "auto" }}>
-                                <Grid container direction="column" spacing={0}>
-                                    <Item />
-                                </Grid>
-                            </CardContent>
-                            <CardActions sx={{ padding:"16px", width: "50%", margin: "auto" }}>
-                                {
-                                    (loading || userid === undefined) ?
-                                        (
-                                            <Grid container direction="column" spacing={0}>
-                                                <Skeleton sx={{ width: "10em" }} />
-                                            </Grid>
-                                        ) :
-                                        (
-                                            <Grid container direction="column" spacing={0}>
-                                                {
-                                                    ids.includes(userid) ?
-                                                        (
-                                                            <div>
-                                                                <Button onClick={() => { RemoveInterest(projectID) }} color="error" size="small" variant="outlined" sx={{ "&:hover::after": { color: 'error' } }}>
-                                                                    Remove Interest
-                                                                </Button>
-                                                            </div>
-                                                        ) :
-                                                        (
-                                                            <div>
-                                                                <Button onClick={() => { AddInterest(projectID) }} color="success" size="small" variant="contained" sx={{ "&:hover": { background: "#000000", color: 'white' } }}>
-                                                                    I'm interested
-                                                                </Button>
-                                                            </div>
-                                                        )
-                                                }
-                                            </Grid>
-                                        )
-
-                                }
-                            </CardActions>
-                        </Card>
+        <Grid item sx={{ width: "100%" }}>
+            <Card>
+                <CardContent sx={{ width: "50%", margin: "auto" }}>
+                    <Grid container direction="column" spacing={0}>
+                        <Item />
                     </Grid>
+                </CardContent>
+                <CardActions sx={{ padding: "16px", width: "50%", margin: "auto" }}>
+                    {
+                        (loading || userid === undefined) ?
+                            (
+                                <Grid container direction="column" spacing={0}>
+                                    <Skeleton sx={{ width: "10em" }} />
+                                </Grid>
+                            ) :
+                            (
+                                <Grid container direction="column" spacing={0}>
+                                    {
+                                        ids.includes(userid) ?
+                                            (
+                                                <div>
+                                                    <Button onClick={() => { RemoveInterest(projectID) }} color="error" size="small" variant="outlined" sx={{ "&:hover::after": { color: 'error' } }}>
+                                                        Remove Interest
+                                                    </Button>
+                                                </div>
+                                            ) :
+                                            (
+                                                <div>
+                                                    <Button onClick={() => { AddInterest(projectID) }} color="success" size="small" variant="contained" sx={{ "&:hover": { background: "#000000", color: 'white' } }}>
+                                                        I'm interested
+                                                    </Button>
+                                                </div>
+                                            )
+                                    }
+                                </Grid>
+                            )
+
+                    }
+                </CardActions>
+            </Card>
+        </Grid>
 
     );
 
