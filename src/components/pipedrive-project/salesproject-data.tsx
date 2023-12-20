@@ -63,7 +63,6 @@ const SalesProjectData = () => {
 
     /**
      * Fetches the list of interested from API. Goes through it and creates new array containing the employee names based on the fetched list of interest.
-     *  
      */
     const fetchNameList = async () => {
 
@@ -147,7 +146,6 @@ const SalesProjectData = () => {
 
 
     };
-
 
     /**
      * Used to add interest to project
