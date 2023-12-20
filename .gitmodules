@@ -3,4 +3,5 @@
 	url = https://github.com/Metatavu/time-bank-api-spec
 [submodule "home-lambdas-api-spec"]
 	path = home-lambdas-api-spec
-	url = https://github.com/Metatavu/home-lambdas-API-spec
+	url = https://github.com/Metatavu/home-lambdas-API-spec.git
+	branch = develop
