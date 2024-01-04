@@ -38,7 +38,7 @@ export const getHours = (minutes: number) =>
  * Formats inputted time period from @PersonTotalTime
  *
  * @param timespan time period
- * @returns formatted timespan in the following formats (DD.MM.YYYY – DD.MM.YYYY), (YYYY/WW), (YYYY/MM)
+ * @returns formatted timespan in the following formats (DD.MM.YYYY – DD.MM.YYYY), (YYYY/WW), (YYYY/MM), (YYYY)
  */
 export const formatTimePeriod = (timespan: string[] | undefined) => {
   if (!timespan) return null;
@@ -49,10 +49,38 @@ export const formatTimePeriod = (timespan: string[] | undefined) => {
     );
     const endDate = DateTime.fromJSDate(new Date(timespan[1])).toLocaleString(DateTime.DATE_SHORT);
     return `${startDate} – ${endDate}`; //All time
-  } else if (timespan.length > 2) {
-    return `${timespan[0]}/${timespan[2]}`; //Month
-  }
-  return `${timespan[0]}/${timespan[1]}`; //Week
+  } else if (timespan.length === 2 && timespan[0].length <= 4) {
+    return `${timespan[0]}/${timespan[1]}`; //Month
+  } else if (timespan.length === 3) {
+    return `${timespan[0]}/${timespan[2]}`; //Week
+  } else return `${timespan[0]}`; // Year
+};
+
+/**
+ * Formats inputted value to double digits
+ *
+ * @param value
+ * @returns value as double digits i.e 9 -> 09
+ */
+export const doubleDigitFormatter = (value: string | undefined) => {
+  if (!value) return null;
+
+  if (value.length < 2) return `0${value}`;
+  else return value;
+};
+
+/**
+ * Formats personTotalTime timePeriod attribute YYYY,MM,WW to ISO string and then to DateTime
+ * 
+ * @param year (YYYY),MM,WW
+ * @param week YYYY,MM,(WW)
+ * @param dayNumber Weekday number
+ * @returns DateTime object
+ */
+export const getWeekFromISO = (year: string, week: string, dayNumber: number) => {
+  const weekISO = `${year}-W${doubleDigitFormatter(week)}-${dayNumber}`
+  const weekParsed = DateTime.fromISO(weekISO);
+  return weekParsed;
 };
 
 /**

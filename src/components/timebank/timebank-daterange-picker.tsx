@@ -1,6 +1,6 @@
 import { DatePicker } from "@mui/x-date-pickers";
-import { DateRange } from "../../types";
 import strings from "../../localization/strings";
+import { DateRange } from "../../types";
 
 /**
  * Component properties
@@ -12,6 +12,7 @@ interface Props {
 
 /**
  * Date Range Picker component
+ *
  *
  * @param props Component properties
  */

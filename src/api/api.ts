@@ -9,10 +9,12 @@ import {
   VacationRequestStatusApi
 } from "../generated/client";
 
+
 /**
  * Generic type that accepts parameters within the @ConfigurationParameters interface
  */
-type ConfigConstructor<T> = new (_params: ConfigurationParameters) => T;
+// rome-ignore lint/correctness/noUnusedVariables: <explanation>
+type  ConfigConstructor<T> = new (_params: ConfigurationParameters) => T;
 
 /**
  * Creates a new ConfigConstructor instance with params required to access the API

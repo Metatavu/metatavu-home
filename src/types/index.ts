@@ -148,3 +148,14 @@ export interface DateRange {
   start: DateTime;
   end: DateTime;
 }
+
+/**
+ * Type describing date range with time period
+ */
+export interface DateRangeWithTimePeriod {
+  date: {
+    start: DateTime;
+    end: DateTime;
+  };
+  timePeriod: { start: string; end: string };
+}
