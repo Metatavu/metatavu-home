@@ -9,7 +9,8 @@ import { errorAtom } from "../../atoms/error";
 import {
   VacationRequest,
   VacationRequestStatus,
-  VacationRequestStatuses
+  VacationRequestStatuses,
+  Person
 } from "../../generated/client";
 import { useApi } from "../../hooks/use-api";
 import { DateTime } from "luxon";
@@ -28,6 +29,8 @@ import { getVacationRequestPersonFullName } from "../../utils/vacation-request-u
 import { validateValueIsNotUndefinedNorNull } from "../../utils/check-utils";
 import { VacationInfoListItem } from "../../types";
 import { formatDate } from "../../utils/time-utils";
+import config from "../../app/config";
+import { renderVacationDays } from "../generics/vacation-days";
 
 /**
  * Vacations card component
@@ -44,7 +47,11 @@ const VacationsCard = () => {
     adminMode ? allVacationRequestStatusesAtom : vacationRequestStatusesAtom
   );
   const [loading, setLoading] = useState(false);
-  const persons = useAtomValue(personsAtom);
+  const [persons, setPersons] = useAtom(personsAtom);
+  const { personsApi } = useApi();
+  const loggedInPerson = persons.find(
+    (person: Person) => person.keycloakId === userProfile?.id || config.person.id
+  );
 
   /**
    * Fetch vacation request statuses
@@ -142,6 +149,22 @@ const VacationsCard = () => {
   useMemo(() => {
     fetchVacationsRequests();
   }, []);
+
+  /**
+   * Initialize logged in person's data.
+   */
+  const getPersons = async () => {
+    if (!persons.length) {
+      setLoading(true);
+      if (loggedInPerson || config.person.id) setLoading(false);
+      const fetchedPersons = await personsApi.listPersons({ active: true });
+      setPersons(fetchedPersons);
+    }
+  };
+
+  useMemo(() => {
+    getPersons();
+  }, [persons]);
 
   /**
    * Get pending vacation requests by checking wether it has a status or not
@@ -295,7 +318,6 @@ const VacationsCard = () => {
         </>
       );
     }
-
     return;
   };
 
@@ -368,6 +390,9 @@ const VacationsCard = () => {
             {adminMode ? strings.tableToolbar.manageRequests : strings.tableToolbar.myRequests}
           </Typography>
           <Grid container>
+            <Box sx={{ width: "100%", display: "flex", flexDirection: "column", mb: 2 }}>
+              {loggedInPerson && renderVacationDays(loggedInPerson)}
+            </Box>
             {renderUpcomingOrPendingVacationRequestsCount()}
             {renderEarliestUpcomingVacationRequest()}
           </Grid>

@@ -160,7 +160,9 @@
     "vacationType": "Vacation Type:",
     "applicant": "Applicant:",
     "timeOfVacation": "Time of Vacation:",
-    "status": "Status:"
+    "status": "Status:",
+    "spentVacations": "Spent vacation days: ",
+    "unspentVacations": "Unspent vacation days: "
   },
   "personSelectDropdown": {
     "label": "Filter by Person"

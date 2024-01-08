@@ -43,7 +43,7 @@ const TimebankScreen = () => {
    * Gets person's total time data.
    */
   const getPersonTotalTime = async () => {
-    if (persons.length) {
+    if (!persons.length) {
       setLoading(true);
       const loggedInPerson = persons.find(
         (person: Person) => person.keycloakId === userProfile?.id

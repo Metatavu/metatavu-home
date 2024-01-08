@@ -33,7 +33,7 @@ const BalanceCard = () => {
    * Initialize logged in person's time data.
    */
   const getPersons = async () => {
-    if (persons.length) {
+    if (!persons.length) {
       setLoading(true);
       const loggedInPerson = persons.find(
         (person: Person) => person.keycloakId === userProfile?.id

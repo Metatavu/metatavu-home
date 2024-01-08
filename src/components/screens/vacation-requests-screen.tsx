@@ -1,10 +1,11 @@
-import { Box, Button, Card, Grow, Typography } from "@mui/material";
+import { Button, Card, Typography, Box } from "@mui/material";
 import { useMemo, useState } from "react";
 import VacationRequestsTable from "../vacation-requests-table/vacation-requests-table";
 import {
   VacationRequest,
   VacationRequestStatus,
-  VacationRequestStatuses
+  VacationRequestStatuses,
+  Person
 } from "../../generated/client";
 import { useApi } from "../../hooks/use-api";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
@@ -23,6 +24,9 @@ import UserRoleUtils from "../../utils/user-role-utils";
 import { Link } from "react-router-dom";
 import { KeyboardReturn } from "@mui/icons-material";
 import LocalizationUtils from "../../utils/localization-utils";
+import { personsAtom } from "../../atoms/person";
+import config from "../../app/config";
+import { renderVacationDays } from "../generics/vacation-days";
 
 /**
  * Vacation requests screen
@@ -39,6 +43,11 @@ const VacationRequestsScreen = () => {
     adminMode ? allVacationRequestStatusesAtom : vacationRequestStatusesAtom
   );
   const [loading, setLoading] = useState(false);
+  const [persons, setPersons] = useAtom(personsAtom);
+  const loggedInPerson = persons.find(
+    (person: Person) => person.keycloakId === userProfile?.id || config.person.id
+  );
+  const { personsApi } = useApi();
 
   /**
    * Fetch vacation request statuses
@@ -72,6 +81,22 @@ const VacationRequestsScreen = () => {
   useMemo(() => {
     fetchVacationRequestStatuses();
   }, [vacationRequests]);
+
+    /**
+   * Initialize logged in person data.
+   */
+  const getPersons = async () => {
+    if (!persons.length) {
+      setLoading(true);
+      if (loggedInPerson || config.person.id) setLoading(false);
+      const fetchedPersons = await personsApi.listPersons({ active: true });
+      setPersons(fetchedPersons);
+    }
+  };
+
+  useMemo(() => {
+    getPersons();
+  }, [persons]);
 
   /**
    * Filter latest vacation request statuses, so there would be only one status(the latest one) for each request showed on the UI
@@ -211,21 +236,19 @@ const VacationRequestsScreen = () => {
       setLoading(true);
       const vacationRequestId = selectedRowId as string;
       const createdVacationRequestStatus =
-        await vacationRequestStatusApi.createVacationRequestStatus({
-          id: vacationRequestId,
-          vacationRequestStatus: {
-            vacationRequestId: vacationRequestId,
-            status: newStatus,
-            message: LocalizationUtils.getLocalizedVacationRequestStatus(newStatus),
-            createdAt: new Date(),
-            createdBy: userProfile.id,
-            updatedAt: new Date(),
-            updatedBy: userProfile.id
-          }
-        });
-
+      await vacationRequestStatusApi.createVacationRequestStatus({
+        id: vacationRequestId,
+        vacationRequestStatus: {
+          vacationRequestId: vacationRequestId,
+          status: newStatus,
+          message: LocalizationUtils.getLocalizedVacationRequestStatus(newStatus),
+          createdAt: new Date(),
+          createdBy: userProfile.id,
+          updatedAt: new Date(),
+          updatedBy: userProfile.id
+        }
+      });
       setLoading(false);
-
       return createdVacationRequestStatus;
     } catch (error) {
       setError(`${strings.vacationRequestError.createStatusError}, ${error}`);
@@ -255,7 +278,6 @@ const VacationRequestsScreen = () => {
           days: vacationData.days
         }
       });
-
       setVacationRequests([createdRequest, ...vacationRequests]);
       setLoading(false);
     } catch (error) {
@@ -293,7 +315,6 @@ const VacationRequestsScreen = () => {
         const updatedVacationRequests = vacationRequests.map((vacationRequest) =>
           vacationRequest.id === updatedRequest.id ? updatedRequest : vacationRequest
         );
-
         setVacationRequests(updatedVacationRequests);
       }
       setLoading(false);
@@ -410,34 +431,32 @@ const VacationRequestsScreen = () => {
     const createdAndFoundVacationRequestStatuses = foundVacationRequestStatuses.concat(
       createdVacationRequestStatuses
     );
-
     setLatestVacationRequestStatuses(createdAndFoundVacationRequestStatuses);
   };
 
   return (
-    <Grow in>
-      <Box>
-        <Card
-          sx={{ margin: 0, padding: "10px", width: "100%", height: "100", marginBottom: "16px" }}
-        >
-          <VacationRequestsTable
-            deleteVacationRequests={deleteVacationRequests}
-            createVacationRequest={createVacationRequest}
-            updateVacationRequest={updateVacationRequest}
-            updateVacationRequestStatuses={updateVacationRequestStatuses}
-            loading={loading}
-          />
-        </Card>
-        <Card sx={{ margin: 0, padding: "10px", width: "100%" }}>
-          <Link to={adminMode ? "/admin" : "/"} style={{ textDecoration: "none" }}>
-            <Button variant="contained" sx={{ padding: "10px", width: "100%" }}>
-              <KeyboardReturn sx={{ marginRight: "10px" }} />
-              <Typography>{strings.vacationsScreen.back}</Typography>
-            </Button>
-          </Link>
-        </Card>
-      </Box>
-    </Grow>
+    <>
+      <Card sx={{ margin: 0, padding: "10px", width: "100%", height: "100", marginBottom: "16px" }}>
+        <VacationRequestsTable
+          deleteVacationRequests={deleteVacationRequests}
+          createVacationRequest={createVacationRequest}
+          updateVacationRequest={updateVacationRequest}
+          updateVacationRequestStatuses={updateVacationRequestStatuses}
+          loading={loading}
+        />
+        <Box sx={{ display: "flex", justifyContent: "space-around", mt: 2 }}>
+          {loggedInPerson && renderVacationDays(loggedInPerson)}
+        </Box>
+      </Card>
+      <Card sx={{ margin: 0, padding: "10px", width: "100%" }}>
+        <Link to={adminMode ? "/admin" : "/"} style={{ textDecoration: "none" }}>
+          <Button variant="contained" sx={{ padding: "10px", width: "100%" }}>
+            <KeyboardReturn sx={{ marginRight: "10px" }} />
+            <Typography>{strings.vacationsScreen.back}</Typography>
+          </Button>
+        </Link>
+      </Card>
+    </>
   );
 };
 

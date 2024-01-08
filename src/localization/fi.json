@@ -160,7 +160,9 @@
     "vacationType": "Lomatyyppi:",
     "applicant": "Hakija:",
     "timeOfVacation": "Ajankohta:",
-    "status": "Tila:"
+    "status": "Tila:",
+    "spentVacations": "Käytetyt lomapäivät: ",
+    "unspentVacations": "Käyttämättömät lomapäivät: "
   },
   "personSelectDropdown": {
     "label": "Suodata henkilöllä"
