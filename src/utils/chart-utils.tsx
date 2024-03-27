@@ -137,25 +137,25 @@ export const renderCustomizedTooltipBarChart = ({
       >
         {name}
       </Typography>
-      {billableProject &&
+      {billableProject !== undefined && billableProject !==0 &&  
         renderCustomizedTooltipRow(
           strings.timebank.billableProjectTime,
           billableProject as number,
           theme.palette.success.main
         )}
-      {nonBillableProject &&
+      {nonBillableProject !== undefined && nonBillableProject !==0 &&
         renderCustomizedTooltipRow(
           strings.timebank.nonBillableProjectTime,
           nonBillableProject as number,
           theme.palette.success.main
         )}
-      {internal &&
+      {internal !== undefined && internal !==0 &&
         renderCustomizedTooltipRow(
           strings.timebank.internalTime,
           internal as number,
           theme.palette.warning.main
         )}
-      {expected &&
+      {expected !== undefined && expected !==0 &&
         renderCustomizedTooltipRow(
           strings.timebank.expected,
           expected as number,
