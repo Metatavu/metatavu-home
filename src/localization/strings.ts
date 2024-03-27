@@ -11,6 +11,7 @@ export interface Localized extends LocalizedStringsMethods {
    */
   placeHolder: {
     notYetImplemented: string;
+    pleaseWait: string;
   };
   label: {
     currentLocaleLabel: string;
@@ -39,6 +40,7 @@ export interface Localized extends LocalizedStringsMethods {
     generic: string;
     totalTimeFetch: string;
     totalTimeNotFound: string;
+    personsFetch: string;
     dailyEntriesFetch: string;
     dailyEntriesNotFound: string;
     fetchFailedGeneral: string;
@@ -72,8 +74,18 @@ export interface Localized extends LocalizedStringsMethods {
     barChartDescription: string;
     pieChartDescription: string;
     byrange: string;
+    viewAllTimeEntries: string;
     selectTimespan: string;
     atTheEndOf: string;
+    searchPlaceholder: string;
+    employeeBalances: string;
+  };
+  /**
+   * Translations related to sprint view
+   */
+  sprint: {
+    sprintview: string;
+    sprintviewScreen: string
   };
   /**
    * General time-related expressions
@@ -190,6 +202,8 @@ export interface Localized extends LocalizedStringsMethods {
     applicant: string;
     timeOfVacation: string;
     status: string;
+    unspentVacations: string;
+    spentVacations: string;
   };
   /**
    * Translation related to person select dropdown
@@ -216,6 +230,36 @@ export interface Localized extends LocalizedStringsMethods {
    */
   vacationsScreen: {
     back: string;
+  };
+  /**
+   * Translation related to view all screen
+   */
+  viewAll: {
+    startDate: string;
+    balance: string;
+  };
+  /**
+   * Translations related to sync dialog
+   */
+  syncDialog: {
+    cancel: string;
+    sync: string;
+    title: string;
+    label: string;
+  };
+  /**
+   * Translations related to sync button
+   */
+  syncButton: {
+    success: string;
+    sync: string;
+    error: string;
+  };
+  /**
+   * Translations related to employee's selection
+   */
+  employeeSelect: {
+    employeeSelectlabel: string;
   };
 }
 

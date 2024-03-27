@@ -87,6 +87,16 @@ const NavItems = () => {
           >
             {strings.header.home}
           </MenuItem>
+          {admin && (
+            <MenuItem
+              component={Link}
+              to={"/admin"}
+              key="adminMenuItem"
+              onClick={handleNavItemClick}
+            >
+              {strings.header.admin}
+            </MenuItem>
+          )}
         </Menu>
         <Typography variant="button" marginTop={1.5}>
           {currentPage}

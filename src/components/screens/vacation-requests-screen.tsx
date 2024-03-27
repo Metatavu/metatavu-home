@@ -4,7 +4,8 @@ import VacationRequestsTable from "../vacation-requests-table/vacation-requests-
 import {
   VacationRequest,
   VacationRequestStatus,
-  VacationRequestStatuses
+  VacationRequestStatuses,
+  Person
 } from "../../generated/client";
 import { useApi } from "../../hooks/use-api";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
@@ -23,6 +24,9 @@ import UserRoleUtils from "../../utils/user-role-utils";
 import { Link } from "react-router-dom";
 import { KeyboardReturn } from "@mui/icons-material";
 import LocalizationUtils from "../../utils/localization-utils";
+import { personsAtom } from "../../atoms/person";
+import config from "../../app/config";
+import { renderVacationDaysTextForScreen } from "../../utils/vacation-days-utils";
 
 /**
  * Vacation requests screen
@@ -39,6 +43,10 @@ const VacationRequestsScreen = () => {
     adminMode ? allVacationRequestStatusesAtom : vacationRequestStatusesAtom
   );
   const [loading, setLoading] = useState(false);
+  const [persons] = useAtom(personsAtom);
+  const loggedInPerson = persons.find(
+    (person: Person) => person.id === config.person.forecastUserIdOverride || person.keycloakId === userProfile?.id
+  );
 
   /**
    * Fetch vacation request statuses
@@ -66,6 +74,7 @@ const VacationRequestsScreen = () => {
       } catch (error) {
         setError(`${strings.vacationRequestError.fetchStatusError}, ${error}`);
       }
+      setLoading(false);
     }
   };
 
@@ -112,30 +121,30 @@ const VacationRequestsScreen = () => {
    * Fetch vacation requests
    */
   const fetchVacationsRequests = async () => {
-    if (!userProfile?.id) return;
+    setLoading(true);
+    if (!loggedInPerson) return;
 
     if (!vacationRequests.length) {
       try {
-        setLoading(true);
         let fetchedVacationRequests: VacationRequest[] = [];
         if (adminMode) {
           fetchedVacationRequests = await vacationRequestsApi.listVacationRequests({});
         } else {
           fetchedVacationRequests = await vacationRequestsApi.listVacationRequests({
-            personId: userProfile?.id
+            personId: loggedInPerson?.keycloakId
           });
         }
         setVacationRequests(fetchedVacationRequests);
-        setLoading(false);
       } catch (error) {
         setError(`${strings.vacationRequestError.fetchRequestError}, ${error}`);
       }
+      setLoading(false);
     }
   };
 
   useMemo(() => {
     fetchVacationsRequests();
-  }, []);
+  }, [loggedInPerson]);
 
   /**
    * Delete vacation request status
@@ -158,11 +167,11 @@ const VacationRequestsScreen = () => {
             (vacationRequestStatus) => vacationRequestStatus.id !== foundVacationRequestStatus.id
           );
           setLatestVacationRequestStatuses(filteredVacationRequestStatuses);
-          setLoading(false);
         }
       } catch (error) {
         setError(`${strings.vacationRequestError.deleteStatusError}, ${error}`);
       }
+      setLoading(false);
     }
   };
 
@@ -205,7 +214,7 @@ const VacationRequestsScreen = () => {
     newStatus: VacationRequestStatuses,
     selectedRowId: GridRowId
   ) => {
-    if (!userProfile?.id) return;
+    if (!loggedInPerson) return;
 
     try {
       setLoading(true);
@@ -218,14 +227,12 @@ const VacationRequestsScreen = () => {
             status: newStatus,
             message: LocalizationUtils.getLocalizedVacationRequestStatus(newStatus),
             createdAt: new Date(),
-            createdBy: userProfile.id,
+            createdBy: loggedInPerson.keycloakId,
             updatedAt: new Date(),
-            updatedBy: userProfile.id
+            updatedBy: loggedInPerson.keycloakId
           }
         });
-
       setLoading(false);
-
       return createdVacationRequestStatus;
     } catch (error) {
       setError(`${strings.vacationRequestError.createStatusError}, ${error}`);
@@ -238,14 +245,12 @@ const VacationRequestsScreen = () => {
    * @param vacationData vacation data
    */
   const createVacationRequest = async (vacationData: VacationData) => {
-    if (!userProfile?.id) return;
+    if (!loggedInPerson) return;
 
     try {
       setLoading(true);
       const createdRequest = await vacationRequestsApi.createVacationRequest({
         vacationRequest: {
-          personId: userProfile.id,
-          createdBy: userProfile.id,
           startDate: vacationData.startDate.toJSDate(),
           endDate: vacationData.endDate.toJSDate(),
           type: vacationData.type,
@@ -255,7 +260,6 @@ const VacationRequestsScreen = () => {
           days: vacationData.days
         }
       });
-
       setVacationRequests([createdRequest, ...vacationRequests]);
       setLoading(false);
     } catch (error) {
@@ -270,7 +274,7 @@ const VacationRequestsScreen = () => {
    * @param vacationRequestId vacation request id
    */
   const updateVacationRequest = async (vacationData: VacationData, vacationRequestId: string) => {
-    if (!userProfile?.id) return;
+    if (!loggedInPerson) return;
 
     try {
       setLoading(true);
@@ -293,7 +297,6 @@ const VacationRequestsScreen = () => {
         const updatedVacationRequests = vacationRequests.map((vacationRequest) =>
           vacationRequest.id === updatedRequest.id ? updatedRequest : vacationRequest
         );
-
         setVacationRequests(updatedVacationRequests);
       }
       setLoading(false);
@@ -410,12 +413,12 @@ const VacationRequestsScreen = () => {
     const createdAndFoundVacationRequestStatuses = foundVacationRequestStatuses.concat(
       createdVacationRequestStatuses
     );
-
     setLatestVacationRequestStatuses(createdAndFoundVacationRequestStatuses);
   };
 
   return (
     <>
+      {loggedInPerson && renderVacationDaysTextForScreen(loggedInPerson)}
       <Card sx={{ margin: 0, padding: "10px", width: "100%", height: "100", marginBottom: "16px" }}>
         <VacationRequestsTable
           deleteVacationRequests={deleteVacationRequests}

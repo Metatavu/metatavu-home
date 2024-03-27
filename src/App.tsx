@@ -12,10 +12,12 @@ import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import Layout from "./components/layout/layout";
 import ErrorHandler from "./components/contexts/error-handler";
 import ErrorScreen from "./components/screens/error-screen";
+import TimebankViewAllScreen from "./components/screens/timebank-view-all-screen";
 import AdminScreen from "./components/screens/admin-screen";
 import { Settings } from "luxon";
 import { useMemo } from "react";
 import RestrictedContentProvider from "./components/providers/restricted-content-provider";
+import SprintViewScreen from "./components/screens/sprint-view-screen";
 
 /**
  * Application component
@@ -44,6 +46,10 @@ const App = () => {
         {
           path: "/timebank",
           element: <TimebankScreen />
+        },
+        {
+          path: "/sprintview",
+          element: <SprintViewScreen />
         }
       ]
     },
@@ -63,6 +69,14 @@ const App = () => {
         {
           path: "/admin/vacations",
           element: <VacationRequestsScreen />
+        },
+        {
+          path: "/admin/timebank/viewall",
+          element: <TimebankViewAllScreen />
+        },
+        {
+          path: "/admin/sprintview",
+          element: <SprintViewScreen />
         }
       ]
     }

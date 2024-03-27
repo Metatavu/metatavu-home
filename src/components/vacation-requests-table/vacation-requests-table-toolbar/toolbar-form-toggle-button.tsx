@@ -14,6 +14,7 @@ interface Props {
   setValue: (value: boolean) => void;
   ButtonIcon?: ComponentType<ButtonIconProps>;
   title?: string;
+  disabled?: boolean;
 }
 
 /**
@@ -28,7 +29,8 @@ const FormToggleButton = ({
   ButtonIcon,
   title,
   titleVariant,
-  buttonVariant
+  buttonVariant,
+  disabled
 }: Props) => (
   <Button
     variant={buttonVariant ? buttonVariant : "contained"}
@@ -38,6 +40,7 @@ const FormToggleButton = ({
     sx={{
       width: "100%"
     }}
+    disabled={disabled}
   >
     {ButtonIcon && <ButtonIcon />}
     {title && (

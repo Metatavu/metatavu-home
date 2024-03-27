@@ -41,18 +41,27 @@ export const getHours = (minutes: number) =>
  * @returns formatted timespan in the following formats (DD.MM.YYYY – DD.MM.YYYY), (YYYY/WW), (YYYY/MM)
  */
 export const formatTimePeriod = (timespan: string[] | undefined) => {
-  if (!timespan) return null;
-
-  if (timespan[0].length > 4) {
-    const startDate = DateTime.fromJSDate(new Date(timespan[0])).toLocaleString(
-      DateTime.DATE_SHORT
-    );
-    const endDate = DateTime.fromJSDate(new Date(timespan[1])).toLocaleString(DateTime.DATE_SHORT);
-    return `${startDate} – ${endDate}`; //All time
-  } else if (timespan.length > 2) {
-    return `${timespan[0]}/${timespan[2]}`; //Month
+  if (!timespan) {
+    return null;
   }
-  return `${timespan[0]}/${timespan[1]}`; //Week
+
+  switch (timespan.length) {
+    case 1:
+      return `${timespan[0]}`; // Year
+    case 2:
+      if (timespan[0].length > 4) {
+        const startDate = DateTime.fromJSDate(new Date(timespan[0])).toLocaleString(DateTime.DATE_SHORT);
+        const endDate = DateTime.fromJSDate(new Date(timespan[1])).toLocaleString(DateTime.DATE_SHORT);
+        
+        return `${startDate} – ${endDate}`; // All time
+      } else {
+        return `${timespan[0]}/${timespan[1]}`; // Month
+      }
+    case 3:
+      return `${timespan[0]}/${timespan[2]}`; // Week
+    default:
+      return null;
+  }
 };
 
 /**

@@ -4,7 +4,7 @@ import strings from "../../localization/strings";
 import ScheduleIcon from "@mui/icons-material/Schedule";
 import { errorAtom } from "../../atoms/error";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useApi } from "../../hooks/use-api";
 import { Person, PersonTotalTime, Timespan } from "../../generated/client";
 import { personsAtom, personTotalTimeAtom, timespanAtom } from "../../atoms/person";
@@ -33,31 +33,29 @@ const BalanceCard = () => {
    * Initialize logged in person's time data.
    */
   const getPersons = async () => {
-    if (persons.length) {
-      setLoading(true);
-      const loggedInPerson = persons.find(
-        (person: Person) => person.keycloakId === userProfile?.id
-      );
-      if (loggedInPerson || config.person.id) {
-        try {
-          const fetchedPerson = await personsApi.listPersonTotalTime({
-            personId: loggedInPerson?.id || config.person.id,
-            timespan: Timespan.ALL_TIME,
-            before: yesterday.toJSDate()
-          });
-          setPersonTotalTime(fetchedPerson[0]);
-        } catch (error) {
-          setError(`${strings.error.fetchFailedGeneral}, ${error}`);
-        }
+    setLoading(true);
+    const loggedInPerson = persons.find(
+      (person: Person) => person.id === config.person.forecastUserIdOverride || person.keycloakId === userProfile?.id
+    );
+    if (loggedInPerson) {
+      try {
+        const fetchedPerson = await personsApi.listPersonTotalTime({
+          personId: loggedInPerson?.id,
+          timespan: Timespan.ALL_TIME,
+          before: yesterday.toJSDate()
+        });
+        setPersonTotalTime(fetchedPerson[0]);
+      } catch (error) {
+        setError(`${strings.error.fetchFailedGeneral}, ${error}`);
       }
-      setLoading(false);
     }
+    setLoading(false);
   };
 
   /**
    * Get person total time if it is undefined or set to "all time"
    */
-  useMemo(() => {
+  useEffect(() => {
     if (!personTotalTime || timespan !== Timespan.ALL_TIME) {
       setTimespan(Timespan.ALL_TIME);
       getPersons();
@@ -90,7 +88,10 @@ const BalanceCard = () => {
   };
 
   return (
-    <Link to={"/timebank"} style={{ textDecoration: "none" }}>
+    <Link
+      to={adminMode ? "/admin/timebank/viewall" : "/timebank"}
+      style={{ textDecoration: "none" }}
+    >
       <Card
         sx={{
           "&:hover": {
@@ -98,22 +99,31 @@ const BalanceCard = () => {
           }
         }}
       >
-        <CardContent>
-          <Typography variant="h6" fontWeight={"bold"} style={{ marginTop: 6, marginBottom: 3 }}>
-            {strings.timebank.balance}
-          </Typography>
-          <Grid container>
-            <Grid item xs={12}>
-              {strings.formatString(strings.timebank.atTheEndOf, yesterday.toLocaleString())}
+        {adminMode ? (
+          <CardContent>
+            <Typography variant="h6" fontWeight={"bold"} style={{ marginTop: 6, marginBottom: 3 }}>
+              {strings.timebank.employeeBalances}
+            </Typography>
+            <Typography variant="body1">{strings.timebank.viewAllTimeEntries}</Typography>
+          </CardContent>
+        ) : (
+          <CardContent>
+            <Typography variant="h6" fontWeight={"bold"} style={{ marginTop: 6, marginBottom: 3 }}>
+              {strings.timebank.balance}
+            </Typography>
+            <Grid container>
+              <Grid item xs={12}>
+                {strings.formatString(strings.timebank.atTheEndOf, yesterday.toLocaleString())}
+              </Grid>
+              <Grid style={{ marginBottom: 1 }} item xs={1}>
+                <ScheduleIcon style={{ marginTop: 1 }} />
+              </Grid>
+              <Grid item xs={11}>
+                {loading ? <Skeleton /> : renderPersonTotalTime(personTotalTime)}
+              </Grid>
             </Grid>
-            <Grid style={{ marginBottom: 1 }} item xs={1}>
-              <ScheduleIcon style={{ marginTop: 1 }} />
-            </Grid>
-            <Grid item xs={11}>
-              {loading ? <Skeleton /> : renderPersonTotalTime(personTotalTime)}
-            </Grid>
-          </Grid>
-        </CardContent>
+          </CardContent>
+        )}
       </Card>
     </Link>
   );

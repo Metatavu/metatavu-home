@@ -41,20 +41,18 @@ const ToolbarForm = ({
   setToolbarFormMode,
   setSelectedRowIds
 }: Props) => {
-  const dateTimeTomorrow = DateTime.now().plus({ days: 1 });
   const defaultDateRange = {
-    start: dateTimeTomorrow,
-    end: dateTimeTomorrow
+    start: DateTime.now().plus({ days: 1 }),
+    end: DateTime.now().plus({ days: 1 })
   };
   const [dateRange, setDateRange] = useState<DateRange>(defaultDateRange);
-  const defaultVacationData = {
+  const [vacationData, setVacationData] = useState<VacationData>({
     type: VacationType.VACATION,
-    startDate: dateTimeTomorrow,
-    endDate: dateTimeTomorrow,
+    startDate: defaultDateRange.start,
+    endDate: defaultDateRange.end,
     message: "",
     days: 1
-  };
-  const [vacationData, setVacationData] = useState<VacationData>(defaultVacationData);
+  });
   const [selectedVacationRequestId, setSelectedVacationRequestId] = useState("");
   const adminMode = UserRoleUtils.adminMode();
   const vacationRequests = useAtomValue(adminMode ? allVacationRequestsAtom : vacationRequestsAtom);
@@ -63,7 +61,7 @@ const ToolbarForm = ({
    * Reset vacation data
    */
   const resetVacationData = () => {
-    setVacationData(defaultVacationData);
+    setVacationData(vacationData);
     setDateRange(defaultDateRange);
   };
 
@@ -116,6 +114,15 @@ const ToolbarForm = ({
       resetVacationData();
     }
   }, [toolbarFormMode]);
+
+  /**
+ * Checks if the vacation type is either sickness or childsickness.
+ */
+  const isSicknessOrChildSickness =
+  vacationData.type === VacationType.SICKNESS || vacationData.type === VacationType.CHILD_SICKNESS;
+  const dateTimeTomorrow = isSicknessOrChildSickness
+    ? DateTime.now().minus({ years: 1 })
+    : DateTime.now().plus({ days: 1 });
 
   /**
    * Handle form submit

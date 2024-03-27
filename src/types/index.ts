@@ -1,5 +1,5 @@
 import { DateTime } from "luxon";
-import { DailyEntry, VacationType } from "../generated/client";
+import { Person, PersonTotalTime, VacationType,DailyEntry } from "../generated/client";
 import { ReactNode } from "react";
 
 /**
@@ -83,6 +83,36 @@ export enum Worktime {
   NonBillable = "nonBillableProject",
   Internal = "internal",
   Expected = "expected"
+}
+
+/**
+ * Interface for person with total time
+ */
+export interface PersonWithTotalTime {
+  person: Person;
+  personTotalTime?: PersonTotalTime;
+}
+
+/**
+ * Enum for work time category
+ */
+export enum WorkTimeCategory {
+  BILLABLE_PROJECT = "Billable Project",
+  NON_BILLABLE_PROJECT = "Non Billable Project",
+  INTERNAL = "Internal",
+  EXPECTED = "Expected",
+  BALANCE = "Balance",
+  LOGGED = "Logged"
+}
+
+/**
+ * Type for work time data
+ */
+export interface WorkTimeTotalData {
+  name: WorkTimeCategory;
+  balance: number;
+  logged?: number;
+  expected?: number;
 }
 
 /**

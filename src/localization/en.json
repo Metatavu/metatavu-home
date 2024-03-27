@@ -1,6 +1,7 @@
 {
   "placeHolder": {
-    "notYetImplemented": "Not yet implemented"
+    "notYetImplemented": "Not yet implemented",
+    "pleaseWait": "Please wait, this could take a moment..."
   },
   "label": {
     "currentLocaleLabel": "Current Locale:"
@@ -23,6 +24,7 @@
     "generic": "Unexpected error has occurred",
     "totalTimeFetch": "Retrieving total time data has failed",
     "totalTimeNotFound": "Could not find total time data",
+    "personsFetch": "Fetching persons has failed",
     "dailyEntriesFetch": "Retrieving daily entries has failed",
     "dailyEntriesNotFound": "Could not find daily entries",
     "fetchFailedGeneral": "There was an error fetching data",
@@ -50,7 +52,29 @@
     "barChartDescription": "Summary of time entries by time span",
     "pieChartDescription": "Select a specific time entry or range",
     "byrange": "By range",
-    "selectTimespan": "Select time span"
+    "viewAllTimeEntries": "View all employees time totals and balances",
+    "selectTimespan": "Select time span",
+    "searchPlaceholder": "Search for a person...",
+    "employeeBalances": "Employee time totals and balances"
+  },
+  "sprint": {
+    "sprintview": "Sprint view",
+    "sprintviewScreen": "Sprint view Screen"
+  },
+  "errors": {
+    "fetchFailedGeneral": "There was an error fetching data",
+    "fetchFailedNoEntriesGeneral": "No time entries found"
+  },
+  "syncDialog": {
+    "cancel": "Cancel",
+    "sync": "Sync",
+    "title": "Select date",
+    "label": "Sync from"
+  },
+  "syncButton": {
+    "success": "Synchronization was successful!",
+    "sync": "Sync",
+    "error": "Synchronizing has failed"
   },
   "timeExpressions": {
     "monday": "Monday",
@@ -140,7 +164,9 @@
     "vacationType": "Vacation Type:",
     "applicant": "Applicant:",
     "timeOfVacation": "Time of Vacation:",
-    "status": "Status:"
+    "status": "Status:",
+    "spentVacations": "Spent vacation days: ",
+    "unspentVacations": "Unspent vacation days: "
   },
   "personSelectDropdown": {
     "label": "Filter by Person"
@@ -155,5 +181,12 @@
   },
   "vacationsScreen": {
     "back": "Back"
+  },
+  "viewAll": {
+    "startDate": "Start Date: ",
+    "balance": "Balance: "
+  },
+  "employeeSelect": {
+    "employeeSelectlabel": "Select employee"
   }
 }

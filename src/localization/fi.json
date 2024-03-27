@@ -1,6 +1,7 @@
 {
   "placeHolder": {
-    "notYetImplemented": "Ei vielä toteutettu"
+    "notYetImplemented": "Ei vielä toteutettu",
+    "pleaseWait": "Odota, tässä voi mennä hetki..."
   },
   "label": {
     "currentLocaleLabel": "Nykyinen kieli:"
@@ -23,6 +24,7 @@
     "generic": "Odottamaton virhe havaittu",
     "totalTimeFetch": "Yhteenvetotietojen haku epäonnistui",
     "totalTimeNotFound": "Yhteenvetotietoja ei löytynyt",
+    "personsFetch": "Henkilöiden haku epäonnistui",
     "dailyEntriesFetch": "Aikakirjauksien haku epäonnistui",
     "dailyEntriesNotFound": "Aikakirjauksia ei löydetty",
     "fetchFailedGeneral": "Tietojen hakeminen epäonnistui",
@@ -50,7 +52,29 @@
     "barChartDescription": "Yhteenveto aikakirjauksista aikavälin mukaan",
     "pieChartDescription": "Valitse yksittäinen aikakirjaus tai aikaväli",
     "byrange": "Aikavälin mukaan",
-    "selectTimespan": "Valitse aikaväli"
+    "viewAllTimeEntries": "Kaikki henkilöstön aikakirjaukset ja saldot",
+    "selectTimespan": "Valitse aikaväli",
+    "searchPlaceholder": "Hae henkilöä...",
+    "employeeBalances": "Henkilöstön aikakirjaukset ja saldot"
+  },
+  "sprint": {
+    "sprintview": "Sprintinäkymä",
+    "sprintviewScreen": "Sprintinäkymä näyttö"
+  },
+  "errors": {
+    "fetchFailedGeneral": "Tietojen hakeminen epäonnistui",
+    "fetchFailedNoEntriesGeneral": "Ei aikatietoja saatavilla"
+  },
+  "syncDialog": {
+    "cancel": "Peruuta",
+    "sync": "Synkronoi",
+    "title": "Valitse päivämäärä",
+    "label": "Synkronoi valitusta päivästä"
+  },
+  "syncButton": {
+    "success": "Synkronoitu onnistuneesti!",
+    "sync": "Sync",
+    "error": "Synkronointi epäonnistui"
   },
   "timeExpressions": {
     "monday": "Maanantai",
@@ -140,7 +164,9 @@
     "vacationType": "Lomatyyppi:",
     "applicant": "Hakija:",
     "timeOfVacation": "Ajankohta:",
-    "status": "Tila:"
+    "status": "Tila:",
+    "spentVacations": "Käytetyt lomapäivät: ",
+    "unspentVacations": "Käyttämättömät lomapäivät: "
   },
   "personSelectDropdown": {
     "label": "Suodata henkilöllä"
@@ -155,5 +181,12 @@
   },
   "vacationsScreen": {
     "back": "Takaisin"
+  },
+  "viewAll": {
+    "startDate": "Aloituspäivä: ",
+    "balance": "Saldo: "
+  },
+  "employeeSelect": {
+    "employeeSelectlabel": "Valitse työntekijä"
   }
 }

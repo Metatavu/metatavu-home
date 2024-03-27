@@ -40,8 +40,15 @@ const TimebankPieChart = ({ personDailyEntry }: Props) => {
           cx="50%"
           cy="50%"
           outerRadius={50}
-          label={renderCustomizedLabel}
-        >
+          label={(entry) => {
+            if (!entry.dataKey) {
+              return null; 
+            } else {
+              return renderCustomizedLabel(entry);
+            }
+          }}
+          labelLine={false}
+        >     
           {dailyEntryToChart(personDailyEntry).map((_entry, index) => (
             <Cell key={`cell-${index}`} fill={COLORS[index]} />
           ))}
@@ -51,5 +58,4 @@ const TimebankPieChart = ({ personDailyEntry }: Props) => {
     </ResponsiveContainer>
   );
 };
-
 export default TimebankPieChart;

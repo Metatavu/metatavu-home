@@ -10,7 +10,7 @@ interface Config {
     baseUrl: string;
   };
   person: {
-    id: number;
+    forecastUserIdOverride: number;
   };
 }
 
@@ -19,7 +19,7 @@ const env = cleanEnv(import.meta.env, {
   VITE_KEYCLOAK_REALM: str(),
   VITE_KEYCLOAK_CLIENT_ID: str(),
   VITE_API_BASE_URL: url(),
-  VITE_PERSON_ID: num({ default: undefined })
+  VITE_FORECAST_USER_ID_OVERRIDE: num({ default: undefined })
 });
 
 const config: Config = {
@@ -32,7 +32,7 @@ const config: Config = {
     baseUrl: env.VITE_API_BASE_URL
   },
   person: {
-    id: env.VITE_PERSON_ID
+    forecastUserIdOverride: env.VITE_FORECAST_USER_ID_OVERRIDE
   }
 };
 

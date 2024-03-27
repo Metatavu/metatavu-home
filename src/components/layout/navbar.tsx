@@ -13,6 +13,7 @@ import strings from "../../localization/strings";
 import { authAtom } from "../../atoms/auth";
 import { useAtomValue } from "jotai";
 import NavItems from "./navitems";
+import SyncButton from "./sync-button";
 
 /**
  * NavBar component
@@ -50,6 +51,7 @@ const NavBar = () => {
         <Container maxWidth="xl">
           <Toolbar disableGutters>
             <NavItems />
+            {import.meta.env.DEV && <SyncButton />}
             <LocalizationButtons />
             <Box>
               <Tooltip title={strings.header.openUserMenu}>
