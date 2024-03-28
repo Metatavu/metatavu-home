@@ -9,6 +9,9 @@ interface Config {
   api: {
     baseUrl: string;
   };
+  lambdas: {
+    baseUrl: string;
+  };
   person: {
     forecastUserIdOverride: number;
   };
@@ -19,7 +22,8 @@ const env = cleanEnv(import.meta.env, {
   VITE_KEYCLOAK_REALM: str(),
   VITE_KEYCLOAK_CLIENT_ID: str(),
   VITE_API_BASE_URL: url(),
-  VITE_FORECAST_USER_ID_OVERRIDE: num({ default: undefined })
+  VITE_FORECAST_USER_ID_OVERRIDE: num({ default: undefined }),
+  VITE_PIPEDRIVE_URL: url()
 });
 
 const config: Config = {
@@ -30,6 +34,9 @@ const config: Config = {
   },
   api: {
     baseUrl: env.VITE_API_BASE_URL
+  },
+  lambdas: {
+    baseUrl: env.VITE_PIPEDRIVE_URL
   },
   person: {
     forecastUserIdOverride: env.VITE_FORECAST_USER_ID_OVERRIDE
