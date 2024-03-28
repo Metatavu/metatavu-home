@@ -8,3 +8,8 @@ export const COLORS = [
     theme.palette.success.light,
     theme.palette.warning.main
   ];
+
+/**
+ * Days of week array.
+ * */ 
+export const daysOfWeek = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];

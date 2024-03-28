@@ -8,7 +8,13 @@ import { DateTime } from "luxon";
 import { hasAllPropsDefined } from "../../../../utils/check-utils";
 import strings from "../../../../localization/strings";
 import LocalizationUtils from "../../../../utils/localization-utils";
-import { getVacationDurationInDays } from "../../../../utils/time-utils";
+import { calculateTotalVacationDays } from "../../../../utils/time-utils";
+import { useAtom, useAtomValue } from "jotai";
+import config from "../../../../app/config";
+import { userProfileAtom } from "../../../../atoms/auth";
+import { personsAtom } from "../../../../atoms/person";
+import { Person } from "../../../../generated/client";
+import { daysOfWeek } from "../../../constants";
 
 /**
  * Component properties
@@ -35,12 +41,18 @@ const ToolbarFormFields = ({
   dateRange,
   setDateRange
 }: Props) => {
+  const userProfile = useAtomValue(userProfileAtom);
+  const [persons] = useAtom(personsAtom);
+  const loggedInPerson = persons.find(
+    (person: Person) => person.id === config.person.forecastUserIdOverride || person.keycloakId === userProfile?.id
+  );
+
   useEffect(() => {
     setVacationData({
       ...vacationData,
       startDate: dateRange.start,
       endDate: dateRange.end,
-      days: getVacationDurationInDays(dateRange.start, dateRange.end)
+      days: calculateTotalVacationDays(dateRange.start, dateRange.end, getWorkingWeek(loggedInPerson))
     });
   }, [dateRange]);
 
@@ -70,6 +82,23 @@ const ToolbarFormFields = ({
       message: value
     });
   };
+
+  /**
+   * Get a list of working days
+   *
+   * @param loggedInPerson Person
+   */
+  const getWorkingWeek = (loggedInPerson?: Person) => {
+    const workingWeek = new Array(daysOfWeek.length).fill(false);
+    if (!loggedInPerson) return workingWeek;
+    
+    daysOfWeek.forEach((weekDay, index)=>{
+      if (loggedInPerson[weekDay as keyof typeof loggedInPerson] !== 0) {
+        workingWeek[index] = true;
+      }
+    }) 
+    return workingWeek;
+  }
 
   return (
     <FormControl sx={{ width: "100%" }}>
