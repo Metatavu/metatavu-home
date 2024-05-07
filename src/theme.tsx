@@ -57,7 +57,7 @@ export const theme: Theme = createTheme({
           backgroundColor: "#f5f5f5"
         }
       }
-    }
+    },
   },
   shape: {
     borderRadius: 15

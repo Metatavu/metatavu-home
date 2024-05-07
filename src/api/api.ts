@@ -13,9 +13,9 @@ import {
   Configuration as LambdaConfiguration, 
   ProjectsApi, 
   TasksApi,
-  TimeEntriesApi
+  TimeEntriesApi,
+  OnCallApi
 } from "../generated/homeLambdasClient"
-
 /**
  * Generic type that accepts parameters within the @ConfigurationParameters interface
  */
@@ -46,7 +46,7 @@ const getConfigurationFactory =
  */
 export const getApiClient = (accessToken?: string) => {
   const getConfiguration = getConfigurationFactory(Configuration, config.api.baseUrl, accessToken);
-
+  
   return {
     dailyEntriesApi: new DailyEntriesApi(getConfiguration()),
     personsApi: new PersonsApi(getConfiguration()),
@@ -62,13 +62,14 @@ export const getApiClient = (accessToken?: string) => {
 * @param accessToken Access token required for authentication
 * @returns Configured API request functions
 */
-export const getLambdasApiClient  = (accessToken?: string) => {
+export const getLambdasApiClient = (accessToken?: string) => {
   const getConfiguration = getConfigurationFactory(LambdaConfiguration, config.lambdas.baseUrl, accessToken);
 
   return {
     allocationsApi: new AllocationsApi(getConfiguration()),
     projectsApi: new ProjectsApi(getConfiguration()),
     tasksApi: new TasksApi(getConfiguration()),
-    timeEntriesApi: new TimeEntriesApi(getConfiguration())
+    timeEntriesApi: new TimeEntriesApi(getConfiguration()),
+    onCallApi: new OnCallApi(getConfiguration())
   };
 };

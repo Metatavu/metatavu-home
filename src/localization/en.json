@@ -188,5 +188,18 @@
   },
   "employeeSelect": {
     "employeeSelectlabel": "Select employee"
+  },
+  "oncall": {
+    "title": "On call calendar",
+    "previousYear": "Previous year",
+    "nextYear": "Next year",
+    "oncallShifts": "On call weeks",
+    "paid": "Paid",
+    "notPaid": "Not paid",
+    "calendar": "Calendar",
+    "list": "List",
+    "selectView": "Select calendar view",
+    "noOnCallPerson": "No on call person this week",
+    "onCallPersonExists": "Current on-call person:"
   }
 }
