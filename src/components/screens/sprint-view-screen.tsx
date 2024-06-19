@@ -6,11 +6,7 @@ import { useAtomValue, useSetAtom } from "jotai";
 import { personsAtom } from "src/atoms/person";
 import config from "src/app/config";
 import { userProfileAtom } from "src/atoms/auth";
-import type {
-  Allocations,
-  Projects,
-  TimeEntries
-} from "src/generated/homeLambdasClient/models/";
+import type { Allocations, Projects } from "src/generated/homeLambdasClient/models/";
 import { DataGrid } from "@mui/x-data-grid";
 import { getHoursAndMinutes, getSprintEnd, getSprintStart } from "src/utils/time-utils";
 import TaskTable from "src/components/sprint-view-table/tasks-table";
@@ -20,7 +16,7 @@ import { errorAtom } from "src/atoms/error";
 import {
   calculateWorkingLoad,
   totalAllocations,
-  filterAllocationsAndProjects
+  fetchProjectDetails
 } from "src/utils/sprint-utils";
 import { TaskStatusFilter } from "src/components/sprint-view-table/menu-Item-filter-table";
 
@@ -28,7 +24,6 @@ import { TaskStatusFilter } from "src/components/sprint-view-table/menu-Item-fil
  * Sprint view screen component
  */
 const SprintViewScreen = () => {
-  const { allocationsApi, projectsApi, timeEntriesApi } = useLambdasApi();
   const persons: Person[] = useAtomValue(personsAtom);
   const userProfile = useAtomValue(userProfileAtom);
   const loggedInPerson = persons.find(
@@ -46,70 +41,31 @@ const SprintViewScreen = () => {
   const sprintEndDate = getSprintEnd(todaysDate);
   const columns = sprintViewProjectsColumns({ allocations, timeEntries, projects });
   const setError = useSetAtom(errorAtom);
+  const { allocationsApi, projectsApi, timeEntriesApi } = useLambdasApi();
 
   /**
    * Get project data if user is logged in
    */
   useEffect(() => {
-    fetchProjectDetails();
+    fetchProjectAndAllocations();
   }, [loggedInPerson]);
 
-  /**
-   * Fetch allocations, project names and time entries
-   */
-  const fetchProjectDetails = async () => {
-    if (!loggedInPerson) return;
-    
+  const fetchProjectAndAllocations = async () => {
     setLoading(true);
-    try {
-      const fetchedAllocations = await allocationsApi.listAllocations({
-        startDate: new Date(),
-        endDate: new Date(),
-        personId: loggedInPerson?.id.toString()
-      });
-      const fetchedProjects = await projectsApi.listProjects({ startDate: new Date() });
-      const { filteredAllocations, filteredProjects } = filterAllocationsAndProjects(
-        fetchedAllocations,
-        fetchedProjects
-      );
-      const fetchedTimeEntries = await Promise.all(
-        filteredAllocations.map(async (allocation) => {
-          try {
-            if (allocation.project) {
-              const totalTimeEntries = await timeEntriesApi.listProjectTimeEntries({
-                projectId: allocation.project,
-                startDate: allocation.startDate,
-                endDate: allocation.endDate
-              });
-              let totalMinutes = 0;
-              totalTimeEntries.forEach((timeEntry: TimeEntries) => {
-                if (loggedInPerson && timeEntry.person === loggedInPerson.id) {
-                  totalMinutes += timeEntry.timeRegistered || 0;
-                }
-              });
-              return totalMinutes;
-            }
-          } catch (error) {
-            if (allocation.id) {
-              const message: string = strings
-                .formatString(
-                  strings.sprintRequestError.fetchAllocationError,
-                  allocation.id.toString(),
-                  error as string
-                )
-                .toString();
-              setError(message);
-            }
-          }
-          return 0;
-        })
-      );
-      setProjects(filteredProjects);
-      setAllocations(filteredAllocations);
-      setTimeEntries(fetchedTimeEntries);
-    } catch (error) {
-      setError(`${strings.sprintRequestError.fetchError}, ${error}`);
-    }
+    if (!loggedInPerson) return;
+
+    const { filteredAllocations, filteredProjects, fetchedTimeEntries } = await fetchProjectDetails(
+      {
+        setError,
+        person: loggedInPerson,
+        allocationsApi,
+        projectsApi,
+        timeEntriesApi
+      }
+    );
+    setProjects(filteredProjects);
+    setAllocations(filteredAllocations);
+    setTimeEntries(fetchedTimeEntries);
     setLoading(false);
   };
 
@@ -164,7 +120,7 @@ const SprintViewScreen = () => {
             label={strings.sprint.showMyTasks}
             onClick={() => handleOnClickTask()}
           />
-          <TaskStatusFilter setFilter={setFilter}/>
+          <TaskStatusFilter setFilter={setFilter} />
           <Card
             sx={{
               margin: 0,

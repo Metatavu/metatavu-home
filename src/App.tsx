@@ -18,6 +18,7 @@ import { Settings } from "luxon";
 import { useMemo } from "react";
 import RestrictedContentProvider from "./components/providers/restricted-content-provider";
 import SprintViewScreen from "./components/screens/sprint-view-screen";
+import SprintViewAllScreen from "./components/screens/sprint-view-all-screen";
 
 /**
  * Application component
@@ -75,8 +76,8 @@ const App = () => {
           element: <TimebankViewAllScreen />
         },
         {
-          path: "/admin/sprintview",
-          element: <SprintViewScreen />
+          path: "/admin/sprintview/viewall",
+          element: <SprintViewAllScreen />
         }
       ]
     }

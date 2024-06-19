@@ -12,7 +12,7 @@ const SprintViewCard = () => {
   const adminMode = UserRoleUtils.adminMode();
   
   return (
-    <Link to={adminMode ? "/admin/sprintview" : "/sprintview"} style={{ textDecoration: "none" }}>
+    <Link to={adminMode ? "/admin/sprintview/viewall" : "/sprintview"} style={{ textDecoration: "none" }}>
       <Card sx={{"&:hover": {background: "#efefef"}}}>
         <CardContent>
           <Typography variant="h6" fontWeight={"bold"} style={{ marginTop: 6, marginBottom: "20px" }}>

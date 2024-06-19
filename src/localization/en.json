@@ -81,7 +81,9 @@
     "unAllocated": "Unallocated Time:",
     "sprintDate": "Sprint",
     "completed": "Done", 
-    "current": "Current: {0}-{1}"
+    "current": "Current: {0}-{1}",
+    "viewAllSprints": "View all emloyees sprint allocations",
+    "searchProjectsAndPersons": "Search for a person or project..."
   },
   "errors": {
     "fetchFailedGeneral": "There was an error fetching data",

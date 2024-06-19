@@ -108,6 +108,8 @@ export interface Localized extends LocalizedStringsMethods {
     sprintDate: string;
     completed: string;
     current: string;
+    viewAllSprints:string;
+    searchProjectsAndPersons: string;
   };
   /**
    * General time-related expressions

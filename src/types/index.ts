@@ -1,6 +1,7 @@
 import type { DateTime } from "luxon";
 import type { Person, PersonTotalTime, VacationType, DailyEntry } from "../generated/client";
 import type { ReactNode } from "react";
+import type { Allocations, Projects } from "src/generated/homeLambdasClient";
 
 /**
  * Enum describing table form modes
@@ -153,9 +154,19 @@ export interface DateRange {
  * Type describing chart data for sprint view
  */
 export interface SprintViewChartData {
-  id: number,
-  projectName: string,
-  timeAllocated: number,
-  timeEntries: number,
-  color: string
+  id: number;
+  projectName: string;
+  timeAllocated: number;
+  timeEntries: number;
+  color: string;
+}
+
+/**
+ * Type describing users' data for sprint view
+ */
+export interface PersonWithAllocations {
+  person: Person;
+  allocations: Allocations[];
+  projects: Projects[];
+  timeEntries: number[];
 }
