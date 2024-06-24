@@ -1,10 +1,11 @@
-import { MenuItem, Card, Grow, FormControl, InputLabel, Select } from "@mui/material";
-import strings from "src/localization/strings";
+import { Card, FormControl, Grow, InputLabel, type SelectChangeEvent } from "@mui/material";
 import { useAtomValue } from "jotai";
 import { personsAtom } from "src/atoms/person";
 import UserRoleUtils from "src/utils/user-role-utils";
 import SummaryTimEntriesCard from "./summary-time-entries-card";
 import SpecificTimeEntriesCard from "./specific-time-entries-card";
+import { renderSelect } from "src/utils/select-utils";
+import strings from "src/localization/strings";
 
 /**
  * Component properties
@@ -19,10 +20,7 @@ interface Props {
  *
  * @param props Component properties
  */
-const TimebankContent = ({
-  selectedEmployeeId,
-  setSelectedEmployeeId
-}: Props) => {
+const TimebankContent = ({ selectedEmployeeId, setSelectedEmployeeId }: Props) => {
   const persons = useAtomValue(personsAtom);
   const isAdmin = UserRoleUtils.isAdmin();
 
@@ -32,27 +30,26 @@ const TimebankContent = ({
         <Grow in>
           <Card sx={{ p: "1%", display: "flex", justifyContent: "center", marginBottom: "24px" }}>
             <FormControl fullWidth>
-              <InputLabel id="employee-select-label">{strings.employeeSelect.employeeSelectlabel}</InputLabel>
-              <Select
-                labelId="employee-select-label"
-                id="employee-select"
-                value={selectedEmployeeId}
-                onChange={(event) => setSelectedEmployeeId(Number(event.target.value))}
-                label={strings.employeeSelect.employeeSelectlabel}
-              >
-                {persons.map((person) => (
-                  <MenuItem key={person.id} value={person.id}>
-                    {`${person.firstName} ${person.lastName}`}
-                  </MenuItem>
-                ))}
-              </Select>
+              <InputLabel id="employee-select-label">
+                {strings.employeeSelect.employeeSelectlabel}
+              </InputLabel>
+              {renderSelect({
+                loading: false,
+                selectedEmployeeId: selectedEmployeeId ?? 0,
+                persons,
+                onChange: (event: SelectChangeEvent<any>) => {
+                  setSelectedEmployeeId(Number(event.target.value));
+                },
+                sx: { width: "100%" },
+                label: strings.employeeSelect.employeeSelectlabel
+              })}
             </FormControl>
           </Card>
         </Grow>
       )}
-      <SummaryTimEntriesCard selectedEmployeeId={selectedEmployeeId}/>
+      <SummaryTimEntriesCard selectedEmployeeId={selectedEmployeeId} />
       <br />
-      <SpecificTimeEntriesCard selectedEmployeeId={selectedEmployeeId}/> 
+      <SpecificTimeEntriesCard selectedEmployeeId={selectedEmployeeId} />
       <br />
     </>
   );
