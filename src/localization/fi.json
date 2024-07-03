@@ -219,5 +219,19 @@
   },
   "employeeSelect": {
     "employeeSelectlabel": "Valitse työntekijä"
+  },
+  "oncall": {
+    "title": "Päivystyskalenteri",
+    "previousYear": "Edellinen vuosi",
+    "nextYear": "Seuraava vuosi",
+    "oncallShifts": "Päivystysvuorot",
+    "paid": "Maksettu",
+    "notPaid": "Ei maksettu",
+    "calendar": "Kalenteri",
+    "list": "Lista",
+    "selectView": "Valitse kalenterinäkymä",
+    "noOnCallPerson": "Päivystäjää ei ole tälle viikolle",
+    "onCallPersonExists": "Tämän viikon päivystäjä:",
+    "fetchFailed": "Päivystystietojen haku epäonnistui"
   }
 }

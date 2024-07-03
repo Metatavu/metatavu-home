@@ -150,6 +150,16 @@ export interface DateRange {
 }
 
 /**
+ * Type describing on call entry for a week
+ */
+export interface OnCallCalendarEntry {
+  date: string | null;
+  person: string;
+  paid: boolean;
+  badgeColor: string;
+}
+
+/**
  * Type describing chart data for sprint view
  */
 export interface SprintViewChartData {
