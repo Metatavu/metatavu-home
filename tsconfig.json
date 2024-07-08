@@ -7,7 +7,7 @@
     "skipLibCheck": true,
     "useUnknownInCatchVariables": true,
     "strict": true,
-
+    "types": ["vitest/globals"],
     /* Bundler mode */
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
@@ -25,9 +25,9 @@
       "src/generated/*": ["src/generated/*"],
       "src/utils/*": ["src/utils/*"],
       "src/types/*": ["src/types/*"],
-      "src/theme/*": ["src/theme/*"],
+      "src/theme/*": ["src/theme/*"]
     }
   },
-  "include": ["src"],
+  "include": ["src", "tests/sync-button.test.tsx"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

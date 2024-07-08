@@ -108,6 +108,7 @@ const TaskTable = ({ project, loggedInPersonId, filter }: Props) => {
 
   return (
     <Card
+      data-testid="task-card"
       key={0}
       sx={{
         backgroundColor: "#f2f2f2",

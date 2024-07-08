@@ -6,11 +6,7 @@ import { useAtomValue, useSetAtom } from "jotai";
 import { personsAtom } from "src/atoms/person";
 import config from "src/app/config";
 import { userProfileAtom } from "src/atoms/auth";
-import type {
-  Allocations,
-  Projects,
-  TimeEntries
-} from "src/generated/homeLambdasClient/models/";
+import type { Allocations, Projects, TimeEntries } from "src/generated/homeLambdasClient/models/";
 import { DataGrid } from "@mui/x-data-grid";
 import { getHoursAndMinutes, getSprintEnd, getSprintStart } from "src/utils/time-utils";
 import TaskTable from "src/components/sprint-view-table/tasks-table";
@@ -164,8 +160,9 @@ const SprintViewScreen = () => {
             label={strings.sprint.showMyTasks}
             onClick={() => handleOnClickTask()}
           />
-          <TaskStatusFilter setFilter={setFilter}/>
+          <TaskStatusFilter setFilter={setFilter}  />
           <Card
+            data-testid="project-card"
             sx={{
               margin: 0,
               width: "100%",
@@ -179,6 +176,7 @@ const SprintViewScreen = () => {
             }}
           >
             <DataGrid
+              data-testid="allocation-table"
               sx={{
                 borderTop: 0,
                 borderLeft: 0,
