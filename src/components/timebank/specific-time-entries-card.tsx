@@ -154,8 +154,7 @@ const SpecificTimeEntriesCard = ({ selectedEmployeeId }: Props) => {
         result.push(
           dailyEntries.filter(
             (item) =>
-              item.logged &&
-              item.expected &&
+              (item.logged ||  item.expected) &&
               DateTime.fromJSDate(item.date).toISODate() ===
                 range.start?.plus({ days: i }).toISODate()
           )[0]
