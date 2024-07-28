@@ -5,8 +5,6 @@ import {
   Card,
   CircularProgress,
   Grid,
-  InputAdornment,
-  TextField,
   Typography
 } from "@mui/material";
 import { DateTime } from "luxon";
@@ -29,8 +27,8 @@ import { useApi } from "src/hooks/use-api";
 import { errorAtom } from "src/atoms/error";
 import { type PersonTotalTime, Timespan } from "src/generated/client";
 import { type ChangeEvent, useEffect, useState } from "react";
-import { Search } from "@mui/icons-material";
 import { COLORS } from "../constants";
+import { renderSearch } from "src/utils/search-utils";
 
 /**
  * Timebank view all screen component
@@ -182,29 +180,6 @@ const TimebankViewAllScreen = () => {
   }, [persons]);
 
   /**
-   * Renders the search
-   */
-  const renderSearch = () => (
-    <Box sx={{ display: "flex", justifyContent: "center" }}>
-      <TextField
-        value={searchInput}
-        onChange={handleSearchInputChange}
-        placeholder={strings.timebank.searchPlaceholder}
-        variant="standard"
-        disabled={loading}
-        sx={{ width: "99%", padding: 1 }}
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <Search />
-            </InputAdornment>
-          )
-        }}
-      />
-    </Box>
-  );
-
-  /**
    * Handle search input change
    *
    * @param event input change event
@@ -238,7 +213,9 @@ const TimebankViewAllScreen = () => {
 
   return (
     <>
-      <Card sx={{ marginBottom: 2 }}>{renderSearch()}</Card>
+      <Card sx={{ marginBottom: 2 }}>
+        {renderSearch({ loading, searchInput, handleSearchInputChange, placeholder: strings.timebank.searchPlaceholder })}
+      </Card>
       <Grid container spacing={2} textAlign={"center"} marginBottom={20}>
         {loading ? (
           <Box

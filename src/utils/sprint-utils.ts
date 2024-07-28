@@ -1,5 +1,14 @@
 import type { Person } from "src/generated/client";
-import type { Allocations, Projects, Tasks } from "src/generated/homeLambdasClient";
+import type {
+  Allocations,
+  AllocationsApi,
+  Projects,
+  ProjectsApi,
+  Tasks,
+  TimeEntries,
+  TimeEntriesApi
+} from "src/generated/homeLambdasClient";
+import strings from "src/localization/strings";
 
 /**
  * Retrieve total time entries for an allocation
@@ -135,4 +144,74 @@ export const filterAllocationsAndProjects = (allocations: Allocations[], project
     if (allocationProject) filteredProjects.push(allocationProject);
   });
   return { filteredAllocations, filteredProjects };
+};
+/**
+ *  component properties
+ */
+interface Props {
+  setError: (error: string) => void;
+  person: Person;
+  allocationsApi: AllocationsApi;
+  projectsApi: ProjectsApi;
+  timeEntriesApi: TimeEntriesApi;
+}
+
+/**
+ * Fetch allocations, project names and time entries
+ */
+export const fetchProjectDetails = async ({
+  setError,
+  person,
+  allocationsApi,
+  projectsApi,
+  timeEntriesApi
+}: Props) => {
+  try {
+    const fetchedAllocations = await allocationsApi.listAllocations({
+      startDate: new Date(),
+      endDate: new Date(),
+      personId: person?.id.toString()
+    });
+    const fetchedProjects = await projectsApi.listProjects({ startDate: new Date() });
+    const { filteredAllocations, filteredProjects } = filterAllocationsAndProjects(
+      fetchedAllocations,
+      fetchedProjects
+    );
+    const fetchedTimeEntries = await Promise.all(
+      filteredAllocations.map(async (allocation) => {
+        try {
+          if (allocation.project) {
+            const totalTimeEntries = await timeEntriesApi.listProjectTimeEntries({
+              projectId: allocation.project,
+              startDate: allocation.startDate,
+              endDate: allocation.endDate
+            });
+            let totalMinutes = 0;
+            totalTimeEntries.forEach((timeEntry: TimeEntries) => {
+              if (person && timeEntry.person === person.id) {
+                totalMinutes += timeEntry.timeRegistered || 0;
+              }
+            });
+            return totalMinutes;
+          }
+        } catch (error) {
+          if (allocation.id) {
+            const message: string = strings
+              .formatString(
+                strings.sprintRequestError.fetchAllocationError,
+                allocation.id.toString(),
+                error as string
+              )
+              .toString();
+            setError(message);
+          }
+        }
+        return 0;
+      })
+    );
+    return { filteredAllocations, filteredProjects, fetchedTimeEntries };
+  } catch (error) {
+    setError(`${strings.sprintRequestError.fetchError}, ${error}`);
+    return { filteredAllocations: [], filteredProjects: [], fetchedTimeEntries: [] };
+  }
 };

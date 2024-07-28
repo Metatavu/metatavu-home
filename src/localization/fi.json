@@ -81,7 +81,9 @@
     "unAllocated": "Kohdistamaton aika:",
     "sprintDate": "Sprint",
     "completed": "Valmis",
-    "current": "Nykyinen: {0}-{1}"
+    "current": "Nykyinen: {0}-{1}",
+    "viewAllSprints": "Näytä kaikki työntekijät sprintin määrärahat",
+    "searchProjectsAndPersons": "Hae henkilöä tai projektia.."
   },
   "errors": {
     "fetchFailedGeneral": "Tietojen hakeminen epäonnistui",

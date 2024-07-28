@@ -5,12 +5,11 @@ import { userProfileAtom } from "src/atoms/auth";
 import type { Person } from "src/generated/client";
 import config from "src/app/config";
 import { useLambdasApi } from "src/hooks/use-api";
-import type { TimeEntries } from "src/generated/homeLambdasClient";
 import { CardContent, Skeleton, Typography } from "@mui/material";
 import SprintViewBarChart from "src/components/charts/sprint-view-bar-chart";
 import type { SprintViewChartData } from "src/types";
 import strings from "src/localization/strings";
-import { totalAllocations, filterAllocationsAndProjects } from "src/utils/sprint-utils";
+import { totalAllocations, fetchProjectDetails } from "src/utils/sprint-utils";
 import { errorAtom } from "src/atoms/error";
 import { allocationsAtom, projectsAtom, timeEntriesAtom } from "src/atoms/sprint-data";
 
@@ -32,56 +31,27 @@ const UserSprintViewCard = () => {
   const setError = useSetAtom(errorAtom);
 
   useEffect(() => {
-    getAllocationsAndProjects();
+    fetchProjectAndAllocations();
   }, [loggedInPerson]);
 
   /**
-   * Get allocations, projects names, colors and time entries
+   * Fetches users' allocations and projects
    */
-  const getAllocationsAndProjects = async () => {
+  const fetchProjectAndAllocations = async () => {
+    if (!loggedInPerson || allocations.length) return;
     setLoading(true);
-    if (loggedInPerson && !allocations.length) {
-      try {
-        const fetchedAllocations = await allocationsApi.listAllocations({
-          personId: loggedInPerson.id.toString(),
-          startDate: new Date(),
-          endDate: new Date()
-        });
-        const fetchedProjects = await projectsApi.listProjects({ startDate: new Date() });
-        const { filteredAllocations, filteredProjects } = filterAllocationsAndProjects(
-          fetchedAllocations,
-          fetchedProjects
-        );
-        const totalTimeEntries = await Promise.all(
-          filteredAllocations.map(async (allocation) => {
-            try {
-              if (allocation.project) {
-                const fetchedTimeEntries = await timeEntriesApi.listProjectTimeEntries({
-                  projectId: allocation.project,
-                  startDate: allocation.startDate,
-                  endDate: allocation.endDate
-                });
-                let totalMinutes = 0;
-                fetchedTimeEntries.map((timeEntry: TimeEntries) => {
-                  if (loggedInPerson && timeEntry.person === loggedInPerson.id) {
-                    totalMinutes += timeEntry.timeRegistered || 0;
-                  }
-                });
-                return totalMinutes;
-              }
-            } catch (error) {
-              setError(`${strings.sprintRequestError.fetchTimeEntriesError}, ${error}`);
-            }
-            return 0;
-          })
-        );
-        setProjects(filteredProjects);
-        setAllocations(filteredAllocations);
-        setTimeEntries(totalTimeEntries);
-      } catch (error) {
-        setError(`${strings.sprintRequestError.fetchError}, ${error}`);
+    const { filteredAllocations, filteredProjects, fetchedTimeEntries } = await fetchProjectDetails(
+      {
+        setError,
+        person: loggedInPerson,
+        allocationsApi,
+        projectsApi,
+        timeEntriesApi
       }
-    }
+    );
+    setAllocations(filteredAllocations);
+    setProjects(filteredProjects);
+    setTimeEntries(fetchedTimeEntries);
     setLoading(false);
   };
 
