@@ -29,6 +29,7 @@ const NavBar = () => {
   const auth = useAtomValue(authAtom);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
   const [avatars, setAvatars] = useAtom(avatarsAtom);
+  const [loggedInPersonAvatar, setLoggedInPersonAvatar] = useState<string>();
   const persons: Person[] = useAtomValue(personsAtom);
   const userProfile = useAtomValue(userProfileAtom);
   const setError = useSetAtom(errorAtom);
@@ -37,8 +38,6 @@ const NavBar = () => {
     (person: Person) =>
       person.id === config.person.forecastUserIdOverride || person.keycloakId === userProfile?.id
   );
-  const loggedInPersonAvatar =
-    avatars.find((avatar) => loggedInPerson?.id === avatar.personId)?.imageOriginal || "";
 
   /**
    * Handles opening user menu
@@ -64,13 +63,19 @@ const NavBar = () => {
   };
 
   /**
-   * Fetch Slack avatars
+   * Fetch Slack avatars and sets logged in user avatar
    */
   const getSlackAvatars = async () => {
-    if (avatars) return;
+    if (!loggedInPerson) return;
     try {
-      const fetchedAvatars = await slackAvatarsApi.slackAvatar();
-      setAvatars(fetchedAvatars);
+      if (!avatars.length) {
+        const fetchedAvatars = await slackAvatarsApi.slackAvatar();
+        setAvatars(fetchedAvatars);
+        setLoggedInPersonAvatar(fetchedAvatars.find((avatar) => loggedInPerson?.id === avatar.personId)?.imageOriginal || "");
+      }
+      else {
+        setLoggedInPersonAvatar(avatars.find((avatar) => loggedInPerson?.id === avatar.personId)?.imageOriginal || "");
+      }  
     }
     catch (error) {
       setError(`${strings.error.fetchSlackAvatarsFailed}: ${error}`);
@@ -79,7 +84,7 @@ const NavBar = () => {
 
   useEffect(() => {
     getSlackAvatars();
-  }, []);
+  }, [loggedInPerson]);
 
   return (
     <>
