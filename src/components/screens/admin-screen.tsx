@@ -11,6 +11,7 @@ import QuestionnaireCard from "../home/questionnaire-card";
 const AdminScreen = () => {
   const developerMode = UserRoleUtils.developerMode();
   const balanceCard = developerMode ? <BalanceCard /> : null;
+  const balanceCard = developerMode ? <BalanceCard /> : null;
   const sprintViewCard = developerMode ? <SprintViewCard /> : null;
   const vacationsCard = developerMode ? <VacationsCard /> : null;
   const questionairesCard = developerMode ? <QuestionnaireCard /> : null;

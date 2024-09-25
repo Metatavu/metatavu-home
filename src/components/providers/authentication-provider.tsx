@@ -91,6 +91,7 @@ const AuthenticationProvider = ({ children }: Props) => {
   useEffect(() => {
     if (auth) {
       getUsersList();
+      getUsersList();
     }
   }, [auth]);
 
