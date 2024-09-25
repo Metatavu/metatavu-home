@@ -4,6 +4,7 @@ import QuestionnaireCard from "../home/questionnaire-card";
 import VacationsCard from "../home/vacations-card";
 import SprintViewCard from "../home/sprint-view-card";
 import UserRoleUtils from "src/utils/user-role-utils";
+import OnCallCard from "../home/oncall-card";
 import type { User } from "src/generated/homeLambdasClient";
 import { usersAtom } from "src/atoms/user";
 import { userProfileAtom } from "src/atoms/auth";
@@ -25,17 +26,24 @@ const HomeScreen = () => {
   const vacationsCard = developerMode ? <VacationsCard /> : null;
   const questionairesCard = developerMode ? <QuestionnaireCard /> : null;
   
+  const onCallCard = developerMode ? <OnCallCard /> : null;
   return (
     <Grid container spacing={2}>
       <Grid item xs={12} sm={6}>
-        {balanceCard}
         {balanceCard}
         <Grid item xs={12} style={{ marginTop: "16px" }}>
           {sprintViewCard}
         </Grid>
       </Grid>
+
       <Grid item xs={12} sm={6}>
         {vacationsCard}
+        <Grid item xs={12} style={{ marginTop: "16px" }}>
+          {onCallCard}
+        </Grid>
+      </Grid>
+      <Grid item xs={12} sm={6}>
+        {sprintViewCard}
       </Grid>
       <Grid item xs={12} sm={6}>
         {questionairesCard}

@@ -22,6 +22,7 @@ import QuestionnaireScreen from "./components/screens/questionnaire-screen";
 import NewQuestionnaireBuilder from "./components/questionnaire/new-questionnaire-builder";
 import QuestionnaireManager from "./components/questionnaire/questionnaire-manager";
 import { QuestionnairePreviewMode } from "./types";
+import OnCallCalendarScreen from "./components/screens/on-call-calendar-screen";
 
 /**
  * Application component
@@ -62,6 +63,10 @@ const App = () => {
         {
           path: "/questionnaire/:id",
           element: <QuestionnaireManager mode={QuestionnairePreviewMode.FILL} />
+        },
+        {
+          path: "/oncall",
+          element: <OnCallCalendarScreen />
         }
       ]
     },

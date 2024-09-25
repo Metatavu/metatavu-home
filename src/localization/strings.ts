@@ -303,6 +303,20 @@ export interface Localized extends LocalizedStringsMethods {
   employeeSelect: {
     employeeSelectlabel: string;
   };
+  oncall: {
+    title: string;
+    previousYear: string;
+    nextYear: string;
+    oncallShifts: string;
+    paid: string;
+    notPaid: string;
+    calendar: string;
+    list: string;
+    selectView: string;
+    noOnCallPerson: string;
+    onCallPersonExists: string;
+    fetchFailed: string;
+  };
   /**
    * Translations related to Questinnaire card
    */
