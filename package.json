@@ -25,6 +25,7 @@
     "keycloak-js": "^25.0.4",
     "localized-strings": "^0.2.4",
     "luxon": "^3.4.4",
+    "postinstall": "^0.11.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.46.1",
