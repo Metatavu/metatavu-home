@@ -76,7 +76,7 @@ const OnCallCalendarScreen = () => {
   const getCurrentOnCallPerson = () => {
     if (selectedDate.year === DateTime.now().year) {
       const currentWeek = DateTime.now().weekNumber;
-      const currentOnCallPerson = onCallData.find((item) => item.week === currentWeek)?.person;
+      const currentOnCallPerson = onCallData.find((item) => Number.parseInt(item.week) === currentWeek)?.person;
       if (currentOnCallPerson) setOnCallPerson(currentOnCallPerson);
     }
   };
@@ -88,7 +88,7 @@ const OnCallCalendarScreen = () => {
   const generateOnCallWeeks = () => {
     const onCallWeeks: OnCallCalendarEntry[] = [];
     for (const item of onCallData) {
-      const weeks = DateTime.fromObject({ weekNumber: item.week, weekYear: selectedDate.year });
+      const weeks = DateTime.fromObject({ weekNumber: Number.parseInt(item.week), weekYear: selectedDate.year });
 
       for (let i = 0; i < 7; i++) {
         onCallWeeks.push({
