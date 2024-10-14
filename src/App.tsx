@@ -18,6 +18,7 @@ import { Settings } from "luxon";
 import { useMemo } from "react";
 import RestrictedContentProvider from "./components/providers/restricted-content-provider";
 import SprintViewScreen from "./components/screens/sprint-view-screen";
+import OnCallCalendarScreen from "./components/screens/on-call-calendar-screen";
 
 /**
  * Application component
@@ -50,6 +51,10 @@ const App = () => {
         {
           path: "/sprintview",
           element: <SprintViewScreen />
+        },
+        {
+          path: "/oncall",
+          element: <OnCallCalendarScreen />
         }
       ]
     },

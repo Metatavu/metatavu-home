@@ -15,9 +15,9 @@ import {
   SlackAvatarsApi,
   TasksApi,
   TimeEntriesApi,
-  UsersApi,
+  OnCallApi,
+  UsersApi
 } from "../generated/homeLambdasClient";
-
 
 /**
  * Generic type that accepts parameters within the @ConfigurationParameters interface
@@ -77,7 +77,8 @@ export const getLambdasApiClient = (accessToken?: string) => {
     projectsApi: new ProjectsApi(getConfiguration()),
     tasksApi: new TasksApi(getConfiguration()),
     timeEntriesApi: new TimeEntriesApi(getConfiguration()),
+    onCallApi: new OnCallApi(getConfiguration()),
     slackAvatarsApi: new SlackAvatarsApi(getConfiguration()),
-    usersApi: new UsersApi(getConfiguration()),
+    usersApi: new UsersApi(getConfiguration())
   };
 };
