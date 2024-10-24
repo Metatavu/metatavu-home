@@ -15,6 +15,7 @@ import {
   SlackAvatarsApi,
   TasksApi,
   TimeEntriesApi,
+  SoftwareApi,
   UsersApi,
 } from "../generated/homeLambdasClient";
 
@@ -78,6 +79,7 @@ export const getLambdasApiClient = (accessToken?: string) => {
     tasksApi: new TasksApi(getConfiguration()),
     timeEntriesApi: new TimeEntriesApi(getConfiguration()),
     slackAvatarsApi: new SlackAvatarsApi(getConfiguration()),
+    softwareApi: new SoftwareApi(getConfiguration()),
     usersApi: new UsersApi(getConfiguration()),
   };
 };

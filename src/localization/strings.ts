@@ -110,6 +110,49 @@ export interface Localized extends LocalizedStringsMethods {
     current: string;
   };
   /**
+   * Translations related to software registry
+   */
+  softwareRegistry: {
+    softwareRegistry: string;
+    softwareRegistryAdmin: string;
+    applications: string;
+    application: string;
+    myApplications: string;
+    recommendations: string;
+    noRecommendations: string;
+    recommendationMessage: string;
+    allApplications: string;
+    addApplication: string;
+    added: string;
+    tags: string;
+    filter: string;
+    results: string;
+    searchBy: string;
+    clearSearch: string;
+    description: string;
+    review: string;
+    remove: string;
+    addToMyApps: string;
+    editApp: string;
+    addSoftware: string;
+    name: string;
+    nameRequired: string;
+    imageURL: string;
+    imageURLRequired: string;
+    URLAddress: string;
+    URLExample: string;
+    ownReview: string;
+    recommend: string;
+    cancel: string;
+    submit: string;
+    showMore: string;
+    showLess: string;
+    noPending: string;
+    newSoftware: string;
+    alreadyExists: string;
+    delete: string
+  };
+  /**
    * General time-related expressions
    */
   timeExpressions: {
