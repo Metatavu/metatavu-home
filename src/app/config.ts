@@ -15,6 +15,9 @@ interface Config {
   person: {
     forecastUserIdOverride: number;
   };
+  user: {
+    testUserSeveraId: string;
+  };
 }
 
 const env = cleanEnv(import.meta.env, {
@@ -23,7 +26,8 @@ const env = cleanEnv(import.meta.env, {
   VITE_KEYCLOAK_CLIENT_ID: str(),
   VITE_API_BASE_URL: url(),
   VITE_FORECAST_USER_ID_OVERRIDE: num({ default: undefined }),
-  VITE_HOME_LAMBDAS_BASE_URL: url()
+  VITE_HOME_LAMBDAS_BASE_URL: url(),
+  VITE_TEST_USER_SEVERA_ID: str()
 });
 
 const config: Config = {
@@ -40,6 +44,9 @@ const config: Config = {
   },
   person: {
     forecastUserIdOverride: env.VITE_FORECAST_USER_ID_OVERRIDE
+  },
+  user: {
+    testUserSeveraId: env.VITE_TEST_USER_SEVERA_ID
   }
 };
 
