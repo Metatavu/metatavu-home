@@ -95,7 +95,6 @@ const VacationRequestsTable = ({
       message: strings.vacationRequest.noMessage,
       status: VacationRequestStatuses.PENDING
     };
-
     return row;
   };
 
@@ -131,12 +130,18 @@ const VacationRequestsTable = ({
             userProfile
           );
         }
-
         rows.push(row);
       });
     }
     return rows;
   };
+
+  /**
+   * Set selected data grid rows
+   */
+  useMemo(() => {
+    setSelectedRowIds([]);
+  }, [updateVacationRequestStatuses, deleteVacationRequests]);
 
   /**
    * Set data grid rows
