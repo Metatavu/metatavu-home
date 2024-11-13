@@ -17,24 +17,21 @@ import strings from "src/localization/strings";
  * Interface for the NewQuestionnaireCard component
  */
 interface Props {
-  handleAddQuestionSubmit: (
-    questionText: string,
-    options: { label: string; value: boolean }[]
-  ) => void;
+  handleAddQuestion: (question: string, options: { label: string; value: boolean }[]) => void;
 }
 
 /**
  * New Questionnaire Card Component
+ * 
+ * @params handleAddQuestion
  */
-const NewQuestionnaireCard = ({handleAddQuestionSubmit}: Props) => {
-  
+const NewQuestionnaireCard = ({ handleAddQuestion }: Props) => {
   const [questionText, setQuestionText] = useState("");
-  const [options, setOptions] = useState([
-    { label: "", value: false }
-  ]);
+  const [options, setOptions] = useState([{ label: "", value: false }]);
 
   /**
    * Handle options label (answer option) change
+   * 
    * @param index
    */
   const handleAnswerLabelChange = (
@@ -48,6 +45,7 @@ const NewQuestionnaireCard = ({handleAddQuestionSubmit}: Props) => {
 
   /**
    * Handle options value change (checkbox)
+   * 
    * @param index
    */
   const handleCheckboxChange = (index: number) => {
@@ -64,15 +62,12 @@ const NewQuestionnaireCard = ({handleAddQuestionSubmit}: Props) => {
   };
 
   /**
-   * Handle saving the question (submitting the question and options + resetting the form)
+   * Handle adding new question (submitting the question and options + resetting the form)
    */
-  const handleSaveQuestion = () => {
-    handleAddQuestionSubmit(questionText, options);
-
+  const handleAddNewQuestion = () => {
+    handleAddQuestion(questionText, options);
     setQuestionText("");
-    setOptions([
-      { label: "", value: false }
-    ]);
+    setOptions([{ label: "", value: false }]);
   };
 
   return (
@@ -100,11 +95,9 @@ const NewQuestionnaireCard = ({handleAddQuestionSubmit}: Props) => {
             onChange={(e) => setQuestionText(e.target.value)}
             fullWidth
           />
-
           <Typography variant="body1" sx={{ mt: 2 }}>
             {strings.newQuestionnaireCard.correctAnswer}
           </Typography>
-
           {options.map((option, index) => (
             <Box
               key={index}
@@ -145,11 +138,13 @@ const NewQuestionnaireCard = ({handleAddQuestionSubmit}: Props) => {
             </Box>
           ))}
           <Button onClick={handleAddNewOption} sx={{ mt: 3 }}>
-            <Typography sx={{ fontWeight: "bold", mb: 2 }}>{strings.newQuestionnaireCard.addAnswer}</Typography>
+            <Typography sx={{ fontWeight: "bold", mb: 2 }}>
+              {strings.newQuestionnaireCard.addAnswer}
+            </Typography>
           </Button>
           <CardActionArea>
             <CardActions>
-              <Button size="large" variant="contained" onClick={handleSaveQuestion}>
+              <Button size="large" variant="contained" onClick={handleAddNewQuestion}>
                 {strings.newQuestionnaireCard.saveAnswer}
               </Button>
             </CardActions>

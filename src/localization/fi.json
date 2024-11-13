@@ -29,7 +29,10 @@
     "dailyEntriesNotFound": "Aikakirjauksia ei löydetty",
     "fetchFailedGeneral": "Tietojen hakeminen epäonnistui",
     "fetchFailedNoEntriesGeneral": "Ei aikatietoja saatavilla",
-    "fetchSlackAvatarsFailed": "Virhe Slack-avatareita pyydettäessä"
+    "fetchSlackAvatarsFailed": "Virhe Slack-avatareita pyydettäessä",
+    "questionnaireSaveFailed": "Kyselylomakkeen tallentaminen epäonnistui",
+    "questionnaireLoadFailed": "Kyselylomakkeiden lataaminen epäonnistui",
+    "questionnaireDeleteFailed": "Kyselylomakkeen poistaminen epäonnistui"
   },
   "localization": {
     "en": "EN",
@@ -240,8 +243,12 @@
     "saveButton": "Tallenna uusi kysely",
     "preview": "Kyselyiden esikatselu",
     "is": "on",
-    "delete": "Poista kysymys",
-    "back": "Takaisin"
+    "removeFromPreview": "Poista kysymys",
+    "back": "Takaisin",
+    "description": "Kuvaus",
+    "insertDescription": "Syötä kuvaus kyselystä tähän",
+    "countedAnswers": "Oikeiden vastausten määrä tässä kyselyssä:",
+    "requiredAnswers": "Montako pitää olla oikein, jotta kysely menee läpi:"
   },
   "newQuestionnaireCard": {
     "newQuestion": "Haluatko lisätä uuden kysymyksen, lisää tiedot alle.",
@@ -250,5 +257,16 @@
     "answerLabel": "Syötä vastaus",
     "addAnswer": "+ Lisää uusi vastausvaihtoehto",
     "saveAnswer": "Tallenna kysymys"
+  },
+  "questionnaireTable": {
+    "title": "Kysely",
+    "description": "Kuvaus",
+    "actions": "Toiminnot",
+    "edit": "Muokkaa",
+    "delete": "Poista",
+    "status": "Tila",
+    "confirmDeleteTitle": "Poista {0}?",
+    "cancel": "Peruuta",
+    "confirm": "Vahvista poisto"
   }
 }

@@ -1,40 +1,17 @@
-import { Card, Grid, Box, CardContent, CardActions } from "@mui/material";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import CloseIcon from "@mui/icons-material/Close";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import EditIcon from "@mui/icons-material/Edit";
+import { Card, CircularProgress, Grid } from "@mui/material";
 import { Typography, Button } from "@mui/material";
 import { Link } from "react-router-dom";
 import UserRoleUtils from "src/utils/user-role-utils";
 import { KeyboardReturn } from "@mui/icons-material";
 import strings from "src/localization/strings";
+import QuestionnaireTable from "../questionnaire/questionnaire-table";
 
-const mockQuestionnaires = [
-  {
-    id: 1,
-    title: "This is listing of Mock data for visual presentation",
-    description: "TODO: Build this with actual data, maybe table ?",
-    status: <CheckCircleIcon sx={{ color: "green" }} />
-  },
-  {
-    id: 2,
-    title: "Questionnaire 2",
-    description: "Description for Questionnaire 2",
-    status: <CloseIcon sx={{ color: "red" }} />
-  },
-  {
-    id: 3,
-    title: "Questionnaire 3",
-    description: "Description for Questionnaire 3",
-    status: <CloseIcon sx={{ color: "red" }} />
-  }
-];
 /**
  * Questionnaire Screen Component
  */
 const QuestionnaireScreen = () => {
   const adminMode = UserRoleUtils.adminMode();
-
+  
   return (
     <Card
       sx={{
@@ -55,7 +32,6 @@ const QuestionnaireScreen = () => {
             justifyContent: { xs: "center", sm: "space-between" },
             alignItems: "center",
             mb: 2,
-            mt: 2
           }}
         >
           <Grid item xs={12} sm={6} sx={{ alignItems: "center" }}>
@@ -81,35 +57,8 @@ const QuestionnaireScreen = () => {
             }
           </Grid>
         </Grid>
-        {mockQuestionnaires.map((questionnaire) => (
-          <Grid item xs={12} key={questionnaire.id} sx={{ mt: 2 }}>
-            <Card sx={{ p: 2 }}>
-              <CardContent>
-                <Typography variant="h6">{questionnaire.title}</Typography>
-                <Typography variant="body2">{questionnaire.description}</Typography>
-                <Box display="flex" alignItems="center">
-                  <Typography variant="body2" sx={{ mr: 1 }}>
-                    {strings.questionnaireScreen.status}
-                  </Typography>
-                  {questionnaire.status}
-                </Box>
-              </CardContent>
-              {adminMode && 
-                <CardActions>
-                  <Button variant="outlined" color="success">
-                    <EditIcon sx={{ color: "success", mr: 2 }} />
-                    {strings.questionnaireScreen.edit}
-                  </Button>
-                  <Button variant="contained" color="secondary">
-                    <DeleteForeverIcon sx={{ color: "red", mr: 2 }} />
-                    {strings.questionnaireScreen.delete}
-                  </Button>
-                </CardActions>
-              }
-            </Card>
-          </Grid>
-        ))}
       </Grid>
+      <QuestionnaireTable/>
       <Card sx={{ mt: 2, width: "100%" }}>
         <Link to={adminMode ? "/admin" : "/"} style={{ textDecoration: "none" }}>
           <Button variant="contained" sx={{ p: 2, width: "100%" }}>
