@@ -1,6 +1,6 @@
 import { atom } from "jotai";
-import type { VacationRequestStatus } from "../generated/client";
-import type { VacationRequest } from "../generated/client";
+import type { VacationRequestStatus } from "../generated/homeLambdasClient";
+import type { VacationRequest } from "../generated/homeLambdasClient";
 
 export const vacationRequestsAtom = atom<VacationRequest[]>([]);
 export const vacationRequestStatusesAtom = atom<VacationRequestStatus[]>([]);

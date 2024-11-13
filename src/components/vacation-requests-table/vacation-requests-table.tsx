@@ -18,7 +18,7 @@ import {
   type VacationRequest,
   type VacationRequestStatus,
   VacationRequestStatuses
-} from "src/generated/client";
+} from "src/generated/homeLambdasClient";
 import { getVacationRequestStatusColor } from "src/utils/vacation-status-utils";
 import UserRoleUtils from "src/utils/user-role-utils";
 import { DateTime } from "luxon";
@@ -40,6 +40,10 @@ interface Props {
   createVacationRequest: (vacationData: VacationData) => Promise<void>;
   updateVacationRequest: (vacationData: VacationData, vacationRequestId: string) => Promise<void>;
   loading: boolean;
+  updateVacationRequestStatuses: (
+    buttonType: VacationRequestStatuses,
+    selectedRowIds: GridRowId[]
+  ) => Promise<void>;
 }
 
 /**
@@ -53,6 +57,7 @@ const VacationRequestsTable = ({
   deleteVacationRequests,
   createVacationRequest,
   updateVacationRequest,
+  updateVacationRequestStatuses,
   loading
 }: Props) => {
   const adminMode = UserRoleUtils.adminMode();
@@ -84,7 +89,7 @@ const VacationRequestsTable = ({
       type: LocalizationUtils.getLocalizedVacationRequestType(vacationRequest.type),
       personFullName: vacationRequest.personId ?? strings.vacationRequest.noPersonFullName,
       updatedAt: DateTime.fromJSDate(vacationRequest.updatedAt),
-      startDate: DateTime.fromJSDate(vacationRequest.startDate),
+      startDate: DateTime.fromJSDate(vacationRequest.startDate as Date),
       endDate: DateTime.fromJSDate(vacationRequest.endDate),
       days: vacationRequest.days,
       message: strings.vacationRequest.noMessage,
@@ -97,7 +102,7 @@ const VacationRequestsTable = ({
   /**
    * Create vacation requests data grid rows
    *
-   * @param vacationRequest vacation request
+   * @param vacationRequests vacation requests
    * @param vacationRequestStatuses vacation request statuses
    */
   const createDataGridRows = (
@@ -193,6 +198,7 @@ const VacationRequestsTable = ({
         deleteVacationRequests={deleteVacationRequests}
         createVacationRequest={createVacationRequest}
         updateVacationRequest={updateVacationRequest}
+        updateVacationRequestStatuses={updateVacationRequestStatuses}
         setFormOpen={setFormOpen}
         formOpen={formOpen}
         selectedRowIds={selectedRowIds}
@@ -208,7 +214,7 @@ const VacationRequestsTable = ({
           setSelectedRowIds(index);
         }}
         rows={rows}
-        loading={loading && !rows.length ? true : false}
+        loading={loading && !rows.length}
         slots={{
           loadingOverlay: CustomSkeletonTableRows,
           noRowsOverlay: CustomNoRowsOverlay

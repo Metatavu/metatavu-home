@@ -33,6 +33,10 @@ interface Props {
   selectedRowIds: GridRowId[];
   rows: VacationsDataGridRow[];
   setSelectedRowIds: (selectedRowIds: GridRowId[]) => void;
+  updateVacationRequestStatuses: (
+    newStatus: VacationRequestStatuses,
+    selectedRowIds: GridRowId[]
+  ) => Promise<void>;
 }
 
 /**
@@ -51,6 +55,7 @@ const TableToolbar = ({
   selectedRowIds,
   rows,
   setSelectedRowIds,
+  updateVacationRequestStatuses
 }: Props) => {
   const [toolbarOpen, setToolbarOpen] = useState(false);
   const [toolbarFormMode, setToolbarFormMode] = useState<ToolbarFormModes>(ToolbarFormModes.NONE);
@@ -146,17 +151,18 @@ const TableToolbar = ({
           {adminMode && (
             <>
               <ToolbarGridItem item sm={3} xs={6}>
-                {/*FIXME: Re-implement functionality to update vacation request statuses*/}
-                {/*<UpdateStatusButton*/}
-                {/*  buttonType={VacationRequestStatuses.APPROVED}*/}
-                {/*  selectedRowIds={selectedRowIds}*/}
-                {/*/>*/}
+                <UpdateStatusButton
+                  buttonType={VacationRequestStatuses.APPROVED}
+                  updateVacationRequestStatuses={updateVacationRequestStatuses}
+                  selectedRowIds={selectedRowIds}
+                />
               </ToolbarGridItem>
               <ToolbarGridItem item sm={3} xs={6}>
-                {/*<UpdateStatusButton*/}
-                {/*  buttonType={VacationRequestStatuses.DECLINED}*/}
-                {/*  selectedRowIds={selectedRowIds}*/}
-                {/*/>*/}
+                <UpdateStatusButton
+                  buttonType={VacationRequestStatuses.DECLINED}
+                  updateVacationRequestStatuses={updateVacationRequestStatuses}
+                  selectedRowIds={selectedRowIds}
+                />
               </ToolbarGridItem>
             </>
           )}
