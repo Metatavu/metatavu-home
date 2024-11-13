@@ -236,8 +236,8 @@ export interface Localized extends LocalizedStringsMethods {
     applicant: string;
     timeOfVacation: string;
     status: string;
-    unspentVacations: string;
-    spentVacations: string;
+    unspentVacationDays: string;
+    vacationDays: string;
   };
   /**
    * Translation related to person select dropdown
