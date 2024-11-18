@@ -1,4 +1,4 @@
-import { VacationRequestStatuses } from "../generated/client";
+import { VacationRequestStatuses } from "../generated/homeLambdasClient";
 import { theme } from "../theme";
 
 /**

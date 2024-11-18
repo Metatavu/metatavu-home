@@ -10,8 +10,8 @@ import {
   type VacationRequest,
   type VacationRequestStatus,
   VacationRequestStatuses,
-} from "src/generated/client";
-import { useApi } from "src/hooks/use-api";
+} from "src/generated/homeLambdasClient";
+import { useLambdasApi } from "src/hooks/use-api";
 import { DateTime } from "luxon";
 import LocalizationUtils from "src/utils/localization-utils";
 import {
@@ -37,7 +37,7 @@ import {usersAtom} from "src/atoms/user.ts";
  */
 const VacationsCard = () => {
   const adminMode = UserRoleUtils.adminMode();
-  const { vacationRequestsApi, vacationRequestStatusApi } = useApi();
+  const { vacationRequestsApi } = useLambdasApi();
   const userProfile = useAtomValue(userProfileAtom);
   const setError = useSetAtom(errorAtom);
   const [vacationRequests, setVacationRequests] = useAtom(
@@ -52,75 +52,76 @@ const VacationsCard = () => {
     (user: User) =>
       user.id === userProfile?.id
   );
+  console.log(loggedInUser);
 
   /**
    * Fetch vacation request statuses
    */
-  const fetchVacationRequestStatuses = async () => {
-    if (vacationRequests.length && !latestVacationRequestStatuses.length) {
-      try {
-        setLoading(true);
-        const vacationRequestStatuses: VacationRequestStatus[] = [];
+  // const fetchVacationRequestStatuses = async () => {
+  //   if (vacationRequests.length && !latestVacationRequestStatuses.length) {
+  //     try {
+  //       setLoading(true);
+  //       const vacationRequestStatuses: VacationRequestStatus[] = [];
+  //
+  //       await Promise.all(
+  //         vacationRequests.map(async (vacationRequest) => {
+  //           let createdStatuses: VacationRequestStatus[] = [];
+  //           if (vacationRequest.id) {
+  //             createdStatuses = await vacationRequestStatusApi.listVacationRequestStatuses({
+  //               id: vacationRequest.id
+  //             });
+  //           }
+  //           createdStatuses.forEach((createdStatus) => {
+  //             vacationRequestStatuses.push(createdStatus);
+  //           });
+  //         })
+  //       );
+  //       await filterLatestVacationRequestStatuses(vacationRequestStatuses);
+  //     } catch (error) {
+  //       setError(`${strings.vacationRequestError.fetchStatusError}, ${error}`);
+  //     }
+  //   }
+  // };
 
-        await Promise.all(
-          vacationRequests.map(async (vacationRequest) => {
-            let createdStatuses: VacationRequestStatus[] = [];
-            if (vacationRequest.id) {
-              createdStatuses = await vacationRequestStatusApi.listVacationRequestStatuses({
-                id: vacationRequest.id
-              });
-            }
-            createdStatuses.forEach((createdStatus) => {
-              vacationRequestStatuses.push(createdStatus);
-            });
-          })
-        );
-        await filterLatestVacationRequestStatuses(vacationRequestStatuses);
-      } catch (error) {
-        setError(`${strings.vacationRequestError.fetchStatusError}, ${error}`);
-      }
-    }
-  };
-
-  useMemo(() => {
-    fetchVacationRequestStatuses();
-  }, [vacationRequests]);
+  // useMemo(() => {
+  //   fetchVacationRequestStatuses();
+  // }, [vacationRequests]);
 
   /**
    * Filter latest vacation request statuses, so there would be only one status(the latest one) for each request showed on the UI
    */
-  const filterLatestVacationRequestStatuses = async (
-    vacationRequestStatuses: VacationRequestStatus[]
-  ) => {
-    if (vacationRequests.length && vacationRequestStatuses.length) {
-      const selectedLatestVacationRequestStatuses: VacationRequestStatus[] = [];
-
-      vacationRequests.forEach((vacationRequest) => {
-        const selectedVacationRequestStatuses: VacationRequestStatus[] = [];
-
-        vacationRequestStatuses.forEach((vacationRequestStatus) => {
-          if (vacationRequest.id === vacationRequestStatus.vacationRequestId) {
-            selectedVacationRequestStatuses.push(vacationRequestStatus);
-          }
-        });
-
-        if (selectedVacationRequestStatuses.length) {
-          const latestStatus = selectedVacationRequestStatuses.reduce((a, b) => {
-            if (a.updatedAt && b.updatedAt) {
-              return a.updatedAt > b.updatedAt ? a : b;
-            }
-            if (a.updatedAt) {
-              return a;
-            }
-            return b;
-          });
-          selectedLatestVacationRequestStatuses.push(latestStatus);
-        }
-      });
-      setLatestVacationRequestStatuses(selectedLatestVacationRequestStatuses);
-    }
-    setLoading(false);
-  };
+  // const filterLatestVacationRequestStatuses = async (
+  //   vacationRequestStatuses: VacationRequestStatus[]
+  // ) => {
+  //   if (vacationRequests.length && vacationRequestStatuses.length) {
+  //     const selectedLatestVacationRequestStatuses: VacationRequestStatus[] = [];
+  //
+  //     vacationRequests.forEach((vacationRequest) => {
+  //       const selectedVacationRequestStatuses: VacationRequestStatus[] = [];
+  //
+  //       vacationRequestStatuses.forEach((vacationRequestStatus) => {
+  //         if (vacationRequest.id === vacationRequestStatus.vacationRequestId) {
+  //           selectedVacationRequestStatuses.push(vacationRequestStatus);
+  //         }
+  //       });
+  //
+  //       if (selectedVacationRequestStatuses.length) {
+  //         const latestStatus = selectedVacationRequestStatuses.reduce((a, b) => {
+  //           if (a.updatedAt && b.updatedAt) {
+  //             return a.updatedAt > b.updatedAt ? a : b;
+  //           }
+  //           if (a.updatedAt) {
+  //             return a;
+  //           }
+  //           return b;
+  //         });
+  //         selectedLatestVacationRequestStatuses.push(latestStatus);
+  //       }
+  //     });
+  //     setLatestVacationRequestStatuses(selectedLatestVacationRequestStatuses);
+  //   }
+  //   setLoading(false);
+  // };
 
   /**
    * Fetch vacation requests
@@ -131,7 +132,7 @@ const VacationsCard = () => {
 
     if (!vacationRequests.length) {
       try {
-        let fetchedVacationRequests = [];
+        let fetchedVacationRequests: VacationRequest[] = [];
         if (adminMode) {
           fetchedVacationRequests = await vacationRequestsApi.listVacationRequests({});
         } else {
@@ -181,7 +182,7 @@ const VacationsCard = () => {
       .filter(
         (vacationRequest) =>
           vacationRequest &&
-          DateTime.fromJSDate(vacationRequest.startDate) > DateTime.now() &&
+          DateTime.fromJSDate(vacationRequest.startDate as Date) > DateTime.now() &&
           !latestVacationRequestStatuses.find(
             (latestVacationRequestStatus) =>
               latestVacationRequestStatus.vacationRequestId === vacationRequest.id &&
@@ -222,7 +223,7 @@ const VacationsCard = () => {
       );
 
       earliestUpcomingVacationRequest = upcomingVacationRequests.reduce((vacationA, vacationB) =>
-        DateTime.fromJSDate(vacationA.startDate) > DateTime.fromJSDate(vacationB.startDate)
+        DateTime.fromJSDate(vacationA.startDate as Date) > DateTime.fromJSDate(vacationB.startDate as Date)
           ? vacationB
           : vacationA
       );
@@ -251,7 +252,7 @@ const VacationsCard = () => {
         {
           name: strings.vacationsCard.timeOfVacation,
           value: `${formatDate(
-            DateTime.fromJSDate(earliestUpcomingVacationRequest.startDate)
+            DateTime.fromJSDate(earliestUpcomingVacationRequest.startDate as Date)
           )} - ${formatDate(DateTime.fromJSDate(earliestUpcomingVacationRequest.endDate))}`
         },
         {
@@ -286,7 +287,7 @@ const VacationsCard = () => {
           <Grid item xs={11}>
             <Box>
               {earliestUpcomingVacationRequest &&
-                DateTime.fromJSDate(earliestUpcomingVacationRequest.startDate) > DateTime.now() && (
+                DateTime.fromJSDate(earliestUpcomingVacationRequest.startDate as Date) > DateTime.now() && (
                   <>
                     <Typography fontWeight={"bold"}>
                       {`${strings.vacationsCard.nextUpcomingVacation}`}

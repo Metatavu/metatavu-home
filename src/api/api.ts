@@ -4,9 +4,7 @@ import {
   type ConfigurationParameters,
   DailyEntriesApi,
   PersonsApi,
-  SynchronizeApi,
-  VacationRequestsApi,
-  VacationRequestStatusApi
+  SynchronizeApi
 } from "../generated/client";
 import {
   AllocationsApi,
@@ -16,7 +14,8 @@ import {
   TasksApi,
   TimeEntriesApi,
   UsersApi,
-  QuestionnairesApi
+  QuestionnairesApi,
+  VacationRequestsApi
 } from "../generated/homeLambdasClient";
 
 /**
@@ -54,8 +53,6 @@ export const getApiClient = (accessToken?: string) => {
     dailyEntriesApi: new DailyEntriesApi(getConfiguration()),
     personsApi: new PersonsApi(getConfiguration()),
     synchronizeApi: new SynchronizeApi(getConfiguration()),
-    vacationRequestsApi: new VacationRequestsApi(getConfiguration()),
-    vacationRequestStatusApi: new VacationRequestStatusApi(getConfiguration())
   };
 };
 
@@ -79,6 +76,7 @@ export const getLambdasApiClient = (accessToken?: string) => {
     timeEntriesApi: new TimeEntriesApi(getConfiguration()),
     slackAvatarsApi: new SlackAvatarsApi(getConfiguration()),
     usersApi: new UsersApi(getConfiguration()),
-    questionnairesApi: new QuestionnairesApi(getConfiguration())
+    questionnairesApi: new QuestionnairesApi(getConfiguration()),
+    vacationRequestsApi: new VacationRequestsApi(getConfiguration())
   };
 };
