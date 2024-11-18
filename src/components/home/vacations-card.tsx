@@ -8,7 +8,6 @@ import { userProfileAtom } from "src/atoms/auth";
 import { errorAtom } from "src/atoms/error";
 import {
   type VacationRequest,
-  type VacationRequestStatus,
   VacationRequestStatuses,
 } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
@@ -16,9 +15,7 @@ import { DateTime } from "luxon";
 import LocalizationUtils from "src/utils/localization-utils";
 import {
   allVacationRequestsAtom,
-  allVacationRequestStatusesAtom,
   vacationRequestsAtom,
-  vacationRequestStatusesAtom
 } from "src/atoms/vacation";
 import { getVacationRequestStatusColor } from "src/utils/vacation-status-utils";
 import UserRoleUtils from "src/utils/user-role-utils";
@@ -43,9 +40,9 @@ const VacationsCard = () => {
   const [vacationRequests, setVacationRequests] = useAtom(
     adminMode ? allVacationRequestsAtom : vacationRequestsAtom
   );
-  const [latestVacationRequestStatuses, setLatestVacationRequestStatuses] = useAtom(
-    adminMode ? allVacationRequestStatusesAtom : vacationRequestStatusesAtom
-  );
+  // const [latestVacationRequestStatuses, setLatestVacationRequestStatuses] = useAtom(
+  //   adminMode ? allVacationRequestStatusesAtom : vacationRequestStatusesAtom
+  // );
   const [loading, setLoading] = useState(false);
   const [users] = useAtom(usersAtom);
   const loggedInUser = users.find(
@@ -137,7 +134,7 @@ const VacationsCard = () => {
           fetchedVacationRequests = await vacationRequestsApi.listVacationRequests({});
         } else {
           fetchedVacationRequests = await vacationRequestsApi.listVacationRequests({
-            personId: loggedInUser.id
+            userId: loggedInUser.id
           });
         }
         setVacationRequests(fetchedVacationRequests);
@@ -153,23 +150,21 @@ const VacationsCard = () => {
   }, [loggedInUser]);
 
   /**
-   * Get pending vacation requests by checking wether it has a status or not
+   * Get pending vacation requests by checking whether any of its statuses are approved or declined
    *
    * @returns pending vacation requests
    */
   const getPendingVacationRequests = () => {
-    const pendingVacationRequests = vacationRequests
+    return vacationRequests
       .filter(
         (vacationRequest) =>
-          vacationRequest &&
-          !latestVacationRequestStatuses.find(
-            (latestVacationRequestStatus) =>
-              latestVacationRequestStatus.vacationRequestId === vacationRequest.id
+          vacationRequest.status?.every(
+            (status) =>
+              status.status !== VacationRequestStatuses.APPROVED &&
+              status.status !== VacationRequestStatuses.DECLINED
           )
       )
       .filter(validateValueIsNotUndefinedNorNull);
-
-    return pendingVacationRequests;
   };
 
   /**
@@ -178,20 +173,16 @@ const VacationsCard = () => {
    * @returns upcoming vacation requests
    */
   const getUpcomingVacationRequests = () => {
-    const upcomingVacationRequests = vacationRequests
+    return vacationRequests
       .filter(
         (vacationRequest) =>
           vacationRequest &&
           DateTime.fromJSDate(vacationRequest.startDate as Date) > DateTime.now() &&
-          !latestVacationRequestStatuses.find(
-            (latestVacationRequestStatus) =>
-              latestVacationRequestStatus.vacationRequestId === vacationRequest.id &&
-              latestVacationRequestStatus.status === VacationRequestStatuses.DECLINED
+          !vacationRequest.status?.some(
+            (status) => status.status === VacationRequestStatuses.DECLINED
           )
       )
       .filter(validateValueIsNotUndefinedNorNull);
-
-    return upcomingVacationRequests;
   };
 
   /**
@@ -214,7 +205,7 @@ const VacationsCard = () => {
    */
   const renderEarliestUpcomingVacationRequest = () => {
     let earliestUpcomingVacationRequest: VacationRequest | undefined = undefined;
-    let earliestUpcomingVacationRequestStatus: VacationRequestStatuses | undefined;
+    // let earliestUpcomingVacationRequestStatus: VacationRequestStatuses | undefined;
     let upcomingVacationRequests = getUpcomingVacationRequests();
 
     if (upcomingVacationRequests.length) {
@@ -228,11 +219,11 @@ const VacationsCard = () => {
           : vacationA
       );
 
-      earliestUpcomingVacationRequestStatus = latestVacationRequestStatuses.find(
-        (vacationRequestStatus) =>
-          earliestUpcomingVacationRequest &&
-          earliestUpcomingVacationRequest.id === vacationRequestStatus.vacationRequestId
-      )?.status;
+      // earliestUpcomingVacationRequestStatus = latestVacationRequestStatuses.find(
+      //   (vacationRequestStatus) =>
+      //     earliestUpcomingVacationRequest &&
+      //     earliestUpcomingVacationRequest.id === vacationRequestStatus.vacationRequestId
+      // )?.status;
 
       const vacationInfoListItems: VacationInfoListItem[] = [
         {
@@ -257,14 +248,31 @@ const VacationsCard = () => {
         },
         {
           name: strings.vacationsCard.status,
-          value: earliestUpcomingVacationRequestStatus ? (
+          value: earliestUpcomingVacationRequest.status ? (
             <span
               style={{
-                color: getVacationRequestStatusColor(earliestUpcomingVacationRequestStatus)
+                color: getVacationRequestStatusColor(earliestUpcomingVacationRequest.status?.some(
+                  (status) => status.status === VacationRequestStatuses.DECLINED
+                )
+                  ? VacationRequestStatuses.DECLINED
+                  : earliestUpcomingVacationRequest.status?.some(
+                    (status) => status.status === VacationRequestStatuses.APPROVED
+                  )
+                    ? VacationRequestStatuses.APPROVED
+                    : VacationRequestStatuses.PENDING
+                )
               }}
             >
               {LocalizationUtils.getLocalizedVacationRequestStatus(
-                earliestUpcomingVacationRequestStatus
+                earliestUpcomingVacationRequest.status?.some(
+                  (status) => status.status === VacationRequestStatuses.DECLINED
+                )
+                  ? VacationRequestStatuses.DECLINED
+                  : earliestUpcomingVacationRequest.status?.some(
+                    (status) => status.status === VacationRequestStatuses.APPROVED
+                  )
+                    ? VacationRequestStatuses.APPROVED
+                    : VacationRequestStatuses.PENDING
               )}
             </span>
           ) : (
