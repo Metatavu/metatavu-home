@@ -40,10 +40,6 @@ interface Props {
   createVacationRequest: (vacationData: VacationData) => Promise<void>;
   updateVacationRequest: (vacationData: VacationData, vacationRequestId: string) => Promise<void>;
   loading: boolean;
-  updateVacationRequestStatuses: (
-    buttonType: VacationRequestStatuses,
-    selectedRowIds: GridRowId[]
-  ) => Promise<void>;
 }
 
 /**
@@ -57,14 +53,13 @@ const VacationRequestsTable = ({
   deleteVacationRequests,
   createVacationRequest,
   updateVacationRequest,
-  updateVacationRequestStatuses,
   loading
 }: Props) => {
   const adminMode = UserRoleUtils.adminMode();
   const vacationRequests = useAtomValue(displayedVacationRequestsAtom);
-  const vacationRequestStatuses = useAtomValue(
-    adminMode ? allVacationRequestStatusesAtom : vacationRequestStatusesAtom
-  );
+  // const vacationRequestStatuses = useAtomValue(
+  //   adminMode ? allVacationRequestStatusesAtom : vacationRequestStatusesAtom
+  // );
   const containerRef = useRef(null);
   const [formOpen, setFormOpen] = useState(false);
   const [selectedRowIds, setSelectedRowIds] = useState<GridRowSelectionModel>([]);
@@ -87,7 +82,7 @@ const VacationRequestsTable = ({
     const row: VacationsDataGridRow = {
       id: vacationRequest.id,
       type: LocalizationUtils.getLocalizedVacationRequestType(vacationRequest.type),
-      personFullName: vacationRequest.personId ?? strings.vacationRequest.noPersonFullName,
+      personFullName: vacationRequest.userId ?? strings.vacationRequest.noPersonFullName,
       updatedAt: DateTime.fromJSDate(vacationRequest.updatedAt),
       startDate: DateTime.fromJSDate(vacationRequest.startDate as Date),
       endDate: DateTime.fromJSDate(vacationRequest.endDate),
@@ -106,24 +101,19 @@ const VacationRequestsTable = ({
    */
   const createDataGridRows = (
     vacationRequests: VacationRequest[],
-    vacationRequestStatuses: VacationRequestStatus[]
   ) => {
     const rows: VacationsDataGridRow[] = [];
     if (vacationRequests.length) {
       vacationRequests.forEach((vacationRequest) => {
         const row = createDataGridRow(vacationRequest);
 
-        vacationRequestStatuses.forEach((vacationRequestStatus) => {
-          if (vacationRequest.id === vacationRequestStatus.vacationRequestId) {
-            row.status = vacationRequestStatus.status;
-          }
-        });
+        row.status = vacationRequest.status?.length ? vacationRequest.status[0].status : VacationRequestStatuses.PENDING;
 
         if (vacationRequest.message.length) {
           row.message = vacationRequest.message;
         }
 
-        if (vacationRequest.personId) {
+        if (vacationRequest.userId) {
           row.personFullName = getVacationRequestPersonFullName(
             vacationRequest,
             users,
@@ -141,14 +131,14 @@ const VacationRequestsTable = ({
    */
   useMemo(() => {
     setSelectedRowIds([]);
-  }, [updateVacationRequestStatuses, deleteVacationRequests]);
+  }, [deleteVacationRequests]);
 
   /**
    * Set data grid rows
    */
   useMemo(() => {
-    setRows(createDataGridRows(vacationRequests, vacationRequestStatuses));
-  }, [vacationRequests, vacationRequestStatuses, formOpen, language]);
+    setRows(createDataGridRows(vacationRequests));
+  }, [vacationRequests, formOpen, language]);
 
   /**
    * Styled grid overlay component
@@ -203,7 +193,7 @@ const VacationRequestsTable = ({
         deleteVacationRequests={deleteVacationRequests}
         createVacationRequest={createVacationRequest}
         updateVacationRequest={updateVacationRequest}
-        updateVacationRequestStatuses={updateVacationRequestStatuses}
+        // updateVacationRequestStatuses={updateVacationRequestStatuses}
         setFormOpen={setFormOpen}
         formOpen={formOpen}
         selectedRowIds={selectedRowIds}

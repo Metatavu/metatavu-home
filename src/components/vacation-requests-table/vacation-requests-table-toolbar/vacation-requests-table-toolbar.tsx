@@ -33,10 +33,9 @@ interface Props {
   selectedRowIds: GridRowId[];
   rows: VacationsDataGridRow[];
   setSelectedRowIds: (selectedRowIds: GridRowId[]) => void;
-  updateVacationRequestStatuses: (
-    newStatus: VacationRequestStatuses,
-    selectedRowIds: GridRowId[]
-  ) => Promise<void>;
+  // updateVacationRequestStatuses: (
+  //   newStatus: VacationRequestStatuses,
+  // ) => Promise<void>;
 }
 
 /**
@@ -54,8 +53,7 @@ const TableToolbar = ({
   formOpen,
   selectedRowIds,
   rows,
-  setSelectedRowIds,
-  updateVacationRequestStatuses
+  setSelectedRowIds
 }: Props) => {
   const [toolbarOpen, setToolbarOpen] = useState(false);
   const [toolbarFormMode, setToolbarFormMode] = useState<ToolbarFormModes>(ToolbarFormModes.NONE);
@@ -153,14 +151,14 @@ const TableToolbar = ({
               <ToolbarGridItem item sm={3} xs={6}>
                 <UpdateStatusButton
                   buttonType={VacationRequestStatuses.APPROVED}
-                  updateVacationRequestStatuses={updateVacationRequestStatuses}
+                  // updateVacationRequestStatuses={VacationRequestStatuses}
                   selectedRowIds={selectedRowIds}
                 />
               </ToolbarGridItem>
               <ToolbarGridItem item sm={3} xs={6}>
                 <UpdateStatusButton
                   buttonType={VacationRequestStatuses.DECLINED}
-                  updateVacationRequestStatuses={updateVacationRequestStatuses}
+                  // updateVacationRequestStatuses={VacationRequestStatuses.DECLINED}
                   selectedRowIds={selectedRowIds}
                 />
               </ToolbarGridItem>
