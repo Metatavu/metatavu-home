@@ -49,7 +49,6 @@ const VacationsCard = () => {
     (user: User) =>
       user.id === userProfile?.id
   );
-  console.log(loggedInUser);
 
   /**
    * Fetch vacation request statuses

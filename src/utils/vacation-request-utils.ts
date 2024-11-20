@@ -18,11 +18,11 @@ export const getVacationRequestPersonFullName = (
   userProfile?: KeycloakProfile | undefined
 ) => {
   let userFullName = strings.vacationRequestError.nameNotFound;
-  const foundUser = users.find((user) => user.id === vacationRequest?.personId);
+  const foundUser = users.find((user) => user.id === vacationRequest?.userId);
 
   if (foundUser) {
     userFullName = `${foundUser.firstName} ${foundUser.lastName}`;
-  } else if (userProfile && userProfile.id === vacationRequest.personId) {
+  } else if (userProfile && userProfile.id === vacationRequest.userId) {
     userFullName = `${userProfile.firstName} ${userProfile.lastName}`;
   }
 

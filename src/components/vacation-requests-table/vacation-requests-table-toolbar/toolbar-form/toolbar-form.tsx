@@ -1,5 +1,5 @@
 import { Box, Grid } from "@mui/material";
-import { VacationType } from "src/generated/client";
+import { VacationType } from "src/generated/homeLambdasClient";
 import { useEffect, useState } from "react";
 import { DateTime } from "luxon";
 import {
@@ -123,12 +123,10 @@ const ToolbarForm = ({
   /**
    * Checks if the vacation type is either sickness or childsickness.
    */
-  const isSicknessOrChildSickness =
-    vacationData.type === VacationType.SICKNESS ||
-    vacationData.type === VacationType.CHILD_SICKNESS;
-  const dateTimeTomorrow = isSicknessOrChildSickness
-    ? DateTime.now().minus({ years: 1 })
-    : DateTime.now().plus({ days: 1 });
+  // const isSicknessOrChildSickness =
+  //   vacationData.type === VacationType.SICKNESS ||
+  //   vacationData.type === VacationType.CHILD_SICKNESS;
+  const dateTimeTomorrow = DateTime.now().plus({ days: 1 });
 
   /**
    * Handle form submit

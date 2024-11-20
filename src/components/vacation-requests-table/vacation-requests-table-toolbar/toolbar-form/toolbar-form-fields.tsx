@@ -9,11 +9,10 @@ import strings from "src/localization/strings";
 import LocalizationUtils from "src/utils/localization-utils";
 import { calculateTotalVacationDays } from "src/utils/time-utils";
 import { useAtom, useAtomValue } from "jotai";
-import config from "src/app/config";
 import { userProfileAtom } from "src/atoms/auth";
-import { personsAtom } from "src/atoms/person";
-import { VacationType, type Person } from "src/generated/client";
-import { DAYS_OF_WEEK } from "src/components/constants";
+import { usersAtom } from "src/atoms/user";
+import { VacationType} from "src/generated/homeLambdasClient";
+import {User} from "src/generated/homeLambdasClient";
 
 /**
  * Component properties
@@ -41,10 +40,10 @@ const ToolbarFormFields = ({
   setDateRange
 }: Props) => {
   const userProfile = useAtomValue(userProfileAtom);
-  const [persons] = useAtom(personsAtom);
-  const loggedInPerson = persons.find(
-    (person: Person) =>
-      person.id === config.person.forecastUserIdOverride || person.keycloakId === userProfile?.id
+  const [users] = useAtom(usersAtom);
+  const loggedInUser = users.find(
+    (user: User) =>
+      user.id === userProfile?.id
   );
 
   useEffect(() => {
@@ -55,7 +54,8 @@ const ToolbarFormFields = ({
       days: calculateTotalVacationDays(
         dateRange.start,
         dateRange.end,
-        getWorkingWeek(loggedInPerson)
+        // getWorkingWeek(loggedInUser)
+        [true, true, true, true, true, false, false]
       )
     });
   }, [dateRange]);
@@ -90,19 +90,19 @@ const ToolbarFormFields = ({
   /**
    * Get a list of working days
    *
-   * @param loggedInPerson Person
+   * @param loggedInUser User
    */
-  const getWorkingWeek = (loggedInPerson?: Person) => {
-    const workingWeek = new Array(DAYS_OF_WEEK.length).fill(false);
-    if (!loggedInPerson) return workingWeek;
-
-    DAYS_OF_WEEK.forEach((weekDay, index) => {
-      if (loggedInPerson[weekDay as keyof typeof loggedInPerson] !== 0) {
-        workingWeek[index] = true;
-      }
-    });
-    return workingWeek;
-  };
+  // const getWorkingWeek = (loggedInUser?: User) => {
+  //   const workingWeek = new Array(DAYS_OF_WEEK.length).fill(false);
+  //   if (!loggedInUser) return workingWeek;
+  //
+  //   DAYS_OF_WEEK.forEach((weekDay, index) => {
+  //     if (loggedInUser[weekDay as keyof typeof loggedInUser] !== 0) {
+  //       workingWeek[index] = true;
+  //     }
+  //   });
+  //   return workingWeek;
+  // };
 
   return (
     <FormControl sx={{ width: "100%" }}>
