@@ -239,27 +239,31 @@
   "newQuestionnaireScreen": {
     "makeNewQuestionnaire" : "Tee uusi kysely",
     "title": "Otsikko",
-    "insertTitle": "Syötä otsikko tähän",
-    "saveButton": "Tallenna uusi kysely",
+    "insertTitle": "Syötä otsikko",
+    "saveButton": "Tallenna kysely",
     "preview": "Kyselyiden esikatselu",
     "is": "on",
     "removeFromPreview": "Poista kysymys",
     "back": "Takaisin",
     "description": "Kuvaus",
-    "insertDescription": "Syötä kuvaus kyselystä tähän",
+    "insertDescription": "Syötä kuvaus",
     "countedAnswers": "Oikeiden vastausten määrä tässä kyselyssä:",
-    "requiredAnswers": "Montako pitää olla oikein, jotta kysely menee läpi:"
+    "requiredAnswers": "Montako pitää olla oikein, jotta kysely menee läpi:",
+    "tooltipEmptyTitle": "Otsikko on pakollinen",
+    "tooltipEmptyDescription": "Kuvaus on pakollinen",
+    "tooltipBothEmpty": "Otsikko ja kuvaus ovat pakollisia"
   },
   "newQuestionnaireCard": {
-    "newQuestion": "Haluatko lisätä uuden kysymyksen, lisää tiedot alle.",
+    "newQuestion": "Lisää uusi kysymys.",
     "questionLabel": "Kysymysteksti",
-    "correctAnswer": "Merkitse oikeat vastaukset alle",
+    "correctAnswer": "Merkitse oikeat vastaukset",
     "answerLabel": "Syötä vastaus",
+    "insertAnswerLabel": "Syötä vastaus",
     "addAnswer": "+ Lisää uusi vastausvaihtoehto",
-    "saveAnswer": "Tallenna kysymys"
+    "saveAnswer": "Lisää kysymys"
   },
   "questionnaireTable": {
-    "title": "Kysely",
+    "title": "Otsikko",
     "description": "Kuvaus",
     "actions": "Toiminnot",
     "edit": "Muokkaa",

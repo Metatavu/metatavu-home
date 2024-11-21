@@ -239,8 +239,8 @@
   "newQuestionnaireScreen": {
     "makeNewQuestionnaire": "Make a New Questionnaire",
     "title": "Title",
-    "insertTitle": "Insert Title Here",
-    "saveButton": "Save & Submit Questionnaire",
+    "insertTitle": "Insert title",
+    "saveButton": "Save Questionnaire",
     "preview": "Questionnaire preview",
     "is": "is",
     "removeFromPreview": "Delete Question",
@@ -248,18 +248,22 @@
     "description": "Description",
     "insertDescription": "Insert description",
     "countedAnswers": "Cumulative amount of true values in this Questionnaire:",
-    "requiredAnswers": "Set required correct answers:"
+    "requiredAnswers": "Set required correct answers:",
+    "tooltipEmptyTitle": "Title is required",
+    "tooltipEmptyDescription": "Description is required",
+    "tooltipBothEmpty": "Title and description are required"
   },
   "newQuestionnaireCard": {
-    "newQuestion": "Want to add a new question? Fill in the details below.",
+    "newQuestion": "Add a new question.",
     "questionLabel": "Question",
-    "correctAnswer": "Check the correct answer(s) below.",
-    "answerLabel": "Insert Answer",
+    "correctAnswer": "Check the correct answer(s).",
+    "answerLabel": "Answer option",
+    "insertAnswerLabel": "Insert answer option",
     "addAnswer": "+ Add new answer option",
-    "saveAnswer": "Save question"
+    "saveAnswer": "Add question"
   },
   "questionnaireTable": {
-    "title": "Questionnaire Title",
+    "title": "Title",
     "description": "Description",
     "actions": "Actions",
     "edit": "Edit",
