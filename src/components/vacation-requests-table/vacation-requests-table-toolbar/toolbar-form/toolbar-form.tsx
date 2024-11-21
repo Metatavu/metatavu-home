@@ -14,6 +14,7 @@ import { useAtomValue } from "jotai";
 import ToolbarFormFields from "./toolbar-form-fields";
 import { allVacationRequestsAtom, vacationRequestsAtom } from "src/atoms/vacation";
 import UserRoleUtils from "src/utils/user-role-utils";
+import {VacationRequestStatuses} from "src/generated/homeLambdasClient";
 
 /**
  * Component properties
@@ -56,7 +57,8 @@ const ToolbarForm = ({
     startDate: defaultDateRange.start,
     endDate: defaultDateRange.end,
     message: "",
-    days: 1
+    days: 1,
+    status: [VacationRequestStatuses.PENDING],
   });
   const [selectedVacationRequestId, setSelectedVacationRequestId] = useState("");
   const adminMode = UserRoleUtils.adminMode();
@@ -98,7 +100,8 @@ const ToolbarForm = ({
           message: selectedVacationRequest.message,
           startDate: startDate,
           endDate: endDate,
-          days: days
+          days: days,
+          status: [VacationRequestStatuses.PENDING],
         });
         setSelectedVacationRequestId(selectedVacationRequest.id);
         setDateRange({
