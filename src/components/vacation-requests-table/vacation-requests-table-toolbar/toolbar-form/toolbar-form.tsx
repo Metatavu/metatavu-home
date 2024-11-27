@@ -58,7 +58,14 @@ const ToolbarForm = ({
     endDate: defaultDateRange.end,
     message: "",
     days: 1,
-    status: [VacationRequestStatuses.PENDING],
+    status: [
+      {
+        message: "",
+        status: VacationRequestStatuses.PENDING,
+        createdBy: "",
+        updatedAt: new Date(),
+      }
+    ],
   });
   const [selectedVacationRequestId, setSelectedVacationRequestId] = useState("");
   const adminMode = UserRoleUtils.adminMode();
@@ -101,8 +108,14 @@ const ToolbarForm = ({
           startDate: startDate,
           endDate: endDate,
           days: days,
-          status: [VacationRequestStatuses.PENDING],
-        });
+          status: [
+            {
+              message: "",
+              status: VacationRequestStatuses.PENDING,
+              createdBy: "",
+              updatedAt: new Date(),
+            }
+          ],        });
         setSelectedVacationRequestId(selectedVacationRequest.id);
         setDateRange({
           start: startDate,

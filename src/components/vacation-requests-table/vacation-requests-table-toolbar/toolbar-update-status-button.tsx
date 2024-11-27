@@ -8,9 +8,6 @@ import strings from "src/localization/strings";
  * Component properties
  */
 interface UpdateStatusButtonProps {
-  // updateVacationRequestStatuses: (
-  //   newStatus: VacationRequestStatuses
-  // ) => Promise<VacationRequestStatuses>;
   selectedRowIds: GridRowId[];
   buttonType: VacationRequestStatuses;
 }
@@ -21,8 +18,7 @@ interface UpdateStatusButtonProps {
  * @param props component properties
  */
 const UpdateStatusButton = ({
-  // updateVacationRequestStatuses,
-  selectedRowIds,
+  // selectedRowIds,
   buttonType
 }: UpdateStatusButtonProps) => {
   /**

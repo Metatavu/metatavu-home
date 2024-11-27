@@ -19,7 +19,6 @@ import {
 import UserRoleUtils from "src/utils/user-role-utils";
 import { Link } from "react-router-dom";
 import { KeyboardReturn } from "@mui/icons-material";
-import LocalizationUtils from "src/utils/localization-utils";
 import { renderVacationDaysTextForScreen } from "src/utils/vacation-days-utils";
 import { usersAtom } from "src/atoms/user";
 import type { User } from "src/generated/homeLambdasClient";
@@ -46,12 +45,8 @@ const VacationRequestsScreen = () => {
     [vacationRequests]
   );
 
-  // const [latestVacationRequestStatuses, setLatestVacationRequestStatuses] = useAtom(
-  //   adminMode ? allVacationRequestStatusesAtom : vacationRequestStatusesAtom
-  // );
   const [loading, setLoading] = useState(false);
   const [isUpcoming, setIsUpcoming] = useState(true);
-  const defaultVacationRequestStatus = VacationRequestStatuses.PENDING;
   const [users] = useAtom(usersAtom);
   const loggedInUser = users.find(
     (user: User) =>
@@ -67,81 +62,12 @@ const VacationRequestsScreen = () => {
       : setDisplayedVacationRequests(pastVacationRequests);
   }, [isUpcoming, vacationRequests]);
 
-  /**
-   * Fetch vacation request statuses
-   */
-  // const fetchVacationRequestStatuses = async () => {
-  //   if (vacationRequests.length && !latestVacationRequestStatuses.length) {
-  //     try {
-  //       setLoading(true);
-  //       const vacationRequestStatuses: VacationRequestStatus[] = [];
-  //       await Promise.all(
-  //         vacationRequests.map(async (vacationRequest) => {
-  //           let createdStatuses: VacationRequestStatus[] = [];
-  //           if (vacationRequest.id) {
-  //             createdStatuses = await vacationRequestStatusApi.listVacationRequestStatuses({
-  //               id: vacationRequest.id
-  //             });
-  //           }
-  //           createdStatuses.forEach((createdStatus) => {
-  //             vacationRequestStatuses.push(createdStatus);
-  //           });
-  //         })
-  //       );
-  //       await filterLatestVacationRequestStatuses(vacationRequestStatuses);
-  //     } catch (error) {
-  //       setError(`${strings.vacationRequestError.fetchStatusError}, ${error}`);
-  //     }
-  //     setLoading(false);
-  //   }
-  // };
-
     /**
    * Handler for upcoming/ past vacations toggle click
    */
   const toggleIsUpcoming = () => {
     setIsUpcoming(!isUpcoming);
   };
-
-  // useMemo(() => {
-  //   fetchVacationRequestStatuses();
-  // }, [vacationRequests]);
-
-  /**
-   * Filter latest vacation request statuses, so there would be only one status(the latest one) for each request showed on the UI
-   */
-  // const filterLatestVacationRequestStatuses = async (
-  //   vacationRequestStatuses: VacationRequestStatus[]
-  // ) => {
-  //   if (vacationRequests.length && vacationRequestStatuses.length) {
-  //     const selectedLatestVacationRequestStatuses: VacationRequestStatus[] = [];
-  //
-  //     vacationRequests.forEach((vacationRequest) => {
-  //       const selectedVacationRequestStatuses: VacationRequestStatus[] = [];
-  //
-  //       vacationRequestStatuses.forEach((vacationRequestStatus) => {
-  //         if (vacationRequest.id === vacationRequestStatus.vacationRequestId) {
-  //           selectedVacationRequestStatuses.push(vacationRequestStatus);
-  //         }
-  //       });
-  //
-  //       if (selectedVacationRequestStatuses.length) {
-  //         const latestStatus = selectedVacationRequestStatuses.reduce((a, b) => {
-  //           if (a.updatedAt && b.updatedAt) {
-  //             return a.updatedAt > b.updatedAt ? a : b;
-  //           }
-  //           if (a.updatedAt) {
-  //             return a;
-  //           }
-  //           return b;
-  //         });
-  //         selectedLatestVacationRequestStatuses.push(latestStatus);
-  //       }
-  //     });
-  //     setLatestVacationRequestStatuses(selectedLatestVacationRequestStatuses);
-  //     setLoading(false);
-  //   }
-  // };
 
   /**
    * Fetch vacation requests
@@ -177,34 +103,6 @@ const VacationRequestsScreen = () => {
     fetchVacationsRequests();
   }, [loggedInUser]);
 
-  //FIXME: introduce this function when status functionality is discussed
-  /**
-   * Delete vacation request status
-   *
-   * @param selectedRow selected row
-   */
-  // const deleteVacationRequestStatus = async (selectedRow: GridRowId) => {
-  //   const selectedVacationRequest = vacationRequests[Number(selectedRow)]
-  //   if (selectedVacationRequest.status?.length) {
-  //     try {
-  //       setLoading(true);
-  //       if (selectedVacationRequest?.id) {
-  //         await vacationRequestStatusApi.deleteVacationRequestStatus({
-  //           id: foundVacationRequestStatus.id,
-  //           statusId: foundVacationRequestStatus.id
-  //         });
-  //         const filteredVacationRequestStatuses = latestVacationRequestStatuses.filter(
-  //           (vacationRequestStatus) => vacationRequestStatus.id !== foundVacationRequestStatus.id
-  //         );
-  //         setLatestVacationRequestStatuses(filteredVacationRequestStatuses);
-  //       }
-  //     } catch (error) {
-  //       setError(`${strings.vacationRequestError.deleteStatusError}, ${error}`);
-  //     }
-  //     setLoading(false);
-  //   }
-  // };
-
   /**
    * Delete vacation requests
    *
@@ -233,42 +131,6 @@ const VacationRequestsScreen = () => {
     }
   };
 
-  //FIXME: Introduce this function when the status functionality is discussed
-  /**
-   * Create a vacation request status
-   *
-   * @param newStatus new vacation request status
-   * @param selectedRowId selected row ids
-   */
-  // const createVacationRequestStatus = async (
-  //   newStatus: VacationRequestStatuses,
-  //   selectedRowId: GridRowId
-  // ) => {
-  //   if (!loggedInUser) return;
-  //
-  //   try {
-  //     setLoading(true);
-  //     const vacationRequestId = selectedRowId as string;
-  //     const createdVacationRequestStatus =
-  //       await vacationRequestStatusApi.createVacationRequestStatus({
-  //         id: vacationRequestId,
-  //         vacationRequestStatus: {
-  //           vacationRequestId: vacationRequestId,
-  //           status: newStatus,
-  //           message: LocalizationUtils.getLocalizedVacationRequestStatus(newStatus),
-  //           createdAt: new Date(),
-  //           createdBy: loggedInUser.id,
-  //           updatedAt: new Date(),
-  //           updatedBy: loggedInUser.id
-  //         }
-  //       });
-  //     return createdVacationRequestStatus;
-  //   } catch (error) {
-  //     setError(`${strings.vacationRequestError.createStatusError}, ${error}`);
-  //   }
-  //   setLoading(false);
-  // };
-
   /**
    * Create a vacation request
    *
@@ -276,7 +138,6 @@ const VacationRequestsScreen = () => {
    */
   const createVacationRequest = async (vacationData: VacationData) => {
     if (!loggedInUser) return;
-
     try {
       setLoading(true);
       const createdRequest = await vacationRequestsApi.createVacationRequest({
@@ -293,10 +154,10 @@ const VacationRequestsScreen = () => {
           draft: false,
           status: [
             {
-              message: vacationData.message,        // Status message (you can adjust based on your requirements)
-              createdBy: loggedInUser.id,                // Date when the status is created
-              updatedAt: new Date(),                // Date when the status was last updated
-              status: VacationRequestStatuses.PENDING, // The status is set to "PENDING"
+              message: vacationData.message,
+              createdBy: loggedInUser.id,
+              updatedAt: new Date(),
+              status: VacationRequestStatuses.PENDING,
             }
           ],
         }
@@ -347,118 +208,6 @@ const VacationRequestsScreen = () => {
     setLoading(false);
   };
 
-  /**
-   * Get updated vacation requests statuses
-   *
-   * @param newStatus vacation request status
-   * @param selectedRowIds selected row ids
-   * @returns updated vacation request statuses
-   */
-  // const getUpdatedVacationRequestStatuses = async (
-  //   newStatus: VacationRequestStatuses,
-  //   selectedRowIds: GridRowId[]
-  // ) => {
-  //   const updatedVacationRequestStatuses: VacationRequestStatus[] = [];
-  //
-  //   await Promise.all(
-  //     selectedRowIds.map(async (selectedRowId) => {
-  //       const vacationRequestStatus = latestVacationRequestStatuses.find(
-  //         (vacationRequestStatus) => vacationRequestStatus.vacationRequestId === selectedRowId
-  //       );
-  //       try {
-  //         if (vacationRequestStatus?.id) {
-  //           const updatedVacationRequestStatus =
-  //             await vacationRequestStatusApi.updateVacationRequestStatus({
-  //               id: vacationRequestStatus.id,
-  //               statusId: vacationRequestStatus.id,
-  //               vacationRequestStatus: {
-  //                 ...vacationRequestStatus,
-  //                 status: newStatus
-  //               }
-  //             });
-  //           updatedVacationRequestStatuses.push(updatedVacationRequestStatus);
-  //         }
-  //       } catch (error) {
-  //         setError(`${strings.vacationRequestError.updateStatusError}, ${error}`);
-  //       }
-  //     })
-  //   );
-  //
-  //   return updatedVacationRequestStatuses;
-  // };
-
-  /**
-   * Get created vacation request statuses
-   *
-   * @param newStatus vacation request status
-   * @param selectedRowIds selected row ids
-   * @returns created vacation request statuses
-   */
-  // const getCreatedVacationRequestStatuses = async (
-  //   newStatus: VacationRequestStatuses,
-  //   selectedRowIds: GridRowId[]
-  // ) => {
-  //   const createdVacationRequestStatuses: VacationRequestStatus[] = [];
-  //
-  //   await Promise.all(
-  //     selectedRowIds.map(async (selectedRowId) => {
-  //       const foundVacationRequestStatus = latestVacationRequestStatuses.find(
-  //         (vacationRequestStatus) => vacationRequestStatus.vacationRequestId === selectedRowId
-  //       );
-  //       if (!foundVacationRequestStatus) {
-  //         const createdVacationRequestStatus = await createVacationRequestStatus(
-  //           newStatus,
-  //           selectedRowId
-  //         );
-  //         if (createdVacationRequestStatus) {
-  //           createdVacationRequestStatuses.push(createdVacationRequestStatus);
-  //         }
-  //       }
-  //     })
-  //   );
-  //
-  //   return createdVacationRequestStatuses;
-  // };
-
-  //FIXME: Introduce this function when the status functionality is discussed
-  /**
-   * Update vacation request statuses
-   *
-   * @param newStatus vacation request status
-   * @param selectedRowIds selected row ids
-   */
-  // const updateVacationRequestStatuses = async (
-  //   newStatus: VacationRequestStatuses,
-  //   selectedRowIds: GridRowId[]
-  // ) => {
-  //   const updatedVacationRequestStatuses = await getUpdatedVacationRequestStatuses(
-  //     newStatus,
-  //     selectedRowIds
-  //   );
-  //   const createdVacationRequestStatuses = await getCreatedVacationRequestStatuses(
-  //     newStatus,
-  //     selectedRowIds
-  //   );
-  //
-  //   const foundVacationRequestStatuses = latestVacationRequestStatuses.map(
-  //     (latestVacationRequestStatus) => {
-  //       const foundUpdatedVacationRequestStatus = updatedVacationRequestStatuses.find(
-  //         (updatedVacationRequestStatus) =>
-  //           updatedVacationRequestStatus.id === latestVacationRequestStatus.id
-  //       );
-  //       if (foundUpdatedVacationRequestStatus) {
-  //         return foundUpdatedVacationRequestStatus;
-  //       }
-  //       return latestVacationRequestStatus;
-  //     }
-  //   );
-  //
-  //   const createdAndFoundVacationRequestStatuses = foundVacationRequestStatuses.concat(
-  //     createdVacationRequestStatuses
-  //   );
-  //   setLatestVacationRequestStatuses(createdAndFoundVacationRequestStatuses);
-  // };
-
   return (
     <>
       {loggedInUser && renderVacationDaysTextForScreen(loggedInUser)}
@@ -469,7 +218,6 @@ const VacationRequestsScreen = () => {
           deleteVacationRequests={deleteVacationRequests}
           createVacationRequest={createVacationRequest}
           updateVacationRequest={updateVacationRequest}
-          // updateVacationRequestStatuses={updateVacationRequest}
           loading={loading}
         />
       </Card>

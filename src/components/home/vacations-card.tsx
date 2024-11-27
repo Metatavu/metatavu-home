@@ -40,84 +40,12 @@ const VacationsCard = () => {
   const [vacationRequests, setVacationRequests] = useAtom(
     adminMode ? allVacationRequestsAtom : vacationRequestsAtom
   );
-  // const [latestVacationRequestStatuses, setLatestVacationRequestStatuses] = useAtom(
-  //   adminMode ? allVacationRequestStatusesAtom : vacationRequestStatusesAtom
-  // );
   const [loading, setLoading] = useState(false);
   const [users] = useAtom(usersAtom);
   const loggedInUser = users.find(
     (user: User) =>
       user.id === userProfile?.id
   );
-
-  /**
-   * Fetch vacation request statuses
-   */
-  // const fetchVacationRequestStatuses = async () => {
-  //   if (vacationRequests.length && !latestVacationRequestStatuses.length) {
-  //     try {
-  //       setLoading(true);
-  //       const vacationRequestStatuses: VacationRequestStatus[] = [];
-  //
-  //       await Promise.all(
-  //         vacationRequests.map(async (vacationRequest) => {
-  //           let createdStatuses: VacationRequestStatus[] = [];
-  //           if (vacationRequest.id) {
-  //             createdStatuses = await vacationRequestStatusApi.listVacationRequestStatuses({
-  //               id: vacationRequest.id
-  //             });
-  //           }
-  //           createdStatuses.forEach((createdStatus) => {
-  //             vacationRequestStatuses.push(createdStatus);
-  //           });
-  //         })
-  //       );
-  //       await filterLatestVacationRequestStatuses(vacationRequestStatuses);
-  //     } catch (error) {
-  //       setError(`${strings.vacationRequestError.fetchStatusError}, ${error}`);
-  //     }
-  //   }
-  // };
-
-  // useMemo(() => {
-  //   fetchVacationRequestStatuses();
-  // }, [vacationRequests]);
-
-  /**
-   * Filter latest vacation request statuses, so there would be only one status(the latest one) for each request showed on the UI
-   */
-  // const filterLatestVacationRequestStatuses = async (
-  //   vacationRequestStatuses: VacationRequestStatus[]
-  // ) => {
-  //   if (vacationRequests.length && vacationRequestStatuses.length) {
-  //     const selectedLatestVacationRequestStatuses: VacationRequestStatus[] = [];
-  //
-  //     vacationRequests.forEach((vacationRequest) => {
-  //       const selectedVacationRequestStatuses: VacationRequestStatus[] = [];
-  //
-  //       vacationRequestStatuses.forEach((vacationRequestStatus) => {
-  //         if (vacationRequest.id === vacationRequestStatus.vacationRequestId) {
-  //           selectedVacationRequestStatuses.push(vacationRequestStatus);
-  //         }
-  //       });
-  //
-  //       if (selectedVacationRequestStatuses.length) {
-  //         const latestStatus = selectedVacationRequestStatuses.reduce((a, b) => {
-  //           if (a.updatedAt && b.updatedAt) {
-  //             return a.updatedAt > b.updatedAt ? a : b;
-  //           }
-  //           if (a.updatedAt) {
-  //             return a;
-  //           }
-  //           return b;
-  //         });
-  //         selectedLatestVacationRequestStatuses.push(latestStatus);
-  //       }
-  //     });
-  //     setLatestVacationRequestStatuses(selectedLatestVacationRequestStatuses);
-  //   }
-  //   setLoading(false);
-  // };
 
   /**
    * Fetch vacation requests
@@ -217,12 +145,6 @@ const VacationsCard = () => {
           ? vacationB
           : vacationA
       );
-
-      // earliestUpcomingVacationRequestStatus = latestVacationRequestStatuses.find(
-      //   (vacationRequestStatus) =>
-      //     earliestUpcomingVacationRequest &&
-      //     earliestUpcomingVacationRequest.id === vacationRequestStatus.vacationRequestId
-      // )?.status;
 
       const vacationInfoListItems: VacationInfoListItem[] = [
         {

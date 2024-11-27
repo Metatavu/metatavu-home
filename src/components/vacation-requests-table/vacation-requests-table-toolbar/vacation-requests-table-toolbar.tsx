@@ -33,9 +33,6 @@ interface Props {
   selectedRowIds: GridRowId[];
   rows: VacationsDataGridRow[];
   setSelectedRowIds: (selectedRowIds: GridRowId[]) => void;
-  // updateVacationRequestStatuses: (
-  //   newStatus: VacationRequestStatuses,
-  // ) => Promise<void>;
 }
 
 /**
@@ -151,14 +148,12 @@ const TableToolbar = ({
               <ToolbarGridItem item sm={3} xs={6}>
                 <UpdateStatusButton
                   buttonType={VacationRequestStatuses.APPROVED}
-                  // updateVacationRequestStatuses={VacationRequestStatuses}
                   selectedRowIds={selectedRowIds}
                 />
               </ToolbarGridItem>
               <ToolbarGridItem item sm={3} xs={6}>
                 <UpdateStatusButton
                   buttonType={VacationRequestStatuses.DECLINED}
-                  // updateVacationRequestStatuses={VacationRequestStatuses.DECLINED}
                   selectedRowIds={selectedRowIds}
                 />
               </ToolbarGridItem>
