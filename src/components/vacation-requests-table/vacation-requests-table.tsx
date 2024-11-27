@@ -10,13 +10,10 @@ import VacationRequestsTableColumns from "./vacation-requests-table-columns";
 import strings from "src/localization/strings";
 import { Inventory } from "@mui/icons-material";
 import {
-  allVacationRequestStatusesAtom,
   displayedVacationRequestsAtom,
-  vacationRequestStatusesAtom
 } from "src/atoms/vacation";
 import {
   type VacationRequest,
-  type VacationRequestStatus,
   VacationRequestStatuses
 } from "src/generated/homeLambdasClient";
 import { getVacationRequestStatusColor } from "src/utils/vacation-status-utils";
@@ -79,10 +76,15 @@ const VacationRequestsTable = ({
    * @returns dataGridRow
    */
   const createDataGridRow = (vacationRequest: VacationRequest) => {
+    const user = users.find(user => user.id === vacationRequest.userId);
+    const usersFullName = user
+      ? `${user.firstName} ${user.lastName}`
+      : strings.vacationRequest.noPersonFullName;
+
     const row: VacationsDataGridRow = {
       id: vacationRequest.id,
       type: LocalizationUtils.getLocalizedVacationRequestType(vacationRequest.type),
-      personFullName: vacationRequest.userId ?? strings.vacationRequest.noPersonFullName,
+      personFullName: usersFullName,
       updatedAt: DateTime.fromJSDate(vacationRequest.updatedAt),
       startDate: DateTime.fromJSDate(vacationRequest.startDate as Date),
       endDate: DateTime.fromJSDate(vacationRequest.endDate),
@@ -97,8 +99,7 @@ const VacationRequestsTable = ({
    * Create vacation requests data grid rows
    *
    * @param vacationRequests vacation requests
-   * @param vacationRequestStatuses vacation request statuses
-   */
+     */
   const createDataGridRows = (
     vacationRequests: VacationRequest[],
   ) => {

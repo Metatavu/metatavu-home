@@ -1,9 +1,8 @@
 import { Button, Card, Typography } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import VacationRequestsTable from "../vacation-requests-table/vacation-requests-table";
-import type {
-  VacationRequest,
-  VacationRequestStatuses,
+import {
+  VacationRequest, VacationRequestStatuses,
 } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
@@ -52,6 +51,7 @@ const VacationRequestsScreen = () => {
   // );
   const [loading, setLoading] = useState(false);
   const [isUpcoming, setIsUpcoming] = useState(true);
+  const defaultVacationRequestStatus = VacationRequestStatuses.PENDING;
   const [users] = useAtom(usersAtom);
   const loggedInUser = users.find(
     (user: User) =>
@@ -152,7 +152,7 @@ const VacationRequestsScreen = () => {
 
     if (!vacationRequests.length) {
       try {
-        let fetchedVacationRequests = [];
+        let fetchedVacationRequests: VacationRequest[] = [];
         if (adminMode) {
           fetchedVacationRequests = await vacationRequestsApi.listVacationRequests({});
         } else {
@@ -167,6 +167,11 @@ const VacationRequestsScreen = () => {
     }
     setLoading(false);
   };
+
+  useEffect(() => {
+    console.log(vacationRequests);
+    console.log(loggedInUser)
+  }, [vacationRequests]);
 
   useMemo(() => {
     fetchVacationsRequests();
@@ -286,6 +291,14 @@ const VacationRequestsScreen = () => {
           createdBy: loggedInUser?.id,
           days: vacationData.days,
           draft: false,
+          status: [
+            {
+              message: vacationData.message,        // Status message (you can adjust based on your requirements)
+              createdBy: loggedInUser.id,                // Date when the status is created
+              updatedAt: new Date(),                // Date when the status was last updated
+              status: VacationRequestStatuses.PENDING, // The status is set to "PENDING"
+            }
+          ],
         }
       });
       setVacationRequests([createdRequest, ...vacationRequests]);
@@ -319,7 +332,8 @@ const VacationRequestsScreen = () => {
             type: vacationData.type,
             message: vacationData.message,
             updatedAt: new Date(),
-            days: vacationData.days
+            days: vacationData.days,
+            status: vacationData.status
           }
         });
         const updatedVacationRequests = vacationRequests.map((vacationRequest) =>

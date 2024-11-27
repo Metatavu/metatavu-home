@@ -1,6 +1,6 @@
 import type { DateTime } from "luxon";
 import type { Person, PersonTotalTime, DailyEntry } from "../generated/client";
-import type {VacationRequestStatuses, VacationType} from "../generated/homeLambdasClient";
+import type {VacationRequestStatus, VacationRequestStatuses, VacationType} from "../generated/homeLambdasClient";
 import type { ReactNode } from "react";
 
 /**
@@ -66,7 +66,7 @@ export interface VacationData {
   type: VacationType;
   message: string;
   days: number;
-  status: VacationRequestStatuses[];
+  status: VacationRequestStatus[];
 }
 
 /**
