@@ -94,11 +94,6 @@ const VacationRequestsScreen = () => {
     setLoading(false);
   };
 
-  useEffect(() => {
-    console.log(vacationRequests);
-    console.log(loggedInUser)
-  }, [vacationRequests]);
-
   useMemo(() => {
     fetchVacationsRequests();
   }, [loggedInUser]);

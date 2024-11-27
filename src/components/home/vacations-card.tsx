@@ -17,7 +17,7 @@ import {
   allVacationRequestsAtom,
   vacationRequestsAtom,
 } from "src/atoms/vacation";
-import { getVacationRequestStatusColor } from "src/utils/vacation-status-utils";
+import {getTotalVacationRequestStatus, getVacationRequestStatusColor} from "src/utils/vacation-status-utils";
 import UserRoleUtils from "src/utils/user-role-utils";
 import { Check, Pending } from "@mui/icons-material";
 import { getVacationRequestPersonFullName } from "src/utils/vacation-request-utils";
@@ -104,7 +104,7 @@ const VacationsCard = () => {
       .filter(
         (vacationRequest) =>
           vacationRequest &&
-          DateTime.fromJSDate(vacationRequest.startDate as Date) > DateTime.now() &&
+          DateTime.fromJSDate(vacationRequest.startDate) > DateTime.now() &&
           !vacationRequest.status?.some(
             (status) => status.status === VacationRequestStatuses.DECLINED
           )
@@ -132,7 +132,6 @@ const VacationsCard = () => {
    */
   const renderEarliestUpcomingVacationRequest = () => {
     let earliestUpcomingVacationRequest: VacationRequest | undefined = undefined;
-    // let earliestUpcomingVacationRequestStatus: VacationRequestStatuses | undefined;
     let upcomingVacationRequests = getUpcomingVacationRequests();
 
     if (upcomingVacationRequests.length) {
@@ -141,7 +140,7 @@ const VacationsCard = () => {
       );
 
       earliestUpcomingVacationRequest = upcomingVacationRequests.reduce((vacationA, vacationB) =>
-        DateTime.fromJSDate(vacationA.startDate as Date) > DateTime.fromJSDate(vacationB.startDate as Date)
+        DateTime.fromJSDate(vacationA.startDate) > DateTime.fromJSDate(vacationB.startDate)
           ? vacationB
           : vacationA
       );
@@ -164,7 +163,7 @@ const VacationsCard = () => {
         {
           name: strings.vacationsCard.timeOfVacation,
           value: `${formatDate(
-            DateTime.fromJSDate(earliestUpcomingVacationRequest.startDate as Date)
+            DateTime.fromJSDate(earliestUpcomingVacationRequest.startDate)
           )} - ${formatDate(DateTime.fromJSDate(earliestUpcomingVacationRequest.endDate))}`
         },
         {
@@ -172,29 +171,10 @@ const VacationsCard = () => {
           value: earliestUpcomingVacationRequest.status ? (
             <span
               style={{
-                color: getVacationRequestStatusColor(earliestUpcomingVacationRequest.status?.some(
-                  (status) => status.status === VacationRequestStatuses.DECLINED
-                )
-                  ? VacationRequestStatuses.DECLINED
-                  : earliestUpcomingVacationRequest.status?.some(
-                    (status) => status.status === VacationRequestStatuses.APPROVED
-                  )
-                    ? VacationRequestStatuses.APPROVED
-                    : VacationRequestStatuses.PENDING
-                )
+                color: getVacationRequestStatusColor(getTotalVacationRequestStatus(earliestUpcomingVacationRequest?.status))
               }}
             >
-              {LocalizationUtils.getLocalizedVacationRequestStatus(
-                earliestUpcomingVacationRequest.status?.some(
-                  (status) => status.status === VacationRequestStatuses.DECLINED
-                )
-                  ? VacationRequestStatuses.DECLINED
-                  : earliestUpcomingVacationRequest.status?.some(
-                    (status) => status.status === VacationRequestStatuses.APPROVED
-                  )
-                    ? VacationRequestStatuses.APPROVED
-                    : VacationRequestStatuses.PENDING
-              )}
+              {LocalizationUtils.getLocalizedVacationRequestStatus(getTotalVacationRequestStatus(earliestUpcomingVacationRequest?.status))}
             </span>
           ) : (
             <span
@@ -216,7 +196,7 @@ const VacationsCard = () => {
           <Grid item xs={11}>
             <Box>
               {earliestUpcomingVacationRequest &&
-                DateTime.fromJSDate(earliestUpcomingVacationRequest.startDate as Date) > DateTime.now() && (
+                DateTime.fromJSDate(earliestUpcomingVacationRequest.startDate) > DateTime.now() && (
                   <>
                     <Typography fontWeight={"bold"}>
                       {`${strings.vacationsCard.nextUpcomingVacation}`}

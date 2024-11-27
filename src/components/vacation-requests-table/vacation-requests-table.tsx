@@ -16,7 +16,7 @@ import {
   type VacationRequest,
   VacationRequestStatuses
 } from "src/generated/homeLambdasClient";
-import { getVacationRequestStatusColor } from "src/utils/vacation-status-utils";
+import {getTotalVacationRequestStatus, getVacationRequestStatusColor} from "src/utils/vacation-status-utils";
 import UserRoleUtils from "src/utils/user-role-utils";
 import { DateTime } from "luxon";
 import LocalizationUtils from "src/utils/localization-utils";
@@ -54,9 +54,6 @@ const VacationRequestsTable = ({
 }: Props) => {
   const adminMode = UserRoleUtils.adminMode();
   const vacationRequests = useAtomValue(displayedVacationRequestsAtom);
-  // const vacationRequestStatuses = useAtomValue(
-  //   adminMode ? allVacationRequestStatusesAtom : vacationRequestStatusesAtom
-  // );
   const containerRef = useRef(null);
   const [formOpen, setFormOpen] = useState(false);
   const [selectedRowIds, setSelectedRowIds] = useState<GridRowSelectionModel>([]);
@@ -86,7 +83,7 @@ const VacationRequestsTable = ({
       type: LocalizationUtils.getLocalizedVacationRequestType(vacationRequest.type),
       personFullName: usersFullName,
       updatedAt: DateTime.fromJSDate(vacationRequest.updatedAt),
-      startDate: DateTime.fromJSDate(vacationRequest.startDate as Date),
+      startDate: DateTime.fromJSDate(vacationRequest.startDate),
       endDate: DateTime.fromJSDate(vacationRequest.endDate),
       days: vacationRequest.days,
       message: strings.vacationRequest.noMessage,
@@ -99,7 +96,7 @@ const VacationRequestsTable = ({
    * Create vacation requests data grid rows
    *
    * @param vacationRequests vacation requests
-     */
+   */
   const createDataGridRows = (
     vacationRequests: VacationRequest[],
   ) => {
@@ -107,8 +104,7 @@ const VacationRequestsTable = ({
     if (vacationRequests.length) {
       vacationRequests.forEach((vacationRequest) => {
         const row = createDataGridRow(vacationRequest);
-
-        row.status = vacationRequest.status?.length ? vacationRequest.status[0].status : VacationRequestStatuses.PENDING;
+        row.status = vacationRequest.status?.length ? getTotalVacationRequestStatus(vacationRequest.status) : VacationRequestStatuses.PENDING;
 
         if (vacationRequest.message.length) {
           row.message = vacationRequest.message;

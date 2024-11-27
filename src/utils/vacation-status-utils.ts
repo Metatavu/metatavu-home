@@ -1,4 +1,4 @@
-import { VacationRequestStatuses } from "../generated/homeLambdasClient";
+import {VacationRequestStatus, VacationRequestStatuses} from "../generated/homeLambdasClient";
 import { theme } from "../theme";
 
 /**
@@ -13,3 +13,20 @@ export const getVacationRequestStatusColor = (vacationRequestStatus: VacationReq
     [VacationRequestStatuses.DECLINED]: theme.palette.error.main,
     [VacationRequestStatuses.PENDING]: theme.palette.info.main
   })[vacationRequestStatus];
+
+/**
+ * Get color code corresponding to the vacation request status
+ *
+ * @param statuses array of vacation request statuses
+ * @returns final status of the vacation request
+ */
+export const getTotalVacationRequestStatus = (statuses: VacationRequestStatus[]) => {
+  if (statuses.some(status => status.status === VacationRequestStatuses.APPROVED)) {
+    return VacationRequestStatuses.APPROVED;
+  } else {
+    if (statuses.some(status => status.status === VacationRequestStatuses.DECLINED)) {
+      return VacationRequestStatuses.DECLINED;
+    }
+  }
+  return VacationRequestStatuses.PENDING;
+};

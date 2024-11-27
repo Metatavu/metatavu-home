@@ -18,14 +18,12 @@ interface UpdateStatusButtonProps {
  * @param props component properties
  */
 const UpdateStatusButton = ({
-  // selectedRowIds,
   buttonType
 }: UpdateStatusButtonProps) => {
   /**
    * Handle update vacation status
    */
   const handleUpdateVacationRequestStatus = async () => {
-    // await updateVacationRequestStatuses(buttonType);
   };
 
   return (

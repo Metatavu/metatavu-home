@@ -11,8 +11,7 @@ import { calculateTotalVacationDays } from "src/utils/time-utils";
 import { useAtom, useAtomValue } from "jotai";
 import { userProfileAtom } from "src/atoms/auth";
 import { usersAtom } from "src/atoms/user";
-import { VacationType} from "src/generated/homeLambdasClient";
-import {User} from "src/generated/homeLambdasClient";
+import { VacationType, type User } from "src/generated/homeLambdasClient";
 
 /**
  * Component properties
@@ -87,6 +86,7 @@ const ToolbarFormFields = ({
     });
   };
 
+  //FIXME: Implement vacation days calculations properly
   /**
    * Get a list of working days
    *
