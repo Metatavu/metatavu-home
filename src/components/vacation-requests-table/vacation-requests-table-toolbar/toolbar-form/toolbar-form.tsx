@@ -14,7 +14,7 @@ import { useAtomValue } from "jotai";
 import ToolbarFormFields from "./toolbar-form-fields";
 import { allVacationRequestsAtom, vacationRequestsAtom } from "src/atoms/vacation";
 import UserRoleUtils from "src/utils/user-role-utils";
-import {VacationRequestStatuses} from "src/generated/homeLambdasClient";
+import { VacationRequestStatuses } from "src/generated/homeLambdasClient";
 
 /**
  * Component properties
@@ -115,7 +115,8 @@ const ToolbarForm = ({
               createdBy: "",
               updatedAt: new Date(),
             }
-          ],        });
+          ],
+        });
         setSelectedVacationRequestId(selectedVacationRequest.id);
         setDateRange({
           start: startDate,

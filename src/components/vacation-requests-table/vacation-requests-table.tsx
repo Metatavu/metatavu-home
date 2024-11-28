@@ -9,14 +9,12 @@ import { useAtomValue } from "jotai";
 import VacationRequestsTableColumns from "./vacation-requests-table-columns";
 import strings from "src/localization/strings";
 import { Inventory } from "@mui/icons-material";
-import {
-  displayedVacationRequestsAtom,
-} from "src/atoms/vacation";
+import { displayedVacationRequestsAtom } from "src/atoms/vacation";
 import {
   type VacationRequest,
   VacationRequestStatuses
 } from "src/generated/homeLambdasClient";
-import {getTotalVacationRequestStatus, getVacationRequestStatusColor} from "src/utils/vacation-status-utils";
+import { getTotalVacationRequestStatus, getVacationRequestStatusColor } from "src/utils/vacation-status-utils";
 import UserRoleUtils from "src/utils/user-role-utils";
 import { DateTime } from "luxon";
 import LocalizationUtils from "src/utils/localization-utils";

@@ -1,6 +1,6 @@
 import { DateTime, Duration } from "luxon";
-import {User} from "src/generated/homeLambdasClient";
-import {theme} from "../theme.tsx";
+import { User } from "src/generated/homeLambdasClient";
+import { theme } from "../theme.tsx";
 
 /**
  * Format date

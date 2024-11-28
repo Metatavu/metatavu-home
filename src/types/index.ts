@@ -1,6 +1,6 @@
 import type { DateTime } from "luxon";
 import type { Person, PersonTotalTime, DailyEntry } from "../generated/client";
-import type {VacationRequestStatus, VacationType} from "../generated/homeLambdasClient";
+import type { VacationRequestStatus, VacationType } from "../generated/homeLambdasClient";
 import type { ReactNode } from "react";
 
 /**

@@ -1,4 +1,4 @@
-import {VacationRequestStatus, VacationRequestStatuses} from "../generated/homeLambdasClient";
+import { VacationRequestStatus, VacationRequestStatuses } from "../generated/homeLambdasClient";
 import { theme } from "../theme";
 
 /**
