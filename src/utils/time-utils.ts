@@ -1,5 +1,5 @@
 import { DateTime, Duration } from "luxon";
-import { User } from "src/generated/homeLambdasClient";
+import type { User } from "src/generated/homeLambdasClient";
 import { theme } from "../theme.tsx";
 
 /**
@@ -216,7 +216,7 @@ export const getSprintStart = (date: string) => {
   const weekIndex = DateTime.fromISO(date).localWeekNumber;
   const weekDay = DateTime.fromISO(date).weekday;
   const days = (weekIndex % 2 === 1 ? 0 : 7) + weekDay;
-  
+
   return DateTime.fromISO(date).minus({ days: days - 1 });
 };
 
@@ -234,21 +234,28 @@ export const getSprintEnd = (date: string) => {
  *
  * @param user Keycloak user
  */
-export const getVacationColors = (user: User)=> {
-  let spentVacationsColor = theme.palette.error.main;
-  let unspentVacationsColor = theme.palette.error.main;
+export const getVacationColors = (user: User) => {
+  let vacationDaysByYearColor = theme.palette.error.main;
+  let unspentVacationDaysByYearColor = theme.palette.error.main;
+  const currentYear = new Date().getFullYear();
 
-  if (user && parseVacationDays(user.attributes?.vacationDaysByYear ?? ["2024:30"])[new Date().getFullYear()] > 0) {
-    spentVacationsColor = theme.palette.success.main;
+  if (
+    user.attributes?.vacationDaysByYear &&
+    parseVacationDays(user.attributes?.vacationDaysByYear)[currentYear] > 0
+  ) {
+    vacationDaysByYearColor = theme.palette.success.main;
   }
-  if (user && parseVacationDays(user.attributes?.unspentVacationDaysByYear ?? ["2024:30"])[new Date().getFullYear()] > 0) {
-    unspentVacationsColor = theme.palette.success.main;
+  if (
+    user.attributes?.unspentVacationDaysByYear &&
+    parseVacationDays(user.attributes?.unspentVacationDaysByYear)[currentYear] > 0
+  ) {
+    unspentVacationDaysByYearColor = theme.palette.success.main;
   }
   return {
-    spentVacationsColor,
-    unspentVacationsColor
+    vacationDaysByYearColor,
+    unspentVacationDaysByYearColor
   };
-}
+};
 
 /**
  * Parsing vacationDaysByYear from format ("YYYY:DDD") to object {[year: string]: [days: number]}
@@ -256,9 +263,12 @@ export const getVacationColors = (user: User)=> {
  * @param vacationDaysByYear A list of strings with years and corresponding number of vacation days
  */
 export const parseVacationDays = (vacationDaysByYear: string[]): { [year: string]: number } => {
-  return vacationDaysByYear.reduce((acc, entry) => {
-    const [year, days] = entry.split(":");
-    acc[year] = parseInt(days, 10);
-    return acc;
-  }, {} as { [year: string]: number });
-}
+  return vacationDaysByYear.reduce(
+    (acc, entry) => {
+      const [year, days] = entry.split(":");
+      acc[year] = Number.parseInt(days, 10);
+      return acc;
+    },
+    {} as { [year: string]: number }
+  );
+};

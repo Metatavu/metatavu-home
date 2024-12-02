@@ -2,7 +2,7 @@ import { DataGrid, type GridRowId, type GridRowSelectionModel } from "@mui/x-dat
 import { useMemo, useRef, useState } from "react";
 import { Box, styled } from "@mui/material";
 import TableToolbar from "./vacation-requests-table-toolbar/vacation-requests-table-toolbar";
-import type { VacationsDataGridRow, VacationData } from "src/types";
+import type { VacationsDataGridRow } from "src/types";
 import SkeletonTableRows from "./skeleton-table-rows/skeleton-table-rows";
 import { languageAtom } from "src/atoms/language";
 import { useAtomValue } from "jotai";
@@ -10,11 +10,11 @@ import VacationRequestsTableColumns from "./vacation-requests-table-columns";
 import strings from "src/localization/strings";
 import { Inventory } from "@mui/icons-material";
 import { displayedVacationRequestsAtom } from "src/atoms/vacation";
+import { type VacationRequest, VacationRequestStatuses } from "src/generated/homeLambdasClient";
 import {
-  type VacationRequest,
-  VacationRequestStatuses
-} from "src/generated/homeLambdasClient";
-import { getTotalVacationRequestStatus, getVacationRequestStatusColor } from "src/utils/vacation-status-utils";
+  getTotalVacationRequestStatus,
+  getVacationRequestStatusColor
+} from "src/utils/vacation-status-utils";
 import UserRoleUtils from "src/utils/user-role-utils";
 import { DateTime } from "luxon";
 import LocalizationUtils from "src/utils/localization-utils";
@@ -26,14 +26,17 @@ import { userProfileAtom } from "src/atoms/auth";
  * Component properties
  */
 interface Props {
-  isUpcoming: boolean
+  isUpcoming: boolean;
   toggleIsUpcoming: () => void;
   deleteVacationRequests: (
     selectedRowIds: GridRowId[],
     rows: VacationsDataGridRow[]
   ) => Promise<void>;
-  createVacationRequest: (vacationData: VacationData) => Promise<void>;
-  updateVacationRequest: (vacationData: VacationData, vacationRequestId: string) => Promise<void>;
+  createVacationRequest: (vacationRequestData: VacationRequest) => Promise<void>;
+  updateVacationRequest: (
+    vacationRequestData: VacationRequest,
+    vacationRequestId: string
+  ) => Promise<void>;
   loading: boolean;
 }
 
@@ -71,7 +74,7 @@ const VacationRequestsTable = ({
    * @returns dataGridRow
    */
   const createDataGridRow = (vacationRequest: VacationRequest) => {
-    const user = users.find(user => user.id === vacationRequest.userId);
+    const user = users.find((user) => user.id === vacationRequest.userId);
     const usersFullName = user
       ? `${user.firstName} ${user.lastName}`
       : strings.vacationRequest.noPersonFullName;
@@ -95,14 +98,14 @@ const VacationRequestsTable = ({
    *
    * @param vacationRequests vacation requests
    */
-  const createDataGridRows = (
-    vacationRequests: VacationRequest[],
-  ) => {
+  const createDataGridRows = (vacationRequests: VacationRequest[]) => {
     const rows: VacationsDataGridRow[] = [];
     if (vacationRequests.length) {
       vacationRequests.forEach((vacationRequest) => {
         const row = createDataGridRow(vacationRequest);
-        row.status = vacationRequest.status?.length ? getTotalVacationRequestStatus(vacationRequest.status) : VacationRequestStatuses.PENDING;
+        row.status = vacationRequest.status?.length
+          ? getTotalVacationRequestStatus(vacationRequest.status)
+          : VacationRequestStatuses.PENDING;
 
         if (vacationRequest.message.length) {
           row.message = vacationRequest.message;

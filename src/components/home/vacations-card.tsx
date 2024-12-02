@@ -6,25 +6,22 @@ import { useAtomValue, useSetAtom, useAtom } from "jotai";
 import { useState, useMemo } from "react";
 import { userProfileAtom } from "src/atoms/auth";
 import { errorAtom } from "src/atoms/error";
-import {
-  type VacationRequest,
-  VacationRequestStatuses,
-} from "src/generated/homeLambdasClient";
+import { type VacationRequest, VacationRequestStatuses } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
 import { DateTime } from "luxon";
 import LocalizationUtils from "src/utils/localization-utils";
+import { allVacationRequestsAtom, vacationRequestsAtom } from "src/atoms/vacation";
 import {
-  allVacationRequestsAtom,
-  vacationRequestsAtom,
-} from "src/atoms/vacation";
-import { getTotalVacationRequestStatus, getVacationRequestStatusColor } from "src/utils/vacation-status-utils";
+  getTotalVacationRequestStatus,
+  getVacationRequestStatusColor
+} from "src/utils/vacation-status-utils";
 import UserRoleUtils from "src/utils/user-role-utils";
 import { Check, Pending } from "@mui/icons-material";
 import { getVacationRequestPersonFullName } from "src/utils/vacation-request-utils";
 import { validateValueIsNotUndefinedNorNull } from "src/utils/check-utils";
 import type { VacationInfoListItem } from "src/types";
 import { formatDate } from "src/utils/time-utils";
-import type {User} from "src/generated/homeLambdasClient";
+import type { User } from "src/generated/homeLambdasClient";
 import { usersAtom } from "src/atoms/user.ts";
 // TODO: Component is commented out due backend calculations about vacation days being incorrect. Once the error is fixed, introduce the text components back in the code.
 // import { renderVacationDaysTextForCard } from "../../utils/vacation-days-utils";
@@ -42,10 +39,7 @@ const VacationsCard = () => {
   );
   const [loading, setLoading] = useState(false);
   const [users] = useAtom(usersAtom);
-  const loggedInUser = users.find(
-    (user: User) =>
-      user.id === userProfile?.id
-  );
+  const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
 
   /**
    * Fetch vacation requests
@@ -83,13 +77,12 @@ const VacationsCard = () => {
    */
   const getPendingVacationRequests = () => {
     return vacationRequests
-      .filter(
-        (vacationRequest) =>
-          vacationRequest.status?.every(
-            (status) =>
-              status.status !== VacationRequestStatuses.APPROVED &&
-              status.status !== VacationRequestStatuses.DECLINED
-          )
+      .filter((vacationRequest) =>
+        vacationRequest.status?.every(
+          (status) =>
+            status.status !== VacationRequestStatuses.APPROVED &&
+            status.status !== VacationRequestStatuses.DECLINED
+        )
       )
       .filter(validateValueIsNotUndefinedNorNull);
   };
@@ -171,10 +164,14 @@ const VacationsCard = () => {
           value: earliestUpcomingVacationRequest.status ? (
             <span
               style={{
-                color: getVacationRequestStatusColor(getTotalVacationRequestStatus(earliestUpcomingVacationRequest?.status))
+                color: getVacationRequestStatusColor(
+                  getTotalVacationRequestStatus(earliestUpcomingVacationRequest?.status)
+                )
               }}
             >
-              {LocalizationUtils.getLocalizedVacationRequestStatus(getTotalVacationRequestStatus(earliestUpcomingVacationRequest?.status))}
+              {LocalizationUtils.getLocalizedVacationRequestStatus(
+                getTotalVacationRequestStatus(earliestUpcomingVacationRequest?.status)
+              )}
             </span>
           ) : (
             <span
