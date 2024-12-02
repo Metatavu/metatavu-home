@@ -1,15 +1,12 @@
 import { Button, Card, Typography } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import VacationRequestsTable from "../vacation-requests-table/vacation-requests-table";
-import {
-  VacationRequest, VacationRequestStatuses,
-} from "src/generated/homeLambdasClient";
+import { type VacationRequest, VacationRequestStatuses } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { userProfileAtom } from "src/atoms/auth";
 import { errorAtom } from "src/atoms/error";
 import type { GridRowId } from "@mui/x-data-grid";
-import type { VacationData } from "src/types";
 import strings from "src/localization/strings";
 import {
   allVacationRequestsAtom,
@@ -48,10 +45,7 @@ const VacationRequestsScreen = () => {
   const [loading, setLoading] = useState(false);
   const [isUpcoming, setIsUpcoming] = useState(true);
   const [users] = useAtom(usersAtom);
-  const loggedInUser = users.find(
-    (user: User) =>
-      user.id === userProfile?.id
-  );
+  const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
 
   /**
    * Decide if we show upcoming or past vacations
@@ -62,7 +56,7 @@ const VacationRequestsScreen = () => {
       : setDisplayedVacationRequests(pastVacationRequests);
   }, [isUpcoming, vacationRequests]);
 
-    /**
+  /**
    * Handler for upcoming/ past vacations toggle click
    */
   const toggleIsUpcoming = () => {
@@ -129,32 +123,32 @@ const VacationRequestsScreen = () => {
   /**
    * Create a vacation request
    *
-   * @param vacationData vacation data
+   * @param vacationRequestData vacation data
    */
-  const createVacationRequest = async (vacationData: VacationData) => {
+  const createVacationRequest = async (vacationRequestData: VacationRequest) => {
     if (!loggedInUser) return;
     try {
       setLoading(true);
       const createdRequest = await vacationRequestsApi.createVacationRequest({
         vacationRequest: {
           userId: loggedInUser.id,
-          startDate: vacationData.startDate.toJSDate(),
-          endDate: vacationData.endDate.toJSDate(),
-          type: vacationData.type,
-          message: vacationData.message,
+          startDate: vacationRequestData.startDate,
+          endDate: vacationRequestData.endDate,
+          type: vacationRequestData.type,
+          message: vacationRequestData.message,
           createdAt: new Date(),
           updatedAt: new Date(),
           createdBy: loggedInUser?.id,
-          days: vacationData.days,
+          days: vacationRequestData.days,
           draft: false,
           status: [
             {
-              message: vacationData.message,
+              message: vacationRequestData.message,
               createdBy: loggedInUser.id,
               updatedAt: new Date(),
-              status: VacationRequestStatuses.PENDING,
+              status: VacationRequestStatuses.PENDING
             }
-          ],
+          ]
         }
       });
       setVacationRequests([createdRequest, ...vacationRequests]);
@@ -167,10 +161,13 @@ const VacationRequestsScreen = () => {
   /**
    * Update a vacation request
    *
-   * @param vacationData vacation request data
+   * @param vacationRequestData vacation request data
    * @param vacationRequestId vacation request id
    */
-  const updateVacationRequest = async (vacationData: VacationData, vacationRequestId: string) => {
+  const updateVacationRequest = async (
+    vacationRequestData: VacationRequest,
+    vacationRequestId: string
+  ) => {
     if (!loggedInUser) return;
 
     try {
@@ -183,13 +180,13 @@ const VacationRequestsScreen = () => {
           id: vacationRequestId,
           vacationRequest: {
             ...vacationRequest,
-            startDate: vacationData.startDate.toJSDate(),
-            endDate: vacationData.endDate.toJSDate(),
-            type: vacationData.type,
-            message: vacationData.message,
+            startDate: vacationRequestData.startDate,
+            endDate: vacationRequestData.endDate,
+            type: vacationRequestData.type,
+            message: vacationRequestData.message,
             updatedAt: new Date(),
-            days: vacationData.days,
-            status: vacationData.status
+            days: vacationRequestData.days,
+            status: vacationRequestData.status
           }
         });
         const updatedVacationRequests = vacationRequests.map((vacationRequest) =>

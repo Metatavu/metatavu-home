@@ -3,7 +3,7 @@ import { Box, Button, Collapse, Grid, Typography, styled } from "@mui/material";
 import { useEffect, useState } from "react";
 import ToolbarForm from "./toolbar-form/toolbar-form";
 import type { GridRowId } from "@mui/x-data-grid";
-import { type VacationsDataGridRow, ToolbarFormModes, type VacationData } from "src/types";
+import { type VacationsDataGridRow, ToolbarFormModes } from "src/types";
 import ToolbarDeleteButton from "./toolbar-delete-button";
 import FormToggleButton from "./toolbar-form-toggle-button";
 import ConfirmationHandler from "../../contexts/confirmation-handler";
@@ -15,6 +15,7 @@ import { useLocation } from "react-router-dom";
 import { VacationRequestStatuses } from "src/generated/client";
 import UpdateStatusButton from "./toolbar-update-status-button";
 import UserRoleUtils from "src/utils/user-role-utils";
+import type { VacationRequest } from "src/generated/homeLambdasClient";
 
 /**
  * Component properties
@@ -26,8 +27,11 @@ interface Props {
     selectedRowIds: GridRowId[],
     rows: VacationsDataGridRow[]
   ) => Promise<void>;
-  createVacationRequest: (vacationData: VacationData) => Promise<void>;
-  updateVacationRequest: (vacationData: VacationData, vacationRequestId: string) => Promise<void>;
+  createVacationRequest: (VacationRequest: VacationRequest) => Promise<void>;
+  updateVacationRequest: (
+    VacationRequest: VacationRequest,
+    vacationRequestId: string
+  ) => Promise<void>;
   setFormOpen: (formOpen: boolean) => void;
   formOpen: boolean;
   selectedRowIds: GridRowId[];
@@ -61,11 +65,9 @@ const TableToolbar = ({
   const { pathname } = useLocation();
   const isToolbarVisible = toolbarOpen && !formOpen && selectedRowIds?.length;
   const buttonLabel = isUpcoming ? strings.tableToolbar.future : strings.tableToolbar.past;
-  const singleSelectionSize = adminMode ? 3 : 6
-  const multiSelectionSize = adminMode ? 6 : 12
-  const gridItemSize = selectedRowIds?.length === 1
-  ? (singleSelectionSize)
-  : (multiSelectionSize);
+  const singleSelectionSize = adminMode ? 3 : 6;
+  const multiSelectionSize = adminMode ? 6 : 12;
+  const gridItemSize = selectedRowIds?.length === 1 ? singleSelectionSize : multiSelectionSize;
   const disableEditButton =
     rows.find((request: VacationsDataGridRow) => request.id === selectedRowIds[0])?.status !==
     VacationRequestStatuses.PENDING;
@@ -125,11 +127,7 @@ const TableToolbar = ({
       />
       {isToolbarVisible ? (
         <ToolbarGridContainer container>
-          <ToolbarGridItem
-            item
-            sm={gridItemSize}
-            xs={6}
-          >
+          <ToolbarGridItem item sm={gridItemSize} xs={6}>
             <ToolbarDeleteButton setConfirmationHandlerOpen={setConfirmationHandlerOpen} />
           </ToolbarGridItem>
           {selectedRowIds?.length === 1 && (
