@@ -50,7 +50,7 @@ const ToolbarForm = ({
     end: DateTime.now().plus({ days: 1 })
   };
   const [dateRange, setDateRange] = useState<DateRange>(defaultDateRange);
-  const defaultVacationRequestData = {
+  const [vacationRequestData, setVacationRequestData] = useState<VacationRequest>({
     createdAt: new Date(),
     createdBy: "",
     draft: false,
@@ -64,14 +64,13 @@ const ToolbarForm = ({
     days: 1,
     status: [
       {
-        message: "Automatically created status",
+        message: "",
         status: VacationRequestStatuses.PENDING,
         createdBy: "",
         updatedAt: new Date()
       }
     ]
-  }
-  const [vacationRequestData, setVacationRequestData] = useState<VacationRequest>(defaultVacationRequestData);
+  });
   const [selectedVacationRequestId, setSelectedVacationRequestId] = useState("");
   const adminMode = UserRoleUtils.adminMode();
   const vacationRequests = useAtomValue(adminMode ? allVacationRequestsAtom : vacationRequestsAtom);
@@ -80,7 +79,7 @@ const ToolbarForm = ({
    * Reset vacation data
    */
   const resetVacationRequestData = () => {
-    setVacationRequestData(defaultVacationRequestData);
+    setVacationRequestData(vacationRequestData);
     setDateRange(defaultDateRange);
   };
 
