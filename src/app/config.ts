@@ -15,6 +15,9 @@ interface Config {
   person: {
     forecastUserIdOverride: number;
   };
+  user: {
+    testUserSeveraId: string;
+  };
 }
 
 const env = cleanEnv(import.meta.env, {
@@ -40,7 +43,11 @@ const config: Config = {
   },
   person: {
     forecastUserIdOverride: env.VITE_FORECAST_USER_ID_OVERRIDE
-  }
+  },
+  user: {
+    testUserSeveraId: env.;
+  };
+  
 };
 
 export default config;

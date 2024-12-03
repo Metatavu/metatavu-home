@@ -1,5 +1,6 @@
+import config from "src/app/config";
 import type { Person } from "src/generated/client";
-import type { Allocations, Projects, Tasks } from "src/generated/homeLambdasClient";
+import type { Allocations, Projects, Tasks, User } from "src/generated/homeLambdasClient";
 
 /**
  * Retrieve total time entries for an allocation
@@ -136,3 +137,8 @@ export const filterAllocationsAndProjects = (allocations: Allocations[], project
   }
   return { filteredAllocations, filteredProjects };
 };
+
+
+export const getSeveraUserId = (user: User | undefined): string => {
+  return user?.attributes?.severaUserId ?? config.user.testUserSeveraId ?? "";
+}
