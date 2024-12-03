@@ -7,17 +7,22 @@ import {
   getProjectName,
   getTotalTimeEntriesAllocations,
   timeLeft,
-  totalAllocations
+  totalAllocations,
 } from "src/utils/sprint-utils";
-import type { Allocations, Projects } from "src/generated/homeLambdasClient";
+import type {
+  Allocations,
+  Projects,
+  ResourceAllocations,
+  WorkHours,
+} from "src/generated/homeLambdasClient";
 
 /**
  * Component properties
  */
 interface Props {
-  allocations: Allocations[];
-  timeEntries: number[];
-  projects: Projects[];
+  resourceAllocations: ResourceAllocations[];
+  // workHours: WorkHours[];
+  // projects: Projects[];
 }
 
 /**
@@ -25,7 +30,11 @@ interface Props {
  *
  * @param props component properties
  */
-const sprintViewProjectsColumns = ({ allocations, timeEntries, projects }: Props) => {
+const sprintViewProjectsColumns = ({
+  resourceAllocations,
+}: // workHours,
+// projects,
+Props) => {
   /**
    * Define columns for data grid
    */
@@ -36,7 +45,8 @@ const sprintViewProjectsColumns = ({ allocations, timeEntries, projects }: Props
       filterable: false,
       headerName: strings.sprint.myAllocation,
       flex: 2,
-      valueGetter: (params) => getProjectName(params.row, allocations, projects),
+      valueGetter: (params) =>
+        getProjectName(params.row, resourceAllocations, projects),
       renderCell: (params) => (
         <>
           <Box
@@ -44,39 +54,52 @@ const sprintViewProjectsColumns = ({ allocations, timeEntries, projects }: Props
             style={{ marginRight: "10px" }}
             component="span"
             sx={{
-              bgcolor: getProjectColor(params.row, allocations, projects),
+              bgcolor: getProjectColor(
+                params.row,
+                resourceAllocations,
+                projects
+              ),
               height: 25,
-              borderRadius: "5px"
+              borderRadius: "5px",
             }}
           />
-          {getProjectName(params.row, allocations, projects)}
+          {getProjectName(params.row, resourceAllocations, projects)}
         </>
-      )
+      ),
     },
-    {
-      field: "allocation",
-      headerClassName: "header-color",
-      headerName: strings.sprint.allocation,
-      flex: 1,
-      valueGetter: (params) => getHoursAndMinutes(totalAllocations(params.row))
-    },
-    {
-      field: "timeEntries",
-      headerClassName: "header-color",
-      headerName: strings.sprint.timeEntries,
-      flex: 1,
-      valueGetter: (params) =>
-        getHoursAndMinutes(getTotalTimeEntriesAllocations(params.row, allocations, timeEntries))
-    },
-    {
-      field: "allocationsLeft",
-      headerClassName: "header-color",
-      headerName: strings.sprint.allocationLeft,
-      flex: 1,
-      cellClassName: (params) =>
-        timeLeft(params.row, allocations, timeEntries) < 0 ? "negative-value" : "",
-      valueGetter: (params) => getHoursAndMinutes(timeLeft(params.row, allocations, timeEntries))
-    }
+    // {
+    //   field: "allocation",
+    //   headerClassName: "header-color",
+    //   headerName: strings.sprint.allocation,
+    //   flex: 1,
+    //   valueGetter: (params) => getHoursAndMinutes(totalAllocations(params.row)),
+    // },
+    // {
+    //   field: "timeEntries",
+    //   headerClassName: "header-color",
+    //   headerName: strings.sprint.timeEntries,
+    //   flex: 1,
+    //   valueGetter: (params) =>
+    //     getHoursAndMinutes(
+    //       getTotalTimeEntriesAllocations(
+    //         params.row,
+    //         resourceAllocations,
+    //         workHours
+    //       )
+    //     ),
+    // },
+    // {
+    //   field: "allocationsLeft",
+    //   headerClassName: "header-color",
+    //   headerName: strings.sprint.allocationLeft,
+    //   flex: 1,
+    //   cellClassName: (params) =>
+    //     timeLeft(params.row, resourceAllocations, timeEntries) < 0
+    //       ? "negative-value"
+    //       : "",
+    //   valueGetter: (params) =>
+    //     getHoursAndMinutes(timeLeft(params.row, allocations, timeEntries)),
+    // },
   ];
   return columns;
 };

@@ -26,7 +26,8 @@ const env = cleanEnv(import.meta.env, {
   VITE_KEYCLOAK_CLIENT_ID: str(),
   VITE_API_BASE_URL: url(),
   VITE_FORECAST_USER_ID_OVERRIDE: num({ default: undefined }),
-  VITE_HOME_LAMBDAS_BASE_URL: url()
+  VITE_HOME_LAMBDAS_BASE_URL: url(),
+  VITE_SEVERA_TEST_USER_ID: str()
 });
 
 const config: Config = {
@@ -45,9 +46,8 @@ const config: Config = {
     forecastUserIdOverride: env.VITE_FORECAST_USER_ID_OVERRIDE
   },
   user: {
-    testUserSeveraId: env.;
-  };
-  
+    testUserSeveraId: env.VITE_SEVERA_TEST_USER_ID
+  }
 };
 
 export default config;

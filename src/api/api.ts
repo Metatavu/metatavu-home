@@ -75,7 +75,7 @@ export const getLambdasApiClient = (accessToken?: string) => {
 
   return {
     // allocationsApi: new AllocationsApi(getConfiguration()),
-    resourceAllocations: new ResourceAllocationsApi(getConfiguration()),
+    resourceAllocationsApi: new ResourceAllocationsApi(getConfiguration()),
     projectsApi: new ProjectsApi(getConfiguration()),
     tasksApi: new TasksApi(getConfiguration()),
     timeEntriesApi: new TimeEntriesApi(getConfiguration()),

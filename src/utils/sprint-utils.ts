@@ -1,6 +1,6 @@
 import config from "src/app/config";
 import type { Person } from "src/generated/client";
-import type { Allocations, Projects, Tasks, User } from "src/generated/homeLambdasClient";
+import type { Allocations, Projects, ResourceAllocations, Tasks, User, WorkHours } from "src/generated/homeLambdasClient";
 
 /**
  * Retrieve total time entries for an allocation
@@ -10,12 +10,12 @@ import type { Allocations, Projects, Tasks, User } from "src/generated/homeLambd
  * @param timeEntries list of total time entries associated with allocations
  */
 export const getTotalTimeEntriesAllocations = (
-  allocation: Allocations,
-  allocations: Allocations[],
-  timeEntries: number[]
+  allocation: ResourceAllocations,
+  allocations: ResourceAllocations[],
+  workHours: WorkHours[]
 ) => {
-  if (timeEntries.length) {
-    return timeEntries[allocations.indexOf(allocation)] || 0;
+  if (workHours.length) {
+    return workHours[allocations.indexOf(allocation)] || 0;
   }
   return 0;
 };
@@ -42,8 +42,8 @@ export const getTotalTimeEntriesTasks = (task: Tasks, tasks: Tasks[], timeEntrie
  * @param projects list of project associated with the allocations
  */
 export const getProjectName = (
-  allocation: Allocations,
-  allocations: Allocations[],
+  allocation: ResourceAllocations,
+  allocations: ResourceAllocations[],
   projects: Projects[]
 ) => {
   if (projects.length) {
@@ -60,8 +60,8 @@ export const getProjectName = (
  * @param projects list of projects associated with allocations
  */
 export const getProjectColor = (
-  allocation: Allocations,
-  allocations: Allocations[],
+  allocation: ResourceAllocations,
+  allocations: ResourceAllocations[],
   projects: Projects[]
 ) => {
   if (projects.length) {
@@ -75,15 +75,15 @@ export const getProjectColor = (
  *
  * @param allocation expected work load of user in minutes
  */
-export const totalAllocations = (allocation: Allocations) => {
-  const totalMinutes =
-    (allocation.monday || 0) +
-    (allocation.tuesday || 0) +
-    (allocation.wednesday || 0) +
-    (allocation.thursday || 0) +
-    (allocation.friday || 0);
-  return totalMinutes * 2;
-};
+// export const totalAllocations = (allocation: Allocations) => {
+//   const totalMinutes =
+//     (allocation.monday || 0) +
+//     (allocation.tuesday || 0) +
+//     (allocation.wednesday || 0) +
+//     (allocation.thursday || 0) +
+//     (allocation.friday || 0);
+//   return totalMinutes * 2;
+// };
 
 /**
  * Calculate the remaining time of project completion
@@ -93,9 +93,9 @@ export const totalAllocations = (allocation: Allocations) => {
  * @param projects list of projects associated with allocations
  */
 export const timeLeft = (
-  allocation: Allocations,
-  allocations: Allocations[],
-  timeEntries: number[]
+  allocation: ResourceAllocations,
+  allocations: ResourceAllocations[],
+  workHours: WorkHours[]
 ) => {
   return (
     totalAllocations(allocation) -
