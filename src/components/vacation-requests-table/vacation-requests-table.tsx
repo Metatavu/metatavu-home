@@ -37,6 +37,10 @@ interface Props {
     vacationRequestData: VacationRequest,
     vacationRequestId: string
   ) => Promise<void>;
+  updateVacationRequestStatus: (
+    updatedVacationRequestStatus: VacationRequestStatuses,
+    selectedRowIds: GridRowId[]
+  ) => Promise<void>;
   loading: boolean;
 }
 
@@ -51,6 +55,7 @@ const VacationRequestsTable = ({
   deleteVacationRequests,
   createVacationRequest,
   updateVacationRequest,
+  updateVacationRequestStatus,
   loading
 }: Props) => {
   const adminMode = UserRoleUtils.adminMode();
@@ -191,6 +196,7 @@ const VacationRequestsTable = ({
         deleteVacationRequests={deleteVacationRequests}
         createVacationRequest={createVacationRequest}
         updateVacationRequest={updateVacationRequest}
+        updateVacationRequestStatus={updateVacationRequestStatus}
         setFormOpen={setFormOpen}
         formOpen={formOpen}
         selectedRowIds={selectedRowIds}

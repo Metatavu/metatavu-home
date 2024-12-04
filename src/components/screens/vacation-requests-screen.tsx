@@ -95,7 +95,7 @@ const VacationRequestsScreen = () => {
   /**
    * Delete vacation requests
    *
-   * @param selectedRowIds selected row ids
+   * @param selectedRowIds GridRowId[] a list of Ids of selected rows (vacation requests)
    */
   const deleteVacationRequests = async (selectedRowIds: GridRowId[]) => {
     if (vacationRequests.length) {
@@ -123,7 +123,7 @@ const VacationRequestsScreen = () => {
   /**
    * Create a vacation request
    *
-   * @param vacationRequestData vacation data
+   * @param vacationRequestData vacation data from the create form
    */
   const createVacationRequest = async (vacationRequestData: VacationRequest) => {
     if (!loggedInUser) return;
@@ -161,7 +161,7 @@ const VacationRequestsScreen = () => {
   /**
    * Update a vacation request
    *
-   * @param vacationRequestData vacation request data
+   * @param vacationRequestData vacation request data from the update form
    * @param vacationRequestId vacation request id
    */
   const updateVacationRequest = async (
@@ -185,8 +185,7 @@ const VacationRequestsScreen = () => {
             type: vacationRequestData.type,
             message: vacationRequestData.message,
             updatedAt: new Date(),
-            days: vacationRequestData.days,
-            status: vacationRequestData.status
+            days: vacationRequestData.days
           }
         });
         const updatedVacationRequests = vacationRequests.map((vacationRequest) =>
@@ -194,6 +193,72 @@ const VacationRequestsScreen = () => {
         );
         setVacationRequests(updatedVacationRequests);
       }
+    } catch (error) {
+      setError(`${strings.vacationRequestError.updateRequestError}, ${error}`);
+    }
+    setLoading(false);
+  };
+
+  /**
+   * Update a vacation request status
+   *
+   * @param status VacationRequestStatus value for the new status
+   * @param selectedRowIds GridRowId[] list of Ids of selected rows(vacation requests)
+   */
+  const updateVacationRequestStatus = async (
+    status: VacationRequestStatuses,
+    selectedRowIds: GridRowId[]
+  ) => {
+    if (!loggedInUser) return;
+
+    try {
+      setLoading(true);
+      const updatedVacationRequests = await Promise.all(
+        selectedRowIds.map(async (vacationRequestId) => {
+          const vacationRequest = vacationRequests.find(
+            (vacationRequest) => vacationRequest.id === vacationRequestId
+          );
+          if (!vacationRequest) return null;
+
+          const statusExists = vacationRequest.status?.some(
+            (existingStatus) => existingStatus.createdBy === loggedInUser.id
+          );
+
+          const newOrUpdatedStatus = {
+            status,
+            createdBy: loggedInUser.id,
+            updatedAt: new Date(),
+            message: `This vacation request is ${status}`
+          };
+
+          const updatedStatus = statusExists
+            ? vacationRequest.status?.map((existingStatus) =>
+                existingStatus.createdBy === loggedInUser.id
+                  ? { ...existingStatus, ...newOrUpdatedStatus }
+                  : existingStatus
+              )
+            : [...(vacationRequest.status || []), newOrUpdatedStatus];
+
+          const updatedRequest = await vacationRequestsApi.updateVacationRequest({
+            id: vacationRequestId.toString(),
+            vacationRequest: {
+              ...vacationRequest,
+              status: updatedStatus
+            }
+          });
+
+          return updatedRequest;
+        })
+      );
+
+      setVacationRequests((prevRequests) =>
+        prevRequests.map((vacationRequest) => {
+          const updatedRequest = updatedVacationRequests.find(
+            (req) => req?.id === vacationRequest.id
+          );
+          return updatedRequest || vacationRequest;
+        })
+      );
     } catch (error) {
       setError(`${strings.vacationRequestError.updateRequestError}, ${error}`);
     }
@@ -210,6 +275,7 @@ const VacationRequestsScreen = () => {
           deleteVacationRequests={deleteVacationRequests}
           createVacationRequest={createVacationRequest}
           updateVacationRequest={updateVacationRequest}
+          updateVacationRequestStatus={updateVacationRequestStatus}
           loading={loading}
         />
       </Card>

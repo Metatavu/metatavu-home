@@ -12,7 +12,7 @@ import { getToolbarTitle } from "src/utils/toolbar-utils";
 import { useAtomValue } from "jotai";
 import { languageAtom } from "src/atoms/language";
 import { useLocation } from "react-router-dom";
-import { VacationRequestStatuses } from "src/generated/client";
+import {VacationRequestStatuses} from "src/generated/homeLambdasClient";
 import UpdateStatusButton from "./toolbar-update-status-button";
 import UserRoleUtils from "src/utils/user-role-utils";
 import type { VacationRequest } from "src/generated/homeLambdasClient";
@@ -32,6 +32,10 @@ interface Props {
     VacationRequest: VacationRequest,
     vacationRequestId: string
   ) => Promise<void>;
+  updateVacationRequestStatus: (
+    vacationRequestStatus: VacationRequestStatuses,
+    selectedRowIds: GridRowId[]
+  ) => Promise<void>;
   setFormOpen: (formOpen: boolean) => void;
   formOpen: boolean;
   selectedRowIds: GridRowId[];
@@ -50,6 +54,7 @@ const TableToolbar = ({
   deleteVacationRequests,
   createVacationRequest,
   updateVacationRequest,
+  updateVacationRequestStatus,
   setFormOpen,
   formOpen,
   selectedRowIds,
@@ -145,12 +150,14 @@ const TableToolbar = ({
             <>
               <ToolbarGridItem item sm={3} xs={6}>
                 <UpdateStatusButton
+                  updateVacationRequestStatus={updateVacationRequestStatus}
                   buttonType={VacationRequestStatuses.APPROVED}
                   selectedRowIds={selectedRowIds}
                 />
               </ToolbarGridItem>
               <ToolbarGridItem item sm={3} xs={6}>
                 <UpdateStatusButton
+                  updateVacationRequestStatus={updateVacationRequestStatus}
                   buttonType={VacationRequestStatuses.DECLINED}
                   selectedRowIds={selectedRowIds}
                 />
