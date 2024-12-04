@@ -3,16 +3,17 @@ import { Box } from "@mui/material";
 import strings from "../../localization/strings";
 import { getHoursAndMinutes } from "src/utils/time-utils";
 import {
-  getProjectColor,
+  // getProjectColor,
   getProjectName,
   getTotalTimeEntriesAllocations,
   timeLeft,
-  totalAllocations,
+  // totalAllocations,
 } from "src/utils/sprint-utils";
 import type {
   Allocations,
   Projects,
   ResourceAllocations,
+  ResourceAllocationsProject,
   WorkHours,
 } from "src/generated/homeLambdasClient";
 
@@ -20,7 +21,8 @@ import type {
  * Component properties
  */
 interface Props {
-  resourceAllocations: ResourceAllocations[];
+  severaProjectId: ResourceAllocationsProject[];
+  projects: ResourceAllocationsProject[];
   // workHours: WorkHours[];
   // projects: Projects[];
 }
@@ -31,7 +33,8 @@ interface Props {
  * @param props component properties
  */
 const sprintViewProjectsColumns = ({
-  resourceAllocations,
+  severaProjectId,
+  projects
 }: // workHours,
 // projects,
 Props) => {
@@ -46,24 +49,24 @@ Props) => {
       headerName: strings.sprint.myAllocation,
       flex: 2,
       valueGetter: (params) =>
-        getProjectName(params.row, resourceAllocations, projects),
+        getProjectName(params.row, severaProjectId, projects),
       renderCell: (params) => (
         <>
           <Box
             minWidth="45px"
             style={{ marginRight: "10px" }}
             component="span"
-            sx={{
-              bgcolor: getProjectColor(
-                params.row,
-                resourceAllocations,
-                projects
-              ),
-              height: 25,
-              borderRadius: "5px",
-            }}
+            // sx={{
+            //   bgcolor: getProjectColor(
+            //     params.row,
+            //     severaProjectId,
+            //     projects
+            //   ),
+            //   height: 25,
+            //   borderRadius: "5px",
+            // }}
           />
-          {getProjectName(params.row, resourceAllocations, projects)}
+          {getProjectName(params.row, severaProjectId, projects)}
         </>
       ),
     },

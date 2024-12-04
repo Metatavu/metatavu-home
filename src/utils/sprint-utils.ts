@@ -1,6 +1,6 @@
 import config from "src/app/config";
 import type { Person } from "src/generated/client";
-import type { Allocations, Projects, ResourceAllocations, Tasks, User, WorkHours } from "src/generated/homeLambdasClient";
+import type { Allocations, Projects, ResourceAllocations, ResourceAllocationsPhase, ResourceAllocationsProject, Tasks, User, WorkHours } from "src/generated/homeLambdasClient";
 
 /**
  * Retrieve total time entries for an allocation
@@ -42,12 +42,12 @@ export const getTotalTimeEntriesTasks = (task: Tasks, tasks: Tasks[], timeEntrie
  * @param projects list of project associated with the allocations
  */
 export const getProjectName = (
-  allocation: ResourceAllocations,
-  allocations: ResourceAllocations[],
-  projects: Projects[]
+  project: ResourceAllocationsProject,
+  projects: ResourceAllocationsProject[],
+  phase: ResourceAllocationsPhase[]
 ) => {
   if (projects.length) {
-    return projects[allocations.indexOf(allocation)]?.name || "";
+    return projects[projects.indexOf(project)]?.name || "";
   }
   return "";
 };
@@ -59,16 +59,16 @@ export const getProjectName = (
  * @param allocations list of allocations
  * @param projects list of projects associated with allocations
  */
-export const getProjectColor = (
-  allocation: ResourceAllocations,
-  allocations: ResourceAllocations[],
-  projects: Projects[]
-) => {
-  if (projects.length) {
-    return projects[allocations.indexOf(allocation)]?.color || "";
-  }
-  return "";
-};
+// export const getProjectColor = (
+//   allocation: ResourceAllocations,
+//   allocations: ResourceAllocations[],
+//   projects: Projects[]
+// ) => {
+//   if (projects.length) {
+//     return projects[allocations.indexOf(allocation)]?.color || "";
+//   }
+//   return "";
+// };
 
 /**
  * Calculate total time allocated to the project for 2 week period

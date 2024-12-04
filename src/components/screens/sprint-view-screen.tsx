@@ -17,6 +17,7 @@ import type {
   Allocations,
   Projects,
   ResourceAllocations,
+  ResourceAllocationsPhase,
   ResourceAllocationsProject,
   TimeEntries,
   User,
@@ -76,11 +77,10 @@ const SprintViewScreen = () => {
   const todaysDate = new Date().toISOString();
   const sprintStartDate = getSprintStart(todaysDate);
   const sprintEndDate = getSprintEnd(todaysDate);
-  const columns = sprintViewProjectsColumns(
-    resourceAllocations
-    // timeEntries,
-    // projects,
-  );
+  const columns = sprintViewProjectsColumns({
+    severaProjectId: resourceAllocationsProject,
+    projects: resourceAllocationsProject,
+  });
   const setError = useSetAtom(errorAtom);
 
   /**
@@ -103,8 +103,9 @@ const SprintViewScreen = () => {
         await resourceAllocationsApi.getAllocationsBySeveraUserId({
           severaUserId: severaUserId,
         });
+        console.log("Severa User Id", severaUserId);
       console.log(
-        "Is this correct hereeeeeeeeeeeeeeeeee",
+        "Is this fetched resource allocations hereeeeeeeeeeeeeeeeee",
         fetchedResourceAllocations
       );
       setResourceAllocations([fetchedResourceAllocations]);
@@ -239,7 +240,7 @@ const SprintViewScreen = () => {
               localeText={{ noResultsOverlayLabel: strings.sprint.notFound }}
               disableColumnFilter
               hideFooter={true}
-              rows={resourceAllocations}
+              rows={resourceAllocationsProject}
               columns={columns}
             />
             <Box

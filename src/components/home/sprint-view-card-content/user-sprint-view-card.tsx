@@ -5,7 +5,7 @@ import { userProfileAtom } from "src/atoms/auth";
 import type { Person } from "src/generated/client";
 import config from "src/app/config";
 import { useLambdasApi } from "src/hooks/use-api";
-import type { TimeEntries, User } from "src/generated/homeLambdasClient";
+import type { ResourceAllocations, ResourceAllocationsPhase, ResourceAllocationsProject, TimeEntries, User } from "src/generated/homeLambdasClient";
 import { CardContent, Skeleton, Typography } from "@mui/material";
 import SprintViewBarChart from "src/components/charts/sprint-view-bar-chart";
 import type { SprintViewChartData } from "src/types";
@@ -13,6 +13,7 @@ import strings from "src/localization/strings";
 import {
   totalAllocations,
   filterAllocationsAndProjects,
+  getSeveraUserId,
 } from "src/utils/sprint-utils";
 import { errorAtom } from "src/atoms/error";
 import {
@@ -127,17 +128,17 @@ const UserSprintViewCard = () => {
   /**
    * Combines allocations and projects data for chart
    */
-  const createChartData = (): SprintViewChartData[] => {
-    return resourceAllocations.map((allocation, index) => {
-      return {
-        id: index,
-        projectName: resourceAllocationsProject[index].name || "",
-        // timeAllocated: totalAllocations(allocation),
-        // timeEntries: timeEntries[index],
-        // color: projects[index].color || "",
-      };
-    });
-  };
+  // const createChartData = (): SprintViewChartData[] => {
+  //   return resourceAllocations.map((allocation, index) => {
+  //     return {
+  //       resourceAllocationId: index,
+  //       projectName: resourceAllocationsProject[index].name,
+  //       // timeAllocated: totalAllocations(allocation),
+  //       // timeEntries: timeEntries[index],
+  //       // color: projects[index].color || "",
+  //     };
+  //   });
+  // };
 
   /**
    * Renders sprint view bar chart
@@ -146,7 +147,7 @@ const UserSprintViewCard = () => {
     <>
       {resourceAllocations.length ? (
         <CardContent sx={{ display: "flex", justifyContent: "left" }}>
-          <SprintViewBarChart chartData={createChartData()} />
+          {/* <SprintViewBarChart chartData={createChartData()} />  */}
         </CardContent>
       ) : (
         <Typography style={{ paddingLeft: "0" }}>
@@ -156,7 +157,9 @@ const UserSprintViewCard = () => {
     </>
   );
 
+  console.log("Is this correct hereeeeeeeeeeeeeeeeee in user sprint view", resourceAllocations);
   return <>{!loggedInUser || loading ? <Skeleton /> : renderBarChart()}</>;
+  
 };
 
 export default UserSprintViewCard;
