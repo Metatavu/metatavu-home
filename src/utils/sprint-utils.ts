@@ -92,16 +92,16 @@ export const getProjectName = (
  * @param allocations list of allocations
  * @param projects list of projects associated with allocations
  */
-export const timeLeft = (
-  allocation: ResourceAllocations,
-  allocations: ResourceAllocations[],
-  workHours: WorkHours[]
-) => {
-  return (
-    totalAllocations(allocation) -
-      getTotalTimeEntriesAllocations(allocation, allocations, timeEntries) || 0
-  );
-};
+// export const timeLeft = (
+//   allocation: ResourceAllocations,
+//   allocations: ResourceAllocations[],
+//   workHours: WorkHours[]
+// ) => {
+//   return (
+//     totalAllocations(allocation) -
+//       getTotalTimeEntriesAllocations(allocation, allocations, timeEntries) || 0
+//   );
+// };
 
 /**
  * Calculate registered time for the user in the current 2 week period
@@ -126,13 +126,13 @@ export const calculateWorkingLoad = (person?: Person) => {
  * @param allocations allocations
  * @param projects list of running projects
  */
-export const filterAllocationsAndProjects = (resourceAllocation: ResourceAllocations[], projects: ResourceAllocationsProject[]) => {
-  const filteredProjects: ResourceAllocationsProject[] = [];
-  const filteredAllocations = resourceAllocation.filter((allocation) =>
-    projects.find((project) => allocation.project === project.severaProjectId)
+export const filterAllocationsAndProjects = (allocations: Allocations[], projects: Projects[]) => {
+  const filteredProjects: Projects[] = [];
+  const filteredAllocations = allocations.filter((allocation) =>
+    projects.find((project) => allocation.project === project.id)
   );
   for (const allocation of filteredAllocations) {
-    const allocationProject = projects.find((project) => allocation.project === project.severaProjectId);
+    const allocationProject = projects.find((project) => allocation.project === project.id);
     if (allocationProject) filteredProjects.push(allocationProject);
   }
   return { filteredAllocations, filteredProjects };

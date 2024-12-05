@@ -70,6 +70,33 @@ Props) => {
         </>
       ),
     },
+    {
+      field: "Allocation Hours",
+      headerClassName: "header-color",
+      headerName: strings.sprint.timeAllocated,
+      flex: 1,
+      // valueGetter: (params) => getHoursAndMinutes(totalAllocations(params.row)),
+    },
+    {
+      field: "Calculated Allocation Hours",
+      headerClassName: "header-color",
+      headerName: strings.sprint.estimatedTime,
+      flex: 1,
+    },
+    {
+      field: "Task",
+      headerClassName: "header-color",
+      headerName: strings.sprint.taskName,
+      flex: 1,
+    },
+    {
+      field: "User",
+      headerClassName: "header-color",
+      headerName: strings.sprint.assigned,
+      flex: 1,
+    },
+
+    
     // {
     //   field: "allocation",
     //   headerClassName: "header-color",

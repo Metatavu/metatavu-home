@@ -269,18 +269,17 @@ const SprintViewScreen = () => {
                 paddingBottom: "10px",
               }}
             >
-              {/* <Typography>
-                {strings.sprint.unAllocated}
+              <Typography>
+                {/* {strings.sprint.unAllocated} */}
                 <span
-                  style={{
-                    paddingLeft: "5px",
-                    color:
-                      unallocatedTime(resourceAllocations) < 0 ? "red" : "",
-                  }}
+                  // style={{
+                  //   paddingLeft: "5px",
+                  //   color:
+                  //     unallocatedTime(resourceAllocations) < 0 ? "red" : "",
+                  // }}
                 >
-                  {getHoursAndMinutes(unallocatedTime(resourceAllocations))}
                 </span>
-              </Typography> */}
+              </Typography>
               <Typography style={{ paddingRight: "5px" }}>
                 {strings.formatString(
                   strings.sprint.current,
