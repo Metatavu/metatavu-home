@@ -89,25 +89,41 @@ const SprintViewScreen = () => {
   useEffect(() => {
     fetchProjectDetails();
   }, [loggedInUser]);
-
+ 
   /**
    * Fetch allocations, project names and time entries
    */
   const fetchProjectDetails = async () => {
     if (!loggedInUser) return;
+    console.log("Logged in User", loggedInUser);
 
     setLoading(true);
+
     try {
+      // const severaUserId = getSeveraUserId(loggedInUser);
+      // const fetchedResourceAllocations = await resourceAllocationsApi.getAllocationsBySeveraUserId({
+      //     severaUserId
+      //   });
+      //   console.log("Severa User Id", severaUserId);
+      //   console.log("Is this fetched resource allocations hereeeeeeeeeeeeeeeeee", fetchedResourceAllocations);
+        
+        
+      // setResourceAllocations([fetchedResourceAllocations]);
       const severaUserId = getSeveraUserId(loggedInUser);
-      const fetchedResourceAllocations =
-        await resourceAllocationsApi.getAllocationsBySeveraUserId({
-          severaUserId: severaUserId,
-        });
-        console.log("Severa User Id", severaUserId);
-      console.log(
-        "Is this fetched resource allocations hereeeeeeeeeeeeeeeeee",
-        fetchedResourceAllocations
-      );
+      console.log("Severa User ID:", severaUserId);
+  
+      const fetchedResourceAllocations = await resourceAllocationsApi.getAllocationsBySeveraUserId({
+        severaUserId
+      });
+  
+      console.log("Raw API Response:", fetchedResourceAllocations);
+  
+      if (!fetchedResourceAllocations || Object.keys(fetchedResourceAllocations).length === 0) {
+        console.error("Empty or undefined resource allocations:", fetchedResourceAllocations);
+      } else {
+        console.log("Valid Resource Allocations:", fetchedResourceAllocations);
+      }
+  
       setResourceAllocations([fetchedResourceAllocations]);
       // const fetchedAllocations = await allocationsApi.listAllocations({
       //   startDate: new Date(),

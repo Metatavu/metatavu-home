@@ -126,13 +126,13 @@ export const calculateWorkingLoad = (person?: Person) => {
  * @param allocations allocations
  * @param projects list of running projects
  */
-export const filterAllocationsAndProjects = (allocations: Allocations[], projects: Projects[]) => {
-  const filteredProjects: Projects[] = [];
-  const filteredAllocations = allocations.filter((allocation) =>
-    projects.find((project) => allocation.project === project.id)
+export const filterAllocationsAndProjects = (resourceAllocation: ResourceAllocations[], projects: ResourceAllocationsProject[]) => {
+  const filteredProjects: ResourceAllocationsProject[] = [];
+  const filteredAllocations = resourceAllocation.filter((allocation) =>
+    projects.find((project) => allocation.project === project.severaProjectId)
   );
   for (const allocation of filteredAllocations) {
-    const allocationProject = projects.find((project) => allocation.project === project.id);
+    const allocationProject = projects.find((project) => allocation.project === project.severaProjectId);
     if (allocationProject) filteredProjects.push(allocationProject);
   }
   return { filteredAllocations, filteredProjects };
