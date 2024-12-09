@@ -62,7 +62,7 @@ const SprintViewScreen = () => {
   // const [allocations, setAllocations] = useState<Allocations[]>([]);
   const [resourceAllocations, setResourceAllocations] = useState<
     ResourceAllocations[]
-  >([]);
+  >();
   const [resourceAllocationsProject, setResourceAllocationsProject] = useState<
     ResourceAllocationsProject[]
   >([]);
@@ -83,6 +83,9 @@ const SprintViewScreen = () => {
   });
   const setError = useSetAtom(errorAtom);
 
+
+  
+
   /**
    * Get project data if user is logged in
    */
@@ -100,31 +103,44 @@ const SprintViewScreen = () => {
     setLoading(true);
 
     try {
-      // const severaUserId = getSeveraUserId(loggedInUser);
-      // const fetchedResourceAllocations = await resourceAllocationsApi.getAllocationsBySeveraUserId({
-      //     severaUserId
-      //   });
-      //   console.log("Severa User Id", severaUserId);
-      //   console.log("Is this fetched resource allocations hereeeeeeeeeeeeeeeeee", fetchedResourceAllocations);
-        
-        
-      // setResourceAllocations([fetchedResourceAllocations]);
       const severaUserId = getSeveraUserId(loggedInUser);
-      console.log("Severa User ID:", severaUserId);
+      const fetchedResourceAllocations = await resourceAllocationsApi.getAllocationsBySeveraUserId({ severaUserId });
+
+      console.log("Raw Fetched Allocations:", fetchedResourceAllocations);
+      console.log("Type:", typeof fetchedResourceAllocations);
+      console.log("Constructor:", fetchedResourceAllocations.constructor.name);
+      console.log("Keys:", Object.keys(fetchedResourceAllocations));
+      console.log("Values:", Object.values(fetchedResourceAllocations));
   
-      const fetchedResourceAllocations = await resourceAllocationsApi.getAllocationsBySeveraUserId({
-        severaUserId
-      });
+      // Log individual properties
+      console.log("Severa Resource Allocation ID:", fetchedResourceAllocations.severaResourceAllocationId);
+      console.log("Allocation Hours:", fetchedResourceAllocations.allocationHours);
+      console.log("Phase:", fetchedResourceAllocations.phase);
+      console.log("User:", fetchedResourceAllocations.user);
+      console.log("Project:", fetchedResourceAllocations.project);
   
-      console.log("Raw API Response:", fetchedResourceAllocations);
+      // Map to plain object if needed
+      const plainAllocations = JSON.parse(JSON.stringify(fetchedResourceAllocations));
+      console.log("Deserialized Allocations:", plainAllocations);
   
-      if (!fetchedResourceAllocations || Object.keys(fetchedResourceAllocations).length === 0) {
-        console.error("Empty or undefined resource allocations:", fetchedResourceAllocations);
-      } else {
-        console.log("Valid Resource Allocations:", fetchedResourceAllocations);
-      }
+      // Set state
+      setResourceAllocations(Array.isArray(plainAllocations) ? plainAllocations : [plainAllocations]);
+      // const severaUserId = getSeveraUserId(loggedInUser);
+      // console.log("Severa User ID:", severaUserId);
   
-      setResourceAllocations([fetchedResourceAllocations]);
+      // const fetchedResourceAllocations = await resourceAllocationsApi.getAllocationsBySeveraUserId({
+      //   severaUserId
+      // });
+  
+      // console.log("Raw API Response:", fetchedResourceAllocations);
+  
+      // if (!fetchedResourceAllocations || Object.keys(fetchedResourceAllocations).length === 0) {
+      //   console.error("Empty or undefined resource allocations:", fetchedResourceAllocations);
+      // } else {
+      //   console.log("Valid Resource Allocations:", fetchedResourceAllocations);
+      // }
+  
+      // setResourceAllocations([fetchedResourceAllocations]);
       // const fetchedAllocations = await allocationsApi.listAllocations({
       //   startDate: new Date(),
       //   endDate: new Date(),
