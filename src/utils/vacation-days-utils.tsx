@@ -23,7 +23,7 @@ export const renderVacationDaysTextForCard = (user: User) => {
             <Typography color={vacationDaysByYearColor}>
               {user.attributes?.vacationDaysByYear
                 ? parseVacationDays(user.attributes?.vacationDaysByYear)[currentYear]
-                : "Vacation days not found"}
+                : strings.vacationsCard.vacationDaysNotFound}
             </Typography>
           </Grid>
         </Grid>
@@ -35,7 +35,7 @@ export const renderVacationDaysTextForCard = (user: User) => {
             <Typography color={unspentVacationDaysByYearColor}>
               {user.attributes?.unspentVacationDaysByYear
                 ? parseVacationDays(user.attributes?.unspentVacationDaysByYear)[currentYear]
-                : "Unspent vacation days not found"}
+                : strings.vacationsCard.unspentVacationDaysNotFound}
             </Typography>
           </Grid>
         </Grid>
@@ -62,7 +62,7 @@ export const renderVacationDaysTextForScreen = (user: User) => {
           <Typography color={vacationDaysByYearColor} style={{ marginLeft: "8px" }}>
             {user.attributes?.vacationDaysByYear
               ? parseVacationDays(user.attributes?.vacationDaysByYear)[currentYear]
-              : "Vacation days not found"}
+              : strings.vacationsCard.vacationDaysNotFound}
           </Typography>
         </Grid>
         <Grid item style={{ display: "flex", alignItems: "center" }}>
@@ -70,7 +70,7 @@ export const renderVacationDaysTextForScreen = (user: User) => {
           <Typography color={unspentVacationDaysByYearColor} style={{ marginLeft: "8px" }}>
             {user.attributes?.unspentVacationDaysByYear
               ? parseVacationDays(user.attributes?.unspentVacationDaysByYear)[currentYear]
-              : "Unspent vacation days not found"}
+              : strings.vacationsCard.unspentVacationDaysNotFound}
           </Typography>
         </Grid>
       </Grid>

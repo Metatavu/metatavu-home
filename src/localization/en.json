@@ -200,7 +200,9 @@
     "timeOfVacation": "Time of Vacation:",
     "status": "Status:",
     "vacationDays": "Total vacation days: ",
-    "unspentVacationDays": "Unspent vacation days: "
+    "unspentVacationDays": "Unspent vacation days: ",
+    "vacationDaysNotFound": "Vacation days not found",
+    "unspentVacationDaysNotFound": "Unspent vacation days not found"
   },
   "personSelectDropdown": {
     "label": "Filter by Person"
