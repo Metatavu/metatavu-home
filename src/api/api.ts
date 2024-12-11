@@ -17,7 +17,8 @@ import {
   TimeEntriesApi,
   UsersApi,
   QuestionnairesApi,
-  ResourceAllocationsApi
+  ResourceAllocationsApi,
+  PhasesApi
 } from "../generated/homeLambdasClient";
 
 /**
@@ -76,6 +77,7 @@ export const getLambdasApiClient = (accessToken?: string) => {
   return {
     // allocationsApi: new AllocationsApi(getConfiguration()),
     resourceAllocationsApi: new ResourceAllocationsApi(getConfiguration()),
+    phaseApi: new PhasesApi(getConfiguration()),
     projectsApi: new ProjectsApi(getConfiguration()),
     tasksApi: new TasksApi(getConfiguration()),
     timeEntriesApi: new TimeEntriesApi(getConfiguration()),

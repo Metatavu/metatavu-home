@@ -18,6 +18,9 @@ interface Config {
   user: {
     testUserSeveraId: string;
   };
+  phase: {
+    testPhaseSeveraId: string;
+  }
 }
 
 const env = cleanEnv(import.meta.env, {
@@ -27,7 +30,8 @@ const env = cleanEnv(import.meta.env, {
   VITE_API_BASE_URL: url(),
   VITE_FORECAST_USER_ID_OVERRIDE: num({ default: undefined }),
   VITE_HOME_LAMBDAS_BASE_URL: url(),
-  VITE_SEVERA_TEST_USER_ID: str()
+  VITE_SEVERA_TEST_USER_ID: str(),
+  VITE_SEVERA_TEST_PROJECT_ID: str()
 });
 
 const config: Config = {
@@ -47,6 +51,9 @@ const config: Config = {
   },
   user: {
     testUserSeveraId: env.VITE_SEVERA_TEST_USER_ID
+  },
+  phase: {
+    testPhaseSeveraId: env.VITE_SEVERA_TEST_PROJECT_ID
   }
 };
 

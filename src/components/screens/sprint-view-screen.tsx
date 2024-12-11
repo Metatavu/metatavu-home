@@ -85,13 +85,13 @@ const SprintViewScreen = () => {
     phase: resourceAllocations || [],
   });
 
-  const allocationColumns = [
-    { field: "project", headerName: "My allocations", flex: 1 },
-    { field: "calculatedHours", headerName: "Calculated Hours", flex: 1 },
-    { field: "estimateHours", headerName: "Estimate Hours", flex: 1 },
-    { field: "tasks", headerName: "Tasks", flex: 1 },
-    { field: "assignee", headerName: "Assignee", flex: 1 },
-  ];
+  // const allocationColumns = [
+  //   { field: "project", headerName: "My allocations", flex: 1 },
+  //   { field: "calculatedHours", headerName: "Calculated Hours", flex: 1 },
+  //   { field: "estimateHours", headerName: "Estimate Hours", flex: 1 },
+  //   { field: "tasks", headerName: "Tasks", flex: 1 },
+  //   { field: "assignee", headerName: "Assignee", flex: 1 },
+  // ];
 
    const allocationRows = resourceAllocations?.map((allocation) => ({
     id: allocation.severaResourceAllocationId, 
@@ -320,9 +320,9 @@ const SprintViewScreen = () => {
               </Typography>
             </Box>
           </Card>
-          {resourceAllocationsProject.map((project) => (
+          {resourceAllocations?.map((project) => (
             <TaskTable
-              key={project.severaProjectId}
+              key={project.severaResourceAllocationId}
               project={project}
               loggedInPersonId={myTasks ? Number(loggedInUser?.id) : undefined}
               filter={filter}

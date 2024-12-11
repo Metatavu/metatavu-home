@@ -179,3 +179,7 @@ export const filterAllocationsAndProjects = (allocations: Allocations[], project
 export const getSeveraUserId = (user: User | undefined): string => {
   return user?.attributes?.severaUserId ?? config.user.testUserSeveraId ?? "";
 }
+
+export const getSeveraProjectId = (project: ResourceAllocationsProject | undefined): string => {
+  return project?.attributes?.severaProjectId ?? config.phase.testPhaseSeveraId ?? "";
+}
