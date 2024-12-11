@@ -33,9 +33,9 @@ import type {
 
 interface Props {
   severaProjectId: ResourceAllocationsInnerProjects[];
-  projects: ResourceAllocationsInner[];
+  project: ResourceAllocationsInner[];
   resourceAllocations: ResourceAllocationsInner[];
-  users: ResourceAllocationsInner[];
+  user: ResourceAllocationsInner[];
 }
 
 
@@ -47,8 +47,8 @@ interface Props {
  */
 const sprintViewProjectsColumns = ({
   severaProjectId,
-  projects,
-  users
+  project,
+  user
   
 }: // workHours,
 // projects,
@@ -107,7 +107,7 @@ Props) => {
       headerName: strings.sprint.myAllocation,
       flex: 2,
       valueGetter: (params) => {
-        getProjectName(params.row.project, projects);
+        getProjectName(params.row.project, project);
       },
       renderCell: (params) => {
         return (
@@ -115,7 +115,7 @@ Props) => {
             <Box
               component="span"
             />
-            {getProjectName(params.row.project, projects)} {/* Fetch and display project name */}
+            {getProjectName(params.row.project, project)} {/* Fetch and display project name */}
           </>
         );
       },
@@ -127,7 +127,7 @@ Props) => {
       headerName: strings.sprint.assigned,
       flex: 2,
       valueGetter: (params) => {
-        getAssigneName(params.row.assignee, users);
+        getAssigneName(params.row.assignee, user);
       },
       renderCell: (params) => {
         return (
@@ -135,7 +135,7 @@ Props) => {
             <Box
               component="span"
             />
-            {getAssigneName(params.row.assignee, users)} {/* Fetch and display project name */}
+            {getAssigneName(params.row.assignee, user)} {/* Fetch and display project name */}
           </>
         );
       },

@@ -45,11 +45,11 @@ export const getProjectName = (
   project: ResourceAllocationsInnerProjects,
   projects: ResourceAllocationsInner[]
 ) => {
-    const foundProject = projects.find(p => p.projects?.severaProjectId === project.severaProjectId);
+    const foundProject = projects.find(p => p.project?.severaProjectId === project.severaProjectId);
 
     
     if (foundProject) {
-      return foundProject.projects?.name;
+      return foundProject.project?.name;
     }
 };
 
@@ -57,10 +57,10 @@ export const getAssigneName = (
   user: ResourceAllocationsInnerUsers,
   users: ResourceAllocationsInner[]
 ) => {
-    const foundUser = users.find(u => u.users?.severaUserId === user.severaUserId);
+    const foundUser = users.find(u => u.user?.severaUserId === user.severaUserId);
 
     if (foundUser) {
-      return foundUser.users?.name;
+      return foundUser.user?.name;
     }
 }
 

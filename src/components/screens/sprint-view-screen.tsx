@@ -79,9 +79,9 @@ const SprintViewScreen = () => {
   const sprintEndDate = getSprintEnd(todaysDate);
   const columns = sprintViewProjectsColumns({
     severaProjectId: resourceAllocationsProject,
-    projects: resourceAllocations || [],
+    project: resourceAllocations || [],
     resourceAllocations: resourceAllocations || [],
-    users: resourceAllocations || []
+    user: resourceAllocations || []
   });
 
   const allocationColumns = [
@@ -94,11 +94,11 @@ const SprintViewScreen = () => {
 
    const allocationRows = resourceAllocations?.map((allocation) => ({
     id: allocation.severaResourceAllocationId, 
-    project: allocation.projects,
+    project: allocation.project,
     calculatedHours: allocation.calculatedAllocationHours , 
     estimateHours: allocation.allocationHours ,
     tasks: allocation.phase , 
-    assignee: allocation.users ,
+    assignee: allocation.user ,
   }));
 
 
