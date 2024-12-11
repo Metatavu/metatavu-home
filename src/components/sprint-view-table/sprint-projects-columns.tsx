@@ -3,6 +3,8 @@ import { Box } from "@mui/material";
 import strings from "../../localization/strings";
 import { getHoursAndMinutes } from "src/utils/time-utils";
 import {
+  getAssigneName,
+  getPhaseName,
   // getProjectColor,
   getProjectName,
   getTotalTimeEntriesAllocations,
@@ -13,19 +15,22 @@ import type {
   Allocations,
   Projects,
   ResourceAllocations,
+  ResourceAllocationsInner,
+  ResourceAllocationsInnerProjects,
+  ResourceAllocationsInnerUsers,
   ResourceAllocationsProject,
   WorkHours,
 } from "src/generated/homeLambdasClient";
 
-/**
- * Component properties
- */
 interface Props {
-  severaProjectId: ResourceAllocationsProject[];
-  projects: ResourceAllocationsProject[];
-  // workHours: WorkHours[];
-  // projects: Projects[];
+  severaProjectId: ResourceAllocationsInnerProjects[];
+  project: ResourceAllocationsInner[];
+  resourceAllocations: ResourceAllocationsInner[];
+  user: ResourceAllocationsInner[];
+  phase: ResourceAllocationsInner[];
 }
+
+
 
 /**
  * Sprint view projects table columns component
@@ -33,102 +38,169 @@ interface Props {
  * @param props component properties
  */
 const sprintViewProjectsColumns = ({
-  severaProjectId,
-  projects
-}: // workHours,
-// projects,
+  project,
+  user,
+  phase
+  
+}:
+
 Props) => {
   /**
    * Define columns for data grid
    */
   const columns: GridColDef[] = [
     {
-      field: "projectName",
+      field: "project",
       headerClassName: "header-color",
       filterable: false,
       headerName: strings.sprint.myAllocation,
       flex: 2,
-      valueGetter: (params) =>
-        getProjectName(params.row, severaProjectId, projects),
-      renderCell: (params) => (
-        <>
-          <Box
-            minWidth="45px"
-            style={{ marginRight: "10px" }}
-            component="span"
-            // sx={{
-            //   bgcolor: getProjectColor(
-            //     params.row,
-            //     severaProjectId,
-            //     projects
-            //   ),
-            //   height: 25,
-            //   borderRadius: "5px",
-            // }}
-          />
-          {getProjectName(params.row, severaProjectId, projects)}
-        </>
-      ),
+      valueGetter: (params) => {
+        getProjectName(params.row.project, project);
+      },
+      renderCell: (params) => {
+        return (
+          <>
+            <Box
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+
+            />
+            {getProjectName(params.row.project, project)} {/* Fetch and display project name */}
+          </>
+        );
+      },
     },
     {
-      field: "Allocation Hours",
+      field: "calculatedHours",
       headerClassName: "header-color",
+      filterable: false,
       headerName: strings.sprint.timeAllocated,
       flex: 1,
-      // valueGetter: (params) => getHoursAndMinutes(totalAllocations(params.row)),
+      renderCell: (params) => {
+        return (
+          <>
+            <Box
+            marginLeft={"50px"}
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+
+            />
+            {params.value} {/* Fetch and display project name */}
+          </>
+        );
+      }
     },
     {
-      field: "Calculated Allocation Hours",
+      field: "estimateHours",
       headerClassName: "header-color",
+      filterable: false,
       headerName: strings.sprint.estimatedTime,
       flex: 1,
+      renderCell: (params) => {
+        return (
+          <>
+            <Box
+                        marginLeft={"50px"}
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+
+            />
+            {params.value} {/* Fetch and display project name */}
+          </>
+        );
+      }
     },
     {
-      field: "Task",
+      field: "Tasks",
       headerClassName: "header-color",
+      filterable: false,
       headerName: strings.sprint.taskName,
       flex: 1,
+      valueGetter: (params) => {
+        getPhaseName(params.row.tasks, phase);
+      },
+      renderCell: (params) => {
+        return (
+          <>
+            <Box
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+            />
+            {getPhaseName(params.row.tasks, phase)} {/* Fetch and display project name */}
+          </>
+        );
+      },
     },
     {
-      field: "User",
+      field: "Assignee",
       headerClassName: "header-color",
+      filterable: false,
       headerName: strings.sprint.assigned,
-      flex: 1,
-    },
+      flex: 2,
+      valueGetter: (params) => {
+        getAssigneName(params.row.assignee, user);
+      },
+      renderCell: (params) => {
+        return (
+          <>
+            <Box
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
 
-    
-    // {
-    //   field: "allocation",
+            />
+            {getAssigneName(params.row.assignee, user)} {/* Fetch and display project name */}
+          </>
+        );
+      },
+    },
+        // {
+    //   field: "projectName",
     //   headerClassName: "header-color",
-    //   headerName: strings.sprint.allocation,
-    //   flex: 1,
-    //   valueGetter: (params) => getHoursAndMinutes(totalAllocations(params.row)),
+    //   filterable: false,
+    //   headerName: strings.sprint.myAllocation,
+    //   flex: 2,
+    //   valueGetter: (params) =>
+    //     getProjectName(params.row, severaProjectId, projects),
+    //   renderCell: (params) => (
+    //     <>
+    //       <Box
+    //         minWidth="45px"
+    //         style={{ marginRight: "10px" }}
+    //         component="span"
+    //         // sx={{
+    //         //   bgcolor: getProjectColor(
+    //         //     params.row,
+    //         //     severaProjectId,
+    //         //     projects
+    //         //   ),
+    //         //   height: 25,
+    //         //   borderRadius: "5px",
+    //         // }}
+    //       />
+    //       {getProjectName(params.row, severaProjectId, projects)}
+    //     </>
+    //   ),
     // },
     // {
-    //   field: "timeEntries",
+    //   field: "project",
     //   headerClassName: "header-color",
-    //   headerName: strings.sprint.timeEntries,
-    //   flex: 1,
-    //   valueGetter: (params) =>
-    //     getHoursAndMinutes(
-    //       getTotalTimeEntriesAllocations(
-    //         params.row,
-    //         resourceAllocations,
-    //         workHours
-    //       )
-    //     ),
-    // },
-    // {
-    //   field: "allocationsLeft",
-    //   headerClassName: "header-color",
-    //   headerName: strings.sprint.allocationLeft,
-    //   flex: 1,
-    //   cellClassName: (params) =>
-    //     timeLeft(params.row, resourceAllocations, timeEntries) < 0
-    //       ? "negative-value"
-    //       : "",
-    //   valueGetter: (params) =>
-    //     getHoursAndMinutes(timeLeft(params.row, allocations, timeEntries)),
+    //   filterable: false,
+    //   headerName: strings.sprint.myAllocation,
+    //   flex: 2,
+    //   renderCell: (params) => (
+    //     <>
+    //       <Box
+    //         component="span"
+    //       />
+    //       {params.value}
+    //     </>
+    //   ),
     // },
   ];
   return columns;

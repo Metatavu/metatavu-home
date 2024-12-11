@@ -16,9 +16,9 @@ import { userProfileAtom } from "src/atoms/auth";
 import type {
   Allocations,
   Projects,
-  ResourceAllocations,
-  ResourceAllocationsPhase,
-  ResourceAllocationsProject,
+  ResourceAllocationsInner,
+  ResourceAllocationsInnerPhase,
+  ResourceAllocationsInnerProjects,
   TimeEntries,
   User,
 } from "src/generated/homeLambdasClient/models/";
@@ -61,13 +61,13 @@ const SprintViewScreen = () => {
   // );
   // const [allocations, setAllocations] = useState<Allocations[]>([]);
   const [resourceAllocations, setResourceAllocations] = useState<
-    ResourceAllocations[]
+    ResourceAllocationsInner[]
   >();
   const [resourceAllocationsProject, setResourceAllocationsProject] = useState<
-    ResourceAllocationsProject[]
+    ResourceAllocationsInnerProjects[]
   >([]);
   const [resourceAllocationsPhase, setResourceAllocationsPhase] = useState<
-    ResourceAllocationsPhase[]
+    ResourceAllocationsInnerPhase[]
   >([]);
   // const [projects, setProjects] = useState<Projects[]>([]);
   // const [timeEntries, setTimeEntries] = useState<number[]>([]);
@@ -79,8 +79,31 @@ const SprintViewScreen = () => {
   const sprintEndDate = getSprintEnd(todaysDate);
   const columns = sprintViewProjectsColumns({
     severaProjectId: resourceAllocationsProject,
-    projects: resourceAllocationsProject,
+    project: resourceAllocations || [],
+    resourceAllocations: resourceAllocations || [],
+    user: resourceAllocations || [],
+    phase: resourceAllocations || [],
   });
+
+  // const allocationColumns = [
+  //   { field: "project", headerName: "My allocations", flex: 1 },
+  //   { field: "calculatedHours", headerName: "Calculated Hours", flex: 1 },
+  //   { field: "estimateHours", headerName: "Estimate Hours", flex: 1 },
+  //   { field: "tasks", headerName: "Tasks", flex: 1 },
+  //   { field: "assignee", headerName: "Assignee", flex: 1 },
+  // ];
+
+   const allocationRows = resourceAllocations?.map((allocation) => ({
+    id: allocation.severaResourceAllocationId, 
+    project: allocation.project,
+    calculatedHours: allocation.calculatedAllocationHours , 
+    estimateHours: allocation.allocationHours ,
+    tasks: allocation.phase , 
+    assignee: allocation.user ,
+  }));
+
+
+
   const setError = useSetAtom(errorAtom);
 
 
@@ -98,7 +121,6 @@ const SprintViewScreen = () => {
    */
   const fetchProjectDetails = async () => {
     if (!loggedInUser) return;
-    console.log("Logged in User", loggedInUser);
 
     setLoading(true);
 
@@ -106,25 +128,15 @@ const SprintViewScreen = () => {
       const severaUserId = getSeveraUserId(loggedInUser);
       const fetchedResourceAllocations = await resourceAllocationsApi.getAllocationsBySeveraUserId({ severaUserId });
 
-      console.log("Raw Fetched Allocations:", fetchedResourceAllocations);
-      console.log("Type:", typeof fetchedResourceAllocations);
-      console.log("Constructor:", fetchedResourceAllocations.constructor.name);
-      console.log("Keys:", Object.keys(fetchedResourceAllocations));
-      console.log("Values:", Object.values(fetchedResourceAllocations));
+   
   
-      // Log individual properties
-      console.log("Severa Resource Allocation ID:", fetchedResourceAllocations.severaResourceAllocationId);
-      console.log("Allocation Hours:", fetchedResourceAllocations.allocationHours);
-      console.log("Phase:", fetchedResourceAllocations.phase);
-      console.log("User:", fetchedResourceAllocations.user);
-      console.log("Project:", fetchedResourceAllocations.project);
+
+
+      setResourceAllocations(fetchedResourceAllocations);
   
-      // Map to plain object if needed
-      const plainAllocations = JSON.parse(JSON.stringify(fetchedResourceAllocations));
-      console.log("Deserialized Allocations:", plainAllocations);
+
   
       // Set state
-      setResourceAllocations(Array.isArray(plainAllocations) ? plainAllocations : [plainAllocations]);
       // const severaUserId = getSeveraUserId(loggedInUser);
       // console.log("Severa User ID:", severaUserId);
   
@@ -272,9 +284,12 @@ const SprintViewScreen = () => {
               localeText={{ noResultsOverlayLabel: strings.sprint.notFound }}
               disableColumnFilter
               hideFooter={true}
-              rows={resourceAllocationsProject}
+              rows={allocationRows || []}
               columns={columns}
             />
+            {/* Add Hello here */}
+
+              
             <Box
               sx={{
                 backgroundColor: "#e6e6e6",
@@ -286,7 +301,7 @@ const SprintViewScreen = () => {
               }}
             >
               <Typography>
-                {/* {strings.sprint.unAllocated} */}
+
                 <span
                   // style={{
                   //   paddingLeft: "5px",
@@ -305,9 +320,9 @@ const SprintViewScreen = () => {
               </Typography>
             </Box>
           </Card>
-          {resourceAllocationsProject.map((project) => (
+          {resourceAllocations?.map((project) => (
             <TaskTable
-              key={project.severaProjectId}
+              key={project.severaResourceAllocationId}
               project={project}
               loggedInPersonId={myTasks ? Number(loggedInUser?.id) : undefined}
               filter={filter}

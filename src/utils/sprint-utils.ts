@@ -1,6 +1,6 @@
 import config from "src/app/config";
 import type { Person } from "src/generated/client";
-import type { Allocations, Projects, ResourceAllocations, ResourceAllocationsPhase, ResourceAllocationsProject, Tasks, User, WorkHours } from "src/generated/homeLambdasClient";
+import type { Allocations, Projects, ResourceAllocations, ResourceAllocationsInner, ResourceAllocationsInnerPhase, ResourceAllocationsInnerProjects, ResourceAllocationsInnerUsers, ResourceAllocationsPhase, ResourceAllocationsProject, Tasks, User, WorkHours } from "src/generated/homeLambdasClient";
 
 /**
  * Retrieve total time entries for an allocation
@@ -42,15 +42,52 @@ export const getTotalTimeEntriesTasks = (task: Tasks, tasks: Tasks[], timeEntrie
  * @param projects list of project associated with the allocations
  */
 export const getProjectName = (
-  project: ResourceAllocationsProject,
-  projects: ResourceAllocationsProject[],
-  phase: ResourceAllocationsPhase[]
+  project: ResourceAllocationsInnerProjects,
+  projects: ResourceAllocationsInner[]
 ) => {
-  if (projects.length) {
-    return projects[projects.indexOf(project)]?.name || "";
-  }
-  return "";
+    const foundProject = projects.find(p => p.project?.severaProjectId === project.severaProjectId);
+
+    
+    if (foundProject) {
+      return foundProject.project?.name;
+    }
 };
+
+export const getAssigneName = (
+  user: ResourceAllocationsInnerUsers,
+  users: ResourceAllocationsInner[]
+) => {
+    const foundUser = users.find(u => u.user?.severaUserId === user.severaUserId);
+
+    if (foundUser) {
+      return foundUser.user?.name;
+    }
+}
+
+export const getPhaseName = (
+  phase: ResourceAllocationsInnerPhase,
+  phases: ResourceAllocationsInner[]
+) => {
+    const foundPhase = phases.find(p => p.phase?.severaPhaseId === phase.severaPhaseId);
+
+    if (foundPhase) {
+      return foundPhase.phase?.name;
+    }
+}
+
+
+// export const getAllocationHour = (
+//   allocation: ResourceAllocationsInner,
+//   allocations: ResourceAllocationsInner[],
+// ) => {
+//   if (workHours.length) {
+//     return workHours[allocations.indexOf(allocation)] || 0;
+//   }
+//   return 0;
+// }
+// )
+
+
 
 /**
  * Get project color
@@ -141,4 +178,8 @@ export const filterAllocationsAndProjects = (allocations: Allocations[], project
 
 export const getSeveraUserId = (user: User | undefined): string => {
   return user?.attributes?.severaUserId ?? config.user.testUserSeveraId ?? "";
+}
+
+export const getSeveraProjectId = (project: ResourceAllocationsProject | undefined): string => {
+  return project?.attributes?.severaProjectId ?? config.phase.testPhaseSeveraId ?? "";
 }

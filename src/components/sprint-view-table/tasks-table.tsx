@@ -1,5 +1,5 @@
 import { Box, Card, CircularProgress, IconButton, Typography } from "@mui/material";
-import type { Projects, Tasks, TimeEntries } from "src/generated/homeLambdasClient";
+import type { Projects, ResourceAllocationsInner, ResourceAllocationsInnerPhase, ResourceAllocationsInnerProject, Tasks, TimeEntries } from "src/generated/homeLambdasClient";
 import { DataGrid } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
 import { useLambdasApi } from "src/hooks/use-api";
@@ -9,14 +9,16 @@ import strings from "src/localization/strings";
 import sprintViewTasksColumns from "./sprint-tasks-columns";
 import { errorAtom } from "src/atoms/error";
 import { useSetAtom } from "jotai";
+import { getSeveraProjectId } from "src/utils/sprint-utils";
 
 /**
  * Component properties
  */
 interface Props {
-  project: Projects;
+  project: ResourceAllocationsInner;
   loggedInPersonId?: number;
   filter?: string;
+
 }
 
 /**
@@ -25,12 +27,13 @@ interface Props {
  * @param props component properties
  */
 const TaskTable = ({ project, loggedInPersonId, filter }: Props) => {
-  const { tasksApi, timeEntriesApi } = useLambdasApi();
-  const [tasks, setTasks] = useState<Tasks[]>([]);
+  const { tasksApi, timeEntriesApi, phaseApi } = useLambdasApi();
+  // const [tasks, setTasks] = useState<Tasks[]>([]);
+  const [phase, setPhase] = useState<ResourceAllocationsInnerPhase[]>();
   const [timeEntries, setTimeEntries] = useState<number[]>([]);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const columns = sprintViewTasksColumns({ tasks, timeEntries });
+  // const columns = sprintViewTasksColumns({ phase, timeEntries });
   const setError = useSetAtom(errorAtom);
 
   /**
@@ -46,7 +49,7 @@ const TaskTable = ({ project, loggedInPersonId, filter }: Props) => {
    * Handle loggenInPersonId change
    */
   useEffect(() => {
-    setTasks([]);
+    setPhase([]);
     setOpen(false);
   }, [loggedInPersonId]);
 
@@ -55,50 +58,47 @@ const TaskTable = ({ project, loggedInPersonId, filter }: Props) => {
    */
   const getTasksAndTimeEntries = async () => {
     setLoading(true);
-    if (!tasks.length || !timeEntries.length) {
+    if (!(phase?.length) || !(timeEntries?.length)) {
       try {
-        const fetchedTasks = !loggedInPersonId
-          ? await tasksApi.listProjectTasks({ projectId: project.id })
-          : await tasksApi
-              .listProjectTasks({ projectId: project.id })
-              .then((result) =>
-                result.filter((task) => task.assignedPersons?.includes(loggedInPersonId || 0))
-              );
+        const severaProjectId = getSeveraProjectId(project);
+        const fetchedTasks = await phaseApi.getPhasesBySeveraProjectId({ severaProjectId: severaProjectId || "" })
 
-        setTasks(fetchedTasks);
-        const fetchedTimeEntries = await Promise.all(
-          fetchedTasks.map(async (task) => {
-            try {
-              if (project.id) {
-                const totalTimeEntries = await timeEntriesApi.listProjectTimeEntries({
-                  projectId: project.id,
-                  taskId: task.id
-                });
-                let totalMinutes = 0;
-                totalTimeEntries.forEach((timeEntry: TimeEntries) => {
-                  if (loggedInPersonId && timeEntry.person === loggedInPersonId) {
-                    totalMinutes += timeEntry.timeRegistered || 0;
-                  }
-                  if (!loggedInPersonId) {
-                    totalMinutes += timeEntry.timeRegistered || 0;
-                  }
-                });
-                return totalMinutes;
-              }
-            } catch (error) {
-              const message: string = strings
-                .formatString(
-                  strings.sprintRequestError.fetchTasksError,
-                  task.id || `${strings.sprintRequestError.fetchTaskIdError}`,
-                  error as string
-                )
-                .toString();
-              setError(message);
-            }
-            return 0;
-          })
-        );
-        setTimeEntries(fetchedTimeEntries);
+        console.log("Fetching tasks here", fetchedTasks);
+
+        // setPhase(fetchedTasks);
+        // const fetchedTimeEntries = await Promise.all(
+        //   fetchedTasks.map(async (task) => {
+        //     try {
+        //       if (project.id) {
+        //         const totalTimeEntries = await timeEntriesApi.listProjectTimeEntries({
+        //           projectId: project.id,
+        //           taskId: task.id
+        //         });
+        //         let totalMinutes = 0;
+        //         totalTimeEntries.forEach((timeEntry: TimeEntries) => {
+        //           if (loggedInPersonId && timeEntry.person === loggedInPersonId) {
+        //             totalMinutes += timeEntry.timeRegistered || 0;
+        //           }
+        //           if (!loggedInPersonId) {
+        //             totalMinutes += timeEntry.timeRegistered || 0;
+        //           }
+        //         });
+        //         return totalMinutes;
+        //       }
+        //     } catch (error) {
+        //       const message: string = strings
+        //         .formatString(
+        //           strings.sprintRequestError.fetchTasksError,
+        //           task.id || `${strings.sprintRequestError.fetchTaskIdError}`,
+        //           error as string
+        //         )
+        //         .toString();
+        //       setError(message);
+        //     }
+        //     return 0;
+        //   })
+        // );
+        // setTimeEntries(fetchedTimeEntries);
       } catch (error) {
         setError(`${strings.sprintRequestError.fetchTimeEntriesError} ${error}`);
       }
@@ -125,6 +125,7 @@ const TaskTable = ({ project, loggedInPersonId, filter }: Props) => {
         }
       }}
     >
+      Task Table
       <IconButton onClick={() => setOpen(!open)}>
         {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
       </IconButton>
@@ -142,33 +143,34 @@ const TaskTable = ({ project, loggedInPersonId, filter }: Props) => {
               />
             </Box>
           ) : (
-            <DataGrid
-              sx={{
-                backgroundColor: "#f6f6f6",
-                borderTop: 0,
-                borderLeft: 0,
-                borderRight: 0,
-                borderBottom: 0,
-                "& .header-color": {
-                  backgroundColor: "#f2f2f2"
-                }
-              }}
-              autoHeight={true}
-              localeText={{ noResultsOverlayLabel: strings.sprint.notFound }}
-              disableColumnFilter
-              hideFooter={true}
-              filterModel={{
-                items: [
-                  {
-                    field: "status",
-                    operator: "contains",
-                    value: filter
-                  }
-                ]
-              }}
-              rows={tasks}
-              columns={columns}
-            />
+            // <DataGrid
+            //   sx={{
+            //     backgroundColor: "#f6f6f6",
+            //     borderTop: 0,
+            //     borderLeft: 0,
+            //     borderRight: 0,
+            //     borderBottom: 0,
+            //     "& .header-color": {
+            //       backgroundColor: "#f2f2f2"
+            //     }
+            //   }}
+            //   autoHeight={true}
+            //   localeText={{ noResultsOverlayLabel: strings.sprint.notFound }}
+            //   disableColumnFilter
+            //   hideFooter={true}
+            //   filterModel={{
+            //     items: [
+            //       {
+            //         field: "status",
+            //         operator: "contains",
+            //         value: filter
+            //       }
+            //     ]
+            //   }}
+            //   // rows={tasks}
+            //   // columns={columns}
+            // />
+            console.log("Tasks here")
           )}
         </>
       )}
