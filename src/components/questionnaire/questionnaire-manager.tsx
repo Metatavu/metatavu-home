@@ -5,6 +5,7 @@ import type { Questionnaire } from "src/generated/homeLambdasClient";
 import strings from "src/localization/strings";
 import type { QuestionnairePreviewMode } from "src/types";
 import QuestionnaireFillMode from "./questionnaires-fill-mode";
+import QuestionnaireEditMode from "./questionnaires-edit-mode";
 import { useAtomValue, useSetAtom } from "jotai";
 import { useParams } from "react-router";
 import { errorAtom } from "src/atoms/error";
@@ -198,6 +199,12 @@ const QuestionnaireManager = ({ mode }: Props) => {
             handleRadioChange={handleRadioChange}
           />
         );
+        case "EDIT":
+          return (
+            <QuestionnaireEditMode
+              questionnaire={questionnaire}
+            />
+          );
       default:
         return null;
     }
