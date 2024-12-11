@@ -1,6 +1,6 @@
 import config from "src/app/config";
 import type { Person } from "src/generated/client";
-import type { Allocations, Projects, ResourceAllocations, ResourceAllocationsPhase, ResourceAllocationsProject, Tasks, User, WorkHours } from "src/generated/homeLambdasClient";
+import type { Allocations, Projects, ResourceAllocations, ResourceAllocationsInner, ResourceAllocationsInnerProjects, ResourceAllocationsInnerUsers, ResourceAllocationsPhase, ResourceAllocationsProject, Tasks, User, WorkHours } from "src/generated/homeLambdasClient";
 
 /**
  * Retrieve total time entries for an allocation
@@ -42,15 +42,29 @@ export const getTotalTimeEntriesTasks = (task: Tasks, tasks: Tasks[], timeEntrie
  * @param projects list of project associated with the allocations
  */
 export const getProjectName = (
-  project: ResourceAllocationsProject,
-  projects: ResourceAllocationsProject[],
-  phase: ResourceAllocationsPhase[]
+  project: ResourceAllocationsInnerProjects,
+  projects: ResourceAllocationsInner[]
 ) => {
-  if (projects.length) {
-    return projects[projects.indexOf(project)]?.name || "";
-  }
-  return "";
+    const foundProject = projects.find(p => p.projects?.severaProjectId === project.severaProjectId);
+
+    
+    if (foundProject) {
+      return foundProject.projects?.name;
+    }
 };
+
+export const getAssigneName = (
+  user: ResourceAllocationsInnerUsers,
+  users: ResourceAllocationsInner[]
+) => {
+    const foundUser = users.find(u => u.users?.severaUserId === user.severaUserId);
+
+    if (foundUser) {
+      return foundUser.users?.name;
+    }
+}
+
+
 
 /**
  * Get project color

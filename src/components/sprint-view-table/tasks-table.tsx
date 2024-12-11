@@ -125,6 +125,7 @@ const TaskTable = ({ project, loggedInPersonId, filter }: Props) => {
         }
       }}
     >
+      Where tf is this ?
       <IconButton onClick={() => setOpen(!open)}>
         {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
       </IconButton>
