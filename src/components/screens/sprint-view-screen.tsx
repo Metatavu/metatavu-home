@@ -81,7 +81,8 @@ const SprintViewScreen = () => {
     severaProjectId: resourceAllocationsProject,
     project: resourceAllocations || [],
     resourceAllocations: resourceAllocations || [],
-    user: resourceAllocations || []
+    user: resourceAllocations || [],
+    phase: resourceAllocations || [],
   });
 
   const allocationColumns = [

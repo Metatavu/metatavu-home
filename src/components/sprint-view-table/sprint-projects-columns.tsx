@@ -4,6 +4,7 @@ import strings from "../../localization/strings";
 import { getHoursAndMinutes } from "src/utils/time-utils";
 import {
   getAssigneName,
+  getPhaseName,
   // getProjectColor,
   getProjectName,
   getTotalTimeEntriesAllocations,
@@ -21,21 +22,12 @@ import type {
   WorkHours,
 } from "src/generated/homeLambdasClient";
 
-/**
- * Component properties
- */
-// interface Props {
-//   severaProjectId: ResourceAllocationsProject[];
-//   projects: ResourceAllocationsProject[];
-//   // workHours: WorkHours[];
-//   // projects: Projects[];
-// }
-
 interface Props {
   severaProjectId: ResourceAllocationsInnerProjects[];
   project: ResourceAllocationsInner[];
   resourceAllocations: ResourceAllocationsInner[];
   user: ResourceAllocationsInner[];
+  phase: ResourceAllocationsInner[];
 }
 
 
@@ -46,18 +38,112 @@ interface Props {
  * @param props component properties
  */
 const sprintViewProjectsColumns = ({
-  severaProjectId,
   project,
-  user
+  user,
+  phase
   
-}: // workHours,
-// projects,
+}:
+
 Props) => {
   /**
    * Define columns for data grid
    */
   const columns: GridColDef[] = [
-    // {
+    {
+      field: "project",
+      headerClassName: "header-color",
+      filterable: false,
+      headerName: strings.sprint.myAllocation,
+      flex: 2,
+      valueGetter: (params) => {
+        getProjectName(params.row.project, project);
+      },
+      renderCell: (params) => {
+        return (
+          <>
+            <Box
+              component="span"
+            />
+            {getProjectName(params.row.project, project)} {/* Fetch and display project name */}
+          </>
+        );
+      },
+    },
+    {
+      field: "calculatedHours",
+      headerClassName: "header-color",
+      filterable: false,
+      headerName: strings.sprint.timeAllocated,
+      flex: 2,
+      renderCell: (params) => {
+        return (
+          <>
+            <Box
+              component="span"
+            />
+            {params.value} {/* Fetch and display project name */}
+          </>
+        );
+      }
+    },
+    {
+      field: "estimateHours",
+      headerClassName: "header-color",
+      filterable: false,
+      headerName: strings.sprint.estimatedTime,
+      flex: 2,
+      renderCell: (params) => {
+        return (
+          <>
+            <Box
+              component="span"
+            />
+            {params.value} {/* Fetch and display project name */}
+          </>
+        );
+      }
+    },
+    {
+      field: "Tasks",
+      headerClassName: "header-color",
+      filterable: false,
+      headerName: strings.sprint.taskName,
+      flex: 2,
+      valueGetter: (params) => {
+        getPhaseName(params.row.tasks, phase);
+      },
+      renderCell: (params) => {
+        return (
+          <>
+            <Box
+              component="span"
+            />
+            {getPhaseName(params.row.tasks, phase)} {/* Fetch and display project name */}
+          </>
+        );
+      },
+    },
+    {
+      field: "Assignee",
+      headerClassName: "header-color",
+      filterable: false,
+      headerName: strings.sprint.assigned,
+      flex: 2,
+      valueGetter: (params) => {
+        getAssigneName(params.row.assignee, user);
+      },
+      renderCell: (params) => {
+        return (
+          <>
+            <Box
+              component="span"
+            />
+            {getAssigneName(params.row.assignee, user)} {/* Fetch and display project name */}
+          </>
+        );
+      },
+    },
+        // {
     //   field: "projectName",
     //   headerClassName: "header-color",
     //   filterable: false,
@@ -99,106 +185,6 @@ Props) => {
     //       {params.value}
     //     </>
     //   ),
-    // },
-    {
-      field: "project",
-      headerClassName: "header-color",
-      filterable: false,
-      headerName: strings.sprint.myAllocation,
-      flex: 2,
-      valueGetter: (params) => {
-        getProjectName(params.row.project, project);
-      },
-      renderCell: (params) => {
-        return (
-          <>
-            <Box
-              component="span"
-            />
-            {getProjectName(params.row.project, project)} {/* Fetch and display project name */}
-          </>
-        );
-      },
-    },
-    {
-      field: "Assignee",
-      headerClassName: "header-color",
-      filterable: false,
-      headerName: strings.sprint.assigned,
-      flex: 2,
-      valueGetter: (params) => {
-        getAssigneName(params.row.assignee, user);
-      },
-      renderCell: (params) => {
-        return (
-          <>
-            <Box
-              component="span"
-            />
-            {getAssigneName(params.row.assignee, user)} {/* Fetch and display project name */}
-          </>
-        );
-      },
-    },
-    // {
-    //   field: "Allocation Hours",
-    //   headerClassName: "header-color",
-    //   headerName: strings.sprint.timeAllocated,
-    //   flex: 1,
-    //   // valueGetter: (params) => getHoursAndMinutes(totalAllocations(params.row)),
-    // },
-    // {
-    //   field: "Calculated Allocation Hours",
-    //   headerClassName: "header-color",
-    //   headerName: strings.sprint.estimatedTime,
-    //   flex: 1,
-    // },
-    // {
-    //   field: "Task",
-    //   headerClassName: "header-color",
-    //   headerName: strings.sprint.taskName,
-    //   flex: 1,
-    // },
-    // {
-    //   field: "User",
-    //   headerClassName: "header-color",
-    //   headerName: strings.sprint.assigned,
-    //   flex: 1,
-    // },
-
-    
-    // {
-    //   field: "allocation",
-    //   headerClassName: "header-color",
-    //   headerName: strings.sprint.allocation,
-    //   flex: 1,
-    //   valueGetter: (params) => getHoursAndMinutes(totalAllocations(params.row)),
-    // },
-    // {
-    //   field: "timeEntries",
-    //   headerClassName: "header-color",
-    //   headerName: strings.sprint.timeEntries,
-    //   flex: 1,
-    //   valueGetter: (params) =>
-    //     getHoursAndMinutes(
-    //       getTotalTimeEntriesAllocations(
-    //         params.row,
-    //         resourceAllocations,
-    //         workHours
-    //       )
-    //     ),
-    // },
-    // {
-    //   field: "allocationsLeft",
-    //   headerClassName: "header-color",
-    //   headerName: strings.sprint.allocationLeft,
-    //   flex: 1,
-    //   cellClassName: (params) =>
-    //     timeLeft(params.row, resourceAllocations, timeEntries) < 0
-    //       ? "negative-value"
-    //       : "",
-    //   valueGetter: (params) =>
-    //     getHoursAndMinutes(timeLeft(params.row, allocations, timeEntries)),
     // },
   ];
   return columns;

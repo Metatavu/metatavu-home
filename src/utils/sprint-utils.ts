@@ -1,6 +1,6 @@
 import config from "src/app/config";
 import type { Person } from "src/generated/client";
-import type { Allocations, Projects, ResourceAllocations, ResourceAllocationsInner, ResourceAllocationsInnerProjects, ResourceAllocationsInnerUsers, ResourceAllocationsPhase, ResourceAllocationsProject, Tasks, User, WorkHours } from "src/generated/homeLambdasClient";
+import type { Allocations, Projects, ResourceAllocations, ResourceAllocationsInner, ResourceAllocationsInnerPhase, ResourceAllocationsInnerProjects, ResourceAllocationsInnerUsers, ResourceAllocationsPhase, ResourceAllocationsProject, Tasks, User, WorkHours } from "src/generated/homeLambdasClient";
 
 /**
  * Retrieve total time entries for an allocation
@@ -63,6 +63,29 @@ export const getAssigneName = (
       return foundUser.user?.name;
     }
 }
+
+export const getPhaseName = (
+  phase: ResourceAllocationsInnerPhase,
+  phases: ResourceAllocationsInner[]
+) => {
+    const foundPhase = phases.find(p => p.phase?.severaPhaseId === phase.severaPhaseId);
+
+    if (foundPhase) {
+      return foundPhase.phase?.name;
+    }
+}
+
+
+// export const getAllocationHour = (
+//   allocation: ResourceAllocationsInner,
+//   allocations: ResourceAllocationsInner[],
+// ) => {
+//   if (workHours.length) {
+//     return workHours[allocations.indexOf(allocation)] || 0;
+//   }
+//   return 0;
+// }
+// )
 
 
 
