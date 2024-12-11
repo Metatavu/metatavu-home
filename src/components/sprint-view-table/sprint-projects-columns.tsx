@@ -62,7 +62,10 @@ Props) => {
         return (
           <>
             <Box
-              component="span"
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+
             />
             {getProjectName(params.row.project, project)} {/* Fetch and display project name */}
           </>
@@ -74,12 +77,16 @@ Props) => {
       headerClassName: "header-color",
       filterable: false,
       headerName: strings.sprint.timeAllocated,
-      flex: 2,
+      flex: 1,
       renderCell: (params) => {
         return (
           <>
             <Box
-              component="span"
+            marginLeft={"50px"}
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+
             />
             {params.value} {/* Fetch and display project name */}
           </>
@@ -91,12 +98,16 @@ Props) => {
       headerClassName: "header-color",
       filterable: false,
       headerName: strings.sprint.estimatedTime,
-      flex: 2,
+      flex: 1,
       renderCell: (params) => {
         return (
           <>
             <Box
-              component="span"
+                        marginLeft={"50px"}
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+
             />
             {params.value} {/* Fetch and display project name */}
           </>
@@ -108,7 +119,7 @@ Props) => {
       headerClassName: "header-color",
       filterable: false,
       headerName: strings.sprint.taskName,
-      flex: 2,
+      flex: 1,
       valueGetter: (params) => {
         getPhaseName(params.row.tasks, phase);
       },
@@ -116,7 +127,9 @@ Props) => {
         return (
           <>
             <Box
-              component="span"
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
             />
             {getPhaseName(params.row.tasks, phase)} {/* Fetch and display project name */}
           </>
@@ -136,7 +149,10 @@ Props) => {
         return (
           <>
             <Box
-              component="span"
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+
             />
             {getAssigneName(params.row.assignee, user)} {/* Fetch and display project name */}
           </>
