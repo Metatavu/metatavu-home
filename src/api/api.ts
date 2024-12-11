@@ -6,7 +6,7 @@ import {
   PersonsApi,
   SynchronizeApi,
   VacationRequestsApi,
-  VacationRequestStatusApi
+  VacationRequestStatusApi,
 } from "../generated/client";
 import {
   AllocationsApi,
@@ -17,7 +17,8 @@ import {
   TimeEntriesApi,
   UsersApi,
   QuestionnairesApi,
-  ResourceAllocationsApi
+  ResourceAllocationsApi,
+  FlexTimeApi,
 } from "../generated/homeLambdasClient";
 
 /**
@@ -34,11 +35,15 @@ type ConfigConstructor<T> = new (_params: ConfigurationParameters) => T;
  * @returns ConfigConstructor instance set up with params
  */
 const getConfigurationFactory =
-  <T>(ConfigConstructor: ConfigConstructor<T>, basePath: string, accessToken?: string) =>
+  <T>(
+    ConfigConstructor: ConfigConstructor<T>,
+    basePath: string,
+    accessToken?: string
+  ) =>
   () => {
     return new ConfigConstructor({
       basePath: basePath,
-      accessToken: accessToken
+      accessToken: accessToken,
     });
   };
 
@@ -49,14 +54,18 @@ const getConfigurationFactory =
  * @returns Configured API request functions
  */
 export const getApiClient = (accessToken?: string) => {
-  const getConfiguration = getConfigurationFactory(Configuration, config.api.baseUrl, accessToken);
+  const getConfiguration = getConfigurationFactory(
+    Configuration,
+    config.api.baseUrl,
+    accessToken
+  );
 
   return {
     dailyEntriesApi: new DailyEntriesApi(getConfiguration()),
     personsApi: new PersonsApi(getConfiguration()),
     synchronizeApi: new SynchronizeApi(getConfiguration()),
     vacationRequestsApi: new VacationRequestsApi(getConfiguration()),
-    vacationRequestStatusApi: new VacationRequestStatusApi(getConfiguration())
+    vacationRequestStatusApi: new VacationRequestStatusApi(getConfiguration()),
   };
 };
 
@@ -81,6 +90,7 @@ export const getLambdasApiClient = (accessToken?: string) => {
     timeEntriesApi: new TimeEntriesApi(getConfiguration()),
     slackAvatarsApi: new SlackAvatarsApi(getConfiguration()),
     usersApi: new UsersApi(getConfiguration()),
-    questionnairesApi: new QuestionnairesApi(getConfiguration())
+    questionnairesApi: new QuestionnairesApi(getConfiguration()),
+    flexTimeApi: new FlexTimeApi(getConfiguration()),
   };
 };

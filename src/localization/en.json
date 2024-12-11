@@ -32,7 +32,10 @@
     "fetchSlackAvatarsFailed": "Error while fetching Slack avatars",
     "questionnaireLoadFailed": "Error while loading questionnaires",
     "questionnaireDeleteFailed": "Error while deleting questionnaire",
-    "questionnaireSaveFailed": "Error while saving questionnaire"
+    "questionnaireSaveFailed": "Error while saving questionnaire",
+    "fetchFailedFlextime": "Error while fetching flextime data",
+    "noSeveraUserId" : "One of your user is missing severaUserId, please contact a member of the metatavu home development team for more information.",
+    "noFlextimeData": "Something went wrong while fetching your flextime data"
   },
   "localization": {
     "en": "EN",
@@ -236,7 +239,7 @@
     "delete": "Delete", 
     "back": "Back"
   },
-  "newQuestionnaireScreen": {
+  "newQuestionnaireBuilder": {
     "makeNewQuestionnaire": "Make a New Questionnaire",
     "title": "Title",
     "insertTitle": "Insert title",
@@ -272,6 +275,26 @@
     "confirmDeleteTitle": "Delete {0}?",
     "cancel": "Cancel",
     "confirm": "Confirm Delete"
-
+  },
+  "questionnaireManager": {
+    "passed": "You have passed the questionnaire with {0} correct answers out of {1}.",
+    "failed": "You have failed the questionnaire with {0} correct answers out of {1}.", 
+    "goBack": "Go back",
+    "submit": "Submit"
+  },
+  "questionnairePreview": {
+    "save": "Save changes",
+    "edit": "Edit question",
+    "remove": "Remove from preview",
+    "saveAlert": "Question is missing required fields"
+  },
+  "balanceCard": {
+    "totalFlextimeBalance": "Total flextime balance:",
+    "employeeBalances": "Employee time totals and balances",
+    "viewAllTimeEntries": "View all employees time totals and balances",
+    "balance": "Balance",
+    "atTheEndOf": "At the end of {0}",
+    "hour": "hour",
+    "hours": "hours"
   }
 }

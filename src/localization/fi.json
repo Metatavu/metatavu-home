@@ -32,7 +32,10 @@
     "fetchSlackAvatarsFailed": "Virhe Slack-avatareita pyydettäessä",
     "questionnaireSaveFailed": "Kyselylomakkeen tallentaminen epäonnistui",
     "questionnaireLoadFailed": "Kyselylomakkeiden lataaminen epäonnistui",
-    "questionnaireDeleteFailed": "Kyselylomakkeen poistaminen epäonnistui"
+    "questionnaireDeleteFailed": "Kyselylomakkeen poistaminen epäonnistui",
+    "fetchFailedFlextime": "Joustotyöaikatietojen hakeminen epäonnistui",
+    "noSeveraUserId": "Käyttäjältä puuttuu Severa-käyttäjätunnus, ota yhteyttä Metatavun kehitystiimiin lisätietoja varten.",
+    "noFlextimeData": "Jotain meni pieleen joustotyöaikatietoja haettaessa"
   },
   "localization": {
     "en": "EN",
@@ -236,7 +239,7 @@
     "delete": "Poista",
     "back": "Takaisin"
   },
-  "newQuestionnaireScreen": {
+  "newQuestionnaireBuilder": {
     "makeNewQuestionnaire" : "Tee uusi kysely",
     "title": "Otsikko",
     "insertTitle": "Syötä otsikko",
@@ -272,5 +275,26 @@
     "confirmDeleteTitle": "Poista {0}?",
     "cancel": "Peruuta",
     "confirm": "Vahvista poisto"
+  },
+  "questionnaireManager": {
+    "passed": "Olet läpäissyt kyselyn, sait {0} / {1} oikein",
+    "failed": "Et läpäissyt kyselyä, sait {0} / {1} oikein",
+    "goBack": "Takaisin",
+    "submit": "Lähetä vastaukset"
+  },
+  "questionnairePreview": {
+    "save": "Tallenna muutokset",
+    "edit": "Muokkaa kysymystä",
+    "remove": "Poista kysymys",
+    "saveAlert": "Kysymyksestä puuttuu pakollisia tietoja"
+  },
+  "balanceCard": {
+    "totalFlextimeBalance": "Kokonaisbalanssi:",
+    "employeeBalances": "Henkilöstön aikakirjaukset ja saldot",
+    "viewAllTimeEntries": "Kaikki henkilöstön aikakirjaukset ja saldot",
+    "balance": "Saldo",
+    "atTheEndOf": "{0} lopussa",
+    "hour": "tunti",  
+    "hours": "Tuntia"
   }
 }

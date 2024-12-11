@@ -167,3 +167,12 @@ export interface QuestionOption {
   label: string;
   value: boolean;
 }
+
+/**
+ * Enum describing questionnaire preview modes
+ */
+export enum QuestionnairePreviewMode {
+  FILL = "FILL",
+  EDIT = "EDIT",
+  PREVIEW = "PREVIEW"
+}
