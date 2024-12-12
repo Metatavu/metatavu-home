@@ -20,7 +20,7 @@ import strings from "src/localization/strings";
 import { Link } from "react-router-dom";
 import { KeyboardReturn } from "@mui/icons-material";
 
-// TODO: Localize strings, PopUp when saving updated questionnaire, isCorrect checkbox for answer options needs to be fixed, Add checkbox that will empty passedUsers array in the questionnaire
+// TODO: TSDocs, PopUp when saving updated questionnaire, Add checkbox that will empty passedUsers array in the questionnaire
 
 interface Props {
   questionnaire: Questionnaire;
@@ -90,10 +90,10 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
 
   const maxCorrectAnswers = countEditedCorrectAnswers();
 
-  const handlePassScoreChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePassScoreChange = (value : number) => {
     const maxCorrectAnswers = countEditedCorrectAnswers();
-    const value = Math.min(Number(e.target.value), maxCorrectAnswers);
-    setEditedQuestionnaire((prev) => ({ ...prev, passScore: value }));
+    const passScore = Math.min(value, maxCorrectAnswers);
+    setEditedQuestionnaire((prev) => ({ ...prev, passScore}));
   };
 
   const updateEditedQuestionnaire = async () => {
@@ -111,15 +111,13 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
     setLoading(false);
   };
 
-  // TODO: Localize strings,
-
   return (
     <>
       <Card>
         <CardContent>
-          <Typography variant="h5">Edit Questionnaire</Typography>
+          <Typography variant="h5">{strings.questionnaireEdit.title}</Typography>
           <TextField
-            label="Title"
+            label={strings.questionnaireEdit.titleLabel}
             name="title"
             value={editedQuestionnaire.title || ""}
             onChange={handleChange}
@@ -127,7 +125,7 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
             sx={{ mt: 3, mb: 2 }}
           />
           <TextField
-            label="Description"
+            label={strings.questionnaireEdit.descriptionLabel}
             name="description"
             value={editedQuestionnaire.description || ""}
             onChange={handleChange}
@@ -138,7 +136,7 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
           {editedQuestionnaire.questions.map((question, questionIndex) => (
             <div key={questionIndex}>
               <TextField
-                label={`Question ${questionIndex + 1}`}
+                label={`${strings.questionnaireEdit.question} ${questionIndex + 1}`}
                 value={question.questionText}
                 onChange={(e) =>
                   handleQuestionChange(questionIndex, { ...question, questionText: e.target.value })
@@ -176,7 +174,7 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
                 size="small"
                 onClick={() => handleDeleteQuestion(questionIndex)}
               >
-                <Typography>Delete Question</Typography>
+                {strings.questionnaireEdit.deleteQuestion}
               </Button>
             </div>
           ))}
@@ -191,14 +189,25 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
             }}
           >
             <TextField
-              label="Pass Score"
+              label={strings.questionnaireEdit.passScoreLabel}
               type="number"
-              value={editedQuestionnaire.passScore || ""}
-              onChange={handlePassScoreChange}
-              InputProps={{
-                inputProps: { min: 0, max: maxCorrectAnswers }
+              value={Math.min(editedQuestionnaire.passScore || 0, maxCorrectAnswers)}
+              onChange={(e) => {
+                const value = Number.parseInt(e.target.value, 10) || 0;
+                handlePassScoreChange(value > maxCorrectAnswers ? maxCorrectAnswers : value);
               }}
-              helperText={`Max pass score: ${maxCorrectAnswers}`}
+              InputProps={{
+                inputProps: { 
+                  min: 0, 
+                  max: maxCorrectAnswers,
+                  }
+              }}
+              onKeyDown={(e) => {
+                if (["e", "E", "+", "-", ".", ","].includes(e.key)) {
+                  e.preventDefault();
+                }
+              }}
+              helperText={`${strings.questionnaireEdit.passScoreMax} ${maxCorrectAnswers}`}
             />
             <Button
               sx={{ alignItems: "center" }}
@@ -208,7 +217,7 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
               size="large"
               color="success"
             >
-              Update Questionnaire
+              {strings.questionnaireEdit.update}
             </Button>
           </CardActions>
         </CardContent>

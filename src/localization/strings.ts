@@ -383,6 +383,20 @@ export interface Localized extends LocalizedStringsMethods {
     saveAlert: string;
   };
   /**
+   * Translations related to Questionnaire edit mode
+   */
+  questionnaireEdit: {
+    title: string;
+    titleLabel: string;
+    descriptionLabel: string;
+    question: string;
+    deleteQuestion: string;
+    passScoreLabel: string;
+    passScoreMax: string;
+    update: string;
+
+  };
+  /**
    * Translations related to Balance Card
    */
   balanceCard: {

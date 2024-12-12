@@ -288,6 +288,16 @@
     "remove": "Poista kysymys",
     "saveAlert": "Kysymyksestä puuttuu pakollisia tietoja"
   },
+  "questionnaireEdit": {
+    "title": "Muokkaa kyselyä",
+    "titleLabel": "Otsikko",
+    "descriptionLabel": "Kuvaus",
+    "question": "Kysymys",
+    "deleteQuestion": "Poista kysymys",
+    "passScoreLabel": "Pistemäärä",
+    "passScoreMax": "Maksimipistemäärä",
+    "update": "Päivitä kysely"
+  },
   "balanceCard": {
     "totalFlextimeBalance": "Kokonaisbalanssi:",
     "employeeBalances": "Henkilöstön aikakirjaukset ja saldot",

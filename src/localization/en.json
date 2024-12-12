@@ -288,6 +288,16 @@
     "remove": "Remove from preview",
     "saveAlert": "Question is missing required fields"
   },
+  "questionnaireEdit": {
+    "title": "Edit Questionnaire",
+    "titleLabel": "Title",
+    "descriptionLabel": "Description",
+    "question": "Question",
+    "deleteQuestion": "Delete question",
+    "passScoreLabel": "Pass score",
+    "passScoreMax": "Max pass score:",
+    "update": "Update Questionnaire"
+  },
   "balanceCard": {
     "totalFlextimeBalance": "Total flextime balance:",
     "employeeBalances": "Employee time totals and balances",
