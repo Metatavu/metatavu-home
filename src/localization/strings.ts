@@ -1,3 +1,4 @@
+import QuestionnairePreview from "src/components/questionnaire/questionnaire-preview";
 import en from "./en.json";
 import fi from "./fi.json";
 import LocalizedStrings, { type LocalizedStringsMethods } from "localized-strings";
@@ -47,6 +48,12 @@ export interface Localized extends LocalizedStringsMethods {
     fetchFailedGeneral: string;
     fetchFailedNoEntriesGeneral: string;
     fetchSlackAvatarsFailed: string;
+    questionnaireSaveFailed: string;
+    questionnaireLoadFailed: string;
+    questionnaireDeleteFailed: string;
+    fetchFailedFlextime: string;
+    noSeveraUserId: string;
+    noFlextimeData: string;
   };
   /**
    * Translations related to localization
@@ -310,23 +317,27 @@ export interface Localized extends LocalizedStringsMethods {
   questionnaireScreen: {
     currentQuestionnaires: string;
     buildNewQuestionnaire: string;
-    status: string;
-    edit: string;
-    delete: string;
     back: string;
   };
   /**
-   * Translations related to New Questionnaire Screen
+   * Translations related to New Questionnaire Builder
    */
-  newQuestionnaireScreen: {
+  newQuestionnaireBuilder: {
     makeNewQuestionnaire: string;
     title: string;
     insertTitle: string;
     saveButton: string;
     preview: string;
     is: string;
-    delete: string;
+    removeFromPreview: string;
     back: string;
+    description: string;
+    insertDescription: string;
+    countedAnswers: string;
+    requiredAnswers: string;
+    tooltipEmptyTitle: string;
+    tooltipEmptyDescription: string;
+    tooltipBothEmpty: string;
   };
   /**
    * Translations related to New Questionnaire Card
@@ -336,9 +347,54 @@ export interface Localized extends LocalizedStringsMethods {
     questionLabel: string;
     correctAnswer: string;
     answerLabel: string;
+    insertAnswerLabel: string;
     addAnswer: string;
     saveAnswer: string;
-  }
+  };
+  /**
+   * Translations related to Questionnaire Table
+   */ 
+  questionnaireTable: {
+    title: string;
+    description: string;
+    actions: string;
+    edit: string;
+    delete: string;
+    status: string;
+    confirmDeleteTitle: string;
+    cancel: string;
+    confirm: string;
+  }; 
+  /**
+   * Translations related to Questionnaire Interaction Screen
+   */
+  questionnaireManager: {
+    passed: string;
+    failed: string;
+    goBack: string;
+    submit: string;
+  };
+  /**
+   * Translations related to Questionnaire Preview
+   */
+  questionnairePreview: {
+    save: string;
+    edit: string;
+    remove: string;
+    saveAlert: string;
+  };
+  /**
+   * Translations related to Balance Card
+   */
+  balanceCard: {
+    totalFlextimeBalance: string;
+    employeeBalances: string;
+    viewAllTimeEntries: string;
+    balance: string;
+    atTheEndOf: string;
+    hour: string;
+    hours: string;
+  };
 }
 
 /**

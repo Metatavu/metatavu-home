@@ -30,7 +30,13 @@
     "dailyEntriesNotFound": "Aikakirjauksia ei löydetty",
     "fetchFailedGeneral": "Tietojen hakeminen epäonnistui",
     "fetchFailedNoEntriesGeneral": "Ei aikatietoja saatavilla",
-    "fetchSlackAvatarsFailed": "Virhe Slack-avatareita pyydettäessä"
+    "fetchSlackAvatarsFailed": "Virhe Slack-avatareita pyydettäessä",
+    "questionnaireSaveFailed": "Kyselylomakkeen tallentaminen epäonnistui",
+    "questionnaireLoadFailed": "Kyselylomakkeiden lataaminen epäonnistui",
+    "questionnaireDeleteFailed": "Kyselylomakkeen poistaminen epäonnistui",
+    "fetchFailedFlextime": "Joustotyöaikatietojen hakeminen epäonnistui",
+    "noSeveraUserId": "Käyttäjältä puuttuu Severa-käyttäjätunnus, ota yhteyttä Metatavun kehitystiimiin lisätietoja varten.",
+    "noFlextimeData": "Jotain meni pieleen joustotyöaikatietoja haettaessa"
   },
   "localization": {
     "en": "EN",
@@ -234,22 +240,62 @@
     "delete": "Poista",
     "back": "Takaisin"
   },
-  "newQuestionnaireScreen": {
+  "newQuestionnaireBuilder": {
     "makeNewQuestionnaire" : "Tee uusi kysely",
     "title": "Otsikko",
-    "insertTitle": "Syötä otsikko tähän",
-    "saveButton": "Tallenna uusi kysely",
+    "insertTitle": "Syötä otsikko",
+    "saveButton": "Tallenna kysely",
     "preview": "Kyselyiden esikatselu",
     "is": "on",
-    "delete": "Poista kysymys",
-    "back": "Takaisin"
+    "removeFromPreview": "Poista kysymys",
+    "back": "Takaisin",
+    "description": "Kuvaus",
+    "insertDescription": "Syötä kuvaus",
+    "countedAnswers": "Oikeiden vastausten määrä tässä kyselyssä:",
+    "requiredAnswers": "Montako pitää olla oikein, jotta kysely menee läpi:",
+    "tooltipEmptyTitle": "Otsikko on pakollinen",
+    "tooltipEmptyDescription": "Kuvaus on pakollinen",
+    "tooltipBothEmpty": "Otsikko ja kuvaus ovat pakollisia"
   },
   "newQuestionnaireCard": {
-    "newQuestion": "Haluatko lisätä uuden kysymyksen, lisää tiedot alle.",
+    "newQuestion": "Lisää uusi kysymys.",
     "questionLabel": "Kysymysteksti",
-    "correctAnswer": "Merkitse oikeat vastaukset alle",
+    "correctAnswer": "Merkitse oikeat vastaukset",
     "answerLabel": "Syötä vastaus",
+    "insertAnswerLabel": "Syötä vastaus",
     "addAnswer": "+ Lisää uusi vastausvaihtoehto",
-    "saveAnswer": "Tallenna kysymys"
+    "saveAnswer": "Lisää kysymys"
+  },
+  "questionnaireTable": {
+    "title": "Otsikko",
+    "description": "Kuvaus",
+    "actions": "Toiminnot",
+    "edit": "Muokkaa",
+    "delete": "Poista",
+    "status": "Tila",
+    "confirmDeleteTitle": "Poista {0}?",
+    "cancel": "Peruuta",
+    "confirm": "Vahvista poisto"
+  },
+  "questionnaireManager": {
+    "passed": "Olet läpäissyt kyselyn, sait {0} / {1} oikein",
+    "failed": "Et läpäissyt kyselyä, sait {0} / {1} oikein",
+    "goBack": "Takaisin",
+    "submit": "Lähetä vastaukset"
+  },
+  "questionnairePreview": {
+    "save": "Tallenna muutokset",
+    "edit": "Muokkaa kysymystä",
+    "remove": "Poista kysymys",
+    "saveAlert": "Kysymyksestä puuttuu pakollisia tietoja"
+  },
+  "balanceCard": {
+    "totalFlextimeBalance": "Kokonaisbalanssi:",
+    "employeeBalances": "Henkilöstön aikakirjaukset ja saldot",
+    "viewAllTimeEntries": "Kaikki henkilöstön aikakirjaukset ja saldot",
+    "balance": "Saldo",
+    "atTheEndOf": "{0} lopussa",
+    "hour": "tunti",  
+    "hours": "Tuntia"
   }
 }

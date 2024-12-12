@@ -19,8 +19,14 @@ import { useMemo } from "react";
 import RestrictedContentProvider from "./components/providers/restricted-content-provider";
 import SprintViewScreen from "./components/screens/sprint-view-screen";
 import QuestionnaireScreen from "./components/screens/questionnaire-screen";
+<<<<<<< HEAD
 import NewQuizScreen from "./components/screens/new-questionnaire-screen";
 import SettingsScreen from "./components/screens/settings-screen";
+=======
+import NewQuestionnaireBuilder from "./components/questionnaire/new-questionnaire-builder";
+import QuestionnaireManager from "./components/questionnaire/questionnaire-manager";
+import { QuestionnairePreviewMode } from "./types";
+>>>>>>> origin/develop
 
 /**
  * Application component
@@ -59,9 +65,15 @@ const App = () => {
           element: <QuestionnaireScreen />
         },
         {
+<<<<<<< HEAD
           path: "/settings",
           element: <SettingsScreen/>
         }    
+=======
+          path: "/questionnaire/:id",
+          element: <QuestionnaireManager mode={QuestionnairePreviewMode.FILL} />
+        }
+>>>>>>> origin/develop
       ]
     },
     {
@@ -95,7 +107,11 @@ const App = () => {
         },
         {
           path: "/admin/newQuestionnaire",
-          element: <NewQuizScreen />
+          element: <NewQuestionnaireBuilder />
+        },
+        {
+          path: "/admin/questionnaire/:id/edit",
+          element: <QuestionnaireManager mode={QuestionnairePreviewMode.EDIT} />
         }
       ]
     }
