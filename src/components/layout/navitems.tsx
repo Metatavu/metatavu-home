@@ -7,6 +7,7 @@ import { type MouseEvent, useState } from "react";
 import { Box, IconButton, Menu, MenuItem } from "@mui/material";
 import strings from "src/localization/strings";
 import UserRoleUtils from "src/utils/user-role-utils";
+import SettingsScreen from "../screens/settings-screen";
 
 /**
  * Navigation Items component
@@ -15,6 +16,8 @@ const NavItems = () => {
   const [currentPage, setCurrentPage] = useState("");
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const admin = UserRoleUtils.isAdmin();
+
+
 
   /**
    * Handles opening navigation menu
@@ -95,8 +98,16 @@ const NavItems = () => {
               onClick={handleNavItemClick}
             >
               {strings.header.admin}
-            </MenuItem>
-          )}
+              </MenuItem>
+            )}
+            <MenuItem
+              component={Link}
+              to={"/settings"}
+              key="settingsMenuItemMobile"
+              onClick={handleNavItemClick}
+            >
+            {strings.header.settings}
+          </MenuItem>
         </Menu>
         <Typography variant="button" marginTop={1.5}>
           {currentPage}
@@ -115,8 +126,11 @@ const NavItems = () => {
         {admin && (
           <Link to={"/admin"} style={{ margin: 2, display: "block" }}>
             <Button>{strings.header.admin}</Button>
-          </Link>
+          </Link>         
         )}
+        <Link to="/settings" style={{ margin: 2, display: "block" }}>
+          <Button>{strings.header.settings}</Button>
+        </Link>
       </Box>
     </>
   );
