@@ -394,6 +394,7 @@ export interface Localized extends LocalizedStringsMethods {
     passScoreLabel: string;
     passScoreMax: string;
     update: string;
+    clearPassedUsers: string;
 
   };
   /**

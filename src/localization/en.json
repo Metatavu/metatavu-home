@@ -296,7 +296,8 @@
     "deleteQuestion": "Delete question",
     "passScoreLabel": "Pass score",
     "passScoreMax": "Max pass score:",
-    "update": "Update Questionnaire"
+    "update": "Update Questionnaire",
+    "clearPassedUsers": "Clear passed users from this questionnaire"
   },
   "balanceCard": {
     "totalFlextimeBalance": "Total flextime balance:",

@@ -5,6 +5,8 @@ import {
   CardActions,
   CardContent,
   Checkbox,
+  FormControl,
+  FormControlLabel,
   TextField,
   Typography
 } from "@mui/material";
@@ -18,7 +20,7 @@ import { errorAtom } from "src/atoms/error";
 import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
 import { Link } from "react-router-dom";
-import { KeyboardReturn } from "@mui/icons-material";
+import { CheckBox, KeyboardReturn } from "@mui/icons-material";
 
 // TODO: TSDocs, PopUp when saving updated questionnaire, Add checkbox that will empty passedUsers array in the questionnaire
 
@@ -32,6 +34,8 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
   const [loading, setLoading] = useState(false);
   const setError = useSetAtom(errorAtom);
   const [editedQuestionnaire, setEditedQuestionnaire] = useState<Questionnaire>(questionnaire);
+  const [clearPassedUsers, setClearPassedUsers] = useState(false);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setEditedQuestionnaire((prev) => ({ ...prev, [name]: value }));
@@ -101,7 +105,10 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
     try {
       const updatedQuestionnaire = await questionnairesApi.updateQuestionnaires({
         id: editedQuestionnaire.id as string,
-        questionnaire: editedQuestionnaire
+        questionnaire: {
+          ...editedQuestionnaire,
+          passedUsers: clearPassedUsers ? [] : editedQuestionnaire.passedUsers
+        }
       });
       navigate(-1);
       return updatedQuestionnaire;
@@ -208,6 +215,16 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
                 }
               }}
               helperText={`${strings.questionnaireEdit.passScoreMax} ${maxCorrectAnswers}`}
+            />
+            <FormControlLabel
+            control={
+              <Checkbox
+                checked={clearPassedUsers}
+                onChange={(e) => setClearPassedUsers(e.target.checked)}
+                color="primary"
+              />
+            }
+            label={strings.questionnaireEdit.clearPassedUsers}
             />
             <Button
               sx={{ alignItems: "center" }}

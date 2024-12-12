@@ -296,7 +296,8 @@
     "deleteQuestion": "Poista kysymys",
     "passScoreLabel": "Pistemäärä",
     "passScoreMax": "Maksimipistemäärä",
-    "update": "Päivitä kysely"
+    "update": "Päivitä kysely",
+    "clearPassedUsers": "Tyhjennä läpäisseet käyttäjät tästä kyselystä"
   },
   "balanceCard": {
     "totalFlextimeBalance": "Kokonaisbalanssi:",
