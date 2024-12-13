@@ -5,8 +5,9 @@ import {
   CardActions,
   CardContent,
   Checkbox,
-  FormControl,
   FormControlLabel,
+  Snackbar,
+  SnackbarContent,
   TextField,
   Typography
 } from "@mui/material";
@@ -20,9 +21,9 @@ import { errorAtom } from "src/atoms/error";
 import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
 import { Link } from "react-router-dom";
-import { CheckBox, KeyboardReturn } from "@mui/icons-material";
+import { KeyboardReturn } from "@mui/icons-material";
 
-// TODO: TSDocs, PopUp when saving updated questionnaire, Add checkbox that will empty passedUsers array in the questionnaire
+// TODO: TSDocs, 
 
 interface Props {
   questionnaire: Questionnaire;
@@ -35,7 +36,8 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
   const setError = useSetAtom(errorAtom);
   const [editedQuestionnaire, setEditedQuestionnaire] = useState<Questionnaire>(questionnaire);
   const [clearPassedUsers, setClearPassedUsers] = useState(false);
-
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setEditedQuestionnaire((prev) => ({ ...prev, [name]: value }));
@@ -110,12 +112,17 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
           passedUsers: clearPassedUsers ? [] : editedQuestionnaire.passedUsers
         }
       });
-      navigate(-1);
+      setSnackbarOpen(true);
       return updatedQuestionnaire;
     } catch (error) {
       setError(`${strings.error.questionnaireSaveFailed}, ${error}`);
     }
     setLoading(false);
+  };
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+    navigate(-1);
   };
 
   return (
@@ -247,6 +254,14 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
           </Button>
         </Link>
       </Card>
+      <Snackbar open={snackbarOpen} autoHideDuration={2000} onClose={handleSnackbarClose}>
+        <SnackbarContent
+          message={strings.questionnaireEdit.snackbarMessageSuccess}
+          sx={{ 
+            backgroundColor: "green",
+            color: "white" }}
+        />
+      </Snackbar>
     </>
   );
 };

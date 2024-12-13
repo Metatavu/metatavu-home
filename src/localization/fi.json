@@ -297,7 +297,8 @@
     "passScoreLabel": "Pistemäärä",
     "passScoreMax": "Maksimipistemäärä",
     "update": "Päivitä kysely",
-    "clearPassedUsers": "Tyhjennä läpäisseet käyttäjät tästä kyselystä"
+    "clearPassedUsers": "Tyhjennä läpäisseet käyttäjät tästä kyselystä",
+    "snackbarMessageSuccess": "Kysely päivitetty onnistuneesti"
   },
   "balanceCard": {
     "totalFlextimeBalance": "Kokonaisbalanssi:",

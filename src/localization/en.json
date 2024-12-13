@@ -297,7 +297,8 @@
     "passScoreLabel": "Pass score",
     "passScoreMax": "Max pass score:",
     "update": "Update Questionnaire",
-    "clearPassedUsers": "Clear passed users from this questionnaire"
+    "clearPassedUsers": "Clear passed users from this questionnaire",
+    "snackbarMessageSuccess": "Update questionniare successfully"
   },
   "balanceCard": {
     "totalFlextimeBalance": "Total flextime balance:",
