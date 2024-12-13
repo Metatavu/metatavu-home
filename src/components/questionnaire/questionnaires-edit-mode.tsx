@@ -23,12 +23,19 @@ import strings from "src/localization/strings";
 import { Link } from "react-router-dom";
 import { KeyboardReturn } from "@mui/icons-material";
 
-// TODO: TSDocs, 
-
+/**
+ * Component props
+ */
 interface Props {
   questionnaire: Questionnaire;
 }
 
+/**
+ * Edit mode for the questionnaire
+ * 
+ * @param props
+ * @returns questionnaire edit mode component
+ */
 const QuestionnairesEditMode = ({ questionnaire }: Props) => {
   const navigate = useNavigate();
   const { questionnairesApi } = useLambdasApi();
@@ -38,11 +45,22 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
   const [clearPassedUsers, setClearPassedUsers] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+  /**
+   * Handle change event for questionnaire title and description
+   * 
+   * @param event - Change event
+   */
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
     setEditedQuestionnaire((prev) => ({ ...prev, [name]: value }));
   };
 
+  /**
+   * Handle change event for question
+   * 
+   * @param questionIndex number
+   * @param updatedFields - The updated fields for the question
+   */
   const handleQuestionChange = (questionIndex: number, updatedFields: Partial<Question>) => {
     const updatedQuestions = editedQuestionnaire.questions.map((question, optionIndex) =>
       optionIndex === questionIndex ? { ...question, ...updatedFields } : question
@@ -50,6 +68,13 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
     setEditedQuestionnaire((prev) => ({ ...prev, questions: updatedQuestions }));
   };
 
+  /**
+   * Handle change event for answer option in question
+   * 
+   * @param questionIndex number
+   * @param optionIndex number
+   * @param updatedFields - The updated fields for the question
+   */
   const handleAnswerOptionChange = (
     questionIndex: number,
     optionIndex: number,
@@ -63,10 +88,10 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
   };
 
   /**
-   * Functions to add new question to Questionnaire that is being built
-   *
+   * Functions to add new question to Questionnaire
+   * 
    * @param questionText string
-   * @param list of QuestionOptions
+   * @param answerOptions - The answer options for the question
    */
   const handleAddQuestion = ({
     questionText,
@@ -78,6 +103,11 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
     }));
   };
 
+  /**
+   * Function to delete question from Questionnaire
+   * 
+   * @param questionIndex number
+   */
   const handleDeleteQuestion = (questionIndex: number) => {
     const updatedQuestions = editedQuestionnaire.questions.filter(
       (_, optionIndex) => optionIndex !== questionIndex
@@ -96,12 +126,20 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
 
   const maxCorrectAnswers = countEditedCorrectAnswers();
 
+  /**
+   * Function to handle passScore change
+   * 
+   * @param value number
+   */
   const handlePassScoreChange = (value : number) => {
     const maxCorrectAnswers = countEditedCorrectAnswers();
     const passScore = Math.min(value, maxCorrectAnswers);
     setEditedQuestionnaire((prev) => ({ ...prev, passScore}));
   };
 
+  /**
+   * Function to update edited questionnaire
+   */
   const updateEditedQuestionnaire = async () => {
     setLoading(true);
     try {
@@ -120,6 +158,9 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
     setLoading(false);
   };
 
+  /**
+   * Function to handle snackbar close event
+   */
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
     navigate(-1);
