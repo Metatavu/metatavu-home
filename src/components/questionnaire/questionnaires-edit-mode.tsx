@@ -32,7 +32,7 @@ interface Props {
 
 /**
  * Edit mode for the questionnaire
- * 
+ *
  * @param props
  * @returns questionnaire edit mode component
  */
@@ -44,10 +44,10 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
   const [editedQuestionnaire, setEditedQuestionnaire] = useState<Questionnaire>(questionnaire);
   const [clearPassedUsers, setClearPassedUsers] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  
+
   /**
    * Handle change event for questionnaire title and description
-   * 
+   *
    * @param event - Change event
    */
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,7 +57,7 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
 
   /**
    * Handle change event for question
-   * 
+   *
    * @param questionIndex number
    * @param updatedFields - The updated fields for the question
    */
@@ -70,7 +70,7 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
 
   /**
    * Handle change event for answer option in question
-   * 
+   *
    * @param questionIndex number
    * @param optionIndex number
    * @param updatedFields - The updated fields for the question
@@ -89,7 +89,7 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
 
   /**
    * Functions to add new question to Questionnaire
-   * 
+   *
    * @param questionText string
    * @param answerOptions - The answer options for the question
    */
@@ -105,7 +105,7 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
 
   /**
    * Function to delete question from Questionnaire
-   * 
+   *
    * @param questionIndex number
    */
   const handleDeleteQuestion = (questionIndex: number) => {
@@ -128,13 +128,13 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
 
   /**
    * Function to handle passScore change
-   * 
+   *
    * @param value number
    */
-  const handlePassScoreChange = (value : number) => {
+  const handlePassScoreChange = (value: number) => {
     const maxCorrectAnswers = countEditedCorrectAnswers();
     const passScore = Math.min(value, maxCorrectAnswers);
-    setEditedQuestionnaire((prev) => ({ ...prev, passScore}));
+    setEditedQuestionnaire((prev) => ({ ...prev, passScore }));
   };
 
   /**
@@ -252,10 +252,10 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
                 handlePassScoreChange(value > maxCorrectAnswers ? maxCorrectAnswers : value);
               }}
               InputProps={{
-                inputProps: { 
-                  min: 0, 
-                  max: maxCorrectAnswers,
-                  }
+                inputProps: {
+                  min: 0,
+                  max: maxCorrectAnswers
+                }
               }}
               onKeyDown={(e) => {
                 if (["e", "E", "+", "-", ".", ","].includes(e.key)) {
@@ -265,14 +265,14 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
               helperText={`${strings.questionnaireEdit.passScoreMax} ${maxCorrectAnswers}`}
             />
             <FormControlLabel
-            control={
-              <Checkbox
-                checked={clearPassedUsers}
-                onChange={(e) => setClearPassedUsers(e.target.checked)}
-                color="primary"
-              />
-            }
-            label={strings.questionnaireEdit.clearPassedUsers}
+              control={
+                <Checkbox
+                  checked={clearPassedUsers}
+                  onChange={(e) => setClearPassedUsers(e.target.checked)}
+                  color="primary"
+                />
+              }
+              label={strings.questionnaireEdit.clearPassedUsers}
             />
             <Button
               sx={{ alignItems: "center" }}
@@ -298,9 +298,10 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
       <Snackbar open={snackbarOpen} autoHideDuration={2000} onClose={handleSnackbarClose}>
         <SnackbarContent
           message={strings.questionnaireEdit.snackbarMessageSuccess}
-          sx={{ 
+          sx={{
             backgroundColor: "green",
-            color: "white" }}
+            color: "white"
+          }}
         />
       </Snackbar>
     </>
