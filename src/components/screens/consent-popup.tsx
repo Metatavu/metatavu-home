@@ -5,7 +5,7 @@ type ConsentDialogProps = {
     onAccept: () => void; 
     onDecline: () => void;  
   };
-
+//Not in use yet
   const ConsentPopUp: React.FC<ConsentDialogProps> = ({ open , onAccept, onDecline}) => {
     return (
       <Dialog open={open} maxWidth="sm" fullWidth>

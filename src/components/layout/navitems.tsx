@@ -7,7 +7,7 @@ import { type MouseEvent, useState } from "react";
 import { Box, IconButton, Menu, MenuItem } from "@mui/material";
 import strings from "src/localization/strings";
 import UserRoleUtils from "src/utils/user-role-utils";
-import SettingsScreen from "../screens/settings-screen";
+
 
 /**
  * Navigation Items component
