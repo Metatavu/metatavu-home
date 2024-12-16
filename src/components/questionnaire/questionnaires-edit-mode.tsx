@@ -11,7 +11,6 @@ import {
   TextField,
   Typography
 } from "@mui/material";
-import {} from "@mui/material";
 import { useState } from "react";
 import type { Questionnaire, Question, AnswerOption } from "src/generated/homeLambdasClient";
 import NewQuestionCard from "./new-question-card";
@@ -44,6 +43,7 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
   const [editedQuestionnaire, setEditedQuestionnaire] = useState<Questionnaire>(questionnaire);
   const [clearPassedUsers, setClearPassedUsers] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const isDisabled = !editedQuestionnaire.title || !editedQuestionnaire.description || editedQuestionnaire.questions.length === 0;
 
   /**
    * Handle change event for questionnaire title and description
@@ -277,7 +277,7 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
             <Button
               sx={{ alignItems: "center" }}
               onClick={updateEditedQuestionnaire}
-              disabled={loading}
+              disabled={loading || isDisabled}
               variant="contained"
               size="large"
               color="success"
