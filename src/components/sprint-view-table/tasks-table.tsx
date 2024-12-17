@@ -30,7 +30,7 @@ import { ResourceAllocationsInnerProjects } from "src/generated/homeLambdasClien
  * Component properties
  */
 interface Props {
-  project: ResourceAllocationsInnerProjects;
+  project: ResourceAllocationsInner;
   loggedInPersonId?: number;
   filter?: string;
 }
@@ -79,9 +79,10 @@ const TaskTable = ({ project, loggedInPersonId, filter }: Props) => {
     setLoading(true);
     if (!phase?.length) {
       try {
-        const severaProjectId = getSeveraProjectId(project);
+        // const severaProjectId = getSeveraProjectId(project);
         const fetchedTasks = await phaseApi.getPhasesBySeveraProjectId({
-          severaProjectId: severaProjectId || "",
+          severaProjectId:
+            project.project?.severaProjectId || "Can we see something here",
         });
         console.log("Here is the fetched Tasks", fetchedTasks);
 
@@ -147,16 +148,12 @@ const TaskTable = ({ project, loggedInPersonId, filter }: Props) => {
         },
       }}
     >
-      <Typography
-        variant="h6"
-        style={{ display: "inline", fontWeight: "bold" }}
-      >
-        {project.name || "No Project Name"}
-      </Typography>
       <IconButton onClick={() => setOpen(!open)}>
         {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
       </IconButton>
-      <Typography style={{ display: "inline" }}>{project?.name}</Typography>
+      <Typography style={{ display: "inline" }}>
+        {project.project?.name}
+      </Typography>
       {open && (
         <>
           {loading ? (

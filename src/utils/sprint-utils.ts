@@ -210,3 +210,40 @@ export const getSeveraProjectId = (
     project?.attributes?.severaProjectId ?? config.phase.testPhaseSeveraId ?? ""
   );
 };
+
+export const getSeveraProjectIds = (
+  projects: ResourceAllocationsInnerProjects[] | undefined
+): string[] => {
+  if (!projects || projects.length === 0) return [];
+
+  return projects
+    .map((project) => project?.attributes?.severaProjectId)
+    .filter((id): id is string => !!id); // Filter out undefined or empty IDs
+};
+
+// Function to filter tasks based on severaProjectId and extract task names
+export const getTaskNamesByProjectId = (
+  phases: any[], // The fetched phases data
+  targetProjectId: string // The project ID to match
+): string[] => {
+  return phases
+    .filter((phase) => phase.project?.severaProjectId === targetProjectId) // Filter by project ID
+    .map((phase) => phase.name); // Extract only the task names
+};
+
+// export const filterAllocationsAndProjectsSevera = (
+//   allocations: ResourceAllocationsInner[],
+//   projects: ResourceAllocationsProject[]
+// ) => {
+//   const filteredProjects: ResourceAllocationsInnerProjects[] = [];
+//   const filteredAllocations = allocations.filter((allocation) =>
+//     projects.find((project) => allocation.project. === project.severaProjectId)
+//   );
+//   for (const allocation of filteredAllocations) {
+//     const allocationProject = projects.find(
+//       (project) => allocation.project === project.id
+//     );
+//     if (allocationProject) filteredProjects.push(allocationProject);
+//   }
+//   return { filteredAllocations, filteredProjects };
+// };

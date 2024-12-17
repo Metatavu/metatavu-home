@@ -60,9 +60,8 @@ const SprintViewScreen = () => {
   //     person.keycloakId === userProfile?.id
   // );
   // const [allocations, setAllocations] = useState<Allocations[]>([]);
-  const [resourceAllocations, setResourceAllocations] = useState<
-    ResourceAllocationsInner[]
-  >();
+  const [resourceAllocations, setResourceAllocations] =
+    useState<ResourceAllocationsInner[]>();
   const [resourceAllocationsProject, setResourceAllocationsProject] = useState<
     ResourceAllocationsInnerProjects[]
   >([]);
@@ -93,21 +92,16 @@ const SprintViewScreen = () => {
   //   { field: "assignee", headerName: "Assignee", flex: 1 },
   // ];
 
-   const allocationRows = resourceAllocations?.map((allocation) => ({
-    id: allocation.severaResourceAllocationId, 
+  const allocationRows = resourceAllocations?.map((allocation) => ({
+    id: allocation.severaResourceAllocationId,
     project: allocation.project,
-    calculatedHours: allocation.calculatedAllocationHours , 
-    estimateHours: allocation.allocationHours ,
-    tasks: allocation.phase , 
-    assignee: allocation.user ,
+    calculatedHours: allocation.calculatedAllocationHours,
+    estimateHours: allocation.allocationHours,
+    tasks: allocation.phase,
+    assignee: allocation.user,
   }));
 
-
-
   const setError = useSetAtom(errorAtom);
-
-
-  
 
   /**
    * Get project data if user is logged in
@@ -115,7 +109,7 @@ const SprintViewScreen = () => {
   useEffect(() => {
     fetchProjectDetails();
   }, [loggedInUser]);
- 
+
   /**
    * Fetch allocations, project names and time entries
    */
@@ -126,32 +120,28 @@ const SprintViewScreen = () => {
 
     try {
       const severaUserId = getSeveraUserId(loggedInUser);
-      const fetchedResourceAllocations = await resourceAllocationsApi.getAllocationsBySeveraUserId({ severaUserId });
-
-   
-  
-
-
+      const fetchedResourceAllocations =
+        await resourceAllocationsApi.getAllocationsBySeveraUserId({
+          severaUserId,
+        });
       setResourceAllocations(fetchedResourceAllocations);
-  
 
-  
       // Set state
       // const severaUserId = getSeveraUserId(loggedInUser);
       // console.log("Severa User ID:", severaUserId);
-  
+
       // const fetchedResourceAllocations = await resourceAllocationsApi.getAllocationsBySeveraUserId({
       //   severaUserId
       // });
-  
+
       // console.log("Raw API Response:", fetchedResourceAllocations);
-  
+
       // if (!fetchedResourceAllocations || Object.keys(fetchedResourceAllocations).length === 0) {
       //   console.error("Empty or undefined resource allocations:", fetchedResourceAllocations);
       // } else {
       //   console.log("Valid Resource Allocations:", fetchedResourceAllocations);
       // }
-  
+
       // setResourceAllocations([fetchedResourceAllocations]);
       // const fetchedAllocations = await allocationsApi.listAllocations({
       //   startDate: new Date(),
@@ -289,7 +279,6 @@ const SprintViewScreen = () => {
             />
             {/* Add Hello here */}
 
-              
             <Box
               sx={{
                 backgroundColor: "#e6e6e6",
@@ -301,15 +290,13 @@ const SprintViewScreen = () => {
               }}
             >
               <Typography>
-
                 <span
-                  // style={{
-                  //   paddingLeft: "5px",
-                  //   color:
-                  //     unallocatedTime(resourceAllocations) < 0 ? "red" : "",
-                  // }}
-                >
-                </span>
+                // style={{
+                //   paddingLeft: "5px",
+                //   color:
+                //     unallocatedTime(resourceAllocations) < 0 ? "red" : "",
+                // }}
+                ></span>
               </Typography>
               <Typography style={{ paddingRight: "5px" }}>
                 {strings.formatString(

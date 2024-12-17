@@ -39,7 +39,7 @@ const sprintViewTasksColumns = ({ phase, timeEntries }: Props) => {
       flex: 1,
       renderCell: (params) =>
         // <UserAvatars assignedPersons={params.row.assignedPersons} />
-        console.log(params),
+        console.log(),
     },
     // {
     //   field: "status",
