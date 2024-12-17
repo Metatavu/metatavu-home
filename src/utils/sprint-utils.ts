@@ -1,6 +1,19 @@
 import config from "src/app/config";
 import type { Person } from "src/generated/client";
-import type { Allocations, Projects, ResourceAllocations, ResourceAllocationsInner, ResourceAllocationsInnerPhase, ResourceAllocationsInnerProjects, ResourceAllocationsInnerUsers, ResourceAllocationsPhase, ResourceAllocationsProject, Tasks, User, WorkHours } from "src/generated/homeLambdasClient";
+import type {
+  Allocations,
+  Projects,
+  ResourceAllocations,
+  ResourceAllocationsInner,
+  ResourceAllocationsInnerPhase,
+  ResourceAllocationsInnerProjects,
+  ResourceAllocationsInnerUsers,
+  ResourceAllocationsPhase,
+  ResourceAllocationsProject,
+  Tasks,
+  User,
+  WorkHours,
+} from "src/generated/homeLambdasClient";
 
 /**
  * Retrieve total time entries for an allocation
@@ -27,7 +40,11 @@ export const getTotalTimeEntriesAllocations = (
  * @param tasks list of tasks related to the project
  * @param timeEntries list of total time associated with tasks
  */
-export const getTotalTimeEntriesTasks = (task: Tasks, tasks: Tasks[], timeEntries: number[]) => {
+export const getTotalTimeEntriesTasks = (
+  task: Tasks,
+  tasks: Tasks[],
+  timeEntries: number[]
+) => {
   if (timeEntries.length) {
     return timeEntries[tasks.indexOf(task)] || 0;
   }
@@ -45,36 +62,40 @@ export const getProjectName = (
   project: ResourceAllocationsInnerProjects,
   projects: ResourceAllocationsInner[]
 ) => {
-    const foundProject = projects.find(p => p.project?.severaProjectId === project.severaProjectId);
+  const foundProject = projects.find(
+    (p) => p.project?.severaProjectId === project.severaProjectId
+  );
 
-    
-    if (foundProject) {
-      return foundProject.project?.name;
-    }
+  if (foundProject) {
+    return foundProject.project?.name;
+  }
 };
 
 export const getAssigneName = (
   user: ResourceAllocationsInnerUsers,
   users: ResourceAllocationsInner[]
 ) => {
-    const foundUser = users.find(u => u.user?.severaUserId === user.severaUserId);
+  const foundUser = users.find(
+    (u) => u.user?.severaUserId === user.severaUserId
+  );
 
-    if (foundUser) {
-      return foundUser.user?.name;
-    }
-}
+  if (foundUser) {
+    return foundUser.user?.name;
+  }
+};
 
 export const getPhaseName = (
   phase: ResourceAllocationsInnerPhase,
   phases: ResourceAllocationsInner[]
 ) => {
-    const foundPhase = phases.find(p => p.phase?.severaPhaseId === phase.severaPhaseId);
+  const foundPhase = phases.find(
+    (p) => p.phase?.severaPhaseId === phase.severaPhaseId
+  );
 
-    if (foundPhase) {
-      return foundPhase.phase?.name;
-    }
-}
-
+  if (foundPhase) {
+    return foundPhase.phase?.name;
+  }
+};
 
 // export const getAllocationHour = (
 //   allocation: ResourceAllocationsInner,
@@ -86,8 +107,6 @@ export const getPhaseName = (
 //   return 0;
 // }
 // )
-
-
 
 /**
  * Get project color
@@ -163,23 +182,31 @@ export const calculateWorkingLoad = (person?: Person) => {
  * @param allocations allocations
  * @param projects list of running projects
  */
-export const filterAllocationsAndProjects = (allocations: Allocations[], projects: Projects[]) => {
+export const filterAllocationsAndProjects = (
+  allocations: Allocations[],
+  projects: Projects[]
+) => {
   const filteredProjects: Projects[] = [];
   const filteredAllocations = allocations.filter((allocation) =>
     projects.find((project) => allocation.project === project.id)
   );
   for (const allocation of filteredAllocations) {
-    const allocationProject = projects.find((project) => allocation.project === project.id);
+    const allocationProject = projects.find(
+      (project) => allocation.project === project.id
+    );
     if (allocationProject) filteredProjects.push(allocationProject);
   }
   return { filteredAllocations, filteredProjects };
 };
 
-
 export const getSeveraUserId = (user: User | undefined): string => {
   return user?.attributes?.severaUserId ?? config.user.testUserSeveraId ?? "";
-}
+};
 
-export const getSeveraProjectId = (project: ResourceAllocationsProject | undefined): string => {
-  return project?.attributes?.severaProjectId ?? config.phase.testPhaseSeveraId ?? "";
-}
+export const getSeveraProjectId = (
+  project: ResourceAllocationsInnerProjects | undefined
+): string => {
+  return (
+    project?.attributes?.severaProjectId ?? config.phase.testPhaseSeveraId ?? ""
+  );
+};

@@ -30,21 +30,12 @@ interface Props {
   phase: ResourceAllocationsInner[];
 }
 
-
-
 /**
  * Sprint view projects table columns component
  *
  * @param props component properties
  */
-const sprintViewProjectsColumns = ({
-  project,
-  user,
-  phase
-  
-}:
-
-Props) => {
+const sprintViewProjectsColumns = ({ project, user, phase }: Props) => {
   /**
    * Define columns for data grid
    */
@@ -61,13 +52,9 @@ Props) => {
       renderCell: (params) => {
         return (
           <>
-            <Box
-        display="flex"
-        alignItems="center"
-        justifyContent="center"
-
-            />
-            {getProjectName(params.row.project, project)} {/* Fetch and display project name */}
+            <Box display="flex" alignItems="center" justifyContent="center" />
+            {getProjectName(params.row.project, project)}{" "}
+            {/* Fetch and display project name */}
           </>
         );
       },
@@ -82,16 +69,15 @@ Props) => {
         return (
           <>
             <Box
-            marginLeft={"50px"}
-        display="flex"
-        alignItems="center"
-        justifyContent="center"
-
+              marginLeft={"50px"}
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
             />
             {params.value} {/* Fetch and display project name */}
           </>
         );
-      }
+      },
     },
     {
       field: "estimateHours",
@@ -103,16 +89,15 @@ Props) => {
         return (
           <>
             <Box
-                        marginLeft={"50px"}
-        display="flex"
-        alignItems="center"
-        justifyContent="center"
-
+              marginLeft={"50px"}
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
             />
             {params.value} {/* Fetch and display project name */}
           </>
         );
-      }
+      },
     },
     {
       field: "Tasks",
@@ -126,12 +111,9 @@ Props) => {
       renderCell: (params) => {
         return (
           <>
-            <Box
-        display="flex"
-        alignItems="center"
-        justifyContent="center"
-            />
-            {getPhaseName(params.row.tasks, phase)} {/* Fetch and display project name */}
+            <Box display="flex" alignItems="center" justifyContent="center" />
+            {getPhaseName(params.row.tasks, phase)}{" "}
+            {/* Fetch and display project name */}
           </>
         );
       },
@@ -148,18 +130,14 @@ Props) => {
       renderCell: (params) => {
         return (
           <>
-            <Box
-        display="flex"
-        alignItems="center"
-        justifyContent="center"
-
-            />
-            {getAssigneName(params.row.assignee, user)} {/* Fetch and display project name */}
+            <Box display="flex" alignItems="center" justifyContent="center" />
+            {getAssigneName(params.row.assignee, user)}{" "}
+            {/* Fetch and display project name */}
           </>
         );
       },
     },
-        // {
+    // {
     //   field: "projectName",
     //   headerClassName: "header-color",
     //   filterable: false,

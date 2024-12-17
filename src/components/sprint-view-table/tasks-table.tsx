@@ -1,5 +1,17 @@
-import { Box, Card, CircularProgress, IconButton, Typography } from "@mui/material";
-import type { Projects, ResourceAllocationsInner, ResourceAllocationsInnerPhase, ResourceAllocationsInnerProject, Tasks, TimeEntries } from "src/generated/homeLambdasClient";
+import {
+  Box,
+  Card,
+  CircularProgress,
+  IconButton,
+  Typography,
+} from "@mui/material";
+import type {
+  Phase,
+  Projects,
+  ResourceAllocationsInnerProject,
+  Tasks,
+  TimeEntries,
+} from "src/generated/homeLambdasClient";
 import { DataGrid } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
 import { useLambdasApi } from "src/hooks/use-api";
@@ -10,15 +22,17 @@ import sprintViewTasksColumns from "./sprint-tasks-columns";
 import { errorAtom } from "src/atoms/error";
 import { useSetAtom } from "jotai";
 import { getSeveraProjectId } from "src/utils/sprint-utils";
+import { ResourceAllocationsInnerPhase } from "src/generated/homeLambdasClient/models/ResourceAllocationsInnerPhase";
+import { ResourceAllocationsInner } from "src/generated/homeLambdasClient/models/ResourceAllocationsInner";
+import { ResourceAllocationsInnerProjects } from "src/generated/homeLambdasClient/models/ResourceAllocationsInnerProjects";
 
 /**
  * Component properties
  */
 interface Props {
-  project: ResourceAllocationsInner;
+  project: ResourceAllocationsInnerProjects;
   loggedInPersonId?: number;
   filter?: string;
-
 }
 
 /**
@@ -29,11 +43,11 @@ interface Props {
 const TaskTable = ({ project, loggedInPersonId, filter }: Props) => {
   const { tasksApi, timeEntriesApi, phaseApi } = useLambdasApi();
   // const [tasks, setTasks] = useState<Tasks[]>([]);
-  const [phase, setPhase] = useState<ResourceAllocationsInnerPhase[]>();
+  const [phase, setPhase] = useState<Phase[]>([]);
   const [timeEntries, setTimeEntries] = useState<number[]>([]);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  // const columns = sprintViewTasksColumns({ phase, timeEntries });
+  const columns = sprintViewTasksColumns({ phase });
   const setError = useSetAtom(errorAtom);
 
   /**
@@ -53,19 +67,25 @@ const TaskTable = ({ project, loggedInPersonId, filter }: Props) => {
     setOpen(false);
   }, [loggedInPersonId]);
 
+  const rows = phase.map((phase) => ({
+    id: phase.severaPhaseId,
+    title: phase.name,
+  }));
+
   /**
    * Get tasks and total time entries
    */
   const getTasksAndTimeEntries = async () => {
     setLoading(true);
-    if (!(phase?.length) || !(timeEntries?.length)) {
+    if (!phase?.length) {
       try {
         const severaProjectId = getSeveraProjectId(project);
-        const fetchedTasks = await phaseApi.getPhasesBySeveraProjectId({ severaProjectId: severaProjectId || "" })
+        const fetchedTasks = await phaseApi.getPhasesBySeveraProjectId({
+          severaProjectId: severaProjectId || "",
+        });
+        console.log("Here is the fetched Tasks", fetchedTasks);
 
-        console.log("Fetching tasks here", fetchedTasks);
-
-        // setPhase(fetchedTasks);
+        setPhase(fetchedTasks);
         // const fetchedTimeEntries = await Promise.all(
         //   fetchedTasks.map(async (task) => {
         //     try {
@@ -100,7 +120,9 @@ const TaskTable = ({ project, loggedInPersonId, filter }: Props) => {
         // );
         // setTimeEntries(fetchedTimeEntries);
       } catch (error) {
-        setError(`${strings.sprintRequestError.fetchTimeEntriesError} ${error}`);
+        setError(
+          `${strings.sprintRequestError.fetchTimeEntriesError} ${error}`
+        );
       }
     }
     setLoading(false);
@@ -118,14 +140,19 @@ const TaskTable = ({ project, loggedInPersonId, filter }: Props) => {
         height: "100",
         marginBottom: "16px",
         "& .high_priority": {
-          color: "red"
+          color: "red",
         },
         "& .low_priority": {
-          color: "green"
-        }
+          color: "green",
+        },
       }}
     >
-      Task Table
+      <Typography
+        variant="h6"
+        style={{ display: "inline", fontWeight: "bold" }}
+      >
+        {project.name || "No Project Name"}
+      </Typography>
       <IconButton onClick={() => setOpen(!open)}>
         {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
       </IconButton>
@@ -138,39 +165,38 @@ const TaskTable = ({ project, loggedInPersonId, filter }: Props) => {
                 sx={{
                   scale: "100%",
                   mt: "3%",
-                  mb: "3%"
+                  mb: "3%",
                 }}
               />
             </Box>
           ) : (
-            // <DataGrid
-            //   sx={{
-            //     backgroundColor: "#f6f6f6",
-            //     borderTop: 0,
-            //     borderLeft: 0,
-            //     borderRight: 0,
-            //     borderBottom: 0,
-            //     "& .header-color": {
-            //       backgroundColor: "#f2f2f2"
-            //     }
-            //   }}
-            //   autoHeight={true}
-            //   localeText={{ noResultsOverlayLabel: strings.sprint.notFound }}
-            //   disableColumnFilter
-            //   hideFooter={true}
-            //   filterModel={{
-            //     items: [
-            //       {
-            //         field: "status",
-            //         operator: "contains",
-            //         value: filter
-            //       }
-            //     ]
-            //   }}
-            //   // rows={tasks}
-            //   // columns={columns}
-            // />
-            console.log("Tasks here")
+            <DataGrid
+              sx={{
+                backgroundColor: "#f6f6f6",
+                borderTop: 0,
+                borderLeft: 0,
+                borderRight: 0,
+                borderBottom: 0,
+                "& .header-color": {
+                  backgroundColor: "#f2f2f2",
+                },
+              }}
+              autoHeight={true}
+              localeText={{ noResultsOverlayLabel: strings.sprint.notFound }}
+              disableColumnFilter
+              hideFooter={true}
+              filterModel={{
+                items: [
+                  {
+                    field: "status",
+                    operator: "contains",
+                    value: filter,
+                  },
+                ],
+              }}
+              rows={rows}
+              columns={columns}
+            />
           )}
         </>
       )}
