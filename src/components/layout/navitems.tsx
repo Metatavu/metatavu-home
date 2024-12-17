@@ -100,14 +100,6 @@ const NavItems = () => {
               {strings.header.admin}
               </MenuItem>
             )}
-            <MenuItem
-              component={Link}
-              to={"/settings"}
-              key="settingsMenuItemMobile"
-              onClick={handleNavItemClick}
-            >
-            {strings.header.settings}
-          </MenuItem>
         </Menu>
         <Typography variant="button" marginTop={1.5}>
           {currentPage}
@@ -128,9 +120,6 @@ const NavItems = () => {
             <Button>{strings.header.admin}</Button>
           </Link>         
         )}
-        <Link to="/settings" style={{ margin: 2, display: "block" }}>
-          <Button>{strings.header.settings}</Button>
-        </Link>
       </Box>
     </>
   );
