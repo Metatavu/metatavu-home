@@ -396,7 +396,6 @@ export interface Localized extends LocalizedStringsMethods {
     update: string;
     clearPassedUsers: string;
     snackbarMessageSuccess: string;
-
   };
   /**
    * Translations related to Balance Card

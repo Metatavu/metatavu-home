@@ -11,7 +11,7 @@ import {
   TextField,
   Typography
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { Questionnaire, Question, AnswerOption } from "src/generated/homeLambdasClient";
 import NewQuestionCard from "./new-question-card";
 import { useNavigate } from "react-router";
@@ -43,7 +43,35 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
   const [editedQuestionnaire, setEditedQuestionnaire] = useState<Questionnaire>(questionnaire);
   const [clearPassedUsers, setClearPassedUsers] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const isDisabled = !editedQuestionnaire.title || !editedQuestionnaire.description || editedQuestionnaire.questions.length === 0;
+  const [isSaveEnable, setIsSaveEnable] = useState(false);
+
+  useEffect(() => {
+    setIsSaveEnable(!validateEditedQuestionnaire(editedQuestionnaire));
+  }, [editedQuestionnaire]);
+
+  /**
+   * Function to validate edited questionnaire
+   *
+   * @param questionnaire
+   * @returns boolean value
+   */
+  const validateEditedQuestionnaire = (questionnaire: Questionnaire): boolean => {
+    const { title, description, questions } = questionnaire;
+
+    if (!title || !description || questions.length === 0) return false;
+
+    if (clearPassedUsers) return true;
+
+    if (editedQuestionnaire.passScore !== undefined) return true;
+
+    const isQuestionValid = (question: Question): boolean => {
+      if (!question.questionText?.trim() || question.answerOptions.length === 0) return false;
+
+      return question.answerOptions.some((answerOption) => answerOption.isCorrect);
+    };
+
+    return questions.every(isQuestionValid);
+  };
 
   /**
    * Handle change event for questionnaire title and description
@@ -117,6 +145,8 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
 
   /**
    * Function to count all correct answers in the questionnaire, used for passScore determination
+   *
+   * @returns number of correct answers
    */
   const countEditedCorrectAnswers = () => {
     return editedQuestionnaire.questions.reduce((count, question) => {
@@ -139,6 +169,8 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
 
   /**
    * Function to update edited questionnaire
+   *
+   * @returns updated questionnaire
    */
   const updateEditedQuestionnaire = async () => {
     setLoading(true);
@@ -225,9 +257,11 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
                 ))}
               </Box>
               <Button
-                sx={{ color: "red", float: "right", mb: 2 }}
+                sx={{ color: "black", float: "right", mb: 2 }}
                 size="small"
                 onClick={() => handleDeleteQuestion(questionIndex)}
+                variant="contained"
+                color="secondary"
               >
                 {strings.questionnaireEdit.deleteQuestion}
               </Button>
@@ -277,7 +311,7 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
             <Button
               sx={{ alignItems: "center" }}
               onClick={updateEditedQuestionnaire}
-              disabled={loading || isDisabled}
+              disabled={loading || !isSaveEnable}
               variant="contained"
               size="large"
               color="success"
