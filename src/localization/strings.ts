@@ -395,6 +395,15 @@ export interface Localized extends LocalizedStringsMethods {
     hour: string;
     hours: string;
   };
+  /**
+   * Translation related settings screen
+   */
+  settingsScreen: {
+    saveSettings: string;
+    accept: string,
+    decline: string;
+    consentToDataProcessing: string;
+  };
 }
 
 /**

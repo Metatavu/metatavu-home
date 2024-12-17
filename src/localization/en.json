@@ -297,5 +297,11 @@
     "atTheEndOf": "At the end of {0}",
     "hour": "hour",
     "hours": "hours"
+  },
+  "settingsScreen": {
+    "saveSettings": "Save settings",
+    "accept": "Accept",
+    "decline":"Decline",
+    "consentToDataProcessing": "Consent to data prosessing"
   }
 }

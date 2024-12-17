@@ -297,5 +297,11 @@
     "atTheEndOf": "{0} lopussa",
     "hour": "tunti",  
     "hours": "Tuntia"
+  },
+  "settingsScreen": {
+    "saveSettings": "Tallena Asetukset",
+    "accept": "Hyväksy",
+    "decline":"En hyväksy",
+    "consentToDataProcessing": "Suostumus tietojen käsittelyyn"
   }
 }
