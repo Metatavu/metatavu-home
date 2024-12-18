@@ -46,8 +46,13 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
   const [isSaveEnable, setIsSaveEnable] = useState(false);
 
   useEffect(() => {
-    setIsSaveEnable(!validateEditedQuestionnaire(editedQuestionnaire));
-  }, [editedQuestionnaire]);
+    const hasChanges = JSON.stringify(editedQuestionnaire) !== JSON.stringify(questionnaire);
+    const isValid = validateEditedQuestionnaire(editedQuestionnaire);
+    setIsSaveEnable(hasChanges && isValid);
+    if (clearPassedUsers && isValid) {
+      setIsSaveEnable(true);
+    }
+  }, [editedQuestionnaire, questionnaire, clearPassedUsers]);
 
   /**
    * Function to validate edited questionnaire
@@ -58,19 +63,30 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
   const validateEditedQuestionnaire = (questionnaire: Questionnaire): boolean => {
     const { title, description, questions } = questionnaire;
 
-    if (!title || !description || questions.length === 0) return false;
+    if (!title || !description) return false;
+    if (questions.length === 0) return false;
+    if (!questionnaire.questions.every(isQuestionValid)) return false;
 
-    if (clearPassedUsers) return true;
+    return true;
+  };
 
-    if (editedQuestionnaire.passScore !== undefined) return true;
+  /**
+   * Validate a single question
+   *
+   * @param question - The question to validate
+   * @returns boolean - True if the question is valid, false otherwise
+   */
+  const isQuestionValid = (question: Question): boolean => {
+    if (!question.questionText || question.answerOptions.length === 0) {
+      return false;
+    }
+    const hasEmptyLabel = question.answerOptions.some((option) => !option.label.trim());
+    if (hasEmptyLabel) {
+      return false;
+    }
 
-    const isQuestionValid = (question: Question): boolean => {
-      if (!question.questionText?.trim() || question.answerOptions.length === 0) return false;
-
-      return question.answerOptions.some((answerOption) => answerOption.isCorrect);
-    };
-
-    return questions.every(isQuestionValid);
+    const hasCorrectAnswer = question.answerOptions.some((option) => option.isCorrect);
+    return hasCorrectAnswer;
   };
 
   /**
