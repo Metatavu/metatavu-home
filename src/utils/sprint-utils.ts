@@ -4,16 +4,16 @@ import type {
   Allocations,
   Projects,
   ResourceAllocations,
-  ResourceAllocationsInner,
-  ResourceAllocationsInnerPhase,
-  ResourceAllocationsInnerProjects,
-  ResourceAllocationsInnerUsers,
   ResourceAllocationsPhase,
   ResourceAllocationsProject,
   Tasks,
   User,
   WorkHours,
 } from "src/generated/homeLambdasClient";
+import { ResourceAllocationsInner } from "src/generated/homeLambdasClient/models/ResourceAllocationsInner";
+import { ResourceAllocationsInnerPhase } from "src/generated/homeLambdasClient/models/ResourceAllocationsInnerPhase";
+import { ResourceAllocationsInnerProjects } from "src/generated/homeLambdasClient/models/ResourceAllocationsInnerProjects";
+import { ResourceAllocationsInnerUsers } from "src/generated/homeLambdasClient/models/ResourceAllocationsInnerUsers";
 
 /**
  * Retrieve total time entries for an allocation
@@ -81,6 +81,18 @@ export const getAssigneName = (
 
   if (foundUser) {
     return foundUser.user?.name;
+  }
+};
+
+export const getAssigneNamePhase = (
+  user: ResourceAllocationsInnerPhase,
+  users: ResourceAllocationsInner[]
+) => {
+  const foundAssignee = users.find(
+    (p) => p.phase?.severaPhaseId === user.severaPhaseId
+  );
+  if (foundAssignee) {
+    return foundAssignee.user?.name;
   }
 };
 

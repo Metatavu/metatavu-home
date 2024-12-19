@@ -17,7 +17,7 @@ interface Props {
  */
 const UserAvatars = ({ assignedPersons }: Props) => {
   const users: User[] = useAtomValue(usersAtom);
-  // const avatars: UsersAvatars[] = useAtomValue(avatarsAtom);
+  const avatars: UsersAvatars[] = useAtomValue(avatarsAtom);
   const maxAvatarsInLine = 3;
 
   return (
@@ -26,7 +26,7 @@ const UserAvatars = ({ assignedPersons }: Props) => {
         "& .MuiAvatar-root": { width: 30, height: 30, fontSize: 15 },
       }}
     >
-      {renderAvatars(assignedPersons, users, maxAvatarsInLine)}
+      {renderAvatars(assignedPersons, users, avatars, maxAvatarsInLine)}
     </AvatarGroup>
   );
 };
@@ -45,6 +45,7 @@ const renderAvatars = (
   avatars: UsersAvatars[],
   maxAvatarsInLine: number
 ) => {
+  console.log("assignedPersons", assignedPersons);
   return assignedPersons.map((userId: number, index: number) => {
     const avatar = avatars?.find((avatar) => avatar.personId === userId);
     // const person = persons?.find((person) => person.id === personId);\
@@ -67,14 +68,14 @@ const renderAvatars = (
       const groupedPersons = assignedPersons.slice(maxAvatarsInLine);
       let tooltipTitle = "";
 
-      // groupedPersons.forEach((groupedPersonId: number) => {
-      //   const personFound = users.find(
-      //     (user: { id: number }) => user.id === groupedPersonId
-      //   );
-      //   if (personFound) {
-      //     tooltipTitle += `${personFound?.firstName} ${personFound?.lastName}, `;
-      //   }
-      // });
+      groupedPersons.forEach((groupedPersonId: number) => {
+        const personFound = users.find(
+          (user: User) => user.id === groupedPersonId.toString()
+        );
+        if (personFound) {
+          tooltipTitle += `${personFound?.firstName} ${personFound?.lastName}, `;
+        }
+      });
       tooltipTitle = tooltipTitle.slice(0, tooltipTitle.length - 2);
       if (hiddenAssignedPersons === 1) {
         return (
