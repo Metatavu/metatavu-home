@@ -21,6 +21,7 @@ import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
 import { Link } from "react-router-dom";
 import { KeyboardReturn } from "@mui/icons-material";
+import isEqual from "lodash/isEqual";
 
 /**
  * Component props
@@ -43,14 +44,14 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
   const [editedQuestionnaire, setEditedQuestionnaire] = useState<Questionnaire>(questionnaire);
   const [clearPassedUsers, setClearPassedUsers] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [isSaveEnable, setIsSaveEnable] = useState(false);
+  const [saveEnabled, setSaveEnabled] = useState(false);
 
   useEffect(() => {
-    const hasChanges = JSON.stringify(editedQuestionnaire) !== JSON.stringify(questionnaire);
+    const hasChanges = !isEqual(editedQuestionnaire, questionnaire);
     const isValid = validateEditedQuestionnaire(editedQuestionnaire);
-    setIsSaveEnable(hasChanges && isValid);
+    setSaveEnabled(hasChanges && isValid);
     if (clearPassedUsers && isValid) {
-      setIsSaveEnable(true);
+      setSaveEnabled(true);
     }
   }, [editedQuestionnaire, questionnaire, clearPassedUsers]);
 
@@ -153,10 +154,10 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
    * @param questionIndex number
    */
   const handleDeleteQuestion = (questionIndex: number) => {
-    const updatedQuestions = editedQuestionnaire.questions.filter(
+    const filteredQuestions = editedQuestionnaire.questions.filter(
       (_, optionIndex) => optionIndex !== questionIndex
     );
-    setEditedQuestionnaire((prev) => ({ ...prev, questions: updatedQuestions }));
+    setEditedQuestionnaire((prev) => ({ ...prev, questions: filteredQuestions }));
   };
 
   /**
@@ -189,10 +190,13 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
    * @returns updated questionnaire
    */
   const updateEditedQuestionnaire = async () => {
+    if (!editedQuestionnaire.id) {
+      return null;
+    }
     setLoading(true);
     try {
       const updatedQuestionnaire = await questionnairesApi.updateQuestionnaires({
-        id: editedQuestionnaire.id as string,
+        id: editedQuestionnaire.id,
         questionnaire: {
           ...editedQuestionnaire,
           passedUsers: clearPassedUsers ? [] : editedQuestionnaire.passedUsers
@@ -201,7 +205,7 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
       setSnackbarOpen(true);
       return updatedQuestionnaire;
     } catch (error) {
-      setError(`${strings.error.questionnaireSaveFailed}, ${error}`);
+      setError(`${strings.error.questionnaireUpdateFailed}, ${error}`);
     }
     setLoading(false);
   };
@@ -235,7 +239,6 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
             fullWidth
             sx={{ mb: 4 }}
           />
-
           {editedQuestionnaire.questions.map((question, questionIndex) => (
             <div key={questionIndex}>
               <TextField
@@ -247,7 +250,7 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
                 fullWidth
                 margin="normal"
               />
-              <Box sx={{}}>
+              <Box>
                 {question.answerOptions.map((option, optionIndex) => (
                   <Box key={optionIndex} sx={{ display: "flex", alignItems: "center", mb: 1 }}>
                     <Checkbox
@@ -327,7 +330,7 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
             <Button
               sx={{ alignItems: "center" }}
               onClick={updateEditedQuestionnaire}
-              disabled={loading || !isSaveEnable}
+              disabled={loading || !saveEnabled}
               variant="contained"
               size="large"
               color="success"

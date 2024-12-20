@@ -24,6 +24,7 @@
     "jotai": "^2.4.1",
     "keycloak-js": "^25.0.4",
     "localized-strings": "^0.2.4",
+    "lodash": "^4.17.21",
     "luxon": "^3.4.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

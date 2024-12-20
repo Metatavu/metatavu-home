@@ -33,6 +33,7 @@
     "questionnaireLoadFailed": "Error while loading questionnaires",
     "questionnaireDeleteFailed": "Error while deleting questionnaire",
     "questionnaireSaveFailed": "Error while saving questionnaire",
+    "questionnaireUpdateFailed": "Error while updating questionnaire",
     "fetchFailedFlextime": "Error while fetching flextime data",
     "noSeveraUserId" : "One of your user is missing severaUserId, please contact a member of the metatavu home development team for more information.",
     "noFlextimeData": "Something went wrong while fetching your flextime data"
@@ -297,8 +298,8 @@
     "passScoreLabel": "Pass score",
     "passScoreMax": "Max pass score:",
     "update": "Update Questionnaire",
-    "clearPassedUsers": "Clear passed users from this questionnaire",
-    "snackbarMessageSuccess": "Update questionniare successfully"
+    "clearPassedUsers": "Remove all passed users from this questionnaire",
+    "snackbarMessageSuccess": "Updated questionnaire successfully"
   },
   "balanceCard": {
     "totalFlextimeBalance": "Total flextime balance:",
