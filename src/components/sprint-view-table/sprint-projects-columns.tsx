@@ -1,26 +1,15 @@
 import type { GridColDef } from "@mui/x-data-grid";
 import { Box } from "@mui/material";
 import strings from "../../localization/strings";
-import { getHoursAndMinutes } from "src/utils/time-utils";
 import {
   getAssigneName,
   getPhaseName,
   // getProjectColor,
   getProjectName,
-  getTotalTimeEntriesAllocations,
-  timeLeft,
   // totalAllocations,
 } from "src/utils/sprint-utils";
-import type {
-  Allocations,
-  Projects,
-  ResourceAllocations,
-  ResourceAllocationsInner,
-  ResourceAllocationsInnerProjects,
-  ResourceAllocationsInnerUsers,
-  ResourceAllocationsProject,
-  WorkHours,
-} from "src/generated/homeLambdasClient";
+import type { ResourceAllocationsInner } from "src/generated/homeLambdasClient/models/ResourceAllocationsInner";
+import type { ResourceAllocationsInnerProjects } from "src/generated/homeLambdasClient/models/ResourceAllocationsInnerProjects";
 
 interface Props {
   severaProjectId: ResourceAllocationsInnerProjects[];
@@ -54,7 +43,6 @@ const sprintViewProjectsColumns = ({ project, user, phase }: Props) => {
           <>
             <Box display="flex" alignItems="center" justifyContent="center" />
             {getProjectName(params.row.project, project)}{" "}
-            {/* Fetch and display project name */}
           </>
         );
       },
@@ -74,7 +62,7 @@ const sprintViewProjectsColumns = ({ project, user, phase }: Props) => {
               alignItems="center"
               justifyContent="center"
             />
-            {params.value} {/* Fetch and display project name */}
+            {params.value}
           </>
         );
       },
@@ -94,7 +82,7 @@ const sprintViewProjectsColumns = ({ project, user, phase }: Props) => {
               alignItems="center"
               justifyContent="center"
             />
-            {params.value} {/* Fetch and display project name */}
+            {params.value}
           </>
         );
       },
@@ -113,7 +101,7 @@ const sprintViewProjectsColumns = ({ project, user, phase }: Props) => {
           <>
             <Box display="flex" alignItems="center" justifyContent="center" />
             {getPhaseName(params.row.tasks, phase)}{" "}
-            {/* Fetch and display project name */}
+            
           </>
         );
       },
@@ -132,54 +120,11 @@ const sprintViewProjectsColumns = ({ project, user, phase }: Props) => {
           <>
             <Box display="flex" alignItems="center" justifyContent="center" />
             {getAssigneName(params.row.assignee, user)}{" "}
-            {/* Fetch and display project name */}
+            
           </>
         );
       },
-    },
-    // {
-    //   field: "projectName",
-    //   headerClassName: "header-color",
-    //   filterable: false,
-    //   headerName: strings.sprint.myAllocation,
-    //   flex: 2,
-    //   valueGetter: (params) =>
-    //     getProjectName(params.row, severaProjectId, projects),
-    //   renderCell: (params) => (
-    //     <>
-    //       <Box
-    //         minWidth="45px"
-    //         style={{ marginRight: "10px" }}
-    //         component="span"
-    //         // sx={{
-    //         //   bgcolor: getProjectColor(
-    //         //     params.row,
-    //         //     severaProjectId,
-    //         //     projects
-    //         //   ),
-    //         //   height: 25,
-    //         //   borderRadius: "5px",
-    //         // }}
-    //       />
-    //       {getProjectName(params.row, severaProjectId, projects)}
-    //     </>
-    //   ),
-    // },
-    // {
-    //   field: "project",
-    //   headerClassName: "header-color",
-    //   filterable: false,
-    //   headerName: strings.sprint.myAllocation,
-    //   flex: 2,
-    //   renderCell: (params) => (
-    //     <>
-    //       <Box
-    //         component="span"
-    //       />
-    //       {params.value}
-    //     </>
-    //   ),
-    // },
+    }
   ];
   return columns;
 };

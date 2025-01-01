@@ -5,13 +5,6 @@ import {
   IconButton,
   Typography,
 } from "@mui/material";
-import type {
-  Phase,
-  Projects,
-  ResourceAllocationsInnerProject,
-  Tasks,
-  TimeEntries,
-} from "src/generated/homeLambdasClient";
 import { DataGrid } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
 import { useLambdasApi } from "src/hooks/use-api";
@@ -21,16 +14,14 @@ import strings from "src/localization/strings";
 import sprintViewTasksColumns from "./sprint-tasks-columns";
 import { errorAtom } from "src/atoms/error";
 import { useSetAtom } from "jotai";
-import { getSeveraProjectId } from "src/utils/sprint-utils";
-import { ResourceAllocationsInnerPhase } from "src/generated/homeLambdasClient/models/ResourceAllocationsInnerPhase";
-import { ResourceAllocationsInner } from "src/generated/homeLambdasClient/models/ResourceAllocationsInner";
-import { ResourceAllocationsInnerProjects } from "src/generated/homeLambdasClient/models/ResourceAllocationsInnerProjects";
+import type { PhaseInner } from "src/generated/homeLambdasClient/models/PhaseInner";
+import type { PhaseInnerProject } from "src/generated/homeLambdasClient/models/PhaseInnerProject";
 
 /**
  * Component properties
  */
 interface Props {
-  project: ResourceAllocationsInner;
+  project: PhaseInnerProject;
   loggedInPersonId?: number;
   filter?: string;
 }
@@ -41,10 +32,8 @@ interface Props {
  * @param props component properties
  */
 const TaskTable = ({ project, loggedInPersonId, filter }: Props) => {
-  const { tasksApi, timeEntriesApi, phaseApi } = useLambdasApi();
-  // const [tasks, setTasks] = useState<Tasks[]>([]);
-  const [phase, setPhase] = useState<Phase[]>([]);
-  const [timeEntries, setTimeEntries] = useState<number[]>([]);
+  const { phaseApi } = useLambdasApi();
+  const [phase, setPhase] = useState<PhaseInner[]>([]);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const columns = sprintViewTasksColumns({ phase });
@@ -70,6 +59,9 @@ const TaskTable = ({ project, loggedInPersonId, filter }: Props) => {
   const rows = phase.map((phase) => ({
     id: phase.severaPhaseId,
     title: phase.name,
+    workHour: phase.workHoursEstimate,
+    startDate: phase.startDate?.toString(),
+    deadLine: phase.deadline?.toString()
   }));
 
   /**
@@ -79,47 +71,11 @@ const TaskTable = ({ project, loggedInPersonId, filter }: Props) => {
     setLoading(true);
     if (!phase?.length) {
       try {
-        // const severaProjectId = getSeveraProjectId(project);
         const fetchedTasks = await phaseApi.getPhasesBySeveraProjectId({
           severaProjectId:
-            project.project?.severaProjectId || "Can we see something here",
+            project.severaProjectId || "",
         });
-        console.log("Here is the fetched Tasks", fetchedTasks);
-
         setPhase(fetchedTasks);
-        // const fetchedTimeEntries = await Promise.all(
-        //   fetchedTasks.map(async (task) => {
-        //     try {
-        //       if (project.id) {
-        //         const totalTimeEntries = await timeEntriesApi.listProjectTimeEntries({
-        //           projectId: project.id,
-        //           taskId: task.id
-        //         });
-        //         let totalMinutes = 0;
-        //         totalTimeEntries.forEach((timeEntry: TimeEntries) => {
-        //           if (loggedInPersonId && timeEntry.person === loggedInPersonId) {
-        //             totalMinutes += timeEntry.timeRegistered || 0;
-        //           }
-        //           if (!loggedInPersonId) {
-        //             totalMinutes += timeEntry.timeRegistered || 0;
-        //           }
-        //         });
-        //         return totalMinutes;
-        //       }
-        //     } catch (error) {
-        //       const message: string = strings
-        //         .formatString(
-        //           strings.sprintRequestError.fetchTasksError,
-        //           task.id || `${strings.sprintRequestError.fetchTaskIdError}`,
-        //           error as string
-        //         )
-        //         .toString();
-        //       setError(message);
-        //     }
-        //     return 0;
-        //   })
-        // );
-        // setTimeEntries(fetchedTimeEntries);
       } catch (error) {
         setError(
           `${strings.sprintRequestError.fetchTimeEntriesError} ${error}`
@@ -152,7 +108,7 @@ const TaskTable = ({ project, loggedInPersonId, filter }: Props) => {
         {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
       </IconButton>
       <Typography style={{ display: "inline" }}>
-        {project.project?.name}
+        {project.name}
       </Typography>
       {open && (
         <>

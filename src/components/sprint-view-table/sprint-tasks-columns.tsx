@@ -1,10 +1,6 @@
 import type { GridColDef } from "@mui/x-data-grid";
 import strings from "../../localization/strings";
-import { getHoursAndMinutes } from "../../utils/time-utils";
-import type { Phase, Tasks } from "../../generated/homeLambdasClient";
-import { getTotalTimeEntriesTasks } from "src/utils/sprint-utils";
-import UserAvatars from "./user-avatars-component";
-import { ResourceAllocationsInnerPhase } from "src/generated/homeLambdasClient/models/ResourceAllocationsInnerPhase";
+import type { Phase } from "../../generated/homeLambdasClient";
 
 /**
  * Component properties
@@ -30,17 +26,36 @@ const sprintViewTasksColumns = ({ phase, timeEntries }: Props) => {
       headerClassName: "header-color",
       headerName: strings.sprint.taskName,
       minWidth: 0,
-      flex: 3,
+      flex: 1,
     },
     {
-      field: "assignedPersons",
+      field: "workHour",
       headerClassName: "header-color",
-      headerName: strings.sprint.assigned,
+      headerName: strings.sprint.estimatedTime,
       flex: 1,
-      renderCell: (params) =>
-        // <UserAvatars assignedPersons={params.row.assignedPersons} />
-        console.log(),
+      renderCell: (params) => params.value 
     },
+    {
+      field: "startDate",
+      headerClassName: "header-color",
+      flex: 3,
+      renderCell: (params) => params.value
+    },
+    {
+      field: "deadLine",
+      headerClassName: "header-color",
+      headerName: "DeadLine",
+      renderCell: (params) => params.value
+    }
+    // {
+    //   field: "assignedPersons",
+    //   headerClassName: "header-color",
+    //   headerName: strings.sprint.assigned,
+    //   flex: 1,
+    //   renderCell: (params) =>
+    //     // <UserAvatars assignedPersons={params.row.assignedPersons} />
+    //     console.log(),
+    // },
     // {
     //   field: "status",
     //   headerClassName: "header-color",
