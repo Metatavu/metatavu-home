@@ -1,6 +1,6 @@
 import type { GridColDef } from "@mui/x-data-grid";
 import strings from "../../localization/strings";
-import type { Phase } from "../../generated/homeLambdasClient";
+import { Phase } from "src/generated/homeLambdasClient";
 
 /**
  * Component properties
@@ -33,20 +33,20 @@ const sprintViewTasksColumns = ({ phase, timeEntries }: Props) => {
       headerClassName: "header-color",
       headerName: strings.sprint.estimatedTime,
       flex: 1,
-      renderCell: (params) => params.value 
+      renderCell: (params) => params.value,
     },
     {
       field: "startDate",
       headerClassName: "header-color",
       flex: 3,
-      renderCell: (params) => params.value
+      renderCell: (params) => params.value,
     },
     {
       field: "deadLine",
       headerClassName: "header-color",
       headerName: "DeadLine",
-      renderCell: (params) => params.value
-    }
+      renderCell: (params) => params.value,
+    },
     // {
     //   field: "assignedPersons",
     //   headerClassName: "header-color",

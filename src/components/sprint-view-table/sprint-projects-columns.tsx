@@ -8,15 +8,17 @@ import {
   getProjectName,
   // totalAllocations,
 } from "src/utils/sprint-utils";
-import type { ResourceAllocationsInner } from "src/generated/homeLambdasClient/models/ResourceAllocationsInner";
-import type { ResourceAllocationsInnerProjects } from "src/generated/homeLambdasClient/models/ResourceAllocationsInnerProjects";
+import {
+  ResourceAllocations,
+  ResourceAllocationsProject,
+} from "src/generated/homeLambdasClient";
 
 interface Props {
-  severaProjectId: ResourceAllocationsInnerProjects[];
-  project: ResourceAllocationsInner[];
-  resourceAllocations: ResourceAllocationsInner[];
-  user: ResourceAllocationsInner[];
-  phase: ResourceAllocationsInner[];
+  severaProjectId: ResourceAllocationsProject[];
+  project: ResourceAllocations[];
+  resourceAllocations: ResourceAllocations[];
+  user: ResourceAllocations[];
+  phase: ResourceAllocations[];
 }
 
 /**
@@ -101,7 +103,6 @@ const sprintViewProjectsColumns = ({ project, user, phase }: Props) => {
           <>
             <Box display="flex" alignItems="center" justifyContent="center" />
             {getPhaseName(params.row.tasks, phase)}{" "}
-            
           </>
         );
       },
@@ -120,11 +121,10 @@ const sprintViewProjectsColumns = ({ project, user, phase }: Props) => {
           <>
             <Box display="flex" alignItems="center" justifyContent="center" />
             {getAssigneName(params.row.assignee, user)}{" "}
-            
           </>
         );
       },
-    }
+    },
   ];
   return columns;
 };

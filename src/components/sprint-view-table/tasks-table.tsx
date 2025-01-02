@@ -14,14 +14,18 @@ import strings from "src/localization/strings";
 import sprintViewTasksColumns from "./sprint-tasks-columns";
 import { errorAtom } from "src/atoms/error";
 import { useSetAtom } from "jotai";
-import type { PhaseInner } from "src/generated/homeLambdasClient/models/PhaseInner";
-import type { PhaseInnerProject } from "src/generated/homeLambdasClient/models/PhaseInnerProject";
+import {
+  Phase,
+  PhaseProject,
+  ResourceAllocations,
+  ResourceAllocationsProject,
+} from "src/generated/homeLambdasClient";
 
 /**
  * Component properties
  */
 interface Props {
-  project: PhaseInnerProject;
+  project: ResourceAllocations;
   loggedInPersonId?: number;
   filter?: string;
 }
@@ -33,7 +37,7 @@ interface Props {
  */
 const TaskTable = ({ project, loggedInPersonId, filter }: Props) => {
   const { phaseApi } = useLambdasApi();
-  const [phase, setPhase] = useState<PhaseInner[]>([]);
+  const [phase, setPhase] = useState<Phase[]>([]);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const columns = sprintViewTasksColumns({ phase });
@@ -60,8 +64,8 @@ const TaskTable = ({ project, loggedInPersonId, filter }: Props) => {
     id: phase.severaPhaseId,
     title: phase.name,
     workHour: phase.workHoursEstimate,
-    startDate: phase.startDate?.toString(),
-    deadLine: phase.deadline?.toString()
+    startDate: phase.startDate?.toISOString().split("T")[0],
+    deadLine: phase.deadline?.toString(),
   }));
 
   /**
@@ -72,8 +76,7 @@ const TaskTable = ({ project, loggedInPersonId, filter }: Props) => {
     if (!phase?.length) {
       try {
         const fetchedTasks = await phaseApi.getPhasesBySeveraProjectId({
-          severaProjectId:
-            project.severaProjectId || "",
+          severaProjectId: project.project?.severaProjectId || "",
         });
         setPhase(fetchedTasks);
       } catch (error) {
@@ -108,7 +111,7 @@ const TaskTable = ({ project, loggedInPersonId, filter }: Props) => {
         {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
       </IconButton>
       <Typography style={{ display: "inline" }}>
-        {project.name}
+        {project.project?.name}
       </Typography>
       {open && (
         <>

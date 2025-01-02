@@ -11,24 +11,19 @@ import { useLambdasApi } from "src/hooks/use-api";
 import { useAtomValue, useSetAtom } from "jotai";
 import { userProfileAtom } from "src/atoms/auth";
 import type {
+  ResourceAllocations,
+  ResourceAllocationsProject,
   User,
 } from "src/generated/homeLambdasClient/models/";
 import { DataGrid } from "@mui/x-data-grid";
-import {
-  getSprintEnd,
-  getSprintStart,
-} from "src/utils/time-utils";
+import { getSprintEnd, getSprintStart } from "src/utils/time-utils";
 import TaskTable from "src/components/sprint-view-table/tasks-table";
 import strings from "src/localization/strings";
 import sprintViewProjectsColumns from "src/components/sprint-view-table/sprint-projects-columns";
 import { errorAtom } from "src/atoms/error";
-import {
-  getSeveraUserId,
-} from "src/utils/sprint-utils";
+import { getSeveraUserId } from "src/utils/sprint-utils";
 import { TaskStatusFilter } from "src/components/sprint-view-table/menu-Item-filter-table";
 import { usersAtom } from "src/atoms/user";
-import type { ResourceAllocationsInnerProjects } from "src/generated/homeLambdasClient/models/ResourceAllocationsInnerProjects";
-import { ResourceAllocationsInner } from "src/generated/homeLambdasClient/models/ResourceAllocationsInner";
 
 /**
  * Sprint view screen component
@@ -42,9 +37,9 @@ const SprintViewScreen = () => {
     (users: User) => users.id === userProfile?.id
   );
   const [resourceAllocations, setResourceAllocations] =
-    useState<ResourceAllocationsInner[]>();
+    useState<ResourceAllocations[]>();
   const [resourceAllocationsProject, setResourceAllocationsProject] = useState<
-    ResourceAllocationsInnerProjects[]
+    ResourceAllocationsProject[]
   >([]);
   // const [projects, setProjects] = useState<Projects[]>([]);
   // const [timeEntries, setTimeEntries] = useState<number[]>([]);
@@ -54,7 +49,7 @@ const SprintViewScreen = () => {
   const todaysDate = new Date().toISOString();
   const sprintStartDate = getSprintStart(todaysDate);
   const sprintEndDate = getSprintEnd(todaysDate);
-  
+
   const columns = sprintViewProjectsColumns({
     severaProjectId: resourceAllocationsProject,
     project: resourceAllocations || [],
@@ -107,13 +102,13 @@ const SprintViewScreen = () => {
    *
    * @param allocation task allocated within a project
    */
-  const unallocatedTime = (allocation: Allocations[]) => {
-    const totalAllocatedTime = allocation.reduce(
-      (total, allocation) => total + totalAllocations(allocation),
-      0
-    );
-    return calculateWorkingLoad(loggedInUser) - totalAllocatedTime;
-  };
+  // const unallocatedTime = (allocation: Allocations[]) => {
+  //   const totalAllocatedTime = allocation.reduce(
+  //     (total, allocation) => total + totalAllocations(allocation),
+  //     0
+  //   );
+  //   return calculateWorkingLoad(loggedInUser) - totalAllocatedTime;
+  // };
 
   /**
    * Featute for task filtering
@@ -198,11 +193,11 @@ const SprintViewScreen = () => {
             >
               <Typography>
                 <span
-                style={{
-                  paddingLeft: "5px",
-                  color:
-                    unallocatedTime(resourceAllocations) < 0 ? "red" : "",
-                }}
+                // style={{
+                //   paddingLeft: "5px",
+                //   color:
+                //     unallocatedTime(resourceAllocations) < 0 ? "red" : "",
+                // }}
                 />
               </Typography>
               <Typography style={{ paddingRight: "5px" }}>
@@ -216,7 +211,7 @@ const SprintViewScreen = () => {
           </Card>
           {resourceAllocations?.map((project) => (
             <TaskTable
-              key={project.severaResourceAllocationId}
+              key={project.phase?.severaPhaseId}
               project={project}
               loggedInPersonId={myTasks ? Number(loggedInUser?.id) : undefined}
               filter={filter}
