@@ -20,6 +20,7 @@ import {
   ResourceAllocationsApi,
   FlexTimeApi,
   PhasesApi,
+  WorkHoursApi,
 } from "../generated/homeLambdasClient";
 
 /**
@@ -94,5 +95,6 @@ export const getLambdasApiClient = (accessToken?: string) => {
     usersApi: new UsersApi(getConfiguration()),
     questionnairesApi: new QuestionnairesApi(getConfiguration()),
     flexTimeApi: new FlexTimeApi(getConfiguration()),
+    workHoursApi: new WorkHoursApi(getConfiguration()),
   };
 };

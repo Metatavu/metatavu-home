@@ -1,6 +1,9 @@
 import type { GridColDef } from "@mui/x-data-grid";
 import strings from "../../localization/strings";
-import { Phase } from "src/generated/homeLambdasClient";
+import { Phase, WorkHours } from "src/generated/homeLambdasClient";
+import { getWorkHour } from "src/utils/sprint-utils";
+import { get } from "react-hook-form";
+import { Box } from "@mui/material";
 
 /**
  * Component properties
@@ -9,6 +12,7 @@ interface Props {
   // tasks: Tasks[];
   // timeEntries: number[];
   phase: Phase[];
+  workHours: WorkHours[];
 }
 
 /**
@@ -16,7 +20,7 @@ interface Props {
  *
  *  @param props component properties
  */
-const sprintViewTasksColumns = ({ phase, timeEntries }: Props) => {
+const sprintViewTasksColumns = ({ phase }: Props) => {
   /**
    * Define columns for data grid
    */
@@ -29,7 +33,7 @@ const sprintViewTasksColumns = ({ phase, timeEntries }: Props) => {
       flex: 1,
     },
     {
-      field: "workHour",
+      field: "estimateWorkHours",
       headerClassName: "header-color",
       headerName: strings.sprint.estimatedTime,
       flex: 1,
@@ -46,6 +50,21 @@ const sprintViewTasksColumns = ({ phase, timeEntries }: Props) => {
       headerClassName: "header-color",
       headerName: "DeadLine",
       renderCell: (params) => params.value,
+    },
+    {
+      field: "Actual Work Hours",
+      headerClassName: "header-color",
+      headerName: "Actual Work Hours",
+      flex: 1,
+      // valueGetter: (params) => getWorkHour(params.row, phase),
+      renderCell: (params) => {
+        return (
+          <>
+            <Box display="flex" alignItems="center" justifyContent="center" />
+            {/* {getWorkHour(params.row, phase)}{" "} */}
+          </>
+        );
+      },
     },
     // {
     //   field: "assignedPersons",

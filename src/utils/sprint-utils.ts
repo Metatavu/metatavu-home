@@ -2,18 +2,18 @@ import config from "src/app/config";
 import type { Person } from "src/generated/client";
 import type {
   Allocations,
+  Phase,
   Projects,
   ResourceAllocations,
   ResourceAllocationsPhase,
   ResourceAllocationsProject,
+  ResourceAllocationsUser,
   Tasks,
   User,
   WorkHours,
+  WorkHoursPhase,
+  WorkHoursProject,
 } from "src/generated/homeLambdasClient";
-import { ResourceAllocationsInner } from "src/generated/homeLambdasClient/models/ResourceAllocationsInner";
-import { ResourceAllocationsInnerPhase } from "src/generated/homeLambdasClient/models/ResourceAllocationsInnerPhase";
-import { ResourceAllocationsInnerProjects } from "src/generated/homeLambdasClient/models/ResourceAllocationsInnerProjects";
-import { ResourceAllocationsInnerUsers } from "src/generated/homeLambdasClient/models/ResourceAllocationsInnerUsers";
 
 /**
  * Retrieve total time entries for an allocation
@@ -59,8 +59,8 @@ export const getTotalTimeEntriesTasks = (
  * @param projects list of project associated with the allocations
  */
 export const getProjectName = (
-  project: ResourceAllocationsInnerProjects,
-  projects: ResourceAllocationsInner[]
+  project: ResourceAllocationsProject,
+  projects: ResourceAllocations[]
 ) => {
   const foundProject = projects.find(
     (p) => p.project?.severaProjectId === project.severaProjectId
@@ -72,8 +72,8 @@ export const getProjectName = (
 };
 
 export const getAssigneName = (
-  user: ResourceAllocationsInnerUsers,
-  users: ResourceAllocationsInner[]
+  user: ResourceAllocationsUser,
+  users: ResourceAllocations[]
 ) => {
   const foundUser = users.find(
     (u) => u.user?.severaUserId === user.severaUserId
@@ -84,21 +84,9 @@ export const getAssigneName = (
   }
 };
 
-export const getAssigneNamePhase = (
-  user: ResourceAllocationsInnerPhase,
-  users: ResourceAllocationsInner[]
-) => {
-  const foundAssignee = users.find(
-    (p) => p.phase?.severaPhaseId === user.severaPhaseId
-  );
-  if (foundAssignee) {
-    return foundAssignee.user?.name;
-  }
-};
-
 export const getPhaseName = (
-  phase: ResourceAllocationsInnerPhase,
-  phases: ResourceAllocationsInner[]
+  phase: ResourceAllocationsPhase,
+  phases: ResourceAllocations[]
 ) => {
   const foundPhase = phases.find(
     (p) => p.phase?.severaPhaseId === phase.severaPhaseId
@@ -108,6 +96,30 @@ export const getPhaseName = (
     return foundPhase.phase?.name;
   }
 };
+
+// export const getWorkHour = (phase: WorkHoursPhase, phases: WorkHours[]) => {
+//   const foundPhase = phases.find(
+//     (p) => p.phase?.severaPhaseId === phase.severaPhaseId
+//   );
+
+//   if (foundPhase) {
+//     return foundPhase.quantity;
+//   }
+// };
+
+// export const getWorkHour = (
+//   phase: ResourceAllocationsPhase,
+//   phases: ResourceAllocations[],
+
+// ) => {
+//   const foundPhase = phases.find(
+//     (p) => p.phase?.severaPhaseId === phase.severaPhaseId
+//   );
+
+//   if (foundPhase) {
+//     return foundPhase.phase?.name;
+//   }
+// };
 
 // export const getAllocationHour = (
 //   allocation: ResourceAllocationsInner,
