@@ -1,9 +1,9 @@
 import type { GridColDef } from "@mui/x-data-grid";
 import strings from "../../localization/strings";
 import { Phase, WorkHours } from "src/generated/homeLambdasClient";
-import { getWorkHour } from "src/utils/sprint-utils";
 import { get } from "react-hook-form";
 import { Box } from "@mui/material";
+import { getWorkHour } from "src/utils/sprint-utils";
 
 /**
  * Component properties
@@ -42,7 +42,7 @@ const sprintViewTasksColumns = ({ phase }: Props) => {
     {
       field: "startDate",
       headerClassName: "header-color",
-      flex: 3,
+      flex: 1,
       renderCell: (params) => params.value,
     },
     {
@@ -52,19 +52,11 @@ const sprintViewTasksColumns = ({ phase }: Props) => {
       renderCell: (params) => params.value,
     },
     {
-      field: "Actual Work Hours",
+      field: "actualWorkHours",
       headerClassName: "header-color",
       headerName: "Actual Work Hours",
       flex: 1,
-      // valueGetter: (params) => getWorkHour(params.row, phase),
-      renderCell: (params) => {
-        return (
-          <>
-            <Box display="flex" alignItems="center" justifyContent="center" />
-            {/* {getWorkHour(params.row, phase)}{" "} */}
-          </>
-        );
-      },
+      renderCell: (params) => params.value,
     },
     // {
     //   field: "assignedPersons",

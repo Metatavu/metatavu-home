@@ -97,40 +97,13 @@ export const getPhaseName = (
   }
 };
 
-// export const getWorkHour = (phase: WorkHoursPhase, phases: WorkHours[]) => {
-//   const foundPhase = phases.find(
-//     (p) => p.phase?.severaPhaseId === phase.severaPhaseId
-//   );
+export const getWorkHour = (severaPhaseId: string, workHours: WorkHours[]) => {
+  const foundPhase = workHours.find(
+    (p) => p.phase?.severaPhaseId === severaPhaseId
+  );
 
-//   if (foundPhase) {
-//     return foundPhase.quantity;
-//   }
-// };
-
-// export const getWorkHour = (
-//   phase: ResourceAllocationsPhase,
-//   phases: ResourceAllocations[],
-
-// ) => {
-//   const foundPhase = phases.find(
-//     (p) => p.phase?.severaPhaseId === phase.severaPhaseId
-//   );
-
-//   if (foundPhase) {
-//     return foundPhase.phase?.name;
-//   }
-// };
-
-// export const getAllocationHour = (
-//   allocation: ResourceAllocationsInner,
-//   allocations: ResourceAllocationsInner[],
-// ) => {
-//   if (workHours.length) {
-//     return workHours[allocations.indexOf(allocation)] || 0;
-//   }
-//   return 0;
-// }
-// )
+  return foundPhase ? foundPhase.quantity : undefined;
+};
 
 /**
  * Get project color

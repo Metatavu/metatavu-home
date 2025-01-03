@@ -64,14 +64,27 @@ const TaskTable = ({ project, loggedInPersonId, filter }: Props) => {
     setOpen(false);
   }, [loggedInPersonId]);
 
-  const rows = phase.map((phase) => ({
-    id: phase.severaPhaseId,
-    title: phase.name,
-    estimateWorkHours: phase.workHoursEstimate,
-    startDate: phase.startDate?.toISOString().split("T")[0],
-    deadLine: phase.deadline?.toString(),
-    // actualWorkHours: getWorkHour(phase, workHours),
-  }));
+  const rows = phase.map((phase) => {
+    // Dynamically fetch the actual work hours for each phase
+    const actualWorkHours = getWorkHour(
+      phase.severaPhaseId || "No data",
+      workHours
+    );
+
+    console.log("Actual work hours is here ", actualWorkHours);
+    console.log("Phase is here ", phase);
+
+    return {
+      id: phase.severaPhaseId,
+      title: phase.name,
+      estimateWorkHours: phase.workHoursEstimate,
+      startDate: phase.startDate?.toISOString().split("T")[0],
+      deadLine: phase.deadline?.toString(),
+      actualWorkHours: actualWorkHours || "No data",
+    };
+  });
+
+  console.log("Rows is here ", rows);
 
   /**
    * Get tasks and total time entries
@@ -86,7 +99,6 @@ const TaskTable = ({ project, loggedInPersonId, filter }: Props) => {
         const fetchedWorkHours = await workHoursApi.getAllWorkHours({
           severaProjectId: project.project?.severaProjectId || "",
         });
-        console.log("Is there anything here ??", fetchedWorkHours);
         setWorkHours(fetchedWorkHours);
         setPhase(fetchedTasks);
       } catch (error) {
