@@ -49,6 +49,7 @@ const sprintViewTasksColumns = ({ phase }: Props) => {
       field: "deadLine",
       headerClassName: "header-color",
       headerName: "DeadLine",
+      flex: 1,
       renderCell: (params) => params.value,
     },
     {

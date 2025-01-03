@@ -79,10 +79,18 @@ const TaskTable = ({ project, loggedInPersonId, filter }: Props) => {
       title: phase.name,
       estimateWorkHours: phase.workHoursEstimate,
       startDate: phase.startDate?.toISOString().split("T")[0],
-      deadLine: phase.deadline?.toString(),
+      deadLine: phase.deadLine
+        ? new Date(phase.deadLine).toLocaleDateString("en-US", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+          })
+        : undefined,
       actualWorkHours: actualWorkHours || "No data",
     };
   });
+
+  console.log("Phase is here ", phase);
 
   console.log("Rows is here ", rows);
 
