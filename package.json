@@ -37,6 +37,7 @@
   "devDependencies": {
     "@biomejs/biome": "1.6.3",
     "@openapitools/openapi-generator-cli": "2.5.2",
+    "@types/lodash": "^4.17.14",
     "@types/luxon": "^3.3.7",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
