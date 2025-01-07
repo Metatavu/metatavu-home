@@ -1,5 +1,4 @@
 import type { GridColDef } from "@mui/x-data-grid";
-import type { Phase, WorkHours } from "src/generated/homeLambdasClient";
 import strings from "../../localization/strings";
 
 /**

@@ -2,7 +2,6 @@ import { Avatar, AvatarGroup, Tooltip } from "@mui/material";
 import { useAtomValue } from "jotai";
 import { avatarsAtom, personsAtom } from "src/atoms/person";
 import { usersAtom } from "src/atoms/user";
-import type { Person } from "src/generated/client";
 import type { User, UsersAvatars } from "src/generated/homeLambdasClient";
 
 /**
@@ -48,7 +47,6 @@ const renderAvatars = (
   console.log("assignedPersons", assignedPersons);
   return assignedPersons.map((userId: number, index: number) => {
     const avatar = avatars?.find((avatar) => avatar.personId === userId);
-    // const person = persons?.find((person) => person.id === personId);\
     const user = users.find((user) => user.id === userId.toString());
     const numberOfAssignedPersons = assignedPersons.length;
     const hiddenAssignedPersons = numberOfAssignedPersons - maxAvatarsInLine;

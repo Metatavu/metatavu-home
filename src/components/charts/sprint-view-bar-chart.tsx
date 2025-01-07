@@ -1,7 +1,7 @@
-import { BarChart, XAxis, YAxis, Tooltip, Bar, ResponsiveContainer, Cell } from "recharts";
-import { getHours, getHoursAndMinutes } from "src/utils/time-utils";
-import type { SprintViewChartData } from "src/types";
+import { Bar, BarChart, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import strings from "src/localization/strings";
+import type { SprintViewChartData } from "src/types";
+import { getHoursAndMinutes } from "src/utils/time-utils";
 
 /**
  * Component properties
@@ -16,50 +16,6 @@ interface Props {
  * @param props component properties
  */
 const SprintViewBarChart = ({chartData}: Props) => 
-  // <ResponsiveContainer 
-  //   width="100%" 
-  //   height={chartData.length === 1 ? 100 : chartData.length * 60 }>
-  //   <BarChart	
-  //     data={chartData} 
-  //     layout="vertical" 
-  //     barGap={0}	
-  //     margin={{top: 0,	right: 0, left: 0, bottom: 0}}>
-  //     <XAxis
-  //       // type="number"
-  //       axisLine={true}
-  //       // tickFormatter={(value) => getHours(value as number)}
-  //       domain={[0, (dataMax: number) => dataMax]}
-  //       style={{fontSize: "18px"}}
-  //       padding={{left:0, right:0}}
-  //       dataKey={"projectName"}
-  //     />
-  //     <YAxis 
-  //       // type="category" 
-  //       // dataKey="projectName" 
-  //       // tick={false} 
-  //       // hide={true}
-
-  //     />
-  //     <Tooltip content={<CustomTooltip/>} />
-  //     <Bar 
-  //       dataKey={"actualWorkHours"} 
-  //       name={ strings.sprint.timeAllocated }  
-  //       barSize={20}>
-  //       {chartData.map((entry) => (
-  //         <Cell key={`cell-time-allocated-${entry.actualWorkHours}`} fill="red"  />
-  //       ))}
-  //     </Bar>
-  //     <Bar 
-  //       dataKey={"estimatedWorkHour"} 
-  //       name={ strings.sprint.timeEntries }	
-  //       barSize={20}>
-  //       {chartData.map((entry) => (
-  //         <Cell style={{opacity: "0.5"}} key={`cell-time-entries-${entry.estimatedWorkHour}`} fill="blue"  />
-  //       ))}
-  //     </Bar>
-  //   </BarChart>
-  // </ResponsiveContainer>
-
   <ResponsiveContainer
   width="100%"
   height={chartData.length === 1 ? 100 : chartData.length * 60}
@@ -70,27 +26,20 @@ const SprintViewBarChart = ({chartData}: Props) =>
     barGap={0}
     margin={{ top: 0, right: 0, left: 0, bottom: 0 }}
   >
-    {/* XAxis - Represents work hours */}
     <XAxis
       type="number"
       axisLine
-      domain={[0, (dataMax: number) => dataMax]} // Ensures maximum value rounding
+      domain={[0, (dataMax: number) => dataMax]} 
       style={{ fontSize: "14px" }}
       padding={{ left: 0, right: 0 }}
     />
-  
-    {/* YAxis - Represents project names */}
     <YAxis
       type="category"
       dataKey="projectName"
       tick={{ fontSize: "14px" }}
       width={150}
     />
-  
-    {/* Tooltip */}
     <Tooltip content={<CustomTooltip />} />
-  
-    {/* Bars */}
     <Bar
       dataKey="actualWorkHours"
       name={strings.sprint.timeAllocated}
