@@ -50,9 +50,7 @@ const UserSprintViewCard = () => {
   const [resourceAllocationsPhase, setResourceAllocationsPhase] = useState<
     ResourceAllocationsPhase[]
   >([]);
-  // const { allocationsApi, projectsApi, timeEntriesApi } = useLambdasApi();
-  const { resourceAllocationsApi, projectsApi, timeEntriesApi } =
-    useLambdasApi();
+  const { resourceAllocationsApi } = useLambdasApi();
   const setError = useSetAtom(errorAtom);
 
   useEffect(() => {
@@ -68,14 +66,10 @@ const UserSprintViewCard = () => {
       try {
         const severaUserId = getSeveraUserId(loggedInUser);
         const fetchedResourceAllocations =
-          await resourceAllocationsApi.getAllocationsBySeveraUserId({
-            severaUserId: severaUserId,
-          });
-        console.log(
-          "Is this correct hereeeeeeeeeeeeeeeeee",
-          fetchedResourceAllocations
-        );
-        setResourceAllocations([fetchedResourceAllocations]);
+        await resourceAllocationsApi.getAllocationsBySeveraUserId({
+          severaUserId,
+        });
+        setResourceAllocations(fetchedResourceAllocations);
         // const fetchedAllocations = await allocationsApi.listAllocations({
         //   personId: loggedInPerson.id.toString(),
         //   startDate: new Date(),
@@ -128,17 +122,22 @@ const UserSprintViewCard = () => {
   /**
    * Combines allocations and projects data for chart
    */
-  // const createChartData = (): SprintViewChartData[] => {
-  //   return resourceAllocations.map((allocation, index) => {
-  //     return {
-  //       resourceAllocationId: index,
-  //       projectName: resourceAllocationsProject[index].name,
-  //       // timeAllocated: totalAllocations(allocation),
-  //       // timeEntries: timeEntries[index],
-  //       // color: projects[index].color || "",
-  //     };
-  //   });
-  // };
+  const createChartData = (): SprintViewChartData[] => {
+     const mapping = resourceAllocations.map((allocation) => {
+      return {
+        severaResourceAllocationId: allocation.severaResourceAllocationId || "",
+        projectName: allocation.project?.name || "",
+        // timeAllocated: totalAllocations(allocation),
+        actualWorkHours: allocation.calculatedAllocationHours || "",
+        // timeEntries: timeEntries[index],
+        estimatedWorkHour: allocation.allocationHours || "",
+        // color: resourceAllocationsProject[index].color || "",
+        // workHours: 
+      };
+    });
+    console.log("What is this here", mapping);
+    return mapping;
+  };
 
   /**
    * Renders sprint view bar chart
@@ -147,7 +146,7 @@ const UserSprintViewCard = () => {
     <>
       {resourceAllocations.length ? (
         <CardContent sx={{ display: "flex", justifyContent: "left" }}>
-          {/* <SprintViewBarChart chartData={createChartData()} />  */}
+          <SprintViewBarChart chartData={createChartData()} /> 
         </CardContent>
       ) : (
         <Typography style={{ paddingLeft: "0" }}>
@@ -156,8 +155,6 @@ const UserSprintViewCard = () => {
       )}
     </>
   );
-
-  console.log("Is this correct hereeeeeeeeeeeeeeeeee in user sprint view", resourceAllocations);
   return <>{!loggedInUser || loading ? <Skeleton /> : renderBarChart()}</>;
   
 };

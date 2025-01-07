@@ -38,11 +38,7 @@ const SprintViewScreen = () => {
   );
   const [resourceAllocations, setResourceAllocations] =
     useState<ResourceAllocations[]>();
-  const [resourceAllocationsProject, setResourceAllocationsProject] = useState<
-    ResourceAllocationsProject[]
-  >([]);
-  // const [projects, setProjects] = useState<Projects[]>([]);
-  // const [timeEntries, setTimeEntries] = useState<number[]>([]);
+  const [resourceAllocationsProject, setResourceAllocationsProject] = useState<ResourceAllocationsProject[]>([]);
   const [loading, setLoading] = useState(false);
   const [myTasks, setMyTasks] = useState(true);
   const [filter, setFilter] = useState("");
