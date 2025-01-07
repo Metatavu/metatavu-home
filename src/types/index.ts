@@ -149,19 +149,6 @@ export interface DateRange {
   end: DateTime;
 }
 
-/**
- * Type describing chart data for sprint view
- */
-// export interface SprintViewChartData {
-//   severaResourceAllocationId: ResourceAllocations,
-//   projectName: ResourceAllocations,
-//   actualWorkHours: ResourceAllocations,
-//   estimatedWorkHour: ResourceAllocations
-//   // timeAllocated: number,
-//   // timeEntries: number,
-//   // color: string
-// }
-
 export interface SprintViewChartData {
 
   severaResourceAllocationId: string;
