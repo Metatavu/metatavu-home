@@ -230,7 +230,7 @@
   "questionnaireCard": {
     "questionnairesBuilder": "Questionnaires builder",
     "questionnaires": "Questionnaires",
-    "progressBar": "Progress Bar"   
+    "passedQuestionnaires": "You have passed {0} out of {1} questionnaire"
   },
   "questionnaireScreen": {
     "currentQuestionnaires": "Current Questionnaires",

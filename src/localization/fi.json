@@ -229,8 +229,9 @@
   },
   "questionnaireCard": {
     "questionnairesBuilder": "Rakenna uusi kysely",
-    "questionnaires": "Kyselylomake",
-    "progressBar": "Edistyminen"
+    "questionnaires": "Kyselylomakkeet",
+    "passedQuestionnaires": "Olet läpäissyt {0} / {1} kyselyä"
+
   },
   "questionnaireScreen": {
     "currentQuestionnaires": "Kyselyt",

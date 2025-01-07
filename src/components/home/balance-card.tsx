@@ -22,6 +22,7 @@ const BalanceCard = () => {
   const userProfile = useAtomValue(userProfileAtom);
   const setError = useSetAtom(errorAtom);
   const [loading, setLoading] = useState(false);
+  const [fetchComplete, setFetchComplete] = useState(false);
   const adminMode = UserRoleUtils.adminMode();
   const [usersFlextime, setUsersFlextime] = useState<Flextime>();
   const yesterday = DateTime.now().minus({ days: 1 });
@@ -54,17 +55,21 @@ const BalanceCard = () => {
       }
     }
     setLoading(false);
+    setFetchComplete(true);
   };
 
   /**
    * Render user's flextime data.
    */
   const renderUserFlextime = () => {
-    if (!usersFlextime?.totalFlextimeBalance) {
+    if (loading || !fetchComplete || usersFlextime === undefined) {
+      return <Skeleton />;
+    }
+    if (fetchComplete && (!usersFlextime || usersFlextime.totalFlextimeBalance === null)) {
       return <Typography variant="body1">{strings.error.noFlextimeData}</Typography>;
     }
-    const totalFlextimeBalance = usersFlextime.totalFlextimeBalance;
-    const textColor = totalFlextimeBalance >= 0 ? "green" : "red";
+    const totalFlextimeBalance = usersFlextime?.totalFlextimeBalance;
+    const textColor = (totalFlextimeBalance ?? 0) >= 0 ? "green" : "red";
     const hourLabel =
       totalFlextimeBalance === 1 ? strings.balanceCard.hour : strings.balanceCard.hours;
 
@@ -108,7 +113,7 @@ const BalanceCard = () => {
                 <ScheduleIcon style={{ marginTop: 1 }} />
               </Grid>
               <Grid item xs={11}>
-                {loading ? <Skeleton /> : renderUserFlextime()}
+                {renderUserFlextime()}
               </Grid>
             </Grid>
           </CardContent>

@@ -309,7 +309,7 @@ export interface Localized extends LocalizedStringsMethods {
   questionnaireCard: {
     questionnairesBuilder: string;
     questionnaires: string;
-    progressBar: string;
+    passedQuestionnaires: string;
   };
   /**
    * Translations related to Questinnaire Screen
