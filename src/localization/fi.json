@@ -33,6 +33,7 @@
     "questionnaireSaveFailed": "Kyselylomakkeen tallentaminen epäonnistui",
     "questionnaireLoadFailed": "Kyselylomakkeiden lataaminen epäonnistui",
     "questionnaireDeleteFailed": "Kyselylomakkeen poistaminen epäonnistui",
+    "questionnaireUpdateFailed": "Kyselylomakkeen päivittäminen epäonnistui",
     "fetchFailedFlextime": "Joustotyöaikatietojen hakeminen epäonnistui",
     "noSeveraUserId": "Käyttäjältä puuttuu Severa-käyttäjätunnus, ota yhteyttä Metatavun kehitystiimiin lisätietoja varten.",
     "noFlextimeData": "Jotain meni pieleen joustotyöaikatietoja haettaessa"
@@ -287,6 +288,18 @@
     "edit": "Muokkaa kysymystä",
     "remove": "Poista kysymys",
     "saveAlert": "Kysymyksestä puuttuu pakollisia tietoja"
+  },
+  "questionnaireEdit": {
+    "title": "Muokkaa kyselyä",
+    "titleLabel": "Otsikko",
+    "descriptionLabel": "Kuvaus",
+    "question": "Kysymys",
+    "deleteQuestion": "Poista kysymys",
+    "passScoreLabel": "Pistemäärä",
+    "passScoreMax": "Maksimipistemäärä",
+    "update": "Päivitä kysely",
+    "clearPassedUsers": "Tyhjennä läpäisseet käyttäjät tästä kyselystä",
+    "snackbarMessageSuccess": "Kysely päivitetty onnistuneesti"
   },
   "balanceCard": {
     "totalFlextimeBalance": "Kokonaisbalanssi:",
