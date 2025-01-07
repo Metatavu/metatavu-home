@@ -61,16 +61,10 @@ const SprintViewScreen = () => {
 
   const setError = useSetAtom(errorAtom);
 
-  /**
-   * Get project data if user is logged in
-   */
   useEffect(() => {
     fetchProjectDetails();
   }, [loggedInUser]);
 
-  /**
-   * Fetch allocations, project names and time entries
-   */
   const fetchProjectDetails = async () => {
     if (!loggedInUser) return;
 
@@ -89,10 +83,10 @@ const SprintViewScreen = () => {
     setLoading(false);
   };
 
-  const handleOnClickTask = () => {
-    setMyTasks(!myTasks);
-    setFilter("");
-  };
+  // const handleOnClickTask = () => {
+  //   setMyTasks(!myTasks);
+  //   setFilter("");
+  // };
 
   return (
     <>
