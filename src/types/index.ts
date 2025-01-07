@@ -152,14 +152,27 @@ export interface DateRange {
 /**
  * Type describing chart data for sprint view
  */
-export interface SprintViewChartData {
-  resourceAllocationId: number,
-  projectName: string,
-  // timeAllocated: number,
-  // timeEntries: number,
-  // color: string
-}
+// export interface SprintViewChartData {
+//   severaResourceAllocationId: ResourceAllocations,
+//   projectName: ResourceAllocations,
+//   actualWorkHours: ResourceAllocations,
+//   estimatedWorkHour: ResourceAllocations
+//   // timeAllocated: number,
+//   // timeEntries: number,
+//   // color: string
+// }
 
+export interface SprintViewChartData {
+
+  severaResourceAllocationId: string;
+
+  projectName: string;
+
+  actualWorkHours: string | number;
+
+  estimatedWorkHour: string | number;
+
+}
 /**
  * Type describing option for a question in New Questionnaire Screen
  */
