@@ -50,6 +50,7 @@ export interface Localized extends LocalizedStringsMethods {
     questionnaireSaveFailed: string;
     questionnaireLoadFailed: string;
     questionnaireDeleteFailed: string;
+    questionnaireUpdateFailed: string;
     fetchFailedFlextime: string;
     noSeveraUserId: string;
     noFlextimeData: string;
@@ -381,6 +382,21 @@ export interface Localized extends LocalizedStringsMethods {
     edit: string;
     remove: string;
     saveAlert: string;
+  };
+  /**
+   * Translations related to Questionnaire edit mode
+   */
+  questionnaireEdit: {
+    title: string;
+    titleLabel: string;
+    descriptionLabel: string;
+    question: string;
+    deleteQuestion: string;
+    passScoreLabel: string;
+    passScoreMax: string;
+    update: string;
+    clearPassedUsers: string;
+    snackbarMessageSuccess: string;
   };
   /**
    * Translations related to Balance Card
