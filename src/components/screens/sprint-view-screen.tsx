@@ -1,36 +1,32 @@
-import { useState, useEffect } from "react";
 import {
+  Box,
   Card,
   CircularProgress,
-  Typography,
-  Box,
-  FormControlLabel,
-  Switch,
+  Typography
 } from "@mui/material";
-import { useLambdasApi } from "src/hooks/use-api";
+import { DataGrid } from "@mui/x-data-grid";
 import { useAtomValue, useSetAtom } from "jotai";
+import { useEffect, useState } from "react";
 import { userProfileAtom } from "src/atoms/auth";
+import { errorAtom } from "src/atoms/error";
+import { usersAtom } from "src/atoms/user";
+import sprintViewProjectsColumns from "src/components/sprint-view-table/sprint-projects-columns";
+import TaskTable from "src/components/sprint-view-table/tasks-table";
 import type {
   ResourceAllocations,
   ResourceAllocationsProject,
   User,
 } from "src/generated/homeLambdasClient/models/";
-import { DataGrid } from "@mui/x-data-grid";
-import { getSprintEnd, getSprintStart } from "src/utils/time-utils";
-import TaskTable from "src/components/sprint-view-table/tasks-table";
+import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
-import sprintViewProjectsColumns from "src/components/sprint-view-table/sprint-projects-columns";
-import { errorAtom } from "src/atoms/error";
 import { getSeveraUserId } from "src/utils/sprint-utils";
-import { TaskStatusFilter } from "src/components/sprint-view-table/menu-Item-filter-table";
-import { usersAtom } from "src/atoms/user";
+import { getSprintEnd, getSprintStart } from "src/utils/time-utils";
 
 /**
  * Sprint view screen component
  */
 const SprintViewScreen = () => {
   const { resourceAllocationsApi } = useLambdasApi();
-  // const persons: Person[] = useAtomValue(personsAtom);
   const users = useAtomValue(usersAtom);
   const userProfile = useAtomValue(userProfileAtom);
   const loggedInUser = users.find(
@@ -38,7 +34,7 @@ const SprintViewScreen = () => {
   );
   const [resourceAllocations, setResourceAllocations] =
     useState<ResourceAllocations[]>();
-  const [resourceAllocationsProject, setResourceAllocationsProject] = useState<ResourceAllocationsProject[]>([]);
+  const [resourceAllocationsProject] = useState<ResourceAllocationsProject[]>([]);
   const [loading, setLoading] = useState(false);
   const [myTasks, setMyTasks] = useState(true);
   const [filter, setFilter] = useState("");
@@ -93,22 +89,6 @@ const SprintViewScreen = () => {
     setLoading(false);
   };
 
-  /**
-   * Calculate total unallocated time for the user in the current 2 week period
-   *
-   * @param allocation task allocated within a project
-   */
-  // const unallocatedTime = (allocation: Allocations[]) => {
-  //   const totalAllocatedTime = allocation.reduce(
-  //     (total, allocation) => total + totalAllocations(allocation),
-  //     0
-  //   );
-  //   return calculateWorkingLoad(loggedInUser) - totalAllocatedTime;
-  // };
-
-  /**
-   * Featute for task filtering
-   */
   const handleOnClickTask = () => {
     setMyTasks(!myTasks);
     setFilter("");
@@ -139,12 +119,12 @@ const SprintViewScreen = () => {
         </Card>
       ) : (
         <>
-          <FormControlLabel
+          {/* <FormControlLabel
             control={<Switch checked={myTasks} />}
             label={strings.sprint.showMyTasks}
             onClick={() => handleOnClickTask()}
           />
-          <TaskStatusFilter setFilter={setFilter} />
+          <TaskStatusFilter setFilter={setFilter} /> */}
           <Card
             sx={{
               margin: 0,
@@ -175,8 +155,6 @@ const SprintViewScreen = () => {
               rows={allocationRows || []}
               columns={columns}
             />
-            {/* Add Hello here */}
-
             <Box
               sx={{
                 backgroundColor: "#e6e6e6",
@@ -187,7 +165,7 @@ const SprintViewScreen = () => {
                 paddingBottom: "10px",
               }}
             >
-              <Typography>
+              {/* <Typography>
                 <span
                 // style={{
                 //   paddingLeft: "5px",
@@ -195,7 +173,7 @@ const SprintViewScreen = () => {
                 //     unallocatedTime(resourceAllocations) < 0 ? "red" : "",
                 // }}
                 />
-              </Typography>
+              </Typography> */}
               <Typography style={{ paddingRight: "5px" }}>
                 {strings.formatString(
                   strings.sprint.current,

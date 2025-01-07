@@ -4,11 +4,9 @@ import strings from "../../localization/strings";
 import {
   getAssigneName,
   getPhaseName,
-  // getProjectColor,
   getProjectName,
-  // totalAllocations,
 } from "src/utils/sprint-utils";
-import {
+import type {
   ResourceAllocations,
   ResourceAllocationsProject,
 } from "src/generated/homeLambdasClient";

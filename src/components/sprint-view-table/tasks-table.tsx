@@ -1,3 +1,5 @@
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import {
   Box,
   Card,
@@ -6,23 +8,18 @@ import {
   Typography,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import { useEffect, useState } from "react";
-import { useLambdasApi } from "src/hooks/use-api";
-import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import strings from "src/localization/strings";
-import sprintViewTasksColumns from "./sprint-tasks-columns";
-import { errorAtom } from "src/atoms/error";
 import { useSetAtom } from "jotai";
-import {
+import { useEffect, useState } from "react";
+import { errorAtom } from "src/atoms/error";
+import type {
   Phase,
-  PhaseProject,
   ResourceAllocations,
-  ResourceAllocationsProject,
   WorkHours,
-  WorkHoursPhase,
 } from "src/generated/homeLambdasClient";
-import { getPhaseName, getWorkHour } from "src/utils/sprint-utils";
+import { useLambdasApi } from "src/hooks/use-api";
+import strings from "src/localization/strings";
+import { getWorkHour } from "src/utils/sprint-utils";
+import sprintViewTasksColumns from "./sprint-tasks-columns";
 
 /**
  * Component properties
@@ -44,7 +41,7 @@ const TaskTable = ({ project, loggedInPersonId, filter }: Props) => {
   const [workHours, setWorkHours] = useState<WorkHours[]>([]);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const columns = sprintViewTasksColumns({ phase, workHours });
+  const columns = sprintViewTasksColumns();
   const setError = useSetAtom(errorAtom);
 
   /**
@@ -65,14 +62,10 @@ const TaskTable = ({ project, loggedInPersonId, filter }: Props) => {
   }, [loggedInPersonId]);
 
   const rows = phase.map((phase) => {
-    // Dynamically fetch the actual work hours for each phase
     const actualWorkHours = getWorkHour(
-      phase.severaPhaseId || "No data",
+      phase.severaPhaseId || "Severa Phase Id not found",
       workHours
     );
-
-    console.log("Actual work hours is here ", actualWorkHours);
-    console.log("Phase is here ", phase);
 
     return {
       id: phase.severaPhaseId,
@@ -86,13 +79,9 @@ const TaskTable = ({ project, loggedInPersonId, filter }: Props) => {
             year: "numeric",
           })
         : undefined,
-      actualWorkHours: actualWorkHours || "No data",
+      actualWorkHours: actualWorkHours || "0",
     };
   });
-
-  console.log("Phase is here ", phase);
-
-  console.log("Rows is here ", rows);
 
   /**
    * Get tasks and total time entries
