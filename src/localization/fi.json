@@ -266,6 +266,65 @@
     "addAnswer": "+ Lisää uusi vastausvaihtoehto",
     "saveAnswer": "Lisää kysymys"
   },
+  "memoScreen": {
+    "selectFile": "Valitse tiedosto katseltavaksi",
+    "selectYear": "Valitse vuosi",
+    "selectPdf": "Valitse PDF-tiedosto",
+    "download": "Lataa",
+    "translatePdf": "Käännä PDF",
+    "originalPdf": "Alkuperäinen PDF",
+    "viewSummary": "Näytä yhteenveto",
+    "summaryTitle": "Yhteenveto",
+    "close": "Sulje",
+    "failedToLoadPdf": "PDF-tiedoston lataaminen epäonnistui",
+    "unsupportedBrowser": "Selaimesi ei tue PDF-tiedostoja",
+    "downloadPdf": "Lataa PDF-tiedosto",
+    "loadingPdf": "Ladataan PDF-tiedostoa...",
+    "translating": "Käännetään..."
+  },
+  "memoRequestError": {
+    "fetchYearError": "Valittu vuosi on tyhjä",
+    "fetchFileNameError": "Nimeämätön tiedosto",
+    "fetchFileError": "Virhe tiedostojen hakemisessa. Yritä myöhemmin uudelleen",
+    "fetchPdfError": "Virhe PDF-tiedoston lataamisessa. Yritä myöhemmin uudelleen",
+    "fetchSummaryError": "Virhe yhteenvedon lataamisessa. Yritä myöhemmin uudelleen",
+    "downloadTranslatedError": "Virhe käännetyn PDF-tiedoston lataamisessa. Yritä myöhemmin uudelleen"
+  },
+  "memoCard": {
+    "memo": "Muistio",
+    "memosAreHere": "Muistiot saatavilla täällä"
+  },
+  "trelloCard": {
+    "cards": "Kortit",
+    "cardsAreHere": "Tarkista Trello-kortit täältä" 
+  },
+  "cardScreen": {
+    "createNewCard": "Luo uusi kortti",
+    "title": "Otsikko",
+    "description": "Kuvaus",
+    "createCard": "Luo kortti",
+    "filterCards": "Suodata kortteja nimen mukaan",
+    "open": "Avaa",
+    "delete": "Poista",
+    "comments": "Kommentit:",
+    "addComment": "Lisää kommentti",
+    "close": "Sulje",
+    "messageFrom": "{count} viesti käyttäjältä {author}",
+    "messagesFrom": "{count} viestiä käyttäjältä {author}"
+  },
+  "cardRequestError": {
+    "errorFetchingCards": "Virhe korttien hakemisessa",
+    "errorDeletingCard": "Virhe kortin poistamisessa",
+    "errorCreatingCard": "Virhe kortin luomisessa",
+    "errorAddingComment": "Virhe kommentin lisäämisessä",
+    "unknownMember": "Tuntematon",
+    "unknownAuthor": "Tuntematon kirjoittaja",
+    "noEmail": "Ei sähköpostiosoitetta",
+    "noText": "Ei tekstiä",
+    "noImage": "Ei kuvaa näytettäväksi",
+    "noComments": "Ei kommentteja",
+    "noDescription": "Ei kuvausta annettu"
+  },
   "questionnaireTable": {
     "title": "Otsikko",
     "description": "Kuvaus",

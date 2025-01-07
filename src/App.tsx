@@ -19,6 +19,8 @@ import { useMemo } from "react";
 import RestrictedContentProvider from "./components/providers/restricted-content-provider";
 import SprintViewScreen from "./components/screens/sprint-view-screen";
 import QuestionnaireScreen from "./components/screens/questionnaire-screen";
+import MemoScreen from "./components/screens/memo-screen";
+import CardScreen from "./components/screens/card-screen";
 import NewQuestionnaireBuilder from "./components/questionnaire/new-questionnaire-builder";
 import QuestionnaireManager from "./components/questionnaire/questionnaire-manager";
 import { QuestionnairePreviewMode } from "./types";
@@ -58,6 +60,14 @@ const App = () => {
         {
           path: "/questionnaire",
           element: <QuestionnaireScreen />
+        },
+        {
+          path: "/memos",
+          element: <MemoScreen />
+        },
+        {
+          path: "/cards",
+          element: <CardScreen />
         },
         {
           path: "/questionnaire/:id",

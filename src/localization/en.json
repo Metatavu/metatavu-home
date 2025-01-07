@@ -266,6 +266,65 @@
     "addAnswer": "+ Add new answer option",
     "saveAnswer": "Add question"
   },
+  "memoScreen": {
+    "selectFile": "Please select a file to view",
+    "selectYear": "Select Year",
+    "selectPdf": "Select a PDF File",
+    "download": "Download",
+    "translatePdf": "Translate PDF",
+    "originalPdf": "Original PDF",
+    "viewSummary": "View Summary",
+    "summaryTitle": "Summary",
+    "close": "Close",
+    "failedToLoadPdf": "Failed to load PDF",
+    "unsupportedBrowser": "Your browser does not support PDFs",
+    "downloadPdf": "Download the PDF",
+    "loadingPdf": "Loading PDF...",
+    "translating": "Translating..."
+  },
+  "memoRequestError": {
+    "fetchYearError": "Selected year is null",
+    "fetchFileNameError": "Unnamed File",
+    "fetchFileError": "Error fetching files. Please try again later",
+    "fetchPdfError": "Error loading PDF. Please try again later",
+    "fetchSummaryError": "Error downloading summary. Please try again",
+    "downloadTranslatedError": "Error downloading translated PDF. Please try again"
+  },
+  "memoCard": {
+    "memo": "Memo",
+    "memosAreHere": "Memos available here"
+  },
+  "trelloCard": {
+     "cards": "Cards",
+     "cardsAreHere": "Check Trello cards here"
+  },
+  "cardScreen": {
+    "createNewCard": "Create a New Card",
+    "title": "Title",
+    "description": "Description",
+    "createCard": "Create Card",
+    "filterCards": "Filter Cards by Name",
+    "open": "Open",
+    "delete": "Delete",
+    "comments": "Comments:",
+    "addComment": "Add Comment",
+    "close": "Close",
+    "messageFrom": "{count} message from {author}",
+    "messagesFrom": "{count} messages from {author}"
+  },
+  "cardRequestError": {
+    "errorFetchingCards": "Error fetching cards",
+    "errorDeletingCard": "Error deleting card",
+    "errorCreatingCard": "Error creating card",
+    "errorAddingComment": "Error adding comment",
+    "unknownMember": "Unknown",
+    "unknownAuthor": "Unknown author",
+    "noEmail": "No email",
+    "noText": "No text",
+    "noImage": "No image to display",
+    "noComments": "No comments",
+    "noDescription": "No description provided"
+  },
   "questionnaireTable": {
     "title": "Title",
     "description": "Description",

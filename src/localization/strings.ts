@@ -352,6 +352,89 @@ export interface Localized extends LocalizedStringsMethods {
     saveAnswer: string;
   };
   /**
+   * Translations related to Memo screen
+   */
+  memoScreen: {
+    selectFile: string;
+    selectYear: string;
+    selectPdf: string;
+    download: string,
+    translatePdf: string,
+    originalPdf: string,
+    viewSummary: string,
+    summaryTitle:string,
+    close: string,
+    failedToLoadPdf: string,
+    unsupportedBrowser: string,
+    downloadPdf: string
+    loadingPdf: string,
+    translating: string
+  };
+
+  /**
+   * Translations related to memo requests errors
+   */
+  memoRequestError: {
+    fetchYearError: string;
+    fetchFileNameError: string;
+    fetchFileError: string;
+    fetchPdfError: string;
+    fetchSummaryError: string;
+    downloadTranslatedError: string;
+  };
+
+  /**
+   * Translations related to Memo card
+   */
+   memoCard: {
+    memo: string;
+    memosAreHere: string;
+  };
+
+  /**
+   * Translations related to Trello card
+   */
+  trelloCard: {
+     cards: string;
+     cardsAreHere: string;
+  };
+
+  /**
+   * Translations related to Card Screen
+   */
+  cardScreen: {
+    createNewCard: string,
+    title: string,
+    description: string,
+    createCard: string,
+    filterCards: string,
+    open: string,
+    delete: string,
+    comments: string,
+    addComment: string,
+    close: string,
+    messagesFrom: string,
+    messageFrom: string,
+  };
+
+  /**
+   * Translations related to card requests errors
+   */
+  cardRequestError: {
+    unknownMember: string,
+    noEmail: string,
+    noText: string,
+    noImage: string,
+    unknownAuthor: string,
+    noComments: string,
+    noDescription: string,
+    errorFetchingCards: string,
+    errorDeletingCard: string,
+    errorCreatingCard: string,
+    errorAddingComment: string,
+  };
+  
+  /**
    * Translations related to Questionnaire Table
    */ 
   questionnaireTable: {
