@@ -57,7 +57,6 @@ export const getApiClient = (accessToken?: string) => {
     config.api.baseUrl,
     accessToken
   );
-
   return {
     dailyEntriesApi: new DailyEntriesApi(getConfiguration()),
     personsApi: new PersonsApi(getConfiguration()),
@@ -79,7 +78,6 @@ export const getLambdasApiClient = (accessToken?: string) => {
     config.lambdas.baseUrl,
     accessToken
   );
-
   return {
     resourceAllocationsApi: new ResourceAllocationsApi(getConfiguration()),
     phaseApi: new PhasesApi(getConfiguration()),
