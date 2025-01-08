@@ -196,11 +196,8 @@ export interface Localized extends LocalizedStringsMethods {
    * Translations related to sprint requests errors
    */
   sprintRequestError: {
-    fetchError: string;
-    fetchTimeEntriesError: string;
-    fetchAllocationError: string;
-    fetchTasksError: string;
-    fetchTaskIdError: string;
+    fetchResourceAllocationsError: string;
+    fetchWorkHoursAndTasksError: string;
   };
   /**
    * Translations related to form

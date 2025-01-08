@@ -77,7 +77,7 @@ const SprintViewScreen = () => {
         });
       setResourceAllocations(fetchedResourceAllocations);
     } catch (error) {
-      setError(`${strings.sprintRequestError.fetchError}, ${error}`);
+      setError(`${strings.sprintRequestError.fetchResourceAllocationsError}, ${error}`);
     }
     setLoading(false);
   };

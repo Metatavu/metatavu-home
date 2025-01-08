@@ -76,7 +76,7 @@ const TaskTable = ({ project, loggedInPersonId, filter }: Props) => {
         setPhase(fetchedTasks);
       } catch (error) {
         setError(
-          `${strings.sprintRequestError.fetchTimeEntriesError} ${error}`
+          `${strings.sprintRequestError.fetchWorkHoursAndTasksError} ${error}`
         );
       }
     }
