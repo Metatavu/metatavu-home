@@ -26,7 +26,12 @@ const QuestionnaireCard = () => {
     }
 
     return (
+      <CardContent>
+        <Typography variant="h6" fontWeight={"bold"} style={{ marginTop: 6, marginBottom: 3 }}>
+          {strings.questionnaireCard.questionnaires}
+        </Typography>
         <UserQuestionnaireCard />
+      </CardContent>
     );
   };
 

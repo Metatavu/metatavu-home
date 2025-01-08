@@ -11,12 +11,11 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import PendingIcon from "@mui/icons-material/Pending";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import type { Questionnaire } from "src/generated/homeLambdasClient";
 import strings from "src/localization/strings";
 import UserRoleUtils from "src/utils/user-role-utils";
 import { DataGrid, type GridRowParams, type GridRenderCellParams } from "@mui/x-data-grid";
-import { useLambdasApi } from "src/hooks/use-api";
 import { useAtomValue, useSetAtom } from "jotai";
 import { errorAtom } from "src/atoms/error";
 import { QuestionnairePreviewMode } from "src/types/index";
@@ -24,6 +23,7 @@ import { useNavigate } from "react-router";
 import { usersAtom } from "src/atoms/user";
 import { userProfileAtom } from "src/atoms/auth";
 import type { User } from "src/generated/homeLambdasClient";
+import useFetchQuestionnaires from "src/hooks/fetch-questionnaires";
 
 /**
  * Questionnaire Table Component
@@ -34,9 +34,7 @@ const QuestionnaireTable = () => {
   const adminMode = UserRoleUtils.adminMode();
   const navigate = useNavigate();
   const [_, setMode] = useState<QuestionnairePreviewMode>();
-  const { questionnairesApi } = useLambdasApi();
-  const [questionnaires, setQuestionnaires] = useState<Questionnaire[]>([]);
-  const [loading, setLoading] = useState(false);
+  const { loading, setLoading, questionnaires, setQuestionnaires, questionnairesApi } = useFetchQuestionnaires();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [deleteTitle, setDeleteTitle] = useState<string | null>(null);
@@ -46,21 +44,6 @@ const QuestionnaireTable = () => {
   const userProfile = useAtomValue(userProfileAtom);
   const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
   
-
-  useEffect(() => {
-    const fetchQuestionnaires = async () => {
-      setLoading(true);
-      try {
-        const questionnaires = await questionnairesApi.listQuestionnaires();
-        setQuestionnaires(questionnaires);
-      } catch (error) {
-        setError(`${strings.error.questionnaireLoadFailed}, ${error}`);
-      }
-      setLoading(false);
-    };
-    fetchQuestionnaires();
-  }, []);
-
   /**
    * Function to open the dialog for deleting the questionnaire
    *
