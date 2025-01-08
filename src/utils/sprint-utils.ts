@@ -4,9 +4,10 @@ import type { ResourceAllocations, ResourceAllocationsPhase, ResourceAllocations
 /**
  * Get project name
  *
- * @param allocation allocation
- * @param allocations list of allocations
- * @param projects list of project associated with the allocations
+ * @param project project with type of ResourceAllocationsProject
+ * @param projects list of projects with type of ResourceAllocations[]
+ * 
+ * @returns project name
  */
 export const getProjectName = (
   project: ResourceAllocationsProject,
@@ -21,6 +22,14 @@ export const getProjectName = (
   }
 };
 
+/**
+ * Get assignee name
+ *
+ * @param user user with type of ResourceAllocationsUser
+ * @param users list of users with type of ResourceAllocations[]
+ * 
+ * @returns user name
+ */
 export const getAssigneName = (
   user: ResourceAllocationsUser,
   users: ResourceAllocations[]
@@ -34,6 +43,14 @@ export const getAssigneName = (
   }
 };
 
+/**
+ * Get phase name
+ *
+ * @param phase phase with type of ResourceAllocationsPhase
+ * @param phases list of phases with type of ResourceAllocations[]
+ * 
+ * @returns phase name
+ */
 export const getPhaseName = (
   phase: ResourceAllocationsPhase,
   phases: ResourceAllocations[]
@@ -47,6 +64,14 @@ export const getPhaseName = (
   }
 };
 
+/**
+ * Get work hour
+ *
+ * @param severaPhaseId phase id with type string
+ * @param workHours list of workHours with type of WorkHours[]
+ * 
+ * @returns WorkHours for each phases
+ */
 export const getWorkHour = (severaPhaseId: string, workHours: WorkHours[]) => {
   const foundPhase = workHours.find(
     (p) => p.phase?.severaPhaseId === severaPhaseId
@@ -73,6 +98,28 @@ export const getWorkHour = (severaPhaseId: string, workHours: WorkHours[]) => {
 //   return "";
 // };
 
+/**
+ * Get severa user id
+ *
+ * @param user with type of User
+ * 
+ * @returns severaUserId 
+ */
 export const getSeveraUserId = (user: User): string => {
   return user?.attributes?.severaUserId ?? config.user.testUserSeveraId ?? "";
+};
+
+/**
+ * Formating date from Severa's date format
+ *
+ * @param date type string
+ * 
+ * @returns date in format of "dd MMM yyyy"
+ */
+export const formatDateSevera = (date: string) => {
+  return new Date(date).toLocaleDateString("en-US", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
 };

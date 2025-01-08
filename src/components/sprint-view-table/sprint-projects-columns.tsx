@@ -11,6 +11,9 @@ import type {
   ResourceAllocationsProject,
 } from "src/generated/homeLambdasClient";
 
+/**
+ * Sprint view projects interfaces
+ */
 interface Props {
   severaProjectId: ResourceAllocationsProject[];
   project: ResourceAllocations[];
@@ -25,9 +28,6 @@ interface Props {
  * @param props component properties
  */
 const sprintViewProjectsColumns = ({ project, user, phase }: Props) => {
-  /**
-   * Define columns for data grid
-   */
   const columns: GridColDef[] = [
     {
       field: "project",

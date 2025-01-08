@@ -18,11 +18,11 @@ import type {
 } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
-import { getWorkHour } from "src/utils/sprint-utils";
+import { formatDateSevera, getWorkHour } from "src/utils/sprint-utils";
 import sprintViewTasksColumns from "./sprint-tasks-columns";
 
 /**
- * Component properties
+ * Interface for TaskTable component
  */
 interface Props {
   project: ResourceAllocations;
@@ -44,49 +44,25 @@ const TaskTable = ({ project, loggedInPersonId, filter }: Props) => {
   const columns = sprintViewTasksColumns();
   const setError = useSetAtom(errorAtom);
 
-  /**
-   * Gather tasks and time entries when project is available and update reload state
-   */
-  useEffect(() => {
-    if (project && open) {
-      getTasksAndTimeEntries();
-    }
-  }, [project, open, filter]);
-
-  /**
-   * Handle loggenInPersonId change
-   */
-  useEffect(() => {
-    setPhase([]);
-    setOpen(false);
-  }, [loggedInPersonId]);
-
   const rows = phase.map((phase) => {
     const actualWorkHours = getWorkHour(
       phase.severaPhaseId || "Severa Phase Id not found",
       workHours
     );
-
     return {
       id: phase.severaPhaseId,
       title: phase.name,
       estimateWorkHours: phase.workHoursEstimate,
       startDate: phase.startDate?.toISOString().split("T")[0],
-      deadLine: phase.deadLine
-        ? new Date(phase.deadLine).toLocaleDateString("en-US", {
-            day: "2-digit",
-            month: "short",
-            year: "numeric",
-          })
-        : undefined,
+      deadLine: formatDateSevera(phase.deadLine?.toISOString() || ""),
       actualWorkHours: actualWorkHours || "0",
     };
   });
 
   /**
-   * Get tasks and total time entries
+   * Get Tasks and WorkHours for tasks
    */
-  const getTasksAndTimeEntries = async () => {
+  const getTasksAndWorkHours = async () => {
     setLoading(true);
     if (!phase?.length) {
       try {
@@ -106,6 +82,17 @@ const TaskTable = ({ project, loggedInPersonId, filter }: Props) => {
     }
     setLoading(false);
   };
+
+  useEffect(() => {
+    if (project && open) {
+      getTasksAndWorkHours();
+    }
+  }, [project, open, filter]);
+
+  useEffect(() => {
+    setPhase([]);
+    setOpen(false);
+  }, [loggedInPersonId]);
 
   return (
     <Card

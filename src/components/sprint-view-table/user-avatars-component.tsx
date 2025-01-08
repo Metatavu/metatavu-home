@@ -13,6 +13,7 @@ interface Props {
 
 /**
  * List of avatars component
+ * @param props component properties
  */
 const UserAvatars = ({ assignedPersons }: Props) => {
   const users: User[] = useAtomValue(usersAtom);

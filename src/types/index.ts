@@ -149,6 +149,9 @@ export interface DateRange {
   end: DateTime;
 }
 
+/**
+ * Type describing chart data
+ */
 export interface SprintViewChartData {
 
   severaResourceAllocationId: string;
@@ -160,6 +163,7 @@ export interface SprintViewChartData {
   estimatedWorkHour: string | number;
 
 }
+
 /**
  * Type describing option for a question in New Questionnaire Screen
  */

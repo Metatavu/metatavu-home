@@ -39,14 +39,14 @@ const SprintViewBarChart = ({chartData}: Props) =>
         tick={{ fontSize: "14px" }}
         width={150}
       />
-      <Tooltip content={<CustomTooltip />} />
+      <Tooltip content={<CustomTooltip />}/>
       <Bar
         dataKey="actualWorkHours"
         name={strings.sprint.timeAllocated}
         barSize={20}
       >
         {chartData.map((entry) => (
-            <Cell key={`cell-actual-workHours-${entry.actualWorkHours}`} fill="#8884d8"  />
+            <Cell key={`cell-actual-workHours-${entry.actualWorkHours}`} fill="#8884d8"/>
           ))}
       </Bar>
       <Bar
@@ -55,7 +55,7 @@ const SprintViewBarChart = ({chartData}: Props) =>
         barSize={20}
       >
         {chartData.map((entry) => (
-            <Cell style={{opacity: "0.5"}} key={`cell-estimated-WorkHours-${entry.estimatedWorkHour}`} fill="#82ca9d"  />
+            <Cell style={{opacity: "0.5"}} key={`cell-estimated-WorkHours-${entry.estimatedWorkHour}`} fill="#82ca9d"/>
           ))}
       </Bar>
     </BarChart>

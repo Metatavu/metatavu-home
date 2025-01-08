@@ -33,7 +33,7 @@ const UserSprintViewCard = () => {
   }, [loggedInUser]);
 
   /**
-   * Get allocations, projects names, colors and time entries
+   * Get ResourceAllocation data using severaUserId
    */
   const getAllocationsAndProjects = async () => {
     setLoading(true);
@@ -53,10 +53,10 @@ const UserSprintViewCard = () => {
   };
 
   /**
-   * Combines allocations and projects data for chart
+   * Assigning data from Severa to its relative fields
    */
   const createChartData = (): SprintViewChartData[] => {
-     const mapping = resourceAllocations.map((allocation) => {
+    const mapping = resourceAllocations.map((allocation) => {
       return {
         severaResourceAllocationId: allocation.severaResourceAllocationId || "",
         projectName: allocation.project?.name || "",
@@ -84,7 +84,6 @@ const UserSprintViewCard = () => {
     </>
   );
   return <>{!loggedInUser || loading ? <Skeleton /> : renderBarChart()}</>;
-  
 };
 
 export default UserSprintViewCard;

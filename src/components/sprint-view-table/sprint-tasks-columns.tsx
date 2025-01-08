@@ -1,15 +1,7 @@
 import type { GridColDef } from "@mui/x-data-grid";
 import strings from "../../localization/strings";
 
-/**
- * Sprint view tasks table columns component
- *
- *  @param props component properties
- */
 const sprintViewTasksColumns = () => {
-  /**
-   * Define columns for data grid
-   */
   const columns: GridColDef[] = [
     {
       field: "title",

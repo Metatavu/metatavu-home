@@ -41,6 +41,7 @@ const SprintViewScreen = () => {
   const todaysDate = new Date().toISOString();
   const sprintStartDate = getSprintStart(todaysDate);
   const sprintEndDate = getSprintEnd(todaysDate);
+  const setError = useSetAtom(errorAtom);
 
   const columns = sprintViewProjectsColumns({
     severaProjectId: resourceAllocationsProject,
@@ -58,8 +59,6 @@ const SprintViewScreen = () => {
     tasks: allocation.phase,
     assignee: allocation.user,
   }));
-
-  const setError = useSetAtom(errorAtom);
 
   useEffect(() => {
     fetchProjectDetails();
