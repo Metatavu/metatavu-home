@@ -54,7 +54,7 @@ const TaskTable = ({ project, loggedInPersonId, filter }: Props) => {
       title: phase.name,
       estimateWorkHours: phase.workHoursEstimate,
       startDate: phase.startDate?.toISOString().split("T")[0],
-      deadLine: formatDateSevera(phase.deadLine?.toISOString() || ""),
+      deadLine: formatDateSevera(phase.deadline?.toISOString() || ""),
       actualWorkHours: actualWorkHours || "0",
     };
   });
