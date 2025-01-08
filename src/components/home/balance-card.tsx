@@ -24,6 +24,7 @@ const BalanceCard = () => {
   const [loading, setLoading] = useState(false);
   const [fetchComplete, setFetchComplete] = useState(false);
   const adminMode = UserRoleUtils.adminMode();
+  const developerMode = UserRoleUtils.developerMode();
   const [usersFlextime, setUsersFlextime] = useState<Flextime>();
   const yesterday = DateTime.now().minus({ days: 1 });
   const { flexTimeApi } = useLambdasApi();
@@ -80,45 +81,54 @@ const BalanceCard = () => {
       </Typography>
     );
   };
+  
+  /**
+   * Render the card content.
+   */
+  const cardContent = (
+    <Card
+      sx={{
+        "&:hover": {
+          background: "#efefef"
+        }
+      }}
+    >
+      {adminMode ? (
+        <CardContent>
+          <Typography variant="h6" fontWeight={"bold"} style={{ marginTop: 6, marginBottom: 3 }}>
+            {strings.balanceCard.employeeBalances}
+          </Typography>
+          <Typography variant="body1">{strings.balanceCard.viewAllTimeEntries}</Typography>
+        </CardContent>
+      ) : (
+        <CardContent>
+          <Typography variant="h6" fontWeight={"bold"} style={{ marginTop: 6, marginBottom: 3 }}>
+            {strings.balanceCard.balance}
+          </Typography>
+          <Grid container>
+            <Grid item xs={12}>
+              {strings.formatString(strings.balanceCard.atTheEndOf, yesterday.toLocaleString())}
+            </Grid>
+            <Grid style={{ marginBottom: 1 }} item xs={1}>
+              <ScheduleIcon style={{ marginTop: 1 }} />
+            </Grid>
+            <Grid item xs={11}>
+              {renderUserFlextime()}
+            </Grid>
+          </Grid>
+        </CardContent>
+      )}
+    </Card>
+  );
 
-  return (
+  return developerMode ? (
+    <div style={{ textDecoration: "none" }}>{cardContent}</div>
+  ) : (
     <Link
       to={adminMode ? "/admin/timebank/viewall" : "/timebank"}
       style={{ textDecoration: "none" }}
     >
-      <Card
-        sx={{
-          "&:hover": {
-            background: "#efefef"
-          }
-        }}
-      >
-        {adminMode ? (
-          <CardContent>
-            <Typography variant="h6" fontWeight={"bold"} style={{ marginTop: 6, marginBottom: 3 }}>
-              {strings.balanceCard.employeeBalances}
-            </Typography>
-            <Typography variant="body1">{strings.balanceCard.viewAllTimeEntries}</Typography>
-          </CardContent>
-        ) : (
-          <CardContent>
-            <Typography variant="h6" fontWeight={"bold"} style={{ marginTop: 6, marginBottom: 3 }}>
-              {strings.balanceCard.balance}
-            </Typography>
-            <Grid container>
-              <Grid item xs={12}>
-                {strings.formatString(strings.balanceCard.atTheEndOf, yesterday.toLocaleString())}
-              </Grid>
-              <Grid style={{ marginBottom: 1 }} item xs={1}>
-                <ScheduleIcon style={{ marginTop: 1 }} />
-              </Grid>
-              <Grid item xs={11}>
-                {renderUserFlextime()}
-              </Grid>
-            </Grid>
-          </CardContent>
-        )}
-      </Card>
+      {cardContent}
     </Link>
   );
 };
