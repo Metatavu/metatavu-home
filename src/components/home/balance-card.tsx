@@ -81,7 +81,7 @@ const BalanceCard = () => {
       </Typography>
     );
   };
-  
+
   /**
    * Render the card content.
    */

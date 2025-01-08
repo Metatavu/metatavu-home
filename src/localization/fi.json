@@ -231,7 +231,6 @@
     "questionnairesBuilder": "Rakenna uusi kysely",
     "questionnaires": "Kyselylomakkeet",
     "passedQuestionnaires": "Olet läpäissyt {0} / {1} kyselyä"
-
   },
   "questionnaireScreen": {
     "currentQuestionnaires": "Kyselyt",

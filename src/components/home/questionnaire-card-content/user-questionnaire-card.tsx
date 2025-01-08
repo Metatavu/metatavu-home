@@ -19,6 +19,7 @@ const UserQuestionnaireCard = () => {
 
   /**
    * Count passed questionnaires by Logged in user
+   * 
    * @returns number of passed questionnaires
    */
   const getPassedQuestionnaires = () => {
