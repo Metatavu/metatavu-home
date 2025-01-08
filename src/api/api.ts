@@ -30,6 +30,7 @@ type ConfigConstructor<T> = new (_params: ConfigurationParameters) => T;
  * @param ConfigConstructor ConfigConstructor class instance
  * @param basePath API base URL
  * @param accessToken Access token for request
+ * 
  * @returns ConfigConstructor instance set up with params
  */
 const getConfigurationFactory =
@@ -49,6 +50,7 @@ const getConfigurationFactory =
  * API client with request functions to several endpoints
  *
  * @param accessToken Access token required for authentication
+ * 
  * @returns Configured API request functions
  */
 export const getApiClient = (accessToken?: string) => {
@@ -70,6 +72,7 @@ export const getApiClient = (accessToken?: string) => {
  * Metatavu Home Lambda API client with request functions to several endpoints
  *
  * @param accessToken Access token required for authentication
+ * 
  * @returns Configured API request functions
  */
 export const getLambdasApiClient = (accessToken?: string) => {

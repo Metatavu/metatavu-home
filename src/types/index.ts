@@ -153,15 +153,10 @@ export interface DateRange {
  * Type describing chart data
  */
 export interface SprintViewChartData {
-
   severaResourceAllocationId: string;
-
   projectName: string;
-
   actualWorkHours: string | number;
-
   estimatedWorkHour: string | number;
-
 }
 
 /**

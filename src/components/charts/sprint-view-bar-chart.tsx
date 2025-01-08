@@ -4,11 +4,33 @@ import type { SprintViewChartData } from "src/types";
 import { getHoursAndMinutes } from "src/utils/time-utils";
 
 /**
- * Component properties
+ * Component properties for BarChart
  */
 interface Props {
   chartData: SprintViewChartData[];
 }
+
+/**
+ * Tooltip for chart component
+ * 
+ * @param payload project values
+ * @param label name of the project
+ */
+const CustomTooltip = ({ payload, label }: any) => {
+  if (!payload.length) return;
+
+  return (
+    <div style={{backgroundColor:"white", opacity:"0.8", borderRadius:"10px"}}>
+      <p style={{padding:"10px 10px 0px 10px"}}>{label}</p>
+      <p style={{padding:"0px 10px 0px 10px"}}>
+        {strings.sprint.allocation}: {getHoursAndMinutes(payload[0].value as number)}
+      </p>
+      <p style={{padding:"0px 10px 10px 10px"}}>
+        {strings.sprint.timeEntries}: {getHoursAndMinutes(payload[1].value as number)}
+      </p>
+    </div>
+  );
+};
 
 /**
  * Sprint overview chart component
@@ -62,25 +84,3 @@ const SprintViewBarChart = ({chartData}: Props) =>
   </ResponsiveContainer>
 
 export default SprintViewBarChart;
-
-/**
- * Tooltip for chart component
- * 
- * @param payload project values
- * @param label name of the project
- */
-const CustomTooltip = ({ payload, label }: any) => {
-  if (!payload.length) return;
-
-  return (
-    <div style={{backgroundColor:"white", opacity:"0.8", borderRadius:"10px"}}>
-      <p style={{padding:"10px 10px 0px 10px"}}>{label}</p>
-      <p style={{padding:"0px 10px 0px 10px"}}>
-        {strings.sprint.allocation}: {getHoursAndMinutes(payload[0].value as number)}
-      </p>
-      <p style={{padding:"0px 10px 10px 10px"}}>
-        {strings.sprint.timeEntries}: {getHoursAndMinutes(payload[1].value as number)}
-      </p>
-    </div>
-  );
-};

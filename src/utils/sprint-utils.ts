@@ -4,8 +4,8 @@ import type { ResourceAllocations, ResourceAllocationsPhase, ResourceAllocations
 /**
  * Get project name
  *
- * @param project project with type of ResourceAllocationsProject
- * @param projects list of projects with type of ResourceAllocations[]
+ * @param project project with type ResourceAllocationsProject
+ * @param projects list of projects with type ResourceAllocations[]
  * 
  * @returns project name
  */
@@ -25,8 +25,8 @@ export const getProjectName = (
 /**
  * Get assignee name
  *
- * @param user user with type of ResourceAllocationsUser
- * @param users list of users with type of ResourceAllocations[]
+ * @param user user with type ResourceAllocationsUser
+ * @param users list of users with type ResourceAllocations[]
  * 
  * @returns user name
  */
@@ -46,8 +46,8 @@ export const getAssigneName = (
 /**
  * Get phase name
  *
- * @param phase phase with type of ResourceAllocationsPhase
- * @param phases list of phases with type of ResourceAllocations[]
+ * @param phase phase with type ResourceAllocationsPhase
+ * @param phases list of phases with type ResourceAllocations[]
  * 
  * @returns phase name
  */
@@ -68,7 +68,7 @@ export const getPhaseName = (
  * Get work hour
  *
  * @param severaPhaseId phase id with type string
- * @param workHours list of workHours with type of WorkHours[]
+ * @param workHours list of workHours with type WorkHours[]
  * 
  * @returns WorkHours for each phases
  */
@@ -101,7 +101,7 @@ export const getWorkHour = (severaPhaseId: string, workHours: WorkHours[]) => {
 /**
  * Get severa user id
  *
- * @param user with type of User
+ * @param user user with type User
  * 
  * @returns severaUserId 
  */
@@ -112,7 +112,7 @@ export const getSeveraUserId = (user: User): string => {
 /**
  * Formating date from Severa's date format
  *
- * @param date type string
+ * @param date date with type string
  * 
  * @returns date in format of "dd MMM yyyy"
  */

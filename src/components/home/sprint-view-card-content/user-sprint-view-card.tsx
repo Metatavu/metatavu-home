@@ -13,7 +13,6 @@ import {
   getSeveraUserId
 } from "src/utils/sprint-utils";
 
-
 /**
  * Sprint card component for users
  */
