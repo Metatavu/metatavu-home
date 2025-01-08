@@ -64,7 +64,6 @@ const UserSprintViewCard = () => {
         estimatedWorkHour: allocation.allocationHours || "",
       };
     });
-    console.log("What is this here", mapping);
     return mapping;
   };
 
