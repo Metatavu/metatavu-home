@@ -62,7 +62,7 @@ const NewQuestionnaireBuilder = () => {
   const handlePassScoreSliderChange = (_: Event, value: number | number[]) => {
     setQuestionnaire((prevQuestionnaire) => ({
       ...prevQuestionnaire,
-      passScore: value as number
+      passScore: Math.min(value as number, countCorrectAnswers())
     }));
   };
 
@@ -236,7 +236,8 @@ const NewQuestionnaireBuilder = () => {
                   {strings.newQuestionnaireBuilder.countedAnswers} {countCorrectAnswers()}
                 </Typography>
                 <Typography variant="h6" gutterBottom sx={{ mb: 1, mt: 1 }}>
-                  {strings.newQuestionnaireBuilder.requiredAnswers} {questionnaire.passScore}
+                  {strings.newQuestionnaireBuilder.requiredAnswers}{" "}
+                  {Math.min(questionnaire.passScore ?? 0, countCorrectAnswers())}
                 </Typography>
                 <Slider
                   value={questionnaire.passScore}
