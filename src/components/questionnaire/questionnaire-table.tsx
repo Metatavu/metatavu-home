@@ -22,6 +22,7 @@ import { QuestionnairePreviewMode } from "src/types/index";
 import { useNavigate } from "react-router";
 import { usersAtom } from "src/atoms/user";
 import { userProfileAtom } from "src/atoms/auth";
+import { useLambdasApi } from "src/hooks/use-api";
 import type { User } from "src/generated/homeLambdasClient";
 import useFetchQuestionnaires from "src/hooks/fetch-questionnaires";
 
@@ -34,7 +35,8 @@ const QuestionnaireTable = () => {
   const adminMode = UserRoleUtils.adminMode();
   const navigate = useNavigate();
   const [_, setMode] = useState<QuestionnairePreviewMode>();
-  const { loading, setLoading, questionnaires, setQuestionnaires, questionnairesApi } = useFetchQuestionnaires();
+  const { loading, setLoading, questionnaires, setQuestionnaires } = useFetchQuestionnaires();
+  const { questionnairesApi } = useLambdasApi();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [deleteTitle, setDeleteTitle] = useState<string | null>(null);

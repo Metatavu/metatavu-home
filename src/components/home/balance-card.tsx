@@ -22,7 +22,7 @@ const BalanceCard = () => {
   const userProfile = useAtomValue(userProfileAtom);
   const setError = useSetAtom(errorAtom);
   const [loading, setLoading] = useState(false);
-  const [fetchComplete, setFetchComplete] = useState(false);
+
   const adminMode = UserRoleUtils.adminMode();
   const developerMode = UserRoleUtils.developerMode();
   const [usersFlextime, setUsersFlextime] = useState<Flextime>();
@@ -56,17 +56,16 @@ const BalanceCard = () => {
       }
     }
     setLoading(false);
-    setFetchComplete(true);
   };
 
   /**
    * Render user's flextime data.
    */
   const renderUserFlextime = () => {
-    if (loading || !fetchComplete || usersFlextime === undefined) {
+    if (loading || usersFlextime === undefined) {
       return <Skeleton />;
     }
-    if (fetchComplete && (!usersFlextime || usersFlextime.totalFlextimeBalance === null)) {
+    if (!usersFlextime || usersFlextime.totalFlextimeBalance === null) {
       return <Typography variant="body1">{strings.error.noFlextimeData}</Typography>;
     }
     const totalFlextimeBalance = usersFlextime?.totalFlextimeBalance;
@@ -85,52 +84,57 @@ const BalanceCard = () => {
   /**
    * Render the card content.
    */
-  const cardContent = (
-    <Card
-      sx={{
-        "&:hover": {
-          background: "#efefef"
-        }
-      }}
-    >
-      {adminMode ? (
-        <CardContent>
-          <Typography variant="h6" fontWeight={"bold"} style={{ marginTop: 6, marginBottom: 3 }}>
-            {strings.balanceCard.employeeBalances}
-          </Typography>
-          <Typography variant="body1">{strings.balanceCard.viewAllTimeEntries}</Typography>
-        </CardContent>
-      ) : (
-        <CardContent>
-          <Typography variant="h6" fontWeight={"bold"} style={{ marginTop: 6, marginBottom: 3 }}>
-            {strings.balanceCard.balance}
-          </Typography>
-          <Grid container>
-            <Grid item xs={12}>
-              {strings.formatString(strings.balanceCard.atTheEndOf, yesterday.toLocaleString())}
+  const renderCardContent = () => {
+    const cardContent = (
+      <Card
+        sx={{
+          "&:hover": {
+            background: "#efefef"
+          }
+        }}
+      >
+        {adminMode ? (
+          <CardContent>
+            <Typography variant="h6" fontWeight={"bold"} style={{ marginTop: 6, marginBottom: 3 }}>
+              {strings.balanceCard.employeeBalances}
+            </Typography>
+            <Typography variant="body1">{strings.balanceCard.viewAllTimeEntries}</Typography>
+          </CardContent>
+        ) : (
+          <CardContent>
+            <Typography variant="h6" fontWeight={"bold"} style={{ marginTop: 6, marginBottom: 3 }}>
+              {strings.balanceCard.balance}
+            </Typography>
+            <Grid container>
+              <Grid item xs={12}>
+                {strings.formatString(strings.balanceCard.atTheEndOf, yesterday.toLocaleString())}
+              </Grid>
+              <Grid style={{ marginBottom: 1 }} item xs={1}>
+                <ScheduleIcon style={{ marginTop: 1 }} />
+              </Grid>
+              <Grid item xs={11}>
+                {renderUserFlextime()}
+              </Grid>
             </Grid>
-            <Grid style={{ marginBottom: 1 }} item xs={1}>
-              <ScheduleIcon style={{ marginTop: 1 }} />
-            </Grid>
-            <Grid item xs={11}>
-              {renderUserFlextime()}
-            </Grid>
-          </Grid>
-        </CardContent>
-      )}
-    </Card>
-  );
+          </CardContent>
+        )}
+      </Card>
+    );
 
-  return developerMode ? (
-    <div style={{ textDecoration: "none" }}>{cardContent}</div>
-  ) : (
-    <Link
-      to={adminMode ? "/admin/timebank/viewall" : "/timebank"}
-      style={{ textDecoration: "none" }}
-    >
-      {cardContent}
-    </Link>
-  );
+    if (developerMode) {
+      return <div style={{ textDecoration: "none" }}>{cardContent}</div>;
+    }
+
+    return (
+      <Link
+        to={adminMode ? "/admin/timebank/viewall" : "/timebank"}
+        style={{ textDecoration: "none" }}
+      >
+        {cardContent}
+      </Link>
+    );
+  };
+  return renderCardContent();
 };
 
 export default BalanceCard;

@@ -30,7 +30,7 @@ const useFetchQuestionnaires = () => {
     fetchQuestionnaires();
   }, []);
 
-  return { loading, setLoading, questionnaires, setQuestionnaires, questionnairesApi };
+  return { loading, setLoading, questionnaires, setQuestionnaires };
 };
 
 export default useFetchQuestionnaires;

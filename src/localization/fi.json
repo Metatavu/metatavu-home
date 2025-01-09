@@ -230,7 +230,7 @@
   "questionnaireCard": {
     "questionnairesBuilder": "Rakenna uusi kysely",
     "questionnaires": "Kyselylomakkeet",
-    "passedQuestionnaires": "Olet läpäissyt {0} / {1} kyselyä"
+    "passedQuestionnaires": "Olet läpäissyt {passedCount} / {totalCount} kyselyä"
   },
   "questionnaireScreen": {
     "currentQuestionnaires": "Kyselyt",

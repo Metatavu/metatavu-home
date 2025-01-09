@@ -135,6 +135,15 @@ const QuestionnaireManager = ({ mode }: Props) => {
   };
 
   /**
+   * Function to count all correct answers in the questionnaire
+   */
+  const correctAnswersInQuestionnaire = () => {
+    return questionnaire.questions.reduce((count, question) => {
+      return count + (question.answerOptions?.filter((option) => option.isCorrect).length || 0);
+    }, 0);
+  };
+
+  /**
    * Function to handle the submission of the questionnaire
    * Save users Id to the passedUsers array in the questionnaire
    * Determine message based on the result
@@ -142,6 +151,7 @@ const QuestionnaireManager = ({ mode }: Props) => {
   const handleSubmit = async () => {
     const correctAnswersCount = countCorrectAnswers();
     const passed = correctAnswersCount >= questionnaire.passScore;
+    const maxAnswers = correctAnswersInQuestionnaire();
 
     if (passed) {
       try {
@@ -156,7 +166,7 @@ const QuestionnaireManager = ({ mode }: Props) => {
           `${strings.formatString(
             strings.questionnaireManager.passed,
             correctAnswersCount,
-            questionnaire.passScore
+            maxAnswers
           )}`
         );
         setQuestionnaireFeedbackDialogOpen(true);
