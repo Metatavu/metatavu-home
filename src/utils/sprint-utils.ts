@@ -79,6 +79,7 @@ export const getWorkHour = (severaPhaseId: string, workHours: WorkHours[]) => {
   return foundPhase ? foundPhase.quantity : undefined;
 };
 
+// TODO: Fixing this function in the future
 /**
  * Get project color
  *
