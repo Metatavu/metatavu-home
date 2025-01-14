@@ -128,7 +128,7 @@ export const mapPhasesToRows = (phase: Phase, workHours: WorkHours[]) => {
     phase.severaPhaseId || "Severa Phase Id not found",
     workHours
   );
-  
+
   return {
     id: phase.severaPhaseId,
     title: phase.name,

@@ -1,17 +1,14 @@
-import type { GridColDef } from "@mui/x-data-grid";
 import { Box } from "@mui/material";
-import strings from "../../localization/strings";
+import type { GridColDef } from "@mui/x-data-grid";
+import type {
+  ResourceAllocations
+} from "src/generated/homeLambdasClient";
 import {
   getAssigneName,
   getPhaseName,
   getProjectName,
 } from "src/utils/sprint-utils";
-import type {
-  ResourceAllocations,
-  ResourceAllocationsPhase,
-  ResourceAllocationsProject,
-  ResourceAllocationsUser,
-} from "src/generated/homeLambdasClient";
+import strings from "../../localization/strings";
 
 /**
  * Sprint view projects interfaces
@@ -19,7 +16,6 @@ import type {
 interface Props {
   resourceAllocations: ResourceAllocations[];
 }
-
 /**
  * Sprint view projects table columns component
  *
@@ -95,7 +91,6 @@ const createSprintViewProjectsColumns = ({ resourceAllocations }: Props) => {
         {getPhaseName(params.row.phase, resourceAllocations)}{" "}
       </>
       )
-
     },
     {
       field: "user",

@@ -28,8 +28,10 @@ const UserSprintViewCard = () => {
   const setError = useSetAtom(errorAtom);
 
   useEffect(() => {
-    getAllocationsAndProjects();
-  }, [loggedInUser]);
+    if(loggedInUser) {
+      getAllocationsAndProjects();
+    }
+  }, []);
 
   /**
    * Get ResourceAllocation data using severaUserId

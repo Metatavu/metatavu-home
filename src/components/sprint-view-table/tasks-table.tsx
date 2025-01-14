@@ -13,14 +13,12 @@ import { useEffect, useState } from "react";
 import { errorAtom } from "src/atoms/error";
 import type {
   Phase,
-  PhaseProject,
   ResourceAllocations,
-  ResourceAllocationsProject,
-  WorkHours,
+  WorkHours
 } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
-import { formatDateSevera, getWorkHour, mapPhasesToRows } from "src/utils/sprint-utils";
+import { mapPhasesToRows } from "src/utils/sprint-utils";
 import sprintViewTasksColumns from "./sprint-tasks-columns";
 
 /**
@@ -46,7 +44,6 @@ const TaskTable = ({ phases, loggedInPersonId, filter, project }: Props) => {
   const [loading, setLoading] = useState(false);
   const columns = sprintViewTasksColumns();
   const setError = useSetAtom(errorAtom);
-
   const rows = phase.map((phase) => mapPhasesToRows(phase, workHours));
   /**
    * Get Tasks and WorkHours for tasks

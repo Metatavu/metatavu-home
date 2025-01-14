@@ -42,15 +42,15 @@ const SprintViewScreen = () => {
     resourceAllocations: resourceAllocations || [],
   });
   
-const allocationRows: ResourceAllocations[] = resourceAllocations?.map((allocation) => ({
-  id: allocation.severaResourceAllocationId || "",
-  severaResourceAllocationId: allocation.severaResourceAllocationId || "", 
-  allocationHours: allocation.allocationHours || 0,
-  calculatedAllocationHours: allocation.calculatedAllocationHours || 0,
-  phase: allocation.phase || undefined,
-  user: allocation.user || undefined,
-  project: allocation.project || undefined, 
-})) || [];
+  const allocationRows: ResourceAllocations[] = resourceAllocations?.map((allocation) => ({
+    id: allocation.severaResourceAllocationId || "",
+    severaResourceAllocationId: allocation.severaResourceAllocationId || "", 
+    allocationHours: allocation.allocationHours || 0,
+    calculatedAllocationHours: allocation.calculatedAllocationHours || 0,
+    phase: allocation.phase || undefined,
+    user: allocation.user || undefined,
+    project: allocation.project || undefined, 
+  })) || [];
 
   useEffect(() => {
     if(loggedInUser) {
