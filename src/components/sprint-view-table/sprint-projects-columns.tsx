@@ -48,7 +48,7 @@ const sprintViewProjectsColumns = ({ project, user, phase }: Props) => {
       },
     },
     {
-      field: "calculatedHours",
+      field: "calculatedAllocationHours",
       headerClassName: "header-color",
       filterable: false,
       headerName: strings.sprint.timeAllocated,
@@ -68,7 +68,7 @@ const sprintViewProjectsColumns = ({ project, user, phase }: Props) => {
       },
     },
     {
-      field: "estimateHours",
+      field: "allocationHours",
       headerClassName: "header-color",
       filterable: false,
       headerName: strings.sprint.estimatedTime,
@@ -88,37 +88,37 @@ const sprintViewProjectsColumns = ({ project, user, phase }: Props) => {
       },
     },
     {
-      field: "Tasks",
+      field: "phase",
       headerClassName: "header-color",
       filterable: false,
       headerName: strings.sprint.taskName,
       flex: 1,
       valueGetter: (params) => {
-        getPhaseName(params.row.tasks, phase);
+        getPhaseName(params.row.phase, phase);
       },
       renderCell: (params) => {
         return (
           <>
             <Box display="flex" alignItems="center" justifyContent="center" />
-            {getPhaseName(params.row.tasks, phase)}{" "}
+            {getPhaseName(params.row.phase, phase)}{" "}
           </>
         );
       },
     },
     {
-      field: "Assignee",
+      field: "user",
       headerClassName: "header-color",
       filterable: false,
       headerName: strings.sprint.assigned,
       flex: 2,
       valueGetter: (params) => {
-        getAssigneName(params.row.assignee, user);
+        getAssigneName(params.row.user, user);
       },
       renderCell: (params) => {
         return (
           <>
             <Box display="flex" alignItems="center" justifyContent="center" />
-            {getAssigneName(params.row.assignee, user)}{" "}
+            {getAssigneName(params.row.user, user)}{" "}
           </>
         );
       },

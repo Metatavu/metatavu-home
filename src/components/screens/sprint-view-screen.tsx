@@ -32,12 +32,11 @@ const SprintViewScreen = () => {
   const loggedInUser = users.find(
     (users: User) => users.id === userProfile?.id
   );
-  const [resourceAllocations, setResourceAllocations] =
-    useState<ResourceAllocations[]>();
+  const [resourceAllocations, setResourceAllocations] = useState<ResourceAllocations[]>();
   const [resourceAllocationsProject] = useState<ResourceAllocationsProject[]>([]);
   const [loading, setLoading] = useState(false);
-  const [myTasks, setMyTasks] = useState(true);
-  const [filter, setFilter] = useState("");
+  const [myTasks] = useState(true);
+  const [filter] = useState("");
   const todaysDate = new Date().toISOString();
   const sprintStartDate = getSprintStart(todaysDate);
   const sprintEndDate = getSprintEnd(todaysDate);
@@ -50,15 +49,16 @@ const SprintViewScreen = () => {
     user: resourceAllocations || [],
     phase: resourceAllocations || [],
   });
-
-  const allocationRows = resourceAllocations?.map((allocation) => ({
-    id: allocation.severaResourceAllocationId,
-    project: allocation.project,
-    calculatedHours: allocation.calculatedAllocationHours,
-    estimateHours: allocation.allocationHours,
-    tasks: allocation.phase,
-    assignee: allocation.user,
-  }));
+  
+const allocationRows: ResourceAllocations[] = resourceAllocations?.map((allocation) => ({
+  id: allocation.severaResourceAllocationId || "",
+  severaResourceAllocationId: allocation.severaResourceAllocationId || "", 
+  allocationHours: allocation.allocationHours || 0,
+  calculatedAllocationHours: allocation.calculatedAllocationHours || 0,
+  phase: allocation.phase || undefined,
+  user: allocation.user || undefined,
+  project: allocation.project || undefined, 
+})) || [];
 
   useEffect(() => {
     fetchProjectDetails();

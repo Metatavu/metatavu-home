@@ -52,7 +52,7 @@ const UserSprintViewCard = () => {
   };
 
   /**
-   * Assigning data from Severa to its relative fields
+   * Mapping resource allocation data from Severa to SprintViewChartData type
    */
   const createChartData = (): SprintViewChartData[] => {
     const mapping = resourceAllocations.map((allocation) => {

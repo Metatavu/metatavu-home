@@ -16,10 +16,10 @@ interface Config {
     forecastUserIdOverride: number;
   };
   user: {
-    testUserSeveraId: string;
+    testUserSeveraId: string | undefined;
   };
   phase: {
-    testPhaseSeveraId: string;
+    testPhaseSeveraId: string | undefined;
   };
 }
 
@@ -50,10 +50,10 @@ const config: Config = {
     forecastUserIdOverride: env.VITE_FORECAST_USER_ID_OVERRIDE,
   },
   user: {
-    testUserSeveraId: env.VITE_SEVERA_TEST_USER_ID,
+    testUserSeveraId: env.VITE_SEVERA_TEST_USER_ID || undefined,
   },
   phase: {
-    testPhaseSeveraId: env.VITE_SEVERA_TEST_PROJECT_ID,
+    testPhaseSeveraId: env.VITE_SEVERA_TEST_PROJECT_ID || undefined,
   },
 };
 

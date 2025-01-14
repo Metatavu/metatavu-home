@@ -38,8 +38,10 @@ export const getAssigneName = (
     (u) => u.user?.severaUserId === user.severaUserId
   );
 
+  console.log("What is foundUser", foundUser);
+
   if (foundUser) {
-    return foundUser.user?.name;
+    return foundUser.user?.name|| "";
   }
 };
 
@@ -60,7 +62,7 @@ export const getPhaseName = (
   );
 
   if (foundPhase) {
-    return foundPhase.phase?.name;
+    return foundPhase.phase?.name || "";
   }
 };
 

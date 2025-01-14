@@ -68,7 +68,7 @@ const SprintViewBarChart = ({chartData}: Props) =>
         barSize={20}
       >
         {chartData.map((entry) => (
-            <Cell key={`cell-actual-workHours-${entry.actualWorkHours}`} fill="#8884d8"/>
+            <Cell key={`cell-actual-workHours-${entry.severaResourceAllocationId}`} fill="#8884d8"/>
           ))}
       </Bar>
       <Bar
@@ -77,7 +77,7 @@ const SprintViewBarChart = ({chartData}: Props) =>
         barSize={20}
       >
         {chartData.map((entry) => (
-            <Cell style={{opacity: "0.5"}} key={`cell-estimated-WorkHours-${entry.estimatedWorkHour}`} fill="#82ca9d"/>
+            <Cell style={{opacity: "0.5"}} key={`cell-estimated-WorkHours-${entry.severaResourceAllocationId}`} fill="#82ca9d"/>
           ))}
       </Bar>
     </BarChart>
