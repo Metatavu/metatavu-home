@@ -1,5 +1,5 @@
 import config from "src/app/config";
-import type { ResourceAllocations, ResourceAllocationsPhase, ResourceAllocationsProject, ResourceAllocationsUser, User, WorkHours } from "src/generated/homeLambdasClient";
+import type { Phase, ResourceAllocations, ResourceAllocationsPhase, ResourceAllocationsProject, ResourceAllocationsUser, User, WorkHours } from "src/generated/homeLambdasClient";
 
 /**
  * Get project name
@@ -11,10 +11,10 @@ import type { ResourceAllocations, ResourceAllocationsPhase, ResourceAllocations
  */
 export const getProjectName = (
   project: ResourceAllocationsProject,
-  projects: ResourceAllocations[]
+  resourceAllocations: ResourceAllocations[]
 ) => {
-  const foundProject = projects.find(
-    (p) => p.project?.severaProjectId === project.severaProjectId
+  const foundProject = resourceAllocations.find(
+    (resourceAllocations) => resourceAllocations.project?.severaProjectId === project.severaProjectId
   );
 
   if (foundProject) {
@@ -32,14 +32,11 @@ export const getProjectName = (
  */
 export const getAssigneName = (
   user: ResourceAllocationsUser,
-  users: ResourceAllocations[]
+  resourceAllocations: ResourceAllocations[]
 ) => {
-  const foundUser = users.find(
-    (u) => u.user?.severaUserId === user.severaUserId
+  const foundUser = resourceAllocations.find(
+    (resourceAllocations) => resourceAllocations.user?.severaUserId === user.severaUserId
   );
-
-  console.log("What is foundUser", foundUser);
-
   if (foundUser) {
     return foundUser.user?.name|| "";
   }
@@ -55,10 +52,10 @@ export const getAssigneName = (
  */
 export const getPhaseName = (
   phase: ResourceAllocationsPhase,
-  phases: ResourceAllocations[]
+  resourceAllocations: ResourceAllocations[]
 ) => {
-  const foundPhase = phases.find(
-    (p) => p.phase?.severaPhaseId === phase.severaPhaseId
+  const foundPhase = resourceAllocations.find(
+    (resourceAllocations) => resourceAllocations.phase?.severaPhaseId === phase.severaPhaseId
   );
 
   if (foundPhase) {
@@ -76,7 +73,7 @@ export const getPhaseName = (
  */
 export const getWorkHour = (severaPhaseId: string, workHours: WorkHours[]) => {
   const foundPhase = workHours.find(
-    (p) => p.phase?.severaPhaseId === severaPhaseId
+    (workHours) => workHours.phase?.severaPhaseId === severaPhaseId
   );
 
   return foundPhase ? foundPhase.quantity : undefined;
@@ -119,9 +116,25 @@ export const getSeveraUserId = (user: User): string => {
  * @returns date in format of "dd MMM yyyy"
  */
 export const formatDateSevera = (date: string) => {
-  return new Date(date).toLocaleDateString("en-US", {
+  return new Date(date).toLocaleDateString("fi-FI", {
     day: "2-digit",
-    month: "short",
+    month: "numeric",
     year: "numeric",
   });
+};
+
+export const mapPhasesToRows = (phase: Phase, workHours: WorkHours[]) => {
+  const actualWorkHours = getWorkHour(
+    phase.severaPhaseId || "Severa Phase Id not found",
+    workHours
+  );
+  
+  return {
+    id: phase.severaPhaseId,
+    title: phase.name,
+    estimateWorkHours: phase.workHoursEstimate,
+    startDate: phase.startDate?.toISOString().split("T")[0],
+    deadLine: formatDateSevera(phase.deadline?.toISOString() || ""),
+    actualWorkHours: actualWorkHours || "0",
+  };
 };

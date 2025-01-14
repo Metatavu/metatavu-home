@@ -10,17 +10,16 @@ import { useEffect, useState } from "react";
 import { userProfileAtom } from "src/atoms/auth";
 import { errorAtom } from "src/atoms/error";
 import { usersAtom } from "src/atoms/user";
-import sprintViewProjectsColumns from "src/components/sprint-view-table/sprint-projects-columns";
 import TaskTable from "src/components/sprint-view-table/tasks-table";
 import type {
   ResourceAllocations,
-  ResourceAllocationsProject,
-  User,
+  User
 } from "src/generated/homeLambdasClient/models/";
 import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
 import { getSeveraUserId } from "src/utils/sprint-utils";
 import { getSprintEnd, getSprintStart } from "src/utils/time-utils";
+import createSprintViewProjectsColumns from "../sprint-view-table/sprint-projects-columns";
 
 /**
  * Sprint view screen component
@@ -33,21 +32,14 @@ const SprintViewScreen = () => {
     (users: User) => users.id === userProfile?.id
   );
   const [resourceAllocations, setResourceAllocations] = useState<ResourceAllocations[]>();
-  const [resourceAllocationsProject] = useState<ResourceAllocationsProject[]>([]);
   const [loading, setLoading] = useState(false);
-  const [myTasks] = useState(true);
-  const [filter] = useState("");
   const todaysDate = new Date().toISOString();
   const sprintStartDate = getSprintStart(todaysDate);
   const sprintEndDate = getSprintEnd(todaysDate);
   const setError = useSetAtom(errorAtom);
 
-  const columns = sprintViewProjectsColumns({
-    severaProjectId: resourceAllocationsProject,
-    project: resourceAllocations || [],
+  const columns = createSprintViewProjectsColumns({
     resourceAllocations: resourceAllocations || [],
-    user: resourceAllocations || [],
-    phase: resourceAllocations || [],
   });
   
 const allocationRows: ResourceAllocations[] = resourceAllocations?.map((allocation) => ({
@@ -61,14 +53,15 @@ const allocationRows: ResourceAllocations[] = resourceAllocations?.map((allocati
 })) || [];
 
   useEffect(() => {
-    fetchProjectDetails();
-  }, [loggedInUser]);
+    if(loggedInUser) {
+      fetchProjectDetails();
+    }
+  }, []);
 
   const fetchProjectDetails = async () => {
     if (!loggedInUser) return;
 
     setLoading(true);
-
     try {
       const severaUserId = getSeveraUserId(loggedInUser);
       const fetchedResourceAllocations =
@@ -81,11 +74,6 @@ const allocationRows: ResourceAllocations[] = resourceAllocations?.map((allocati
     }
     setLoading(false);
   };
-
-  // const handleOnClickTask = () => {
-  //   setMyTasks(!myTasks);
-  //   setFilter("");
-  // };
 
   return (
     <>
@@ -112,12 +100,8 @@ const allocationRows: ResourceAllocations[] = resourceAllocations?.map((allocati
         </Card>
       ) : (
         <>
-          {/* <FormControlLabel
-            control={<Switch checked={myTasks} />}
-            label={strings.sprint.showMyTasks}
-            onClick={() => handleOnClickTask()}
-          />
-          <TaskStatusFilter setFilter={setFilter} /> */}
+          {/* TODO: Need to fetch the status from home-lambdas first for phases, then recreate filter in metatavu-home */}
+          {/* <TaskStatusFilter setFilter={setFilter} /> */}
           <Card
             sx={{
               margin: 0,
@@ -158,6 +142,7 @@ const allocationRows: ResourceAllocations[] = resourceAllocations?.map((allocati
                 paddingBottom: "10px",
               }}
             >
+              {/* TODO: Maybe after able to get status, we can add feature color for phases, Example: unfinished phase => colors: red */}
               {/* <Typography>
                 <span
                 // style={{
@@ -176,12 +161,11 @@ const allocationRows: ResourceAllocations[] = resourceAllocations?.map((allocati
               </Typography>
             </Box>
           </Card>
-          {resourceAllocations?.map((project) => (
+          {resourceAllocations?.map((resourceAllocations) => (
             <TaskTable
-              key={project.phase?.severaPhaseId}
-              project={project}
-              loggedInPersonId={myTasks ? Number(loggedInUser?.id) : undefined}
-              filter={filter}
+              key={resourceAllocations.phase?.severaPhaseId}
+              project={resourceAllocations}
+              phases={resourceAllocations}
             />
           ))}
         </>

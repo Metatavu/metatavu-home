@@ -20,20 +20,21 @@ const sprintViewTasksColumns = () => {
     {
       field: "startDate",
       headerClassName: "header-color",
+      headerName: strings.sprint.startDate,
       flex: 1,
       renderCell: (params) => params.value,
     },
     {
       field: "deadLine",
       headerClassName: "header-color",
-      headerName: "DeadLine",
+      headerName: strings.sprint.deadLine,
       flex: 1,
       renderCell: (params) => params.value,
     },
     {
       field: "actualWorkHours",
       headerClassName: "header-color",
-      headerName: "Actual Work Hours",
+      headerName: strings.sprint.actualWorkHours,
       flex: 1,
       renderCell: (params) => params.value,
     },

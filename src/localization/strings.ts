@@ -116,6 +116,9 @@ export interface Localized extends LocalizedStringsMethods {
     sprintDate: string;
     completed: string;
     current: string;
+    startDate: string;
+    deadLine: string;
+    actualWorkHours: string;
   };
   /**
    * General time-related expressions

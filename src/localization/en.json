@@ -88,7 +88,10 @@
     "unAllocated": "Unallocated Time:",
     "sprintDate": "Sprint",
     "completed": "Done", 
-    "current": "Current: {0}-{1}"
+    "current": "Current: {0}-{1}",
+    "startDate":"Start Date",
+    "deadLine":"Deadline",
+    "actualWorkHours": "Actual Work Hours"
   },
   "errors": {
     "fetchFailedGeneral": "There was an error fetching data",

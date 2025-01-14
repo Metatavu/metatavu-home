@@ -1,8 +1,8 @@
 import { Avatar, AvatarGroup, Tooltip } from "@mui/material";
 import { useAtomValue } from "jotai";
 import { avatarsAtom, personsAtom } from "src/atoms/person";
-import { usersAtom } from "src/atoms/user";
-import type { User, UsersAvatars } from "src/generated/homeLambdasClient";
+import type { Person } from "src/generated/client";
+import type { UsersAvatars } from "src/generated/homeLambdasClient";
 
 /**
  * Component properties
@@ -13,20 +13,19 @@ interface Props {
 
 /**
  * List of avatars component
- * @param props component properties
  */
 const UserAvatars = ({ assignedPersons }: Props) => {
-  const users: User[] = useAtomValue(usersAtom);
+  const persons: Person[] = useAtomValue(personsAtom);
   const avatars: UsersAvatars[] = useAtomValue(avatarsAtom);
   const maxAvatarsInLine = 3;
 
   return (
     <AvatarGroup
       sx={{
-        "& .MuiAvatar-root": { width: 30, height: 30, fontSize: 15 },
+        "& .MuiAvatar-root": { width: 30, height: 30, fontSize: 15 }
       }}
     >
-      {renderAvatars(assignedPersons, users, avatars, maxAvatarsInLine)}
+      {renderAvatars(assignedPersons, persons, avatars, maxAvatarsInLine)}
     </AvatarGroup>
   );
 };
@@ -41,23 +40,19 @@ const UserAvatars = ({ assignedPersons }: Props) => {
  */
 const renderAvatars = (
   assignedPersons: number[],
-  users: User[],
+  persons: Person[],
   avatars: UsersAvatars[],
   maxAvatarsInLine: number
 ) => {
-  console.log("assignedPersons", assignedPersons);
-  return assignedPersons.map((userId: number, index: number) => {
-    const avatar = avatars?.find((avatar) => avatar.personId === userId);
-    const user = users.find((user) => user.id === userId.toString());
+  return assignedPersons.map((personId: number, index: number) => {
+    const avatar = avatars?.find((avatar) => avatar.personId === personId);
+    const person = persons?.find((person) => person.id === personId);
     const numberOfAssignedPersons = assignedPersons.length;
     const hiddenAssignedPersons = numberOfAssignedPersons - maxAvatarsInLine;
 
     if (index < maxAvatarsInLine) {
       return (
-        <Tooltip
-          key={userId}
-          title={(user && `${user.firstName} ${user.lastName}`) || ""}
-        >
+        <Tooltip key={personId} title={(person && `${person.firstName} ${person.lastName}`) || ""}>
           <Avatar src={avatar?.imageOriginal || ""} />
         </Tooltip>
       );
@@ -68,9 +63,7 @@ const renderAvatars = (
       let tooltipTitle = "";
 
       groupedPersons.forEach((groupedPersonId: number) => {
-        const personFound = users.find(
-          (user: User) => user.id === groupedPersonId.toString()
-        );
+        const personFound = persons.find((person: { id: number }) => person.id === groupedPersonId);
         if (personFound) {
           tooltipTitle += `${personFound?.firstName} ${personFound?.lastName}, `;
         }
@@ -78,7 +71,7 @@ const renderAvatars = (
       tooltipTitle = tooltipTitle.slice(0, tooltipTitle.length - 2);
       if (hiddenAssignedPersons === 1) {
         return (
-          <Tooltip key={userId} title={tooltipTitle}>
+          <Tooltip key={personId} title={tooltipTitle}>
             <Avatar src={avatar?.imageOriginal} />
           </Tooltip>
         );

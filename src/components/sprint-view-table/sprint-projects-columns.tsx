@@ -8,18 +8,16 @@ import {
 } from "src/utils/sprint-utils";
 import type {
   ResourceAllocations,
+  ResourceAllocationsPhase,
   ResourceAllocationsProject,
+  ResourceAllocationsUser,
 } from "src/generated/homeLambdasClient";
 
 /**
  * Sprint view projects interfaces
  */
 interface Props {
-  severaProjectId: ResourceAllocationsProject[];
-  project: ResourceAllocations[];
   resourceAllocations: ResourceAllocations[];
-  user: ResourceAllocations[];
-  phase: ResourceAllocations[];
 }
 
 /**
@@ -27,7 +25,7 @@ interface Props {
  *
  * @param props component properties
  */
-const sprintViewProjectsColumns = ({ project, user, phase }: Props) => {
+const createSprintViewProjectsColumns = ({ resourceAllocations }: Props) => {
   const columns: GridColDef[] = [
     {
       field: "project",
@@ -36,16 +34,15 @@ const sprintViewProjectsColumns = ({ project, user, phase }: Props) => {
       headerName: strings.sprint.myAllocation,
       flex: 2,
       valueGetter: (params) => {
-        getProjectName(params.row.project, project);
+        getProjectName(params.row.project, resourceAllocations);
       },
-      renderCell: (params) => {
-        return (
-          <>
-            <Box display="flex" alignItems="center" justifyContent="center" />
-            {getProjectName(params.row.project, project)}{" "}
-          </>
-        );
-      },
+      renderCell: (params) => (
+        <>
+          <Box display="flex" alignItems="center" justifyContent="center" />
+          {getProjectName(params.row.project, resourceAllocations)}{" "}
+        </>
+      ),
+      
     },
     {
       field: "calculatedAllocationHours",
@@ -53,19 +50,17 @@ const sprintViewProjectsColumns = ({ project, user, phase }: Props) => {
       filterable: false,
       headerName: strings.sprint.timeAllocated,
       flex: 1,
-      renderCell: (params) => {
-        return (
-          <>
-            <Box
-              marginLeft={"50px"}
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-            />
-            {params.value}
-          </>
-        );
-      },
+      renderCell: (params) => (
+        <>
+          <Box
+            marginLeft={"50px"}
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+          />
+          {params.value}
+        </>
+      ),
     },
     {
       field: "allocationHours",
@@ -73,19 +68,17 @@ const sprintViewProjectsColumns = ({ project, user, phase }: Props) => {
       filterable: false,
       headerName: strings.sprint.estimatedTime,
       flex: 1,
-      renderCell: (params) => {
-        return (
-          <>
-            <Box
-              marginLeft={"50px"}
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-            />
-            {params.value}
-          </>
-        );
-      },
+      renderCell: (params) => (
+      <>
+        <Box
+          marginLeft={"50px"}
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+        />
+        {params.value}
+      </>
+      )
     },
     {
       field: "phase",
@@ -94,16 +87,15 @@ const sprintViewProjectsColumns = ({ project, user, phase }: Props) => {
       headerName: strings.sprint.taskName,
       flex: 1,
       valueGetter: (params) => {
-        getPhaseName(params.row.phase, phase);
+        getPhaseName(params.row.phase, resourceAllocations);
       },
-      renderCell: (params) => {
-        return (
-          <>
-            <Box display="flex" alignItems="center" justifyContent="center" />
-            {getPhaseName(params.row.phase, phase)}{" "}
-          </>
-        );
-      },
+      renderCell: (params) => (
+      <>
+        <Box display="flex" alignItems="center" justifyContent="center" />
+        {getPhaseName(params.row.phase, resourceAllocations)}{" "}
+      </>
+      )
+
     },
     {
       field: "user",
@@ -112,19 +104,17 @@ const sprintViewProjectsColumns = ({ project, user, phase }: Props) => {
       headerName: strings.sprint.assigned,
       flex: 2,
       valueGetter: (params) => {
-        getAssigneName(params.row.user, user);
+        getAssigneName(params.row.user, resourceAllocations);
       },
-      renderCell: (params) => {
-        return (
-          <>
-            <Box display="flex" alignItems="center" justifyContent="center" />
-            {getAssigneName(params.row.user, user)}{" "}
-          </>
-        );
-      },
+      renderCell: (params) => (
+      <>
+        <Box display="flex" alignItems="center" justifyContent="center" />
+        {getAssigneName(params.row.user, resourceAllocations)}{" "}
+      </>
+      )
     },
   ];
   return columns;
 };
 
-export default sprintViewProjectsColumns;
+export default createSprintViewProjectsColumns;

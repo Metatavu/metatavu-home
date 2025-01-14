@@ -88,7 +88,10 @@
     "unAllocated": "Kohdistamaton aika:",
     "sprintDate": "Sprint",
     "completed": "Valmis",
-    "current": "Nykyinen: {0}-{1}"
+    "current": "Nykyinen: {0}-{1}",
+    "startDate":"Aloituspäivämäärä",
+    "deadLine":"Määräaika",
+    "actualWorkHours": "Todelliset työajat"
   },
   "errors": {
     "fetchFailedGeneral": "Tietojen hakeminen epäonnistui",

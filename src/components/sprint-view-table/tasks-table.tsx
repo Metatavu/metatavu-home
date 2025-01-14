@@ -13,21 +13,24 @@ import { useEffect, useState } from "react";
 import { errorAtom } from "src/atoms/error";
 import type {
   Phase,
+  PhaseProject,
   ResourceAllocations,
+  ResourceAllocationsProject,
   WorkHours,
 } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
-import { formatDateSevera, getWorkHour } from "src/utils/sprint-utils";
+import { formatDateSevera, getWorkHour, mapPhasesToRows } from "src/utils/sprint-utils";
 import sprintViewTasksColumns from "./sprint-tasks-columns";
 
 /**
  * Interface for TaskTable component
  */
 interface Props {
-  project: ResourceAllocations;
-  loggedInPersonId?: number;
+  phases: Phase;
+  loggedInPersonId?: string;
   filter?: string;
+  project: ResourceAllocations
 }
 
 /**
@@ -35,7 +38,7 @@ interface Props {
  *
  * @param props component properties
  */
-const TaskTable = ({ project, loggedInPersonId, filter }: Props) => {
+const TaskTable = ({ phases, loggedInPersonId, filter, project }: Props) => {
   const { phaseApi, workHoursApi } = useLambdasApi();
   const [phase, setPhase] = useState<Phase[]>([]);
   const [workHours, setWorkHours] = useState<WorkHours[]>([]);
@@ -44,21 +47,7 @@ const TaskTable = ({ project, loggedInPersonId, filter }: Props) => {
   const columns = sprintViewTasksColumns();
   const setError = useSetAtom(errorAtom);
 
-  const rows = phase.map((phase) => {
-    const actualWorkHours = getWorkHour(
-      phase.severaPhaseId || "Severa Phase Id not found",
-      workHours
-    );
-    return {
-      id: phase.severaPhaseId,
-      title: phase.name,
-      estimateWorkHours: phase.workHoursEstimate,
-      startDate: phase.startDate?.toISOString().split("T")[0],
-      deadLine: formatDateSevera(phase.deadline?.toISOString() || ""),
-      actualWorkHours: actualWorkHours || "0",
-    };
-  });
-
+  const rows = phase.map((phase) => mapPhasesToRows(phase, workHours));
   /**
    * Get Tasks and WorkHours for tasks
    */
@@ -67,10 +56,10 @@ const TaskTable = ({ project, loggedInPersonId, filter }: Props) => {
     if (!phase?.length) {
       try {
         const fetchedTasks = await phaseApi.getPhasesBySeveraProjectId({
-          severaProjectId: project.project?.severaProjectId || "",
+          severaProjectId: phases.project?.severaProjectId || "",
         });
         const fetchedWorkHours = await workHoursApi.getAllWorkHours({
-          severaProjectId: project.project?.severaProjectId || "",
+          severaProjectId: phases.project?.severaProjectId || "",
         });
         setWorkHours(fetchedWorkHours);
         setPhase(fetchedTasks);
@@ -87,13 +76,15 @@ const TaskTable = ({ project, loggedInPersonId, filter }: Props) => {
     if (project && open) {
       getTasksAndWorkHours();
     }
-  }, [project, open, filter]);
+  }, [project, open]);
 
   useEffect(() => {
-    setPhase([]);
-    setOpen(false);
-  }, [loggedInPersonId]);
-
+    if (loggedInPersonId) {
+      setPhase([]);
+      setOpen(false);
+    }
+  }, []);
+  
   return (
     <Card
       key={0}
@@ -117,7 +108,7 @@ const TaskTable = ({ project, loggedInPersonId, filter }: Props) => {
         {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
       </IconButton>
       <Typography style={{ display: "inline" }}>
-        {project.project?.name}
+        {phases.project?.name}
       </Typography>
       {open && (
         <>
