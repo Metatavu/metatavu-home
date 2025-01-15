@@ -18,8 +18,8 @@ interface Config {
   user: {
     testUserSeveraId: string;
   };
-  phase: {
-    testPhaseSeveraId: string;
+  project: {
+    testProjectSeveraId: string;
   };
 }
 
@@ -52,8 +52,8 @@ const config: Config = {
   user: {
     testUserSeveraId: env.VITE_SEVERA_TEST_USER_ID,
   },
-  phase: {
-    testPhaseSeveraId: env.VITE_SEVERA_TEST_PROJECT_ID,
+  project: {
+    testProjectSeveraId: env.VITE_SEVERA_TEST_PROJECT_ID,
   },
 };
 

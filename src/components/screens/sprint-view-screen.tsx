@@ -46,7 +46,7 @@ const SprintViewScreen = () => {
   }, [loggedInUser]);
 
   const fetchProjectDetails = async () => {
-    if(!loggedInUser) return;
+    if (!loggedInUser) return;
 
     setLoading(true);
     try {

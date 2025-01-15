@@ -134,7 +134,7 @@ export const mapPhasesToRows = (phase: Phase, workHours: WorkHours[]) => {
     title: phase.name || "",
     estimateWorkHours: phase.workHoursEstimate || "",
     startDate: phase.startDate?.toISOString().split("T")[0] || "",
-    deadLine: formatDateSevera(phase.deadline?.toISOString() || "") || "",
+    deadline: formatDateSevera(phase.deadline?.toISOString() || "") || "",
     actualWorkHours: actualWorkHours || "0",
   };
 };

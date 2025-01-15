@@ -49,7 +49,7 @@ const TaskTable = ({ phases, filter, project }: Props) => {
   /**
    * Get Phases and WorkHours for tasks
    */
-  const getPhasessAndWorkHours = async () => {
+  const getPhasesAndWorkHours = async () => {
     setLoading(true);
     if (!phase?.length) {
       try {
@@ -72,7 +72,7 @@ const TaskTable = ({ phases, filter, project }: Props) => {
 
   useEffect(() => {
     if (project && open) {
-      getPhasessAndWorkHours();
+      getPhasesAndWorkHours();
     }
   }, [project, open]);
   
