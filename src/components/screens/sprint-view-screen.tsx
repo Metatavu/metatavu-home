@@ -31,35 +31,22 @@ const SprintViewScreen = () => {
   const loggedInUser = users.find(
     (users: User) => users.id === userProfile?.id
   );
-  const [resourceAllocations, setResourceAllocations] = useState<ResourceAllocations[]>();
+  const [resourceAllocations, setResourceAllocations] = useState<ResourceAllocations[]>([]);
   const [loading, setLoading] = useState(false);
   const todaysDate = new Date().toISOString();
   const sprintStartDate = getSprintStart(todaysDate);
   const sprintEndDate = getSprintEnd(todaysDate);
   const setError = useSetAtom(errorAtom);
-
   const columns = createSprintViewProjectsColumns({
     resourceAllocations: resourceAllocations || [],
   });
   
-  const allocationRows: ResourceAllocations[] = resourceAllocations?.map((allocation) => ({
-    id: allocation.severaResourceAllocationId || "",
-    severaResourceAllocationId: allocation.severaResourceAllocationId || "", 
-    allocationHours: allocation.allocationHours || 0,
-    calculatedAllocationHours: allocation.calculatedAllocationHours || 0,
-    phase: allocation.phase || undefined,
-    user: allocation.user || undefined,
-    project: allocation.project || undefined, 
-  })) || [];
-
   useEffect(() => {
-    if(loggedInUser) {
       fetchProjectDetails();
-    }
-  }, []);
+  }, [loggedInUser]);
 
   const fetchProjectDetails = async () => {
-    if (!loggedInUser) return;
+    if(!loggedInUser) return;
 
     setLoading(true);
     try {
@@ -129,8 +116,9 @@ const SprintViewScreen = () => {
               localeText={{ noResultsOverlayLabel: strings.sprint.notFound }}
               disableColumnFilter
               hideFooter={true}
-              rows={allocationRows || []}
+              rows={resourceAllocations || []}
               columns={columns}
+              getRowId={(row) => row.severaResourceAllocationId}
             />
             <Box
               sx={{

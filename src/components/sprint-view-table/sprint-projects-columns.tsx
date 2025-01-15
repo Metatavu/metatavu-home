@@ -38,7 +38,6 @@ const createSprintViewProjectsColumns = ({ resourceAllocations }: Props) => {
           {getProjectName(params.row.project, resourceAllocations)}{" "}
         </>
       ),
-      
     },
     {
       field: "calculatedAllocationHours",
@@ -48,12 +47,7 @@ const createSprintViewProjectsColumns = ({ resourceAllocations }: Props) => {
       flex: 1,
       renderCell: (params) => (
         <>
-          <Box
-            marginLeft={"50px"}
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-          />
+          <Box marginLeft={"50px"} display="flex" alignItems="center" justifyContent="center" />
           {params.value}
         </>
       ),
@@ -66,12 +60,7 @@ const createSprintViewProjectsColumns = ({ resourceAllocations }: Props) => {
       flex: 1,
       renderCell: (params) => (
       <>
-        <Box
-          marginLeft={"50px"}
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-        />
+        <Box marginLeft={"50px"} display="flex" alignItems="center" justifyContent="center" />
         {params.value}
       </>
       )

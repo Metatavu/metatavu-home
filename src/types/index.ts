@@ -175,3 +175,15 @@ export enum QuestionnairePreviewMode {
   EDIT = "EDIT",
   PREVIEW = "PREVIEW"
 }
+
+/**
+ * Type describing row for phases data grid table
+ */
+export interface PhaseRow {
+  id: string;
+  title: string;
+  estimateWorkHours: string | number;
+  startDate: string;
+  deadLine: string;
+  actualWorkHours: string | number;
+}

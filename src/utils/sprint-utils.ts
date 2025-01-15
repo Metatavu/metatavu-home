@@ -126,16 +126,15 @@ export const formatDateSevera = (date: string) => {
 
 export const mapPhasesToRows = (phase: Phase, workHours: WorkHours[]) => {
   const actualWorkHours = getWorkHour(
-    phase.severaPhaseId || "Severa Phase Id not found",
-    workHours
+    phase.severaPhaseId || "", workHours
   );
 
   return {
-    id: phase.severaPhaseId,
-    title: phase.name,
-    estimateWorkHours: phase.workHoursEstimate,
-    startDate: phase.startDate?.toISOString().split("T")[0],
-    deadLine: formatDateSevera(phase.deadline?.toISOString() || ""),
+    id: phase.severaPhaseId || "",
+    title: phase.name || "",
+    estimateWorkHours: phase.workHoursEstimate || "",
+    startDate: phase.startDate?.toISOString().split("T")[0] || "",
+    deadLine: formatDateSevera(phase.deadline?.toISOString() || "") || "",
     actualWorkHours: actualWorkHours || "0",
   };
 };

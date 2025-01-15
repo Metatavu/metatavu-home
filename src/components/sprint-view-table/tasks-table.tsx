@@ -18,6 +18,7 @@ import type {
 } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
+import type { PhaseRow } from "src/types/index";
 import { mapPhasesToRows } from "src/utils/sprint-utils";
 import sprintViewTasksColumns from "./sprint-tasks-columns";
 
@@ -26,7 +27,6 @@ import sprintViewTasksColumns from "./sprint-tasks-columns";
  */
 interface Props {
   phases: Phase;
-  loggedInPersonId?: string;
   filter?: string;
   project: ResourceAllocations
 }
@@ -36,7 +36,7 @@ interface Props {
  *
  * @param props component properties
  */
-const TaskTable = ({ phases, loggedInPersonId, filter, project }: Props) => {
+const TaskTable = ({ phases, filter, project }: Props) => {
   const { phaseApi, workHoursApi } = useLambdasApi();
   const [phase, setPhase] = useState<Phase[]>([]);
   const [workHours, setWorkHours] = useState<WorkHours[]>([]);
@@ -44,11 +44,12 @@ const TaskTable = ({ phases, loggedInPersonId, filter, project }: Props) => {
   const [loading, setLoading] = useState(false);
   const columns = sprintViewTasksColumns();
   const setError = useSetAtom(errorAtom);
-  const rows = phase.map((phase) => mapPhasesToRows(phase, workHours));
+  const rows: PhaseRow[] = phase.map((phase) => mapPhasesToRows(phase, workHours));
+
   /**
-   * Get Tasks and WorkHours for tasks
+   * Get Phases and WorkHours for tasks
    */
-  const getTasksAndWorkHours = async () => {
+  const getPhasessAndWorkHours = async () => {
     setLoading(true);
     if (!phase?.length) {
       try {
@@ -71,16 +72,9 @@ const TaskTable = ({ phases, loggedInPersonId, filter, project }: Props) => {
 
   useEffect(() => {
     if (project && open) {
-      getTasksAndWorkHours();
+      getPhasessAndWorkHours();
     }
   }, [project, open]);
-
-  useEffect(() => {
-    if (loggedInPersonId) {
-      setPhase([]);
-      setOpen(false);
-    }
-  }, []);
   
   return (
     <Card

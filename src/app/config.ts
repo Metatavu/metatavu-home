@@ -16,10 +16,10 @@ interface Config {
     forecastUserIdOverride: number;
   };
   user: {
-    testUserSeveraId: string | undefined;
+    testUserSeveraId: string;
   };
   phase: {
-    testPhaseSeveraId: string | undefined;
+    testPhaseSeveraId: string;
   };
 }
 
@@ -30,8 +30,8 @@ const env = cleanEnv(import.meta.env, {
   VITE_API_BASE_URL: url(),
   VITE_FORECAST_USER_ID_OVERRIDE: num({ default: undefined }),
   VITE_HOME_LAMBDAS_BASE_URL: url(),
-  VITE_SEVERA_TEST_USER_ID: str(),
-  VITE_SEVERA_TEST_PROJECT_ID: str(),
+  VITE_SEVERA_TEST_USER_ID: str({ default: undefined }),
+  VITE_SEVERA_TEST_PROJECT_ID: str({ default: undefined }),
 });
 
 const config: Config = {
@@ -50,10 +50,10 @@ const config: Config = {
     forecastUserIdOverride: env.VITE_FORECAST_USER_ID_OVERRIDE,
   },
   user: {
-    testUserSeveraId: env.VITE_SEVERA_TEST_USER_ID || undefined,
+    testUserSeveraId: env.VITE_SEVERA_TEST_USER_ID,
   },
   phase: {
-    testPhaseSeveraId: env.VITE_SEVERA_TEST_PROJECT_ID || undefined,
+    testPhaseSeveraId: env.VITE_SEVERA_TEST_PROJECT_ID,
   },
 };
 
