@@ -69,14 +69,14 @@
     "sprintview": "Sprint view",
     "myAllocation": "My allocations",
     "allocation": "Allocation",
-    "timeAllocated": "Time allocated",
+    "timeAllocated": "Calculated Hours",
     "timeEntries": "Time Entries",
     "allocationLeft": "Allocations Left",
     "noAllocation": "No allocation found",
     "assigned": "Assignee",
     "taskStatus": "Status",
     "taskPriority": "Priority",
-    "estimatedTime": "Estimate",
+    "estimatedTime": "Estimate Hours",
     "taskName": "Tasks",
     "showMyTasks": "My tasks",
     "toDo": "To do",
@@ -88,7 +88,10 @@
     "unAllocated": "Unallocated Time:",
     "sprintDate": "Sprint",
     "completed": "Done", 
-    "current": "Current: {0}-{1}"
+    "current": "Current: {0}-{1}",
+    "startDate":"Start Date",
+    "deadLine":"Deadline",
+    "actualWorkHours": "Actual Work Hours"
   },
   "errors": {
     "fetchFailedGeneral": "There was an error fetching data",
@@ -167,11 +170,8 @@
     "nameNotFound": "Name not found"
   },
   "sprintRequestError": {
-    "fetchError": "Fetching sprint data requests has failed",
-    "fetchTimeEntriesError": "Error fetching time entries",
-    "fetchAllocationError": "Error fetching time entries for allocation {0}: {1}",
-    "fetchTasksError": "Error fetching time entries for task {0}: {1}",
-    "fetchTaskIdError": "Task id not found"
+    "fetchResourceAllocationsError": "Fetching sprint data for resourceAllocations has failed",
+    "fetchWorkHoursAndTasksError": "Error fetching workHours and tasks"
   },
   "form": {
     "submit": "Submit",

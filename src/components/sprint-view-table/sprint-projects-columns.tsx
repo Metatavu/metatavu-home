@@ -1,84 +1,104 @@
-import type { GridColDef } from "@mui/x-data-grid";
 import { Box } from "@mui/material";
-import strings from "../../localization/strings";
-import { getHoursAndMinutes } from "src/utils/time-utils";
+import type { GridColDef } from "@mui/x-data-grid";
+import type {
+  ResourceAllocations
+} from "src/generated/homeLambdasClient";
 import {
-  getProjectColor,
+  getAssigneName,
+  getPhaseName,
   getProjectName,
-  getTotalTimeEntriesAllocations,
-  timeLeft,
-  totalAllocations
 } from "src/utils/sprint-utils";
-import type { Allocations, Projects } from "src/generated/homeLambdasClient";
+import strings from "../../localization/strings";
 
 /**
- * Component properties
+ * Sprint view projects interfaces
  */
 interface Props {
-  allocations: Allocations[];
-  timeEntries: number[];
-  projects: Projects[];
+  resourceAllocations: ResourceAllocations[];
 }
-
 /**
  * Sprint view projects table columns component
  *
  * @param props component properties
  */
-const sprintViewProjectsColumns = ({ allocations, timeEntries, projects }: Props) => {
-  /**
-   * Define columns for data grid
-   */
+const createSprintViewProjectsColumns = ({ resourceAllocations }: Props) => {
   const columns: GridColDef[] = [
     {
-      field: "projectName",
+      field: "project",
       headerClassName: "header-color",
       filterable: false,
       headerName: strings.sprint.myAllocation,
       flex: 2,
-      valueGetter: (params) => getProjectName(params.row, allocations, projects),
+      valueGetter: (params) => {
+        getProjectName(params.row.project, resourceAllocations);
+      },
       renderCell: (params) => (
         <>
-          <Box
-            minWidth="45px"
-            style={{ marginRight: "10px" }}
-            component="span"
-            sx={{
-              bgcolor: getProjectColor(params.row, allocations, projects),
-              height: 25,
-              borderRadius: "5px"
-            }}
-          />
-          {getProjectName(params.row, allocations, projects)}
+          <Box display="flex" alignItems="center" justifyContent="center" />
+          {getProjectName(params.row.project, resourceAllocations)}{" "}
         </>
+      ),
+    },
+    {
+      field: "calculatedAllocationHours",
+      headerClassName: "header-color",
+      filterable: false,
+      headerName: strings.sprint.timeAllocated,
+      flex: 1,
+      renderCell: (params) => (
+        <>
+          <Box marginLeft={"50px"} display="flex" alignItems="center" justifyContent="center" />
+          {params.value}
+        </>
+      ),
+    },
+    {
+      field: "allocationHours",
+      headerClassName: "header-color",
+      filterable: false,
+      headerName: strings.sprint.estimatedTime,
+      flex: 1,
+      renderCell: (params) => (
+      <>
+        <Box marginLeft={"50px"} display="flex" alignItems="center" justifyContent="center" />
+        {params.value}
+      </>
       )
     },
     {
-      field: "allocation",
+      field: "phase",
       headerClassName: "header-color",
-      headerName: strings.sprint.allocation,
+      filterable: false,
+      headerName: strings.sprint.taskName,
       flex: 1,
-      valueGetter: (params) => getHoursAndMinutes(totalAllocations(params.row))
+      valueGetter: (params) => {
+        getPhaseName(params.row.phase, resourceAllocations);
+      },
+      renderCell: (params) => (
+      <>
+        <Box display="flex" alignItems="center" justifyContent="center" />
+        {getPhaseName(params.row.phase, resourceAllocations)}{" "}
+      </>
+      )
     },
     {
-      field: "timeEntries",
+      field: "user",
       headerClassName: "header-color",
-      headerName: strings.sprint.timeEntries,
-      flex: 1,
-      valueGetter: (params) =>
-        getHoursAndMinutes(getTotalTimeEntriesAllocations(params.row, allocations, timeEntries))
+      filterable: false,
+      headerName: strings.sprint.assigned,
+      flex: 2,
+      valueGetter: (params) => {
+        getAssigneName(params.row.user, resourceAllocations);
+      },
+      renderCell: (params) => (
+      <>
+        <Box display="flex" alignItems="center" justifyContent="center" />
+        {getAssigneName(params.row.user, resourceAllocations)}{" "}
+      </>
+      )
     },
-    {
-      field: "allocationsLeft",
-      headerClassName: "header-color",
-      headerName: strings.sprint.allocationLeft,
-      flex: 1,
-      cellClassName: (params) =>
-        timeLeft(params.row, allocations, timeEntries) < 0 ? "negative-value" : "",
-      valueGetter: (params) => getHoursAndMinutes(timeLeft(params.row, allocations, timeEntries))
-    }
   ];
   return columns;
 };
 
-export default sprintViewProjectsColumns;
+export default createSprintViewProjectsColumns;

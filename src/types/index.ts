@@ -150,14 +150,13 @@ export interface DateRange {
 }
 
 /**
- * Type describing chart data for sprint view
+ * Type describing chart data
  */
 export interface SprintViewChartData {
-  id: number,
-  projectName: string,
-  timeAllocated: number,
-  timeEntries: number,
-  color: string
+  severaResourceAllocationId: string;
+  projectName: string;
+  actualWorkHours: string | number;
+  estimatedWorkHour: string | number;
 }
 
 /**
@@ -175,4 +174,16 @@ export enum QuestionnairePreviewMode {
   FILL = "FILL",
   EDIT = "EDIT",
   PREVIEW = "PREVIEW"
+}
+
+/**
+ * Type describing row for phases data grid table
+ */
+export interface PhaseRow {
+  id: string;
+  title: string;
+  estimateWorkHours: string | number;
+  startDate: Date | string;
+  deadline: Date | string;
+  actualWorkHours: string | number;
 }

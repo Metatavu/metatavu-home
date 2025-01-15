@@ -18,6 +18,9 @@ interface Config {
   user: {
     testUserSeveraId: string;
   };
+  project: {
+    testProjectSeveraId: string;
+  };
 }
 
 const env = cleanEnv(import.meta.env, {
@@ -27,27 +30,31 @@ const env = cleanEnv(import.meta.env, {
   VITE_API_BASE_URL: url(),
   VITE_FORECAST_USER_ID_OVERRIDE: num({ default: undefined }),
   VITE_HOME_LAMBDAS_BASE_URL: url(),
-  VITE_TEST_USER_SEVERA_ID: str()
+  VITE_SEVERA_TEST_USER_ID: str({ default: undefined }),
+  VITE_SEVERA_TEST_PROJECT_ID: str({ default: undefined }),
 });
 
 const config: Config = {
   auth: {
     url: env.VITE_KEYCLOAK_URL,
     realm: env.VITE_KEYCLOAK_REALM,
-    clientId: env.VITE_KEYCLOAK_CLIENT_ID
+    clientId: env.VITE_KEYCLOAK_CLIENT_ID,
   },
   api: {
-    baseUrl: env.VITE_API_BASE_URL
+    baseUrl: env.VITE_API_BASE_URL,
   },
   lambdas: {
-    baseUrl: env.VITE_HOME_LAMBDAS_BASE_URL
+    baseUrl: env.VITE_HOME_LAMBDAS_BASE_URL,
   },
   person: {
-    forecastUserIdOverride: env.VITE_FORECAST_USER_ID_OVERRIDE
+    forecastUserIdOverride: env.VITE_FORECAST_USER_ID_OVERRIDE,
   },
   user: {
-    testUserSeveraId: env.VITE_TEST_USER_SEVERA_ID
-  }
+    testUserSeveraId: env.VITE_SEVERA_TEST_USER_ID,
+  },
+  project: {
+    testProjectSeveraId: env.VITE_SEVERA_TEST_PROJECT_ID,
+  },
 };
 
 export default config;
