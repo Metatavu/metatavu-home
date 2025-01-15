@@ -183,7 +183,7 @@ export interface PhaseRow {
   id: string;
   title: string;
   estimateWorkHours: string | number;
-  startDate: string;
-  deadLine: string;
+  startDate: Date | string;
+  deadLine: Date | string;
   actualWorkHours: string | number;
 }
