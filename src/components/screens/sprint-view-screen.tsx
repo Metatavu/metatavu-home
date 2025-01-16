@@ -160,7 +160,7 @@ const SprintViewScreen = () => {
               phases={resourceAllocations}
             />
           ))}
-          <Card sx={{ mt: 2, width: "100%" }}>
+          <Card sx={{ mt: 4, width: "100%" }}>
             <Link to={adminMode ? "/admin" : "/"} style={{ textDecoration: "none" }}>
               <Button variant="contained" sx={{ p: 2, width: "100%" }}>
                 <KeyboardReturn sx={{ marginRight: "10px" }} />
