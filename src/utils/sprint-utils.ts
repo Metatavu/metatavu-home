@@ -112,8 +112,8 @@ export const getSeveraUserId = (user: User): string => {
 /**
  * Mapping phases to rows for datagrid
  * 
- * @param phase phase with type Phase
- * @param workHours list of workHours with type WorkHours[]
+ * @param phase Phase
+ * @param workHours WorkHours[]
  * 
  * @returns PhaseRow
  */
@@ -121,6 +121,7 @@ export const mapPhasesToRows = (phase: Phase, workHours: WorkHours[]) => {
   const actualWorkHours = getWorkHour(
     phase.severaPhaseId || "", workHours
   );
+
   return {
     id: phase.severaPhaseId || "",
     title: phase.name || "",
