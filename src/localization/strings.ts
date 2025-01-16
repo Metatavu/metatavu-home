@@ -119,6 +119,7 @@ export interface Localized extends LocalizedStringsMethods {
     startDate: string;
     deadLine: string;
     actualWorkHours: string;
+    back: string;
   };
   /**
    * General time-related expressions

@@ -91,7 +91,8 @@
     "current": "Current: {0}-{1}",
     "startDate":"Start Date",
     "deadLine":"Deadline",
-    "actualWorkHours": "Actual Work Hours"
+    "actualWorkHours": "Actual Work Hours",
+    "back":"Back"
   },
   "errors": {
     "fetchFailedGeneral": "There was an error fetching data",
