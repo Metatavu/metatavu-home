@@ -25,7 +25,7 @@ const sprintViewTasksColumns = () => {
       renderCell: (params) => params.value,
     },
     {
-      field: "deadLine",
+      field: "deadline",
       headerClassName: "header-color",
       headerName: strings.sprint.deadLine,
       flex: 1,
