@@ -4,16 +4,20 @@ import {
   type ConfigurationParameters,
   DailyEntriesApi,
   PersonsApi,
+  SynchronizeApi,
+  VacationRequestStatusApi,
+  VacationRequestsApi,
   SynchronizeApi
 } from "../generated/client";
 import {
-  AllocationsApi,
+  FlexTimeApi,
   Configuration as LambdaConfiguration,
-  ProjectsApi,
+  PhasesApi,
+  QuestionnairesApi,
+  ResourceAllocationsApi,
   SlackAvatarsApi,
-  TasksApi,
-  TimeEntriesApi,
   UsersApi,
+  WorkHoursApi
   QuestionnairesApi,
   VacationRequestsApi
 } from "../generated/homeLambdasClient";
@@ -29,14 +33,19 @@ type ConfigConstructor<T> = new (_params: ConfigurationParameters) => T;
  * @param ConfigConstructor ConfigConstructor class instance
  * @param basePath API base URL
  * @param accessToken Access token for request
+ *
  * @returns ConfigConstructor instance set up with params
  */
 const getConfigurationFactory =
-  <T>(ConfigConstructor: ConfigConstructor<T>, basePath: string, accessToken?: string) =>
+  <T>(
+    ConfigConstructor: ConfigConstructor<T>,
+    basePath: string,
+    accessToken?: string
+  ) =>
   () => {
     return new ConfigConstructor({
       basePath: basePath,
-      accessToken: accessToken
+      accessToken: accessToken,
     });
   };
 
@@ -44,15 +53,21 @@ const getConfigurationFactory =
  * API client with request functions to several endpoints
  *
  * @param accessToken Access token required for authentication
+ *
  * @returns Configured API request functions
  */
 export const getApiClient = (accessToken?: string) => {
-  const getConfiguration = getConfigurationFactory(Configuration, config.api.baseUrl, accessToken);
-
+  const getConfiguration = getConfigurationFactory(
+    Configuration,
+    config.api.baseUrl,
+    accessToken
+  );
   return {
     dailyEntriesApi: new DailyEntriesApi(getConfiguration()),
     personsApi: new PersonsApi(getConfiguration()),
     synchronizeApi: new SynchronizeApi(getConfiguration()),
+    vacationRequestsApi: new VacationRequestsApi(getConfiguration()),
+    vacationRequestStatusApi: new VacationRequestStatusApi(getConfiguration()),
   };
 };
 
@@ -60,6 +75,7 @@ export const getApiClient = (accessToken?: string) => {
  * Metatavu Home Lambda API client with request functions to several endpoints
  *
  * @param accessToken Access token required for authentication
+ *
  * @returns Configured API request functions
  */
 export const getLambdasApiClient = (accessToken?: string) => {
@@ -68,14 +84,14 @@ export const getLambdasApiClient = (accessToken?: string) => {
     config.lambdas.baseUrl,
     accessToken
   );
-
   return {
-    allocationsApi: new AllocationsApi(getConfiguration()),
-    projectsApi: new ProjectsApi(getConfiguration()),
-    tasksApi: new TasksApi(getConfiguration()),
-    timeEntriesApi: new TimeEntriesApi(getConfiguration()),
+    resourceAllocationsApi: new ResourceAllocationsApi(getConfiguration()),
+    phaseApi: new PhasesApi(getConfiguration()),
     slackAvatarsApi: new SlackAvatarsApi(getConfiguration()),
     usersApi: new UsersApi(getConfiguration()),
+    questionnairesApi: new QuestionnairesApi(getConfiguration()),
+    flexTimeApi: new FlexTimeApi(getConfiguration()),
+    workHoursApi: new WorkHoursApi(getConfiguration()),
     questionnairesApi: new QuestionnairesApi(getConfiguration()),
     vacationRequestsApi: new VacationRequestsApi(getConfiguration())
   };

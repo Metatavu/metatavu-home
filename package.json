@@ -24,6 +24,7 @@
     "jotai": "^2.4.1",
     "keycloak-js": "^25.0.4",
     "localized-strings": "^0.2.4",
+    "lodash": "^4.17.21",
     "luxon": "^3.4.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -36,6 +37,7 @@
   "devDependencies": {
     "@biomejs/biome": "1.6.3",
     "@openapitools/openapi-generator-cli": "2.5.2",
+    "@types/lodash": "^4.17.14",
     "@types/luxon": "^3.3.7",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",

@@ -32,7 +32,11 @@
     "fetchSlackAvatarsFailed": "Virhe Slack-avatareita pyydettäessä",
     "questionnaireSaveFailed": "Kyselylomakkeen tallentaminen epäonnistui",
     "questionnaireLoadFailed": "Kyselylomakkeiden lataaminen epäonnistui",
-    "questionnaireDeleteFailed": "Kyselylomakkeen poistaminen epäonnistui"
+    "questionnaireDeleteFailed": "Kyselylomakkeen poistaminen epäonnistui",
+    "questionnaireUpdateFailed": "Kyselylomakkeen päivittäminen epäonnistui",
+    "fetchFailedFlextime": "Joustotyöaikatietojen hakeminen epäonnistui",
+    "noSeveraUserId": "Käyttäjältä puuttuu Severa-käyttäjätunnus, ota yhteyttä Metatavun kehitystiimiin lisätietoja varten.",
+    "noFlextimeData": "Jotain meni pieleen joustotyöaikatietoja haettaessa"
   },
   "localization": {
     "en": "EN",
@@ -84,7 +88,10 @@
     "unAllocated": "Kohdistamaton aika:",
     "sprintDate": "Sprint",
     "completed": "Valmis",
-    "current": "Nykyinen: {0}-{1}"
+    "current": "Nykyinen: {0}-{1}",
+    "startDate":"Aloituspäivämäärä",
+    "deadLine":"Määräaika",
+    "actualWorkHours": "Todelliset työajat"
   },
   "errors": {
     "fetchFailedGeneral": "Tietojen hakeminen epäonnistui",
@@ -163,11 +170,8 @@
     "nameNotFound": "Nimeä ei löydetty"
   },
   "sprintRequestError": {
-    "fetchError": "Sprintin tietopyyntöjen hakeminen epäonnistui",
-    "fetchTimeEntriesError": "Virhe aikamerkintöjen hakemisessa",
-    "fetchAllocationError": "Virhe aikamerkintöjen hakemisessa jakamista varten {0}: {1}",
-    "fetchTasksError": "Tehtävän {0} aikamerkintöjen noutovirhe: {1}",
-    "fetchTaskIdError": "Tehtävän tunnusta ei löytynyt"
+    "fetchResourceAllocationsError": "Sprintin tietopyyntöjen hakeminen epäonnistui",
+    "fetchWorkHoursAndTasksError": "Virhe aikamerkintöjen hakemisessa"
   },
   "form": {
     "submit": "Lähetä",
@@ -238,7 +242,7 @@
     "delete": "Poista",
     "back": "Takaisin"
   },
-  "newQuestionnaireScreen": {
+  "newQuestionnaireBuilder": {
     "makeNewQuestionnaire" : "Tee uusi kysely",
     "title": "Otsikko",
     "insertTitle": "Syötä otsikko",
@@ -274,5 +278,38 @@
     "confirmDeleteTitle": "Poista {0}?",
     "cancel": "Peruuta",
     "confirm": "Vahvista poisto"
+  },
+  "questionnaireManager": {
+    "passed": "Olet läpäissyt kyselyn, sait {0} / {1} oikein",
+    "failed": "Et läpäissyt kyselyä, sait {0} / {1} oikein",
+    "goBack": "Takaisin",
+    "submit": "Lähetä vastaukset"
+  },
+  "questionnairePreview": {
+    "save": "Tallenna muutokset",
+    "edit": "Muokkaa kysymystä",
+    "remove": "Poista kysymys",
+    "saveAlert": "Kysymyksestä puuttuu pakollisia tietoja"
+  },
+  "questionnaireEdit": {
+    "title": "Muokkaa kyselyä",
+    "titleLabel": "Otsikko",
+    "descriptionLabel": "Kuvaus",
+    "question": "Kysymys",
+    "deleteQuestion": "Poista kysymys",
+    "passScoreLabel": "Pistemäärä",
+    "passScoreMax": "Maksimipistemäärä",
+    "update": "Päivitä kysely",
+    "clearPassedUsers": "Tyhjennä läpäisseet käyttäjät tästä kyselystä",
+    "snackbarMessageSuccess": "Kysely päivitetty onnistuneesti"
+  },
+  "balanceCard": {
+    "totalFlextimeBalance": "Kokonaisbalanssi:",
+    "employeeBalances": "Henkilöstön aikakirjaukset ja saldot",
+    "viewAllTimeEntries": "Kaikki henkilöstön aikakirjaukset ja saldot",
+    "balance": "Saldo",
+    "atTheEndOf": "{0} lopussa",
+    "hour": "tunti",  
+    "hours": "Tuntia"
   }
 }
