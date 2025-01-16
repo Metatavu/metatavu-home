@@ -110,31 +110,23 @@ export const getSeveraUserId = (user: User): string => {
 };
 
 /**
- * Formating date from Severa's date format
- *
- * @param date date with type string
+ * Mapping phases to rows for datagrid
  * 
- * @returns date in format of "dd MMM yyyy"
+ * @param phase phase with type Phase
+ * @param workHours list of workHours with type WorkHours[]
+ * 
+ * @returns PhaseRow
  */
-export const formatDateSevera = (date: string) => {
-  return new Date(date).toLocaleDateString("fi-FI", {
-    day: "2-digit",
-    month: "numeric",
-    year: "numeric",
-  });
-};
-
 export const mapPhasesToRows = (phase: Phase, workHours: WorkHours[]) => {
   const actualWorkHours = getWorkHour(
     phase.severaPhaseId || "", workHours
   );
-
   return {
     id: phase.severaPhaseId || "",
     title: phase.name || "",
-    estimateWorkHours: phase.workHoursEstimate || "",
+    estimateWorkHours: phase.workHoursEstimate || "0",
     startDate: phase.startDate?.toISOString().split("T")[0] || "",
-    deadline: formatDateSevera(phase.deadline?.toISOString() || "") || "",
+    deadline: phase.deadline?.toISOString().split("T")[0] || "",
     actualWorkHours: actualWorkHours || "0",
   };
 };
