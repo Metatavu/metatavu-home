@@ -1,17 +1,12 @@
-import { Button, FormControl, FormLabel, MenuItem, TextField } from "@mui/material";
-import getVacationTypeByString from "src/utils/vacation-type-utils";
+import { Button, FormControl, FormLabel, TextField } from "@mui/material";
 import { type ChangeEvent, useEffect } from "react";
 import DateRangePicker from "../../../generics/date-range-picker";
 import { type DateRange, ToolbarFormModes } from "src/types";
 import type { DateTime } from "luxon";
 import { hasAllPropsDefined } from "src/utils/check-utils";
 import strings from "src/localization/strings";
-import LocalizationUtils from "src/utils/localization-utils";
 import { calculateTotalVacationDays } from "src/utils/time-utils";
-import { useAtom, useAtomValue } from "jotai";
-import { userProfileAtom } from "src/atoms/auth";
-import { usersAtom } from "src/atoms/user";
-import { VacationType, type User, type VacationRequest } from "src/generated/homeLambdasClient";
+import type { VacationRequest } from "src/generated/homeLambdasClient";
 
 /**
  * Component properties
@@ -38,9 +33,10 @@ const ToolbarFormFields = ({
   dateRange,
   setDateRange
 }: Props) => {
-  const userProfile = useAtomValue(userProfileAtom);
-  const [users] = useAtom(usersAtom);
-  const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
+  // This will be used again when we have a solution for various work contracts in place
+  // const userProfile = useAtomValue(userProfileAtom);
+  // const [users] = useAtom(usersAtom);
+  // const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
 
   useEffect(() => {
     setVacationRequestData({
@@ -58,21 +54,6 @@ const ToolbarFormFields = ({
   }, [dateRange]);
 
   /**
-   * Handle vacation type change
-   *
-   * @param value vacation type string
-   */
-  const handleVacationTypeChange = (value: string) => {
-    const vacationType = getVacationTypeByString(value);
-    if (vacationType) {
-      setVacationRequestData({
-        ...vacationRequestData,
-        type: vacationType
-      });
-    }
-  };
-
-  /**
    * Handle vacation data change
    *
    * @param value message string
@@ -86,24 +67,6 @@ const ToolbarFormFields = ({
 
   return (
     <FormControl sx={{ width: "100%" }}>
-      <TextField
-        select
-        label={strings.vacationRequest.type}
-        name="type"
-        value={String(vacationRequestData.type)}
-        onChange={(event) => {
-          handleVacationTypeChange(event.target.value);
-        }}
-        sx={{ marginBottom: "5px", width: "100%" }}
-      >
-        {Object.keys(VacationType).map((vacationType) => {
-          return (
-            <MenuItem key={vacationType} value={vacationType}>
-              {LocalizationUtils.getLocalizedVacationRequestType(vacationType as VacationType)}
-            </MenuItem>
-          );
-        })}
-      </TextField>
       <FormLabel>{strings.vacationRequest.message}</FormLabel>
       <TextField
         required

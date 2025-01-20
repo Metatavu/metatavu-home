@@ -1,3 +1,4 @@
+import QuestionnairePreview from "src/components/questionnaire/questionnaire-preview";
 import en from "./en.json";
 import fi from "./fi.json";
 import LocalizedStrings, { type LocalizedStringsMethods } from "localized-strings";
@@ -49,6 +50,10 @@ export interface Localized extends LocalizedStringsMethods {
     questionnaireSaveFailed: string;
     questionnaireLoadFailed: string;
     questionnaireDeleteFailed: string;
+    questionnaireUpdateFailed: string;
+    fetchFailedFlextime: string;
+    noSeveraUserId: string;
+    noFlextimeData: string;
   };
   /**
    * Translations related to localization
@@ -111,6 +116,10 @@ export interface Localized extends LocalizedStringsMethods {
     sprintDate: string;
     completed: string;
     current: string;
+    startDate: string;
+    deadLine: string;
+    actualWorkHours: string;
+    back: string;
   };
   /**
    * General time-related expressions
@@ -191,11 +200,8 @@ export interface Localized extends LocalizedStringsMethods {
    * Translations related to sprint requests errors
    */
   sprintRequestError: {
-    fetchError: string;
-    fetchTimeEntriesError: string;
-    fetchAllocationError: string;
-    fetchTasksError: string;
-    fetchTaskIdError: string;
+    fetchResourceAllocationsError: string;
+    fetchWorkHoursAndTasksError: string;
   };
   /**
    * Translations related to form
@@ -241,6 +247,8 @@ export interface Localized extends LocalizedStringsMethods {
     status: string;
     unspentVacationDays: string;
     vacationDays: string;
+    vacationDaysNotFound: string;
+    unspentVacationDaysNotFound: string;
   };
   /**
    * Translation related to person select dropdown
@@ -315,9 +323,9 @@ export interface Localized extends LocalizedStringsMethods {
     back: string;
   };
   /**
-   * Translations related to New Questionnaire Screen
+   * Translations related to New Questionnaire Builder
    */
-  newQuestionnaireScreen: {
+  newQuestionnaireBuilder: {
     makeNewQuestionnaire: string;
     title: string;
     insertTitle: string;
@@ -360,6 +368,51 @@ export interface Localized extends LocalizedStringsMethods {
     cancel: string;
     confirm: string;
   }; 
+  /**
+   * Translations related to Questionnaire Interaction Screen
+   */
+  questionnaireManager: {
+    passed: string;
+    failed: string;
+    goBack: string;
+    submit: string;
+  };
+  /**
+   * Translations related to Questionnaire Preview
+   */
+  questionnairePreview: {
+    save: string;
+    edit: string;
+    remove: string;
+    saveAlert: string;
+  };
+  /**
+   * Translations related to Questionnaire edit mode
+   */
+  questionnaireEdit: {
+    title: string;
+    titleLabel: string;
+    descriptionLabel: string;
+    question: string;
+    deleteQuestion: string;
+    passScoreLabel: string;
+    passScoreMax: string;
+    update: string;
+    clearPassedUsers: string;
+    snackbarMessageSuccess: string;
+  };
+  /**
+   * Translations related to Balance Card
+   */
+  balanceCard: {
+    totalFlextimeBalance: string;
+    employeeBalances: string;
+    viewAllTimeEntries: string;
+    balance: string;
+    atTheEndOf: string;
+    hour: string;
+    hours: string;
+  };
 }
 
 /**

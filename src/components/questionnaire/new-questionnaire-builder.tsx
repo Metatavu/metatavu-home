@@ -5,31 +5,27 @@ import {
   CardActions,
   CardContent,
   CircularProgress,
-  Grid,
-  List,
-  ListItem,
-  ListItemText,
   Slider,
   TextField,
   Tooltip,
   Typography
 } from "@mui/material";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { useState, type ChangeEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import NewQuestionnaireCard from "../questionnaire/new-questionnaire-card";
+import NewQuestionCard from "./new-question-card";
 import { KeyboardReturn } from "@mui/icons-material";
 import UserRoleUtils from "src/utils/user-role-utils";
-import type { Questionnaire, AnswerOption } from "src/generated/homeLambdasClient";
+import type { Questionnaire, AnswerOption, Question } from "src/generated/homeLambdasClient";
 import strings from "src/localization/strings";
 import { useLambdasApi } from "src/hooks/use-api";
 import { useSetAtom } from "jotai";
 import { errorAtom } from "src/atoms/error";
+import QuestionnairePreview from "./questionnaire-preview";
 
 /**
- * New Questionnaire Screen component
+ * New Questionnaire Builder component
  */
-const NewQuestionnaireScreen = () => {
+const NewQuestionnaireBuilder = () => {
   const adminMode = UserRoleUtils.adminMode();
   const navigate = useNavigate();
   const { questionnairesApi } = useLambdasApi();
@@ -74,7 +70,7 @@ const NewQuestionnaireScreen = () => {
    * Functions to add new question to Questionnaire that is being built
    *
    * @param questionText string
-   * @param list of QuestionOptions
+   * @param answerOptions object
    */
   const handleAddQuestion = ({
     questionText,
@@ -94,7 +90,20 @@ const NewQuestionnaireScreen = () => {
   const removeQuestionFromPreview = (index: number) => {
     setQuestionnaire((prevQuestionnaire) => ({
       ...prevQuestionnaire,
-      answerOptions: prevQuestionnaire.questions.filter((_, i) => i !== index)
+      questions: prevQuestionnaire.questions.filter((_, i) => i !== index)
+    }));
+  };
+
+  /**
+   * Function to edit question in the questionnaire that is being built
+   *
+   * @param index number
+   * @param updatedQuestion object
+   */
+  const editQuestionInPreview = (index: number, updatedQuestion: Question) => {
+    setQuestionnaire((prev) => ({
+      ...prev,
+      questions: prev.questions.map((question, i) => (i === index ? updatedQuestion : question))
     }));
   };
 
@@ -127,13 +136,13 @@ const NewQuestionnaireScreen = () => {
     const isDescriptionEmpty = !questionnaire.description.trim();
 
     if (isTitleEmpty && isDescriptionEmpty) {
-      return strings.newQuestionnaireScreen.tooltipBothEmpty;
+      return strings.newQuestionnaireBuilder.tooltipBothEmpty;
     }
     if (isTitleEmpty) {
-      return strings.newQuestionnaireScreen.tooltipEmptyTitle;
+      return strings.newQuestionnaireBuilder.tooltipEmptyTitle;
     }
     if (isDescriptionEmpty) {
-      return strings.newQuestionnaireScreen.tooltipEmptyDescription;
+      return strings.newQuestionnaireBuilder.tooltipEmptyDescription;
     }
     return "";
   };
@@ -143,7 +152,6 @@ const NewQuestionnaireScreen = () => {
    */
   const saveQuestionnaire = async () => {
     setLoading(true);
-
     try {
       const createdQuestionnaire = await questionnairesApi.createQuestionnaires({
         questionnaire: {
@@ -164,7 +172,6 @@ const NewQuestionnaireScreen = () => {
 
   return (
     <>
-      {/* Card containing functions to build new Questionnaire */}
       <Card
         sx={{
           p: 2,
@@ -176,12 +183,12 @@ const NewQuestionnaireScreen = () => {
       >
         <CardContent sx={{ p: 2 }}>
           <Typography variant="h4" gutterBottom>
-            {strings.newQuestionnaireScreen.makeNewQuestionnaire}
+            {strings.newQuestionnaireBuilder.makeNewQuestionnaire}
           </Typography>
           <TextField
             name="title"
-            label={strings.newQuestionnaireScreen.title}
-            placeholder={strings.newQuestionnaireScreen.insertTitle}
+            label={strings.newQuestionnaireBuilder.title}
+            placeholder={strings.newQuestionnaireBuilder.insertTitle}
             value={questionnaire.title}
             onChange={handleQuestionnaireInputChange}
             variant="outlined"
@@ -191,8 +198,8 @@ const NewQuestionnaireScreen = () => {
           />
           <TextField
             name="description"
-            label={strings.newQuestionnaireScreen.description}
-            placeholder={strings.newQuestionnaireScreen.insertDescription}
+            label={strings.newQuestionnaireBuilder.description}
+            placeholder={strings.newQuestionnaireBuilder.insertDescription}
             value={questionnaire.description}
             onChange={handleQuestionnaireInputChange}
             variant="outlined"
@@ -200,7 +207,7 @@ const NewQuestionnaireScreen = () => {
             required
             sx={{ mt: 2, mb: 4 }}
           />
-          <NewQuestionnaireCard handleAddQuestion={handleAddQuestion} />
+          <NewQuestionCard handleAddQuestion={handleAddQuestion} />
           <Card
             sx={{
               p: 2,
@@ -226,10 +233,10 @@ const NewQuestionnaireScreen = () => {
                   gutterBottom
                   sx={{ display: "flex", alignItems: "center", mb: 1, mt: 1 }}
                 >
-                  {strings.newQuestionnaireScreen.countedAnswers} {countCorrectAnswers()}
+                  {strings.newQuestionnaireBuilder.countedAnswers} {countCorrectAnswers()}
                 </Typography>
                 <Typography variant="h6" gutterBottom sx={{ mb: 1, mt: 1 }}>
-                  {strings.newQuestionnaireScreen.requiredAnswers} {questionnaire.passScore}
+                  {strings.newQuestionnaireBuilder.requiredAnswers} {questionnaire.passScore}
                 </Typography>
                 <Slider
                   value={questionnaire.passScore}
@@ -256,7 +263,7 @@ const NewQuestionnaireScreen = () => {
                     {loading ? (
                       <CircularProgress size={24} color="inherit" />
                     ) : (
-                      strings.newQuestionnaireScreen.saveButton
+                      strings.newQuestionnaireBuilder.saveButton
                     )}
                   </Button>
                 </span>
@@ -265,57 +272,11 @@ const NewQuestionnaireScreen = () => {
           </Card>
         </CardContent>
       </Card>
-      {/* Card containing answerOptions preview */}
-      <Card
-        sx={{
-          p: 2,
-          mt: 2,
-          width: "100%",
-          display: "flex",
-          flexDirection: "column",
-          height: "100"
-        }}
-      >
-        <CardContent>
-          <Grid container sx={{ flexGrow: 1 }}>
-            <Grid item xs={12}>
-              <Typography variant="h4" gutterBottom>
-                {strings.newQuestionnaireScreen.preview}
-              </Typography>
-            </Grid>
-            <Typography variant="h5" gutterBottom>
-              {questionnaire.title}
-            </Typography>
-            {questionnaire.questions.map((q, index) => (
-              <Grid item xs={12} key={index} sx={{ mb: 2 }}>
-                <Card sx={{ p: 2 }}>
-                  <Typography>{q.questionText}</Typography>
-                  <List component="ol">
-                    {q.answerOptions?.map((option, idx) => (
-                      <ListItem component="li" key={idx}>
-                        <ListItemText
-                          primary={`${option.label} ${strings.newQuestionnaireScreen.is} ${
-                            option.isCorrect?.toString() || "false"
-                          }`}
-                        />
-                      </ListItem>
-                    ))}
-                  </List>
-                  <Button
-                    variant="contained"
-                    color="secondary"
-                    onClick={() => removeQuestionFromPreview(index)}
-                  >
-                    <DeleteForeverIcon sx={{ color: "red", mr: 2 }} />
-                    {strings.newQuestionnaireScreen.removeFromPreview}
-                  </Button>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
-        </CardContent>
-      </Card>
-      {/* Card containing back button */}
+      <QuestionnairePreview
+        questionnaire={questionnaire}
+        removeQuestionFromPreview={removeQuestionFromPreview}
+        editQuestionInPreview={editQuestionInPreview}
+      />
       <Card sx={{ mt: 2, mb: 2, width: "100%" }}>
         <Link
           to={adminMode ? "/admin/questionnaire" : "/questionnaire"}
@@ -323,7 +284,7 @@ const NewQuestionnaireScreen = () => {
         >
           <Button variant="contained" sx={{ p: 2, width: "100%" }}>
             <KeyboardReturn sx={{ marginRight: "10px" }} />
-            <Typography>{strings.newQuestionnaireScreen.back}</Typography>
+            <Typography>{strings.newQuestionnaireBuilder.back}</Typography>
           </Button>
         </Link>
       </Card>
@@ -331,4 +292,4 @@ const NewQuestionnaireScreen = () => {
   );
 };
 
-export default NewQuestionnaireScreen;
+export default NewQuestionnaireBuilder;

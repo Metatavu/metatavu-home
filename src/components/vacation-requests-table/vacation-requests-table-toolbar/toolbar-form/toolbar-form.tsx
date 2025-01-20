@@ -50,7 +50,7 @@ const ToolbarForm = ({
     end: DateTime.now().plus({ days: 1 })
   };
   const [dateRange, setDateRange] = useState<DateRange>(defaultDateRange);
-  const defaultVacationRequestData = {
+  const defaultVacationRequestData: VacationRequest = {
     createdAt: new Date(),
     createdBy: "",
     draft: false,
@@ -107,26 +107,14 @@ const ToolbarForm = ({
         const days = selectedVacationRequest.days;
 
         setVacationRequestData({
-          createdAt: new Date(),
-          createdBy: "",
-          draft: false,
-          id: "",
-          updatedAt: new Date(),
-          userId: "",
-          type: selectedVacationRequest.type,
+          ...defaultVacationRequestData,
           message: selectedVacationRequest.message,
           startDate: startDate.toJSDate(),
           endDate: endDate.toJSDate(),
           days: days,
-          status: selectedVacationRequest.status ?? [
-            {
-              message: "Automatically created status",
-              status: VacationRequestStatuses.PENDING,
-              createdBy: "",
-              updatedAt: new Date()
-            }
-          ]
+          status: selectedVacationRequest.status ?? defaultVacationRequestData.status
         });
+
         setSelectedVacationRequestId(selectedVacationRequest.id);
         setDateRange({
           start: startDate,
@@ -156,14 +144,11 @@ const ToolbarForm = ({
     if (toolbarFormMode === ToolbarFormModes.CREATE) {
       await createVacationRequest(vacationRequestData);
     } else if (toolbarFormMode === ToolbarFormModes.EDIT) {
-      await updateVacationRequest(vacationRequestData, selectedVacationRequestId).then(() => {
-        setSelectedRowIds([]);
-      });
+      await updateVacationRequest(vacationRequestData, selectedVacationRequestId);
+      setSelectedRowIds([]);
     }
     setFormOpen(false);
-    if (toolbarFormMode !== ToolbarFormModes.EDIT) {
-      resetVacationRequestData();
-    }
+    resetVacationRequestData()
   };
 
   return (

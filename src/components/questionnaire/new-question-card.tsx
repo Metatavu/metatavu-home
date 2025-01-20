@@ -2,7 +2,6 @@ import {
   Box,
   Button,
   Card,
-  CardActionArea,
   CardActions,
   CardContent,
   Checkbox,
@@ -15,7 +14,7 @@ import type { AnswerOption } from "src/generated/homeLambdasClient";
 import strings from "src/localization/strings";
 
 /**
- * Interface for the NewQuestionnaireCard component
+ * Interface for the NewQuestionCard component
  */
 interface Props {
   handleAddQuestion: ({
@@ -25,11 +24,11 @@ interface Props {
 }
 
 /**
- * New Questionnaire Card Component
+ * New Question Card Component
  *
  * @params handleAddQuestion
  */
-const NewQuestionnaireCard = ({ handleAddQuestion }: Props) => {
+const NewQuestionCard = ({ handleAddQuestion }: Props) => {
   const [questionText, setQuestionText] = useState("");
   const [answerOptions, setAnswerOptions] = useState([{ label: "", isCorrect: false }]);
 
@@ -175,4 +174,4 @@ const NewQuestionnaireCard = ({ handleAddQuestion }: Props) => {
   );
 };
 
-export default NewQuestionnaireCard;
+export default NewQuestionCard;
