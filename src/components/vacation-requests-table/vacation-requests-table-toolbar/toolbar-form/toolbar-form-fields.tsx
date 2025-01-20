@@ -33,7 +33,7 @@ const ToolbarFormFields = ({
   dateRange,
   setDateRange
 }: Props) => {
-  // This will be used again when we have a solution for various work contracts in place
+  // TODO: This will be used again when we have a solution for various work contracts in place
   // const userProfile = useAtomValue(userProfileAtom);
   // const [users] = useAtom(usersAtom);
   // const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
