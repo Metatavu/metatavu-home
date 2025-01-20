@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Card,
   CircularProgress,
   Typography
@@ -20,6 +21,9 @@ import strings from "src/localization/strings";
 import { getSeveraUserId } from "src/utils/sprint-utils";
 import { getSprintEnd, getSprintStart } from "src/utils/time-utils";
 import createSprintViewProjectsColumns from "../sprint-view-table/sprint-projects-columns";
+import { Link } from "react-router-dom";
+import { KeyboardReturn } from "@mui/icons-material";
+import UserRoleUtils from "src/utils/user-role-utils";
 
 /**
  * Sprint view screen component
@@ -37,10 +41,10 @@ const SprintViewScreen = () => {
   const sprintStartDate = getSprintStart(todaysDate);
   const sprintEndDate = getSprintEnd(todaysDate);
   const setError = useSetAtom(errorAtom);
+  const adminMode = UserRoleUtils.adminMode();
   const columns = createSprintViewProjectsColumns({
     resourceAllocations: resourceAllocations || [],
   });
-  
   useEffect(() => {
       fetchProjectDetails();
   }, [loggedInUser]);
@@ -156,6 +160,14 @@ const SprintViewScreen = () => {
               phases={resourceAllocations}
             />
           ))}
+          <Card sx={{ mt: 4, width: "100%" }}>
+            <Link to={adminMode ? "/admin" : "/"} style={{ textDecoration: "none" }}>
+              <Button variant="contained" sx={{ p: 2, width: "100%" }}>
+                <KeyboardReturn sx={{ marginRight: "10px" }} />
+                <Typography>{strings.sprint.back}</Typography>
+              </Button>
+            </Link>
+          </Card>
         </>
       )}
     </>
