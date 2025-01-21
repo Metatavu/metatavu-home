@@ -69,28 +69,28 @@ const VacationRequestsScreen = () => {
   const fetchVacationsRequests = async () => {
     setLoading(true);
     if (!loggedInUser) return;
-
-    if (!vacationRequests.length) {
-      try {
-        let fetchedVacationRequests: VacationRequest[] = [];
-        if (adminMode) {
-          fetchedVacationRequests = await vacationRequestsApi.listVacationRequests({});
-        } else {
-          fetchedVacationRequests = await vacationRequestsApi.listVacationRequests({
-            userId: loggedInUser?.id
-          });
-        }
-        setVacationRequests(fetchedVacationRequests);
-      } catch (error) {
-        setError(`${strings.vacationRequestError.fetchRequestError}, ${error}`);
+    try {
+      let fetchedVacationRequests: VacationRequest[] = [];
+      if (adminMode) {
+        fetchedVacationRequests = await vacationRequestsApi.listVacationRequests({});
+      } else {
+        console.log("Fetching vacation requests");
+        fetchedVacationRequests = await vacationRequestsApi.listVacationRequests({
+          userId: loggedInUser?.id
+        });
       }
+      setVacationRequests(fetchedVacationRequests);
+    } catch (error) {
+      setError(`${strings.vacationRequestError.fetchRequestError}, ${error}`);
     }
+
     setLoading(false);
   };
 
-  useMemo(() => {
+  useEffect(() => {
+    console.log("Component is mounted");
     fetchVacationsRequests();
-  }, [loggedInUser]);
+  }, []);
 
   /**
    * Delete vacation requests
