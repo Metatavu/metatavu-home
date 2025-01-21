@@ -15,7 +15,6 @@ import {
   getTotalVacationRequestStatus,
   getVacationRequestStatusColor
 } from "src/utils/vacation-status-utils";
-import UserRoleUtils from "src/utils/user-role-utils";
 import { DateTime } from "luxon";
 import LocalizationUtils from "src/utils/localization-utils";
 import { getVacationRequestPersonFullName } from "src/utils/vacation-request-utils";
@@ -58,7 +57,6 @@ const VacationRequestsTable = ({
   updateVacationRequestStatus,
   loading
 }: Props) => {
-  // const adminMode = UserRoleUtils.adminMode();
   const vacationRequests = useAtomValue(displayedVacationRequestsAtom);
   const containerRef = useRef(null);
   const [formOpen, setFormOpen] = useState(false);

@@ -12,7 +12,7 @@ import { getToolbarTitle } from "src/utils/toolbar-utils";
 import { useAtomValue } from "jotai";
 import { languageAtom } from "src/atoms/language";
 import { useLocation } from "react-router-dom";
-import {VacationRequestStatuses} from "src/generated/homeLambdasClient";
+import { VacationRequestStatuses } from "src/generated/homeLambdasClient";
 import UpdateStatusButton from "./toolbar-update-status-button";
 import UserRoleUtils from "src/utils/user-role-utils";
 import type { VacationRequest } from "src/generated/homeLambdasClient";
@@ -137,13 +137,15 @@ const TableToolbar = ({
           </ToolbarGridItem>
           {selectedRowIds?.length === 1 && (
             <ToolbarGridItem item sm={adminMode ? 3 : 6} xs={6}>
-              <FormToggleButton
-                title={strings.tableToolbar.edit}
-                ButtonIcon={Edit}
-                value={formOpen}
-                setValue={setFormOpen}
-                disabled={disableEditButton}
-              />
+              {!adminMode && (
+                <FormToggleButton
+                  title={strings.tableToolbar.edit}
+                  ButtonIcon={Edit}
+                  value={formOpen}
+                  setValue={setFormOpen}
+                  disabled={disableEditButton}
+                />
+              )}
             </ToolbarGridItem>
           )}
           {adminMode && (
