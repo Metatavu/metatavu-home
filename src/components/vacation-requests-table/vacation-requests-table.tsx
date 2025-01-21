@@ -58,7 +58,7 @@ const VacationRequestsTable = ({
   updateVacationRequestStatus,
   loading
 }: Props) => {
-  const adminMode = UserRoleUtils.adminMode();
+  // const adminMode = UserRoleUtils.adminMode();
   const vacationRequests = useAtomValue(displayedVacationRequestsAtom);
   const containerRef = useRef(null);
   const [formOpen, setFormOpen] = useState(false);
@@ -113,6 +113,7 @@ const VacationRequestsTable = ({
           : VacationRequestStatuses.PENDING;
 
         if (vacationRequest.message.length) {
+          row.message = vacationRequest.message;
           row.message = vacationRequest.message;
         }
 
@@ -225,13 +226,6 @@ const VacationRequestsTable = ({
           sorting: {
             sortModel: [{ field: "updatedAt", sort: "asc" }]
           },
-          filter: adminMode
-            ? {
-                filterModel: {
-                  items: [{ field: "status", operator: "contains", value: "pending" }]
-                }
-              }
-            : {}
         }}
       />
     </Box>

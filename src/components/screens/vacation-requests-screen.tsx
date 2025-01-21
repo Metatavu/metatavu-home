@@ -67,11 +67,12 @@ const VacationRequestsScreen = () => {
    * Fetch vacation requests
    */
   const fetchVacationsRequests = async () => {
-    setLoading(true);
     if (!loggedInUser) return;
+    setLoading(true);
     try {
       let fetchedVacationRequests: VacationRequest[] = [];
       if (adminMode) {
+        console.log("Fetching vacation requests");
         fetchedVacationRequests = await vacationRequestsApi.listVacationRequests({});
       } else {
         console.log("Fetching vacation requests");
@@ -83,14 +84,15 @@ const VacationRequestsScreen = () => {
     } catch (error) {
       setError(`${strings.vacationRequestError.fetchRequestError}, ${error}`);
     }
-
     setLoading(false);
   };
 
+  /**
+   * Re-fetch vacation requests whenever the component is mounted
+   */
   useEffect(() => {
-    console.log("Component is mounted");
     fetchVacationsRequests();
-  }, []);
+  }, [loggedInUser, isUpcoming]);
 
   /**
    * Delete vacation requests
