@@ -158,7 +158,6 @@ const SprintViewScreen = () => {
             <TaskTable
               key={resourceAllocations.phase?.severaPhaseId}
               project={resourceAllocations.project ?? {} as ResourceAllocationsProject}
-              // phases={resourceAllocations.phase ?? {} as ResourceAllocationsPhase}
             />
           ))}
           <Card sx={{ mt: 4, width: "100%" }}>
