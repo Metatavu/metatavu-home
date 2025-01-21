@@ -110,6 +110,37 @@ export const getSeveraUserId = (user: User): string => {
 };
 
 /**
+ * Get total work hours for each phase 
+ * 
+ * @param workHours with type WorkHours[]
+ * @param phase with type Phase
+ * @param userId with type string
+ * 
+ * @returns total work hours for each phase according to the userId
+ */
+const totalWorkHours = (workHours: WorkHours[], phase: Phase, userId: string) => {
+  return workHours
+    .filter(workHour => workHour.phase?.severaPhaseId === phase.severaPhaseId && workHour.user?.severaUserId === userId)
+    .reduce((total, workHour) => total + (workHour.quantity || 0), 0);
+}
+
+/**
+ * Get phases's assignee
+ * 
+ * @param workHours with type WorkHours[]
+ * @param userId with type string
+ * 
+ * @returns assignee's name excludes given userId
+ */
+const getAssigneeWorkHours = (workHours: WorkHours[], userId: string) => {
+  const assignee = new Set(
+    workHours
+      .filter((workHour) => workHour.user?.severaUserId !== userId)
+      .map((workHour) => workHour.user?.name)
+  );
+  return Array.from(assignee).join(", ");
+};
+/**
  * Mapping phases to rows for datagrid
  * 
  * @param phase Phase
@@ -117,17 +148,14 @@ export const getSeveraUserId = (user: User): string => {
  * 
  * @returns PhaseRow
  */
-export const mapPhasesToRows = (phase: Phase, workHours: WorkHours[]) => {
-  const actualWorkHours = getWorkHour(
-    phase.severaPhaseId || "", workHours
-  );
-
+export const mapPhasesToRows = (phase: Phase, workHours: WorkHours[], userId: string) => {
   return {
     id: phase.severaPhaseId || "",
     title: phase.name || "",
     estimateWorkHours: phase.workHoursEstimate || "0",
     startDate: phase.startDate?.toISOString().split("T")[0] || "",
     deadline: phase.deadline?.toISOString().split("T")[0] || "",
-    actualWorkHours: actualWorkHours || "0",
+    actualWorkHours: totalWorkHours(workHours, phase, userId),
+    assignee: getAssigneeWorkHours(workHours, userId),
   };
 };
