@@ -8,27 +8,29 @@ import {
   Typography,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import { useSetAtom } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { useEffect, useState } from "react";
+import { userProfileAtom } from "src/atoms/auth";
 import { errorAtom } from "src/atoms/error";
+import { usersAtom } from "src/atoms/user";
 import type {
   Phase,
-  ResourceAllocations,
+  ResourceAllocationsProject,
+  User,
   WorkHours
 } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
 import type { PhaseRow } from "src/types/index";
-import { mapPhasesToRows } from "src/utils/sprint-utils";
+import { getSeveraUserId, mapPhasesToRows } from "src/utils/sprint-utils";
 import sprintViewTasksColumns from "./sprint-tasks-columns";
 
 /**
  * Interface for TaskTable component
  */
 interface Props {
-  phases: Phase;
   filter?: string;
-  project: ResourceAllocations
+  project: ResourceAllocationsProject
 }
 
 /**
@@ -36,7 +38,12 @@ interface Props {
  *
  * @param props component properties
  */
-const TaskTable = ({ phases, filter, project }: Props) => {
+const TaskTable = ({filter, project }: Props) => {
+  const users = useAtomValue(usersAtom);
+  const userProfile = useAtomValue(userProfileAtom);
+  const loggedInUser = users.find(
+    (users: User) => users.id === userProfile?.id
+  );
   const { phaseApi, workHoursApi } = useLambdasApi();
   const [phase, setPhase] = useState<Phase[]>([]);
   const [workHours, setWorkHours] = useState<WorkHours[]>([]);
@@ -50,17 +57,20 @@ const TaskTable = ({ phases, filter, project }: Props) => {
    * Get Phases and WorkHours for tasks
    */
   const getPhasesAndWorkHours = async () => {
+    if (!loggedInUser) return;
     setLoading(true);
     if (!phase?.length) {
       try {
-        const fetchedTasks = await phaseApi.getPhasesBySeveraProjectId({
-          severaProjectId: phases.project?.severaProjectId || "",
+        const severaUserId = getSeveraUserId(loggedInUser);
+        const fetchedPhases = await phaseApi.getPhasesBySeveraProjectId({
+          severaProjectId: project.severaProjectId || "",
         });
         const fetchedWorkHours = await workHoursApi.getAllWorkHours({
-          severaProjectId: phases.project?.severaProjectId || "",
+          severaUserId,
         });
+        console.log("WorkHours here",fetchedWorkHours);
         setWorkHours(fetchedWorkHours);
-        setPhase(fetchedTasks);
+        setPhase(fetchedPhases);
       } catch (error) {
         setError(
           `${strings.sprintRequestError.fetchWorkHoursAndTasksError} ${error}`
@@ -99,7 +109,7 @@ const TaskTable = ({ phases, filter, project }: Props) => {
         {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
       </IconButton>
       <Typography style={{ display: "inline" }}>
-        {phases.project?.name}
+        {project.name}
       </Typography>
       {open && (
         <>
