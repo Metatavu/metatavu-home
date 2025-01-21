@@ -72,10 +72,8 @@ const VacationRequestsScreen = () => {
     try {
       let fetchedVacationRequests: VacationRequest[];
       if (adminMode) {
-        console.log("Fetching vacation requests");
         fetchedVacationRequests = await vacationRequestsApi.listVacationRequests({});
       } else {
-        console.log("Fetching vacation requests");
         fetchedVacationRequests = await vacationRequestsApi.listVacationRequests({
           userId: loggedInUser?.id
         });
