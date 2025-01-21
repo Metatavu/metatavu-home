@@ -68,7 +68,6 @@ const TaskTable = ({filter, project }: Props) => {
         const fetchedWorkHours = await workHoursApi.getAllWorkHours({
           severaUserId,
         });
-        console.log("WorkHours here",fetchedWorkHours);
         setWorkHours(fetchedWorkHours);
         setPhase(fetchedPhases);
       } catch (error) {
