@@ -223,7 +223,7 @@ const VacationRequestsTable = ({
         initialState={{
           sorting: {
             sortModel: [{ field: "updatedAt", sort: "asc" }]
-          },
+          }
         }}
       />
     </Box>

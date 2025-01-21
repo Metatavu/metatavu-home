@@ -1,20 +1,24 @@
-import {Button, Card, Typography} from "@mui/material";
-import {useEffect, useMemo, useState} from "react";
+import { Button, Card, Typography } from "@mui/material";
+import { useEffect, useMemo, useState } from "react";
 import VacationRequestsTable from "../vacation-requests-table/vacation-requests-table";
-import type {User} from "src/generated/homeLambdasClient";
-import {type VacationRequest, VacationRequestStatuses} from "src/generated/homeLambdasClient";
-import {useLambdasApi} from "src/hooks/use-api";
-import {useAtom, useAtomValue, useSetAtom} from "jotai";
-import {userProfileAtom} from "src/atoms/auth";
-import {errorAtom} from "src/atoms/error";
-import type {GridRowId} from "@mui/x-data-grid";
+import type { User } from "src/generated/homeLambdasClient";
+import { type VacationRequest, VacationRequestStatuses } from "src/generated/homeLambdasClient";
+import { useLambdasApi } from "src/hooks/use-api";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { userProfileAtom } from "src/atoms/auth";
+import { errorAtom } from "src/atoms/error";
+import type { GridRowId } from "@mui/x-data-grid";
 import strings from "src/localization/strings";
-import {allVacationRequestsAtom, displayedVacationRequestsAtom, vacationRequestsAtom} from "src/atoms/vacation";
+import {
+  allVacationRequestsAtom,
+  displayedVacationRequestsAtom,
+  vacationRequestsAtom
+} from "src/atoms/vacation";
 import UserRoleUtils from "src/utils/user-role-utils";
-import {Link} from "react-router-dom";
-import {KeyboardReturn} from "@mui/icons-material";
-import {renderVacationDaysTextForScreen} from "src/utils/vacation-days-utils";
-import {usersAtom} from "src/atoms/user";
+import { Link } from "react-router-dom";
+import { KeyboardReturn } from "@mui/icons-material";
+import { renderVacationDaysTextForScreen } from "src/utils/vacation-days-utils";
+import { usersAtom } from "src/atoms/user";
 
 /**
  * Vacation requests screen
