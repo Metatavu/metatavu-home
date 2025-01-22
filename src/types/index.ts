@@ -1,5 +1,6 @@
 import type { DateTime } from "luxon";
-import type { Person, PersonTotalTime, VacationType, DailyEntry } from "../generated/client";
+import type { Person, PersonTotalTime, DailyEntry } from "../generated/client";
+import type { VacationType } from "../generated/homeLambdasClient";
 import type { ReactNode } from "react";
 
 /**
@@ -54,17 +55,6 @@ export interface SkeletonTableRow {
   height: string | number;
   width: string | number;
   margin: string;
-}
-
-/**
- * Type describing data for vacation request
- */
-export interface VacationData {
-  startDate: DateTime;
-  endDate: DateTime;
-  type: VacationType;
-  message: string;
-  days: number;
 }
 
 /**

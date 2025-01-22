@@ -204,8 +204,10 @@
     "applicant": "Applicant:",
     "timeOfVacation": "Time of Vacation:",
     "status": "Status:",
-    "spentVacations": "Spent vacation days: ",
-    "unspentVacations": "Unspent vacation days: "
+    "vacationDays": "Total vacation days: ",
+    "unspentVacationDays": "Unspent vacation days: ",
+    "vacationDaysNotFound": "Vacation days not found",
+    "unspentVacationDaysNotFound": "Unspent vacation days not found"
   },
   "personSelectDropdown": {
     "label": "Filter by Person"

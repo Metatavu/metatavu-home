@@ -204,8 +204,10 @@
     "applicant": "Hakija:",
     "timeOfVacation": "Ajankohta:",
     "status": "Tila:",
-    "spentVacations": "Käytetyt lomapäivät: ",
-    "unspentVacations": "Käyttämättömät lomapäivät: "
+    "vacationDays": "Käytetyt lomapäivät: ",
+    "unspentVacationDays": "Käyttämättömät lomapäivät: ",
+    "vacationDaysNotFound": "Lomapäiviä ei löytynyt",
+    "unspentVacationDaysNotFound": "Käyttämättömiä lomapäiviä ei löytynyt"
   },
   "personSelectDropdown": {
     "label": "Suodata henkilöllä"
