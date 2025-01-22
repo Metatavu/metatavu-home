@@ -38,7 +38,7 @@ interface Props {
  *
  * @param props component properties
  */
-const TaskTable = ({filter, project }: Props) => {
+const TaskTable = ({ filter, project }: Props) => {
   const users = useAtomValue(usersAtom);
   const userProfile = useAtomValue(userProfileAtom);
   const loggedInUser = users.find(

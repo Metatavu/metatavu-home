@@ -156,7 +156,7 @@ const SprintViewScreen = () => {
           </Card>
           {resourceAllocations?.map((resourceAllocations) => (
             <TaskTable
-              key={resourceAllocations.phase?.severaPhaseId}
+              key={resourceAllocations.project?.severaProjectId}
               project={resourceAllocations.project ?? {} as ResourceAllocationsProject}
             />
           ))}
