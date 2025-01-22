@@ -118,16 +118,15 @@ export const getSeveraUserId = (user: User): string => {
  * @returns PhaseRow
  */
 export const mapPhasesToRows = (phase: Phase, workHours: WorkHours[]) => {
-  const actualWorkHours = getWorkHour(
-    phase.severaPhaseId || "", workHours
-  );
-
+  const totalWorkHours = workHours
+    .filter(workHour => workHour.phase?.severaPhaseId === phase.severaPhaseId)
+    .reduce((total, workHour) => total + (workHour.quantity || 0), 0);
   return {
     id: phase.severaPhaseId || "",
     title: phase.name || "",
     estimateWorkHours: phase.workHoursEstimate || "0",
     startDate: phase.startDate?.toISOString().split("T")[0] || "",
     deadline: phase.deadline?.toISOString().split("T")[0] || "",
-    actualWorkHours: actualWorkHours || "0",
+    actualWorkHours: totalWorkHours.toString(),
   };
 };
