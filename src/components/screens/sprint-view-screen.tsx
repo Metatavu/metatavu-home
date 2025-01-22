@@ -14,6 +14,7 @@ import { usersAtom } from "src/atoms/user";
 import TaskTable from "src/components/sprint-view-table/tasks-table";
 import type {
   ResourceAllocations,
+  ResourceAllocationsProject,
   User
 } from "src/generated/homeLambdasClient/models/";
 import { useLambdasApi } from "src/hooks/use-api";
@@ -156,8 +157,7 @@ const SprintViewScreen = () => {
           {resourceAllocations?.map((resourceAllocations) => (
             <TaskTable
               key={resourceAllocations.phase?.severaPhaseId}
-              project={resourceAllocations}
-              phases={resourceAllocations}
+              project={resourceAllocations.project ?? {} as ResourceAllocationsProject}
             />
           ))}
           <Card sx={{ mt: 4, width: "100%" }}>
