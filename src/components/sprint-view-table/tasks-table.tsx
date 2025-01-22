@@ -38,7 +38,7 @@ interface Props {
  *
  * @param props component properties
  */
-const TaskTable = ({filter, project }: Props) => {
+const TaskTable = ({ filter, project }: Props) => {
   const users = useAtomValue(usersAtom);
   const userProfile = useAtomValue(userProfileAtom);
   const loggedInUser = users.find(
@@ -58,17 +58,16 @@ const TaskTable = ({filter, project }: Props) => {
    * Get Phases and WorkHours for tasks
    */
   const getPhasesAndWorkHours = async () => {
+    if (!loggedInUser) return;
     setLoading(true);
     if (!phase?.length) {
       try {
-        // const severaUserId = getSeveraUserId(loggedInUser);
+        const severaUserId = getSeveraUserId(loggedInUser);
         const fetchedPhases = await phaseApi.getPhasesBySeveraProjectId({
           severaProjectId: project.severaProjectId || "",
         });
         const fetchedWorkHours = await workHoursApi.getAllWorkHours({
-          // severaUserId,
-          severaProjectId: project.severaProjectId || "",
-
+          severaUserId,
         });
         setWorkHours(fetchedWorkHours);
         setPhase(fetchedPhases);

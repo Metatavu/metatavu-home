@@ -1,3 +1,4 @@
+import { KeyboardReturn } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -8,6 +9,7 @@ import {
 import { DataGrid } from "@mui/x-data-grid";
 import { useAtomValue, useSetAtom } from "jotai";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { userProfileAtom } from "src/atoms/auth";
 import { errorAtom } from "src/atoms/error";
 import { usersAtom } from "src/atoms/user";
@@ -21,10 +23,8 @@ import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
 import { getSeveraUserId } from "src/utils/sprint-utils";
 import { getSprintEnd, getSprintStart } from "src/utils/time-utils";
-import createSprintViewProjectsColumns from "../sprint-view-table/sprint-projects-columns";
-import { Link } from "react-router-dom";
-import { KeyboardReturn } from "@mui/icons-material";
 import UserRoleUtils from "src/utils/user-role-utils";
+import createSprintViewProjectsColumns from "../sprint-view-table/sprint-projects-columns";
 
 /**
  * Sprint view screen component
@@ -156,7 +156,7 @@ const SprintViewScreen = () => {
           </Card>
           {resourceAllocations?.map((resourceAllocations) => (
             <TaskTable
-              key={resourceAllocations.phase?.severaPhaseId}
+              key={resourceAllocations.project?.severaProjectId}
               project={resourceAllocations.project ?? {} as ResourceAllocationsProject}
             />
           ))}
