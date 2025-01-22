@@ -140,6 +140,7 @@ const getAssigneeWorkHours = (workHours: WorkHours[], userId: string) => {
   );
   return Array.from(assignee).join(", ");
 };
+
 /**
  * Mapping phases to rows for datagrid
  * 

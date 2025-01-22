@@ -62,13 +62,15 @@ const TaskTable = ({ filter, project }: Props) => {
     setLoading(true);
     if (!phase?.length) {
       try {
-        const severaUserId = getSeveraUserId(loggedInUser);
-        const fetchedPhases = await phaseApi.getPhasesBySeveraProjectId({
-          severaProjectId: project.severaProjectId || "",
-        });
-        const fetchedWorkHours = await workHoursApi.getAllWorkHours({
-          severaUserId,
-        });
+        const severaProjectId = project.severaProjectId || "";
+        const [fetchedPhases, fetchedWorkHours] = await Promise.all([
+          phaseApi.getPhasesBySeveraProjectId({
+            severaProjectId
+          }),
+          workHoursApi.getAllWorkHours({
+            severaProjectId
+          }),
+        ]);
         setWorkHours(fetchedWorkHours);
         setPhase(fetchedPhases);
       } catch (error) {
