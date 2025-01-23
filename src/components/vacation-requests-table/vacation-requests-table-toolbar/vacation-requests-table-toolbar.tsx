@@ -70,7 +70,7 @@ const TableToolbar = ({
   const { pathname } = useLocation();
   const isToolbarVisible = toolbarOpen && !formOpen && selectedRowIds?.length;
   const buttonLabel = isUpcoming ? strings.tableToolbar.future : strings.tableToolbar.past;
-  const singleSelectionSize = adminMode ? 3 : 6;
+  const singleSelectionSize = adminMode ? 6 : 6;
   const multiSelectionSize = adminMode ? 6 : 12;
   const gridItemSize = selectedRowIds?.length === 1 ? singleSelectionSize : multiSelectionSize;
   const disableEditButton =
@@ -135,17 +135,15 @@ const TableToolbar = ({
           <ToolbarGridItem item sm={gridItemSize} xs={6}>
             <ToolbarDeleteButton setConfirmationHandlerOpen={setConfirmationHandlerOpen} />
           </ToolbarGridItem>
-          {selectedRowIds?.length === 1 && (
+          {selectedRowIds?.length === 1 && !adminMode && (
             <ToolbarGridItem item sm={adminMode ? 3 : 6} xs={6}>
-              {!adminMode && (
-                <FormToggleButton
-                  title={strings.tableToolbar.edit}
-                  ButtonIcon={Edit}
-                  value={formOpen}
-                  setValue={setFormOpen}
-                  disabled={disableEditButton}
-                />
-              )}
+              <FormToggleButton
+                title={strings.tableToolbar.edit}
+                ButtonIcon={Edit}
+                value={formOpen}
+                setValue={setFormOpen}
+                disabled={disableEditButton}
+              />
             </ToolbarGridItem>
           )}
           {adminMode && (

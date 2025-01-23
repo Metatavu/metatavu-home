@@ -75,7 +75,7 @@ const VacationRequestsScreen = () => {
         fetchedVacationRequests = await vacationRequestsApi.listVacationRequests({});
       } else {
         fetchedVacationRequests = await vacationRequestsApi.listVacationRequests({
-          userId: loggedInUser?.id
+          userId: loggedInUser.id
         });
       }
       setVacationRequests(fetchedVacationRequests);
@@ -218,7 +218,7 @@ const VacationRequestsScreen = () => {
           const vacationRequest = vacationRequests.find(
             (vacationRequest) => vacationRequest.id === vacationRequestId
           );
-          if (!vacationRequest) return null;
+          if (!vacationRequest) return;
 
           const statusExists = vacationRequest.status?.some(
             (existingStatus) => existingStatus.createdBy === loggedInUser.id
@@ -237,9 +237,9 @@ const VacationRequestsScreen = () => {
                   ? { ...existingStatus, ...newOrUpdatedStatus }
                   : existingStatus
               )
-            : [...(vacationRequest.status || []), newOrUpdatedStatus];
+            : [...vacationRequest.status || [], newOrUpdatedStatus];
 
-          return await vacationRequestsApi.updateVacationRequest({
+          return vacationRequestsApi.updateVacationRequest({
             id: vacationRequestId.toString(),
             vacationRequest: {
               ...vacationRequest,
@@ -250,12 +250,9 @@ const VacationRequestsScreen = () => {
       );
 
       setVacationRequests((prevRequests) =>
-        prevRequests.map((vacationRequest) => {
-          const updatedRequest = updatedVacationRequests.find(
-            (req) => req?.id === vacationRequest.id
-          );
-          return updatedRequest || vacationRequest;
-        })
+        prevRequests.map((vacationRequest) =>
+          updatedVacationRequests.find((req) => req?.id === vacationRequest.id) || vacationRequest
+        )
       );
     } catch (error) {
       setError(`${strings.vacationRequestError.updateRequestError}, ${error}`);

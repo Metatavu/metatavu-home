@@ -112,7 +112,6 @@ const VacationRequestsTable = ({
 
         if (vacationRequest.message.length) {
           row.message = vacationRequest.message;
-          row.message = vacationRequest.message;
         }
 
         if (vacationRequest.userId) {
