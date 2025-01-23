@@ -237,7 +237,7 @@ const VacationRequestsScreen = () => {
                   ? { ...existingStatus, ...newOrUpdatedStatus }
                   : existingStatus
               )
-            : [...vacationRequest.status || [], newOrUpdatedStatus];
+            : [...(vacationRequest.status || []), newOrUpdatedStatus];
 
           return vacationRequestsApi.updateVacationRequest({
             id: vacationRequestId.toString(),
