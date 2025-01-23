@@ -239,7 +239,7 @@ const VacationRequestsScreen = () => {
               )
             : [...(vacationRequest.status || []), newOrUpdatedStatus];
 
-          return vacationRequestsApi.updateVacationRequest({
+          return await vacationRequestsApi.updateVacationRequest({
             id: vacationRequestId.toString(),
             vacationRequest: {
               ...vacationRequest,
