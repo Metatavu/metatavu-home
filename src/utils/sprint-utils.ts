@@ -128,9 +128,8 @@ const totalWorkHours = (workHours: WorkHours[], phase: Phase, userId: string) =>
  * Get phases's assignee
  * 
  * @param workHours with type WorkHours[]
- * @param userId with type string
  * 
- * @returns assignee's name excludes given userId
+ * @returns assignee's name for each phase
  */
 const getAssigneeWorkHours = (workHours: WorkHours[]) => {
   const assigneeMap = new Map();
