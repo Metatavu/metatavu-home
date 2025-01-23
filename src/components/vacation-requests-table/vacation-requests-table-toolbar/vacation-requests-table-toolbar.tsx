@@ -70,7 +70,7 @@ const TableToolbar = ({
   const { pathname } = useLocation();
   const isToolbarVisible = toolbarOpen && !formOpen && selectedRowIds?.length;
   const buttonLabel = isUpcoming ? strings.tableToolbar.future : strings.tableToolbar.past;
-  const singleSelectionSize = adminMode ? 6 : 6;
+  const singleSelectionSize = 6;
   const multiSelectionSize = adminMode ? 6 : 12;
   const gridItemSize = selectedRowIds?.length === 1 ? singleSelectionSize : multiSelectionSize;
   const disableEditButton =
