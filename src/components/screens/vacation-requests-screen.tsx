@@ -75,7 +75,7 @@ const VacationRequestsScreen = () => {
         fetchedVacationRequests = await vacationRequestsApi.listVacationRequests({});
       } else {
         fetchedVacationRequests = await vacationRequestsApi.listVacationRequests({
-          userId: loggedInUser.id
+          userId: loggedInUser?.id
         });
       }
       setVacationRequests(fetchedVacationRequests);
