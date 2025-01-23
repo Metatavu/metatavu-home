@@ -250,9 +250,12 @@ const VacationRequestsScreen = () => {
       );
 
       setVacationRequests((prevRequests) =>
-        prevRequests.map((vacationRequest) =>
-          updatedVacationRequests.find((req) => req?.id === vacationRequest.id) || vacationRequest
-        )
+        prevRequests.map((vacationRequest) => {
+          const updatedRequest = updatedVacationRequests.find(
+            (req) => req?.id === vacationRequest.id
+          );
+          return updatedRequest || vacationRequest;
+        })
       );
     } catch (error) {
       setError(`${strings.vacationRequestError.updateRequestError}, ${error}`);
