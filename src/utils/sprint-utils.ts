@@ -133,10 +133,15 @@ const totalWorkHours = (workHours: WorkHours[], phase: Phase, userId: string) =>
  * @returns assignee's name excludes given userId
  */
 const getAssigneeWorkHours = (workHours: WorkHours[]) => {
-  const assignee = new Set(
-    workHours.map((workHour) => workHour.user?.name)
-  );
-  return Array.from(assignee).join(", ");
+  const assigneeMap = new Map();
+
+  workHours
+    .forEach((workHour) => {
+      if (workHour.user?.severaUserId) {
+        assigneeMap.set(workHour.user.severaUserId, workHour.user.name);
+      }
+    });
+  return Array.from(assigneeMap.values()).join(", ");
 };
 
 /**
