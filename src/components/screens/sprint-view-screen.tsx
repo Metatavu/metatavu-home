@@ -56,10 +56,16 @@ const SprintViewScreen = () => {
     setLoading(true);
     try {
       const severaUserId = getSeveraUserId(loggedInUser);
-      const fetchedResourceAllocations =
-        await resourceAllocationsApi.getAllocationsBySeveraUserId({
-          severaUserId,
-        });
+      let fetchedResourceAllocations: ResourceAllocations[] = [];
+      if (adminMode) {
+        fetchedResourceAllocations = await resourceAllocationsApi.getAllocationsBySeveraUserId({
+            severaUserId,
+          });
+      } else {
+        fetchedResourceAllocations = await resourceAllocationsApi.getAllocationsBySeveraUserId({
+            severaUserId,
+          });
+      }
       setResourceAllocations(fetchedResourceAllocations);
     } catch (error) {
       setError(`${strings.sprintRequestError.fetchResourceAllocationsError}, ${error}`);
@@ -94,6 +100,11 @@ const SprintViewScreen = () => {
         <>
           {/* TODO: Need to fetch the status from home-lambdas first for phases, then recreate filter in metatavu-home */}
           {/* <TaskStatusFilter setFilter={setFilter} /> */}
+          {adminMode && (
+            <Typography sx={{ mt: 2 }}>
+              {strings.sprint.allocation}
+            </Typography>
+          )}
           <Card
             sx={{
               margin: 0,
