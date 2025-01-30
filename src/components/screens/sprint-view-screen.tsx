@@ -58,11 +58,9 @@ const SprintViewScreen = () => {
       const severaUserId = getSeveraUserId(loggedInUser);
       let fetchedResourceAllocations: ResourceAllocations[] = [];
       if (adminMode) {
-        fetchedResourceAllocations = await resourceAllocationsApi.getAllocationsBySeveraUserId({
-            severaUserId,
-          });
+        fetchedResourceAllocations = await resourceAllocationsApi.getAllResourceAllocations()
       } else {
-        fetchedResourceAllocations = await resourceAllocationsApi.getAllocationsBySeveraUserId({
+        fetchedResourceAllocations = await resourceAllocationsApi.getAllResourceAllocations({
             severaUserId,
           });
       }
