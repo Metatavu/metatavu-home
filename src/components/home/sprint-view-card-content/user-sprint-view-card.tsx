@@ -40,7 +40,7 @@ const UserSprintViewCard = () => {
       try {
         const severaUserId = getSeveraUserId(loggedInUser);
         const fetchedResourceAllocations =
-        await resourceAllocationsApi.getAllocationsBySeveraUserId({
+        await resourceAllocationsApi.getAllResourceAllocations({
           severaUserId,
         });
         setResourceAllocations(fetchedResourceAllocations);

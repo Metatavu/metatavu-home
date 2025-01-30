@@ -51,7 +51,8 @@ const TaskTable = ({ filter, project }: Props) => {
   const [loading, setLoading] = useState(false);
   const columns = sprintViewTasksColumns();
   const setError = useSetAtom(errorAtom);
-  const rows: PhaseRow[] = phase.map((phase) => mapPhasesToRows(phase, workHours));
+  const severaUserId = loggedInUser ? getSeveraUserId(loggedInUser) : "";
+  const rows: PhaseRow[] = phase.map((phase) => mapPhasesToRows(phase, workHours, severaUserId));
 
   /**
    * Get Phases and WorkHours for tasks
@@ -61,13 +62,15 @@ const TaskTable = ({ filter, project }: Props) => {
     setLoading(true);
     if (!phase?.length) {
       try {
-        const severaUserId = getSeveraUserId(loggedInUser);
-        const fetchedPhases = await phaseApi.getPhasesBySeveraProjectId({
-          severaProjectId: project.severaProjectId || "",
-        });
-        const fetchedWorkHours = await workHoursApi.getAllWorkHours({
-          severaUserId,
-        });
+        const severaProjectId = project.severaProjectId || "";
+        const [fetchedPhases, fetchedWorkHours] = await Promise.all([
+          phaseApi.getPhasesBySeveraProjectId({
+            severaProjectId
+          }),
+          workHoursApi.getAllWorkHours({
+            severaProjectId
+          }),
+        ]);
         setWorkHours(fetchedWorkHours);
         setPhase(fetchedPhases);
       } catch (error) {

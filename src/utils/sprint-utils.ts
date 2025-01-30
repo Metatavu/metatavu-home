@@ -110,23 +110,60 @@ export const getSeveraUserId = (user: User): string => {
 };
 
 /**
+ * Get total work hours for each phase 
+ * 
+ * @param workHours with type WorkHours[]
+ * @param phase with type Phase
+ * @param userId with type string
+ * 
+ * @returns total work hours for each phase according to the userId
+ */
+const totalWorkHours = (workHours: WorkHours[], phase: Phase, userId: string) => {
+  return workHours
+    .filter(workHour => {
+      const matchingPhase = workHour.phase?.severaPhaseId === phase.severaPhaseId;
+      const matchingUser = workHour.user?.severaUserId === userId;
+      return matchingPhase && matchingUser;
+    })
+    .reduce((total, workHour) => total + (workHour.quantity || 0), 0);
+}
+
+/**
+ * Get phases's assignee
+ * 
+ * @param workHours with type WorkHours[]
+ * 
+ * @returns assignee's name for each phase
+ */
+const getAssigneeWorkHours = (workHours: WorkHours[]) => {
+  const assigneeMap = new Map();
+
+  workHours
+    .forEach((workHour) => {
+      if (workHour.user?.severaUserId) {
+        assigneeMap.set(workHour.user.severaUserId, workHour.user.name);
+      }
+    });
+  return Array.from(assigneeMap.values()).join(", ");
+};
+
+/**
  * Mapping phases to rows for datagrid
  * 
  * @param phase Phase
  * @param workHours WorkHours[]
+ * @param userId string
  * 
  * @returns PhaseRow
  */
-export const mapPhasesToRows = (phase: Phase, workHours: WorkHours[]) => {
-  const totalWorkHours = workHours
-    .filter(workHour => workHour.phase?.severaPhaseId === phase.severaPhaseId)
-    .reduce((total, workHour) => total + (workHour.quantity || 0), 0);
+export const mapPhasesToRows = (phase: Phase, workHours: WorkHours[], userId: string) => {
   return {
     id: phase.severaPhaseId || "",
     title: phase.name || "",
     estimateWorkHours: phase.workHoursEstimate || "0",
     startDate: phase.startDate?.toISOString().split("T")[0] || "",
     deadline: phase.deadline?.toISOString().split("T")[0] || "",
-    actualWorkHours: totalWorkHours.toString(),
+    actualWorkHours: totalWorkHours(workHours, phase, userId),
+    assignee: getAssigneeWorkHours(workHours),
   };
 };
