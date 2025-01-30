@@ -120,7 +120,11 @@ export const getSeveraUserId = (user: User): string => {
  */
 const totalWorkHours = (workHours: WorkHours[], phase: Phase, userId: string) => {
   return workHours
-    .filter(workHour => workHour.phase?.severaPhaseId === phase.severaPhaseId && workHour.user?.severaUserId === userId)
+    .filter(workHour => {
+      const matchingPhase = workHour.phase?.severaPhaseId === phase.severaPhaseId;
+      const matchingUser = workHour.user?.severaUserId === userId;
+      return matchingPhase && matchingUser;
+    })
     .reduce((total, workHour) => total + (workHour.quantity || 0), 0);
 }
 
@@ -148,6 +152,7 @@ const getAssigneeWorkHours = (workHours: WorkHours[]) => {
  * 
  * @param phase Phase
  * @param workHours WorkHours[]
+ * @param userId string
  * 
  * @returns PhaseRow
  */
