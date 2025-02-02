@@ -1,10 +1,21 @@
-import { KeyboardReturn } from "@mui/icons-material";
+import { KeyboardReturn, Search, Close } from "@mui/icons-material";
 import {
   Box,
   Button,
   Card,
   CircularProgress,
-  Typography
+  Typography,
+  Paper,
+  Divider,
+  Container,
+  Stack,
+  TextField,
+  InputAdornment,
+  Select,
+  MenuItem,
+  IconButton,
+  FormControl,
+  InputLabel
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { useAtomValue, useSetAtom } from "jotai";
@@ -25,12 +36,22 @@ import { getSeveraUserId } from "src/utils/sprint-utils";
 import { getSprintEnd, getSprintStart } from "src/utils/time-utils";
 import UserRoleUtils from "src/utils/user-role-utils";
 import createSprintViewProjectsColumns from "../sprint-view-table/sprint-projects-columns";
+import useSprintViewHandlers from "src/hooks/sprint-custom-hooks";
 
 /**
  * Sprint view screen component
  */
 const SprintViewScreen = () => {
   const { resourceAllocationsApi } = useLambdasApi();
+  const { 
+    filterType,
+    searchQuery, 
+    selectedProject, 
+    handleFilterChange, 
+    handleRowClick,
+    handleClearSearch, 
+    setSearchQuery, 
+    filterAllocations } = useSprintViewHandlers();
   const users = useAtomValue(usersAtom);
   const userProfile = useAtomValue(userProfileAtom);
   const loggedInUser = users.find(
@@ -46,8 +67,10 @@ const SprintViewScreen = () => {
   const columns = createSprintViewProjectsColumns({
     resourceAllocations: resourceAllocations || [],
   });
+  const filteredAllocations = filterAllocations(resourceAllocations);
+
   useEffect(() => {
-      fetchProjectDetails();
+    fetchProjectDetails();
   }, [loggedInUser]);
 
   const fetchProjectDetails = async () => {
@@ -56,14 +79,9 @@ const SprintViewScreen = () => {
     setLoading(true);
     try {
       const severaUserId = getSeveraUserId(loggedInUser);
-      let fetchedResourceAllocations: ResourceAllocations[] = [];
-      if (adminMode) {
-        fetchedResourceAllocations = await resourceAllocationsApi.getAllResourceAllocations()
-      } else {
-        fetchedResourceAllocations = await resourceAllocationsApi.getAllResourceAllocations({
-            severaUserId,
-          });
-      }
+      const fetchedResourceAllocations = adminMode
+        ? await resourceAllocationsApi.getAllResourceAllocations()
+        : await resourceAllocationsApi.getAllResourceAllocations({ severaUserId });
       setResourceAllocations(fetchedResourceAllocations);
     } catch (error) {
       setError(`${strings.sprintRequestError.fetchResourceAllocationsError}, ${error}`);
@@ -81,103 +99,126 @@ const SprintViewScreen = () => {
             justifyContent: "center",
           }}
         >
-          {
-            <Box sx={{ textAlign: "center" }}>
-              <Typography>{strings.placeHolder.pleaseWait}</Typography>
-              <CircularProgress
-                sx={{
-                  scale: "150%",
-                  mt: "5%",
-                  mb: "5%",
-                }}
-              />
-            </Box>
-          }
+          <Box sx={{ textAlign: "center" }}>
+            <Typography>{strings.placeHolder.pleaseWait}</Typography>
+            <CircularProgress
+              sx={{
+                scale: "150%",
+                mt: "5%",
+                mb: "5%",
+              }}
+            />
+          </Box>
         </Card>
       ) : (
-        <>
-          {/* TODO: Need to fetch the status from home-lambdas first for phases, then recreate filter in metatavu-home */}
-          {/* <TaskStatusFilter setFilter={setFilter} /> */}
-          {adminMode && (
-            <Typography sx={{ mt: 2 }}>
-              {strings.sprint.allocation}
-            </Typography>
-          )}
-          <Card
-            sx={{
-              margin: 0,
-              width: "100%",
-              height: "100",
-              marginBottom: "16px",
-              marginTop: "16px",
-              padding: "0px",
-              "& .negative-value": {
-                color: "red",
-              },
-            }}
-          >
-            <DataGrid
-              sx={{
-                borderTop: 0,
-                borderLeft: 0,
-                borderRight: 0,
-                borderBottom: 0,
-                "& .header-color": {
-                  backgroundColor: "#f2f2f2",
-                },
-              }}
-              autoHeight={true}
-              localeText={{ noResultsOverlayLabel: strings.sprint.notFound }}
-              disableColumnFilter
-              hideFooter={true}
-              rows={resourceAllocations || []}
-              columns={columns}
-              getRowId={(row) => row.severaResourceAllocationId}
-            />
-            <Box
-              sx={{
-                backgroundColor: "#e6e6e6",
-                display: "flex",
-                justifyContent: "space-between",
-                padding: "5px",
-                paddingTop: "10px",
-                paddingBottom: "10px",
-              }}
-            >
-              {/* TODO: Maybe after able to get status, we can add feature color for phases, Example: unfinished phase => colors: red */}
-              {/* <Typography>
-                <span
-                // style={{
-                //   paddingLeft: "5px",
-                //   color:
-                //     unallocatedTime(resourceAllocations) < 0 ? "red" : "",
-                // }}
+        /* TODO: Need to fetch the status from home-lambdas first for phases, then recreate filter in metatavu-home */
+        /* <TaskStatusFilter setFilter={setFilter} /> */
+        <Container maxWidth="lg" sx={{ mt: 4 }}>
+          <Paper elevation={3} sx={{ padding: 4, borderRadius: 3 }}>
+            <Stack spacing={3}>
+              {adminMode && (
+                <>
+                  <Typography variant="h5" fontWeight="bold" color="primary">
+                    {strings.sprint.allocation}
+                  </Typography>
+
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+                    <Typography variant="subtitle1" fontWeight="medium" color="text.secondary">
+                      Filter by:
+                    </Typography>
+                    <FormControl sx={{ minWidth: 120 }}>
+                      <InputLabel id="filter-select-label">Filter Type</InputLabel>
+                      <Select
+                        labelId="filter-select-label"
+                        value={filterType}
+                        onChange={handleFilterChange}
+                        label="Filter Type"
+                      >
+                        <MenuItem value="project">Project</MenuItem>
+                        <MenuItem value="user">User</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Box>
+
+                  <TextField
+                    label={`Search by ${filterType === "project" ? "Project" : "User"}`}
+                    variant="outlined"
+                    fullWidth
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Search color="action" />
+                        </InputAdornment>
+                      ),
+                      endAdornment: searchQuery && (
+                        <InputAdornment position="end">
+                          <IconButton onClick={handleClearSearch} size="small">
+                            <Close fontSize="small" />
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                      sx: {
+                        borderRadius: 2,
+                        backgroundColor: "background.paper",
+                      },
+                    }}
+                  />
+                </>
+              )}
+
+              <Card>
+                <DataGrid
+                  sx={{
+                    "& .MuiDataGrid-columnHeaders": { backgroundColor: "#e9ecef" },
+                    "& .MuiDataGrid-row:nth-of-type(even)": { backgroundColor: "#dee2e6" },
+                    "& .MuiDataGrid-row:hover": { cursor: "pointer", backgroundColor: "#ced4da" },
+                  }}
+                  autoHeight
+                  localeText={{ noResultsOverlayLabel: strings.sprint.notFound }}
+                  disableColumnFilter
+                  hideFooter
+                  rows={filteredAllocations}
+                  columns={columns}
+                  getRowId={(row) => row.severaResourceAllocationId}
+                  onRowClick={(params) => handleRowClick(params.row)}
                 />
-              </Typography> */}
-              <Typography style={{ paddingRight: "5px" }}>
-                {strings.formatString(
-                  strings.sprint.current,
-                  sprintStartDate.toLocaleString(),
-                  sprintEndDate.toLocaleString()
-                )}
-              </Typography>
-            </Box>
-          </Card>
-          {resourceAllocations?.map((resourceAllocations) => (
-            <TaskTable
-              key={resourceAllocations.project?.severaProjectId}
-              project={resourceAllocations.project ?? {} as ResourceAllocationsProject}
-            />
-          ))}
-          <Card sx={{ mt: 4, width: "100%" }}>
-            <Link to={adminMode ? "/admin" : "/"} style={{ textDecoration: "none" }}>
-              <Button variant="contained" sx={{ p: 2, width: "100%" }}>
-                <KeyboardReturn sx={{ marginRight: "10px" }} />
-                <Typography>{strings.sprint.back}</Typography>
-              </Button>
-            </Link>
-          </Card>
-        </>
+                <Box sx={{ backgroundColor: "#e9ecef", p: 1.5, textAlign: "right" }}>
+                  <Typography variant="body2" color="text.primary">
+                    {strings.formatString(
+                      strings.sprint.current,
+                      sprintStartDate.toLocaleString(),
+                      sprintEndDate.toLocaleString()
+                    )}
+                  </Typography>
+                </Box>
+              </Card>
+
+              <Divider />
+
+              {selectedProject ? (
+                <TaskTable key={selectedProject.severaProjectId} project={selectedProject} />
+              ) : (
+                filteredAllocations.map((resourceAlloc) => (
+                  <TaskTable
+                    key={resourceAlloc.project?.severaProjectId}
+                    project={resourceAlloc.project ?? ({} as ResourceAllocationsProject)}
+                  />
+                ))
+              )}
+
+              <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
+                <Link to={adminMode ? "/admin" : "/"} style={{ textDecoration: "none" }}>
+                  <Button variant="contained" sx={{ px: 4, py: 1.5, borderRadius: 2 }}>
+                    <KeyboardReturn sx={{ mr: 1 }} />
+                    {strings.sprint.back}
+                  </Button>
+                </Link>
+              </Box>
+            </Stack>
+          </Paper>
+        </Container>
       )}
     </>
   );
