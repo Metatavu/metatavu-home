@@ -207,15 +207,14 @@ const SprintViewScreen = () => {
                   />
                 ))
               )}
-
-              <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
+              <Card sx={{ mt: 4, width: "100%" }}>
                 <Link to={adminMode ? "/admin" : "/"} style={{ textDecoration: "none" }}>
-                  <Button variant="contained" sx={{ px: 4, py: 1.5, borderRadius: 2 }}>
-                    <KeyboardReturn sx={{ mr: 1 }} />
-                    {strings.sprint.back}
+                  <Button variant="contained" sx={{ p: 2, width: "100%" }}>
+                    <KeyboardReturn sx={{ marginRight: "10px" }} />
+                    <Typography>{strings.sprint.back}</Typography>
                   </Button>
                 </Link>
-              </Box>
+              </Card>
             </Stack>
           </Paper>
         </Container>
