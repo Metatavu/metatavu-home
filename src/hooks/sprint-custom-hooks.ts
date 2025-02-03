@@ -47,16 +47,25 @@ const useSprintViewHandlers = () => {
    * Filters the given resource allocations based on the specified filter type and search query.
    *
    * @param allocation - An array of resource allocations to be filtered.
+   * @param isAdmin - A boolean value indicating whether the user is an admin.
    * 
    * @returns An array of resource allocations that match the filter criteria.
    */
-  const filterAllocations = (allocation: ResourceAllocations[]) => {
-    return allocation.filter((allocation) =>
-      filterType === "project"
-        ? allocation.project?.name?.toLowerCase().includes(searchQuery.toLowerCase())
-        : allocation.user?.name?.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-  }
+  const filterAllocations = (allocations: ResourceAllocations[], isAdmin: boolean) => {
+    const uniqueProjects = new Map<string, ResourceAllocations>();
+
+    allocations.forEach((allocation) => {
+        const key = isAdmin 
+            ? `${allocation.project?.name}-${allocation.user?.name}`
+            : allocation.project?.name;
+
+        if (key?.toLowerCase().includes(searchQuery.toLowerCase())) {
+            uniqueProjects.set(key, allocation);
+        }
+    });
+
+    return Array.from(uniqueProjects.values());
+};
 
   return {
     filterType,

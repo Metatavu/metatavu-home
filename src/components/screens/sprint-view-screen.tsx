@@ -67,7 +67,7 @@ const SprintViewScreen = () => {
   const columns = createSprintViewProjectsColumns({
     resourceAllocations: resourceAllocations || [],
   });
-  const filteredAllocations = filterAllocations(resourceAllocations);
+  const filteredAllocations = filterAllocations(resourceAllocations, adminMode);
 
   useEffect(() => {
     fetchProjectDetails();
@@ -194,16 +194,15 @@ const SprintViewScreen = () => {
                   </Typography>
                 </Box>
               </Card>
-
               <Divider />
 
               {selectedProject ? (
                 <TaskTable key={selectedProject.severaProjectId} project={selectedProject} />
               ) : (
-                filteredAllocations.map((resourceAlloc) => (
+                (filteredAllocations).map((resourceAllocations) => (
                   <TaskTable
-                    key={resourceAlloc.project?.severaProjectId}
-                    project={resourceAlloc.project ?? ({} as ResourceAllocationsProject)}
+                    key={resourceAllocations.project?.severaProjectId}
+                    project={resourceAllocations.project ?? ({} as ResourceAllocationsProject)}
                   />
                 ))
               )}
