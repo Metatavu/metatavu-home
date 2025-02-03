@@ -9,7 +9,6 @@ import type { User, ResourceAllocations } from "src/generated/homeLambdasClient"
 import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings"
 import type { SprintViewChartData } from "src/types/index";
-import { getSeveraUserId } from "src/utils/user-utils";
 
 /**
  * Sprint card component for admin
@@ -36,7 +35,6 @@ const AdminSprintViewCard = () => {
     setLoading(true);
     if (loggedInUser && !resourceAllocations.length) {
       try {
-        // const severaUserId = getSeveraUserId(loggedInUser);
         const fetchedResourceAllocations =
         await resourceAllocationsApi.getAllResourceAllocations();
         setResourceAllocations(fetchedResourceAllocations);
