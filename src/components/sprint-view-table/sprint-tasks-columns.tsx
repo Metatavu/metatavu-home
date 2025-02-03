@@ -42,7 +42,7 @@ const sprintViewTasksColumns = () => {
       field: "assignee",
       headerClassName: "header-color",
       headerName: strings.sprint.assigned,
-      flex: 2,
+      flex: 3,
       renderCell: (params) => params.value,
     },
   ];
