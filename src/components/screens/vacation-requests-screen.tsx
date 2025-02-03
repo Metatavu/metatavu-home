@@ -85,9 +85,7 @@ const VacationRequestsScreen = () => {
     setLoading(false);
   };
 
-  /**
-   * Re-fetch vacation requests whenever the component is mounted
-   */
+
   useEffect(() => {
     fetchVacationsRequests();
   }, [loggedInUser, isUpcoming]);
@@ -231,12 +229,17 @@ const VacationRequestsScreen = () => {
             message: `This vacation request is ${status}`
           };
 
-          const updatedStatus = statusExists
-            ? vacationRequest.status?.map((existingStatus) =>
+
+          const updateExistingStatus = () => {
+            return vacationRequest.status?.map((existingStatus) =>
                 existingStatus.createdBy === loggedInUser.id
-                  ? { ...existingStatus, ...newOrUpdatedStatus }
-                  : existingStatus
-              )
+                    ? { ...existingStatus, ...newOrUpdatedStatus }
+                    : existingStatus
+            )
+          }
+
+          const updatedStatus = statusExists
+            ? updateExistingStatus()
             : [...vacationRequest.status || [], newOrUpdatedStatus];
 
           return vacationRequestsApi.updateVacationRequest({
