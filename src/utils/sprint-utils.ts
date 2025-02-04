@@ -30,17 +30,16 @@ export const getProjectName = (
  * 
  * @returns user name
  */
-export const getAssigneName = (
-  user: ResourceAllocationsUser,
-  resourceAllocations: ResourceAllocations[]
-) => {
-  const foundUser = resourceAllocations.find(
-    (resourceAllocations) => resourceAllocations.user?.severaUserId === user.severaUserId
-  );
-  if (foundUser) {
-    return foundUser.user?.name|| "";
-  }
-};
+
+export const getAssigneName = (resourceAllocations: ResourceAllocations[], project: ResourceAllocationsProject) => {
+  const user = new Map();
+  resourceAllocations
+    .filter((allocation) => allocation.project?.severaProjectId === project.severaProjectId)
+    .forEach((allocation) => {
+      user.set(allocation.user?.severaUserId, allocation.user?.name);
+    });
+  return Array.from(user.values()).join(", ");
+}
 
 /**
  * Get phase name

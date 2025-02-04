@@ -77,14 +77,14 @@ const createSprintViewProjectsColumns = ({ resourceAllocations }: Props) => {
       headerClassName: "header-color",
       filterable: false,
       headerName: strings.sprint.assigned,
-      flex: 1,
+      flex: 4,
       valueGetter: (params) => {
-        getAssigneName(params.row.user, resourceAllocations);
+        getAssigneName(resourceAllocations, params.row.project);
       },
       renderCell: (params) => (
       <>
         <Box display="flex" alignItems="center" justifyContent="center" />
-        {getAssigneName(params.row.user, resourceAllocations)}{" "}
+        {getAssigneName(resourceAllocations, params.row.project)}{" "}
       </>
       )
     },

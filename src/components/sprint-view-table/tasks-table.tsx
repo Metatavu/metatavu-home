@@ -57,6 +57,7 @@ const TaskTable = ({ filter, project }: Props) => {
   const setError = useSetAtom(errorAtom);
   const severaUserId = loggedInUser ? getSeveraUserId(loggedInUser) : "";
   const rows: PhaseRow[] = phase.map((phase) => mapPhasesToRows(phase, workHours, severaUserId, resourceAllocations, adminMode));
+  console.log('This is rows', rows);
 
   /**
    * Get Phases and WorkHours for tasks

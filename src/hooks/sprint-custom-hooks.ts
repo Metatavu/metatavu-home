@@ -44,7 +44,7 @@ const useSprintViewHandlers = () => {
   };
 
   /**
-   * Filters the given resource allocations based on the specified filter type and search query.
+   * Filters the total allocations based on project name and user name.
    *
    * @param allocation - An array of resource allocations to be filtered.
    * 
@@ -63,19 +63,19 @@ const useSprintViewHandlers = () => {
         }
     });
 
-    return Array.from(uniqueProjects.values());
-  };
+    const newArray = Array.from(uniqueProjects.values());
 
-  const phaseAllocations = (allocations: ResourceAllocations[]) :ResourceAllocations[]=> {           
-    return allocations.reduce((acc, allocation) => {
-      const projectId = allocation.project?.severaProjectId;
+    const newArray2 = newArray.reduce((acc, allocation) => {
+        const projectId = allocation.project?.severaProjectId;
 
-      if (projectId && !acc.some((a) => a.project?.severaProjectId === projectId)) {
-        acc.push(allocation);
-      }
-      return acc;
+        if (projectId && !acc.some((a) => a.project?.severaProjectId === projectId)) {
+            acc.push(allocation);
+        }
+        return acc;
     }, [] as ResourceAllocations[]);
-  }
+
+    return newArray2;
+  };
 
   return {
     filterType,
@@ -87,7 +87,6 @@ const useSprintViewHandlers = () => {
     setSearchQuery,
     setSelectedProject, 
     filterAllocations,
-    phaseAllocations
   };
 };
 

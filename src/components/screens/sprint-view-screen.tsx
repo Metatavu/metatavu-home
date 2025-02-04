@@ -51,8 +51,7 @@ const SprintViewScreen = () => {
     handleRowClick,
     handleClearSearch, 
     setSearchQuery, 
-    filterAllocations,
-    phaseAllocations } = useSprintViewHandlers();
+    filterAllocations } = useSprintViewHandlers();
   const users = useAtomValue(usersAtom);
   const userProfile = useAtomValue(userProfileAtom);
   const loggedInUser = users.find(
@@ -69,8 +68,6 @@ const SprintViewScreen = () => {
     resourceAllocations: resourceAllocations || [],
   });
   const filteredAllocations = filterAllocations(resourceAllocations, adminMode);
-  const filteredPhaseAllocations = phaseAllocations(filteredAllocations);
-
   useEffect(() => {
     fetchProjectDetails();
   }, [loggedInUser]);
@@ -201,7 +198,7 @@ const SprintViewScreen = () => {
               {selectedProject ? (
                 <TaskTable key={selectedProject.severaProjectId} project={selectedProject} />
               ) : (
-                (filteredPhaseAllocations).map((resourceAllocations) => (
+                (filteredAllocations).map((resourceAllocations) => (
                   <TaskTable
                     key={resourceAllocations.project?.severaProjectId}
                     project={resourceAllocations.project ?? ({} as ResourceAllocationsProject)}
