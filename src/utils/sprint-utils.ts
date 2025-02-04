@@ -135,12 +135,12 @@ const totalWorkHours = (workHours: WorkHours[], phase: Phase, userId: string) =>
  * 
  * @returns assignee's name for each phase
  */
-const getAssigneeWorkHours = (workHours: WorkHours[]) => {
+const getAssigneeWorkHours = (workHours: WorkHours[], phase: Phase) => {
   const assigneeMap = new Map();
 
   workHours
     .forEach((workHour) => {
-      if (workHour.user?.severaUserId) {
+      if (workHour.user?.severaUserId && workHour.phase?.severaPhaseId === phase.severaPhaseId) {
         assigneeMap.set(workHour.user.severaUserId, workHour.user.name);
       }
     });
@@ -164,6 +164,6 @@ export const mapPhasesToRows = (phase: Phase, workHours: WorkHours[], userId: st
     startDate: phase.startDate?.toISOString().split("T")[0] || "",
     deadline: phase.deadline?.toISOString().split("T")[0] || "",
     actualWorkHours: totalWorkHours(workHours, phase, userId),
-    assignee: getAssigneeWorkHours(workHours),
+    assignee: getAssigneeWorkHours(workHours, phase),
   };
 };
