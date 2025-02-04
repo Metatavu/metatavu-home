@@ -156,14 +156,25 @@ const getAssigneeWorkHours = (workHours: WorkHours[], phase: Phase) => {
  * 
  * @returns PhaseRow
  */
-export const mapPhasesToRows = (phase: Phase, workHours: WorkHours[], userId: string) => {
+export const mapPhasesToRows = (phase: Phase, workHours: WorkHours[], userId: string, resourceAllocations: ResourceAllocations[], adminMode: boolean) => {
   return {
     id: phase.severaPhaseId || "",
     title: phase.name || "",
-    estimateWorkHours: phase.workHoursEstimate || "0",
+    estimateWorkHours: adminMode ? phase.workHoursEstimate || "0" : getEstimateHoursUser(resourceAllocations, phase) || "0",
     startDate: phase.startDate?.toISOString().split("T")[0] || "",
     deadline: phase.deadline?.toISOString().split("T")[0] || "",
     actualWorkHours: totalWorkHours(workHours, phase, userId),
     assignee: getAssigneeWorkHours(workHours, phase),
   };
 };
+
+export const getTotalEstimatedHours = (resourceAllocations: ResourceAllocations[], project: ResourceAllocationsProject) => {
+  return resourceAllocations
+    .filter((allocation) => allocation.project?.severaProjectId === project.severaProjectId)
+    .reduce((total, allocation) => total + (allocation.allocationHours || 0), 0);
+}
+
+export const getEstimateHoursUser = (resourceAllocations: ResourceAllocations[], phase: Phase): string | number => {
+  const estimateHours =  resourceAllocations.filter((allocation) => allocation.phase?.severaPhaseId === phase.severaPhaseId )
+  return estimateHours.reduce((total, allocation) => total + (allocation.allocationHours || 0), 0);
+}

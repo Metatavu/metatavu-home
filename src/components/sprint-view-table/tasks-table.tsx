@@ -15,6 +15,7 @@ import { errorAtom } from "src/atoms/error";
 import { usersAtom } from "src/atoms/user";
 import type {
   Phase,
+  ResourceAllocations,
   ResourceAllocationsProject,
   User,
   WorkHours
@@ -24,6 +25,7 @@ import strings from "src/localization/strings";
 import type { PhaseRow } from "src/types/index";
 import { getSeveraUserId, mapPhasesToRows } from "src/utils/sprint-utils";
 import sprintViewTasksColumns from "./sprint-tasks-columns";
+import UserRoleUtils from "src/utils/user-role-utils";
 
 /**
  * Interface for TaskTable component
@@ -40,19 +42,21 @@ interface Props {
  */
 const TaskTable = ({ filter, project }: Props) => {
   const users = useAtomValue(usersAtom);
+  const adminMode = UserRoleUtils.adminMode();
   const userProfile = useAtomValue(userProfileAtom);
   const loggedInUser = users.find(
     (users: User) => users.id === userProfile?.id
   );
-  const { phaseApi, workHoursApi } = useLambdasApi();
+  const { phaseApi, workHoursApi, resourceAllocationsApi } = useLambdasApi();
   const [phase, setPhase] = useState<Phase[]>([]);
   const [workHours, setWorkHours] = useState<WorkHours[]>([]);
+  const [resourceAllocations, setResourceAllocations] = useState<ResourceAllocations[]>([]);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const columns = sprintViewTasksColumns();
   const setError = useSetAtom(errorAtom);
   const severaUserId = loggedInUser ? getSeveraUserId(loggedInUser) : "";
-  const rows: PhaseRow[] = phase.map((phase) => mapPhasesToRows(phase, workHours, severaUserId));
+  const rows: PhaseRow[] = phase.map((phase) => mapPhasesToRows(phase, workHours, severaUserId, resourceAllocations, adminMode));
 
   /**
    * Get Phases and WorkHours for tasks
@@ -63,6 +67,9 @@ const TaskTable = ({ filter, project }: Props) => {
     if (!phase?.length) {
       try {
         const severaProjectId = project.severaProjectId || "";
+        const [fetchedResourceAllocations] = await Promise.all([
+          resourceAllocationsApi.getAllResourceAllocations({severaUserId}),
+        ]);
         const [fetchedPhases, fetchedWorkHours] = await Promise.all([
           phaseApi.getPhasesBySeveraProjectId({
             severaProjectId
@@ -71,6 +78,7 @@ const TaskTable = ({ filter, project }: Props) => {
             severaProjectId
           }),
         ]);
+        setResourceAllocations(fetchedResourceAllocations);
         setWorkHours(fetchedWorkHours);
         setPhase(fetchedPhases);
       } catch (error) {

@@ -7,6 +7,7 @@ import {
   getAssigneName,
   getPhaseName,
   getProjectName,
+  getTotalEstimatedHours,
 } from "src/utils/sprint-utils";
 import strings from "../../localization/strings";
 
@@ -40,28 +41,18 @@ const createSprintViewProjectsColumns = ({ resourceAllocations }: Props) => {
       ),
     },
     {
-      field: "calculatedAllocationHours",
-      headerClassName: "header-color",
-      filterable: false,
-      headerName: strings.sprint.timeAllocated,
-      flex: 1,
-      renderCell: (params) => (
-        <>
-          <Box marginLeft={"50px"} display="flex" alignItems="center" justifyContent="center" />
-          {params.value}
-        </>
-      ),
-    },
-    {
       field: "allocationHours",
       headerClassName: "header-color",
       filterable: false,
       headerName: strings.sprint.estimatedTime,
       flex: 1,
-      renderCell: (params) => (
+      valueGetter: (param) => {
+        getTotalEstimatedHours(resourceAllocations, param.row.project);
+      },
+      renderCell: (param) => (
       <>
         <Box marginLeft={"50px"} display="flex" alignItems="center" justifyContent="center" />
-        {params.value}
+        {getTotalEstimatedHours(resourceAllocations, param.row.project)}{" "}
       </>
       )
     },
@@ -86,7 +77,7 @@ const createSprintViewProjectsColumns = ({ resourceAllocations }: Props) => {
       headerClassName: "header-color",
       filterable: false,
       headerName: strings.sprint.assigned,
-      flex: 2,
+      flex: 1,
       valueGetter: (params) => {
         getAssigneName(params.row.user, resourceAllocations);
       },
