@@ -117,7 +117,12 @@ export const getSeveraUserId = (user: User): string => {
  * 
  * @returns total work hours for each phase according to the userId
  */
-const totalWorkHours = (workHours: WorkHours[], phase: Phase, userId: string) => {
+const totalWorkHours = (workHours: WorkHours[], phase: Phase, userId: string, adminMode: boolean) => {
+  if(adminMode) {
+    return workHours
+      .filter(workHour => workHour.phase?.severaPhaseId === phase.severaPhaseId)
+      .reduce((total, workHour) => total + (workHour.quantity || 0), 0);
+  }
   return workHours
     .filter(workHour => {
       const matchingPhase = workHour.phase?.severaPhaseId === phase.severaPhaseId;
@@ -162,7 +167,7 @@ export const mapPhasesToRows = (phase: Phase, workHours: WorkHours[], userId: st
     estimateWorkHours: adminMode ? phase.workHoursEstimate || "0" : getEstimateHoursUser(resourceAllocations, phase) || "0",
     startDate: phase.startDate?.toISOString().split("T")[0] || "",
     deadline: phase.deadline?.toISOString().split("T")[0] || "",
-    actualWorkHours: totalWorkHours(workHours, phase, userId),
+    actualWorkHours: totalWorkHours(workHours, phase, userId, adminMode),
     assignee: getAssigneeWorkHours(workHours, phase),
   };
 };
