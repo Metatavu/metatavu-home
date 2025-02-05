@@ -80,20 +80,13 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({
 /**
  * Sprint overview scatter chart component.
  */
-const SprintViewScatterChart: React.FC<Props> = ({
-  chartData,
-  showActualWorkHours = false }) => {
+const SprintViewScatterChart: React.FC<Props> = ({ chartData }) => {
     const chartHeight = chartData.length === 1 ? 100 : chartData.length * 60;
 
     const estimatedData = chartData.map((item) => ({
       projectName: item.projectName,
       x: item.estimatedWorkHour,
     }));
-
-    const actualData = chartData.map((item) => ({
-      projectName: item.projectName,
-      x: item.actualWorkHours,
-  }));
 
   return (
     <ResponsiveContainer width="100%" height={chartHeight}>
@@ -117,18 +110,11 @@ const SprintViewScatterChart: React.FC<Props> = ({
           interval={0}
         />
         <Tooltip content={<CustomTooltip />} />
-        {showActualWorkHours && (
-          <Scatter
-            name={strings.sprint.timeAllocated}
-            data={actualData}
-            fill="#8884d8"
-          />
-        )}
         <Scatter
           name={strings.sprint.timeEntries}
           data={estimatedData}
-          fill="#82ca9d"
-        />
+          fill="#4d4788"
+        />82ca9d
       </ScatterChart>
     </ResponsiveContainer>
   );
