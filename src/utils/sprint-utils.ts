@@ -1,56 +1,85 @@
-import type { Person } from "src/generated/client";
-import type { Allocations, Projects, Tasks } from "src/generated/homeLambdasClient";
-
-/**
- * Retrieve total time entries for an allocation
- *
- * @param allocation allocation
- * @param allocations list of allocations
- * @param timeEntries list of total time entries associated with allocations
- */
-export const getTotalTimeEntriesAllocations = (
-  allocation: Allocations,
-  allocations: Allocations[],
-  timeEntries: number[]
-) => {
-  if (timeEntries.length) {
-    return timeEntries[allocations.indexOf(allocation)] || 0;
-  }
-  return 0;
-};
-
-/**
- * Retrieve total time entries for a task
- *
- * @param task task of allocated project
- * @param tasks list of tasks related to the project
- * @param timeEntries list of total time associated with tasks
- */
-export const getTotalTimeEntriesTasks = (task: Tasks, tasks: Tasks[], timeEntries: number[]) => {
-  if (timeEntries.length) {
-    return timeEntries[tasks.indexOf(task)] || 0;
-  }
-  return 0;
-};
+import config from "src/app/config";
+import type { Phase, ResourceAllocations, ResourceAllocationsPhase, ResourceAllocationsProject, ResourceAllocationsUser, User, WorkHours } from "src/generated/homeLambdasClient";
 
 /**
  * Get project name
  *
- * @param allocation allocation
- * @param allocations list of allocations
- * @param projects list of project associated with the allocations
+ * @param project project with type ResourceAllocationsProject
+ * @param projects list of projects with type ResourceAllocations[]
+ * 
+ * @returns project name
  */
 export const getProjectName = (
-  allocation: Allocations,
-  allocations: Allocations[],
-  projects: Projects[]
+  project: ResourceAllocationsProject,
+  resourceAllocations: ResourceAllocations[]
 ) => {
-  if (projects.length) {
-    return projects[allocations.indexOf(allocation)]?.name || "";
+  const foundProject = resourceAllocations.find(
+    (resourceAllocations) => resourceAllocations.project?.severaProjectId === project.severaProjectId
+  );
+
+  if (foundProject) {
+    return foundProject.project?.name;
   }
-  return "";
 };
 
+/**
+ * Get assignee name
+ *
+ * @param user user with type ResourceAllocationsUser
+ * @param users list of users with type ResourceAllocations[]
+ * 
+ * @returns user name
+ */
+export const getAssigneName = (
+  user: ResourceAllocationsUser,
+  resourceAllocations: ResourceAllocations[]
+) => {
+  const foundUser = resourceAllocations.find(
+    (resourceAllocations) => resourceAllocations.user?.severaUserId === user.severaUserId
+  );
+  if (foundUser) {
+    return foundUser.user?.name|| "";
+  }
+};
+
+/**
+ * Get phase name
+ *
+ * @param phase phase with type ResourceAllocationsPhase
+ * @param phases list of phases with type ResourceAllocations[]
+ * 
+ * @returns phase name
+ */
+export const getPhaseName = (
+  phase: ResourceAllocationsPhase,
+  resourceAllocations: ResourceAllocations[]
+) => {
+  const foundPhase = resourceAllocations.find(
+    (resourceAllocations) => resourceAllocations.phase?.severaPhaseId === phase.severaPhaseId
+  );
+
+  if (foundPhase) {
+    return foundPhase.phase?.name || "";
+  }
+};
+
+/**
+ * Get work hour
+ *
+ * @param severaPhaseId phase id with type string
+ * @param workHours list of workHours with type WorkHours[]
+ * 
+ * @returns WorkHours for each phases
+ */
+export const getWorkHour = (severaPhaseId: string, workHours: WorkHours[]) => {
+  const foundPhase = workHours.find(
+    (workHours) => workHours.phase?.severaPhaseId === severaPhaseId
+  );
+
+  return foundPhase ? foundPhase.quantity : undefined;
+};
+
+// TODO: Fixing this function in the future
 /**
  * Get project color
  *
@@ -58,81 +87,83 @@ export const getProjectName = (
  * @param allocations list of allocations
  * @param projects list of projects associated with allocations
  */
-export const getProjectColor = (
-  allocation: Allocations,
-  allocations: Allocations[],
-  projects: Projects[]
-) => {
-  if (projects.length) {
-    return projects[allocations.indexOf(allocation)]?.color || "";
-  }
-  return "";
+// export const getProjectColor = (
+//   allocation: ResourceAllocations,
+//   allocations: ResourceAllocations[],
+//   projects: Projects[]
+// ) => {
+//   if (projects.length) {
+//     return projects[allocations.indexOf(allocation)]?.color || "";
+//   }
+//   return "";
+// };
+
+/**
+ * Get severa user id
+ *
+ * @param user user with type User
+ * 
+ * @returns severaUserId 
+ */
+export const getSeveraUserId = (user: User): string => {
+  return user?.attributes?.severaUserId ?? config.user.testUserSeveraId ?? "";
 };
 
 /**
- * Calculate total time allocated to the project for 2 week period
- *
- * @param allocation expected work load of user in minutes
+ * Get total work hours for each phase 
+ * 
+ * @param workHours with type WorkHours[]
+ * @param phase with type Phase
+ * @param userId with type string
+ * 
+ * @returns total work hours for each phase according to the userId
  */
-export const totalAllocations = (allocation: Allocations) => {
-  const totalMinutes =
-    (allocation.monday || 0) +
-    (allocation.tuesday || 0) +
-    (allocation.wednesday || 0) +
-    (allocation.thursday || 0) +
-    (allocation.friday || 0);
-  return totalMinutes * 2;
+const totalWorkHours = (workHours: WorkHours[], phase: Phase, userId: string) => {
+  return workHours
+    .filter(workHour => {
+      const matchingPhase = workHour.phase?.severaPhaseId === phase.severaPhaseId;
+      const matchingUser = workHour.user?.severaUserId === userId;
+      return matchingPhase && matchingUser;
+    })
+    .reduce((total, workHour) => total + (workHour.quantity || 0), 0);
+}
+
+/**
+ * Get phases's assignee
+ * 
+ * @param workHours with type WorkHours[]
+ * 
+ * @returns assignee's name for each phase
+ */
+const getAssigneeWorkHours = (workHours: WorkHours[]) => {
+  const assigneeMap = new Map();
+
+  workHours
+    .forEach((workHour) => {
+      if (workHour.user?.severaUserId) {
+        assigneeMap.set(workHour.user.severaUserId, workHour.user.name);
+      }
+    });
+  return Array.from(assigneeMap.values()).join(", ");
 };
 
 /**
- * Calculate the remaining time of project completion
- *
- * @param allocation allocation
- * @param allocations list of allocations
- * @param projects list of projects associated with allocations
+ * Mapping phases to rows for datagrid
+ * 
+ * @param phase Phase
+ * @param workHours WorkHours[]
+ * @param userId string
+ * 
+ * @returns PhaseRow
  */
-export const timeLeft = (
-  allocation: Allocations,
-  allocations: Allocations[],
-  timeEntries: number[]
-) => {
-  return (
-    totalAllocations(allocation) -
-      getTotalTimeEntriesAllocations(allocation, allocations, timeEntries) || 0
-  );
-};
-
-/**
- * Calculate registered time for the user in the current 2 week period
- *
- * @param person user time spent on the project in minutes
- */
-export const calculateWorkingLoad = (person?: Person) => {
-  if (!person) return 0;
-
-  const totalMinutes =
-    (person.monday || 0) +
-    (person.tuesday || 0) +
-    (person.wednesday || 0) +
-    (person.thursday || 0) +
-    (person.friday || 0);
-  return totalMinutes * 2;
-};
-
-/**
- * Filter allocations and projects if project is not running
- *
- * @param allocations allocations
- * @param projects list of running projects
- */
-export const filterAllocationsAndProjects = (allocations: Allocations[], projects: Projects[]) => {
-  const filteredProjects: Projects[] = [];
-  const filteredAllocations = allocations.filter((allocation) =>
-    projects.find((project) => allocation.project === project.id)
-  );
-  for (const allocation of filteredAllocations) {
-    const allocationProject = projects.find((project) => allocation.project === project.id);
-    if (allocationProject) filteredProjects.push(allocationProject);
-  }
-  return { filteredAllocations, filteredProjects };
+export const mapPhasesToRows = (phase: Phase, workHours: WorkHours[], userId: string) => {
+  return {
+    id: phase.severaPhaseId || "",
+    title: phase.name || "",
+    estimateWorkHours: phase.workHoursEstimate || "0",
+    startDate: phase.startDate?.toISOString().split("T")[0] || "",
+    deadline: phase.deadline?.toISOString().split("T")[0] || "",
+    actualWorkHours: totalWorkHours(workHours, phase, userId),
+    assignee: getAssigneeWorkHours(workHours),
+  };
 };

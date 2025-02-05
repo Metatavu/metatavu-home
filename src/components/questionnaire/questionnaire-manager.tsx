@@ -3,8 +3,9 @@ import { Box, Button, CircularProgress, Dialog, DialogActions, DialogTitle } fro
 import { useEffect, useState } from "react";
 import type { Questionnaire } from "src/generated/homeLambdasClient";
 import strings from "src/localization/strings";
-import type { QuestionnairePreviewMode } from "src/types";
+import { QuestionnairePreviewMode } from "src/types";
 import QuestionnaireFillMode from "./questionnaires-fill-mode";
+import QuestionnaireEditMode from "./questionnaires-edit-mode";
 import { useAtomValue, useSetAtom } from "jotai";
 import { useParams } from "react-router";
 import { errorAtom } from "src/atoms/error";
@@ -189,7 +190,7 @@ const QuestionnaireManager = ({ mode }: Props) => {
    */
   const renderCardContent = () => {
     switch (mode) {
-      case "FILL":
+      case QuestionnairePreviewMode.FILL:
         return (
           <QuestionnaireFillMode
             questionnaire={questionnaire}
@@ -198,6 +199,12 @@ const QuestionnaireManager = ({ mode }: Props) => {
             handleRadioChange={handleRadioChange}
           />
         );
+        case QuestionnairePreviewMode.EDIT:
+          return (
+            <QuestionnaireEditMode
+              questionnaire={questionnaire}
+            />
+          );
       default:
         return null;
     }
@@ -208,7 +215,7 @@ const QuestionnaireManager = ({ mode }: Props) => {
    */
   const renderButtons = () => {
     switch (mode) {
-      case "FILL":
+      case QuestionnairePreviewMode.FILL:
         return (
           <Box
             sx={{
@@ -247,7 +254,7 @@ const QuestionnaireManager = ({ mode }: Props) => {
    */
   const renderDialog = () => {
     switch (mode) {
-      case "FILL":
+      case QuestionnairePreviewMode.FILL:
         return (
           <Dialog open={questionnaireFeedbackDialogOpen} onClose={closeQuestionnaireFeedbackDialog}>
             <DialogTitle>{questionnaireFeedbackMessage}</DialogTitle>

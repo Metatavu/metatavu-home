@@ -34,6 +34,7 @@
     "questionnaireLoadFailed": "Error while loading questionnaires",
     "questionnaireDeleteFailed": "Error while deleting questionnaire",
     "questionnaireSaveFailed": "Error while saving questionnaire",
+    "questionnaireUpdateFailed": "Error while updating questionnaire",
     "fetchFailedFlextime": "Error while fetching flextime data",
     "noSeveraUserId" : "One of your user is missing severaUserId, please contact a member of the metatavu home development team for more information.",
     "noFlextimeData": "Something went wrong while fetching your flextime data"
@@ -69,14 +70,14 @@
     "sprintview": "Sprint view",
     "myAllocation": "My allocations",
     "allocation": "Allocation",
-    "timeAllocated": "Time allocated",
+    "timeAllocated": "Calculated Hours",
     "timeEntries": "Time Entries",
     "allocationLeft": "Allocations Left",
     "noAllocation": "No allocation found",
     "assigned": "Assignee",
     "taskStatus": "Status",
     "taskPriority": "Priority",
-    "estimatedTime": "Estimate",
+    "estimatedTime": "Estimate Hours",
     "taskName": "Tasks",
     "showMyTasks": "My tasks",
     "toDo": "To do",
@@ -88,7 +89,11 @@
     "unAllocated": "Unallocated Time:",
     "sprintDate": "Sprint",
     "completed": "Done", 
-    "current": "Current: {0}-{1}"
+    "current": "Current: {0}-{1}",
+    "startDate":"Start Date",
+    "deadLine":"Deadline",
+    "actualWorkHours": "Actual Work Hours",
+    "back":"Back"
   },
   "errors": {
     "fetchFailedGeneral": "There was an error fetching data",
@@ -167,11 +172,8 @@
     "nameNotFound": "Name not found"
   },
   "sprintRequestError": {
-    "fetchError": "Fetching sprint data requests has failed",
-    "fetchTimeEntriesError": "Error fetching time entries",
-    "fetchAllocationError": "Error fetching time entries for allocation {0}: {1}",
-    "fetchTasksError": "Error fetching time entries for task {0}: {1}",
-    "fetchTaskIdError": "Task id not found"
+    "fetchResourceAllocationsError": "Fetching sprint data for resourceAllocations has failed",
+    "fetchWorkHoursAndTasksError": "Error fetching workHours and tasks"
   },
   "form": {
     "submit": "Submit",
@@ -203,8 +205,10 @@
     "applicant": "Applicant:",
     "timeOfVacation": "Time of Vacation:",
     "status": "Status:",
-    "spentVacations": "Spent vacation days: ",
-    "unspentVacations": "Unspent vacation days: "
+    "vacationDays": "Total vacation days: ",
+    "unspentVacationDays": "Unspent vacation days: ",
+    "vacationDaysNotFound": "Vacation days not found",
+    "unspentVacationDaysNotFound": "Unspent vacation days not found"
   },
   "personSelectDropdown": {
     "label": "Filter by Person"
@@ -288,6 +292,18 @@
     "edit": "Edit question",
     "remove": "Remove from preview",
     "saveAlert": "Question is missing required fields"
+  },
+  "questionnaireEdit": {
+    "title": "Edit Questionnaire",
+    "titleLabel": "Title",
+    "descriptionLabel": "Description",
+    "question": "Question",
+    "deleteQuestion": "Delete question",
+    "passScoreLabel": "Pass score",
+    "passScoreMax": "Max pass score:",
+    "update": "Update Questionnaire",
+    "clearPassedUsers": "Remove all passed users from this questionnaire",
+    "snackbarMessageSuccess": "Updated questionnaire successfully"
   },
   "balanceCard": {
     "totalFlextimeBalance": "Total flextime balance:",

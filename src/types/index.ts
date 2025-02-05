@@ -1,5 +1,6 @@
 import type { DateTime } from "luxon";
-import type { Person, PersonTotalTime, VacationType, DailyEntry } from "../generated/client";
+import type { Person, PersonTotalTime, DailyEntry } from "../generated/client";
+import type { VacationType } from "../generated/homeLambdasClient";
 import type { ReactNode } from "react";
 
 /**
@@ -54,17 +55,6 @@ export interface SkeletonTableRow {
   height: string | number;
   width: string | number;
   margin: string;
-}
-
-/**
- * Type describing data for vacation request
- */
-export interface VacationData {
-  startDate: DateTime;
-  endDate: DateTime;
-  type: VacationType;
-  message: string;
-  days: number;
 }
 
 /**
@@ -150,14 +140,13 @@ export interface DateRange {
 }
 
 /**
- * Type describing chart data for sprint view
+ * Type describing chart data
  */
 export interface SprintViewChartData {
-  id: number,
-  projectName: string,
-  timeAllocated: number,
-  timeEntries: number,
-  color: string
+  severaResourceAllocationId: string;
+  projectName: string;
+  actualWorkHours: string | number;
+  estimatedWorkHour: string | number;
 }
 
 /**
@@ -175,4 +164,16 @@ export enum QuestionnairePreviewMode {
   FILL = "FILL",
   EDIT = "EDIT",
   PREVIEW = "PREVIEW"
+}
+
+/**
+ * Type describing row for phases data grid table
+ */
+export interface PhaseRow {
+  id: string;
+  title: string;
+  estimateWorkHours: string | number;
+  startDate: Date | string;
+  deadline: Date | string;
+  actualWorkHours: string | number;
 }

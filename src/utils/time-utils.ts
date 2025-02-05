@@ -1,4 +1,6 @@
 import { DateTime, Duration } from "luxon";
+import type { User } from "src/generated/homeLambdasClient";
+import { theme } from "../theme.tsx";
 
 /**
  * Format date
@@ -71,8 +73,8 @@ export const formatTimePeriod = (timespan: string[] | undefined) => {
 /**
  * Calculates vacation days
  *
- * @param vacationDayStart DateTime vacation start date
- * @param vacationDayEnd DateTime vacation end date
+ * @param vacationStartDate DateTime vacation start date
+ * @param vacationEndDate DateTime vacation end date
  * @param workingWeek list of booleans representing which days are working days
  */
 export const calculateTotalVacationDays = (
@@ -214,7 +216,7 @@ export const getSprintStart = (date: string) => {
   const weekIndex = DateTime.fromISO(date).localWeekNumber;
   const weekDay = DateTime.fromISO(date).weekday;
   const days = (weekIndex % 2 === 1 ? 0 : 7) + weekDay;
-  
+
   return DateTime.fromISO(date).minus({ days: days - 1 });
 };
 
@@ -225,4 +227,48 @@ export const getSprintStart = (date: string) => {
  */
 export const getSprintEnd = (date: string) => {
   return getSprintStart(date).plus({ days: 11 });
+};
+
+/**
+ * Calculate color for vacation days from vacation days
+ *
+ * @param user Keycloak user
+ */
+export const getVacationColors = (user: User) => {
+  let vacationDaysByYearColor = theme.palette.error.main;
+  let unspentVacationDaysByYearColor = theme.palette.error.main;
+  const currentYear = new Date().getFullYear();
+
+  if (
+    user.attributes?.vacationDaysByYear &&
+    parseVacationDays(user.attributes?.vacationDaysByYear)[currentYear] > 0
+  ) {
+    vacationDaysByYearColor = theme.palette.success.main;
+  }
+  if (
+    user.attributes?.unspentVacationDaysByYear &&
+    parseVacationDays(user.attributes?.unspentVacationDaysByYear)[currentYear] > 0
+  ) {
+    unspentVacationDaysByYearColor = theme.palette.success.main;
+  }
+  return {
+    vacationDaysByYearColor,
+    unspentVacationDaysByYearColor
+  };
+};
+
+/**
+ * Parsing vacationDaysByYear from format ("YYYY:DDD") to object {[year: string]: [days: number]}
+ *
+ * @param vacationDaysByYear A list of strings with years and corresponding number of vacation days
+ */
+export const parseVacationDays = (vacationDaysByYear: string[]): { [year: string]: number } => {
+  return vacationDaysByYear.reduce(
+    (acc, entry) => {
+      const [year, days] = entry.split(":");
+      acc[year] = Number.parseInt(days, 10);
+      return acc;
+    },
+    {} as { [year: string]: number }
+  );
 };

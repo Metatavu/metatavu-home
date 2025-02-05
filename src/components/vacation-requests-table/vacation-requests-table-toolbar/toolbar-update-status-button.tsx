@@ -8,10 +8,6 @@ import strings from "src/localization/strings";
  * Component properties
  */
 interface UpdateStatusButtonProps {
-  updateVacationRequestStatuses: (
-    newStatus: VacationRequestStatuses,
-    selectedRowIds: GridRowId[]
-  ) => Promise<void>;
   selectedRowIds: GridRowId[];
   buttonType: VacationRequestStatuses;
 }
@@ -22,15 +18,12 @@ interface UpdateStatusButtonProps {
  * @param props component properties
  */
 const UpdateStatusButton = ({
-  updateVacationRequestStatuses,
-  selectedRowIds,
   buttonType
 }: UpdateStatusButtonProps) => {
   /**
    * Handle update vacation status
    */
   const handleUpdateVacationRequestStatus = async () => {
-    await updateVacationRequestStatuses(buttonType, selectedRowIds);
   };
 
   return (
