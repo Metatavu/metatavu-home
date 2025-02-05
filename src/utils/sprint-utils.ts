@@ -172,13 +172,30 @@ export const mapPhasesToRows = (phase: Phase, workHours: WorkHours[], userId: st
   };
 };
 
+/**
+ * Get total estimated hours (general) with matching project
+ * 
+ * @param resourceAllocations with type ResourceAllocations[]
+ * @param project with type ResourceAllocationsProject
+ * 
+ * @returns total estimated hours for each phase
+ */
 export const getTotalEstimatedHours = (resourceAllocations: ResourceAllocations[], project: ResourceAllocationsProject) => {
   return resourceAllocations
     .filter((allocation) => allocation.project?.severaProjectId === project.severaProjectId)
     .reduce((total, allocation) => total + (allocation.allocationHours || 0), 0);
 }
 
+/**
+ * Get total estimated hours with matching phase
+ * 
+ * @param resourceAllocations with type ResourceAllocations[]
+ * @param phase with type Phase
+ * 
+ * @returns total estimated hours for each phase
+ */
 export const getEstimateHoursUser = (resourceAllocations: ResourceAllocations[], phase: Phase): string | number => {
-  const estimateHours =  resourceAllocations.filter((allocation) => allocation.phase?.severaPhaseId === phase.severaPhaseId )
-  return estimateHours.reduce((total, allocation) => total + (allocation.allocationHours || 0), 0);
+  return resourceAllocations
+    .filter((allocation) => allocation.phase?.severaPhaseId === phase.severaPhaseId )
+    .reduce((total, allocation) => total + (allocation.allocationHours || 0), 0);
 }

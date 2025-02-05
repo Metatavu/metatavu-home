@@ -115,12 +115,23 @@ const TaskTable = ({ filter, project }: Props) => {
         },
       }}
     >
-      <IconButton onClick={() => setOpen(!open)}>
+      <div 
+        onClick={() => setOpen(!open)} 
+        onKeyUp={(event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            setOpen(!open);
+          }
+        }}
+        tabIndex={0}
+        role="button"
+      >
+      <IconButton >
         {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
       </IconButton>
       <Typography style={{ display: "inline" }}>
         {project.name}
       </Typography>
+      </div>
       {open && (
         <>
           {loading ? (
