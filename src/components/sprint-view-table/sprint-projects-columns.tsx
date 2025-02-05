@@ -45,7 +45,7 @@ const createSprintViewProjectsColumns = ({ resourceAllocations }: Props) => {
       headerClassName: "header-color",
       filterable: false,
       headerName: strings.sprint.estimatedTime,
-      flex: 1,
+      flex: 2,
       valueGetter: (param) => {
         getTotalEstimatedHours(resourceAllocations, param.row.project);
       },
@@ -56,22 +56,22 @@ const createSprintViewProjectsColumns = ({ resourceAllocations }: Props) => {
       </>
       )
     },
-    {
-      field: "phase",
-      headerClassName: "header-color",
-      filterable: false,
-      headerName: strings.sprint.taskName,
-      flex: 1,
-      valueGetter: (params) => {
-        getPhaseName(params.row.phase, resourceAllocations);
-      },
-      renderCell: (params) => (
-      <>
-        <Box display="flex" alignItems="center" justifyContent="center" />
-        {getPhaseName(params.row.phase, resourceAllocations)}{" "}
-      </>
-      )
-    },
+    // {
+    //   field: "phase",
+    //   headerClassName: "header-color",
+    //   filterable: false,
+    //   headerName: strings.sprint.taskName,
+    //   flex: 1,
+    //   valueGetter: (params) => {
+    //     getPhaseName(params.row.phase, resourceAllocations);
+    //   },
+    //   renderCell: (params) => (
+    //   <>
+    //     <Box display="flex" alignItems="center" justifyContent="center" />
+    //     {getPhaseName(params.row.phase, resourceAllocations)}{" "}
+    //   </>
+    //   )
+    // },
     {
       field: "user",
       headerClassName: "header-color",
