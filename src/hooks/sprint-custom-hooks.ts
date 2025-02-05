@@ -44,14 +44,15 @@ const useSprintViewHandlers = () => {
   };
 
   /**
-   * Filters the total allocations based on project name and user name.
+   * Filters the total allocations preventing duplication for phase and assignee.
+   * 
    *
-   * @param allocation - An array of resource allocations to be filtered.
+   * @param allocation - total allocations to be filtered.
    * 
    * @returns An array of resource allocations that match the filter criteria.
    */
   const filterAllocations = (allocations: ResourceAllocations[], isAdmin: boolean) => {
-    const uniqueProjects = new Map<string, ResourceAllocations>();
+    const allocationsWithPhaseDuplication = new Map<string, ResourceAllocations>();
 
     allocations.forEach((allocation) => {
         const key = isAdmin 
@@ -59,13 +60,13 @@ const useSprintViewHandlers = () => {
             : allocation.project?.name;
 
         if (key?.toLowerCase().includes(searchQuery.toLowerCase())) {
-            uniqueProjects.set(key, allocation);
+          allocationsWithPhaseDuplication.set(key, allocation);
         }
     });
 
-    const newArray = Array.from(uniqueProjects.values());
+    const newAllocationWithProjectDuplication = Array.from(allocationsWithPhaseDuplication.values());
 
-    const newArray2 = newArray.reduce((acc, allocation) => {
+    const uniqueAllocations = newAllocationWithProjectDuplication.reduce((acc, allocation) => {
         const projectId = allocation.project?.severaProjectId;
 
         if (projectId && !acc.some((a) => a.project?.severaProjectId === projectId)) {
@@ -74,7 +75,7 @@ const useSprintViewHandlers = () => {
         return acc;
     }, [] as ResourceAllocations[]);
 
-    return newArray2;
+    return uniqueAllocations;
   };
 
   return {

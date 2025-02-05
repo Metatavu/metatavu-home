@@ -68,6 +68,7 @@ const SprintViewScreen = () => {
     resourceAllocations: resourceAllocations || [],
   });
   const filteredAllocations = filterAllocations(resourceAllocations, adminMode);
+  
   useEffect(() => {
     fetchProjectDetails();
   }, [loggedInUser]);

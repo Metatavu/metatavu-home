@@ -21,11 +21,13 @@ export const formatDate = (date: DateTime, dateWithTime?: boolean) => {
  * @param minutes value in minutes
  * @returns inputted minute value in X h Y min format as string
  */
-export const getHoursAndMinutes = (minutes: number) => {
-  if (minutes < 0) {
-    return `-${Duration.fromObject({ minutes: minutes }).negate().toFormat("h 'h' m 'min'")}`;
-  }
-  return Duration.fromObject({ minutes: minutes }).toFormat("h 'h' m 'min'");
+export const getHoursAndMinutes = (hours: number): string => {
+  const isNegative = hours < 0;
+  const totalMinutes = Math.round(Math.abs(hours) * 60);
+  const duration = Duration.fromObject({ minutes: totalMinutes });
+  const formatted = duration.toFormat("h 'h' m 'min'");
+  
+  return isNegative ? `-${formatted}` : formatted;
 };
 
 /**
