@@ -56,7 +56,7 @@ const TaskTable = ({ filter, project }: Props) => {
   const columns = sprintViewTasksColumns();
   const setError = useSetAtom(errorAtom);
   const severaUserId = loggedInUser ? getSeveraUserId(loggedInUser) : "";
-  const rows: PhaseRow[] = phase.map((phase) => mapPhasesToRows(phase, workHours, severaUserId, resourceAllocations, adminMode));
+  const rows: PhaseRow[] = phase.map((phase) => mapPhasesToRows(phase, workHours, severaUserId, resourceAllocations, adminMode)).filter(row => row !== null);
 
   /**
    * Get Phases and WorkHours for tasks

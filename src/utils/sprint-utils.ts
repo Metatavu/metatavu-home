@@ -1,5 +1,6 @@
 import config from "src/app/config";
 import type { Phase, ResourceAllocations, ResourceAllocationsPhase, ResourceAllocationsProject, ResourceAllocationsUser, User, WorkHours } from "src/generated/homeLambdasClient";
+import { PhaseRow } from "../types";
 
 /**
  * Get project name
@@ -161,6 +162,10 @@ const getAssigneeWorkHours = (workHours: WorkHours[], phase: Phase) => {
  * @returns PhaseRow
  */
 export const mapPhasesToRows = (phase: Phase, workHours: WorkHours[], userId: string, resourceAllocations: ResourceAllocations[], adminMode: boolean) => {
+  const workHour = workHours.find(workHour => workHour.phase?.severaPhaseId === phase.severaPhaseId && workHour.user?.severaUserId === userId);
+  if(!workHour && !adminMode) {
+    return null;
+  }
   return {
     id: phase.severaPhaseId || "",
     title: phase.name || "",
@@ -168,7 +173,7 @@ export const mapPhasesToRows = (phase: Phase, workHours: WorkHours[], userId: st
     startDate: phase.startDate?.toISOString().split("T")[0] || "",
     deadline: phase.deadline?.toISOString().split("T")[0] || "",
     actualWorkHours: totalWorkHours(workHours, phase, userId, adminMode),
-    assignee: getAssigneeWorkHours(workHours, phase),
+    assignee: adminMode ? getAssigneeWorkHours(workHours, phase) : workHour?.user?.name || "",
   };
 };
 
