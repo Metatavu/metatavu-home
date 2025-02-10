@@ -14,13 +14,11 @@ import { getHoursAndMinutes } from "src/utils/time-utils";
 
 interface Props {
   chartData: SprintViewChartData[];
-  showActualWorkHours?: boolean;
 }
 
 interface CustomTooltipProps {
   active?: boolean;
   payload?: any[];
-  label?: string;
 }
 
 const tooltipContainerStyle: React.CSSProperties = {
