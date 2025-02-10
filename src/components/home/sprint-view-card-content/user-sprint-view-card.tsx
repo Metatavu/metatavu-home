@@ -5,7 +5,7 @@ import { userProfileAtom } from "src/atoms/auth";
 import { errorAtom } from "src/atoms/error";
 import { usersAtom } from "src/atoms/user";
 import SprintViewBarChart from "src/components/charts/sprint-view-bar-chart";
-import type { ResourceAllocations, ResourceAllocationsProject, User } from "src/generated/homeLambdasClient";
+import type { ResourceAllocations, User } from "src/generated/homeLambdasClient";
 import useSprintViewHandlers from "src/hooks/sprint-custom-hooks";
 import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";

@@ -5,7 +5,6 @@ import type {
 } from "src/generated/homeLambdasClient";
 import {
   getAssigneName,
-  getPhaseName,
   getProjectName,
   getTotalEstimatedHours,
 } from "src/utils/sprint-utils";

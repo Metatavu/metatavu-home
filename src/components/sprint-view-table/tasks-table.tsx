@@ -117,20 +117,15 @@ const TaskTable = ({ filter, project }: Props) => {
     >
       <div 
         onClick={() => setOpen(!open)} 
-        onKeyUp={(event) => {
-          if (event.key === "Enter" || event.key === " ") {
-            setOpen(!open);
-          }
-        }}
+        onKeyUp={(event) => { if (event.key === "Enter") setOpen(!open); }} 
+        style={{ display: "flex", alignItems: "center", padding: "2px", cursor: "pointer" }}
         tabIndex={0}
         role="button"
       >
-      <IconButton >
-        {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-      </IconButton>
-      <Typography style={{ display: "inline" }}>
-        {project.name}
-      </Typography>
+        <IconButton>
+          {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+        </IconButton>
+        <Typography>{project.name}</Typography>
       </div>
       {open && (
         <>

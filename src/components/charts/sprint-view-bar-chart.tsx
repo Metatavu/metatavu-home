@@ -14,7 +14,6 @@ import { getHoursAndMinutes } from "src/utils/time-utils";
 
 interface Props {
   chartData: SprintViewChartData[];
-  /** Toggle the display of the actual work hours scatter series */
   showActualWorkHours?: boolean;
 }
 
@@ -24,7 +23,6 @@ interface CustomTooltipProps {
   label?: string;
 }
 
-// Style objects for the tooltip
 const tooltipContainerStyle: React.CSSProperties = {
   backgroundColor: "white",
   opacity: 0.8,
@@ -77,12 +75,8 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({
   );
 };
 
-/**
- * Sprint overview scatter chart component.
- */
 const SprintViewScatterChart: React.FC<Props> = ({ chartData }) => {
     const chartHeight = chartData.length === 1 ? 100 : chartData.length * 60;
-
     const estimatedData = chartData.map((item) => ({
       projectName: item.projectName,
       x: item.estimatedWorkHour,
@@ -114,7 +108,7 @@ const SprintViewScatterChart: React.FC<Props> = ({ chartData }) => {
           name={strings.sprint.timeEntries}
           data={estimatedData}
           fill="#4d4788"
-        />82ca9d
+        />
       </ScatterChart>
     </ResponsiveContainer>
   );
