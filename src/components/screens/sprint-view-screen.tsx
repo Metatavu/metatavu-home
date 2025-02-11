@@ -121,7 +121,6 @@ const SprintViewScreen = () => {
                   <Typography variant="h5" fontWeight="bold" color="primary">
                     {strings.sprint.allocation}
                   </Typography>
-
                   <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                     <Typography variant="subtitle1" fontWeight="medium" color="text.secondary">
                       Filter by:
@@ -139,7 +138,6 @@ const SprintViewScreen = () => {
                       </Select>
                     </FormControl>
                   </Box>
-
                   <TextField
                     label={`Search by ${filterType === "project" ? "Project" : "User"}`}
                     variant="outlined"
@@ -167,7 +165,6 @@ const SprintViewScreen = () => {
                   />
                 </>
               )}
-
               <Card>
                 <DataGrid
                   sx={{
@@ -195,7 +192,6 @@ const SprintViewScreen = () => {
                 </Box>
               </Card>
               <Divider />
-
               {selectedProject ? (
                 <TaskTable key={selectedProject.severaProjectId} project={selectedProject} />
               ) : (

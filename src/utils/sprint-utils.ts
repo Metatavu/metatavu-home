@@ -1,6 +1,6 @@
 import config from "src/app/config";
 import type { Phase, ResourceAllocations, ResourceAllocationsPhase, ResourceAllocationsProject, ResourceAllocationsUser, User, WorkHours } from "src/generated/homeLambdasClient";
-import { PhaseRow } from "../types";
+import type { PhaseRow } from "../types";
 
 /**
  * Get project name
@@ -161,7 +161,7 @@ const getAssigneeWorkHours = (workHours: WorkHours[], phase: Phase) => {
  * 
  * @returns PhaseRow
  */
-export const mapPhasesToRows = (phase: Phase, workHours: WorkHours[], userId: string, resourceAllocations: ResourceAllocations[], adminMode: boolean) => {
+export const mapPhasesToRows = (phase: Phase, workHours: WorkHours[], userId: string, resourceAllocations: ResourceAllocations[], adminMode: boolean) : PhaseRow | null=> {
   const workHour = workHours.find(workHour => workHour.phase?.severaPhaseId === phase.severaPhaseId && workHour.user?.severaUserId === userId);
   if(!workHour && !adminMode) {
     return null;

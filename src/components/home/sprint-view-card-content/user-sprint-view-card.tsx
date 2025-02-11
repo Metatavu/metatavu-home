@@ -63,6 +63,7 @@ const UserSprintViewCard = () => {
     const mapping = filteredAllocations.map((allocation) => {
       const project = allocation.project;
       const estimateHours = project ? getTotalEstimatedHours(resourceAllocations, project) : 0;
+      
       return {
         severaResourceAllocationId: allocation.severaResourceAllocationId || "",
         projectName: allocation.project?.name || "",

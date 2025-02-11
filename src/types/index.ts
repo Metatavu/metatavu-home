@@ -176,4 +176,5 @@ export interface PhaseRow {
   startDate: Date | string;
   deadline: Date | string;
   actualWorkHours: string | number;
+  assignee: string;
 }

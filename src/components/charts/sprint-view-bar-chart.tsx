@@ -50,10 +50,11 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({
   const estimatedEntry = payload.find(
     (entry) => entry.name === strings.sprint.timeEntries
   );
+
   const actualEntry = payload.find(
     (entry) => entry.name === strings.sprint.timeAllocated
   );
-
+  
   return (
     <div style={tooltipContainerStyle}>
       <p style={tooltipTitleStyle}>{projectName}</p>
