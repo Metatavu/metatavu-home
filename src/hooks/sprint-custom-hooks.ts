@@ -46,7 +46,6 @@ const useSprintViewHandlers = () => {
   /**
    * Filters the total allocations preventing duplication for phase and assignee.
    * 
-   *
    * @param allocation - total allocations to be filtered.
    * 
    * @returns An array of resource allocations that match the filter criteria.
