@@ -21,24 +21,6 @@ interface CustomTooltipProps {
   payload?: any[];
 }
 
-const tooltipContainerStyle: React.CSSProperties = {
-  backgroundColor: "white",
-  opacity: 0.8,
-  borderRadius: "10px",
-  boxShadow: "0 0 5px rgba(0, 0, 0, 0.2)",
-};
-
-const tooltipTitleStyle: React.CSSProperties = {
-  padding: "10px",
-  fontWeight: "bold",
-  margin: 0,
-};
-
-const tooltipItemStyle: React.CSSProperties = {
-  padding: "0 10px 10px 10px",
-  margin: 0,
-};
-
 const CustomTooltip: React.FC<CustomTooltipProps> = ({
   active,
   payload,
@@ -56,16 +38,16 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({
   );
   
   return (
-    <div style={tooltipContainerStyle}>
-      <p style={tooltipTitleStyle}>{projectName}</p>
+    <div >
+      <p >{projectName}</p>
       {actualEntry && (
-        <p style={tooltipItemStyle}>
+        <p >
           {strings.sprint.timeAllocated}:{" "}
           {getHoursAndMinutes(actualEntry.value)}
         </p>
       )}
       {estimatedEntry && (
-        <p style={tooltipItemStyle}>
+        <p >
           {strings.sprint.timeEntries}:{" "}
           {getHoursAndMinutes(estimatedEntry.value)}
         </p>

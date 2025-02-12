@@ -19,7 +19,7 @@ import UserRoleUtils from "src/utils/user-role-utils";
 /**
  * Sprint card component for users
  */
-const UserSprintViewCard = () => {
+const SprintViewCardContent = () => {
   const { filterAllocations } = useSprintViewHandlers();
   const adminMode = UserRoleUtils.adminMode();
   const [loading, setLoading] = useState(false);
@@ -93,4 +93,4 @@ const UserSprintViewCard = () => {
   return <>{!loggedInUser || loading ? <Skeleton /> : renderBarChart()}</>;
 };
 
-export default UserSprintViewCard;
+export default SprintViewCardContent;
