@@ -143,7 +143,6 @@ const VacationRequestsScreen = () => {
           draft: false,
           status: [
             {
-              message: vacationRequestData.message,
               createdBy: loggedInUser.id,
               updatedAt: new Date(),
               status: VacationRequestStatuses.PENDING
@@ -228,7 +227,6 @@ const VacationRequestsScreen = () => {
             status,
             createdBy: loggedInUser.id,
             updatedAt: new Date(),
-            message: `This vacation request is ${status}`
           };
 
           const updatedStatus = statusExists
