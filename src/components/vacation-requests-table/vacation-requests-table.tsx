@@ -15,7 +15,6 @@ import {
   getTotalVacationRequestStatus,
   getVacationRequestStatusColor
 } from "src/utils/vacation-status-utils";
-import UserRoleUtils from "src/utils/user-role-utils";
 import { DateTime } from "luxon";
 import LocalizationUtils from "src/utils/localization-utils";
 import { getVacationRequestPersonFullName } from "src/utils/vacation-request-utils";
@@ -37,6 +36,10 @@ interface Props {
     vacationRequestData: VacationRequest,
     vacationRequestId: string
   ) => Promise<void>;
+  updateVacationRequestStatus: (
+    updatedVacationRequestStatus: VacationRequestStatuses,
+    selectedRowIds: GridRowId[]
+  ) => Promise<void>;
   loading: boolean;
 }
 
@@ -51,9 +54,9 @@ const VacationRequestsTable = ({
   deleteVacationRequests,
   createVacationRequest,
   updateVacationRequest,
+  updateVacationRequestStatus,
   loading
 }: Props) => {
-  const adminMode = UserRoleUtils.adminMode();
   const vacationRequests = useAtomValue(displayedVacationRequestsAtom);
   const containerRef = useRef(null);
   const [formOpen, setFormOpen] = useState(false);
@@ -191,6 +194,7 @@ const VacationRequestsTable = ({
         deleteVacationRequests={deleteVacationRequests}
         createVacationRequest={createVacationRequest}
         updateVacationRequest={updateVacationRequest}
+        updateVacationRequestStatus={updateVacationRequestStatus}
         setFormOpen={setFormOpen}
         formOpen={formOpen}
         selectedRowIds={selectedRowIds}
@@ -218,14 +222,7 @@ const VacationRequestsTable = ({
         initialState={{
           sorting: {
             sortModel: [{ field: "updatedAt", sort: "asc" }]
-          },
-          filter: adminMode
-            ? {
-                filterModel: {
-                  items: [{ field: "status", operator: "contains", value: "pending" }]
-                }
-              }
-            : {}
+          }
         }}
       />
     </Box>

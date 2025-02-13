@@ -96,7 +96,6 @@ const ToolbarForm = ({
    */
   const getVacationRequestDataFromRow = () => {
     const selectedVacationRow = rows.find((row) => row.id === selectedRowIds[0]);
-
     if (selectedVacationRow) {
       const selectedVacationRequest = vacationRequests.find(
         (vacationRequest) => vacationRequest.id === selectedVacationRow.id
