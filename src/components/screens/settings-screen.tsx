@@ -15,7 +15,7 @@ const SettingsScreen = ({ onSave }: { onSave: (isAccepted: boolean) => void }) =
     };
     
     const handleButtonClick = () => {
-        console.log("Asetukset tallennettu (ei lähetetty eteenpäin):", { isAccepted });
+        console.log("settings not saved):", { isAccepted });
         onSave(isAccepted); 
     };
 

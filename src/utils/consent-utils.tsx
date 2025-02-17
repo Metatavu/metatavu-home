@@ -5,7 +5,7 @@ const ConstentUtils = ({userId}: {userId: string}) => {
 
 const handleSave = async (isAccepted: boolean) => {
     try {
-        await keycloakService.updateUserAttribute(userId, "consentGiven", isAccepted.toString());
+      /*   await keycloakService.updateUserAttribute(userId, "consentGiven", isAccepted.toString()); */
         console.log("Tiedot tallennettu onnistuneesti Keycloakiin!");
     } catch (error) {
         console.error("Virhe tallennuksessa:", error);
