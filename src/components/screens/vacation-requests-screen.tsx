@@ -1,6 +1,7 @@
 import { Button, Card, Typography } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import VacationRequestsTable from "../vacation-requests-table/vacation-requests-table";
+import type { User } from "src/generated/homeLambdasClient";
 import { type VacationRequest, VacationRequestStatuses } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
@@ -10,15 +11,14 @@ import type { GridRowId } from "@mui/x-data-grid";
 import strings from "src/localization/strings";
 import {
   allVacationRequestsAtom,
-  vacationRequestsAtom,
-  displayedVacationRequestsAtom
+  displayedVacationRequestsAtom,
+  vacationRequestsAtom
 } from "src/atoms/vacation";
 import UserRoleUtils from "src/utils/user-role-utils";
 import { Link } from "react-router-dom";
 import { KeyboardReturn } from "@mui/icons-material";
 import { renderVacationDaysTextForScreen } from "src/utils/vacation-days-utils";
 import { usersAtom } from "src/atoms/user";
-import type { User } from "src/generated/homeLambdasClient";
 
 /**
  * Vacation requests screen
@@ -67,35 +67,33 @@ const VacationRequestsScreen = () => {
    * Fetch vacation requests
    */
   const fetchVacationsRequests = async () => {
-    setLoading(true);
     if (!loggedInUser) return;
-
-    if (!vacationRequests.length) {
-      try {
-        let fetchedVacationRequests: VacationRequest[] = [];
-        if (adminMode) {
-          fetchedVacationRequests = await vacationRequestsApi.listVacationRequests({});
-        } else {
-          fetchedVacationRequests = await vacationRequestsApi.listVacationRequests({
-            userId: loggedInUser?.id
-          });
-        }
-        setVacationRequests(fetchedVacationRequests);
-      } catch (error) {
-        setError(`${strings.vacationRequestError.fetchRequestError}, ${error}`);
+    setLoading(true);
+    try {
+      let fetchedVacationRequests: VacationRequest[];
+      if (adminMode) {
+        fetchedVacationRequests = await vacationRequestsApi.listVacationRequests({});
+      } else {
+        fetchedVacationRequests = await vacationRequestsApi.listVacationRequests({
+          userId: loggedInUser.id
+        });
       }
+      setVacationRequests(fetchedVacationRequests);
+    } catch (error) {
+      setError(`${strings.vacationRequestError.fetchRequestError}, ${error}`);
     }
     setLoading(false);
   };
 
-  useMemo(() => {
+
+  useEffect(() => {
     fetchVacationsRequests();
-  }, [loggedInUser]);
+  }, [loggedInUser, isUpcoming]);
 
   /**
    * Delete vacation requests
    *
-   * @param selectedRowIds selected row ids
+   * @param selectedRowIds GridRowId[] a list of Ids of selected rows (vacation requests)
    */
   const deleteVacationRequests = async (selectedRowIds: GridRowId[]) => {
     if (vacationRequests.length) {
@@ -123,7 +121,7 @@ const VacationRequestsScreen = () => {
   /**
    * Create a vacation request
    *
-   * @param vacationRequestData vacation data
+   * @param vacationRequestData vacation data from the create form
    */
   const createVacationRequest = async (vacationRequestData: VacationRequest) => {
     if (!loggedInUser) return;
@@ -143,7 +141,6 @@ const VacationRequestsScreen = () => {
           draft: false,
           status: [
             {
-              message: vacationRequestData.message,
               createdBy: loggedInUser.id,
               updatedAt: new Date(),
               status: VacationRequestStatuses.PENDING
@@ -161,7 +158,7 @@ const VacationRequestsScreen = () => {
   /**
    * Update a vacation request
    *
-   * @param vacationRequestData vacation request data
+   * @param vacationRequestData vacation request data from the update form
    * @param vacationRequestId vacation request id
    */
   const updateVacationRequest = async (
@@ -185,8 +182,7 @@ const VacationRequestsScreen = () => {
             type: vacationRequestData.type,
             message: vacationRequestData.message,
             updatedAt: new Date(),
-            days: vacationRequestData.days,
-            status: vacationRequestData.status
+            days: vacationRequestData.days
           }
         });
         const updatedVacationRequests = vacationRequests.map((vacationRequest) =>
@@ -194,6 +190,71 @@ const VacationRequestsScreen = () => {
         );
         setVacationRequests(updatedVacationRequests);
       }
+    } catch (error) {
+      setError(`${strings.vacationRequestError.updateRequestError}, ${error}`);
+    }
+    setLoading(false);
+  };
+
+  /**
+   * Update a vacation request status
+   *
+   * @param status VacationRequestStatus value for the new status
+   * @param selectedRowIds GridRowId[] list of Ids of selected rows(vacation requests)
+   */
+  const updateVacationRequestStatus = async (
+    status: VacationRequestStatuses,
+    selectedRowIds: GridRowId[]
+  ) => {
+    if (!loggedInUser) return;
+
+    try {
+      setLoading(true);
+      const updatedVacationRequests = await Promise.all(
+        selectedRowIds.map(async (vacationRequestId) => {
+          const vacationRequest = vacationRequests.find(
+            (vacationRequest) => vacationRequest.id === vacationRequestId
+          );
+          if (!vacationRequest) return;
+
+          const statusExists = vacationRequest.status?.some(
+            (existingStatus) => existingStatus.createdBy === loggedInUser.id
+          );
+
+          const newOrUpdatedStatus = {
+            status,
+            createdBy: loggedInUser.id,
+            updatedAt: new Date(),
+          };
+
+
+          const updateExistingStatus = () => {
+            return vacationRequest.status?.map((existingStatus) =>
+                existingStatus.createdBy === loggedInUser.id
+                    ? { ...existingStatus, ...newOrUpdatedStatus }
+                    : existingStatus
+            )
+          }
+
+          const updatedStatus = statusExists
+            ? updateExistingStatus()
+            : [...vacationRequest.status || [], newOrUpdatedStatus];
+
+          return vacationRequestsApi.updateVacationRequest({
+            id: vacationRequestId.toString(),
+            vacationRequest: {
+              ...vacationRequest,
+              status: updatedStatus
+            }
+          });
+        })
+      );
+
+      setVacationRequests((prevRequests) =>
+        prevRequests.map((vacationRequest) =>
+          updatedVacationRequests.find((req) => req?.id === vacationRequest.id) || vacationRequest
+        )
+      );
     } catch (error) {
       setError(`${strings.vacationRequestError.updateRequestError}, ${error}`);
     }
@@ -210,6 +271,7 @@ const VacationRequestsScreen = () => {
           deleteVacationRequests={deleteVacationRequests}
           createVacationRequest={createVacationRequest}
           updateVacationRequest={updateVacationRequest}
+          updateVacationRequestStatus={updateVacationRequestStatus}
           loading={loading}
         />
       </Card>

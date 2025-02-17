@@ -12,7 +12,7 @@ import { getToolbarTitle } from "src/utils/toolbar-utils";
 import { useAtomValue } from "jotai";
 import { languageAtom } from "src/atoms/language";
 import { useLocation } from "react-router-dom";
-import { VacationRequestStatuses } from "src/generated/client";
+import { VacationRequestStatuses } from "src/generated/homeLambdasClient";
 import UpdateStatusButton from "./toolbar-update-status-button";
 import UserRoleUtils from "src/utils/user-role-utils";
 import type { VacationRequest } from "src/generated/homeLambdasClient";
@@ -32,6 +32,10 @@ interface Props {
     VacationRequest: VacationRequest,
     vacationRequestId: string
   ) => Promise<void>;
+  updateVacationRequestStatus: (
+    vacationRequestStatus: VacationRequestStatuses,
+    selectedRowIds: GridRowId[]
+  ) => Promise<void>;
   setFormOpen: (formOpen: boolean) => void;
   formOpen: boolean;
   selectedRowIds: GridRowId[];
@@ -50,6 +54,7 @@ const TableToolbar = ({
   deleteVacationRequests,
   createVacationRequest,
   updateVacationRequest,
+  updateVacationRequestStatus,
   setFormOpen,
   formOpen,
   selectedRowIds,
@@ -65,7 +70,7 @@ const TableToolbar = ({
   const { pathname } = useLocation();
   const isToolbarVisible = toolbarOpen && !formOpen && selectedRowIds?.length;
   const buttonLabel = isUpcoming ? strings.tableToolbar.future : strings.tableToolbar.past;
-  const singleSelectionSize = adminMode ? 3 : 6;
+  const singleSelectionSize = 6;
   const multiSelectionSize = adminMode ? 6 : 12;
   const gridItemSize = selectedRowIds?.length === 1 ? singleSelectionSize : multiSelectionSize;
   const disableEditButton =
@@ -130,7 +135,7 @@ const TableToolbar = ({
           <ToolbarGridItem item sm={gridItemSize} xs={6}>
             <ToolbarDeleteButton setConfirmationHandlerOpen={setConfirmationHandlerOpen} />
           </ToolbarGridItem>
-          {selectedRowIds?.length === 1 && (
+          {selectedRowIds?.length === 1 && !adminMode && (
             <ToolbarGridItem item sm={adminMode ? 3 : 6} xs={6}>
               <FormToggleButton
                 title={strings.tableToolbar.edit}
@@ -145,12 +150,14 @@ const TableToolbar = ({
             <>
               <ToolbarGridItem item sm={3} xs={6}>
                 <UpdateStatusButton
+                  updateVacationRequestStatus={updateVacationRequestStatus}
                   buttonType={VacationRequestStatuses.APPROVED}
                   selectedRowIds={selectedRowIds}
                 />
               </ToolbarGridItem>
               <ToolbarGridItem item sm={3} xs={6}>
                 <UpdateStatusButton
+                  updateVacationRequestStatus={updateVacationRequestStatus}
                   buttonType={VacationRequestStatuses.DECLINED}
                   selectedRowIds={selectedRowIds}
                 />
