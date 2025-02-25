@@ -1,6 +1,6 @@
 import { useState } from "react";
 import GenericDialog from "../generics/generic-dialog";
-import { OnCallCalendarEntry } from "../../types";
+import type { OnCallCalendarEntry } from "../../types";
 import { Box, Button, Dialog, DialogActions, DialogContent } from "@mui/material";
 import { DateTime } from "luxon";
 import strings from "src/localization/strings";
