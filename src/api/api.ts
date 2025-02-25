@@ -14,7 +14,7 @@ import {
   ResourceAllocationsApi,
   SlackAvatarsApi,
   OnCallApi,
-  UsersApi
+  UsersApi,
   WorkHoursApi,
   VacationRequestsApi,
 } from "../generated/homeLambdasClient";
