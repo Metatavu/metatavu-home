@@ -1,19 +1,15 @@
 import { Box, Grid } from "@mui/material";
-import { VacationType } from "src/generated/client";
+import { type VacationRequest, VacationType } from "src/generated/homeLambdasClient";
 import { useEffect, useState } from "react";
 import { DateTime } from "luxon";
-import {
-  type VacationsDataGridRow,
-  type VacationData,
-  ToolbarFormModes,
-  type DateRange
-} from "src/types";
+import { type VacationsDataGridRow, ToolbarFormModes, type DateRange } from "src/types";
 import type { GridRowId } from "@mui/x-data-grid";
 import { determineToolbarFormMode } from "src/utils/toolbar-utils";
 import { useAtomValue } from "jotai";
 import ToolbarFormFields from "./toolbar-form-fields";
 import { allVacationRequestsAtom, vacationRequestsAtom } from "src/atoms/vacation";
 import UserRoleUtils from "src/utils/user-role-utils";
+import { VacationRequestStatuses } from "src/generated/homeLambdasClient";
 
 /**
  * Component properties
@@ -21,8 +17,11 @@ import UserRoleUtils from "src/utils/user-role-utils";
 interface Props {
   formOpen: boolean;
   setFormOpen: (formOpen: boolean) => void;
-  updateVacationRequest: (vacationData: VacationData, vacationRequestId: string) => Promise<void>;
-  createVacationRequest: (vacationData: VacationData) => Promise<void>;
+  updateVacationRequest: (
+    vacationRequestData: VacationRequest,
+    vacationRequestId: string
+  ) => Promise<void>;
+  createVacationRequest: (vacationRequestData: VacationRequest) => Promise<void>;
   selectedRowIds: GridRowId[];
   rows: VacationsDataGridRow[];
   toolbarFormMode: ToolbarFormModes;
@@ -51,13 +50,28 @@ const ToolbarForm = ({
     end: DateTime.now().plus({ days: 1 })
   };
   const [dateRange, setDateRange] = useState<DateRange>(defaultDateRange);
-  const [vacationData, setVacationData] = useState<VacationData>({
+  const defaultVacationRequestData: VacationRequest = {
+    createdAt: new Date(),
+    createdBy: "",
+    draft: false,
+    id: "",
+    updatedAt: new Date(),
+    userId: "",
     type: VacationType.VACATION,
-    startDate: defaultDateRange.start,
-    endDate: defaultDateRange.end,
+    startDate: defaultDateRange.start.toJSDate(),
+    endDate: defaultDateRange.end.toJSDate(),
     message: "",
-    days: 1
-  });
+    days: 1,
+    status: [
+      {
+        message: "Automatically created status",
+        status: VacationRequestStatuses.PENDING,
+        createdBy: "",
+        updatedAt: new Date()
+      }
+    ]
+  }
+  const [vacationRequestData, setVacationRequestData] = useState<VacationRequest>(defaultVacationRequestData);
   const [selectedVacationRequestId, setSelectedVacationRequestId] = useState("");
   const adminMode = UserRoleUtils.adminMode();
   const vacationRequests = useAtomValue(adminMode ? allVacationRequestsAtom : vacationRequestsAtom);
@@ -65,8 +79,8 @@ const ToolbarForm = ({
   /**
    * Reset vacation data
    */
-  const resetVacationData = () => {
-    setVacationData(vacationData);
+  const resetVacationRequestData = () => {
+    setVacationRequestData(defaultVacationRequestData);
     setDateRange(defaultDateRange);
   };
 
@@ -80,9 +94,8 @@ const ToolbarForm = ({
   /**
    * Get vacation data from row
    */
-  const getVacationDataFromRow = () => {
+  const getVacationRequestDataFromRow = () => {
     const selectedVacationRow = rows.find((row) => row.id === selectedRowIds[0]);
-
     if (selectedVacationRow) {
       const selectedVacationRequest = vacationRequests.find(
         (vacationRequest) => vacationRequest.id === selectedVacationRow.id
@@ -93,13 +106,15 @@ const ToolbarForm = ({
         const endDate = DateTime.fromJSDate(selectedVacationRequest.endDate);
         const days = selectedVacationRequest.days;
 
-        setVacationData({
-          type: selectedVacationRequest.type,
+        setVacationRequestData({
+          ...defaultVacationRequestData,
           message: selectedVacationRequest.message,
-          startDate: startDate,
-          endDate: endDate,
-          days: days
+          startDate: startDate.toJSDate(),
+          endDate: endDate.toJSDate(),
+          days: days,
+          status: selectedVacationRequest.status ?? defaultVacationRequestData.status
         });
+
         setSelectedVacationRequestId(selectedVacationRequest.id);
         setDateRange({
           start: startDate,
@@ -114,37 +129,26 @@ const ToolbarForm = ({
    */
   useEffect(() => {
     if (toolbarFormMode === ToolbarFormModes.EDIT && selectedRowIds?.length && rows?.length) {
-      getVacationDataFromRow();
+      getVacationRequestDataFromRow();
     } else {
-      resetVacationData();
+      resetVacationRequestData();
     }
   }, [toolbarFormMode]);
 
-  /**
-   * Checks if the vacation type is either sickness or childsickness.
-   */
-  const isSicknessOrChildSickness =
-    vacationData.type === VacationType.SICKNESS ||
-    vacationData.type === VacationType.CHILD_SICKNESS;
-  const dateTimeTomorrow = isSicknessOrChildSickness
-    ? DateTime.now().minus({ years: 1 })
-    : DateTime.now().plus({ days: 1 });
+  const dateTimeTomorrow = DateTime.now().plus({ days: 1 });
 
   /**
    * Handle form submit
    */
   const handleFormSubmit = async () => {
     if (toolbarFormMode === ToolbarFormModes.CREATE) {
-      await createVacationRequest(vacationData);
+      await createVacationRequest(vacationRequestData);
     } else if (toolbarFormMode === ToolbarFormModes.EDIT) {
-      await updateVacationRequest(vacationData, selectedVacationRequestId).then(() => {
-        setSelectedRowIds([]);
-      });
+      await updateVacationRequest(vacationRequestData, selectedVacationRequestId);
+      setSelectedRowIds([]);
     }
     setFormOpen(false);
-    if (toolbarFormMode !== ToolbarFormModes.EDIT) {
-      resetVacationData();
-    }
+    resetVacationRequestData()
   };
 
   return (
@@ -159,8 +163,8 @@ const ToolbarForm = ({
           >
             <ToolbarFormFields
               dateTimeTomorrow={dateTimeTomorrow}
-              setVacationData={setVacationData}
-              vacationData={vacationData}
+              setVacationRequestData={setVacationRequestData}
+              vacationRequestData={vacationRequestData}
               toolbarFormMode={toolbarFormMode}
               dateRange={dateRange}
               setDateRange={setDateRange}
