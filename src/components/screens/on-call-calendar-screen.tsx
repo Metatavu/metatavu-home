@@ -50,7 +50,6 @@ const OnCallCalendarScreen = () => {
     getOnCallData(selectedDate.year);
   }, [selectedDate.year]);
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: dependency is necessary
   useEffect(() => {
     getCurrentOnCallPerson();
   }, [onCallData]);
