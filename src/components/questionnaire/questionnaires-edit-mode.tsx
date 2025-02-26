@@ -5,6 +5,7 @@ import {
   CardActions,
   CardContent,
   Checkbox,
+  Chip,
   FormControlLabel,
   Snackbar,
   SnackbarContent,
@@ -45,8 +46,14 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
   const [clearPassedUsers, setClearPassedUsers] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [saveEnabled, setSaveEnabled] = useState(false);
+  const [newTag, setNewTag] = useState("");
 
   useEffect(() => {
+    // Initialize tags array if it doesn't exist
+    if (!editedQuestionnaire.tags) {
+      setEditedQuestionnaire(prev => ({...prev, tags: []}));
+    }
+    
     const hasChanges = !isEqual(editedQuestionnaire, questionnaire);
     const isValid = validateEditedQuestionnaire(editedQuestionnaire);
     setSaveEnabled(hasChanges && isValid);
@@ -98,6 +105,43 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     setEditedQuestionnaire((prev) => ({ ...prev, [name]: value }));
+  };
+
+  /**
+   * Function to add a new tag
+   */
+  const handleAddTag = () => {
+    if (newTag.trim() && !editedQuestionnaire.tags?.includes(newTag.trim())) {
+      setEditedQuestionnaire(prev => ({
+        ...prev,
+        tags: [...(prev.tags || []), newTag.trim()]
+      }));
+      setNewTag("");
+    }
+  };
+
+  /**
+   * Function to remove a tag
+   * 
+   * @param tagToRemove - The tag to remove
+   */
+  const handleRemoveTag = (tagToRemove: string) => {
+    setEditedQuestionnaire(prev => ({
+      ...prev,
+      tags: prev.tags?.filter(tag => tag !== tagToRemove) || []
+    }));
+  };
+
+  /**
+   * Handle key press event for tag input
+   * 
+   * @param event - Key press event
+   */
+  const handleTagKeyPress = (event: React.KeyboardEvent) => {
+    if (event.key === 'Enter' && newTag.trim()) {
+      event.preventDefault();
+      handleAddTag();
+    }
   };
 
   /**
@@ -237,8 +281,48 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
             value={editedQuestionnaire.description || ""}
             onChange={handleChange}
             fullWidth
-            sx={{ mb: 4 }}
+            sx={{ mb: 2 }}
           />
+          
+          {/* Tags Section */}
+          <Box sx={{ mb: 4 }}>
+            <Typography variant="subtitle1" sx={{ mb: 1 }}>Tags</Typography>
+            <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', mb: 2 }}>
+              {editedQuestionnaire.tags?.map((tag, index) => (
+                <Chip
+                  key={index}
+                  label={tag}
+                  onDelete={() => handleRemoveTag(tag)}
+                  color="primary"
+                  variant="outlined"
+                />
+              ))}
+              {(!editedQuestionnaire.tags || editedQuestionnaire.tags.length === 0) && (
+                <Typography variant="body2" color="text.secondary">
+                  No tags added yet
+                </Typography>
+              )}
+            </Box>
+            <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+              <TextField
+                label="Add a tag"
+                value={newTag}
+                onChange={(e) => setNewTag(e.target.value)}
+                onKeyPress={handleTagKeyPress}
+                size="small"
+                fullWidth
+              />
+              <Button 
+                variant="contained" 
+                onClick={handleAddTag}
+                disabled={!newTag.trim()}
+                size="small"
+              >
+                Add Tag
+              </Button>
+            </Box>
+          </Box>
+          
           {editedQuestionnaire.questions.map((question, questionIndex) => (
             <div key={questionIndex}>
               <TextField

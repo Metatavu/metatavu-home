@@ -5,13 +5,21 @@ import {
   Dialog,
   DialogActions,
   DialogTitle,
-  Typography
+  Typography,
+  Chip,
+  Box,
+  TextField,
+  InputAdornment,
+  IconButton
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import PendingIcon from "@mui/icons-material/Pending";
-import { useState, useEffect } from "react";
+import LabelIcon from "@mui/icons-material/Label";
+import SearchIcon from "@mui/icons-material/Search";
+import ClearIcon from "@mui/icons-material/Clear";
+import { useState, useEffect, useRef } from "react";
 import type { Questionnaire } from "src/generated/homeLambdasClient";
 import strings from "src/localization/strings";
 import UserRoleUtils from "src/utils/user-role-utils";
@@ -25,6 +33,11 @@ import { usersAtom } from "src/atoms/user";
 import { userProfileAtom } from "src/atoms/auth";
 import type { User } from "src/generated/homeLambdasClient";
 
+// Define an interface that extends Questionnaire to ensure tags property
+interface EnhancedQuestionnaire extends Questionnaire {
+  tags?: string[];
+}
+
 /**
  * Questionnaire Table Component
  *
@@ -35,24 +48,36 @@ const QuestionnaireTable = () => {
   const navigate = useNavigate();
   const [_, setMode] = useState<QuestionnairePreviewMode>();
   const { questionnairesApi } = useLambdasApi();
-  const [questionnaires, setQuestionnaires] = useState<Questionnaire[]>([]);
+  const [questionnaires, setQuestionnaires] = useState<EnhancedQuestionnaire[]>([]);
+  const [filteredQuestionnaires, setFilteredQuestionnaires] = useState<EnhancedQuestionnaire[]>([]);
+  const [searchTerm, setSearchTerm] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [deleteTitle, setDeleteTitle] = useState<string | null>(null);
-  const [selectedQuestionnaire, setSelectedQuestionnaire] = useState<Questionnaire | null>(null);
+  const [selectedQuestionnaire, setSelectedQuestionnaire] = useState<EnhancedQuestionnaire | null>(null);
   const setError = useSetAtom(errorAtom);
   const users = useAtomValue(usersAtom);
   const userProfile = useAtomValue(userProfileAtom);
   const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
+  const dataGridRef = useRef(null);
   
 
   useEffect(() => {
     const fetchQuestionnaires = async () => {
       setLoading(true);
       try {
-        const questionnaires = await questionnairesApi.listQuestionnaires();
-        setQuestionnaires(questionnaires);
+        const response = await questionnairesApi.listQuestionnaires();
+        
+        // Process the response to ensure each questionnaire has a tags property
+        const processedQuestionnaires = response.map(q => ({
+          ...q,
+          tags: q.tags || [] // Ensure tags property exists
+        }));
+        
+        console.log("Processed questionnaires:", processedQuestionnaires);
+        setQuestionnaires(processedQuestionnaires);
+        setFilteredQuestionnaires(processedQuestionnaires);
       } catch (error) {
         setError(`${strings.error.questionnaireLoadFailed}, ${error}`);
       }
@@ -60,6 +85,65 @@ const QuestionnaireTable = () => {
     };
     fetchQuestionnaires();
   }, []);
+
+  /**
+   * Debug function to identify issues with tags
+   */
+  useEffect(() => {
+    if (questionnaires.length > 0) {
+      console.log("Questionnaires after processing:", questionnaires);
+      const anyHasTags = questionnaires.some(q => Array.isArray(q.tags) && q.tags.length > 0);
+      console.log("Any questionnaire has tags?", anyHasTags);
+      
+      if (questionnaires.length > 0) {
+        console.log("First questionnaire:", questionnaires[0]);
+        console.log("First questionnaire tags:", questionnaires[0].tags);
+      }
+    }
+  }, [questionnaires]);
+
+  /**
+   * Function to filter questionnaires based on search term
+   * Filters by title and tags
+   */
+  useEffect(() => {
+    if (!searchTerm.trim()) {
+      // If search is empty, show all questionnaires
+      setFilteredQuestionnaires(questionnaires);
+      return;
+    }
+
+    const lowerCaseSearchTerm = searchTerm.toLowerCase().trim();
+    
+    const filtered = questionnaires.filter((questionnaire) => {
+      // Check if title matches search term
+      const titleMatch = questionnaire.title?.toLowerCase().includes(lowerCaseSearchTerm);
+      
+      // Check if any tag matches search term
+      const tagMatch = questionnaire.tags?.some(tag => 
+        tag.toLowerCase().includes(lowerCaseSearchTerm)
+      );
+      
+      // Return true if either title or tags match
+      return titleMatch || tagMatch;
+    });
+    
+    setFilteredQuestionnaires(filtered);
+  }, [searchTerm, questionnaires]);
+
+  /**
+   * Handle search input change
+   */
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
+  };
+
+  /**
+   * Clear search input
+   */
+  const handleClearSearch = () => {
+    setSearchTerm("");
+  };
 
   /**
    * Function to open the dialog for deleting the questionnaire
@@ -91,8 +175,8 @@ const QuestionnaireTable = () => {
     setLoading(true);
     try {
       await questionnairesApi.deleteQuestionnaires({ id: deleteId });
-      setQuestionnaires((prevQuestionnaires: Questionnaire[]) =>
-        prevQuestionnaires.filter((questionnaire: Questionnaire) => questionnaire.id !== deleteId)
+      setQuestionnaires((prevQuestionnaires) =>
+        prevQuestionnaires.filter((questionnaire) => questionnaire.id !== deleteId)
       );
       handleCloseDialog();
     } catch (error) {
@@ -107,7 +191,7 @@ const QuestionnaireTable = () => {
    * @param params
    */
   const handleRowClick = (params: GridRowParams) => {
-    setSelectedQuestionnaire(params.row as Questionnaire);
+    setSelectedQuestionnaire(params.row as EnhancedQuestionnaire);
     setMode(QuestionnairePreviewMode.FILL);
     navigate(`/questionnaire/${params.row.id}`);
   };
@@ -117,7 +201,7 @@ const QuestionnaireTable = () => {
    *
    * @param questionnaire - Questionnaire to edit
    */
-  const handleEditClick = (questionnaire: Questionnaire) => {
+  const handleEditClick = (questionnaire: EnhancedQuestionnaire) => {
     setSelectedQuestionnaire(questionnaire);
     setMode(QuestionnairePreviewMode.EDIT);
     navigate(`${questionnaire.id}/edit`);
@@ -135,6 +219,43 @@ const QuestionnaireTable = () => {
       <CheckCircleIcon sx={{ color: "green" }} />
     ) : (
       <PendingIcon sx={{ color: "gray" }} />
+    );
+  };
+
+  /**
+   * Function to render the tags cell
+   * 
+   * @param params
+   */
+  const renderTagsCell = (params: GridRenderCellParams) => {
+    // Extra safe handling of tags property
+    const tags = Array.isArray(params.row.tags) ? params.row.tags : [];
+    
+    console.log(`Rendering tags for row ${params.row.id}:`, tags);
+    
+    return (
+      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+        {tags.length > 0 ? (
+          tags.map((tag: string, index: number) => (
+            <Chip
+              key={index}
+              label={tag}
+              size="small"
+              icon={<LabelIcon />}
+              variant="outlined"
+              sx={{ margin: '2px' }}
+              onClick={(e) => {
+                e.stopPropagation(); // Prevent row click
+                setSearchTerm(tag); // Set search to this tag
+              }}
+            />
+          ))
+        ) : (
+          <Typography variant="body2" color="text.secondary">
+            {'No tags'}
+          </Typography>
+        )}
+      </Box>
     );
   };
 
@@ -157,9 +278,16 @@ const QuestionnaireTable = () => {
     </Dialog>
   );
 
+  // Use string literal for the tags header name since it's not in our localization file
   const columns = [
     { field: "title", headerName: `${strings.questionnaireTable.title}`, flex: 3 },
     { field: "description", headerName: `${strings.questionnaireTable.description}`, flex: 5 },
+    { 
+      field: "tags", 
+      headerName: "Tags", // Fixed: Using string literal instead of missing localized string
+      flex: 3,
+      renderCell: renderTagsCell 
+    },
     adminMode
       ? {
           field: "actions",
@@ -171,7 +299,7 @@ const QuestionnaireTable = () => {
                 name="edit"
                 variant="outlined"
                 color="success"
-                onClick={() => handleEditClick(params.row as Questionnaire)}
+                onClick={() => handleEditClick(params.row as EnhancedQuestionnaire)}
                 sx={{ mr: 1 }}
               >
                 <EditIcon sx={{ color: "success.main", mr: 1 }} />
@@ -197,6 +325,22 @@ const QuestionnaireTable = () => {
         }
   ];
 
+  // Added direct DOM checking code to debug if the tags column is actually being rendered
+  useEffect(() => {
+    setTimeout(() => {
+      // Check the DOM after the component has rendered
+      const headers = document.querySelectorAll('[role="columnheader"]');
+      console.log("DataGrid headers found:", headers.length);
+      headers.forEach((header, index) => {
+        console.log(`Header ${index} text:`, header.textContent);
+      });
+
+      // Check if any cells with tags are being rendered
+      const cells = document.querySelectorAll('[role="cell"]');
+      console.log("DataGrid cells found:", cells.length);
+    }, 1000); // Give the DataGrid time to render
+  }, [filteredQuestionnaires]);
+
   return (
     <>
       <Paper style={{ minHeight: 500, maxHeight: "auto", width: "100%", overflow: "auto" }}>
@@ -216,9 +360,37 @@ const QuestionnaireTable = () => {
             ? selectedQuestionnaire.title
             : strings.questionnaireScreen.currentQuestionnaires}
         </Typography>
+        
+        {/* Search Bar */}
+        <Box sx={{ px: 2, pb: 2 }}>
+          <TextField
+            fullWidth
+            value={searchTerm}
+            onChange={handleSearchChange}
+            placeholder="Search by title or tags..."
+            variant="outlined"
+            size="small"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+              endAdornment: searchTerm && (
+                <InputAdornment position="end">
+                  <IconButton size="small" onClick={handleClearSearch}>
+                    <ClearIcon />
+                  </IconButton>
+                </InputAdornment>
+              )
+            }}
+          />
+        </Box>
+        
         <DataGrid
+          ref={dataGridRef}
           sx={{ margin: 0 }}
-          rows={questionnaires}
+          rows={filteredQuestionnaires}
           columns={columns}
           pagination
           getRowId={(row) => row.id || ""}

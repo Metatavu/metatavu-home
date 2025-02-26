@@ -8,12 +8,17 @@ import {
   Slider,
   TextField,
   Tooltip,
-  Typography
+  Typography,
+  Chip,
+  InputAdornment,
+  IconButton
 } from "@mui/material";
 import { useState, type ChangeEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import NewQuestionCard from "./new-question-card";
 import { KeyboardReturn } from "@mui/icons-material";
+import AddIcon from "@mui/icons-material/Add";
+import LabelIcon from "@mui/icons-material/Label";
 import UserRoleUtils from "src/utils/user-role-utils";
 import type { Questionnaire, AnswerOption, Question } from "src/generated/homeLambdasClient";
 import strings from "src/localization/strings";
@@ -35,8 +40,13 @@ const NewQuestionnaireBuilder = () => {
     title: "",
     description: "",
     questions: [],
-    passScore: 0
+    passScore: 0,
+    tags: [] // Initialize empty tags array
   });
+  // New state for tag input
+  const [tagInput, setTagInput] = useState<string>("");
+  const [tagError, setTagError] = useState<string | null>(null);
+  
   const isDisabled = !questionnaire.title || !questionnaire.description;
 
   /**
@@ -50,6 +60,58 @@ const NewQuestionnaireBuilder = () => {
     setQuestionnaire((prevQuestionnaire) => ({
       ...prevQuestionnaire,
       [name]: value
+    }));
+  };
+
+  /**
+   * Function to handle tag input change
+   */
+  const handleTagInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setTagInput(event.target.value);
+    if (tagError) setTagError(null);
+  };
+
+  /**
+   * Function to add a tag to the questionnaire
+   */
+  const handleAddTag = () => {
+    const trimmedTag = tagInput.trim();
+    
+    if (!trimmedTag) {
+      setTagError("Tag cannot be empty");
+      return;
+    }
+    
+    if (questionnaire.tags?.includes(trimmedTag)) {
+      setTagError("Tag already exists");
+      return;
+    }
+    
+    setQuestionnaire((prevQuestionnaire) => ({
+      ...prevQuestionnaire,
+      tags: [...(prevQuestionnaire.tags || []), trimmedTag]
+    }));
+    
+    setTagInput("");
+  };
+
+  /**
+   * Function to handle key press in tag input
+   */
+  const handleTagKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      handleAddTag();
+    }
+  };
+
+  /**
+   * Function to remove a tag from the questionnaire
+   */
+  const handleRemoveTag = (tagToRemove: string) => {
+    setQuestionnaire((prevQuestionnaire) => ({
+      ...prevQuestionnaire,
+      tags: prevQuestionnaire.tags?.filter(tag => tag !== tagToRemove) || []
     }));
   };
 
@@ -124,8 +186,11 @@ const NewQuestionnaireBuilder = () => {
       title: "",
       description: "",
       questions: [],
-      passScore: 0
+      passScore: 0,
+      tags: []
     });
+    setTagInput("");
+    setTagError(null);
   };
 
   /**
@@ -153,12 +218,14 @@ const NewQuestionnaireBuilder = () => {
   const saveQuestionnaire = async () => {
     setLoading(true);
     try {
+      // Make sure to include tags in the createQuestionnaires API call
       const createdQuestionnaire = await questionnairesApi.createQuestionnaires({
         questionnaire: {
           title: questionnaire.title,
           description: questionnaire.description,
           questions: questionnaire.questions,
-          passScore: questionnaire.passScore
+          passScore: questionnaire.passScore,
+          tags: questionnaire.tags // Include tags in the API call
         }
       });
       closeAndClear();
@@ -207,6 +274,62 @@ const NewQuestionnaireBuilder = () => {
             required
             sx={{ mt: 2, mb: 4 }}
           />
+
+          {/* Tags input section */}
+          <Box sx={{ mb: 4 }}>
+            <Typography variant="h6" gutterBottom>
+              {"Tags"}
+            </Typography>
+            <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
+              <TextField
+                value={tagInput}
+                onChange={handleTagInputChange}
+                onKeyDown={handleTagKeyDown}
+                placeholder="Add a tag..."
+                variant="outlined"
+                fullWidth
+                error={!!tagError}
+                helperText={tagError}
+                sx={{ mr: 1 }}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <LabelIcon />
+                    </InputAdornment>
+                  )
+                }}
+              />
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleAddTag}
+                startIcon={<AddIcon />}
+              >
+                {"Add"}
+              </Button>
+            </Box>
+            
+            {/* Display current tags */}
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 2 }}>
+              {questionnaire.tags && questionnaire.tags.length > 0 ? (
+                questionnaire.tags.map((tag, index) => (
+                  <Chip
+                    key={index}
+                    label={tag}
+                    onDelete={() => handleRemoveTag(tag)}
+                    color="primary"
+                    variant="outlined"
+                    icon={<LabelIcon />}
+                  />
+                ))
+              ) : (
+                <Typography variant="body2" color="text.secondary">
+                  {"No tags added yet"}
+                </Typography>
+              )}
+            </Box>
+          </Box>
+          
           <NewQuestionCard handleAddQuestion={handleAddQuestion} />
           <Card
             sx={{
