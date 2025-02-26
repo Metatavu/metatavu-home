@@ -1,18 +1,35 @@
+import { useEffect, useState } from "react";
 import SettingsScreen from "src/components/screens/settings-screen";
+import {UsersApi} from "src/generated/homeLambdasClient";
+const ConsentUtils = ({ userId }: { userId: string }) => {
+  const [isConsentGiven, setIsConsentGiven] = useState<boolean | null>(null);
 
-const ConstentUtils = ({userId}: {userId: string}) => {
-//const keycloakService = ();
-
-const handleSave = async (isAccepted: boolean) => {
+useEffect(() => {
+  const fetchConsent = async () => {
     try {
-      /*   await keycloakService.updateUserAttribute(userId, "consentGiven", isAccepted.toString()); */
-        console.log("Tiedot tallennettu onnistuneesti Keycloakiin!");
+        const consent = await UsersApi.(userId, "consentGiven");
+        setIsConsentGiven(consent === "true");
     } catch (error) {
-        console.error("Virhe tallennuksessa:", error);
+        console.error("Error fetching consent:", error);
     }
 };
+fetchConsent();
+}, [userId]);
 
-return <SettingsScreen onSave={handleSave} />;
+  const handleSave = async (isAccepted: boolean) => {
+  try {
+      await updateUserAttribute(userId, "consentGiven", isAccepted.toString());
+      setIsConsentGiven(isAccepted);
+  } catch (error) {
+      console.error("Error saving consent:", error);
+  }
 };
 
-export default ConstentUtils
+return isConsentGiven !== null ? (
+    <SettingsScreen onSave={handleSave} initialConsent={isConsentGiven} />
+) : (
+   <p>Loading...</p>
+);
+};
+
+export default ConsentUtils;
