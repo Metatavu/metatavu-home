@@ -1,5 +1,5 @@
 import { KeyboardReturn } from "@mui/icons-material";
-import { Box, Button, CircularProgress, Dialog, DialogActions, DialogTitle } from "@mui/material";
+import { Box, Button, CircularProgress, Dialog, DialogActions, DialogTitle, Chip } from "@mui/material";
 import { useEffect, useState } from "react";
 import type { Questionnaire } from "src/generated/homeLambdasClient";
 import strings from "src/localization/strings";
@@ -43,7 +43,8 @@ const QuestionnaireManager = ({ mode }: Props) => {
     title: "",
     description: "",
     questions: [],
-    passScore: 0
+    passScore: 0,
+    tags: []
   });
   const [loading, setLoading] = useState(false);
   const [userResponses, setUserResponses] = useState<UserResponses>({});
@@ -199,16 +200,27 @@ const QuestionnaireManager = ({ mode }: Props) => {
             handleRadioChange={handleRadioChange}
           />
         );
-        case QuestionnairePreviewMode.EDIT:
-          return (
-            <QuestionnaireEditMode
-              questionnaire={questionnaire}
-            />
-          );
+      case QuestionnairePreviewMode.EDIT:
+        return (
+          <QuestionnaireEditMode
+            questionnaire={questionnaire}
+          />
+        );
       default:
         return null;
     }
   };
+
+  /**
+   * Render tags for the questionnaire
+   */
+  const renderTags = () => (
+    <Box sx={{ mb: 2 }}>
+      {questionnaire.tags?.map((tag) => (
+        <Chip key={tag} label={tag} sx={{ mr: 1 }} />
+      )) || "No tags available"}
+    </Box>
+  );
 
   /**
    * Render the buttons based on the mode
@@ -272,6 +284,7 @@ const QuestionnaireManager = ({ mode }: Props) => {
 
   return (
     <>
+      {renderTags()}
       {renderCardContent()}
       {renderButtons()}
       {renderDialog()}

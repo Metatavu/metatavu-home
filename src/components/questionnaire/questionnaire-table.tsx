@@ -10,7 +10,8 @@ import {
   Box,
   TextField,
   InputAdornment,
-  IconButton
+  IconButton,
+  Popover
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
@@ -56,13 +57,17 @@ const QuestionnaireTable = () => {
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [deleteTitle, setDeleteTitle] = useState<string | null>(null);
   const [selectedQuestionnaire, setSelectedQuestionnaire] = useState<EnhancedQuestionnaire | null>(null);
+  
+  // State for tag popover
+  const [tagPopoverAnchor, setTagPopoverAnchor] = useState<HTMLElement | null>(null);
+  const [currentTags, setCurrentTags] = useState<string[]>([]);
+  
   const setError = useSetAtom(errorAtom);
   const users = useAtomValue(usersAtom);
   const userProfile = useAtomValue(userProfileAtom);
   const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
   const dataGridRef = useRef(null);
   
-
   useEffect(() => {
     const fetchQuestionnaires = async () => {
       setLoading(true);
@@ -75,7 +80,6 @@ const QuestionnaireTable = () => {
           tags: q.tags || [] // Ensure tags property exists
         }));
         
-        console.log("Processed questionnaires:", processedQuestionnaires);
         setQuestionnaires(processedQuestionnaires);
         setFilteredQuestionnaires(processedQuestionnaires);
       } catch (error) {
@@ -86,29 +90,9 @@ const QuestionnaireTable = () => {
     fetchQuestionnaires();
   }, []);
 
-  /**
-   * Debug function to identify issues with tags
-   */
-  useEffect(() => {
-    if (questionnaires.length > 0) {
-      console.log("Questionnaires after processing:", questionnaires);
-      const anyHasTags = questionnaires.some(q => Array.isArray(q.tags) && q.tags.length > 0);
-      console.log("Any questionnaire has tags?", anyHasTags);
-      
-      if (questionnaires.length > 0) {
-        console.log("First questionnaire:", questionnaires[0]);
-        console.log("First questionnaire tags:", questionnaires[0].tags);
-      }
-    }
-  }, [questionnaires]);
-
-  /**
-   * Function to filter questionnaires based on search term
-   * Filters by title and tags
-   */
+  //Search Functionality
   useEffect(() => {
     if (!searchTerm.trim()) {
-      // If search is empty, show all questionnaires
       setFilteredQuestionnaires(questionnaires);
       return;
     }
@@ -116,50 +100,46 @@ const QuestionnaireTable = () => {
     const lowerCaseSearchTerm = searchTerm.toLowerCase().trim();
     
     const filtered = questionnaires.filter((questionnaire) => {
-      // Check if title matches search term
       const titleMatch = questionnaire.title?.toLowerCase().includes(lowerCaseSearchTerm);
-      
-      // Check if any tag matches search term
       const tagMatch = questionnaire.tags?.some(tag => 
         tag.toLowerCase().includes(lowerCaseSearchTerm)
       );
-      
-      // Return true if either title or tags match
       return titleMatch || tagMatch;
     });
     
     setFilteredQuestionnaires(filtered);
   }, [searchTerm, questionnaires]);
 
-  /**
-   * Handle search input change
-   */
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
   };
 
-  /**
-   * Clear search input
-   */
   const handleClearSearch = () => {
     setSearchTerm("");
   };
 
-  /**
-   * Function to open the dialog for deleting the questionnaire
-   *
-   * @param id - Questionnaire ID
-   * @param title - Questionnaire Title
-   */
+  // Tag popover handlers
+  const handleTagMoreClick = (event: React.MouseEvent<HTMLElement>, tags: string[]) => {
+    event.stopPropagation(); // Prevent row click
+    setTagPopoverAnchor(event.currentTarget);
+    setCurrentTags(tags);
+  };
+
+  const handleCloseTagPopover = () => {
+    setTagPopoverAnchor(null);
+  };
+
+  const handleTagClick = (tag: string) => {
+    setSearchTerm(tag);
+    handleCloseTagPopover();
+  };
+
   const handleOpenDialog = (id: string, title: string) => {
     setDeleteId(id);
     setDeleteTitle(title);
     setDialogOpen(true);
   };
 
-  /**
-   * Function to close the dialog for deleting the questionnaire
-   */
   const handleCloseDialog = () => {
     setDialogOpen(false);
     setDeleteId(null);
@@ -167,9 +147,6 @@ const QuestionnaireTable = () => {
     setSelectedQuestionnaire(null);
   };
 
-  /**
-   * Function to delete the questionnaire
-   */
   const handleConfirmDelete = async () => {
     if (!deleteId) return;
     setLoading(true);
@@ -185,36 +162,20 @@ const QuestionnaireTable = () => {
     setLoading(false);
   };
 
-  /**
-   * Function to handle select Questionnaire from x-data-grid as a row
-   *
-   * @param params
-   */
   const handleRowClick = (params: GridRowParams) => {
     setSelectedQuestionnaire(params.row as EnhancedQuestionnaire);
     setMode(QuestionnairePreviewMode.FILL);
     navigate(`/questionnaire/${params.row.id}`);
   };
 
-  /**
-   * Function to handle open editor for Questionnaire
-   *
-   * @param questionnaire - Questionnaire to edit
-   */
   const handleEditClick = (questionnaire: EnhancedQuestionnaire) => {
     setSelectedQuestionnaire(questionnaire);
     setMode(QuestionnairePreviewMode.EDIT);
     navigate(`${questionnaire.id}/edit`);
   };
 
-  /**
-   * Function to render the status cell to check if LoggerInUser has passed the questionnaire
-   *
-   * @param params
-   */
   const renderStatusCell = (params: GridRenderCellParams) => {
     const userHasPassed = params.row.passedUsers?.includes(loggedInUser?.id);
-
     return userHasPassed ? (
       <CheckCircleIcon sx={{ color: "green" }} />
     ) : (
@@ -223,33 +184,74 @@ const QuestionnaireTable = () => {
   };
 
   /**
-   * Function to render the tags cell
-   * 
-   * @param params
+   * Function to render the tags cell with improved styling and overflow handling
    */
   const renderTagsCell = (params: GridRenderCellParams) => {
     // Extra safe handling of tags property
     const tags = Array.isArray(params.row.tags) ? params.row.tags : [];
     
-    console.log(`Rendering tags for row ${params.row.id}:`, tags);
+    // Determine if we should show all tags or use "+X more" pattern
+    const MAX_VISIBLE_TAGS = 1;
+    const visibleTags = tags.slice(0, MAX_VISIBLE_TAGS);
+    const hiddenTagsCount = Math.max(0, tags.length - MAX_VISIBLE_TAGS);
+    
+    // Create a tooltip text with all tags when there are hidden tags
+    const allTagsTooltip = tags.join(', ');
     
     return (
-      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+      <Box 
+        sx={{ 
+          display: 'flex', 
+          flexWrap: 'nowrap',
+          gap: 0.5,
+          overflow: 'hidden',
+          alignItems: 'center',
+          width: '100%',
+          height: '100%'
+        }}
+        title={allTagsTooltip}
+      >
         {tags.length > 0 ? (
-          tags.map((tag: string, index: number) => (
-            <Chip
-              key={index}
-              label={tag}
-              size="small"
-              icon={<LabelIcon />}
-              variant="outlined"
-              sx={{ margin: '2px' }}
-              onClick={(e) => {
-                e.stopPropagation(); // Prevent row click
-                setSearchTerm(tag); // Set search to this tag
-              }}
-            />
-          ))
+          <>
+            {visibleTags.map((tag: string, index: number) => (
+              <Chip
+                key={index}
+                label={tag}
+                size="small"
+                icon={<LabelIcon />}
+                variant="outlined"
+                sx={{ 
+                  margin: '1px',
+                  maxWidth: '120px',
+                  '& .MuiChip-label': {
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap'
+                  }
+                }}
+                onClick={(e) => {
+                  e.stopPropagation(); // Prevent row click
+                  setSearchTerm(tag);  // Set search to this tag
+                }}
+              />
+            ))}
+            
+            {/* Show "+X more" chip if there are hidden tags */}
+            {hiddenTagsCount > 0 && (
+              <Chip
+                size="small"
+                label={`+${hiddenTagsCount} more`}
+                sx={{ 
+                  flexShrink:0,
+                  backgroundColor: 'rgba(0, 0, 0, 0.08)',
+                  '&:hover': { 
+                    backgroundColor: 'rgba(0, 0, 0, 0.12)' 
+                  }
+                }}
+                onClick={(e) => handleTagMoreClick(e, tags)}
+              />
+            )}
+          </>
         ) : (
           <Typography variant="body2" color="text.secondary">
             {'No tags'}
@@ -259,34 +261,24 @@ const QuestionnaireTable = () => {
     );
   };
 
-  /**
-   * Function to render the confirm delete dialog
-   */
-  const renderConfirmDeleteDialog = () => (
-    <Dialog open={dialogOpen} onClose={handleCloseDialog}>
-      <DialogTitle>
-        {strings.formatString(strings.questionnaireTable.confirmDeleteTitle, deleteTitle ?? "")}
-      </DialogTitle>
-      <DialogActions>
-        <Button onClick={handleCloseDialog} color="primary">
-          {strings.questionnaireTable.cancel}
-        </Button>
-        <Button onClick={handleConfirmDelete} color="secondary" variant="contained">
-          {strings.questionnaireTable.confirm}
-        </Button>
-      </DialogActions>
-    </Dialog>
-  );
-
-  // Use string literal for the tags header name since it's not in our localization file
+  // Column configuration with improved tags column
   const columns = [
     { field: "title", headerName: `${strings.questionnaireTable.title}`, flex: 3 },
     { field: "description", headerName: `${strings.questionnaireTable.description}`, flex: 5 },
     { 
       field: "tags", 
-      headerName: "Tags", // Fixed: Using string literal instead of missing localized string
+      headerName: "Tags",
       flex: 3,
-      renderCell: renderTagsCell 
+      minWidth: 180,
+      renderCell: renderTagsCell,
+      sortable: false,
+      filterable: true,
+      renderHeader: () => (
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <LabelIcon sx={{ mr: 0.5, fontSize: '1.25rem' }} />
+          <Typography variant="subtitle2">Tags</Typography>
+        </Box>
+      )
     },
     adminMode
       ? {
@@ -325,21 +317,63 @@ const QuestionnaireTable = () => {
         }
   ];
 
-  // Added direct DOM checking code to debug if the tags column is actually being rendered
-  useEffect(() => {
-    setTimeout(() => {
-      // Check the DOM after the component has rendered
-      const headers = document.querySelectorAll('[role="columnheader"]');
-      console.log("DataGrid headers found:", headers.length);
-      headers.forEach((header, index) => {
-        console.log(`Header ${index} text:`, header.textContent);
-      });
+  const renderConfirmDeleteDialog = () => (
+    <Dialog open={dialogOpen} onClose={handleCloseDialog}>
+      <DialogTitle>
+        {strings.formatString(strings.questionnaireTable.confirmDeleteTitle, deleteTitle ?? "")}
+      </DialogTitle>
+      <DialogActions>
+        <Button onClick={handleCloseDialog} color="primary">
+          {strings.questionnaireTable.cancel}
+        </Button>
+        <Button onClick={handleConfirmDelete} color="secondary" variant="contained">
+          {strings.questionnaireTable.confirm}
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
 
-      // Check if any cells with tags are being rendered
-      const cells = document.querySelectorAll('[role="cell"]');
-      console.log("DataGrid cells found:", cells.length);
-    }, 1000); // Give the DataGrid time to render
-  }, [filteredQuestionnaires]);
+  // Inline Tag Popover rendering - no need for separate component
+  const renderTagPopover = () => (
+    <Popover
+      open={Boolean(tagPopoverAnchor)}
+      anchorEl={tagPopoverAnchor}
+      onClose={handleCloseTagPopover}
+      anchorOrigin={{
+        vertical: 'bottom',
+        horizontal: 'center',
+      }}
+      transformOrigin={{
+        vertical: 'top',
+        horizontal: 'center',
+      }}
+      PaperProps={{
+        sx: { maxWidth: '400px', p: 2 }
+      }}
+    >
+      <Typography variant="subtitle2" sx={{ mb: 1 }}>
+        All Tags ({currentTags.length})
+      </Typography>
+      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+        {currentTags.map((tag, index) => (
+          <Chip
+            key={index}
+            label={tag}
+            size="small"
+            icon={<LabelIcon />}
+            variant="outlined"
+            onClick={() => handleTagClick(tag)}
+            sx={{ 
+              cursor: 'pointer',
+              '&:hover': {
+                backgroundColor: 'rgba(0, 0, 0, 0.08)'
+              }
+            }}
+          />
+        ))}
+      </Box>
+    </Popover>
+  );
 
   return (
     <>
@@ -389,15 +423,33 @@ const QuestionnaireTable = () => {
         
         <DataGrid
           ref={dataGridRef}
-          sx={{ margin: 0 }}
+          sx={{ 
+            margin: 0,
+            '& .MuiDataGrid-cell': {
+              padding: '8px', // Add some padding to cells
+            },
+            '& .MuiDataGrid-columnHeader': {
+              padding: '0 8px', // Add some padding to headers
+            }
+          }}
           rows={filteredQuestionnaires}
           columns={columns}
           pagination
           getRowId={(row) => row.id || ""}
           disableRowSelectionOnClick
           onRowClick={adminMode ? undefined : handleRowClick}
+          initialState={{
+            pagination: {
+              paginationModel: { pageSize: 10 }
+            },
+          }}
+          pageSizeOptions={[5, 10, 25, 50, 100]}
         />
       </Paper>
+      
+      {/* Render the tag popover inline */}
+      {renderTagPopover()}
+      
       {renderConfirmDeleteDialog()}
     </>
   );

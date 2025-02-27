@@ -47,6 +47,7 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [saveEnabled, setSaveEnabled] = useState(false);
   const [newTag, setNewTag] = useState("");
+  const [tagError, setTagError] = useState<string | null>(null);
 
   useEffect(() => {
     // Initialize tags array if it doesn't exist
@@ -108,16 +109,31 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
   };
 
   /**
-   * Function to add a new tag
+   * Function to add a new tag with validation
    */
   const handleAddTag = () => {
-    if (newTag.trim() && !editedQuestionnaire.tags?.includes(newTag.trim())) {
-      setEditedQuestionnaire(prev => ({
-        ...prev,
-        tags: [...(prev.tags || []), newTag.trim()]
-      }));
-      setNewTag("");
+    // Validate empty tags
+    if (!newTag.trim()) {
+      setTagError("Tag cannot be empty");
+      return;
     }
+    
+    // Validate duplicate tags (case-insensitive)
+    const trimmedTag = newTag.trim();
+    if (editedQuestionnaire.tags?.some(tag => tag.toLowerCase() === trimmedTag.toLowerCase())) {
+      setTagError("Tag already exists");
+      return;
+    }
+    
+    // Add the valid tag
+    setEditedQuestionnaire(prev => ({
+      ...prev,
+      tags: [...(prev.tags || []), trimmedTag]
+    }));
+    
+    // Clear the input and error state
+    setNewTag("");
+    setTagError(null);
   };
 
   /**
@@ -138,7 +154,7 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
    * @param event - Key press event
    */
   const handleTagKeyPress = (event: React.KeyboardEvent) => {
-    if (event.key === 'Enter' && newTag.trim()) {
+    if (event.key === 'Enter') {
       event.preventDefault();
       handleAddTag();
     }
@@ -303,23 +319,39 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
                 </Typography>
               )}
             </Box>
-            <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-              <TextField
-                label="Add a tag"
-                value={newTag}
-                onChange={(e) => setNewTag(e.target.value)}
-                onKeyPress={handleTagKeyPress}
-                size="small"
-                fullWidth
-              />
-              <Button 
-                variant="contained" 
-                onClick={handleAddTag}
-                disabled={!newTag.trim()}
-                size="small"
-              >
-                Add Tag
-              </Button>
+            <Box sx={{ display: 'flex', gap: 1, alignItems: 'flex-start', flexDirection: 'column' }}>
+              <Box sx={{ display: 'flex', gap: 1, width: '100%' }}>
+                <TextField
+                  label="Add a tag"
+                  value={newTag}
+                  onChange={(e) => {
+                    setNewTag(e.target.value);
+                    // Clear error when user types
+                    if (tagError) setTagError(null);
+                  }}
+                  onKeyPress={handleTagKeyPress}
+                  size="small"
+                  fullWidth
+                  error={!!tagError}
+                  helperText={tagError}
+                />
+                <Button 
+                  variant="contained" 
+                  onClick={handleAddTag}
+                  size="small"
+                  sx={{ 
+                    height: '40px',
+                    minWidth: '90px',
+                    textTransform: 'uppercase',
+                    backgroundColor: '#212121',
+                    '&:hover': {
+                      backgroundColor: '#000000'
+                    }
+                  }}
+                >
+                  Add Tag
+                </Button>
+              </Box>
             </Box>
           </Box>
           

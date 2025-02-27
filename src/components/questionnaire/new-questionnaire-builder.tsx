@@ -11,16 +11,18 @@ import {
   Typography,
   Chip,
   InputAdornment,
-  IconButton
 } from "@mui/material";
 import { useState, type ChangeEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import NewQuestionCard from "./new-question-card";
 import { KeyboardReturn } from "@mui/icons-material";
-import AddIcon from "@mui/icons-material/Add";
 import LabelIcon from "@mui/icons-material/Label";
 import UserRoleUtils from "src/utils/user-role-utils";
-import type { Questionnaire, AnswerOption, Question } from "src/generated/homeLambdasClient";
+import type {
+  Questionnaire,
+  AnswerOption,
+  Question,
+} from "src/generated/homeLambdasClient";
 import strings from "src/localization/strings";
 import { useLambdasApi } from "src/hooks/use-api";
 import { useSetAtom } from "jotai";
@@ -41,12 +43,12 @@ const NewQuestionnaireBuilder = () => {
     description: "",
     questions: [],
     passScore: 0,
-    tags: [] // Initialize empty tags array
+    tags: [], // Initialize empty tags array
   });
   // New state for tag input
   const [tagInput, setTagInput] = useState<string>("");
   const [tagError, setTagError] = useState<string | null>(null);
-  
+
   const isDisabled = !questionnaire.title || !questionnaire.description;
 
   /**
@@ -54,12 +56,14 @@ const NewQuestionnaireBuilder = () => {
    *
    * @param event
    */
-  const handleQuestionnaireInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleQuestionnaireInputChange = (
+    event: ChangeEvent<HTMLInputElement>
+  ) => {
     const { name, value } = event.target;
 
     setQuestionnaire((prevQuestionnaire) => ({
       ...prevQuestionnaire,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -71,35 +75,39 @@ const NewQuestionnaireBuilder = () => {
     if (tagError) setTagError(null);
   };
 
-  /**
-   * Function to add a tag to the questionnaire
-   */
   const handleAddTag = () => {
-    const trimmedTag = tagInput.trim();
-    
+    const trimmedTag = tagInput.trim(); // Trim any extra spaces
+
     if (!trimmedTag) {
       setTagError("Tag cannot be empty");
       return;
     }
-    
-    if (questionnaire.tags?.includes(trimmedTag)) {
-      setTagError("Tag already exists");
+
+    // Check if the tag already exists (case-insensitive)
+    const tagExists = questionnaire.tags?.some(
+      (tag) => tag.toLowerCase() === trimmedTag.toLowerCase()
+    );
+    if (tagExists) {
+      setTagError("Tag already exists!");
       return;
     }
-    
+
+    // Add the new tag to the list
     setQuestionnaire((prevQuestionnaire) => ({
       ...prevQuestionnaire,
-      tags: [...(prevQuestionnaire.tags || []), trimmedTag]
+      tags: [...(prevQuestionnaire.tags || []), trimmedTag],
     }));
-    
+
+    // Clear input and error message
     setTagInput("");
+    setTagError(null);
   };
 
   /**
    * Function to handle key press in tag input
    */
   const handleTagKeyDown = (event: React.KeyboardEvent) => {
-    if (event.key === 'Enter') {
+    if (event.key === "Enter") {
       event.preventDefault();
       handleAddTag();
     }
@@ -111,7 +119,7 @@ const NewQuestionnaireBuilder = () => {
   const handleRemoveTag = (tagToRemove: string) => {
     setQuestionnaire((prevQuestionnaire) => ({
       ...prevQuestionnaire,
-      tags: prevQuestionnaire.tags?.filter(tag => tag !== tagToRemove) || []
+      tags: prevQuestionnaire.tags?.filter((tag) => tag !== tagToRemove) || [],
     }));
   };
 
@@ -124,7 +132,7 @@ const NewQuestionnaireBuilder = () => {
   const handlePassScoreSliderChange = (_: Event, value: number | number[]) => {
     setQuestionnaire((prevQuestionnaire) => ({
       ...prevQuestionnaire,
-      passScore: value as number
+      passScore: value as number,
     }));
   };
 
@@ -136,11 +144,17 @@ const NewQuestionnaireBuilder = () => {
    */
   const handleAddQuestion = ({
     questionText,
-    answerOptions
-  }: { questionText: string; answerOptions: AnswerOption[] }) => {
+    answerOptions,
+  }: {
+    questionText: string;
+    answerOptions: AnswerOption[];
+  }) => {
     setQuestionnaire((prevQuestionnaire) => ({
       ...prevQuestionnaire,
-      questions: [...prevQuestionnaire.questions, { questionText, answerOptions }]
+      questions: [
+        ...prevQuestionnaire.questions,
+        { questionText, answerOptions },
+      ],
     }));
   };
 
@@ -152,7 +166,7 @@ const NewQuestionnaireBuilder = () => {
   const removeQuestionFromPreview = (index: number) => {
     setQuestionnaire((prevQuestionnaire) => ({
       ...prevQuestionnaire,
-      questions: prevQuestionnaire.questions.filter((_, i) => i !== index)
+      questions: prevQuestionnaire.questions.filter((_, i) => i !== index),
     }));
   };
 
@@ -165,7 +179,9 @@ const NewQuestionnaireBuilder = () => {
   const editQuestionInPreview = (index: number, updatedQuestion: Question) => {
     setQuestionnaire((prev) => ({
       ...prev,
-      questions: prev.questions.map((question, i) => (i === index ? updatedQuestion : question))
+      questions: prev.questions.map((question, i) =>
+        i === index ? updatedQuestion : question
+      ),
     }));
   };
 
@@ -174,7 +190,11 @@ const NewQuestionnaireBuilder = () => {
    */
   const countCorrectAnswers = () => {
     return questionnaire.questions.reduce((count, question) => {
-      return count + (question.answerOptions?.filter((option) => option.isCorrect).length || 0);
+      return (
+        count +
+        (question.answerOptions?.filter((option) => option.isCorrect).length ||
+          0)
+      );
     }, 0);
   };
 
@@ -187,7 +207,7 @@ const NewQuestionnaireBuilder = () => {
       description: "",
       questions: [],
       passScore: 0,
-      tags: []
+      tags: [],
     });
     setTagInput("");
     setTagError(null);
@@ -218,16 +238,17 @@ const NewQuestionnaireBuilder = () => {
   const saveQuestionnaire = async () => {
     setLoading(true);
     try {
-      // Make sure to include tags in the createQuestionnaires API call
-      const createdQuestionnaire = await questionnairesApi.createQuestionnaires({
-        questionnaire: {
-          title: questionnaire.title,
-          description: questionnaire.description,
-          questions: questionnaire.questions,
-          passScore: questionnaire.passScore,
-          tags: questionnaire.tags // Include tags in the API call
+      const createdQuestionnaire = await questionnairesApi.createQuestionnaires(
+        {
+          questionnaire: {
+            title: questionnaire.title,
+            description: questionnaire.description,
+            questions: questionnaire.questions,
+            passScore: questionnaire.passScore,
+            tags: questionnaire.tags, 
+          },
         }
-      });
+      );
       closeAndClear();
       navigate(-1);
       return createdQuestionnaire;
@@ -245,7 +266,7 @@ const NewQuestionnaireBuilder = () => {
           width: "100%",
           display: "flex",
           flexDirection: "column",
-          height: "100"
+          height: "100",
         }}
       >
         <CardContent sx={{ p: 2 }}>
@@ -280,13 +301,14 @@ const NewQuestionnaireBuilder = () => {
             <Typography variant="h6" gutterBottom>
               {"Tags"}
             </Typography>
-            <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
+            <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
               <TextField
                 value={tagInput}
                 onChange={handleTagInputChange}
                 onKeyDown={handleTagKeyDown}
                 placeholder="Add a tag..."
                 variant="outlined"
+                size="small"
                 fullWidth
                 error={!!tagError}
                 helperText={tagError}
@@ -296,21 +318,30 @@ const NewQuestionnaireBuilder = () => {
                     <InputAdornment position="start">
                       <LabelIcon />
                     </InputAdornment>
-                  )
+                  ),
                 }}
               />
               <Button
                 variant="contained"
                 color="primary"
                 onClick={handleAddTag}
-                startIcon={<AddIcon />}
+                size="small"
+                sx={{
+                  height: "40px",
+                  minWidth: "90px",
+                  textTransform: "uppercase",
+                  backgroundColor: "#212121",
+                  "&:hover": {
+                    backgroundColor: "#000000",
+                  },
+                }}
               >
-                {"Add"}
+                {"ADD TAG"}
               </Button>
             </Box>
-            
+
             {/* Display current tags */}
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 2 }}>
+            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mt: 2 }}>
               {questionnaire.tags && questionnaire.tags.length > 0 ? (
                 questionnaire.tags.map((tag, index) => (
                   <Chip
@@ -329,7 +360,7 @@ const NewQuestionnaireBuilder = () => {
               )}
             </Box>
           </Box>
-          
+
           <NewQuestionCard handleAddQuestion={handleAddQuestion} />
           <Card
             sx={{
@@ -337,7 +368,7 @@ const NewQuestionnaireBuilder = () => {
               mt: 4,
               width: "100%",
               display: "flex",
-              flexDirection: "column"
+              flexDirection: "column",
             }}
           >
             <CardActions
@@ -347,19 +378,28 @@ const NewQuestionnaireBuilder = () => {
                 padding: 0,
                 alignItems: "flex-start",
                 flexDirection: { xs: "column", sm: "row" },
-                width: "100%"
+                width: "100%",
               }}
             >
-              <Box sx={{ display: "flex", flexDirection: "column", width: "70%", mr: 4 }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  width: "70%",
+                  mr: 4,
+                }}
+              >
                 <Typography
                   variant="h6"
                   gutterBottom
                   sx={{ display: "flex", alignItems: "center", mb: 1, mt: 1 }}
                 >
-                  {strings.newQuestionnaireBuilder.countedAnswers} {countCorrectAnswers()}
+                  {strings.newQuestionnaireBuilder.countedAnswers}{" "}
+                  {countCorrectAnswers()}
                 </Typography>
                 <Typography variant="h6" gutterBottom sx={{ mb: 1, mt: 1 }}>
-                  {strings.newQuestionnaireBuilder.requiredAnswers} {questionnaire.passScore}
+                  {strings.newQuestionnaireBuilder.requiredAnswers}{" "}
+                  {questionnaire.passScore}
                 </Typography>
                 <Slider
                   value={questionnaire.passScore}
