@@ -152,7 +152,7 @@ const NewQuestionnaireBuilder = () => {
   /**
    * Function to delete question from the questionnaire that is being built
    *
-   * @param index
+   * @param index number
    */
   const removeQuestionFromPreview = (index: number) => {
     setQuestionnaire((prevQuestionnaire) => ({
@@ -165,7 +165,7 @@ const NewQuestionnaireBuilder = () => {
    * Function to edit question in the questionnaire that is being built
    *
    * @param index number
-   * @param updatedQuestion object
+   * @param updatedQuestion question
    */
   const editQuestionInPreview = (index: number, updatedQuestion: Question) => {
     setQuestionnaire((prev) => ({
@@ -332,9 +332,9 @@ const NewQuestionnaireBuilder = () => {
 
             <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mt: 2 }}>
               {questionnaire.tags && questionnaire.tags.length > 0 ? (
-                questionnaire.tags.map((tag, index) => (
+                questionnaire.tags.map((tag, questionnaireId) => (
                   <Chip
-                    key={index}
+                    key={questionnaireId}
                     label={tag}
                     onDelete={() => handleRemoveTag(tag)}
                     color="primary"

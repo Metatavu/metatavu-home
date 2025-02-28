@@ -50,7 +50,6 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
   const [tagError, setTagError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Initialize tags array if it doesn't exist
     if (!editedQuestionnaire.tags) {
       setEditedQuestionnaire(prev => ({...prev, tags: []}));
     }
@@ -112,26 +111,22 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
    * Function to add a new tag with validation
    */
   const handleAddTag = () => {
-    // Validate empty tags
     if (!newTag.trim()) {
       setTagError("Tag cannot be empty");
       return;
     }
     
-    // Validate duplicate tags (case-insensitive)
     const trimmedTag = newTag.trim();
     if (editedQuestionnaire.tags?.some(tag => tag.toLowerCase() === trimmedTag.toLowerCase())) {
       setTagError("Tag already exists");
       return;
     }
     
-    // Add the valid tag
     setEditedQuestionnaire(prev => ({
       ...prev,
       tags: [...(prev.tags || []), trimmedTag]
     }));
     
-    // Clear the input and error state
     setNewTag("");
     setTagError(null);
   };
@@ -139,7 +134,7 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
   /**
    * Function to remove a tag
    * 
-   * @param tagToRemove - The tag to remove
+   * @param string - The tag to remove
    */
   const handleRemoveTag = (tagToRemove: string) => {
     setEditedQuestionnaire(prev => ({
@@ -153,7 +148,7 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
    * 
    * @param event - Key press event
    */
-  const handleTagKeyPress = (event: React.KeyboardEvent) => {
+  const handleTagKeyDown = (event: React.KeyboardEvent) => {
     if (event.key === 'Enter') {
       event.preventDefault();
       handleAddTag();
@@ -326,10 +321,9 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
                   value={newTag}
                   onChange={(e) => {
                     setNewTag(e.target.value);
-                    // Clear error when user types
                     if (tagError) setTagError(null);
                   }}
-                  onKeyPress={handleTagKeyPress}
+                  onKeyDown={handleTagKeyDown}
                   size="small"
                   fullWidth
                   error={!!tagError}
@@ -476,4 +470,6 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
     </>
   );
 };
+
+
 export default QuestionnairesEditMode;

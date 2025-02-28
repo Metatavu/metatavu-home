@@ -34,7 +34,6 @@ import { usersAtom } from "src/atoms/user";
 import { userProfileAtom } from "src/atoms/auth";
 import type { User } from "src/generated/homeLambdasClient";
 
-// Define an interface that extends Questionnaire to ensure tags property
 interface EnhancedQuestionnaire extends Questionnaire {
   tags?: string[];
 }
@@ -44,7 +43,7 @@ interface EnhancedQuestionnaire extends Questionnaire {
  *
  * @returns Questionnaires from DynamoDB rendered in a x-data-grid table
  */
-const QuestionnaireTable = () => {
+  const QuestionnaireTable = () => {
   const adminMode = UserRoleUtils.adminMode();
   const navigate = useNavigate();
   const [_, setMode] = useState<QuestionnairePreviewMode>();
@@ -57,8 +56,6 @@ const QuestionnaireTable = () => {
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [deleteTitle, setDeleteTitle] = useState<string | null>(null);
   const [selectedQuestionnaire, setSelectedQuestionnaire] = useState<EnhancedQuestionnaire | null>(null);
-  
-  // State for tag popover
   const [tagPopoverAnchor, setTagPopoverAnchor] = useState<HTMLElement | null>(null);
   const [currentTags, setCurrentTags] = useState<string[]>([]);
   const setError = useSetAtom(errorAtom);
@@ -181,14 +178,11 @@ const QuestionnaireTable = () => {
    * Function to render the tags cell with improved styling and overflow handling
    */
   const renderTagsCell = (params: GridRenderCellParams) => {
-    const tags = Array.isArray(params.row.tags) ? params.row.tags : [];
-    
-    // Determine if we should show all tags or use "+X more" pattern
+    const tags: string[] = Array.isArray(params.row.tags) ? params.row.tags : [];
     const MAX_VISIBLE_TAGS = 1;
     const visibleTags = tags.slice(0, MAX_VISIBLE_TAGS);
     const hiddenTagsCount = Math.max(0, tags.length - MAX_VISIBLE_TAGS);
     
-    // Create a tooltip text with all tags when there are hidden tags
     const allTagsTooltip = tags.join(', ');
     
     return (
@@ -206,9 +200,9 @@ const QuestionnaireTable = () => {
       >
         {tags.length > 0 ? (
           <>
-            {visibleTags.map((tag: string, index: number) => (
+            {visibleTags.map((tag: string) => (
               <Chip
-                key={index}
+                key={tag}
                 label={tag}
                 size="small"
                 icon={<LabelIcon />}
@@ -253,7 +247,6 @@ const QuestionnaireTable = () => {
     );
   };
 
-  // Column configuration with improved tags column
   const columns = [
     { field: "title", headerName: `${strings.questionnaireTable.title}`, flex: 3 },
     { field: "description", headerName: `${strings.questionnaireTable.description}`, flex: 5 },
@@ -325,7 +318,6 @@ const QuestionnaireTable = () => {
     </Dialog>
   );
 
-  // Inline Tag Popover rendering - no need for separate component
   const renderTagPopover = () => (
     <Popover
       open={Boolean(tagPopoverAnchor)}
@@ -339,17 +331,19 @@ const QuestionnaireTable = () => {
         vertical: 'top',
         horizontal: 'center',
       }}
-      PaperProps={{
-        sx: { maxWidth: '400px', p: 2 }
+      slotProps={{
+        paper: { 
+          sx: { maxWidth: '400px', p: 2 } 
+        }
       }}
     >
       <Typography variant="subtitle2" sx={{ mb: 1 }}>
         All Tags ({currentTags.length})
       </Typography>
       <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-        {currentTags.map((tag, index) => (
+        {currentTags.map((tag) => (
           <Chip
-            key={index}
+            key={tag}
             label={tag}
             size="small"
             icon={<LabelIcon />}
