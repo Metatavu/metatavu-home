@@ -1,9 +1,15 @@
 import type { SelectChangeEvent } from "@mui/material";
 import { useState } from "react";
 import type { ResourceAllocations, ResourceAllocationsProject } from "src/generated/homeLambdasClient";
+import { SprintViewFilterTypes } from "../types";
 
+/**
+ * Custom hook to handle sprint view interactions.
+ * 
+ * @returns An object containing state variables and handler functions for sprint view interactions.
+ */
 const useSprintViewHandlers = () => {
-  const [filterType, setFilterType] = useState("project");
+  const [filterType, setFilterType] = useState(SprintViewFilterTypes.project);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedProject, setSelectedProject] = useState<ResourceAllocationsProject | null>(null);
 
@@ -24,10 +30,10 @@ const useSprintViewHandlers = () => {
    * @param row - type of ResourceAllocations.
    */
   const handleRowClick = (row: ResourceAllocations) => {
-    if (filterType === "project") {
+    if (filterType === SprintViewFilterTypes.project) {
       setSearchQuery(row.project?.name || "");
       setSelectedProject(row.project || null);
-    } else if (filterType === "user") {
+    } else if (filterType === SprintViewFilterTypes.user) {
       setSearchQuery(row.user?.name || "");
       setSelectedProject(row.project || null);
     }
@@ -50,30 +56,39 @@ const useSprintViewHandlers = () => {
    * 
    * @returns An array of resource allocations that match the filter criteria.
    */
-  const filterAllocations = (allocations: ResourceAllocations[], isAdmin: boolean) => {
+  const filterAllocations = (
+    allocations: ResourceAllocations[], 
+    isAdmin: boolean
+  ) => {
     const allocationsWithPhaseDuplication = new Map<string, ResourceAllocations>();
-
+  
     allocations.forEach((allocation) => {
-        const key = isAdmin 
-            ? `${allocation.project?.name}-${allocation.user?.name}`
-            : allocation.project?.name;
-
-        if (key?.toLowerCase().includes(searchQuery.toLowerCase())) {
-          allocationsWithPhaseDuplication.set(key, allocation);
-        }
+      const key = isAdmin
+        ? `${allocation.project?.name}-${allocation.user?.name}`
+        : allocation.project?.name;
+  
+      if (key?.toLowerCase().includes(searchQuery.toLowerCase())) {
+        allocationsWithPhaseDuplication.set(key, allocation);
+      }
     });
-
-    const newAllocationWithProjectDuplication = Array.from(allocationsWithPhaseDuplication.values());
-
-    const uniqueAllocations = newAllocationWithProjectDuplication.reduce((acc, allocation) => {
+  
+    const newAllocationWithProjectDuplication = Array.from(
+      allocationsWithPhaseDuplication.values()
+    );
+  
+    const uniqueAllocations = newAllocationWithProjectDuplication.reduce(
+      (acc, allocation) => {
         const projectId = allocation.project?.severaProjectId;
-
+  
         if (projectId && !acc.some((a) => a.project?.severaProjectId === projectId)) {
-            acc.push(allocation);
+          acc.push(allocation);
         }
+  
         return acc;
-    }, [] as ResourceAllocations[]);
-
+      }, 
+      [] as ResourceAllocations[]
+    );
+    
     return uniqueAllocations;
   };
 

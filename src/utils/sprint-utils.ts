@@ -26,12 +26,11 @@ export const getProjectName = (
 /**
  * Get assignee name
  *
- * @param user user with type ResourceAllocationsUser
- * @param users list of users with type ResourceAllocations[]
+ * @param resourceAllocations resourceAllocations with type ResourceAllocations[]
+ * @param project project with type ResourceAllocationsProject
  * 
  * @returns user name
  */
-
 export const getAssigneName = (resourceAllocations: ResourceAllocations[], project: ResourceAllocationsProject) => {
   const user = new Map();
   resourceAllocations

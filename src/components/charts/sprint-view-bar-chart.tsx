@@ -1,4 +1,4 @@
-import type React from "react";
+import { Box, Typography } from "@mui/material";
 import {
   ScatterChart,
   Scatter,
@@ -12,20 +12,34 @@ import strings from "src/localization/strings";
 import type { SprintViewChartData } from "src/types";
 import { getHoursAndMinutes } from "src/utils/time-utils";
 
+/**
+ * SprintViewScatterChart component props
+ */
 interface Props {
   chartData: SprintViewChartData[];
 }
 
+/**
+ * CustomTooltip component props
+ */
 interface CustomTooltipProps {
   active?: boolean;
   payload?: any[];
 }
 
-const CustomTooltip: React.FC<CustomTooltipProps> = ({
+/**
+ * CustomTooltip component
+ * 
+ * @param active boolean
+ * @param payload any[]
+ * 
+ * @returns JSX.Element
+ */
+const CustomTooltip= ({
   active,
   payload,
-}) => {
-  if (!active || !payload || payload.length === 0) return null;
+}: CustomTooltipProps) => {
+  if (!active || !payload || !payload.length) return null;
 
   const projectName = payload[0]?.payload?.projectName;
 
@@ -38,25 +52,23 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({
   );
   
   return (
-    <div >
-      <p >{projectName}</p>
+    <Box>
+      <Typography variant="h6">{projectName}</Typography>
       {actualEntry && (
-        <p >
-          {strings.sprint.timeAllocated}:{" "}
-          {getHoursAndMinutes(actualEntry.value)}
-        </p>
+        <Typography variant="body1">
+          {strings.sprint.timeAllocated}: {getHoursAndMinutes(actualEntry.value)}
+        </Typography>
       )}
       {estimatedEntry && (
-        <p >
-          {strings.sprint.timeEntries}:{" "}
-          {getHoursAndMinutes(estimatedEntry.value)}
-        </p>
+        <Typography variant="body1">
+          {strings.sprint.timeEntries}: {getHoursAndMinutes(estimatedEntry.value)}
+        </Typography>
       )}
-    </div>
+    </Box>
   );
 };
 
-const SprintViewScatterChart: React.FC<Props> = ({ chartData }) => {
+const SprintViewScatterChart = ({ chartData }: Props) => {
     const chartHeight = chartData.length === 1 ? 100 : chartData.length * 60;
     const estimatedData = chartData.map((item) => ({
       projectName: item.projectName,

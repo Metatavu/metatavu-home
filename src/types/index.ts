@@ -178,3 +178,11 @@ export interface PhaseRow {
   actualWorkHours: string | number;
   assignee: string;
 }
+
+/**
+ * Enum describing the filter types for the sprint view.
+ */
+export const SprintViewFilterTypes = {
+  project: "project",
+  user: "user",
+};

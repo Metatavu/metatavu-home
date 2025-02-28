@@ -92,7 +92,12 @@
     "startDate":"Aloituspäivämäärä",
     "deadLine":"Määräaika",
     "actualWorkHours": "Todelliset työajat",
-    "back":"Takaisin"
+    "back":"Takaisin",
+    "filter": "Suodata",
+    "filterType": "Suodattimen tyyppi",
+    "project": "Projekti",
+    "user": "Käyttäjä",
+    "searchBy": "Hae nimellä {0}"
   },
   "errors": {
     "fetchFailedGeneral": "Tietojen hakeminen epäonnistui",

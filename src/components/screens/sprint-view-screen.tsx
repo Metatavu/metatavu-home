@@ -123,23 +123,23 @@ const SprintViewScreen = () => {
                   </Typography>
                   <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                     <Typography variant="subtitle1" fontWeight="medium" color="text.secondary">
-                      Filter by:
+                      {strings.sprint.filter}
                     </Typography>
-                    <FormControl sx={{ minWidth: 120 }}>
-                      <InputLabel id="filter-select-label">Filter Type</InputLabel>
+                    <FormControl sx={{ minWidth: 140 }}>
+                      <InputLabel id="filter-select-label">{strings.sprint.filterType}</InputLabel>
                       <Select
                         labelId="filter-select-label"
                         value={filterType}
                         onChange={handleFilterChange}
                         label="Filter Type"
                       >
-                        <MenuItem value="project">Project</MenuItem>
-                        <MenuItem value="user">User</MenuItem>
+                        <MenuItem value="project">{strings.sprint.project}</MenuItem>
+                        <MenuItem value="user">{strings.sprint.user}</MenuItem>
                       </Select>
                     </FormControl>
                   </Box>
                   <TextField
-                    label={`Search by ${filterType === "project" ? "Project" : "User"}`}
+                    label={strings.formatString(strings.sprint.searchBy, filterType === "project" ? strings.sprint.project : strings.sprint.user)}
                     variant="outlined"
                     fullWidth
                     value={searchQuery}
