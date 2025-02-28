@@ -181,7 +181,6 @@ const QuestionnaireTable = () => {
    * Function to render the tags cell with improved styling and overflow handling
    */
   const renderTagsCell = (params: GridRenderCellParams) => {
-    // Extra safe handling of tags property
     const tags = Array.isArray(params.row.tags) ? params.row.tags : [];
     
     // Determine if we should show all tags or use "+X more" pattern
@@ -224,13 +223,12 @@ const QuestionnaireTable = () => {
                   }
                 }}
                 onClick={(e) => {
-                  e.stopPropagation(); // Prevent row click
-                  setSearchTerm(tag);  // Set search to this tag
+                  e.stopPropagation();
+                  setSearchTerm(tag); 
                 }}
               />
             ))}
-            
-            {/* Show "+X more" chip if there are hidden tags */}
+      
             {hiddenTagsCount > 0 && (
               <Chip
                 size="small"
@@ -389,7 +387,6 @@ const QuestionnaireTable = () => {
             : strings.questionnaireScreen.currentQuestionnaires}
         </Typography>
         
-        {/* Search Bar */}
         <Box sx={{ px: 2, pb: 2 }}>
           <TextField
             fullWidth
@@ -420,10 +417,10 @@ const QuestionnaireTable = () => {
           sx={{ 
             margin: 0,
             '& .MuiDataGrid-cell': {
-              padding: '8px', // Add some padding to cells
+              padding: '8px', 
             },
             '& .MuiDataGrid-columnHeader': {
-              padding: '0 8px', // Add some padding to headers
+              padding: '0 8px', 
             }
           }}
           rows={filteredQuestionnaires}
