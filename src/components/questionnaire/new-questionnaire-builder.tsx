@@ -48,8 +48,8 @@ const NewQuestionnaireBuilder = () => {
 
   const [tagInput, setTagInput] = useState<string>("");
   const [tagError, setTagError] = useState<string | null>(null);
+  
   const isDisabled = !questionnaire.title || !questionnaire.description;
-
   /**
    * Function to handle input change in the questionnaire title and description
    *
@@ -67,6 +67,7 @@ const NewQuestionnaireBuilder = () => {
 
   /**
    * Function to handle tag input change
+   * @param event
    */
   const handleTagInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     setTagInput(event.target.value);
@@ -99,6 +100,7 @@ const NewQuestionnaireBuilder = () => {
 
   /**
    * Function to handle key press in tag input
+   * @param event
    */
   const handleTagKeyDown = (event: React.KeyboardEvent) => {
     if (event.key === "Enter") {
@@ -108,7 +110,8 @@ const NewQuestionnaireBuilder = () => {
   };
 
   /**
-   * Function to remove a tag from the questionnaire
+   * Function to remove a tag from the questionnaire'
+   * @param tagToRemove string
    */
   const handleRemoveTag = (tagToRemove: string) => {
     setQuestionnaire((prevQuestionnaire) => ({
@@ -121,7 +124,7 @@ const NewQuestionnaireBuilder = () => {
    * Function to handle slider that pass value about what is the minimum score to pass the questionnaire
    *
    * @param event
-   * @param value number
+   * @param value number 
    */
   const handlePassScoreSliderChange = (_: Event, value: number | number[]) => {
     setQuestionnaire((prevQuestionnaire) => ({
@@ -136,13 +139,7 @@ const NewQuestionnaireBuilder = () => {
    * @param questionText string
    * @param answerOptions object
    */
-  const handleAddQuestion = ({
-    questionText,
-    answerOptions,
-  }: {
-    questionText: string;
-    answerOptions: AnswerOption[];
-  }) => {
+  const handleAddQuestion = (questionText: string, answerOptions: AnswerOption[]) => {
     setQuestionnaire((prevQuestionnaire) => ({
       ...prevQuestionnaire,
       questions: [
@@ -352,8 +349,12 @@ const NewQuestionnaireBuilder = () => {
               )}
             </Box>
           </Box>
-
-          <NewQuestionCard handleAddQuestion={handleAddQuestion} />
+          
+          <NewQuestionCard
+            handleAddQuestion={(params) =>
+              handleAddQuestion(params.questionText, params.answerOptions)
+            }
+          />
           <Card
             sx={{
               p: 2,
