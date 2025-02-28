@@ -9,7 +9,7 @@ import { SprintViewFilterTypes } from "../types";
  * @returns An object containing state variables and handler functions for sprint view interactions.
  */
 const useSprintViewHandlers = () => {
-  const [filterType, setFilterType] = useState(SprintViewFilterTypes.project);
+  const [filterType, setFilterType] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedProject, setSelectedProject] = useState<ResourceAllocationsProject | null>(null);
 
@@ -88,7 +88,7 @@ const useSprintViewHandlers = () => {
       }, 
       [] as ResourceAllocations[]
     );
-    
+
     return uniqueAllocations;
   };
 
