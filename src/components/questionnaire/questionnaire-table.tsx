@@ -61,7 +61,6 @@ const QuestionnaireTable = () => {
   // State for tag popover
   const [tagPopoverAnchor, setTagPopoverAnchor] = useState<HTMLElement | null>(null);
   const [currentTags, setCurrentTags] = useState<string[]>([]);
-  
   const setError = useSetAtom(errorAtom);
   const users = useAtomValue(usersAtom);
   const userProfile = useAtomValue(userProfileAtom);
@@ -73,11 +72,9 @@ const QuestionnaireTable = () => {
       setLoading(true);
       try {
         const response = await questionnairesApi.listQuestionnaires();
-        
-        // Process the response to ensure each questionnaire has a tags property
         const processedQuestionnaires = response.map(q => ({
           ...q,
-          tags: q.tags || [] // Ensure tags property exists
+          tags: q.tags || [] 
         }));
         
         setQuestionnaires(processedQuestionnaires);
@@ -90,7 +87,6 @@ const QuestionnaireTable = () => {
     fetchQuestionnaires();
   }, []);
 
-  //Search Functionality
   useEffect(() => {
     if (!searchTerm.trim()) {
       setFilteredQuestionnaires(questionnaires);
@@ -98,7 +94,6 @@ const QuestionnaireTable = () => {
     }
 
     const lowerCaseSearchTerm = searchTerm.toLowerCase().trim();
-    
     const filtered = questionnaires.filter((questionnaire) => {
       const titleMatch = questionnaire.title?.toLowerCase().includes(lowerCaseSearchTerm);
       const tagMatch = questionnaire.tags?.some(tag => 
@@ -118,9 +113,8 @@ const QuestionnaireTable = () => {
     setSearchTerm("");
   };
 
-  // Tag popover handlers
   const handleTagMoreClick = (event: React.MouseEvent<HTMLElement>, tags: string[]) => {
-    event.stopPropagation(); // Prevent row click
+    event.stopPropagation(); 
     setTagPopoverAnchor(event.currentTarget);
     setCurrentTags(tags);
   };

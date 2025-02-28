@@ -43,12 +43,11 @@ const NewQuestionnaireBuilder = () => {
     description: "",
     questions: [],
     passScore: 0,
-    tags: [], // Initialize empty tags array
+    tags: [], 
   });
-  // New state for tag input
+
   const [tagInput, setTagInput] = useState<string>("");
   const [tagError, setTagError] = useState<string | null>(null);
-
   const isDisabled = !questionnaire.title || !questionnaire.description;
 
   /**
@@ -60,7 +59,6 @@ const NewQuestionnaireBuilder = () => {
     event: ChangeEvent<HTMLInputElement>
   ) => {
     const { name, value } = event.target;
-
     setQuestionnaire((prevQuestionnaire) => ({
       ...prevQuestionnaire,
       [name]: value,
@@ -76,14 +74,12 @@ const NewQuestionnaireBuilder = () => {
   };
 
   const handleAddTag = () => {
-    const trimmedTag = tagInput.trim(); // Trim any extra spaces
-
+    const trimmedTag = tagInput.trim(); 
     if (!trimmedTag) {
       setTagError("Tag cannot be empty");
       return;
     }
 
-    // Check if the tag already exists (case-insensitive)
     const tagExists = questionnaire.tags?.some(
       (tag) => tag.toLowerCase() === trimmedTag.toLowerCase()
     );
@@ -92,13 +88,11 @@ const NewQuestionnaireBuilder = () => {
       return;
     }
 
-    // Add the new tag to the list
     setQuestionnaire((prevQuestionnaire) => ({
       ...prevQuestionnaire,
-      tags: [...(prevQuestionnaire.tags || []), trimmedTag],
+      tags: [...prevQuestionnaire.tags || [], trimmedTag],
     }));
 
-    // Clear input and error message
     setTagInput("");
     setTagError(null);
   };
@@ -296,7 +290,6 @@ const NewQuestionnaireBuilder = () => {
             sx={{ mt: 2, mb: 4 }}
           />
 
-          {/* Tags input section */}
           <Box sx={{ mb: 4 }}>
             <Typography variant="h6" gutterBottom>
               {"Tags"}
@@ -340,7 +333,6 @@ const NewQuestionnaireBuilder = () => {
               </Button>
             </Box>
 
-            {/* Display current tags */}
             <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mt: 2 }}>
               {questionnaire.tags && questionnaire.tags.length > 0 ? (
                 questionnaire.tags.map((tag, index) => (
