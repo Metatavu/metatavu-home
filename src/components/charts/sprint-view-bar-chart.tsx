@@ -39,7 +39,7 @@ const CustomTooltip= ({
   active,
   payload,
 }: CustomTooltipProps) => {
-  if (!active || !payload || !payload.length) return null;
+  if (!active || !payload?.length) return null;
 
   const projectName = payload[0]?.payload?.projectName;
 

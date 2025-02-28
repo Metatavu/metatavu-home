@@ -1,5 +1,5 @@
 import config from "src/app/config";
-import type { Phase, ResourceAllocations, ResourceAllocationsPhase, ResourceAllocationsProject, ResourceAllocationsUser, User, WorkHours } from "src/generated/homeLambdasClient";
+import type { Phase, ResourceAllocations, ResourceAllocationsPhase, ResourceAllocationsProject, User, WorkHours } from "src/generated/homeLambdasClient";
 import type { PhaseRow } from "../types";
 
 /**
