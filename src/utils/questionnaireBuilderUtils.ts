@@ -36,7 +36,15 @@ export const addTag = (
   if (!trimmedTag) {
     return { 
       updatedQuestionnaire: questionnaire, 
-      error: "Tag cannot be empty" 
+      error: strings.tags?.emptyTagError || "Tag cannot be empty" 
+    };
+  }
+
+  const MAX_TAG_LENGTH = 50;
+  if (trimmedTag.length > MAX_TAG_LENGTH) {
+    return {
+      updatedQuestionnaire: questionnaire,
+      error: strings.tags?.tagTooLongError || `Tag cannot exceed ${MAX_TAG_LENGTH} characters`
     };
   }
 
@@ -47,7 +55,15 @@ export const addTag = (
   if (tagExists) {
     return { 
       updatedQuestionnaire: questionnaire, 
-      error: "Tag already exists!" 
+      error: strings.tags?.duplicateTagError || "Tag already exists!" 
+    };
+  }
+
+  const MAX_TAGS = 10;
+  if (questionnaire.tags && questionnaire.tags.length >= MAX_TAGS) {
+    return {
+      updatedQuestionnaire: questionnaire,
+      error: strings.tags?.maxTagsError || `Maximum of ${MAX_TAGS} tags allowed`
     };
   }
 

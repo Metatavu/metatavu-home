@@ -231,14 +231,14 @@ const NewQuestionnaireBuilder = () => {
 
           <Box sx={{ mb: 4 }}>
             <Typography variant="h6" gutterBottom>
-              {"Tags"}
+              {(strings as any).tags?.title || "Tags"}
             </Typography>
             <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
               <TextField
                 value={tagInput}
                 onChange={handleTagInputChange}
                 onKeyDown={handleTagKeyDown}
-                placeholder="Add a tag..."
+                placeholder={(strings as any).tags?.addTagPlaceholder || "Add a tag..."}
                 variant="outlined"
                 size="small"
                 fullWidth
@@ -268,7 +268,7 @@ const NewQuestionnaireBuilder = () => {
                   },
                 }}
               >
-                {"ADD TAG"}
+                {(strings as any).tags?.addTag || "ADD TAG"}
               </Button>
             </Box>
 
@@ -286,7 +286,7 @@ const NewQuestionnaireBuilder = () => {
                 ))
               ) : (
                 <Typography variant="body2" color="text.secondary">
-                  {"No tags added yet"}
+                  {(strings as any).tags?.noTags || "No tags added yet"}
                 </Typography>
               )}
             </Box>

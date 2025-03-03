@@ -304,6 +304,15 @@
     "clearPassedUsers": "Tyhjennä läpäisseet käyttäjät tästä kyselystä",
     "snackbarMessageSuccess": "Kysely päivitetty onnistuneesti"
   },
+  "tags": {
+  "emptyTagError": "Tagi ei voi olla tyhjä",
+  "duplicateTagError": "Tagi on jo olemassa!",
+  "tagTooLongError": "Tagi ei voi olla yli 50 merkkiä pitkä",
+  "maxTagsError": "Enintään 10 tagia sallittu",
+  "addTag": "LISÄÄ TAGI",
+  "addTagPlaceholder": "Lisää tagi...",
+  "noTags": "Ei tageja vielä lisätty"
+},
   "balanceCard": {
     "totalFlextimeBalance": "Kokonaisbalanssi:",
     "employeeBalances": "Henkilöstön aikakirjaukset ja saldot",

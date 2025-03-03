@@ -1,7 +1,9 @@
 import QuestionnairePreview from "src/components/questionnaire/questionnaire-preview";
 import en from "./en.json";
 import fi from "./fi.json";
-import LocalizedStrings, { type LocalizedStringsMethods } from "localized-strings";
+import LocalizedStrings, {
+  type LocalizedStringsMethods,
+} from "localized-strings";
 
 /**
  * Localized strings
@@ -344,7 +346,7 @@ export interface Localized extends LocalizedStringsMethods {
   };
   /**
    * Translations related to New Questionnaire Card
-    */
+   */
   newQuestionnaireCard: {
     newQuestion: string;
     questionLabel: string;
@@ -356,7 +358,7 @@ export interface Localized extends LocalizedStringsMethods {
   };
   /**
    * Translations related to Questionnaire Table
-   */ 
+   */
   questionnaireTable: {
     title: string;
     description: string;
@@ -367,7 +369,7 @@ export interface Localized extends LocalizedStringsMethods {
     confirmDeleteTitle: string;
     cancel: string;
     confirm: string;
-  }; 
+  };
   /**
    * Translations related to Questionnaire Interaction Screen
    */
@@ -400,6 +402,18 @@ export interface Localized extends LocalizedStringsMethods {
     update: string;
     clearPassedUsers: string;
     snackbarMessageSuccess: string;
+  };
+  /**
+   * Translations related to tags
+   */
+  tags: {
+    emptyTagError: string;
+    duplicateTagError: string;
+    tagTooLongError: string;
+    maxTagsError: string;
+    addTag: string;
+    addTagPlaceholder: string;
+    noTags: string;
   };
   /**
    * Translations related to Balance Card

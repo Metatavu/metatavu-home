@@ -304,6 +304,15 @@
     "clearPassedUsers": "Remove all passed users from this questionnaire",
     "snackbarMessageSuccess": "Updated questionnaire successfully"
   },
+  "tags": {
+  "emptyTagError": "Tag cannot be empty",
+  "duplicateTagError": "Tag already exists!",
+  "tagTooLongError": "Tag cannot exceed 50 characters",
+  "maxTagsError": "Maximum of 10 tags allowed",
+  "addTag": "ADD TAG",
+  "addTagPlaceholder": "Add a tag...",
+  "noTags": "No tags added yet"
+},
   "balanceCard": {
     "totalFlextimeBalance": "Total flextime balance:",
     "employeeBalances": "Employee time totals and balances",
