@@ -52,15 +52,16 @@ const NewQuestionnaireBuilder = () => {
   const [loading, setLoading] = useState(false);
   const setError = useSetAtom(errorAtom);
   const [questionnaire, setQuestionnaire] = useState<Questionnaire>(createEmptyQuestionnaire());
-
   const [tagInput, setTagInput] = useState<string>("");
   const [tagError, setTagError] = useState<string | null>(null);
-  
   const isDisabled = !isFormValid(questionnaire);
-
-  /**
-   * Function to handle input change in the questionnaire title and description
-   */
+ /**
+ * Function to handle input change in the questionnaire title and description
+ *
+ * @param event - The change event from the input field
+ * @param questionnaire - The current questionnaire state object
+ * @returns Updated questionnaire object with the new input value
+ */
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     setQuestionnaire(prevQuestionnaire => 
       handleQuestionnaireInputChange(event, prevQuestionnaire)
@@ -68,8 +69,10 @@ const NewQuestionnaireBuilder = () => {
   };
 
   /**
-   * Function to handle tag input change
-   */
+ * Function to handle tag input change
+ * 
+ * @param event - The change event from the input field that contains the new tag value
+ */
   const handleTagInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     setTagInput(event.target.value);
     if (tagError) setTagError(null);
@@ -119,9 +122,12 @@ const NewQuestionnaireBuilder = () => {
     );
   };
 
-  /**
-   * Functions to add new question to Questionnaire that is being built
-   */
+ /**
+ * Functions to add new question to Questionnaire that is being built
+ * 
+ * @param questionText - The text content of the question to be added
+ * @param answerOptions - Array of answer options for the question
+ */
   const handleAddQuestion = (questionText: string, answerOptions: AnswerOption[]) => {
     setQuestionnaire(prevQuestionnaire => 
       addQuestion(questionText, answerOptions, prevQuestionnaire)
@@ -136,10 +142,14 @@ const NewQuestionnaireBuilder = () => {
       removeQuestion(index, prevQuestionnaire)
     );
   };
-
-  /**
-   * Function to edit question in the questionnaire that is being built
-   */
+/**
+ * Function to edit question in the questionnaire that is being built
+ *
+ * @param index - The index of the question to be edited
+ * @param updatedQuestion - The new question data to replace the existing question
+ * @param questionnaire - The current questionnaire state object
+ * @returns Updated questionnaire object with the edited question
+ */
   const editQuestionInPreview = (index: number, updatedQuestion: Question) => {
     setQuestionnaire(prevQuestionnaire => 
       editQuestion(index, updatedQuestion, prevQuestionnaire)
@@ -264,9 +274,9 @@ const NewQuestionnaireBuilder = () => {
 
             <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mt: 2 }}>
               {questionnaire.tags && questionnaire.tags.length > 0 ? (
-                questionnaire.tags.map((tag, questionnaireId) => (
+                questionnaire.tags.map((tag) => (
                   <Chip
-                    key={questionnaireId}
+                    key={tag}
                     label={tag}
                     onDelete={() => handleRemoveTag(tag)}
                     color="primary"
