@@ -407,6 +407,9 @@ export interface Localized extends LocalizedStringsMethods {
    * Translations related to tags
    */
   tags: {
+    title: string;         
+    searchPlaceholder: string; 
+    allTags: string;     
     emptyTagError: string;
     duplicateTagError: string;
     tagTooLongError: string;

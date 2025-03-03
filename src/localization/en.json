@@ -305,6 +305,9 @@
     "snackbarMessageSuccess": "Updated questionnaire successfully"
   },
   "tags": {
+  "title": "Tags",
+  "searchPlaceholder": "Search by title or tags...",
+  "allTags": "All Tags",
   "emptyTagError": "Tag cannot be empty",
   "duplicateTagError": "Tag already exists!",
   "tagTooLongError": "Tag cannot exceed 50 characters",

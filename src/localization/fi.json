@@ -305,6 +305,9 @@
     "snackbarMessageSuccess": "Kysely päivitetty onnistuneesti"
   },
   "tags": {
+  "title": "Tagit",
+  "searchPlaceholder": "Hae otsikon tai tagien mukaan...",
+  "allTags": "Kaikki tagit",
   "emptyTagError": "Tagi ei voi olla tyhjä",
   "duplicateTagError": "Tagi on jo olemassa!",
   "tagTooLongError": "Tagi ei voi olla yli 50 merkkiä pitkä",

@@ -240,7 +240,7 @@ interface EnhancedQuestionnaire extends Questionnaire {
           </>
         ) : (
           <Typography variant="body2" color="text.secondary">
-            {'No tags'}
+            {strings.tags.noTags}
           </Typography>
         )}
       </Box>
@@ -252,7 +252,7 @@ interface EnhancedQuestionnaire extends Questionnaire {
     { field: "description", headerName: `${strings.questionnaireTable.description}`, flex: 5 },
     { 
       field: "tags", 
-      headerName: "Tags",
+      headerName: strings.tags.title || "Tags",
       flex: 3,
       minWidth: 180,
       renderCell: renderTagsCell,
@@ -261,7 +261,7 @@ interface EnhancedQuestionnaire extends Questionnaire {
       renderHeader: () => (
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <LabelIcon sx={{ mr: 0.5, fontSize: '1.25rem' }} />
-          <Typography variant="subtitle2">Tags</Typography>
+          <Typography variant="subtitle2">{strings.tags.title}</Typography>
         </Box>
       )
     },
@@ -338,7 +338,7 @@ interface EnhancedQuestionnaire extends Questionnaire {
       }}
     >
       <Typography variant="subtitle2" sx={{ mb: 1 }}>
-        All Tags ({currentTags.length})
+        {`All Tags`} ({currentTags.length})
       </Typography>
       <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
         {currentTags.map((tag) => (
@@ -433,7 +433,6 @@ interface EnhancedQuestionnaire extends Questionnaire {
       </Paper>
       {/* Render the tag popover inline */}
       {renderTagPopover()}
-      
       {renderConfirmDeleteDialog()}
     </>
   );
