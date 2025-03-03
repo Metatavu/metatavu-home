@@ -28,6 +28,19 @@ import { useLambdasApi } from "src/hooks/use-api";
 import { useSetAtom } from "jotai";
 import { errorAtom } from "src/atoms/error";
 import QuestionnairePreview from "./questionnaire-preview";
+import {
+  handleQuestionnaireInputChange,
+  addTag,
+  removeTag,
+  updatePassScore,
+  addQuestion,
+  removeQuestion,
+  editQuestion,
+  countCorrectAnswers,
+  getTooltipMessage,
+  createEmptyQuestionnaire,
+  isFormValid
+} from "src/utils/questionnaireBuilderUtils";
 
 /**
  * New Questionnaire Builder component
@@ -38,69 +51,48 @@ const NewQuestionnaireBuilder = () => {
   const { questionnairesApi } = useLambdasApi();
   const [loading, setLoading] = useState(false);
   const setError = useSetAtom(errorAtom);
-  const [questionnaire, setQuestionnaire] = useState<Questionnaire>({
-    title: "",
-    description: "",
-    questions: [],
-    passScore: 0,
-    tags: [], 
-  });
+  const [questionnaire, setQuestionnaire] = useState<Questionnaire>(createEmptyQuestionnaire());
 
   const [tagInput, setTagInput] = useState<string>("");
   const [tagError, setTagError] = useState<string | null>(null);
   
-  const isDisabled = !questionnaire.title || !questionnaire.description;
+  const isDisabled = !isFormValid(questionnaire);
+
   /**
    * Function to handle input change in the questionnaire title and description
-   *
-   * @param event
    */
-  const handleQuestionnaireInputChange = (
-    event: ChangeEvent<HTMLInputElement>
-  ) => {
-    const { name, value } = event.target;
-    setQuestionnaire((prevQuestionnaire) => ({
-      ...prevQuestionnaire,
-      [name]: value,
-    }));
+  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setQuestionnaire(prevQuestionnaire => 
+      handleQuestionnaireInputChange(event, prevQuestionnaire)
+    );
   };
 
   /**
    * Function to handle tag input change
-   * @param event
    */
   const handleTagInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     setTagInput(event.target.value);
     if (tagError) setTagError(null);
   };
 
+  /**
+   * Function to handle adding a tag
+   */
   const handleAddTag = () => {
-    const trimmedTag = tagInput.trim(); 
-    if (!trimmedTag) {
-      setTagError("Tag cannot be empty");
+    const { updatedQuestionnaire, error } = addTag(tagInput, questionnaire);
+    
+    if (error) {
+      setTagError(error);
       return;
     }
-
-    const tagExists = questionnaire.tags?.some(
-      (tag) => tag.toLowerCase() === trimmedTag.toLowerCase()
-    );
-    if (tagExists) {
-      setTagError("Tag already exists!");
-      return;
-    }
-
-    setQuestionnaire((prevQuestionnaire) => ({
-      ...prevQuestionnaire,
-      tags: [...prevQuestionnaire.tags || [], trimmedTag],
-    }));
-
+    
+    setQuestionnaire(updatedQuestionnaire);
     setTagInput("");
     setTagError(null);
   };
 
   /**
    * Function to handle key press in tag input
-   * @param event
    */
   const handleTagKeyDown = (event: React.KeyboardEvent) => {
     if (event.key === "Enter") {
@@ -110,117 +102,57 @@ const NewQuestionnaireBuilder = () => {
   };
 
   /**
-   * Function to remove a tag from the questionnaire'
-   * @param tagToRemove string
+   * Function to remove a tag from the questionnaire
    */
   const handleRemoveTag = (tagToRemove: string) => {
-    setQuestionnaire((prevQuestionnaire) => ({
-      ...prevQuestionnaire,
-      tags: prevQuestionnaire.tags?.filter((tag) => tag !== tagToRemove) || [],
-    }));
+    setQuestionnaire(prevQuestionnaire => 
+      removeTag(tagToRemove, prevQuestionnaire)
+    );
   };
 
   /**
    * Function to handle slider that pass value about what is the minimum score to pass the questionnaire
-   *
-   * @param event
-   * @param value number 
    */
   const handlePassScoreSliderChange = (_: Event, value: number | number[]) => {
-    setQuestionnaire((prevQuestionnaire) => ({
-      ...prevQuestionnaire,
-      passScore: value as number,
-    }));
+    setQuestionnaire(prevQuestionnaire => 
+      updatePassScore(value, prevQuestionnaire)
+    );
   };
 
   /**
    * Functions to add new question to Questionnaire that is being built
-   *
-   * @param questionText string
-   * @param answerOptions object
    */
   const handleAddQuestion = (questionText: string, answerOptions: AnswerOption[]) => {
-    setQuestionnaire((prevQuestionnaire) => ({
-      ...prevQuestionnaire,
-      questions: [
-        ...prevQuestionnaire.questions,
-        { questionText, answerOptions },
-      ],
-    }));
+    setQuestionnaire(prevQuestionnaire => 
+      addQuestion(questionText, answerOptions, prevQuestionnaire)
+    );
   };
 
   /**
    * Function to delete question from the questionnaire that is being built
-   *
-   * @param index number
    */
   const removeQuestionFromPreview = (index: number) => {
-    setQuestionnaire((prevQuestionnaire) => ({
-      ...prevQuestionnaire,
-      questions: prevQuestionnaire.questions.filter((_, i) => i !== index),
-    }));
+    setQuestionnaire(prevQuestionnaire => 
+      removeQuestion(index, prevQuestionnaire)
+    );
   };
 
   /**
    * Function to edit question in the questionnaire that is being built
-   *
-   * @param index number
-   * @param updatedQuestion question
    */
   const editQuestionInPreview = (index: number, updatedQuestion: Question) => {
-    setQuestionnaire((prev) => ({
-      ...prev,
-      questions: prev.questions.map((question, i) =>
-        i === index ? updatedQuestion : question
-      ),
-    }));
-  };
-
-  /**
-   * Function to count all correct answers in the questionnaire, used for passScore determination
-   */
-  const countCorrectAnswers = () => {
-    return questionnaire.questions.reduce((count, question) => {
-      return (
-        count +
-        (question.answerOptions?.filter((option) => option.isCorrect).length ||
-          0)
-      );
-    }, 0);
+    setQuestionnaire(prevQuestionnaire => 
+      editQuestion(index, updatedQuestion, prevQuestionnaire)
+    );
   };
 
   /**
    * Function to close and clear the questionnaire form
    */
   const closeAndClear = async () => {
-    setQuestionnaire({
-      title: "",
-      description: "",
-      questions: [],
-      passScore: 0,
-      tags: [],
-    });
+    setQuestionnaire(createEmptyQuestionnaire());
     setTagInput("");
     setTagError(null);
-  };
-
-  /**
-   * Function to check and set the tooltip message and isDisabled state
-   */
-  const renderUpdatedTooltips = () => {
-    const isTitleEmpty = !questionnaire.title.trim();
-    const isDescriptionEmpty = !questionnaire.description.trim();
-
-    if (isTitleEmpty && isDescriptionEmpty) {
-      return strings.newQuestionnaireBuilder.tooltipBothEmpty;
-    }
-    if (isTitleEmpty) {
-      return strings.newQuestionnaireBuilder.tooltipEmptyTitle;
-    }
-    if (isDescriptionEmpty) {
-      return strings.newQuestionnaireBuilder.tooltipEmptyDescription;
-    }
-    return "";
   };
 
   /**
@@ -269,7 +201,7 @@ const NewQuestionnaireBuilder = () => {
             label={strings.newQuestionnaireBuilder.title}
             placeholder={strings.newQuestionnaireBuilder.insertTitle}
             value={questionnaire.title}
-            onChange={handleQuestionnaireInputChange}
+            onChange={handleInputChange}
             variant="outlined"
             fullWidth
             required
@@ -280,7 +212,7 @@ const NewQuestionnaireBuilder = () => {
             label={strings.newQuestionnaireBuilder.description}
             placeholder={strings.newQuestionnaireBuilder.insertDescription}
             value={questionnaire.description}
-            onChange={handleQuestionnaireInputChange}
+            onChange={handleInputChange}
             variant="outlined"
             fullWidth
             required
@@ -388,7 +320,7 @@ const NewQuestionnaireBuilder = () => {
                   sx={{ display: "flex", alignItems: "center", mb: 1, mt: 1 }}
                 >
                   {strings.newQuestionnaireBuilder.countedAnswers}{" "}
-                  {countCorrectAnswers()}
+                  {countCorrectAnswers(questionnaire)}
                 </Typography>
                 <Typography variant="h6" gutterBottom sx={{ mb: 1, mt: 1 }}>
                   {strings.newQuestionnaireBuilder.requiredAnswers}{" "}
@@ -400,12 +332,12 @@ const NewQuestionnaireBuilder = () => {
                   step={1}
                   marks
                   min={0}
-                  max={countCorrectAnswers()}
+                  max={countCorrectAnswers(questionnaire)}
                   valueLabelDisplay="auto"
                   sx={{ mt: 1, mb: 1, width: "70%" }}
                 />
               </Box>
-              <Tooltip title={renderUpdatedTooltips()} placement="bottom">
+              <Tooltip title={getTooltipMessage(questionnaire)} placement="bottom">
                 <span>
                   <Button
                     sx={{ display: "flex", alignItems: "center", mt: 6, mr: 4 }}
