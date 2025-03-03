@@ -112,13 +112,13 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
    */
   const handleAddTag = () => {
     if (!newTag.trim()) {
-      setTagError("Tag cannot be empty");
+      setTagError((strings as any).tags?.emptyTagError || "Tag cannot be empty");
       return;
     }
     
     const trimmedTag = newTag.trim();
     if (editedQuestionnaire.tags?.some(tag => tag.toLowerCase() === trimmedTag.toLowerCase())) {
-      setTagError("Tag already exists");
+      setTagError((strings as any).tags?.duplicateTagError || "Tag already exists");
       return;
     }
     
@@ -297,7 +297,7 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
           
           {/* Tags Section */}
           <Box sx={{ mb: 4 }}>
-            <Typography variant="subtitle1" sx={{ mb: 1 }}>Tags</Typography>
+            <Typography variant="subtitle1" sx={{ mb: 1 }}>{(strings as any).tags?.title || "Tags"}</Typography>
             <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', mb: 2 }}>
               {editedQuestionnaire.tags?.map((tag, index) => (
                 <Chip
@@ -310,14 +310,14 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
               ))}
               {(!editedQuestionnaire.tags || editedQuestionnaire.tags.length === 0) && (
                 <Typography variant="body2" color="text.secondary">
-                  No tags added yet
+                  {(strings as any).tags?.noTags || "No tags added yet"}
                 </Typography>
               )}
             </Box>
             <Box sx={{ display: 'flex', gap: 1, alignItems: 'flex-start', flexDirection: 'column' }}>
               <Box sx={{ display: 'flex', gap: 1, width: '100%' }}>
                 <TextField
-                  label="Add a tag"
+                  label={(strings as any).tags?.addTagPlaceholder || "Add a tag"}
                   value={newTag}
                   onChange={(e) => {
                     setNewTag(e.target.value);
@@ -343,7 +343,7 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
                     }
                   }}
                 >
-                  Add Tag
+                  {(strings as any).tags?.addTag || "Add Tag"}
                 </Button>
               </Box>
             </Box>
