@@ -69,9 +69,9 @@ interface EnhancedQuestionnaire extends Questionnaire {
       setLoading(true);
       try {
         const response = await questionnairesApi.listQuestionnaires();
-        const processedQuestionnaires = response.map(q => ({
-          ...q,
-          tags: q.tags || [] 
+        const processedQuestionnaires = response.map(question => ({
+          ...question,
+          tags: question.tags || [] 
         }));
         
         setQuestionnaires(processedQuestionnaires);
@@ -431,7 +431,6 @@ interface EnhancedQuestionnaire extends Questionnaire {
           pageSizeOptions={[5, 10, 25, 50, 100]}
         />
       </Paper>
-      
       {/* Render the tag popover inline */}
       {renderTagPopover()}
       

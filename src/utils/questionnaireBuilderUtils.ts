@@ -1,4 +1,4 @@
-import { ChangeEvent } from "react";
+import type { ChangeEvent } from "react";
 import type { Question, AnswerOption, Questionnaire } from "src/generated/homeLambdasClient";
 import strings from "src/localization/strings";
 

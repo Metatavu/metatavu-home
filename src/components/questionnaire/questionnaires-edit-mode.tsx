@@ -134,7 +134,7 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
   /**
    * Function to remove a tag
    * 
-   * @param string - The tag to remove
+   * @param tagToRemove - type string
    */
   const handleRemoveTag = (tagToRemove: string) => {
     setEditedQuestionnaire(prev => ({
@@ -470,6 +470,5 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
     </>
   );
 };
-
 
 export default QuestionnairesEditMode;
