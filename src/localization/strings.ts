@@ -120,6 +120,11 @@ export interface Localized extends LocalizedStringsMethods {
     deadLine: string;
     actualWorkHours: string;
     back: string;
+    filter: string;
+    filterType: string;
+    project: string;
+    user: string;
+    searchBy: string;
   };
   /**
    * General time-related expressions

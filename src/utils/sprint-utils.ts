@@ -1,5 +1,6 @@
 import config from "src/app/config";
-import type { Phase, ResourceAllocations, ResourceAllocationsPhase, ResourceAllocationsProject, ResourceAllocationsUser, User, WorkHours } from "src/generated/homeLambdasClient";
+import type { Phase, ResourceAllocations, ResourceAllocationsPhase, ResourceAllocationsProject, User, WorkHours } from "src/generated/homeLambdasClient";
+import type { PhaseRow } from "../types";
 
 /**
  * Get project name
@@ -25,22 +26,20 @@ export const getProjectName = (
 /**
  * Get assignee name
  *
- * @param user user with type ResourceAllocationsUser
- * @param users list of users with type ResourceAllocations[]
+ * @param resourceAllocations resourceAllocations with type ResourceAllocations[]
+ * @param project project with type ResourceAllocationsProject
  * 
  * @returns user name
  */
-export const getAssigneName = (
-  user: ResourceAllocationsUser,
-  resourceAllocations: ResourceAllocations[]
-) => {
-  const foundUser = resourceAllocations.find(
-    (resourceAllocations) => resourceAllocations.user?.severaUserId === user.severaUserId
-  );
-  if (foundUser) {
-    return foundUser.user?.name|| "";
-  }
-};
+export const getAssigneName = (resourceAllocations: ResourceAllocations[], project: ResourceAllocationsProject) => {
+  const user = new Map();
+  resourceAllocations
+    .filter((allocation) => allocation.project?.severaProjectId === project.severaProjectId)
+    .forEach((allocation) => {
+      user.set(allocation.user?.severaUserId, allocation.user?.name);
+    });
+  return Array.from(user.values()).join(", ");
+}
 
 /**
  * Get phase name
@@ -118,7 +117,12 @@ export const getSeveraUserId = (user: User): string => {
  * 
  * @returns total work hours for each phase according to the userId
  */
-const totalWorkHours = (workHours: WorkHours[], phase: Phase, userId: string) => {
+const totalWorkHours = (workHours: WorkHours[], phase: Phase, userId: string, adminMode: boolean) => {
+  if(adminMode) {
+    return workHours
+      .filter(workHour => workHour.phase?.severaPhaseId === phase.severaPhaseId)
+      .reduce((total, workHour) => total + (workHour.quantity || 0), 0);
+  }
   return workHours
     .filter(workHour => {
       const matchingPhase = workHour.phase?.severaPhaseId === phase.severaPhaseId;
@@ -135,12 +139,12 @@ const totalWorkHours = (workHours: WorkHours[], phase: Phase, userId: string) =>
  * 
  * @returns assignee's name for each phase
  */
-const getAssigneeWorkHours = (workHours: WorkHours[]) => {
+const getAssigneeWorkHours = (workHours: WorkHours[], phase: Phase) => {
   const assigneeMap = new Map();
 
   workHours
     .forEach((workHour) => {
-      if (workHour.user?.severaUserId) {
+      if (workHour.user?.severaUserId && workHour.phase?.severaPhaseId === phase.severaPhaseId) {
         assigneeMap.set(workHour.user.severaUserId, workHour.user.name);
       }
     });
@@ -156,14 +160,46 @@ const getAssigneeWorkHours = (workHours: WorkHours[]) => {
  * 
  * @returns PhaseRow
  */
-export const mapPhasesToRows = (phase: Phase, workHours: WorkHours[], userId: string) => {
+export const mapPhasesToRows = (phase: Phase, workHours: WorkHours[], userId: string, resourceAllocations: ResourceAllocations[], adminMode: boolean) : PhaseRow | null=> {
+  const workHour = workHours.find(workHour => workHour.phase?.severaPhaseId === phase.severaPhaseId && workHour.user?.severaUserId === userId);
+  if(!workHour && !adminMode) {
+    return null;
+  }
   return {
     id: phase.severaPhaseId || "",
     title: phase.name || "",
-    estimateWorkHours: phase.workHoursEstimate || "0",
+    estimateWorkHours: adminMode ? phase.workHoursEstimate || "0" : getEstimateHoursUser(resourceAllocations, phase) || "0",
     startDate: phase.startDate?.toISOString().split("T")[0] || "",
     deadline: phase.deadline?.toISOString().split("T")[0] || "",
-    actualWorkHours: totalWorkHours(workHours, phase, userId),
-    assignee: getAssigneeWorkHours(workHours),
+    actualWorkHours: totalWorkHours(workHours, phase, userId, adminMode),
+    assignee: adminMode ? getAssigneeWorkHours(workHours, phase) : workHour?.user?.name || "",
   };
 };
+
+/**
+ * Get total estimated hours (general) with matching project
+ * 
+ * @param resourceAllocations with type ResourceAllocations[]
+ * @param project with type ResourceAllocationsProject
+ * 
+ * @returns total estimated hours for each phase
+ */
+export const getTotalEstimatedHours = (resourceAllocations: ResourceAllocations[], project: ResourceAllocationsProject) => {
+  return resourceAllocations
+    .filter((allocation) => allocation.project?.severaProjectId === project.severaProjectId)
+    .reduce((total, allocation) => total + (allocation.allocationHours || 0), 0);
+}
+
+/**
+ * Get total estimated hours with matching phase
+ * 
+ * @param resourceAllocations with type ResourceAllocations[]
+ * @param phase with type Phase
+ * 
+ * @returns total estimated hours for each phase
+ */
+export const getEstimateHoursUser = (resourceAllocations: ResourceAllocations[], phase: Phase): string | number => {
+  return resourceAllocations
+    .filter((allocation) => allocation.phase?.severaPhaseId === phase.severaPhaseId )
+    .reduce((total, allocation) => total + (allocation.allocationHours || 0), 0);
+}
