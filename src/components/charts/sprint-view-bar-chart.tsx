@@ -1,86 +1,110 @@
-import { Bar, BarChart, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { Box, Typography } from "@mui/material";
+import {
+  ScatterChart,
+  Scatter,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 import strings from "src/localization/strings";
 import type { SprintViewChartData } from "src/types";
 import { getHoursAndMinutes } from "src/utils/time-utils";
 
 /**
- * Component properties for BarChart
+ * SprintViewScatterChart component props
  */
 interface Props {
   chartData: SprintViewChartData[];
 }
 
 /**
- * Tooltip for chart component
- * 
- * @param payload project values
- * @param label name of the project
+ * CustomTooltip component props
  */
-const CustomTooltip = ({ payload, label }: any) => {
-  if (!payload.length) return;
+interface CustomTooltipProps {
+  active?: boolean;
+  payload?: any[];
+}
 
+/**
+ * CustomTooltip component
+ * 
+ * @param active boolean
+ * @param payload any[]
+ * 
+ * @returns JSX.Element
+ */
+const CustomTooltip= ({
+  active,
+  payload,
+}: CustomTooltipProps) => {
+  if (!active || !payload?.length) return null;
+
+  const projectName = payload[0]?.payload?.projectName;
+
+  const estimatedEntry = payload.find(
+    (entry) => entry.name === strings.sprint.timeEntries
+  );
+
+  const actualEntry = payload.find(
+    (entry) => entry.name === strings.sprint.timeAllocated
+  );
+  
   return (
-    <div style={{backgroundColor:"white", opacity:"0.8", borderRadius:"10px"}}>
-      <p style={{padding:"10px 10px 0px 10px"}}>{label}</p>
-      <p style={{padding:"0px 10px 0px 10px"}}>
-        {strings.sprint.allocation}: {getHoursAndMinutes(payload[0].value as number)}
-      </p>
-      <p style={{padding:"0px 10px 10px 10px"}}>
-        {strings.sprint.timeEntries}: {getHoursAndMinutes(payload[1].value as number)}
-      </p>
-    </div>
+    <Box>
+      <Typography variant="h6">{projectName}</Typography>
+      {actualEntry && (
+        <Typography variant="body1">
+          {strings.sprint.timeAllocated}: {getHoursAndMinutes(actualEntry.value)}
+        </Typography>
+      )}
+      {estimatedEntry && (
+        <Typography variant="body1">
+          {strings.sprint.timeEntries}: {getHoursAndMinutes(estimatedEntry.value)}
+        </Typography>
+      )}
+    </Box>
   );
 };
 
-/**
- * Sprint overview chart component
- * 
- * @param chartData component properties
- */
-const SprintViewBarChart = ({chartData}: Props) => 
-  <ResponsiveContainer
-  width="100%"
-  height={chartData.length === 1 ? 100 : chartData.length * 60}
-  >
-    <BarChart
-      data={chartData}
-      layout="vertical"
-      barGap={0}
-      margin={{ top: 0, right: 0, left: 0, bottom: 0 }}
-    >
-      <XAxis
-        type="number"
-        axisLine
-        domain={[0, (dataMax: number) => dataMax]} 
-        style={{ fontSize: "14px" }}
-        padding={{ left: 0, right: 0 }}
-      />
-      <YAxis
-        type="category"
-        dataKey="projectName"
-        tick={{ fontSize: "14px" }}
-        width={150}
-      />
-      <Tooltip content={<CustomTooltip />}/>
-      <Bar
-        dataKey="actualWorkHours"
-        name={strings.sprint.timeAllocated}
-        barSize={20}
-      >
-        {chartData.map((entry) => (
-            <Cell key={`cell-actual-workHours-${entry.severaResourceAllocationId}`} fill="#8884d8"/>
-          ))}
-      </Bar>
-      <Bar
-        dataKey="estimatedWorkHour"
-        name={strings.sprint.timeEntries}
-        barSize={20}
-      >
-        {chartData.map((entry) => (
-            <Cell style={{opacity: "0.5"}} key={`cell-estimated-WorkHours-${entry.severaResourceAllocationId}`} fill="#82ca9d"/>
-          ))}
-      </Bar>
-    </BarChart>
-  </ResponsiveContainer>
+const SprintViewScatterChart = ({ chartData }: Props) => {
+    const chartHeight = chartData.length === 1 ? 100 : chartData.length * 60;
+    const estimatedData = chartData.map((item) => ({
+      projectName: item.projectName,
+      x: item.estimatedWorkHour,
+    }));
 
-export default SprintViewBarChart;
+  return (
+    <ResponsiveContainer width="100%" height={chartHeight}>
+      <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
+        <CartesianGrid />
+        <XAxis
+          type="number"
+          dataKey="x"
+          name="Work Hours"
+          tick={{ fontSize: 14 }}
+          axisLine
+          padding={{ left: 0, right: 0 }}
+          domain={[0, (dataMax: number) => dataMax]}
+        />
+        <YAxis
+          type="category"
+          dataKey="projectName"
+          name="Project"
+          tick={{ fontSize: 14 }}
+          width={150}
+          interval={0}
+        />
+        <Tooltip content={<CustomTooltip />} />
+        <Scatter
+          name={strings.sprint.timeEntries}
+          data={estimatedData}
+          fill="#4d4788"
+        />
+      </ScatterChart>
+    </ResponsiveContainer>
+  );
+};
+
+export default SprintViewScatterChart;

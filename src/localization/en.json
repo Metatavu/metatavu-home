@@ -93,7 +93,12 @@
     "startDate":"Start Date",
     "deadLine":"Deadline",
     "actualWorkHours": "Actual Work Hours",
-    "back":"Back"
+    "back":"Back",
+    "filter": "Filter by",
+    "filterType": "Filter type",
+    "project": "Project",
+    "user": "User",
+    "searchBy": "Search by {0}"
   },
   "errors": {
     "fetchFailedGeneral": "There was an error fetching data",
