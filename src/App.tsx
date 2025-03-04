@@ -64,7 +64,9 @@ const App = () => {
           element: <QuestionnaireManager mode={QuestionnairePreviewMode.FILL} />
         },{
         path: "/settings",
-        element: <SettingsScreen/>
+        element: <SettingsScreen onSave={() => {
+          throw new Error("Function not implemented.");
+        }} />
       } 
       ]
     },

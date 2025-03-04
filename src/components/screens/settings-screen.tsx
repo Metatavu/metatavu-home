@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Typography, Box, Switch, Button } from "@mui/material";
 import strings from "src/localization/strings";
+/* import { saveConsent } from "src/utils/consent-utils"; */
 
 /**
  *
@@ -15,7 +16,8 @@ const SettingsScreen = ({ onSave }: { onSave: (isAccepted: boolean) => void }) =
   };
 
   const handleButtonClick = () => {
-    console.log("settings not saved):", { isAccepted });
+    saveConsent(isAccepted);
+    console.log("settings saved:", { isAccepted });
     onSave(isAccepted);
   };
 
@@ -31,7 +33,7 @@ const SettingsScreen = ({ onSave }: { onSave: (isAccepted: boolean) => void }) =
         <Switch
           checked={isAccepted}
           onChange={handleToggleChange}
-          inputProps={{ "aria-label": "information " }}
+          inputProps={{ "aria-label": "information" }}
         />
         <Typography variant="body1" sx={{ marginLeft: 2 }}>
           {strings.settingsScreen.accept}
