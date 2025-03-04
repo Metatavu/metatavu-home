@@ -240,7 +240,7 @@ interface EnhancedQuestionnaire extends Questionnaire {
           </>
         ) : (
           <Typography variant="body2" color="text.secondary">
-            {strings.tags.noTags}
+            {strings.questionnaireTags.noTags}
           </Typography>
         )}
       </Box>
@@ -252,7 +252,7 @@ interface EnhancedQuestionnaire extends Questionnaire {
     { field: "description", headerName: `${strings.questionnaireTable.description}`, flex: 5 },
     { 
       field: "tags", 
-      headerName: strings.tags.title || "Tags",
+      headerName: strings.questionnaireTags.title || "Tags",
       flex: 3,
       minWidth: 180,
       renderCell: renderTagsCell,
@@ -261,7 +261,7 @@ interface EnhancedQuestionnaire extends Questionnaire {
       renderHeader: () => (
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <LabelIcon sx={{ mr: 0.5, fontSize: '1.25rem' }} />
-          <Typography variant="subtitle2">{strings.tags.title}</Typography>
+          <Typography variant="subtitle2">{strings.questionnaireTags.title}</Typography>
         </Box>
       )
     },
@@ -338,7 +338,7 @@ interface EnhancedQuestionnaire extends Questionnaire {
       }}
     >
       <Typography variant="subtitle2" sx={{ mb: 1 }}>
-        {strings.tags.allTags} ({currentTags.length})
+        {strings.questionnaireTags.allTags} ({currentTags.length})
       </Typography>
       <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
         {currentTags.map((tag) => (
@@ -386,7 +386,7 @@ interface EnhancedQuestionnaire extends Questionnaire {
             fullWidth
             value={searchTerm}
             onChange={handleSearchChange}
-            placeholder={strings.tags.searchPlaceholder}
+            placeholder={strings.questionnaireTags.searchPlaceholder}
             variant="outlined"
             size="small"
             InputProps={{

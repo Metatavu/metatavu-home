@@ -237,14 +237,14 @@ const NewQuestionnaireBuilder = () => {
 
           <Box sx={{ mb: 4 }}>
             <Typography variant="h6" gutterBottom>
-              {strings.tags.title}
+              {strings.questionnaireTags.title}
             </Typography>
             <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
               <TextField
                 value={tagInput}
                 onChange={handleTagInputChange}
                 onKeyDown={handleTagKeyDown}
-                placeholder={strings.tags.addTagPlaceholder}
+                placeholder={strings.questionnaireTags.addTagPlaceholder}
                 variant="outlined"
                 size="small"
                 fullWidth
@@ -274,7 +274,7 @@ const NewQuestionnaireBuilder = () => {
                   },
                 }}
               >
-                {strings.tags.addTag}
+                {strings.questionnaireTags.addTag}
               </Button>
             </Box>
 
@@ -292,7 +292,7 @@ const NewQuestionnaireBuilder = () => {
                 ))
               ) : (
                 <Typography variant="body2" color="text.secondary">
-                  {strings.tags.noTags}
+                  {strings.questionnaireTags.noTags}
                 </Typography>
               )}
             </Box>

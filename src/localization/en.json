@@ -310,7 +310,7 @@
     "allTags": "All Tags",
     "emptyTagError": "Tag cannot be empty",
     "duplicateTagError": "Tag already exists!",
-    "tagTooLongError": "Tag cannot exceed 50 characters",
+    "tagTooLongError": "Tag cannot be longer than {max} characters",
     "maxTagsError": "Maximum of 10 tags allowed",
     "addTag": "Add tag",
     "addTagPlaceholder": "Add a tag...",

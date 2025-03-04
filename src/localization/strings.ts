@@ -1,4 +1,3 @@
-import QuestionnairePreview from "src/components/questionnaire/questionnaire-preview";
 import en from "./en.json";
 import fi from "./fi.json";
 import LocalizedStrings, {
@@ -406,7 +405,7 @@ export interface Localized extends LocalizedStringsMethods {
   /**
    * Translations related to tags
    */
-  tags: {
+  questionnaireTags: {
     title: string;         
     searchPlaceholder: string; 
     allTags: string;     

@@ -310,7 +310,7 @@
     "allTags": "Kaikki tagit",
     "emptyTagError": "Tagi ei voi olla tyhjä",
     "duplicateTagError": "Tagi on jo olemassa!",
-    "tagTooLongError": "Tagi ei voi olla yli 50 merkkiä pitkä",
+    "tagTooLongError": "Tagi ei voi olla pidempi kuin {max} merkkiä.",
     "maxTagsError": "Enintään 10 tagia sallittu",
     "addTag": "Lisää tagi",
     "addTagPlaceholder": "Lisää tagi...",

@@ -218,7 +218,7 @@ const QuestionnaireManager = ({ mode }: Props) => {
     <Box sx={{ mb: 2 }}>
       {questionnaire.tags?.map((tag) => (
         <Chip key={tag} label={tag} sx={{ mr: 1 }} />
-      )) || strings.tags.noTags}
+      )) || strings.questionnaireTags.noTags}
     </Box>
   );
 
