@@ -431,7 +431,6 @@ interface EnhancedQuestionnaire extends Questionnaire {
           pageSizeOptions={[5, 10, 25, 50, 100]}
         />
       </Paper>
-      {/* Render the tag popover inline */}
       {renderTagPopover()}
       {renderConfirmDeleteDialog()}
     </>
