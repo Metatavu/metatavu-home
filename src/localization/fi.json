@@ -81,18 +81,18 @@
     "showMyTasks": "Tehtäväni ",
     "toDo": "Odotuksessa",
     "inProgress": "Käynnissä",
-    "allTasks" : "Kaikki tehtävät",
-    "notFound" : "Tulosta ei löytynyt",
+    "allTasks": "Kaikki tehtävät",
+    "notFound": "Tulosta ei löytynyt",
     "projectName": "Projekti",
     "search": "Hae tehtävää, projektia tai vastaanottajaa",
     "unAllocated": "Kohdistamaton aika:",
     "sprintDate": "Sprint",
     "completed": "Valmis",
     "current": "Nykyinen: {0}-{1}",
-    "startDate":"Aloituspäivämäärä",
-    "deadLine":"Määräaika",
+    "startDate": "Aloituspäivämäärä",
+    "deadLine": "Määräaika",
     "actualWorkHours": "Todelliset työajat",
-    "back":"Takaisin"
+    "back": "Takaisin"
   },
   "errors": {
     "fetchFailedGeneral": "Tietojen hakeminen epäonnistui",
@@ -244,7 +244,7 @@
     "back": "Takaisin"
   },
   "newQuestionnaireBuilder": {
-    "makeNewQuestionnaire" : "Tee uusi kysely",
+    "makeNewQuestionnaire": "Tee uusi kysely",
     "title": "Otsikko",
     "insertTitle": "Syötä otsikko",
     "saveButton": "Tallenna kysely",
@@ -304,25 +304,25 @@
     "clearPassedUsers": "Tyhjennä läpäisseet käyttäjät tästä kyselystä",
     "snackbarMessageSuccess": "Kysely päivitetty onnistuneesti"
   },
-  "tags": {
-  "title": "Tagit",
-  "searchPlaceholder": "Hae otsikon tai tagien mukaan...",
-  "allTags": "Kaikki tagit",
-  "emptyTagError": "Tagi ei voi olla tyhjä",
-  "duplicateTagError": "Tagi on jo olemassa!",
-  "tagTooLongError": "Tagi ei voi olla yli 50 merkkiä pitkä",
-  "maxTagsError": "Enintään 10 tagia sallittu",
-  "addTag": "LISÄÄ TAGI",
-  "addTagPlaceholder": "Lisää tagi...",
-  "noTags": "Ei tageja vielä lisätty"
-},
+  "questionnaireTags": {
+    "title": "Tagit",
+    "searchPlaceholder": "Hae otsikon tai tagien mukaan...",
+    "allTags": "Kaikki tagit",
+    "emptyTagError": "Tagi ei voi olla tyhjä",
+    "duplicateTagError": "Tagi on jo olemassa!",
+    "tagTooLongError": "Tagi ei voi olla yli 50 merkkiä pitkä",
+    "maxTagsError": "Enintään 10 tagia sallittu",
+    "addTag": "Lisää tagi",
+    "addTagPlaceholder": "Lisää tagi...",
+    "noTags": "Ei tageja vielä lisätty"
+  },
   "balanceCard": {
     "totalFlextimeBalance": "Kokonaisbalanssi:",
     "employeeBalances": "Henkilöstön aikakirjaukset ja saldot",
     "viewAllTimeEntries": "Kaikki henkilöstön aikakirjaukset ja saldot",
     "balance": "Saldo",
     "atTheEndOf": "{0} lopussa",
-    "hour": "tunti",  
+    "hour": "tunti",
     "hours": "Tuntia"
   }
 }

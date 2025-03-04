@@ -35,7 +35,7 @@
     "questionnaireSaveFailed": "Error while saving questionnaire",
     "questionnaireUpdateFailed": "Error while updating questionnaire",
     "fetchFailedFlextime": "Error while fetching flextime data",
-    "noSeveraUserId" : "One of your user is missing severaUserId, please contact a member of the metatavu home development team for more information.",
+    "noSeveraUserId": "One of your user is missing severaUserId, please contact a member of the metatavu home development team for more information.",
     "noFlextimeData": "Something went wrong while fetching your flextime data"
   },
   "localization": {
@@ -81,18 +81,18 @@
     "showMyTasks": "My tasks",
     "toDo": "To do",
     "inProgress": "In progress",
-    "allTasks" : "All tasks",
-    "notFound" : "No result found",
+    "allTasks": "All tasks",
+    "notFound": "No result found",
     "projectName": "Project",
     "search": "Search for a task, project or assignee",
     "unAllocated": "Unallocated Time:",
     "sprintDate": "Sprint",
-    "completed": "Done", 
+    "completed": "Done",
     "current": "Current: {0}-{1}",
-    "startDate":"Start Date",
-    "deadLine":"Deadline",
+    "startDate": "Start Date",
+    "deadLine": "Deadline",
     "actualWorkHours": "Actual Work Hours",
-    "back":"Back"
+    "back": "Back"
   },
   "errors": {
     "fetchFailedGeneral": "There was an error fetching data",
@@ -233,14 +233,14 @@
   "questionnaireCard": {
     "questionnairesBuilder": "Questionnaires builder",
     "questionnaires": "Questionnaires",
-    "progressBar": "Progress Bar"   
+    "progressBar": "Progress Bar"
   },
   "questionnaireScreen": {
     "currentQuestionnaires": "Current Questionnaires",
     "buildNewQuestionnaire": "Build New Questionnaire",
     "status": "Status:",
     "edit": "Edit",
-    "delete": "Delete", 
+    "delete": "Delete",
     "back": "Back"
   },
   "newQuestionnaireBuilder": {
@@ -282,7 +282,7 @@
   },
   "questionnaireManager": {
     "passed": "You have passed the questionnaire with {0} correct answers out of {1}.",
-    "failed": "You have failed the questionnaire with {0} correct answers out of {1}.", 
+    "failed": "You have failed the questionnaire with {0} correct answers out of {1}.",
     "goBack": "Go back",
     "submit": "Submit"
   },
@@ -304,18 +304,18 @@
     "clearPassedUsers": "Remove all passed users from this questionnaire",
     "snackbarMessageSuccess": "Updated questionnaire successfully"
   },
-  "tags": {
-  "title": "Tags",
-  "searchPlaceholder": "Search by title or tags...",
-  "allTags": "All Tags",
-  "emptyTagError": "Tag cannot be empty",
-  "duplicateTagError": "Tag already exists!",
-  "tagTooLongError": "Tag cannot exceed 50 characters",
-  "maxTagsError": "Maximum of 10 tags allowed",
-  "addTag": "ADD TAG",
-  "addTagPlaceholder": "Add a tag...",
-  "noTags": "No tags added yet"
-},
+  "questionnaireTags": {
+    "title": "Tags",
+    "searchPlaceholder": "Search by title or tags...",
+    "allTags": "All Tags",
+    "emptyTagError": "Tag cannot be empty",
+    "duplicateTagError": "Tag already exists!",
+    "tagTooLongError": "Tag cannot exceed 50 characters",
+    "maxTagsError": "Maximum of 10 tags allowed",
+    "addTag": "Add tag",
+    "addTagPlaceholder": "Add a tag...",
+    "noTags": "No tags added yet"
+  },
   "balanceCard": {
     "totalFlextimeBalance": "Total flextime balance:",
     "employeeBalances": "Employee time totals and balances",
