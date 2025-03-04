@@ -112,21 +112,21 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
    */
   const handleAddTag = () => {
     if (!newTag.trim()) {
-      setTagError((strings as any).tags?.emptyTagError || "Tag cannot be empty");
+      setTagError(strings.questionnaireTags.emptyTagError);
       return;
     }
-    
+  
     const trimmedTag = newTag.trim();
     if (editedQuestionnaire.tags?.some(tag => tag.toLowerCase() === trimmedTag.toLowerCase())) {
-      setTagError((strings as any).tags?.duplicateTagError || "Tag already exists");
+      setTagError(strings.questionnaireTags.duplicateTagError);
       return;
     }
-    
+  
     setEditedQuestionnaire(prev => ({
       ...prev,
       tags: [...(prev.tags || []), trimmedTag]
     }));
-    
+  
     setNewTag("");
     setTagError(null);
   };
