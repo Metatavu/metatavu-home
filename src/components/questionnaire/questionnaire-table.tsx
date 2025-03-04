@@ -338,7 +338,7 @@ interface EnhancedQuestionnaire extends Questionnaire {
       }}
     >
       <Typography variant="subtitle2" sx={{ mb: 1 }}>
-        {`All Tags`} ({currentTags.length})
+        {strings.tags.allTags} ({currentTags.length})
       </Typography>
       <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
         {currentTags.map((tag) => (
@@ -386,7 +386,7 @@ interface EnhancedQuestionnaire extends Questionnaire {
             fullWidth
             value={searchTerm}
             onChange={handleSearchChange}
-            placeholder="Search by title or tags..."
+            placeholder={strings.tags.searchPlaceholder}
             variant="outlined"
             size="small"
             InputProps={{

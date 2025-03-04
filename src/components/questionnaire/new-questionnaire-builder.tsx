@@ -104,18 +104,23 @@ const NewQuestionnaireBuilder = () => {
     }
   };
 
-  /**
-   * Function to remove a tag from the questionnaire
-   */
+ /**
+ * Function to remove a tag from the questionnaire
+ * 
+ * @param {string} tagToRemove - The tag to be removed from the questionnaire
+ */
   const handleRemoveTag = (tagToRemove: string) => {
     setQuestionnaire(prevQuestionnaire => 
       removeTag(tagToRemove, prevQuestionnaire)
     );
   };
 
-  /**
-   * Function to handle slider that pass value about what is the minimum score to pass the questionnaire
-   */
+ /**
+ * Function to handle slider that pass value about what is the minimum score to pass the questionnaire
+ * 
+ * @param _ - The event object
+ * @param value - The slider value, can be a single number or array of numbers
+ */
   const handlePassScoreSliderChange = (_: Event, value: number | number[]) => {
     setQuestionnaire(prevQuestionnaire => 
       updatePassScore(value, prevQuestionnaire)
@@ -136,7 +141,8 @@ const NewQuestionnaireBuilder = () => {
 
   /**
    * Function to delete question from the questionnaire that is being built
-   */
+   * @param index number- The index of the question to remove
+*/
   const removeQuestionFromPreview = (index: number) => {
     setQuestionnaire(prevQuestionnaire => 
       removeQuestion(index, prevQuestionnaire)
@@ -231,14 +237,14 @@ const NewQuestionnaireBuilder = () => {
 
           <Box sx={{ mb: 4 }}>
             <Typography variant="h6" gutterBottom>
-              {(strings as any).tags?.title || "Tags"}
+              {strings.tags.title}
             </Typography>
             <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
               <TextField
                 value={tagInput}
                 onChange={handleTagInputChange}
                 onKeyDown={handleTagKeyDown}
-                placeholder={(strings as any).tags?.addTagPlaceholder || "Add a tag..."}
+                placeholder={strings.tags.addTagPlaceholder}
                 variant="outlined"
                 size="small"
                 fullWidth
@@ -268,7 +274,7 @@ const NewQuestionnaireBuilder = () => {
                   },
                 }}
               >
-                {(strings as any).tags?.addTag || "ADD TAG"}
+                {strings.tags.addTag}
               </Button>
             </Box>
 
@@ -286,7 +292,7 @@ const NewQuestionnaireBuilder = () => {
                 ))
               ) : (
                 <Typography variant="body2" color="text.secondary">
-                  {(strings as any).tags?.noTags || "No tags added yet"}
+                  {strings.tags.noTags}
                 </Typography>
               )}
             </Box>
