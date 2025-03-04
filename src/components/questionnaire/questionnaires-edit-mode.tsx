@@ -310,7 +310,7 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
               ))}
               {(!editedQuestionnaire.tags || editedQuestionnaire.tags.length === 0) && (
                 <Typography variant="body2" color="text.secondary">
-                  {(strings as any).tags?.noTags || "No tags added yet"}
+                  {strings.questionnaireTags.noTags}
                 </Typography>
               )}
             </Box>
@@ -343,7 +343,7 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
                     }
                   }}
                 >
-                  {(strings as any).tags?.addTag || "Add Tag"}
+                  {strings.questionnaireTags.addTag}
                 </Button>
               </Box>
             </Box>
