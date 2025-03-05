@@ -15,7 +15,7 @@ import ErrorScreen from "./components/screens/error-screen";
 import TimebankViewAllScreen from "./components/screens/timebank-view-all-screen";
 import AdminScreen from "./components/screens/admin-screen";
 import { Settings } from "luxon";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import RestrictedContentProvider from "./components/providers/restricted-content-provider";
 import SprintViewScreen from "./components/screens/sprint-view-screen";
 import QuestionnaireScreen from "./components/screens/questionnaire-screen";
@@ -28,7 +28,17 @@ import SettingsScreen from "./components/screens/settings-screen"
  */
 const App = () => {
   const language = useAtomValue(languageAtom);
+  const [userConsent, setUserConsent] = useState<boolean>(false);
 
+
+  const handleSaveConsent = async (isAccepted: boolean) => {
+    try {
+      setUserConsent(isAccepted);
+      console.log("Consent successfully!");
+    } catch (error) {
+      console.error("Error saving consent:", error);
+    }
+  };
   useMemo(() => {
     Settings.defaultLocale = language;
   }, [language]);
@@ -62,12 +72,11 @@ const App = () => {
         {
           path: "/questionnaire/:id",
           element: <QuestionnaireManager mode={QuestionnairePreviewMode.FILL} />
-        },{
-        path: "/settings",
-        element: <SettingsScreen onSave={() => {
-          throw new Error("Function not implemented.");
-        }} />
-      } 
+        },
+        {
+          path: "/settings",
+          element: <SettingsScreen onSave={handleSaveConsent} initialConsent={userConsent} />
+        }
       ]
     },
     {
@@ -107,7 +116,6 @@ const App = () => {
           path: "/admin/questionnaire/:id/edit",
           element: <QuestionnaireManager mode={QuestionnairePreviewMode.EDIT} />
         },
-        
       ]
     }
   ]);

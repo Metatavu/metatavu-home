@@ -5,8 +5,8 @@ import strings from "src/localization/strings";
 /**
  * settings screen
  */
-const SettingsScreen = ({ onSave }: { onSave: (isAccepted: boolean) => void }) => {
-  const [isAccepted, setIsAccepted] = useState(false);
+const SettingsScreen = ({ onSave, initialConsent }: { onSave: (isAccepted: boolean) => void, initialConsent: boolean }) => {
+  const [isAccepted, setIsAccepted] = useState(initialConsent);
 
   const handleToggleChange = () => {
     setIsAccepted((prevState) => !prevState);
@@ -14,7 +14,7 @@ const SettingsScreen = ({ onSave }: { onSave: (isAccepted: boolean) => void }) =
 
   const handleButtonClick = () => {
     console.log("settings saved:", { isAccepted });
-    onSave(isAccepted);
+    onSave(isAccepted);  
   };
 
   return (
@@ -43,4 +43,5 @@ const SettingsScreen = ({ onSave }: { onSave: (isAccepted: boolean) => void }) =
     </Box>
   );
 };
+
 export default SettingsScreen;
