@@ -1,12 +1,9 @@
 import React, { useState } from "react";
 import { Typography, Box, Switch, Button } from "@mui/material";
 import strings from "src/localization/strings";
-/* import { saveConsent } from "src/utils/consent-utils"; */
 
 /**
- *
  * settings screen
- *
  */
 const SettingsScreen = ({ onSave }: { onSave: (isAccepted: boolean) => void }) => {
   const [isAccepted, setIsAccepted] = useState(false);
@@ -16,7 +13,6 @@ const SettingsScreen = ({ onSave }: { onSave: (isAccepted: boolean) => void }) =
   };
 
   const handleButtonClick = () => {
-    saveConsent(isAccepted);
     console.log("settings saved:", { isAccepted });
     onSave(isAccepted);
   };
