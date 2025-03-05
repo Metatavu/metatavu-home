@@ -226,12 +226,12 @@ interface EnhancedQuestionnaire extends Questionnaire {
             {hiddenTagsCount > 0 && (
               <Chip
                 size="small"
-                label={`+${hiddenTagsCount} more`}
-                sx={{ 
-                  flexShrink:0,
+                label={strings.formatString(strings.questionnaireTags.moreCount, hiddenTagsCount)}
+                sx={{
+                  flexShrink: 0,
                   backgroundColor: 'rgba(0, 0, 0, 0.08)',
-                  '&:hover': { 
-                    backgroundColor: 'rgba(0, 0, 0, 0.12)' 
+                  '&:hover': {
+                    backgroundColor: 'rgba(0, 0, 0, 0.12)'
                   }
                 }}
                 onClick={(e) => handleTagMoreClick(e, tags)}
@@ -277,9 +277,15 @@ interface EnhancedQuestionnaire extends Questionnaire {
                 variant="outlined"
                 color="success"
                 onClick={() => handleEditClick(params.row as EnhancedQuestionnaire)}
-                sx={{ mr: 1 }}
+                sx={{ 
+                  mr: 0.8, 
+                  minWidth: '100px',
+                  width: 'auto', 
+                  height: 'auto',
+                  fontSize: '0.80rem' 
+                }}
               >
-                <EditIcon sx={{ color: "success.main", mr: 1 }} />
+                <EditIcon sx={{ color: "success.main", mr: 0.3 }} />
                 {strings.questionnaireTable.edit}
               </Button>
               <Button
@@ -287,8 +293,14 @@ interface EnhancedQuestionnaire extends Questionnaire {
                 variant="contained"
                 color="secondary"
                 onClick={() => handleOpenDialog(params.row.id, params.row.title)}
+                sx={{ 
+                  minWidth: '85px',
+                  width: 'auto', 
+                  height: 'auto',
+                  fontSize: '0.80rem',
+                }}
               >
-                <DeleteForeverIcon sx={{ color: "red", mr: 1 }} />
+                <DeleteForeverIcon sx={{ color: "red", mr: 0.3 }} />
                 {strings.questionnaireTable.delete}
               </Button>
             </>

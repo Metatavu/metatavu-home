@@ -319,7 +319,8 @@
     "maxTagsError": "Maximum of 10 tags allowed",
     "addTag": "Add tag",
     "addTagPlaceholder": "Add a tag...",
-    "noTags": "No tags added yet"
+    "noTags": "No tags added yet",
+    "moreCount": "+{0} more"
   },
   "balanceCard": {
     "totalFlextimeBalance": "Total flextime balance:",

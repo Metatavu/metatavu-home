@@ -319,7 +319,8 @@
     "maxTagsError": "Enintään 10 tagia sallittu",
     "addTag": "Lisää tagi",
     "addTagPlaceholder": "Lisää tagi...",
-    "noTags": "Ei tageja vielä lisätty"
+    "noTags": "Ei tageja vielä lisätty",
+    "moreCount": "+{0} lisää"
   },
   "balanceCard": {
     "totalFlextimeBalance": "Kokonaisbalanssi:",

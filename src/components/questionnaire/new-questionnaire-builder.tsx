@@ -267,7 +267,7 @@ const NewQuestionnaireBuilder = () => {
                 sx={{
                   height: "40px",
                   minWidth: "90px",
-                  textTransform: "uppercase",
+                  textTransform: "lowercase",
                   backgroundColor: "#212121",
                   "&:hover": {
                     backgroundColor: "#000000",

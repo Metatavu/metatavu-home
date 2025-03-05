@@ -416,6 +416,7 @@ export interface Localized extends LocalizedStringsMethods {
     addTag: string;
     addTagPlaceholder: string;
     noTags: string;
+    moreCount: string;
   };
   /**
    * Translations related to Balance Card

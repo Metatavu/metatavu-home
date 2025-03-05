@@ -317,7 +317,7 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
             <Box sx={{ display: 'flex', gap: 1, alignItems: 'flex-start', flexDirection: 'column' }}>
               <Box sx={{ display: 'flex', gap: 1, width: '100%' }}>
                 <TextField
-                  label={(strings as any).tags?.addTagPlaceholder || "Add a tag"}
+                  label = {strings.questionnaireTags.addTagPlaceholder}
                   value={newTag}
                   onChange={(e) => {
                     setNewTag(e.target.value);
@@ -334,7 +334,7 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
                   onClick={handleAddTag}
                   size="small"
                   sx={{ 
-                    height: '40px',
+                    height: '48px',
                     minWidth: '90px',
                     textTransform: 'uppercase',
                     backgroundColor: '#212121',
