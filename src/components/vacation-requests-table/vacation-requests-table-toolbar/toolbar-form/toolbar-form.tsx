@@ -64,7 +64,6 @@ const ToolbarForm = ({
     days: 1,
     status: [
       {
-        message: "Automatically created status",
         status: VacationRequestStatuses.PENDING,
         createdBy: "",
         updatedAt: new Date()

@@ -5,8 +5,8 @@ import type {
 } from "src/generated/homeLambdasClient";
 import {
   getAssigneName,
-  getPhaseName,
   getProjectName,
+  getTotalEstimatedHours,
 } from "src/utils/sprint-utils";
 import strings from "../../localization/strings";
 
@@ -40,44 +40,18 @@ const createSprintViewProjectsColumns = ({ resourceAllocations }: Props) => {
       ),
     },
     {
-      field: "calculatedAllocationHours",
-      headerClassName: "header-color",
-      filterable: false,
-      headerName: strings.sprint.timeAllocated,
-      flex: 1,
-      renderCell: (params) => (
-        <>
-          <Box marginLeft={"50px"} display="flex" alignItems="center" justifyContent="center" />
-          {params.value}
-        </>
-      ),
-    },
-    {
       field: "allocationHours",
       headerClassName: "header-color",
       filterable: false,
       headerName: strings.sprint.estimatedTime,
-      flex: 1,
-      renderCell: (params) => (
+      flex: 2,
+      valueGetter: (param) => {
+        getTotalEstimatedHours(resourceAllocations, param.row.project);
+      },
+      renderCell: (param) => (
       <>
         <Box marginLeft={"50px"} display="flex" alignItems="center" justifyContent="center" />
-        {params.value}
-      </>
-      )
-    },
-    {
-      field: "phase",
-      headerClassName: "header-color",
-      filterable: false,
-      headerName: strings.sprint.taskName,
-      flex: 1,
-      valueGetter: (params) => {
-        getPhaseName(params.row.phase, resourceAllocations);
-      },
-      renderCell: (params) => (
-      <>
-        <Box display="flex" alignItems="center" justifyContent="center" />
-        {getPhaseName(params.row.phase, resourceAllocations)}{" "}
+        {getTotalEstimatedHours(resourceAllocations, param.row.project)}{" "}
       </>
       )
     },
@@ -86,14 +60,14 @@ const createSprintViewProjectsColumns = ({ resourceAllocations }: Props) => {
       headerClassName: "header-color",
       filterable: false,
       headerName: strings.sprint.assigned,
-      flex: 2,
+      flex: 4,
       valueGetter: (params) => {
-        getAssigneName(params.row.user, resourceAllocations);
+        getAssigneName(resourceAllocations, params.row.project);
       },
       renderCell: (params) => (
       <>
         <Box display="flex" alignItems="center" justifyContent="center" />
-        {getAssigneName(params.row.user, resourceAllocations)}{" "}
+        {getAssigneName(resourceAllocations, params.row.project)}{" "}
       </>
       )
     },

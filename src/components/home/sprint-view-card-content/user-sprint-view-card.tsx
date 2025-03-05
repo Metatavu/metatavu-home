@@ -6,17 +6,22 @@ import { errorAtom } from "src/atoms/error";
 import { usersAtom } from "src/atoms/user";
 import SprintViewBarChart from "src/components/charts/sprint-view-bar-chart";
 import type { ResourceAllocations, User } from "src/generated/homeLambdasClient";
+import useSprintViewHandlers from "src/hooks/sprint-custom-hooks";
 import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
 import type { SprintViewChartData } from "src/types";
 import {
-  getSeveraUserId
+  getSeveraUserId,
+  getTotalEstimatedHours
 } from "src/utils/sprint-utils";
+import UserRoleUtils from "src/utils/user-role-utils";
 
 /**
  * Sprint card component for users
  */
-const UserSprintViewCard = () => {
+const SprintViewCardContent = () => {
+  const { filterAllocations } = useSprintViewHandlers();
+  const adminMode = UserRoleUtils.adminMode();
   const [loading, setLoading] = useState(false);
   const users = useAtomValue(usersAtom);
   const userProfile = useAtomValue(userProfileAtom);
@@ -26,6 +31,7 @@ const UserSprintViewCard = () => {
   const [resourceAllocations, setResourceAllocations] = useState<ResourceAllocations[]>([]);
   const { resourceAllocationsApi } = useLambdasApi();
   const setError = useSetAtom(errorAtom);
+  const filteredAllocations = filterAllocations(resourceAllocations, adminMode)
 
   useEffect(() => {
     getAllocationsAndProjects();
@@ -39,10 +45,9 @@ const UserSprintViewCard = () => {
     if (loggedInUser && !resourceAllocations.length) {
       try {
         const severaUserId = getSeveraUserId(loggedInUser);
-        const fetchedResourceAllocations =
-        await resourceAllocationsApi.getAllResourceAllocations({
-          severaUserId,
-        });
+        const fetchedResourceAllocations = adminMode
+          ? await resourceAllocationsApi.getAllResourceAllocations()
+          : await resourceAllocationsApi.getAllResourceAllocations({ severaUserId });
         setResourceAllocations(fetchedResourceAllocations);
       } catch (error) {
         setError(`${strings.sprintRequestError.fetchResourceAllocationsError}, ${error}`);
@@ -55,12 +60,15 @@ const UserSprintViewCard = () => {
    * Mapping resource allocation data from Severa to SprintViewChartData type
    */
   const createChartData = (): SprintViewChartData[] => {
-    const mapping = resourceAllocations.map((allocation) => {
+    const mapping = filteredAllocations.map((allocation) => {
+      const project = allocation.project;
+      const estimateHours = project ? getTotalEstimatedHours(resourceAllocations, project) : 0;
+      
       return {
         severaResourceAllocationId: allocation.severaResourceAllocationId || "",
         projectName: allocation.project?.name || "",
         actualWorkHours: allocation.calculatedAllocationHours || "",
-        estimatedWorkHour: allocation.allocationHours || "",
+        estimatedWorkHour: estimateHours || "",
       };
     });
     return mapping;
@@ -85,4 +93,4 @@ const UserSprintViewCard = () => {
   return <>{!loggedInUser || loading ? <Skeleton /> : renderBarChart()}</>;
 };
 
-export default UserSprintViewCard;
+export default SprintViewCardContent;
