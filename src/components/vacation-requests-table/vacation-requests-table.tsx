@@ -20,6 +20,7 @@ import LocalizationUtils from "src/utils/localization-utils";
 import { getVacationRequestPersonFullName } from "src/utils/vacation-request-utils";
 import { usersAtom } from "src/atoms/user";
 import { userProfileAtom } from "src/atoms/auth";
+import UserRoleUtils from "src/utils/user-role-utils";
 
 /**
  * Component properties
@@ -110,7 +111,7 @@ const VacationRequestsTable = ({
           ? getTotalVacationRequestStatus(vacationRequest.status)
           : VacationRequestStatuses.PENDING;
 
-        if (vacationRequest.message.length) {
+        if (vacationRequest.message?.length) {
           row.message = vacationRequest.message;
         }
 
