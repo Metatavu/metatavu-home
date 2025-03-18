@@ -40,9 +40,8 @@ const ToolbarFormFields = ({
   // const [users] = useAtom(usersAtom);
   // const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
 
-
   useEffect(() => {
-    if (!adminMode) { // Vain ei-admin käyttäjien kohdalla päivitetään päivät automaattisesti
+    if (!adminMode) {
       setVacationRequestData({
         ...vacationRequestData,
         startDate: dateRange.start.toJSDate(),
@@ -51,12 +50,11 @@ const ToolbarFormFields = ({
           dateRange.start,
           dateRange.end,
           // FIXME: implement a proper solution for various work contracts
-        // getWorkingWeek(loggedInUser)
+          // getWorkingWeek(loggedInUser)
           [true, true, true, true, true, false, false]
         )
       });
     } else {
-      // Admin-tilassa vain päivämäärät päivittyvät
       setVacationRequestData({
         ...vacationRequestData,
         startDate: dateRange.start.toJSDate(),
@@ -79,7 +77,7 @@ const ToolbarFormFields = ({
 
   /**
    * Handle days change
-   * 
+   *
    * @param value days value
    */
   const handleDaysChange = (value: string) => {
@@ -94,12 +92,16 @@ const ToolbarFormFields = ({
    * Handle restore default days
    */
   const handleRestoreDefaultDays = () => {
-    const defaultDays = calculateTotalVacationDays(
-      dateRange.start,
-      dateRange.end,
-      [true, true, true, true, true, false, false]
-    );
-    
+    const defaultDays = calculateTotalVacationDays(dateRange.start, dateRange.end, [
+      true,
+      true,
+      true,
+      true,
+      true,
+      false,
+      false
+    ]);
+
     setVacationRequestData({
       ...vacationRequestData,
       days: defaultDays
@@ -136,11 +138,7 @@ const ToolbarFormFields = ({
               inputProps={{ min: 1 }}
               sx={{ flexGrow: 1 }}
             />
-            <Button 
-              variant="outlined" 
-              size="medium" 
-              onClick={handleRestoreDefaultDays}
-            >
+            <Button variant="outlined" size="medium" onClick={handleRestoreDefaultDays}>
               {strings.form.restoreDefault || "Restore default"}
             </Button>
           </Box>
@@ -157,7 +155,10 @@ const ToolbarFormFields = ({
       )}
 
       <Button
-        disabled={!adminMode && (!hasAllPropsDefined(vacationRequestData) || !vacationRequestData.message?.length)}
+        disabled={
+          !adminMode &&
+          (!hasAllPropsDefined(vacationRequestData) || !vacationRequestData.message?.length)
+        }
         type="submit"
         variant="contained"
         size="large"
