@@ -317,5 +317,12 @@
     "atTheEndOf": "{0} lopussa",
     "hour": "tunti",  
     "hours": "Tuntia"
+  },
+  "wikiDocumentation": {
+    "cardTitle": "Wiki Dokumentaatio",
+    "lastActivityArticle": "Viimeksi {0} artikkeli:",
+    "updated": "päivitetty",
+    "created": "luotu",
+    "read": "luettu"
   }
 }

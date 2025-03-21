@@ -8,6 +8,7 @@ import type { User } from "src/generated/homeLambdasClient";
 import { usersAtom } from "src/atoms/user";
 import { userProfileAtom } from "src/atoms/auth";
 import { useAtomValue } from "jotai";
+import WikiDocumentationCard from "../home/wiki-documentation-card";
 
 /**
  * Home screen component
@@ -24,20 +25,32 @@ const HomeScreen = () => {
   const sprintViewCard = developerMode ? <SprintViewCard /> : null;
   const vacationsCard = developerMode ? <VacationsCard /> : null;
   const questionairesCard = developerMode ? <QuestionnaireCard /> : null;
-  
+  const wikiDocumentationCard = developerMode ? <WikiDocumentationCard/> : null;
+
   return (
     <Grid container spacing={2}>
       <Grid item xs={12} sm={6}>
-        {balanceCard}
-        <Grid item xs={12} style={{ marginTop: "16px" }}>
-          {sprintViewCard}
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            {balanceCard}
+          </Grid>
+          <Grid item xs={12}>
+            {sprintViewCard}
+          </Grid>
+          <Grid item xs={12}>
+            {questionairesCard}
+          </Grid>
         </Grid>
       </Grid>
       <Grid item xs={12} sm={6}>
-        {vacationsCard}
-      </Grid>
-      <Grid item xs={12} sm={6}>
-        {questionairesCard}
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            {vacationsCard}
+          </Grid>
+          <Grid item xs={12}>
+            {wikiDocumentationCard}
+          </Grid>
+        </Grid>
       </Grid>
     </Grid>
   );

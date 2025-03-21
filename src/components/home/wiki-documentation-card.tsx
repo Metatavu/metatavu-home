@@ -1,0 +1,178 @@
+import { 
+  Grid, 
+  Typography, 
+  Card, 
+  CardContent, 
+  Skeleton, 
+  Box
+} from "@mui/material";
+import strings from "src/localization/strings";
+import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
+import { errorAtom } from "src/atoms/error";
+import { useSetAtom } from "jotai";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import UserRoleUtils from "src/utils/user-role-utils";
+import type {  ArticleMetadata } from "src/generated/homeLambdasClient";
+import { useLambdasApi } from "src/hooks/use-api";
+
+/**
+ * Component for displaying last read, created or updated article for Wiki Documentation.
+ */
+const WikiDocumentationCard = () => {
+  const setError = useSetAtom(errorAtom);
+  const adminMode = UserRoleUtils.adminMode();
+  const { articleApi } = useLambdasApi();
+  const [loading, setLoading] = useState(false);
+  const [lastUpdatedArticle, setLastUpdatedArticle] = useState<ArticleMetadata>();
+
+  /**
+   * Fetch a last updated article.
+   */
+  useEffect(() => {
+    getLastUpdatedArticle();
+  }, []);
+
+  const getLastUpdatedArticle = async () => {
+    setLoading(true);
+    try {
+      const fetchedArticles = await articleApi.getArticles();
+      setLastUpdatedArticle(fetchedArticles[0]);
+      console.log(lastUpdatedArticle)
+    } catch (error) {
+      setError(`${error}`);
+    }
+    setLoading(false);
+  };
+
+  const renderCardContent = () => {
+    if (!lastUpdatedArticle || !lastUpdatedArticle.lastUpdatedAt) return;
+
+    const {
+      lastUpdatedAt,
+      createdAt,
+      lastReadAt
+    } = lastUpdatedArticle;
+
+    let lastActivityType = strings.wikiDocumentation.created;
+
+    if (lastUpdatedAt === lastReadAt)
+      lastActivityType = strings.wikiDocumentation.read;
+
+    if (lastUpdatedAt !== lastReadAt && 
+      lastUpdatedAt !== createdAt) 
+      lastActivityType = strings.wikiDocumentation.updated;
+
+    return (
+      <>
+        <Grid container>
+          <Grid style={{ marginBottom: 1 }} item xs={1}>
+            <DescriptionOutlinedIcon style={{ marginTop: 1}} />
+          </Grid>
+          <Grid item xs={11}>
+            {loading ? <Skeleton /> 
+              : <Typography variant="body1" sx={{paddingTop: "2px"}}>
+                {strings.formatString(strings.wikiDocumentation.lastActivityArticle, lastActivityType)}
+              </Typography>
+            }
+          </Grid>
+        </Grid>
+        
+        <Grid container style={{ marginTop: "15px"}}>
+          <Grid item xs={5} sm={12} md={4} marginBottom={{sm: "15px", md: "0"}}>
+            <Box
+              component="img"
+              sx={{
+                width: {
+                  lg:"150px", 
+                  md: "125px", 
+                  sm: "100%", 
+                  xs: "125px"
+                },
+                height: {
+                  lg:"120px", 
+                  md: "100px", 
+                  sm: "100%", 
+                  xs:"100px"
+                },
+                borderRadius: "20px",
+                marginRight: "10px",
+                objectFit: "cover",
+                overflow: "hidden"
+              }}
+              alt="The house from the offer."
+              src={lastUpdatedArticle.coverImage}
+            />
+          </Grid>
+          <Grid item xs={7}  sm={12} md={8}>
+            <Typography variant="h6" sx={{
+              lineHeight: "1.2",
+              marginBottom: "10px",
+              fontSize: { 
+                lg: "24px", 
+                md: "20px", 
+                sm: "24px", 
+                xs: "20px" 
+              },
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "normal",
+              wordBreak: "break-word",
+              display: "-webkit-box",
+              WebkitBoxOrient: "vertical",
+              WebkitLineClamp: {md: 2, sm: 2, xs: 2}
+            }}>
+              {lastUpdatedArticle.title}
+            </Typography>
+            <Typography variant="body1">
+              {strings.formatString(
+                "{0} {1}",
+                lastActivityType[0].toUpperCase() + lastActivityType.slice(1), 
+                lastUpdatedAt.toLocaleDateString())
+              }
+            </Typography>
+            <Typography variant="body1">
+              {strings.formatString(
+                "By {0}",
+                "Viille Juatialainen")
+              }
+            </Typography>
+          </Grid>
+        </Grid>
+      </>
+    )
+  }
+
+  return (
+    <Link
+      to={adminMode ? "/admin/wiki-documentation" : "/wiki-documentation"}
+      style={{ textDecoration: "none" }}
+    >
+      <Card
+        sx={{
+          "&:hover": {
+            background: "#efefef"
+          }
+        }}
+      >
+        {adminMode ? (
+          <CardContent>
+            <Typography variant="h6" fontWeight={"bold"} style={{ marginTop: 6, marginBottom: 3 }}>
+              {strings.balanceCard.employeeBalances}
+            </Typography>
+            <Typography variant="body1">{strings.wikiDocumentation.cardTitle}</Typography>
+          </CardContent>
+        ) : (
+          <CardContent>
+            <Typography variant="h6" fontWeight={"bold"} style={{ marginTop: 6, marginBottom: 3 }}>
+              {strings.wikiDocumentation.cardTitle}
+            </Typography>
+            {renderCardContent()}
+          </CardContent>
+        )}
+      </Card>
+    </Link>
+  );
+};
+
+export default WikiDocumentationCard;

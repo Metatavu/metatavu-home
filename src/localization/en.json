@@ -317,5 +317,12 @@
     "atTheEndOf": "At the end of {0}",
     "hour": "hour",
     "hours": "hours"
+  },
+  "wikiDocumentation": {
+    "cardTitle": "Wiki Documentation",
+    "lastActivityArticle": "Last {0} article:",
+    "updated": "updated",
+    "created": "created",
+    "read": "read"
   }
 }

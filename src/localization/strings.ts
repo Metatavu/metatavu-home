@@ -418,6 +418,16 @@ export interface Localized extends LocalizedStringsMethods {
     hour: string;
     hours: string;
   };
+  /**
+   * Translations related to Wiki Documentation service
+   */
+  wikiDocumentation: {
+    cardTitle: string;
+    lastActivityArticle: string;
+    updated: string;
+    created: string;
+    read: string;
+  }
 }
 
 /**
