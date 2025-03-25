@@ -5,8 +5,6 @@ import { formatDate } from "src/utils/time-utils";
 
 /**
  * Vacation requests table columns component
- *
- * @param isAdmin boolean indicating if current user is an admin
  */
 const VacationRequestsTableColumns = (): GridColDef[] => {
   /**

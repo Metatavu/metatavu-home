@@ -20,7 +20,6 @@ import LocalizationUtils from "src/utils/localization-utils";
 import { getVacationRequestPersonFullName } from "src/utils/vacation-request-utils";
 import { usersAtom } from "src/atoms/user";
 import { userProfileAtom } from "src/atoms/auth";
-import UserRoleUtils from "src/utils/user-role-utils";
 
 /**
  * Component properties
