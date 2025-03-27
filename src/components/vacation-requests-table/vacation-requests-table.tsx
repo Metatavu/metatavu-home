@@ -57,14 +57,14 @@ const VacationRequestsTable = ({
   updateVacationRequestStatus,
   loading
 }: Props) => {
-  const vacationRequests = useAtomValue(displayedVacationRequestsAtom);
+  const vacationRequests = useAtomValue(displayedVacationRequestsAtom) || []; // Add default empty array
   const containerRef = useRef(null);
   const [formOpen, setFormOpen] = useState(false);
   const [selectedRowIds, setSelectedRowIds] = useState<GridRowSelectionModel>([]);
   const [rows, setRows] = useState<VacationsDataGridRow[]>([]);
   const language = useAtomValue(languageAtom);
   const columns = VacationRequestsTableColumns();
-  const users = useAtomValue(usersAtom);
+  const users = useAtomValue(usersAtom) || []; // Add default empty array
   const userProfile = useAtomValue(userProfileAtom);
   const dataGridHeight = 700;
   const dataGridRowHeight = 52;
@@ -103,17 +103,25 @@ const VacationRequestsTable = ({
    */
   const createDataGridRows = (vacationRequests: VacationRequest[]) => {
     const rows: VacationsDataGridRow[] = [];
-    if (vacationRequests.length) {
+    // Ensure vacationRequests is an array before checking length
+    if (Array.isArray(vacationRequests) && vacationRequests.length > 0) {
       vacationRequests.forEach((vacationRequest) => {
+        if (!vacationRequest) return; // Skip undefined items
+        
         const row = createDataGridRow(vacationRequest);
-        row.status = vacationRequest.status?.length
-          ? getTotalVacationRequestStatus(vacationRequest.status)
+        
+        // Safely check status array
+        const status = vacationRequest.status;
+        row.status = Array.isArray(status) && status.length > 0
+          ? getTotalVacationRequestStatus(status)
           : VacationRequestStatuses.PENDING;
 
-        if (vacationRequest.message.length) {
+        // Safely check message
+        if (vacationRequest.message && vacationRequest.message.length) {
           row.message = vacationRequest.message;
         }
 
+        // Safely get person name
         if (vacationRequest.userId) {
           row.personFullName = getVacationRequestPersonFullName(
             vacationRequest,
@@ -138,7 +146,13 @@ const VacationRequestsTable = ({
    * Set data grid rows
    */
   useMemo(() => {
-    setRows(createDataGridRows(vacationRequests));
+    // Add try-catch to prevent errors during rendering
+    try {
+      setRows(createDataGridRows(vacationRequests));
+    } catch (error) {
+      console.error("Error creating data grid rows:", error);
+      setRows([]);
+    }
   }, [vacationRequests, formOpen, language]);
 
   /**

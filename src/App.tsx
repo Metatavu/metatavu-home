@@ -22,6 +22,8 @@ import QuestionnaireScreen from "./components/screens/questionnaire-screen";
 import NewQuestionnaireBuilder from "./components/questionnaire/new-questionnaire-builder";
 import QuestionnaireManager from "./components/questionnaire/questionnaire-manager";
 import { QuestionnairePreviewMode } from "./types";
+// Import the new admin vacation management screen
+import AdminVacationManagementScreen from "./components/screens/admin-vacation-management-screen";
 
 /**
  * Application component
@@ -83,6 +85,10 @@ const App = () => {
           element: <VacationRequestsScreen />
         },
         {
+          path: "/admin/vacation-management",
+          element: <AdminVacationManagementScreen />
+        },
+        {
           path: "/admin/timebank/viewall",
           element: <TimebankViewAllScreen />
         },
@@ -101,6 +107,10 @@ const App = () => {
         {
           path: "/admin/questionnaire/:id/edit",
           element: <QuestionnaireManager mode={QuestionnairePreviewMode.EDIT} />
+        },
+        {
+          path: "/admin/vacation-management",
+          element: <AdminVacationManagementScreen />
         }
       ]
     }

@@ -1,4 +1,4 @@
-import { Button, Card, Typography } from "@mui/material";
+import { Button, Card, Typography, Box, Grid } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import VacationRequestsTable from "../vacation-requests-table/vacation-requests-table";
 import type { User } from "src/generated/homeLambdasClient";
@@ -16,7 +16,7 @@ import {
 } from "src/atoms/vacation";
 import UserRoleUtils from "src/utils/user-role-utils";
 import { Link } from "react-router-dom";
-import { KeyboardReturn } from "@mui/icons-material";
+import { KeyboardReturn, PeopleAlt } from "@mui/icons-material";
 import { renderVacationDaysTextForScreen } from "src/utils/vacation-days-utils";
 import { usersAtom } from "src/atoms/user";
 
@@ -275,6 +275,52 @@ const VacationRequestsScreen = () => {
           loading={loading}
         />
       </Card>
+      
+      {/* Admin Tools Section - Only visible in admin mode */}
+      {adminMode && (
+        <Card sx={{ margin: 0, padding: "16px", width: "100%", marginBottom: "16px" }}>
+          <Typography variant="h6" gutterBottom>
+            Admin Tools
+          </Typography>
+          <Grid container spacing={2}>
+            <Grid item xs={12} md={6}>
+              <Box
+                sx={{
+                  border: "1px solid rgba(0, 0, 0, 0.12)",
+                  borderRadius: "4px",
+                  padding: "16px",
+                  height: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between"
+                }}
+              >
+                <div>
+                  <Typography variant="subtitle1" fontWeight="bold">
+                    User Vacation Management
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                    View and update individual user vacation day allocations and remaining days.
+                  </Typography>
+                </div>
+                <Box sx={{ mt: 2 }}>
+                  <Button
+                    component={Link}
+                    to="/admin/vacation-management"
+                    variant="contained"
+                    color="primary"
+                    startIcon={<PeopleAlt />}
+                    fullWidth
+                  >
+                    Manage User Vacation Days
+                  </Button>
+                </Box>
+              </Box>
+            </Grid>
+          </Grid>
+        </Card>
+      )}
+      
       <Card sx={{ margin: 0, padding: "10px", width: "100%" }}>
         <Link to={adminMode ? "/admin" : "/"} style={{ textDecoration: "none" }}>
           <Button variant="contained" sx={{ padding: "10px", width: "100%" }}>
