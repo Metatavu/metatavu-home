@@ -1,74 +1,80 @@
 import { Grid, Typography } from "@mui/material";
-import { theme } from "../theme";
-import type { Person } from "../generated/client";
 import strings from "../localization/strings";
+import type { User } from "src/generated/homeLambdasClient";
+import { getVacationColors, parseVacationDays } from "src/utils/time-utils.ts";
 
 /**
- * Display persons vacation days
+ * Display persons vacation days in card
  *
- * @param Person timebank person
+ * @param user KeyCloak user
  */
-export const renderVacationDaysTextForCard = (person: Person) => {
-  const spentVacationsColor =
-    person && person.spentVacations > 0 ? theme.palette.success.main : theme.palette.error.main;
+export const renderVacationDaysTextForCard = (user: User) => {
+  const { vacationDaysByYearColor, unspentVacationDaysByYearColor } = getVacationColors(user);
+  const currentYear = new Date().getFullYear();
 
-  const unspentVacationsColor =
-    person && person.unspentVacations > 0 ? theme.palette.success.main : theme.palette.error.main;
-
-  if (person) {
+  if (user) {
     return (
       <Grid>
         <Grid container spacing={2} alignItems="center">
           <Grid item xs={6}>
-            {strings.vacationsCard.spentVacations}
+            {strings.vacationsCard.vacationDays}
           </Grid>
           <Grid item xs={6}>
-            <Typography color={spentVacationsColor}>{person.spentVacations}</Typography>
+            <Typography color={vacationDaysByYearColor}>
+              {user.attributes?.vacationDaysByYear
+                ? parseVacationDays(user.attributes?.vacationDaysByYear)[currentYear]
+                : strings.vacationsCard.vacationDaysNotFound}
+            </Typography>
           </Grid>
         </Grid>
         <Grid container spacing={2} alignItems="center">
           <Grid item xs={6}>
-            {strings.vacationsCard.unspentVacations}
+            {strings.vacationsCard.unspentVacationDays}
           </Grid>
           <Grid item xs={6}>
-            <Typography color={unspentVacationsColor}>{person.unspentVacations}</Typography>
+            <Typography color={unspentVacationDaysByYearColor}>
+              {user.attributes?.unspentVacationDaysByYear
+                ? parseVacationDays(user.attributes?.unspentVacationDaysByYear)[currentYear]
+                : strings.vacationsCard.unspentVacationDaysNotFound}
+            </Typography>
           </Grid>
         </Grid>
       </Grid>
     );
   }
-    return <Typography>{strings.error.personsFetch}</Typography>;
+  return <Typography>{strings.error.personsFetch}</Typography>;
 };
 
 /**
- * Display persons vacation days
+ * Display users vacation days in screen
  *
- * @param Person timebank person
+ * @param user Keycloak user
  */
-export const renderVacationDaysTextForScreen = (person: Person) => {
-  const spentVacationsColor =
-    person && person.spentVacations > 0 ? theme.palette.success.main : theme.palette.error.main;
+export const renderVacationDaysTextForScreen = (user: User) => {
+  const { vacationDaysByYearColor, unspentVacationDaysByYearColor } = getVacationColors(user);
+  const currentYear = new Date().getFullYear();
 
-  const unspentVacationsColor =
-    person && person.unspentVacations > 0 ? theme.palette.success.main : theme.palette.error.main;
-
-  if (person) {
+  if (user) {
     return (
       <Grid container justifyContent="space-around">
         <Grid item style={{ display: "flex", alignItems: "center" }}>
-          {strings.vacationsCard.spentVacations}
-          <Typography color={spentVacationsColor} style={{ marginLeft: "8px" }}>
-            {person.spentVacations}
+          {strings.vacationsCard.vacationDays}
+          <Typography color={vacationDaysByYearColor} style={{ marginLeft: "8px" }}>
+            {user.attributes?.vacationDaysByYear
+              ? parseVacationDays(user.attributes?.vacationDaysByYear)[currentYear]
+              : strings.vacationsCard.vacationDaysNotFound}
           </Typography>
         </Grid>
         <Grid item style={{ display: "flex", alignItems: "center" }}>
-          {strings.vacationsCard.unspentVacations}
-          <Typography color={unspentVacationsColor} style={{ marginLeft: "8px" }}>
-            {person.unspentVacations}
+          {strings.vacationsCard.unspentVacationDays}
+          <Typography color={unspentVacationDaysByYearColor} style={{ marginLeft: "8px" }}>
+            {user.attributes?.unspentVacationDaysByYear
+              ? parseVacationDays(user.attributes?.unspentVacationDaysByYear)[currentYear]
+              : strings.vacationsCard.unspentVacationDaysNotFound}
           </Typography>
         </Grid>
       </Grid>
     );
   }
-    return <Typography>{strings.error.personsFetch}</Typography>;
+  return <Typography>{strings.error.personsFetch}</Typography>;
 };

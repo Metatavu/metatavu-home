@@ -1,22 +1,38 @@
-import { Box, Card, CircularProgress, IconButton, Typography } from "@mui/material";
-import type { Projects, Tasks, TimeEntries } from "src/generated/homeLambdasClient";
-import { DataGrid } from "@mui/x-data-grid";
-import { useEffect, useState } from "react";
-import { useLambdasApi } from "src/hooks/use-api";
-import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import strings from "src/localization/strings";
-import sprintViewTasksColumns from "./sprint-tasks-columns";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import {
+  Box,
+  Card,
+  CircularProgress,
+  IconButton,
+  Typography,
+} from "@mui/material";
+import { DataGrid } from "@mui/x-data-grid";
+import { useAtomValue, useSetAtom } from "jotai";
+import { useEffect, useState } from "react";
+import { userProfileAtom } from "src/atoms/auth";
 import { errorAtom } from "src/atoms/error";
-import { useSetAtom } from "jotai";
+import { usersAtom } from "src/atoms/user";
+import type {
+  Phase,
+  ResourceAllocations,
+  ResourceAllocationsProject,
+  User,
+  WorkHours
+} from "src/generated/homeLambdasClient";
+import { useLambdasApi } from "src/hooks/use-api";
+import strings from "src/localization/strings";
+import type { PhaseRow } from "src/types/index";
+import { getSeveraUserId, mapPhasesToRows } from "src/utils/sprint-utils";
+import sprintViewTasksColumns from "./sprint-tasks-columns";
+import UserRoleUtils from "src/utils/user-role-utils";
 
 /**
- * Component properties
+ * Interface for TaskTable component
  */
 interface Props {
-  project: Projects;
-  loggedInPersonId?: number;
   filter?: string;
+  project: ResourceAllocationsProject
 }
 
 /**
@@ -24,88 +40,62 @@ interface Props {
  *
  * @param props component properties
  */
-const TaskTable = ({ project, loggedInPersonId, filter }: Props) => {
-  const { tasksApi, timeEntriesApi } = useLambdasApi();
-  const [tasks, setTasks] = useState<Tasks[]>([]);
-  const [timeEntries, setTimeEntries] = useState<number[]>([]);
+const TaskTable = ({ filter, project }: Props) => {
+  const users = useAtomValue(usersAtom);
+  const adminMode = UserRoleUtils.adminMode();
+  const userProfile = useAtomValue(userProfileAtom);
+  const loggedInUser = users.find(
+    (users: User) => users.id === userProfile?.id
+  );
+  const { phaseApi, workHoursApi, resourceAllocationsApi } = useLambdasApi();
+  const [phase, setPhase] = useState<Phase[]>([]);
+  const [workHours, setWorkHours] = useState<WorkHours[]>([]);
+  const [resourceAllocations, setResourceAllocations] = useState<ResourceAllocations[]>([]);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const columns = sprintViewTasksColumns({ tasks, timeEntries });
+  const columns = sprintViewTasksColumns();
   const setError = useSetAtom(errorAtom);
+  const severaUserId = loggedInUser ? getSeveraUserId(loggedInUser) : "";
+  const rows: PhaseRow[] = phase.map((phase) => mapPhasesToRows(phase, workHours, severaUserId, resourceAllocations, adminMode)).filter((row): row is PhaseRow => row !== null);
 
   /**
-   * Gather tasks and time entries when project is available and update reload state
+   * Get Phases and WorkHours for tasks
    */
-  useEffect(() => {
-    if (project && open) {
-      getTasksAndTimeEntries();
-    }
-  }, [project, open, filter]);
-
-  /**
-   * Handle loggenInPersonId change
-   */
-  useEffect(() => {
-    setTasks([]);
-    setOpen(false);
-  }, [loggedInPersonId]);
-
-  /**
-   * Get tasks and total time entries
-   */
-  const getTasksAndTimeEntries = async () => {
+  const getPhasesAndWorkHours = async () => {
+    if (!loggedInUser) return;
     setLoading(true);
-    if (!tasks.length || !timeEntries.length) {
+    if (!phase?.length) {
       try {
-        const fetchedTasks = !loggedInPersonId
-          ? await tasksApi.listProjectTasks({ projectId: project.id })
-          : await tasksApi
-              .listProjectTasks({ projectId: project.id })
-              .then((result) =>
-                result.filter((task) => task.assignedPersons?.includes(loggedInPersonId || 0))
-              );
-
-        setTasks(fetchedTasks);
-        const fetchedTimeEntries = await Promise.all(
-          fetchedTasks.map(async (task) => {
-            try {
-              if (project.id) {
-                const totalTimeEntries = await timeEntriesApi.listProjectTimeEntries({
-                  projectId: project.id,
-                  taskId: task.id
-                });
-                let totalMinutes = 0;
-                totalTimeEntries.forEach((timeEntry: TimeEntries) => {
-                  if (loggedInPersonId && timeEntry.person === loggedInPersonId) {
-                    totalMinutes += timeEntry.timeRegistered || 0;
-                  }
-                  if (!loggedInPersonId) {
-                    totalMinutes += timeEntry.timeRegistered || 0;
-                  }
-                });
-                return totalMinutes;
-              }
-            } catch (error) {
-              const message: string = strings
-                .formatString(
-                  strings.sprintRequestError.fetchTasksError,
-                  task.id || `${strings.sprintRequestError.fetchTaskIdError}`,
-                  error as string
-                )
-                .toString();
-              setError(message);
-            }
-            return 0;
-          })
-        );
-        setTimeEntries(fetchedTimeEntries);
+        const severaProjectId = project.severaProjectId || "";
+        const [fetchedResourceAllocations] = await Promise.all([
+          resourceAllocationsApi.getAllResourceAllocations({severaUserId}),
+        ]);
+        const [fetchedPhases, fetchedWorkHours] = await Promise.all([
+          phaseApi.getPhasesBySeveraProjectId({
+            severaProjectId
+          }),
+          workHoursApi.getAllWorkHours({
+            severaProjectId
+          }),
+        ]);
+        setResourceAllocations(fetchedResourceAllocations);
+        setWorkHours(fetchedWorkHours);
+        setPhase(fetchedPhases);
       } catch (error) {
-        setError(`${strings.sprintRequestError.fetchTimeEntriesError} ${error}`);
+        setError(
+          `${strings.sprintRequestError.fetchWorkHoursAndTasksError} ${error}`
+        );
       }
     }
     setLoading(false);
   };
 
+  useEffect(() => {
+    if (project && open) {
+      getPhasesAndWorkHours();
+    }
+  }, [project, open]);
+  
   return (
     <Card
       key={0}
@@ -118,17 +108,31 @@ const TaskTable = ({ project, loggedInPersonId, filter }: Props) => {
         height: "100",
         marginBottom: "16px",
         "& .high_priority": {
-          color: "red"
+          color: "red",
         },
         "& .low_priority": {
-          color: "green"
-        }
+          color: "green",
+        },
       }}
     >
-      <IconButton onClick={() => setOpen(!open)}>
-        {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-      </IconButton>
-      <Typography style={{ display: "inline" }}>{project?.name}</Typography>
+      <button 
+        type="button"
+        onClick={() => setOpen(!open)} 
+        style={{ 
+          display: "flex", 
+          alignItems: "center", 
+          padding: "2px", 
+          width: "100%", 
+          background: "transparent", 
+          border: "none", 
+          cursor: "pointer" 
+        }}
+      >
+        <IconButton>
+          {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+        </IconButton>
+        <Typography>{project.name}</Typography>
+      </button>
       {open && (
         <>
           {loading ? (
@@ -137,7 +141,7 @@ const TaskTable = ({ project, loggedInPersonId, filter }: Props) => {
                 sx={{
                   scale: "100%",
                   mt: "3%",
-                  mb: "3%"
+                  mb: "3%",
                 }}
               />
             </Box>
@@ -150,8 +154,8 @@ const TaskTable = ({ project, loggedInPersonId, filter }: Props) => {
                 borderRight: 0,
                 borderBottom: 0,
                 "& .header-color": {
-                  backgroundColor: "#f2f2f2"
-                }
+                  backgroundColor: "#f2f2f2",
+                },
               }}
               autoHeight={true}
               localeText={{ noResultsOverlayLabel: strings.sprint.notFound }}
@@ -162,11 +166,11 @@ const TaskTable = ({ project, loggedInPersonId, filter }: Props) => {
                   {
                     field: "status",
                     operator: "contains",
-                    value: filter
-                  }
-                ]
+                    value: filter,
+                  },
+                ],
               }}
-              rows={tasks}
+              rows={rows}
               columns={columns}
             />
           )}

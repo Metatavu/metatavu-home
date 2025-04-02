@@ -1,137 +1,92 @@
-import { useState, useEffect } from "react";
-import { Card, CircularProgress, Typography, Box, FormControlLabel, Switch } from "@mui/material";
-import { useLambdasApi } from "src/hooks/use-api";
-import type { Person } from "src/generated/client";
-import { useAtomValue, useSetAtom } from "jotai";
-import { personsAtom } from "src/atoms/person";
-import config from "src/app/config";
-import { userProfileAtom } from "src/atoms/auth";
-import type {
-  Allocations,
-  Projects,
-  TimeEntries
-} from "src/generated/homeLambdasClient/models/";
-import { DataGrid } from "@mui/x-data-grid";
-import { getHoursAndMinutes, getSprintEnd, getSprintStart } from "src/utils/time-utils";
-import TaskTable from "src/components/sprint-view-table/tasks-table";
-import strings from "src/localization/strings";
-import sprintViewProjectsColumns from "src/components/sprint-view-table/sprint-projects-columns";
-import { errorAtom } from "src/atoms/error";
+import { KeyboardReturn, Search, Close } from "@mui/icons-material";
 import {
-  calculateWorkingLoad,
-  totalAllocations,
-  filterAllocationsAndProjects
-} from "src/utils/sprint-utils";
-import { TaskStatusFilter } from "src/components/sprint-view-table/menu-Item-filter-table";
+  Box,
+  Button,
+  Card,
+  CircularProgress,
+  Typography,
+  Paper,
+  Divider,
+  Container,
+  Stack,
+  TextField,
+  InputAdornment,
+  Select,
+  MenuItem,
+  IconButton,
+  FormControl,
+  InputLabel
+} from "@mui/material";
+import { DataGrid } from "@mui/x-data-grid";
+import { useAtomValue, useSetAtom } from "jotai";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { userProfileAtom } from "src/atoms/auth";
+import { errorAtom } from "src/atoms/error";
+import { usersAtom } from "src/atoms/user";
+import TaskTable from "src/components/sprint-view-table/tasks-table";
+import type {
+  ResourceAllocations,
+  ResourceAllocationsProject,
+  User
+} from "src/generated/homeLambdasClient/models/";
+import { useLambdasApi } from "src/hooks/use-api";
+import strings from "src/localization/strings";
+import { getSeveraUserId } from "src/utils/sprint-utils";
+import { getSprintEnd, getSprintStart } from "src/utils/time-utils";
+import UserRoleUtils from "src/utils/user-role-utils";
+import createSprintViewProjectsColumns from "../sprint-view-table/sprint-projects-columns";
+import useSprintViewHandlers from "src/hooks/sprint-custom-hooks";
 
 /**
  * Sprint view screen component
  */
 const SprintViewScreen = () => {
-  const { allocationsApi, projectsApi, timeEntriesApi } = useLambdasApi();
-  const persons: Person[] = useAtomValue(personsAtom);
+  const { resourceAllocationsApi } = useLambdasApi();
+  const { 
+    filterType,
+    searchQuery, 
+    selectedProject, 
+    handleFilterChange, 
+    handleRowClick,
+    handleClearSearch, 
+    setSearchQuery, 
+    filterAllocations } = useSprintViewHandlers();
+  const users = useAtomValue(usersAtom);
   const userProfile = useAtomValue(userProfileAtom);
-  const loggedInPerson = persons.find(
-    (person: Person) =>
-      person.id === config.person.forecastUserIdOverride || person.keycloakId === userProfile?.id
+  const loggedInUser = users.find(
+    (users: User) => users.id === userProfile?.id
   );
-  const [allocations, setAllocations] = useState<Allocations[]>([]);
-  const [projects, setProjects] = useState<Projects[]>([]);
-  const [timeEntries, setTimeEntries] = useState<number[]>([]);
+  const [resourceAllocations, setResourceAllocations] = useState<ResourceAllocations[]>([]);
   const [loading, setLoading] = useState(false);
-  const [myTasks, setMyTasks] = useState(true);
-  const [filter, setFilter] = useState("");
   const todaysDate = new Date().toISOString();
   const sprintStartDate = getSprintStart(todaysDate);
   const sprintEndDate = getSprintEnd(todaysDate);
-  const columns = sprintViewProjectsColumns({ allocations, timeEntries, projects });
   const setError = useSetAtom(errorAtom);
-
-  /**
-   * Get project data if user is logged in
-   */
+  const adminMode = UserRoleUtils.adminMode();
+  const columns = createSprintViewProjectsColumns({
+    resourceAllocations: resourceAllocations || [],
+  });
+  const filteredAllocations = filterAllocations(resourceAllocations, adminMode);
+  
   useEffect(() => {
     fetchProjectDetails();
-  }, [loggedInPerson]);
+  }, [loggedInUser]);
 
-  /**
-   * Fetch allocations, project names and time entries
-   */
   const fetchProjectDetails = async () => {
-    if (!loggedInPerson) return;
-    
+    if (!loggedInUser) return;
+
     setLoading(true);
     try {
-      const fetchedAllocations = await allocationsApi.listAllocations({
-        startDate: new Date(),
-        endDate: new Date(),
-        personId: loggedInPerson?.id.toString()
-      });
-      const fetchedProjects = await projectsApi.listProjects({ startDate: new Date() });
-      const { filteredAllocations, filteredProjects } = filterAllocationsAndProjects(
-        fetchedAllocations,
-        fetchedProjects
-      );
-      const fetchedTimeEntries = await Promise.all(
-        filteredAllocations.map(async (allocation) => {
-          try {
-            if (allocation.project) {
-              const totalTimeEntries = await timeEntriesApi.listProjectTimeEntries({
-                projectId: allocation.project,
-                startDate: allocation.startDate,
-                endDate: allocation.endDate
-              });
-              let totalMinutes = 0;
-              totalTimeEntries.forEach((timeEntry: TimeEntries) => {
-                if (loggedInPerson && timeEntry.person === loggedInPerson.id) {
-                  totalMinutes += timeEntry.timeRegistered || 0;
-                }
-              });
-              return totalMinutes;
-            }
-          } catch (error) {
-            if (allocation.id) {
-              const message: string = strings
-                .formatString(
-                  strings.sprintRequestError.fetchAllocationError,
-                  allocation.id.toString(),
-                  error as string
-                )
-                .toString();
-              setError(message);
-            }
-          }
-          return 0;
-        })
-      );
-      setProjects(filteredProjects);
-      setAllocations(filteredAllocations);
-      setTimeEntries(fetchedTimeEntries);
+      const severaUserId = getSeveraUserId(loggedInUser);
+      const fetchedResourceAllocations = adminMode
+        ? await resourceAllocationsApi.getAllResourceAllocations()
+        : await resourceAllocationsApi.getAllResourceAllocations({ severaUserId });
+      setResourceAllocations(fetchedResourceAllocations);
     } catch (error) {
-      setError(`${strings.sprintRequestError.fetchError}, ${error}`);
+      setError(`${strings.sprintRequestError.fetchResourceAllocationsError}, ${error}`);
     }
     setLoading(false);
-  };
-
-  /**
-   * Calculate total unallocated time for the user in the current 2 week period
-   *
-   * @param allocation task allocated within a project
-   */
-  const unallocatedTime = (allocation: Allocations[]) => {
-    const totalAllocatedTime = allocation.reduce(
-      (total, allocation) => total + totalAllocations(allocation),
-      0
-    );
-    return calculateWorkingLoad(loggedInPerson) - totalAllocatedTime;
-  };
-
-  /**
-   * Featute for task filtering
-   */
-  const handleOnClickTask = () => {
-    setMyTasks(!myTasks);
-    setFilter("");
   };
 
   return (
@@ -141,99 +96,123 @@ const SprintViewScreen = () => {
           sx={{
             p: "25%",
             display: "flex",
-            justifyContent: "center"
+            justifyContent: "center",
           }}
         >
-          {
-            <Box sx={{ textAlign: "center" }}>
-              <Typography>{strings.placeHolder.pleaseWait}</Typography>
-              <CircularProgress
-                sx={{
-                  scale: "150%",
-                  mt: "5%",
-                  mb: "5%"
-                }}
-              />
-            </Box>
-          }
+          <Box sx={{ textAlign: "center" }}>
+            <Typography>{strings.placeHolder.pleaseWait}</Typography>
+            <CircularProgress
+              sx={{
+                scale: "150%",
+                mt: "5%",
+                mb: "5%",
+              }}
+            />
+          </Box>
         </Card>
       ) : (
-        <>
-          <FormControlLabel
-            control={<Switch checked={myTasks} />}
-            label={strings.sprint.showMyTasks}
-            onClick={() => handleOnClickTask()}
-          />
-          <TaskStatusFilter setFilter={setFilter}/>
-          <Card
-            sx={{
-              margin: 0,
-              width: "100%",
-              height: "100",
-              marginBottom: "16px",
-              marginTop: "16px",
-              padding: "0px",
-              "& .negative-value": {
-                color: "red"
-              }
-            }}
-          >
-            <DataGrid
-              sx={{
-                borderTop: 0,
-                borderLeft: 0,
-                borderRight: 0,
-                borderBottom: 0,
-                "& .header-color": {
-                  backgroundColor: "#f2f2f2"
-                }
-              }}
-              autoHeight={true}
-              localeText={{ noResultsOverlayLabel: strings.sprint.notFound }}
-              disableColumnFilter
-              hideFooter={true}
-              rows={allocations}
-              columns={columns}
-            />
-            <Box
-              sx={{
-                backgroundColor: "#e6e6e6",
-                display: "flex",
-                justifyContent: "space-between",
-                padding: "5px",
-                paddingTop: "10px",
-                paddingBottom: "10px"
-              }}
-            >
-              <Typography>
-                {strings.sprint.unAllocated}
-                <span
-                  style={{
-                    paddingLeft: "5px",
-                    color: unallocatedTime(allocations) < 0 ? "red" : ""
+        /* TODO: Need to fetch the status from home-lambdas first for phases, then recreate filter in metatavu-home */
+        /* <TaskStatusFilter setFilter={setFilter} /> */
+        <Container maxWidth="lg" sx={{ mt: 4 }}>
+          <Paper elevation={3} sx={{ padding: 4, borderRadius: 3 }}>
+            <Stack spacing={3}>
+              {adminMode && (
+                <>
+                  <Typography variant="h5" fontWeight="bold" color="primary">
+                    {strings.sprint.allocation}
+                  </Typography>
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+                    <Typography variant="subtitle1" fontWeight="medium" color="text.secondary">
+                      {strings.sprint.filter}
+                    </Typography>
+                    <FormControl sx={{ minWidth: 140 }}>
+                      <InputLabel id="filter-select-label">{strings.sprint.filterType}</InputLabel>
+                      <Select
+                        labelId="filter-select-label"
+                        value={filterType}
+                        onChange={handleFilterChange}
+                        label="Filter Type"
+                      >
+                        <MenuItem value="project">{strings.sprint.project}</MenuItem>
+                        <MenuItem value="user">{strings.sprint.user}</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Box>
+                  <TextField
+                    label={strings.formatString(strings.sprint.searchBy, filterType === "project" ? strings.sprint.project : strings.sprint.user)}
+                    variant="outlined"
+                    fullWidth
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Search color="action" />
+                        </InputAdornment>
+                      ),
+                      endAdornment: searchQuery && (
+                        <InputAdornment position="end">
+                          <IconButton onClick={handleClearSearch} size="small">
+                            <Close fontSize="small" />
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                      sx: {
+                        borderRadius: 2,
+                        backgroundColor: "background.paper",
+                      },
+                    }}
+                  />
+                </>
+              )}
+              <Card>
+                <DataGrid
+                  sx={{
+                    "& .MuiDataGrid-columnHeaders": { backgroundColor: "#e9ecef" },
+                    "& .MuiDataGrid-row:nth-of-type(even)": { backgroundColor: "#dee2e6" },
+                    "& .MuiDataGrid-row:hover": { cursor: "pointer", backgroundColor: "#ced4da" },
                   }}
-                >
-                  {getHoursAndMinutes(unallocatedTime(allocations))}
-                </span>
-              </Typography>
-              <Typography style={{ paddingRight: "5px" }}>
-                {strings.formatString(
-                  strings.sprint.current,
-                  sprintStartDate.toLocaleString(),
-                  sprintEndDate.toLocaleString()
-                )}
-              </Typography>
-            </Box>
-          </Card>
-          {projects.map((project) => (
-            <TaskTable
-              key={project.id}
-              project={project}
-              loggedInPersonId={myTasks ? loggedInPerson?.id : undefined}
-              filter={filter}
-            />
-          ))}
-        </>
+                  autoHeight
+                  localeText={{ noResultsOverlayLabel: strings.sprint.notFound }}
+                  disableColumnFilter
+                  hideFooter
+                  rows={filteredAllocations}
+                  columns={columns}
+                  getRowId={(row) => row.severaResourceAllocationId}
+                  onRowClick={(params) => handleRowClick(params.row)}
+                />
+                <Box sx={{ backgroundColor: "#e9ecef", p: 1.5, textAlign: "right" }}>
+                  <Typography variant="body2" color="text.primary">
+                    {strings.formatString(
+                      strings.sprint.current,
+                      sprintStartDate.toLocaleString(),
+                      sprintEndDate.toLocaleString()
+                    )}
+                  </Typography>
+                </Box>
+              </Card>
+              <Divider />
+              {selectedProject ? (
+                <TaskTable key={selectedProject.severaProjectId} project={selectedProject} />
+              ) : (
+                (filteredAllocations).map((resourceAllocations) => (
+                  <TaskTable
+                    key={resourceAllocations.project?.severaProjectId}
+                    project={resourceAllocations.project ?? ({} as ResourceAllocationsProject)}
+                  />
+                ))
+              )}
+              <Card sx={{ mt: 4, width: "100%" }}>
+                <Link to={adminMode ? "/admin" : "/"} style={{ textDecoration: "none" }}>
+                  <Button variant="contained" sx={{ p: 2, width: "100%" }}>
+                    <KeyboardReturn sx={{ marginRight: "10px" }} />
+                    <Typography>{strings.sprint.back}</Typography>
+                  </Button>
+                </Link>
+              </Card>
+            </Stack>
+          </Paper>
+        </Container>
       )}
     </>
   );

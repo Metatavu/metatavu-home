@@ -1,19 +1,19 @@
 import { Check, Close } from "@mui/icons-material";
 import { Button, Typography } from "@mui/material";
 import type { GridRowId } from "@mui/x-data-grid";
-import { VacationRequestStatuses } from "src/generated/client";
+import {VacationRequestStatuses} from "src/generated/homeLambdasClient";
 import strings from "src/localization/strings";
 
 /**
  * Component properties
  */
 interface UpdateStatusButtonProps {
-  updateVacationRequestStatuses: (
-    newStatus: VacationRequestStatuses,
-    selectedRowIds: GridRowId[]
-  ) => Promise<void>;
   selectedRowIds: GridRowId[];
   buttonType: VacationRequestStatuses;
+  updateVacationRequestStatus: (
+    vacationRequestStatus: VacationRequestStatuses,
+    selectedRowsId: GridRowId[]
+  ) => Promise<void>;
 }
 
 /**
@@ -22,15 +22,15 @@ interface UpdateStatusButtonProps {
  * @param props component properties
  */
 const UpdateStatusButton = ({
-  updateVacationRequestStatuses,
+  buttonType,
   selectedRowIds,
-  buttonType
+  updateVacationRequestStatus
 }: UpdateStatusButtonProps) => {
   /**
    * Handle update vacation status
    */
   const handleUpdateVacationRequestStatus = async () => {
-    await updateVacationRequestStatuses(buttonType, selectedRowIds);
+    await updateVacationRequestStatus(buttonType, selectedRowIds);
   };
 
   return (
