@@ -139,7 +139,7 @@ const ToolbarFormFields = ({
               sx={{ flexGrow: 1 }}
             />
             <Button variant="outlined" size="medium" onClick={handleRestoreDefaultDays}>
-              {strings.form.restoreDefault || "Restore default"}
+              {strings.form.restoreDefault}
             </Button>
           </Box>
         </>

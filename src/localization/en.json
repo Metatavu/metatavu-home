@@ -181,7 +181,8 @@
   },
   "form": {
     "submit": "Submit",
-    "update": "Update"
+    "update": "Update",
+    "restoreDefault": "Restore default"
   },
   "tableToolbar": {
     "delete": "Delete",

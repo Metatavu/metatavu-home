@@ -181,7 +181,8 @@
   },
   "form": {
     "submit": "Lähetä",
-    "update": "Päivitä"
+    "update": "Päivitä",
+    "restoreDefault": "Palauta oletusasetukset"
   },
   "tableToolbar": {
     "delete": "Poista",
