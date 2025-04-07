@@ -101,7 +101,7 @@
   },
   "softwareRegistry": {
     "softwareRegistry": "Ohjelmistorekisteri",
-    "softwareRegistryAdmin": "Ohjelmistorekisteri ylläpito",
+    "softwareRegistryAdmin": "Ohjelmistorekisterin ylläpito",
     "applications": "Sovellukset",
     "application": "Sovellus",
     "myApplications": "Omat sovellukset",
@@ -116,7 +116,7 @@
     "searchBy": "Hae tageilla tai nimellä",
     "clearSearch": "Tyhjennä haku",
     "description": "Kuvaus",
-    "review": "Lisääjan arvio",
+    "review": "Lisääjän arvio",
     "remove": "Poista omista sovelluksista",
     "addToMyApps": "Lisää omiin sovelluksiin",
     "editApp": "Muokkaa sovellus",

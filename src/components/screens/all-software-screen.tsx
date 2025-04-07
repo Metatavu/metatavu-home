@@ -154,7 +154,7 @@ const AllSoftwareScreen: React.FC = () => {
           status: newStatus,
           name: appToUpdate.name || "",
           description: appToUpdate.description || "",
-          review: appToUpdate.review || "",
+          // review: appToUpdate.review || "",
           url: appToUpdate.url || "",
           image: appToUpdate.image || "",
           tags: appToUpdate.tags || [],
