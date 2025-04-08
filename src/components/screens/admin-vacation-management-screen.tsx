@@ -19,7 +19,6 @@ import {
   CircularProgress,
   Snackbar,
   Alert,
-  Card,
   InputAdornment
 } from '@mui/material';
 import { Edit as EditIcon, Search as SearchIcon, KeyboardReturn } from '@mui/icons-material';
@@ -115,8 +114,8 @@ const AdminVacationManagementScreen: React.FC = () => {
   const fetchUsers = async (): Promise<void> => {
     setLoading(true);
     try {
-      // Fetch users from the backend API
-      const response = await axios.get<User[]>('http://localhost:3000/admin/users');
+      // Fetch users from the backend API - fixed endpoint to match backend
+      const response = await axios.get<User[]>('http://localhost:3000/users');
       setUsers(response.data || []);
       setFilteredUsers(response.data || []);
     } catch (error) {
@@ -142,8 +141,8 @@ const AdminVacationManagementScreen: React.FC = () => {
   
     // Iterate over a range of years (from two years ago to next year)
     for (let i = currentYear - 2; i <= currentYear + 1; i++) {
-      const yearTotal = getAttributeValue(user, `vacation_${i}`);
-      const yearRemaining = getAttributeValue(user, `vacation_${i}_remaining`);
+      const yearTotal = user.attributes?.[`vacation_${i}`]?.[0] || '0';
+      const yearRemaining = user.attributes?.[`vacation_${i}_remaining`]?.[0] || '0';
   
       vacationData[i.toString()] = {
         total: yearTotal,
@@ -155,6 +154,51 @@ const AdminVacationManagementScreen: React.FC = () => {
     setEditDialogOpen(true);
   };
   
+  const handleSaveVacationDays = (): void => {
+    if (!currentUser) return;
+    
+    setLoading(true);
+    
+    try {
+      // Prepare updated attributes
+      const updatedAttributes: Record<string, string[]> = {
+        ...(currentUser.attributes || {})
+      };
+      
+      Object.keys(vacationDays).forEach(year => {
+        updatedAttributes[`vacation_${year}`] = [vacationDays[year].total];
+        updatedAttributes[`vacation_${year}_remaining`] = [vacationDays[year].remaining];
+      });
+      
+      // Update the local state without making API calls
+      setUsers(prevUsers => 
+        prevUsers.map(user => 
+          user.id === currentUser.id 
+            ? { ...user, attributes: updatedAttributes } 
+            : user
+        )
+      );
+      
+      console.log('Locally updated user vacation days:', updatedAttributes);
+      
+      setNotification({
+        open: true,
+        message: `Vacation days updated for ${currentUser.firstName} ${currentUser.lastName} (Local only)`,
+        severity: 'success'
+      });
+      
+      setEditDialogOpen(false);
+    } catch (error) {
+      console.error('Failed to update vacation days:', error);
+      setNotification({
+        open: true,
+        message: 'Failed to update vacation days. Please try again.',
+        severity: 'error'
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleCloseNotification = (): void => {
     setNotification(prev => ({ ...prev, open: false }));
@@ -211,11 +255,15 @@ const AdminVacationManagementScreen: React.FC = () => {
             ) : (
               filteredUsers.map(user => (
                 <TableRow key={user.id}>
-                  <TableCell>{`${user.firstName} ${user.lastName}`}</TableCell>
+                  <TableCell>{`${user.firstName || ''} ${user.lastName || ''}`}</TableCell>
                   <TableCell>{user.username}</TableCell>
                   <TableCell>{user.email}</TableCell>
-                  <TableCell align="right">0 days</TableCell>
-                  <TableCell align="right">0 days</TableCell>
+                  <TableCell align="right">
+                    {user.attributes?.[`vacation_${new Date().getFullYear()}`]?.[0] || '0'} days
+                  </TableCell>
+                  <TableCell align="right">
+                    {user.attributes?.[`vacation_${new Date().getFullYear()}_remaining`]?.[0] || '0'} days
+                  </TableCell>
                   <TableCell align="center">
                     <IconButton 
                       color="primary" 
@@ -231,6 +279,72 @@ const AdminVacationManagementScreen: React.FC = () => {
           </TableBody>
         </Table>
       </TableContainer>
+
+      {/* Edit Dialog */}
+      <Dialog 
+        open={editDialogOpen} 
+        onClose={() => setEditDialogOpen(false)} 
+        maxWidth="md"
+        fullWidth
+      >
+        <DialogTitle>
+          Edit Vacation Days: {currentUser?.firstName} {currentUser?.lastName}
+        </DialogTitle>
+        <DialogContent dividers>
+          {Object.keys(vacationDays).map(year => (
+            <Box key={year} sx={{ mb: 3 }}>
+              <Typography variant="h6">{year}</Typography>
+              <Box sx={{ display: 'flex', gap: 2, mt: 1 }}>
+                <TextField
+                  label="Total Days"
+                  type="number"
+                  value={vacationDays[year].total}
+                  onChange={(e) => {
+                    const newValue = e.target.value;
+                    setVacationDays(prev => ({
+                      ...prev,
+                      [year]: {
+                        ...prev[year],
+                        total: newValue
+                      }
+                    }));
+                  }}
+                  InputProps={{ inputProps: { min: 0 } }}
+                  fullWidth
+                />
+                <TextField
+                  label="Remaining Days"
+                  type="number"
+                  value={vacationDays[year].remaining}
+                  onChange={(e) => {
+                    const newValue = e.target.value;
+                    setVacationDays(prev => ({
+                      ...prev,
+                      [year]: {
+                        ...prev[year],
+                        remaining: newValue
+                      }
+                    }));
+                  }}
+                  InputProps={{ inputProps: { min: 0 } }}
+                  fullWidth
+                />
+              </Box>
+            </Box>
+          ))}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setEditDialogOpen(false)}>Cancel</Button>
+          <Button 
+            onClick={handleSaveVacationDays} 
+            variant="contained" 
+            color="primary"
+            disabled={loading}
+          >
+            {loading ? <CircularProgress size={24} /> : 'Save'}
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       <Snackbar
         open={notification.open}
