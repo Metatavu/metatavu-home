@@ -47,7 +47,7 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
     id: "",
     name: "",
     description: "",
-    // review: "",
+    review: "",
     url: "",
     image: "",
     createdBy: "",
