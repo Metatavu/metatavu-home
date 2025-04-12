@@ -22,6 +22,8 @@ import QuestionnaireScreen from "./components/screens/questionnaire-screen";
 import NewQuestionnaireBuilder from "./components/questionnaire/new-questionnaire-builder";
 import QuestionnaireManager from "./components/questionnaire/questionnaire-manager";
 import { QuestionnairePreviewMode } from "./types";
+import WikiDocumantationScreen from "./components/screens/wiki-documentation-screen";
+import ArticleScreen from "./components/screens/wiki-article-screen";
 
 /**
  * Application component
@@ -62,6 +64,14 @@ const App = () => {
         {
           path: "/questionnaire/:id",
           element: <QuestionnaireManager mode={QuestionnairePreviewMode.FILL} />
+        },
+        {
+          path: "/wiki-documentation",
+          element: <WikiDocumantationScreen />
+        },
+        {
+          path: "/wiki-documentation/*",
+          element: <ArticleScreen />
         }
       ]
     },
