@@ -1,20 +1,30 @@
 import { useEffect, useState } from "react";
-import { CircularProgress, Card, Box, TextField, InputAdornment, Grid, Typography, Button, FormControl, Select, MenuItem, FormHelperText, IconButton, Slide, Paper, CardContent } from "@mui/material";
+import { 
+  CircularProgress, 
+  Card, 
+  Box, 
+  TextField, 
+  InputAdornment, 
+  Grid, 
+  Typography,
+  Button, 
+  FormControl, 
+  Select, 
+  MenuItem 
+} from "@mui/material";
 import { useAtomValue, useSetAtom } from "jotai";
-import { Search } from "@mui/icons-material";
-import strings from "src/localization/strings";
 import { useLambdasApi } from "src/hooks/use-api";
 import { errorAtom } from "src/atoms/error";
 import type { ArticleMetadata } from "src/generated/homeLambdasClient";
 import { articleAtom } from "src/atoms/article";
 import { Link } from "react-router-dom";
-import ListViewIcon from "@mui/icons-material/List";
+import { Search } from "@mui/icons-material";
 import GridViewIcon from "@mui/icons-material/GridView";
-import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
-import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import CarouselArticleCards from "../wiki-documentation/carousel-article-cards";
+import strings from "src/localization/strings";
 
 /**
- * Timebank screen component.
+ * Wiki documentation screen component displaying a list of articles.
  */
 const WikiDocumantationScreen = () => {
   const setError = useSetAtom(errorAtom);
@@ -23,9 +33,8 @@ const WikiDocumantationScreen = () => {
   const { articleApi } = useLambdasApi();
   const initLoadingState = articleAtomValue?.length === 0;
   const [loading, setLoading] = useState(initLoadingState);
-  const [articles, setArticles] = useState<ArticleMetadata[]>(articleAtomValue);
+  const [articles, setArticles] = useState<ArticleMetadata[]>(articleAtomValue || []);
   const [selectOpen, setSelectOpen] = useState(false);
-  const [currentPage, setCurrentPage] = useState<number>(0);
   const colors = {
     toolbar : {
       main: "#E9E8E8",
@@ -41,8 +50,8 @@ const WikiDocumantationScreen = () => {
   const getArticles = async () => {
     try {
       const fetchedArticles = await articleApi.getArticles();
-      setArticles(fetchedArticles);
-      setArticlesAtom(fetchedArticles);
+      setArticles(fetchedArticles ?? []);
+      setArticlesAtom(fetchedArticles ?? []);
     } catch (error) {
       setError(`${error}`);
     }
@@ -79,89 +88,6 @@ const WikiDocumantationScreen = () => {
           </Typography>
       </Card>
     </Link>
-
-  const renderCarouselArticleCard = () =>
-    <Card sx={{ position: "relative" }}>
-      <IconButton onClick={handlePreviousPage} sx={{
-        position: "absolute", 
-        left: "0", 
-        top: "50%", 
-        transform: "translateY(-50%)",
-        zIndex: 1
-      }}>
-        <NavigateBeforeIcon/>
-      </IconButton>
-
-      <IconButton onClick={handleNextPage} sx={{
-        position: "absolute", 
-        right: "0", 
-        top: "50%", 
-        transform: "translateY(-50%)",
-        zIndex: 1
-      }}>
-        <NavigateNextIcon/>
-      </IconButton>
-      <Box
-        sx={{
-          display: "flex",
-          width: "100%",
-          height: { md: "420px", sm: "330px" },
-          transform: `translateX(-${currentPage * 100}%)`,
-          transition: "transform 0.5s ease-in-out"
-        }}
-      >
-        {articles.map((article) => (
-          <Box
-            key={`article-card-${article.id}`}
-            sx={{
-              flex: "0 0 100%",
-              width: "100%",
-              height: "100%",
-              padding: { md: "40px", xs: "40px" },
-              backgroundColor: "#F7F7F7",
-            }}
-          >
-            <Grid container spacing={3}>
-              <Grid item sm={6} xs={12}>
-                <Box
-                  component="img"
-                  sx={{
-                    width: "100%",
-                    maxWidth: { sm: "440px" },
-                    height: { md: "330px", sm: "250px", xs: "270px" },
-                    borderRadius: "20px",
-                    objectFit: "cover",
-                    overflow: "hidden"
-                  }}
-                  alt={article.title}
-                  src={article.coverImage}
-                />
-              </Grid>
-              <Grid item sm={6} xs={12}>
-                <Typography variant="h5" sx={{ fontWeight: "bold", fontSize: "25px" }}>
-                  {article.title}
-                </Typography>
-                <Typography sx={{ 
-                  fontSize: "22px", 
-                  marginTop: 4, 
-                  marginBottom: 4,
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  whiteSpace: "normal",
-                  wordBreak: "break-word",
-                  display: "-webkit-box",
-                  WebkitBoxOrient: "vertical",
-                  WebkitLineClamp: { md: 5, sm: 4, xs: 3 }
-                }}>
-                  {article.description}
-                </Typography>
-              </Grid>
-            </Grid>
-          </Box>
-        ))}
-      </Box>
-    </Card>
-
 
   const renderSearch = () =>
     <Card sx={{width: {md:"55%", xs:"100%"}, boxShadow: 2, marginBottom: {xs: 2}}}>
@@ -265,9 +191,6 @@ const WikiDocumantationScreen = () => {
         <MenuItem sx={{backgroundColor: colors.toolbar.main, "&:hover": {backgroundColor: colors.toolbar.hover}}} value="">
           <em>None</em>
         </MenuItem>
-        <MenuItem sx={{backgroundColor: colors.toolbar.main, "&:hover": {backgroundColor: colors.toolbar.hover}}} value="">
-          <em>None</em>
-        </MenuItem>
       </Select>
     </FormControl>
 
@@ -285,12 +208,6 @@ const WikiDocumantationScreen = () => {
       {renderListViewButton()}
       {renderCreateButton()}
     </Grid>
-
-  const handlePreviousPage = () => 
-    setCurrentPage((prevPage) => (prevPage - 1 + articles.length) % articles.length);
-
-  const handleNextPage = () => 
-    setCurrentPage((prevPage) => (prevPage+1) % articles.length);
 
   return (
     <>
@@ -311,11 +228,11 @@ const WikiDocumantationScreen = () => {
             marginBottom: 2, 
             marginLeft: 3
           }}>
-            Wiki Documentation
+            {strings.wikiDocumentation.cardTitle}
           </Typography>
           {articles && articles.length !== 0 ? 
             <>
-              {renderCarouselArticleCard()}
+              <CarouselArticleCards articles={articles}/>
               <Box sx={{paddingLeft: 3, paddingRight: 3}}>
                 {renderToolBar()}
                 <Grid 
