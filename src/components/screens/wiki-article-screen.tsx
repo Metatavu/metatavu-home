@@ -1,6 +1,6 @@
 import { Card, CircularProgress } from "@mui/material";
 import { useEffect, useState } from "react";
-import { Article, type Questionnaire } from "src/generated/homeLambdasClient";
+import type { Article } from "src/generated/homeLambdasClient";
 import strings from "src/localization/strings";
 
 import { useSetAtom } from "jotai";
