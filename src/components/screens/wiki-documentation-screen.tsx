@@ -1,16 +1,21 @@
-import { useEffect, useState } from "react";
+import {useEffect, useState } from "react";
 import { 
   CircularProgress, 
   Card, 
   Box, 
   TextField, 
-  InputAdornment, 
   Grid, 
   Typography,
   Button, 
   FormControl, 
   Select, 
-  MenuItem 
+  MenuItem, 
+  Autocomplete,
+  IconButton,
+  Checkbox,
+  styled,
+  type PopperProps,
+  Popper
 } from "@mui/material";
 import { useAtomValue, useSetAtom } from "jotai";
 import { useLambdasApi } from "src/hooks/use-api";
@@ -23,6 +28,16 @@ import GridViewIcon from "@mui/icons-material/GridView";
 import CarouselArticleCards from "../wiki-documentation/carousel-article-cards";
 import strings from "src/localization/strings";
 
+const colors = {
+  toolbar : {
+    main: "#E9E8E8",
+    hover: "#DCD8D8",
+    text: "#787272"
+  }
+}
+
+
+
 /**
  * Wiki documentation screen component displaying a list of articles.
  */
@@ -33,25 +48,25 @@ const WikiDocumantationScreen = () => {
   const { articleApi } = useLambdasApi();
   const initLoadingState = articleAtomValue?.length === 0;
   const [loading, setLoading] = useState(initLoadingState);
-  const [articles, setArticles] = useState<ArticleMetadata[]>(articleAtomValue || []);
+  const [articles, setArticles] = useState<ArticleMetadata[]>(articleAtomValue);
+  const [dispayedArticles, setDisplayedArticles] = useState<ArticleMetadata[]>(articleAtomValue);
+  const [tags, setTags] = useState<string[]>([]);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [selectOpen, setSelectOpen] = useState(false);
-  const colors = {
-    toolbar : {
-      main: "#E9E8E8",
-      hover: "#DCD8D8",
-      text: "#787272"
-    }
-  }
+  const [searchInput, setSearchInput] = useState("");
 
   useEffect(() => {
     if (articleAtomValue.length === 0) getArticles();
+    else getTags(articleAtomValue);
   }, []);
 
   const getArticles = async () => {
     try {
       const fetchedArticles = await articleApi.getArticles();
-      setArticles(fetchedArticles ?? []);
-      setArticlesAtom(fetchedArticles ?? []);
+      setArticles(fetchedArticles);
+      setDisplayedArticles(fetchedArticles);
+      setArticlesAtom(fetchedArticles);
+      getTags(fetchedArticles);
     } catch (error) {
       setError(`${error}`);
     }
@@ -60,7 +75,38 @@ const WikiDocumantationScreen = () => {
     }, 1000)
   };
 
-  const renderArticleCard = (article: ArticleMetadata) =>
+  const getTags = (fetchedArticles: ArticleMetadata[]) => {
+    const allTags = fetchedArticles.flatMap(article => article.tags || []);
+    const uniqueTags = [...new Set(allTags)];
+    setTags(uniqueTags);
+  }
+
+  const handleSearchInputChange = (event: any) => {
+    const newSearchInput = event.target.value;
+    setSearchInput(newSearchInput || "");
+
+    if (!newSearchInput || newSearchInput === "") {
+      setDisplayedArticles(articles);
+      return;
+    }
+
+    const filteredArticles = articles.filter(article => 
+      article.title.toLowerCase().includes(newSearchInput.toLowerCase()) && 
+      selectedTags.every(tag => article.tags?.includes(tag))
+    );
+    setDisplayedArticles(filteredArticles);
+  }
+
+  const handleSelectedTagChange = (values: string[]) => {
+    setSelectedTags(values);
+    const filteredArticles = articles.filter(article => 
+      article.title.toLowerCase().includes(searchInput.toLowerCase()) && 
+      values.every(tag => article.tags?.includes(tag))
+    );
+    setDisplayedArticles(filteredArticles);
+  }
+
+  const renderArticleCard = (article: ArticleMetadata) => (
     <Link to={article.path}>
       <Card sx={{
         padding: "20px", 
@@ -88,47 +134,122 @@ const WikiDocumantationScreen = () => {
           </Typography>
       </Card>
     </Link>
+  )
 
-  const renderSearch = () =>
-    <Card sx={{width: {md:"55%", xs:"100%"}, boxShadow: 2, marginBottom: {xs: 2}}}>
+  const CustomPopper = styled((props: PopperProps) => <Popper {...props} placement="bottom" />)({
+    "& .MuiAutocomplete-noOptions": {
+      display: "none"
+    },
+    "& .MuiAutocomplete-paper": {
+      marginTop: "10px",
+      backgroundColor: colors.toolbar.main,
+      color: colors.toolbar.text
+    }
+  });
+
+  const renderSearch = () => (
+    <Card sx={{
+      width: {
+        md:"65%",
+        xs:"100%"
+      }, 
+      boxShadow: 2, 
+      marginBottom: {xs: 2}
+    }}>
       <Box sx={{ 
         display: "flex", 
         justifyContent: "center", 
-        backgroundColor: colors.toolbar.main
+        backgroundColor: colors.toolbar.main,
+        
       }}>
-        <TextField
-          // value={searchInput}
-          // onChange={handleSearchInputChange}
-          placeholder={strings.timebank.searchPlaceholder}
-          variant="outlined"
-          disabled={loading}
-          sx={{ 
-            width: "99%", 
-            padding: 1, 
-            "& .MuiOutlinedInput-root": { 
-              height: "34px",
-              "& fieldset": {
-                border: "none",
+        <Autocomplete
+          PopperComponent={CustomPopper}
+          multiple
+          disableCloseOnSelect
+          id="checkboxes-tags-select-component"
+          options={tags}
+          sx={{width:"100%"}}
+          clearOnBlur={false}
+          inputValue={searchInput}
+          onInputChange={handleSearchInputChange}
+          onChange={(_event, values) => {
+            handleSelectedTagChange(values)
+          }}
+          size="small"
+          renderOption={(props, option, { selected }) => (
+            <li
+              {...props}
+              style={{ display: "flex", alignItems: "center" }}
+              key={`tags-option-${option}`}
+            >
+              <Checkbox sx={{
+                  color: colors.toolbar.text, 
+                  marginRight: 2,
+                }} 
+                checked={selected} 
+              />
+              <Box
+                minWidth="5px"
+                style={{ marginRight: "10px" }}
+                component="span"
+                sx={{
+                  height: 40,
+                  borderRadius: "5px"
+                }}
+              />
+              {option}
+            </li>
+          )}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              placeholder={"strings.sprint.searchProjectsAndPersons"}
+              sx={{
+                "& fieldset": {
+                  border: "none",
+                  marginBottom: "20px"
+                }
+              }}
+              InputProps={{
+                ...params.InputProps,
+                endAdornment: null,
+                startAdornment: (
+                  <>
+                    <IconButton>
+                      <Search />
+                    </IconButton>
+                    {params.InputProps.startAdornment}
+                  </>
+                )
+              }}
+            />
+          )}
+          ListboxProps={{
+            sx: {
+              display: "grid",
+              columnGap: 3,
+              rowGap: 1,
+              gridTemplateColumns: "repeat(2, 1fr)",
+              "@media (min-width: 900px)": {
+                gridTemplateColumns: "repeat(4, 1fr)"
               }
-            }}
-          }
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <Search />
-              </InputAdornment>
-            )
+            }
           }}
         />
       </Box>
     </Card>
+  )
 
-  const renderCreateButton = () => 
+  const renderCreateButton = () => (
     <Button
       variant="contained"
       sx={{
-        width: {md: "15%", sm: "40%", xs:"35%"},
-        height: "50px",
+        width: {
+          md: "15%", 
+          sm: "40%", 
+          xs:"35%"
+        },
+        height: "55px",
         backgroundColor: colors.toolbar.main,
         color: colors.toolbar.text,
         "&:hover": {backgroundColor: colors.toolbar.hover}
@@ -138,11 +259,12 @@ const WikiDocumantationScreen = () => {
         Create
       </Typography>
     </Button>
+  )
 
-  const renderListViewButton = () => 
+  const renderListViewButton = () => (
     <Button variant="contained" sx={{
       maxWidth: "32px", 
-      height: "50px",
+      height: "55px",
       backgroundColor: colors.toolbar.main, 
       "&:hover": {backgroundColor: colors.toolbar.hover}
     }} 
@@ -150,14 +272,19 @@ const WikiDocumantationScreen = () => {
     >
       <GridViewIcon sx={{color: colors.toolbar.text}}/>
     </Button>
+  )
 
-  const renderDropdownMenu = () => 
+  const renderDropdownMenu = () => (
     <FormControl
       sx={{
-        width: {md: "20%", sm: "40%", xs:"35%"},
+        width: {
+          md: "10%", 
+          sm: "40%", 
+          xs:"35%"
+        },
         color: colors.toolbar.text,
         '& .css-eqd77p-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.MuiSelect-select': {
-          height: '33px'
+          height: '38px'
         },
         "& fieldset": { border: 'none' },
       }}
@@ -188,13 +315,22 @@ const WikiDocumantationScreen = () => {
           },
         }}
       >
-        <MenuItem sx={{backgroundColor: colors.toolbar.main, "&:hover": {backgroundColor: colors.toolbar.hover}}} value="">
-          <em>None</em>
-        </MenuItem>
+        {tags.map(tag => 
+          <MenuItem sx={{
+            backgroundColor: colors.toolbar.main, 
+            "&:hover": {
+              backgroundColor: colors.toolbar.hover
+            }}} 
+            value=""
+          >
+            <em>{tag}</em>
+          </MenuItem>
+        )}
       </Select>
     </FormControl>
+  )
 
-  const renderToolBar = () => 
+  const renderToolBar = () => (
     <Grid
       container 
       justifyContent={"space-between"} 
@@ -208,6 +344,7 @@ const WikiDocumantationScreen = () => {
       {renderListViewButton()}
       {renderCreateButton()}
     </Grid>
+  )
 
   return (
     <>
@@ -217,7 +354,7 @@ const WikiDocumantationScreen = () => {
           display: "flex", 
           justifyContent: "center" 
         }}>
-          {<CircularProgress sx={{ scale: "150%" }} />}
+          <CircularProgress sx={{ scale: "150%" }} />
         </Card>
       ) : 
       (
@@ -240,7 +377,7 @@ const WikiDocumantationScreen = () => {
                   spacing={3}
                   textAlign={"center"}
                 >
-                  {articles.map(article => 
+                  {dispayedArticles.map(article => 
                     <Grid item lg={3} md={4} sm={6} xs={12}>
                       {renderArticleCard(article)}
                     </Grid>
