@@ -121,6 +121,8 @@
     "addToMyApps": "Lisää omiin sovelluksiin",
     "editApp": "Muokkaa sovellus",
     "addSoftware": "Lisää sovellus",
+    "deleteSoftwareDescription": "Haluatko varmasti poistaa sovelluksen? Toimintoa ei voi peruuttaa",
+    "confirmDeletion": "Vahvista poisto",
     "added": "Lisätty",
     "name": "Nimi",
     "nameRequired": "Nimi on pakollinen",

@@ -152,6 +152,8 @@ export interface Localized extends LocalizedStringsMethods {
     addToMyApps: string;
     editApp: string;
     addSoftware: string;
+    confirmDeletion: string;
+    deleteSoftwareDescription: string;
     name: string;
     nameRequired: string;
     imageURL: string;
