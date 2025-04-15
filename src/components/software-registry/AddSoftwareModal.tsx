@@ -90,14 +90,7 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
     setNameExists(nameAlreadyExists);
   }, [software.name, existingSoftwareList]);
 
-  /**
-   * Handle form field reset to initial values.
-   */
-  const resetForm = () => {
-    setSoftware(initialSoftwareState);
-    setTags("");
-    setNameExists(false);
-  };
+  
 
   /**
    * Handle form field changes by updating the software state.
@@ -138,7 +131,6 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
   const handleSubmit = () => {
     if (!nameExists) {
       handleSave(software);
-      resetForm();
       handleClose();
     }
   };
@@ -160,7 +152,7 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
         overflowY: "auto",
         }}
       >
-        <IconButton onClick={() => { resetForm(); handleClose(); }} sx={{ position: "absolute", top: 16, right: 16 }}>
+        <IconButton onClick={() => {  handleClose(); }} sx={{ position: "absolute", top: 16, right: 16 }}>
           <CloseIcon />
         </IconButton>
         <Typography variant="h6" marginBottom={4}>
@@ -278,7 +270,7 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
           </Grid>
           <Grid item container justifyContent="right" xs={12} mt={4}>
             <Button
-              onClick={() => { resetForm(); handleClose(); }}
+              onClick={() => {  handleClose(); }}
               variant="outlined"
               sx={{
                 marginRight: "4px",
