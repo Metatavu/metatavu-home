@@ -29,7 +29,7 @@ import { useSetAtom } from 'jotai';
 import { errorAtom } from 'src/atoms/error';
 
 /**
- * Interface representing a Keycloak user
+ * Interface representing a user from the Keycloak API
  */
 interface User {
   id: string;
@@ -42,22 +42,32 @@ interface User {
     [key: string]: string[];
   };
 }
-
+/**
+ * Interface for vacation days in a specific year
+ */
 interface VacationYear {
   total: string;
   remaining: string;
+  hasError?: boolean;
 }
-
+/**
+ * Interface for vacation days mapping by year
+ */
 interface VacationDays {
   [year: string]: VacationYear;
 }
-
+/**
+ * Interface for notification state
+ */
 interface NotificationState {
   open: boolean;
   message: string;
   severity: 'success' | 'error' | 'info' | 'warning';
 }
-
+/**
+ * Admin screen component for managing user vacation days
+ * Provides interface to view and edit vacation allocations for all users
+ */
 const AdminVacationManagementScreen: React.FC = () => {
   if (!UserRoleUtils.adminMode()) {
     return (
@@ -66,18 +76,12 @@ const AdminVacationManagementScreen: React.FC = () => {
         <Typography paragraph>
           You need administrator privileges to access this page.
         </Typography>
-        <Button 
-          component={Link} 
-          to="/" 
-          variant="contained"
-          startIcon={<KeyboardReturn />}
-        >
+        <Button component={Link} to="/" variant="contained" startIcon={<KeyboardReturn />}>
           Return to Home
         </Button>
       </Box>
     );
   }
-
   const [users, setUsers] = useState<User[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [searchKeyword, setSearchKeyword] = useState('');
@@ -92,7 +96,6 @@ const AdminVacationManagementScreen: React.FC = () => {
   });
 
   const setError = useSetAtom(errorAtom);
-
   useEffect(() => {
     fetchUsers();
   }, []);
@@ -101,177 +104,245 @@ const AdminVacationManagementScreen: React.FC = () => {
     if (searchKeyword.trim() === '') {
       setFilteredUsers(users);
     } else {
-      const filtered = users.filter(user =>
-        (user.firstName?.toLowerCase() || '').includes(searchKeyword.toLowerCase()) ||
-        (user.lastName?.toLowerCase() || '').includes(searchKeyword.toLowerCase()) ||
-        (user.email?.toLowerCase() || '').includes(searchKeyword.toLowerCase()) ||
-        (user.username?.toLowerCase() || '').includes(searchKeyword.toLowerCase())
+      const keyword = searchKeyword.toLowerCase();
+      setFilteredUsers(
+        users.filter(user =>
+          (user.firstName?.toLowerCase() || '').includes(keyword) ||
+          (user.lastName?.toLowerCase() || '').includes(keyword) ||
+          (user.email?.toLowerCase() || '').includes(keyword) ||
+          (user.username?.toLowerCase() || '').includes(keyword)
+        )
       );
-      setFilteredUsers(filtered);
     }
   }, [searchKeyword, users]);
-
+  /**
+   * Fetches all users from the backend API
+   */
   const fetchUsers = async (): Promise<void> => {
     setLoading(true);
     try {
-      // Fetch users from the backend API - fixed endpoint to match backend
-      const response = await axios.get<User[]>('http://localhost:3000/users');
-      setUsers(response.data || []);
-      setFilteredUsers(response.data || []);
-    } catch (error) {
-      console.error('Failed to fetch users from backend:', error);
-      setError(`Failed to load users from backend. Please try again.`);
-      setNotification({
-        open: true,
-        message: 'Failed to load users from backend. Please try again.',
-        severity: 'error'
-      });
+      const response = await axios.get<User[]>('http://localhost:3000/admin/users');
+      setUsers(response.data);
+      setFilteredUsers(response.data);
+    } catch (err) {
+      const error = err as any;
+      setError('Failed to load users from backend. Please try again.');
+      setNotification({ open: true, message: 'Failed to load users.', severity: 'error' });
     } finally {
       setLoading(false);
     }
   };
-
-  const handleEditUser = (user: User): void => {
-    if (!user) return;
-  
-    setCurrentUser(user);
-  
-    const vacationData: VacationDays = {};
-    const currentYear = new Date().getFullYear();
-  
-    // Iterate over a range of years (from two years ago to next year)
-    for (let i = currentYear - 2; i <= currentYear + 1; i++) {
-      const yearTotal = user.attributes?.[`vacation_${i}`]?.[0] || '0';
-      const yearRemaining = user.attributes?.[`vacation_${i}_remaining`]?.[0] || '0';
-  
-      vacationData[i.toString()] = {
-        total: yearTotal,
-        remaining: yearRemaining
-      };
+  /**
+   * Gets vacation days value from user attributes
+   * Supports two storage formats:
+   * 1. Individual attributes: vacation_YEAR and vacation_YEAR_remaining
+   * 2. Arrays: vacationDaysByYear and unspentVacationDaysByYear in "YEAR:days" format
+   * 
+   * @param user - User object containing attributes
+   * @param year - Year to get vacation data for
+   * @param isRemaining - Whether to get remaining days (true) or total days (false)
+   * @returns Vacation days value as string
+   */
+  const getVacationDaysValue = (user: User, year: number, isRemaining: boolean = false): string => {
+    if (!user.attributes) return '0';
+    const standardKey = isRemaining ? `vacation_${year}_remaining` : `vacation_${year}`;
+    if (user.attributes[standardKey]?.[0]) {
+      return user.attributes[standardKey][0];
     }
-  
-    setVacationDays(vacationData);
+    const yearAttribute = isRemaining ? 'unspentVacationDaysByYear' : 'vacationDaysByYear';
+    const yearPrefix = `${year}:`;
+    
+    if (user.attributes[yearAttribute]) {
+      const yearValue = user.attributes[yearAttribute].find(val => val.startsWith(yearPrefix));
+      if (yearValue) {
+        return yearValue.split(':')[1].replace(/^0+/, '') || '0'; // Remove leading zeros
+      }
+    }
+    
+    return '0';
+  };
+  /**
+   * Prepares vacation data for editing a specific user
+   * @param user - User to edit
+   */
+  const handleEditUser = (user: User): void => {
+    setCurrentUser(user);
+    const data: VacationDays = {};
+    
+    for (let year = 2023; year <= 2026; year++) {
+      let total = '0';
+      let remaining = '0';
+
+      if (user.attributes?.[`vacation_${year}`]?.[0]) {
+        total = user.attributes[`vacation_${year}`][0];
+      }
+      if (user.attributes?.[`vacation_${year}_remaining`]?.[0]) {
+        remaining = user.attributes[`vacation_${year}_remaining`][0];
+      }
+      if (user.attributes?.vacationDaysByYear) {
+        const yearEntry = user.attributes.vacationDaysByYear.find(val => val.startsWith(`${year}:`));
+        if (yearEntry) {
+          total = yearEntry.split(':')[1];
+        }
+      }
+      
+      if (user.attributes?.unspentVacationDaysByYear) {
+        const yearEntry = user.attributes.unspentVacationDaysByYear.find(val => val.startsWith(`${year}:`));
+        if (yearEntry) {
+          remaining = yearEntry.split(':')[1];
+        }
+      }
+      // Remove leading zeros
+      total = total.replace(/^0+/, '') || '0';
+      remaining = remaining.replace(/^0+/, '') || '0';
+      data[year] = { total, remaining };
+    }
+    setVacationDays(data);
     setEditDialogOpen(true);
   };
-  
-  const handleSaveVacationDays = (): void => {
+  /**
+   * Validates that remaining days don't exceed total days
+   * 
+   * @param vacationData - Vacation days data to validate
+   * @returns Object with validation result and error message if invalid
+   */
+  const validateVacationDays = (vacationData: VacationDays): { isValid: boolean; errorMessage?: string } => {
+    for (const year in vacationData) {
+      const totalDays = parseInt(vacationData[year].total, 10);
+      const remainingDays = parseInt(vacationData[year].remaining, 10);
+      
+      if (remainingDays > totalDays) {
+        return {
+          isValid: false,
+          errorMessage: `Error for year ${year}: Remaining days (${remainingDays}) cannot exceed total days (${totalDays}).`
+        };
+      }
+    }
+    return { isValid: true };
+  };
+  /**
+   * Saves vacation days to the backend API
+   * Validates data before saving and converts to both supported formats:
+   * 1. Individual attributes format
+   * 2. Array format with "YEAR:value" entries
+   */
+  const handleSaveVacationDays = async (): Promise<void> => {
     if (!currentUser) return;
-    
-    setLoading(true);
-    
-    try {
-      // Prepare updated attributes
-      const updatedAttributes: Record<string, string[]> = {
-        ...(currentUser.attributes || {})
-      };
-      
-      Object.keys(vacationDays).forEach(year => {
-        updatedAttributes[`vacation_${year}`] = [vacationDays[year].total];
-        updatedAttributes[`vacation_${year}_remaining`] = [vacationDays[year].remaining];
-      });
-      
-      // Update the local state without making API calls
-      setUsers(prevUsers => 
-        prevUsers.map(user => 
-          user.id === currentUser.id 
-            ? { ...user, attributes: updatedAttributes } 
-            : user
-        )
-      );
-      
-      console.log('Locally updated user vacation days:', updatedAttributes);
-      
+    const validation = validateVacationDays(vacationDays);
+    if (!validation.isValid) {
       setNotification({
         open: true,
-        message: `Vacation days updated for ${currentUser.firstName} ${currentUser.lastName} (Local only)`,
+        message: validation.errorMessage || 'Validation error with vacation days.',
+        severity: 'error'
+      });
+      return;
+    }
+    
+    setLoading(true);
+    try {
+      // Convert to format with leading zeros
+      const vacationDaysByYear = Object.keys(vacationDays).map(year => 
+        `${year}:${vacationDays[year].total.padStart(3, '0')}`
+      );
+      const unspentVacationDaysByYear = Object.keys(vacationDays).map(year => 
+        `${year}:${vacationDays[year].remaining.padStart(3, '0')}`
+      );    
+      // Create a payload with both formats
+      const payload = {
+        vacationDays,
+        attributes: {
+          vacationDaysByYear,
+          unspentVacationDaysByYear,
+          isActive: ['Active']
+        }
+      };
+      await axios.put(
+        `http://localhost:3000/admin/users/${currentUser.id}/vacation`, 
+        payload
+      );
+      await fetchUsers();
+      setNotification({
+        open: true,
+        message: `Vacation days updated for ${currentUser.username || ''}`,
         severity: 'success'
       });
       
       setEditDialogOpen(false);
-    } catch (error) {
-      console.error('Failed to update vacation days:', error);
-      setNotification({
-        open: true,
-        message: 'Failed to update vacation days. Please try again.',
-        severity: 'error'
+    } catch (err) {
+      const error = err as any;
+      
+      setNotification({ 
+        open: true, 
+        message: 'Failed to update vacation days. Please try again.', 
+        severity: 'error' 
       });
     } finally {
       setLoading(false);
     }
   };
-
+  /**
+   * Closes the notification snackbar
+   */
   const handleCloseNotification = (): void => {
     setNotification(prev => ({ ...prev, open: false }));
+  };
+  /**
+   * Formats user name for display
+   * Uses firstName and lastName if available, falls back to username
+   * 
+   * @param user - User to display name for
+   * @returns Formatted user name string
+   */
+  const displayName = (user: User): string => {
+    if (user.firstName || user.lastName) {
+      return `${user.firstName || ''} ${user.lastName || ''}`.trim();
+    }
+    return user.username || 'Unknown';
   };
 
   return (
     <Box sx={{ p: 3 }}>
-      <Typography variant="h4" component="h1" gutterBottom sx={{ mb: 3 }}>
-        Admin Vacation Management
-      </Typography>
-
-      <Paper sx={{ p: 2, mb: 3, display: 'flex', alignItems: 'center' }}>
+      <Typography variant="h4" gutterBottom>Admin Vacation Management</Typography>
+      <Paper sx={{ p: 2, mb: 3 }}>
         <TextField
           fullWidth
           placeholder="Search users by name or email"
-          variant="outlined"
           value={searchKeyword}
-          onChange={(e) => setSearchKeyword(e.target.value)}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon />
-              </InputAdornment>
-            )
-          }}
+          onChange={e => setSearchKeyword(e.target.value)}
+          InputProps={{ startAdornment: <InputAdornment position="start"><SearchIcon /></InputAdornment> }}
         />
       </Paper>
-
-      <TableContainer component={Paper} sx={{ mb: 3 }}>
+      <TableContainer component={Paper}>
         <Table>
           <TableHead>
             <TableRow>
               <TableCell>Name</TableCell>
               <TableCell>Username</TableCell>
               <TableCell>Email</TableCell>
-              <TableCell align="right">Current Year Total</TableCell>
-              <TableCell align="right">Remaining Days</TableCell>
+              <TableCell align="right">2025 Total</TableCell>
+              <TableCell align="right">2025 Remaining</TableCell>
               <TableCell align="center">Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {loading ? (
-              <TableRow>
-                <TableCell colSpan={6} align="center">
-                  <CircularProgress />
-                </TableCell>
-              </TableRow>
+              <TableRow><TableCell colSpan={6} align="center"><CircularProgress /></TableCell></TableRow>
             ) : filteredUsers.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={6} align="center">
-                  No users found
-                </TableCell>
-              </TableRow>
+              <TableRow><TableCell colSpan={6} align="center">No users found</TableCell></TableRow>
             ) : (
               filteredUsers.map(user => (
                 <TableRow key={user.id}>
-                  <TableCell>{`${user.firstName || ''} ${user.lastName || ''}`}</TableCell>
+                  <TableCell>{displayName(user)}</TableCell>
                   <TableCell>{user.username}</TableCell>
                   <TableCell>{user.email}</TableCell>
                   <TableCell align="right">
-                    {user.attributes?.[`vacation_${new Date().getFullYear()}`]?.[0] || '0'} days
+                    {getVacationDaysValue(user, 2025)} days
                   </TableCell>
                   <TableCell align="right">
-                    {user.attributes?.[`vacation_${new Date().getFullYear()}_remaining`]?.[0] || '0'} days
+                    {getVacationDaysValue(user, 2025, true)} days
                   </TableCell>
                   <TableCell align="center">
-                    <IconButton 
-                      color="primary" 
-                      onClick={() => handleEditUser(user)}
-                      aria-label="Edit vacation days"
-                    >
-                      <EditIcon />
-                    </IconButton>
+                    <IconButton onClick={() => handleEditUser(user)}><EditIcon /></IconButton>
                   </TableCell>
                 </TableRow>
               ))
@@ -280,54 +351,73 @@ const AdminVacationManagementScreen: React.FC = () => {
         </Table>
       </TableContainer>
 
-      {/* Edit Dialog */}
-      <Dialog 
-        open={editDialogOpen} 
-        onClose={() => setEditDialogOpen(false)} 
-        maxWidth="md"
-        fullWidth
-      >
+      <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)} maxWidth="md" fullWidth>
         <DialogTitle>
-          Edit Vacation Days: {currentUser?.firstName} {currentUser?.lastName}
+          Edit Vacation Days: {currentUser ? (displayName(currentUser) || currentUser.username) : ''}
         </DialogTitle>
         <DialogContent dividers>
-          {Object.keys(vacationDays).map(year => (
-            <Box key={year} sx={{ mb: 3 }}>
+          {Object.entries(vacationDays).map(([year, data]) => (
+            <Box key={year} sx={{ mb: 2 }}>
               <Typography variant="h6">{year}</Typography>
-              <Box sx={{ display: 'flex', gap: 2, mt: 1 }}>
+              <Box sx={{ display: 'flex', gap: 2 }}>
                 <TextField
                   label="Total Days"
                   type="number"
-                  value={vacationDays[year].total}
+                  value={data.total}
                   onChange={(e) => {
-                    const newValue = e.target.value;
-                    setVacationDays(prev => ({
-                      ...prev,
-                      [year]: {
-                        ...prev[year],
-                        total: newValue
+                    const newTotal = e.target.value;
+                    setVacationDays(prev => {
+                      const updatedYear = { 
+                        ...prev[year], 
+                        total: newTotal 
+                      };
+                      
+                      // Auto-correct remaining days if they exceed the new total
+                      const totalNum = parseInt(newTotal, 10);
+                      const remainingNum = parseInt(updatedYear.remaining, 10);
+                      
+                      if (!isNaN(totalNum) && !isNaN(remainingNum) && remainingNum > totalNum) {
+                        updatedYear.remaining = newTotal;
                       }
-                    }));
+                      
+                      return {
+                        ...prev,
+                        [year]: updatedYear
+                      };
+                    });
                   }}
-                  InputProps={{ inputProps: { min: 0 } }}
                   fullWidth
+                  inputProps={{ min: 0 }}
+                  helperText="Total vacation days for the year"
                 />
                 <TextField
                   label="Remaining Days"
                   type="number"
-                  value={vacationDays[year].remaining}
+                  value={data.remaining}
                   onChange={(e) => {
-                    const newValue = e.target.value;
-                    setVacationDays(prev => ({
-                      ...prev,
-                      [year]: {
-                        ...prev[year],
-                        remaining: newValue
-                      }
-                    }));
+                    const newRemaining = e.target.value;
+                    setVacationDays(prev => {
+                      const prevYear = prev[year];
+                      const totalNum = parseInt(prevYear.total, 10);
+                      const remainingNum = parseInt(newRemaining, 10);
+                      
+                      // Show error styling if remaining exceeds total
+                      const hasError = !isNaN(totalNum) && !isNaN(remainingNum) && remainingNum > totalNum;
+                      
+                      return { 
+                        ...prev, 
+                        [year]: { 
+                          ...prevYear, 
+                          remaining: newRemaining,
+                          hasError
+                        } 
+                      };
+                    });
                   }}
-                  InputProps={{ inputProps: { min: 0 } }}
                   fullWidth
+                  inputProps={{ min: 0 }}
+                  error={!!data.hasError}
+                  helperText={data.hasError ? "Cannot exceed total days" : "Unused vacation days remaining"}
                 />
               </Box>
             </Box>
@@ -335,24 +425,19 @@ const AdminVacationManagementScreen: React.FC = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setEditDialogOpen(false)}>Cancel</Button>
-          <Button 
-            onClick={handleSaveVacationDays} 
-            variant="contained" 
-            color="primary"
-            disabled={loading}
-          >
-            {loading ? <CircularProgress size={24} /> : 'Save'}
+          <Button onClick={handleSaveVacationDays} disabled={loading} variant="contained">
+            {loading ? <CircularProgress size={20} /> : 'Save'}
           </Button>
         </DialogActions>
       </Dialog>
 
-      <Snackbar
-        open={notification.open}
-        autoHideDuration={6000}
-        onClose={handleCloseNotification}
+      <Snackbar 
+        open={notification.open} 
+        autoHideDuration={6000} 
+        onClose={handleCloseNotification} 
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
       >
-        <Alert onClose={handleCloseNotification} severity={notification.severity}>
+        <Alert severity={notification.severity} onClose={handleCloseNotification}>
           {notification.message}
         </Alert>
       </Snackbar>

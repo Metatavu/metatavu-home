@@ -22,7 +22,6 @@ import QuestionnaireScreen from "./components/screens/questionnaire-screen";
 import NewQuestionnaireBuilder from "./components/questionnaire/new-questionnaire-builder";
 import QuestionnaireManager from "./components/questionnaire/questionnaire-manager";
 import { QuestionnairePreviewMode } from "./types";
-// Import the new admin vacation management screen
 import AdminVacationManagementScreen from "./components/screens/admin-vacation-management-screen";
 
 /**
