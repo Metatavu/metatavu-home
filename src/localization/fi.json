@@ -81,18 +81,18 @@
     "showMyTasks": "Tehtäväni ",
     "toDo": "Odotuksessa",
     "inProgress": "Käynnissä",
-    "allTasks" : "Kaikki tehtävät",
-    "notFound" : "Tulosta ei löytynyt",
+    "allTasks": "Kaikki tehtävät",
+    "notFound": "Tulosta ei löytynyt",
     "projectName": "Projekti",
     "search": "Hae tehtävää, projektia tai vastaanottajaa",
     "unAllocated": "Kohdistamaton aika:",
     "sprintDate": "Sprint",
     "completed": "Valmis",
     "current": "Nykyinen: {0}-{1}",
-    "startDate":"Aloituspäivämäärä",
-    "deadLine":"Määräaika",
+    "startDate": "Aloituspäivämäärä",
+    "deadLine": "Määräaika",
     "actualWorkHours": "Todelliset työajat",
-    "back":"Takaisin",
+    "back": "Takaisin",
     "filter": "Suodata",
     "filterType": "Suodattimen tyyppi",
     "project": "Projekti",
@@ -121,6 +121,8 @@
     "addToMyApps": "Lisää omiin sovelluksiin",
     "editApp": "Muokkaa sovellus",
     "addSoftware": "Lisää sovellus",
+    "deleteSoftwareDescription": "Haluatko varmasti poistaa sovelluksen? Toimintoa ei voi peruuttaa",
+    "confirmDeletion": "Vahvista poisto",
     "added": "Lisätty",
     "name": "Nimi",
     "nameRequired": "Nimi on pakollinen",
@@ -131,13 +133,21 @@
     "ownReview": "Oma arvio",
     "recommend": "Suosittele",
     "cancel": "Peruuta",
-    "submit": "Lähetä hyväksyttävaksi",
+    "submit": "Lähetä hyväksyttäväksi",
+    "addedSuccessfully": "Sovellus lisätty onnistuneesti",
     "showMore": "Näytä lisää",
     "showLess": "Näytä vähemmän",
     "noPending": "Ei uutta sovellusta",
     "newSoftware": "Uusi sovelluksia",
     "alreadyExists": "Nimi on jo olemassa",
     "delete": "Poista"
+  },
+  "softwareStatus": {
+    "pending": "Odottaa",
+    "underReview": "Arvioinnissa",
+    "accepted": "Hyväksytty",
+    "deprecated": "Vanhentunut",
+    "declined": "Hylätty"
   },
   "errors": {
     "fetchFailedGeneral": "Tietojen hakeminen epäonnistui",
@@ -289,7 +299,7 @@
     "back": "Takaisin"
   },
   "newQuestionnaireBuilder": {
-    "makeNewQuestionnaire" : "Tee uusi kysely",
+    "makeNewQuestionnaire": "Tee uusi kysely",
     "title": "Otsikko",
     "insertTitle": "Syötä otsikko",
     "saveButton": "Tallenna kysely",
@@ -355,7 +365,7 @@
     "viewAllTimeEntries": "Kaikki henkilöstön aikakirjaukset ja saldot",
     "balance": "Saldo",
     "atTheEndOf": "{0} lopussa",
-    "hour": "tunti",  
+    "hour": "tunti",
     "hours": "Tuntia"
   }
 }

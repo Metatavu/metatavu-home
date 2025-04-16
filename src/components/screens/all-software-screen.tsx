@@ -15,6 +15,11 @@ import {
   FormControl,
   Chip,
   OutlinedInput,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
 } from "@mui/material";
 import Content from "../software-registry/allContent";
 import { useLambdasApi } from "src/hooks/use-api";
@@ -57,6 +62,8 @@ const AllSoftwareScreen: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showAll, setShowAll] = useState(false);
   const { createSoftware } = useCreateSoftware(loggedUserId, setApplications);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [selectedApplicationId, setSelectedApplicationId] = useState<string | null>(null);
 
   /**
    * Fetches the list of all software applications from the API.
@@ -209,24 +216,43 @@ const AllSoftwareScreen: React.FC = () => {
   };
 
   /**
-   * Removes the specified application.
-   * 
-   * @param {string} id - The id of the application to remove.
+   * Opens the delete confirmation dialog.
+   *
+   * @param id - The ID of the application to delete.
    */
-  const handleRemove = async (id: string) => {
+  const openDeleteDialog = (id: string) => {
+    setSelectedApplicationId(id);
+    setDeleteDialogOpen(true);
+  };
+
+  /**
+   * Closes the delete confirmation dialog.
+   */
+  const closeDeleteDialog = () => {
+    setSelectedApplicationId(null);
+    setDeleteDialogOpen(false);
+  };
+
+  /**
+   * Handles the removal of an application after confirmation.
+   */
+  const handleRemove = async () => {
+    if (!selectedApplicationId) return;
+
     try {
-      const applicationToDelete = applications.find(app => app.id === id);
+      const applicationToDelete = applications.find(app => app.id === selectedApplicationId);
       if (!applicationToDelete) {
-        throw new Error(`Application with ID ${id} not found`);
+        throw new Error(`Application with ID ${selectedApplicationId} not found`);
       }
 
-      const updatedApplications = applications.filter(app => app.id !== id);
+      const updatedApplications = applications.filter(app => app.id !== selectedApplicationId);
       setApplications(updatedApplications);
 
-      await softwareApi.deleteSoftwareById({ id });
-
+      await softwareApi.deleteSoftwareById({ id: selectedApplicationId });
     } catch (error) {
       console.error(`Error deleting the app: ${error}`);
+    } finally {
+      closeDeleteDialog();
     }
   };
 
@@ -409,7 +435,7 @@ const AllSoftwareScreen: React.FC = () => {
               onStatusChange={handleStatusChange}
               adminMode={adminMode}
               onSave={handleSave}
-              onRemove={handleRemove}
+              onRemove={openDeleteDialog}
               loggedUserId={loggedUserId}
             />
 
@@ -447,6 +473,31 @@ const AllSoftwareScreen: React.FC = () => {
         disabled={loading}
         existingSoftwareList={applications}
       />
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog
+        open={deleteDialogOpen}
+        onClose={closeDeleteDialog}
+        aria-labelledby="delete-dialog-title"
+        aria-describedby="delete-dialog-description"
+      >
+        <DialogTitle id="delete-dialog-title">
+          {strings.softwareRegistry.confirmDeletion}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="delete-dialog-description">
+          {strings.softwareRegistry.deleteSoftwareDescription}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={closeDeleteDialog} color="primary">
+            {strings.softwareRegistry.cancel}
+          </Button>
+          <Button onClick={handleRemove} color="secondary" autoFocus>
+            {strings.softwareRegistry.delete}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 };
