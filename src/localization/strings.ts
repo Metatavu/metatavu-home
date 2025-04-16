@@ -169,8 +169,20 @@ export interface Localized extends LocalizedStringsMethods {
     noPending: string;
     newSoftware: string;
     alreadyExists: string;
-    delete: string
+    delete: string;
   };
+
+  /**
+   * Software status related translations
+   */
+  softwareStatus: {
+    pending: string;
+    underReview: string;
+    accepted: string;
+    deprecated: string;
+    declined: string;
+  };
+
   /**
    * General time-related expressions
    */
@@ -394,7 +406,7 @@ export interface Localized extends LocalizedStringsMethods {
   };
   /**
    * Translations related to New Questionnaire Card
-    */
+   */
   newQuestionnaireCard: {
     newQuestion: string;
     questionLabel: string;
@@ -406,7 +418,7 @@ export interface Localized extends LocalizedStringsMethods {
   };
   /**
    * Translations related to Questionnaire Table
-   */ 
+   */
   questionnaireTable: {
     title: string;
     description: string;
@@ -417,7 +429,7 @@ export interface Localized extends LocalizedStringsMethods {
     confirmDeleteTitle: string;
     cancel: string;
     confirm: string;
-  }; 
+  };
   /**
    * Translations related to Questionnaire Interaction Screen
    */

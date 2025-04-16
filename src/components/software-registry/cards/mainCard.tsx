@@ -13,19 +13,11 @@ import {
   Menu,
   MenuItem,
   ListItemIcon,
-  ListItemText,
+  ListItemText
 } from "@mui/material";
 import { Link } from "react-router-dom";
 import { SoftwareRegistry, SoftwareStatus } from "src/generated/homeLambdasClient";
 import strings from "src/localization/strings";
-
-const statusInfo: { [key in SoftwareStatus]: { color: string; displayText: string } } = {
-  PENDING: { color: "#f7cb73", displayText: "Pending" },
-  UNDER_REVIEW: { color: "#077e8c", displayText: "Under review" },
-  ACCEPTED: { color: "#47b758", displayText: "Accepted" },
-  DEPRECATED: { color: "#9f9080", displayText: "Deprecated" },
-  DECLINED: { color: "#c82922", displayText: "Declined" },
-};
 
 interface CardProps extends SoftwareRegistry {
   isGridView: boolean;
@@ -48,10 +40,19 @@ const MainCard: React.FC<CardProps> = ({
   isAdmin,
   onSave,
   onRemove,
-  onStatusChange,
+  onStatusChange
 }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+
+  // Move statusInfo here so it updates with language changes
+  const statusInfo: { [key in SoftwareStatus]: { color: string; displayText: string } } = {
+    PENDING: { color: "#f7cb73", displayText: strings.softwareStatus.pending },
+    UNDER_REVIEW: { color: "#077e8c", displayText: strings.softwareStatus.underReview },
+    ACCEPTED: { color: "#47b758", displayText: strings.softwareStatus.accepted },
+    DEPRECATED: { color: "#9f9080", displayText: strings.softwareStatus.deprecated },
+    DECLINED: { color: "#c82922", displayText: strings.softwareStatus.declined }
+  };
 
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -77,27 +78,30 @@ const MainCard: React.FC<CardProps> = ({
                 width: 30,
                 height: 20,
                 borderRadius: "5px",
-                backgroundColor: statusInfo[status || "PENDING"].color,
+                backgroundColor: statusInfo[status || "PENDING"].color
               }}
             />
           </IconButton>
           <Menu anchorEl={anchorEl} open={open} onClose={() => handleMenuClose()}>
             {Object.keys(SoftwareStatus).map((statusOption) => (
-              <MenuItem key={statusOption} onClick={() => handleMenuClose(statusOption as SoftwareStatus)}>
+              <MenuItem
+                key={statusOption}
+                onClick={() => handleMenuClose(statusOption as SoftwareStatus)}
+              >
                 <ListItemIcon>
                   <Box
                     sx={{
                       width: 20,
                       height: 15,
                       borderRadius: "5px",
-                      backgroundColor: statusInfo[statusOption as SoftwareStatus].color,
+                      backgroundColor: statusInfo[statusOption as SoftwareStatus].color
                     }}
                   />
                 </ListItemIcon>
                 <ListItemText
                   sx={{
                     color: statusInfo[statusOption as SoftwareStatus].color,
-                    textTransform: "none",
+                    textTransform: "none"
                   }}
                 >
                   {statusInfo[statusOption as SoftwareStatus].displayText}
@@ -112,7 +116,7 @@ const MainCard: React.FC<CardProps> = ({
             width: 30,
             height: 20,
             borderRadius: "5px",
-            backgroundColor: statusInfo[status || "PENDING"].color,
+            backgroundColor: statusInfo[status || "PENDING"].color
           }}
         />
       )}
@@ -123,30 +127,64 @@ const MainCard: React.FC<CardProps> = ({
    * Renders the action buttons (save and delete) depending on whether the user is an admin.
    */
   const renderActionButtons = () => (
-    <Box sx={{ display: "flex", justifyContent: "left", padding: "8px 16px" }}>
-      <Button
-        variant="contained"
-        size="small"
-        disabled={isInMyApplications}
-        onClick={(e) => {
-          e.stopPropagation();
-          onSave();
-        }}
-        sx={{
-          textTransform: "none",
-          color: "#fff",
-          marginRight: "6px",
-          background: "#f9473b",
-          borderRadius: "25px",
-          "&:hover": { background: "#000" },
-        }}
-      >
-        {
-          isInMyApplications ? 
-          strings.softwareRegistry.added : 
-          strings.softwareRegistry.addApplication
-        }
-      </Button>
+    <Box
+      sx={{ display: "flex", alignItems: "center", justifyContent: "left", padding: "8px 16px" }}
+    >
+      {status === "ACCEPTED" && !isInMyApplications && (
+        <Button
+          variant="contained"
+          size="small"
+          disabled={false}
+          onClick={(e) => {
+            e.stopPropagation();
+            onSave();
+          }}
+          sx={{
+            textTransform: "none",
+            color: "#fff",
+            marginRight: "6px",
+            background: "#f9473b",
+            borderRadius: "25px",
+            "&:hover": { background: "#000" }
+          }}
+        >
+          {strings.softwareRegistry.addApplication}
+        </Button>
+      )}
+      {status === "ACCEPTED" && isInMyApplications && (
+        <Button
+          variant="contained"
+          size="small"
+          disabled={true}
+          sx={{
+            textTransform: "none",
+            color: "#fff",
+            marginRight: "6px",
+            background: "#f9473b",
+            borderRadius: "25px",
+            "&:hover": { background: "#f9473b" }
+          }}
+        >
+          {strings.softwareRegistry.added}
+        </Button>
+      )}
+      {status === "PENDING" && (
+        <Button
+          variant="contained"
+          size="small"
+          disabled={true}
+          sx={{
+            textTransform: "none",
+            color: "#fff",
+            marginRight: "6px",
+            background: "#f7cb73",
+            borderRadius: "25px",
+            "&:hover": { background: "#f7cb73" }
+          }}
+        >
+          {statusInfo.PENDING?.displayText}
+        </Button>
+      )}
       {isAdmin && onRemove && (
         <Button
           variant="outlined"
@@ -163,8 +201,8 @@ const MainCard: React.FC<CardProps> = ({
             borderColor: "#000",
             "&:hover": {
               borderColor: "#000",
-              backgroundColor: "#f0f0f0",
-            },
+              backgroundColor: "#f0f0f0"
+            }
           }}
         >
           {strings.softwareRegistry.delete}
@@ -190,7 +228,7 @@ const MainCard: React.FC<CardProps> = ({
             backgroundColor: "#ff4d4f",
             color: "#fff",
             fontSize: "12px",
-            whiteSpace: "nowrap",
+            whiteSpace: "nowrap"
           }}
         />
       ))}
@@ -210,8 +248,8 @@ const MainCard: React.FC<CardProps> = ({
             boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.25)",
             overflow: "hidden",
             ":hover": {
-              boxShadow: "0px 6px 14px rgba(0, 0, 0, 0.3)",
-            },
+              boxShadow: "0px 6px 14px rgba(0, 0, 0, 0.3)"
+            }
           }}
         >
           <CardActionArea sx={{ padding: "14px" }} component={Link} to={`${id}`}>
@@ -223,7 +261,7 @@ const MainCard: React.FC<CardProps> = ({
               sx={{
                 objectFit: "contain",
                 marginBottom: "10px",
-                borderRadius: "8px",
+                borderRadius: "8px"
               }}
             />
             <CardContent sx={{ padding: 0 }}>
@@ -239,7 +277,7 @@ const MainCard: React.FC<CardProps> = ({
                     WebkitLineClamp: 3,
                     WebkitBoxOrient: "vertical",
                     overflow: "hidden",
-                    textOverflow: "ellipsis",
+                    textOverflow: "ellipsis"
                   }}
                 >
                   {description}
@@ -266,15 +304,15 @@ const MainCard: React.FC<CardProps> = ({
             boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.25)",
             overflow: "hidden",
             ":hover": {
-              boxShadow: "0px 6px 14px rgba(0, 0, 0, 0.3)",
-            },
+              boxShadow: "0px 6px 14px rgba(0, 0, 0, 0.3)"
+            }
           }}
         >
           <Box
             sx={{
               display: "flex",
               flex: 1,
-              alignItems: "center",
+              alignItems: "center"
             }}
           >
             <CardActionArea
@@ -286,7 +324,7 @@ const MainCard: React.FC<CardProps> = ({
                 flexDirection: "row",
                 alignItems: "center",
                 height: "140px",
-                flexGrow: 1,
+                flexGrow: 1
               }}
             >
               <Box>
@@ -299,7 +337,7 @@ const MainCard: React.FC<CardProps> = ({
                     width: "80px",
                     objectFit: "contain",
                     margin: "10px",
-                    borderRadius: "8px",
+                    borderRadius: "8px"
                   }}
                 />
               </Box>
@@ -310,7 +348,7 @@ const MainCard: React.FC<CardProps> = ({
                   sx={{
                     fontSize: "16px",
                     fontWeight: "bold",
-                    marginBottom: "4px",
+                    marginBottom: "4px"
                   }}
                 >
                   {name}
@@ -324,13 +362,17 @@ const MainCard: React.FC<CardProps> = ({
                       WebkitLineClamp: 2,
                       WebkitBoxOrient: "vertical",
                       overflow: "hidden",
-                      textOverflow: "ellipsis",
+                      textOverflow: "ellipsis"
                     }}
                   >
                     {description}
                   </Typography>
                 </Box>
-                <Box alignItems="center" flexWrap="wrap" sx={{ gap: 0.5, height: "30px", marginTop: "10px" }}>
+                <Box
+                  alignItems="center"
+                  flexWrap="wrap"
+                  sx={{ gap: 0.5, height: "30px", marginTop: "10px" }}
+                >
                   {renderTags()}
                 </Box>
               </CardContent>
@@ -342,7 +384,7 @@ const MainCard: React.FC<CardProps> = ({
               display: "flex",
               flexDirection: "column",
               justifyContent: "center",
-              padding: "8px",
+              padding: "8px"
             }}
           >
             <Button
@@ -360,14 +402,12 @@ const MainCard: React.FC<CardProps> = ({
                 borderRadius: "25px",
                 fontSize: "12px",
                 marginBottom: "8px",
-                "&:hover": { background: "#000" },
+                "&:hover": { background: "#000" }
               }}
             >
-              {
-                isInMyApplications ? 
-                strings.softwareRegistry.added : 
-                strings.softwareRegistry.addApplication
-              }
+              {isInMyApplications
+                ? strings.softwareRegistry.added
+                : strings.softwareRegistry.addApplication}
             </Button>
             {isAdmin && (
               <Button
@@ -386,8 +426,8 @@ const MainCard: React.FC<CardProps> = ({
                   fontSize: "12px",
                   "&:hover": {
                     borderColor: "#000",
-                    backgroundColor: "#f0f0f0",
-                  },
+                    backgroundColor: "#f0f0f0"
+                  }
                 }}
               >
                 {strings.softwareRegistry.delete}

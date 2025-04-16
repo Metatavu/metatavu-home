@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { 
-  Modal, 
-  Box, 
-  Typography, 
-  TextField, 
-  Button, 
-  Grid, 
-  Chip, 
-  IconButton, 
-  Autocomplete 
+import {
+  Modal,
+  Box,
+  Typography,
+  TextField,
+  Button,
+  Grid,
+  Chip,
+  IconButton,
+  Autocomplete
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import strings from "src/localization/strings";
@@ -29,7 +29,7 @@ interface AddSoftwareModalProps {
 
 /**
  * AddSoftwareModal component.
- * This component renders a modal dialog for adding or editing a software entry. 
+ * This component renders a modal dialog for adding or editing a software entry.
  * It provides form fields for software entry.
  *
  * @param {AddSoftwareModalProps} props - The props for the AddSoftwareModal component.
@@ -41,7 +41,7 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
   handleSave,
   disabled,
   softwareData,
-  existingSoftwareList,
+  existingSoftwareList
 }) => {
   const initialSoftwareState: SoftwareRegistry = {
     id: "",
@@ -54,7 +54,7 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
     lastUpdatedBy: "",
     recommend: [],
     tags: [],
-    users: [],
+    users: []
   };
   const { usersApi } = useLambdasApi();
   const [userList, setUserList] = useState<User[]>([]);
@@ -90,11 +90,9 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
     setNameExists(nameAlreadyExists);
   }, [software.name, existingSoftwareList]);
 
-  
-
   /**
    * Handle form field changes by updating the software state.
-   * 
+   *
    * @param e - The change event for form inputs.
    */
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -109,7 +107,7 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
     if (tags.trim() !== "") {
       setSoftware((prev) => ({
         ...prev,
-        tags: [...new Set([...(prev.tags || []), tags.trim()])],
+        tags: [...new Set([...(prev.tags || []), tags.trim()])]
       }));
       setTags("");
     }
@@ -121,7 +119,7 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
   const handleDeleteTag = (tagToDelete: string) => {
     setSoftware((prev) => ({
       ...prev,
-      tags: (prev.tags || []).filter((tag) => tag !== tagToDelete),
+      tags: (prev.tags || []).filter((tag) => tag !== tagToDelete)
     }));
   };
 
@@ -137,22 +135,27 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
 
   return (
     <Modal open={open} onClose={handleClose}>
-      <Box 
-      sx={{
-        position: "absolute",
-        top: "50%",
-        left: "50%",
-        transform: "translate(-50%, -50%)",
-        width: { xs: "90%", sm: "80%", md: "60%" },
-        maxWidth: 900,
-        bgcolor: "background.paper",
-        borderRadius: "10px",
-        boxShadow: 24,
-        p: 4,
-        overflowY: "auto",
+      <Box
+        sx={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          width: { xs: "90%", sm: "80%", md: "60%" },
+          maxWidth: 900,
+          bgcolor: "background.paper",
+          borderRadius: "10px",
+          boxShadow: 24,
+          p: 4,
+          overflowY: "auto"
         }}
       >
-        <IconButton onClick={() => {  handleClose(); }} sx={{ position: "absolute", top: 16, right: 16 }}>
+        <IconButton
+          onClick={() => {
+            handleClose();
+          }}
+          sx={{ position: "absolute", top: 16, right: 16 }}
+        >
           <CloseIcon />
         </IconButton>
         <Typography variant="h6" marginBottom={4}>
@@ -168,7 +171,11 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
               onChange={handleChange}
               required
               error={nameExists}
-              helperText={nameExists ? strings.softwareRegistry.alreadyExists : strings.softwareRegistry.nameRequired}
+              helperText={
+                nameExists
+                  ? strings.softwareRegistry.alreadyExists
+                  : strings.softwareRegistry.nameRequired
+              }
             />
           </Grid>
           <Grid item xs={12} md={6}>
@@ -203,11 +210,7 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
             />
             <Box mt={1} display="flex" flexWrap="wrap">
               {(software.tags || []).map((tag) => (
-                <Chip
-                  key={tag}
-                  label={tag}
-                  onDelete={() => handleDeleteTag(tag)}
-                />
+                <Chip key={tag} label={tag} onDelete={() => handleDeleteTag(tag)} />
               ))}
             </Box>
           </Grid>
@@ -236,14 +239,14 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
           <Grid item xs={12}>
             <Autocomplete
               multiple
-              options={userList.filter(user => user.firstName && user.lastName)}
+              options={userList.filter((user) => user.firstName && user.lastName)}
               getOptionLabel={(option) => `${option.firstName} ${option.lastName}`}
               filterSelectedOptions
-              value={userList.filter(user => software.recommend?.includes(user.id))}
+              value={userList.filter((user) => software.recommend?.includes(user.id))}
               onChange={(_, newValue) => {
-                setSoftware(prev => ({
+                setSoftware((prev) => ({
                   ...prev,
-                  recommend: newValue.map(user => user.id),
+                  recommend: newValue.map((user) => user.id)
                 }));
               }}
               renderTags={(value, getTagProps) =>
@@ -260,17 +263,15 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
                 </li>
               )}
               renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Recommend"
-                  placeholder="Search and select users"
-                />
+                <TextField {...params} label="Recommend" placeholder="Search and select users" />
               )}
             />
           </Grid>
           <Grid item container justifyContent="right" xs={12} mt={4}>
             <Button
-              onClick={() => {  handleClose(); }}
+              onClick={() => {
+                handleClose();
+              }}
               variant="outlined"
               sx={{
                 marginRight: "4px",
@@ -282,8 +283,8 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
                 borderColor: "#000",
                 "&:hover": {
                   borderColor: "#000",
-                  backgroundColor: "#f0f0f0",
-                },
+                  backgroundColor: "#f0f0f0"
+                }
               }}
             >
               {strings.softwareRegistry.cancel}
@@ -299,7 +300,7 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
                 fontSize: "18px",
                 background: "#f9473b",
                 borderRadius: "25px",
-                "&:hover": { background: "#000" },
+                "&:hover": { background: "#000" }
               }}
               disabled={disabled || nameExists}
             >
