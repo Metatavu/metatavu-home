@@ -164,6 +164,7 @@ export interface Localized extends LocalizedStringsMethods {
     recommend: string;
     cancel: string;
     submit: string;
+    addedSuccessfully: string;
     showMore: string;
     showLess: string;
     noPending: string;
