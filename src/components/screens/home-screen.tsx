@@ -13,13 +13,13 @@ import { useAtomValue } from "jotai";
  * Home screen component
  */
 const HomeScreen = () => {
-  const developerMode = UserRoleUtils.developerMode();
+  
   const users = useAtomValue(usersAtom);
   const userProfile = useAtomValue(userProfileAtom);
   const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
   const severaUserId = loggedInUser?.attributes?.severaUserId;
 
-  const shouldShowCards = developerMode && severaUserId;
+  const shouldShowCards =  severaUserId;
   
   const balanceCard = shouldShowCards ? <BalanceCard /> : null;
   const sprintViewCard = shouldShowCards ? <SprintViewCard /> : null;
