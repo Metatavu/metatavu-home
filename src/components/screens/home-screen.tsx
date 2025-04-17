@@ -17,13 +17,14 @@ const HomeScreen = () => {
   const users = useAtomValue(usersAtom);
   const userProfile = useAtomValue(userProfileAtom);
   const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
-  // TODO: Uncomment this code when the optIn feature is ready
-  // const isOptIn = loggedInUser?.attributes?.severaUserId;
-  // const balanceCard = developerMode && isOptIn ? <BalanceCard /> : null;
-  const balanceCard = developerMode ? <BalanceCard /> : null;
-  const sprintViewCard = developerMode ? <SprintViewCard /> : null;
-  const vacationsCard = developerMode ? <VacationsCard /> : null;
-  const questionairesCard = developerMode ? <QuestionnaireCard /> : null;
+  const severaUserId = loggedInUser?.attributes?.severaUserId;
+
+  const shouldShowCards = developerMode && severaUserId;
+  
+  const balanceCard = shouldShowCards ? <BalanceCard /> : null;
+  const sprintViewCard = shouldShowCards ? <SprintViewCard /> : null;
+  const vacationsCard = shouldShowCards ? <VacationsCard /> : null;
+  const questionairesCard = shouldShowCards ? <QuestionnaireCard /> : null;
   
   return (
     <Grid container spacing={2}>
