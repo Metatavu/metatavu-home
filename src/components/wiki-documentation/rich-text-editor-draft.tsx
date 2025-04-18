@@ -70,7 +70,7 @@ const parseImages = {
 const covertToMDImges = {
   entityItems: {
     IMAGE: {
-      open: (entity: any) => {
+      open: () => {
         return '';
       },
       close: (entity: any) => {
@@ -360,6 +360,26 @@ const RichTextEditorDraft = forwardRef((props, ref) => {
     }
   };
 
+  const renderBlock = (block: ContentBlock) => {
+    const type = block.getType();
+
+    if (type === "code-block") 
+      return {
+        component: CodeBlock,
+        editable: true
+      }
+    return null
+  }
+
+  const CodeBlock = ({block}: {block: ContentBlock}) => {
+    const text = block.getText();
+
+    return(
+      <p style={{backgroundColor: "red"}}>
+        {text}
+      </p>
+  )}
+
   return (
     <Card sx={{ 
       marginTop: 4, 
@@ -434,6 +454,7 @@ const RichTextEditorDraft = forwardRef((props, ref) => {
           editorState={editorState}
           onChange={setEditorState}
           placeholder="Start typing..."
+          blockRendererFn={renderBlock}
         />
       </Box>
     </Card>
