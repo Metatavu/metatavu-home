@@ -323,6 +323,11 @@
     "lastActivityArticle": "Last {0} article:",
     "updated": "updated",
     "created": "created",
-    "read": "read"
+    "read": "read",
+    "create": "create",
+    "searchArticle": "Search for an article...",
+    "createArticle": "Create new article",
+    "labelTitle": "Title",
+    "labelPath": "Path"
   }
 }

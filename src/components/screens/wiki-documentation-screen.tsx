@@ -27,16 +27,10 @@ import { Search } from "@mui/icons-material";
 import GridViewIcon from "@mui/icons-material/GridView";
 import CarouselArticleCards from "../wiki-documentation/carousel-article-cards";
 import strings from "src/localization/strings";
+import CreateArticleForm from "../wiki-documentation/create-article-form";
+import { wikiScreenColors } from "src/theme";
 
-const colors = {
-  toolbar : {
-    main: "#E9E8E8",
-    hover: "#DCD8D8",
-    text: "#787272"
-  }
-}
-
-
+const colors = wikiScreenColors;
 
 /**
  * Wiki documentation screen component displaying a list of articles.
@@ -48,6 +42,7 @@ const WikiDocumantationScreen = () => {
   const { articleApi } = useLambdasApi();
   const initLoadingState = articleAtomValue?.length === 0;
   const [loading, setLoading] = useState(initLoadingState);
+  const [creating,  setCreating] = useState(true);
   const [articles, setArticles] = useState<ArticleMetadata[]>(articleAtomValue);
   const [dispayedArticles, setDisplayedArticles] = useState<ArticleMetadata[]>(articleAtomValue);
   const [tags, setTags] = useState<string[]>([]);
@@ -203,7 +198,7 @@ const WikiDocumantationScreen = () => {
           renderInput={(params) => (
             <TextField
               {...params}
-              placeholder={"strings.sprint.searchProjectsAndPersons"}
+              placeholder={strings.wikiDocumentation.searchArticle}
               sx={{
                 "& fieldset": {
                   border: "none",
@@ -242,10 +237,11 @@ const WikiDocumantationScreen = () => {
 
   const renderCreateButton = () => (
     <Button
+      onClick={()=>setCreating(true)}
       variant="contained"
       sx={{
         width: {
-          md: "15%", 
+          md: "15%",
           sm: "40%", 
           xs:"35%"
         },
@@ -255,8 +251,12 @@ const WikiDocumantationScreen = () => {
         "&:hover": {backgroundColor: colors.toolbar.hover}
       }}
     >
-      <Typography variant={"body1"} marginLeft={1} sx={{fontWeight: "bold"}}>
-        Create
+      <Typography 
+        variant={"body1"} 
+        marginLeft={1} 
+        sx={{fontWeight: "bold"}}
+      >
+        {strings.wikiDocumentation.create}
       </Typography>
     </Button>
   )
@@ -330,6 +330,17 @@ const WikiDocumantationScreen = () => {
     </FormControl>
   )
 
+  const renderTitle = (text: string) => (
+    <Typography variant="h5" sx={{ 
+      fontWeight: "bold", 
+      marginTop: 4, 
+      marginBottom: 2, 
+      marginLeft: 3
+    }}>
+      {text}
+    </Typography>
+  )
+
   const renderToolBar = () => (
     <Grid
       container 
@@ -359,34 +370,37 @@ const WikiDocumantationScreen = () => {
       ) : 
       (
         <>
-          <Typography variant="h5" sx={{ 
-            fontWeight: "bold", 
-            marginTop: 4, 
-            marginBottom: 2, 
-            marginLeft: 3
-          }}>
-            {strings.wikiDocumentation.cardTitle}
-          </Typography>
-          {articles && articles.length !== 0 ? 
+          {creating ? (
             <>
-              <CarouselArticleCards articles={articles}/>
-              <Box sx={{paddingLeft: 3, paddingRight: 3}}>
-                {renderToolBar()}
-                <Grid 
-                  container 
-                  spacing={3}
-                  textAlign={"center"}
-                >
-                  {dispayedArticles.map(article => 
-                    <Grid item lg={3} md={4} sm={6} xs={12}>
-                      {renderArticleCard(article)}
-                    </Grid>
-                  )}
-                </Grid>
-              </Box>
+              {renderTitle(strings.wikiDocumentation.createArticle)}
+              <CreateArticleForm/>
             </>
-            : renderToolBar()
-          }
+          ) : 
+          (
+            <>
+              {renderTitle(strings.wikiDocumentation.cardTitle)}
+              {articles && articles.length !== 0 ? 
+                <>
+                  <CarouselArticleCards articles={articles}/>
+                  <Box sx={{paddingLeft: 3, paddingRight: 3}}>
+                    {renderToolBar()}
+                    <Grid 
+                      container 
+                      spacing={3}
+                      textAlign={"center"}
+                    >
+                      {dispayedArticles.map(article => 
+                        <Grid item lg={3} md={4} sm={6} xs={12}>
+                          {renderArticleCard(article)}
+                        </Grid>
+                      )}
+                    </Grid>
+                  </Box>
+                </>
+                : renderToolBar()
+              }
+            </>
+          )}
         </>
       )}
     </>

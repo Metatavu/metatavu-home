@@ -427,6 +427,11 @@ export interface Localized extends LocalizedStringsMethods {
     updated: string;
     created: string;
     read: string;
+    create: string;
+    searchArticle: string;
+    createArticle: string;
+    labelTitle: string;
+    labelPath: string;
   }
 }
 

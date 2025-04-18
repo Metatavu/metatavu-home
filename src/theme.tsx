@@ -63,3 +63,11 @@ export const theme: Theme = createTheme({
     borderRadius: 15
   }
 });
+
+export const wikiScreenColors = {
+  toolbar : {
+    main: "#E9E8E8",
+    hover: "#DCD8D8",
+    text: "#787272"
+  }
+}

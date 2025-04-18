@@ -323,6 +323,11 @@
     "lastActivityArticle": "Viimeksi {0} artikkeli:",
     "updated": "päivitetty",
     "created": "luotu",
-    "read": "luettu"
+    "read": "luettu",
+    "create": "luoda",
+    "searchArticle": "Etsi artikkeli...",
+    "createArticle": "Luo uusi artikkeli",
+    "labelTitle": "Otsikko",
+    "labelPath": "Polku"
   }
 }
