@@ -1,8 +1,8 @@
 import { forwardRef, useImperativeHandle, useState } from 'react';
 import { 
-  type ContentState,
   Editor, 
   CompositeDecorator, 
+  type ContentState, 
   EditorState, 
   RichUtils, 
   convertFromRaw, 
@@ -96,9 +96,9 @@ const RichTextEditorDraft = forwardRef((props, ref) => {
 
   const markDown = `[Example](https://example.com) asdf dad  **bold text** 
   ![Image](https://images.unsplash.com/photo-1478098711619-5ab0b478d6e6?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8Y2F0fGVufDB8fDB8fHww)  
-  `;  
+  `; 
 
-    useImperativeHandle(ref, () => ({
+  useImperativeHandle(ref, () => ({
     getMarkdownContent: () => {
       const content = convertToRaw(editorState.getCurrentContent());
       return draftToMarkdown(content, covertToMDImges);
@@ -110,8 +110,7 @@ const RichTextEditorDraft = forwardRef((props, ref) => {
     block.entityRanges.forEach(entity => {
       if (entity.length === 0 && rawContent.entityMap[entity.key].type === "IMAGE") {
         entity.length +=  1
-        entity.offset += 1 
-        block.text = `${block.text?.slice(0, entity.offset)}\n\u200b\n${block.text.slice(entity.offset, block.text?.length)} \n`;
+        block.text = `${block.text?.slice(0, entity.offset)}\u200b${block.text.slice(entity.offset, block.text?.length)} \n`;
       }
     })
   });
@@ -151,17 +150,24 @@ const RichTextEditorDraft = forwardRef((props, ref) => {
     .getEntity(props.entityKey)
     .getData();
     return (
-      <Box
-        component="img"
-        sx={{
-          zIndex: 0,
-          width: "99%",
-          height: "auto",
-          borderRadius: "20px"
+      <span 
+        contentEditable={false} 
+        style={{ 
+          display: "inline-block", 
+          margin: "0 4px" 
         }}
-        alt={alt}
-        src={src}
-      />
+      >
+        <img
+          src={src}
+          alt={alt}
+          style={{
+            maxHeight: "200px",
+            maxWidth: "100%",
+            verticalAlign: "middle",
+            borderRadius: "8px"
+          }}
+        />
+      </span>
     );
   }
 
@@ -237,7 +243,7 @@ const RichTextEditorDraft = forwardRef((props, ref) => {
 
   const addImage = (uploadedImageUrl?: string) => {
     const src = uploadedImageUrl ?? imageLink;
-    if (!savedSelection || !src)  return;
+    if (!savedSelection || !src) return;
 
     const contentState = editorState.getCurrentContent();
     const contentStateWithEntity = contentState.createEntity(
@@ -247,16 +253,9 @@ const RichTextEditorDraft = forwardRef((props, ref) => {
     );
 
     const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
-    let newContentState = Modifier.insertText(
+    const newContentState = Modifier.insertText(
       contentStateWithEntity,
       savedSelection,
-      '\n'
-    );
-
-    const selectionAfterNewline = newContentState.getSelectionAfter();
-    newContentState = Modifier.insertText(
-      newContentState,
-      selectionAfterNewline,
       '\u200b',
       undefined,
       entityKey
@@ -268,11 +267,10 @@ const RichTextEditorDraft = forwardRef((props, ref) => {
       'insert-characters'
     );
 
-    const finalSelection = newContentState.getSelectionAfter();
-    setEditorState(EditorState.forceSelection(newEditorState, finalSelection));
-    setLinkDialogOpen(false);
-    setImageLink("")
+    setEditorState(EditorState.forceSelection(newEditorState, newContentState.getSelectionAfter()));
+    setImageLink("");
     setSavedSelection(null);
+    setImageDialogOpen(false);
   };
 
   const renderLinkInput = () => (
