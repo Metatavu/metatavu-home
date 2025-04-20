@@ -1,7 +1,7 @@
 import { Button, Card, TextField } from "@mui/material"
 import strings from "src/localization/strings";
-import RichTextEditorDraft from "./rich-text-editor-draft";
 import { useRef, useState } from "react";
+import RichTextEditorLexical from "./rich-text-editor/rich-text-editor";
 
 const CreateArticleForm = () => {
   const editorRef = useRef(null);
@@ -28,7 +28,7 @@ const CreateArticleForm = () => {
         size="small" 
         label={strings.wikiDocumentation.labelPath}
       />
-      <RichTextEditorDraft ref={editorRef}/>
+      <RichTextEditorLexical ref={editorRef}/>
     </Card>
   )
 }
