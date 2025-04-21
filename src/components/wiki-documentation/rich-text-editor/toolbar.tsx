@@ -34,7 +34,7 @@ import FormatUnderlinedIcon from '@mui/icons-material/FormatUnderlined';
 import InsertPhotoIcon from '@mui/icons-material/InsertPhoto';
 import LinkOffIcon from '@mui/icons-material/LinkOff';
 import TitleIcon from '@mui/icons-material/Title';
-import config from '../../../app/config';
+import { uploadFile } from 'src/utils/s3-file-utils';
 import { useLambdasApi } from 'src/hooks/use-api';
 
 interface TextCommand {
@@ -43,11 +43,8 @@ interface TextCommand {
   handler: () => void;
 }
 
-const s3ImageFolder = config.s3.articleImagesFolder;
-const s3ArticleBucket = config.s3.articleBuket;
-
 const ToolBar = () => {
-  const { articleApi } = useLambdasApi();
+  const {articleApi} = useLambdasApi();
   const [editor] = useLexicalComposerContext();
   const [link, setLink] = useState("");
   const [imageLink, setImageLink] = useState("");
@@ -204,26 +201,12 @@ const ToolBar = () => {
     }
   };
 
-  const uploadFile = async () => {
+  const uploadImage = async () => {
     if (!file) return;
-    console.log(file)
-    const filePath = `${s3ImageFolder}/${file.name}`;
+    const imageUrl = await uploadFile(file, articleApi);
 
-    const presignedUrlResponse = await articleApi.uploadFileForArticle({
-      fileMetadata: {
-        path: filePath,
-        contentType: file.type
-      }
-    });
-
-    const uploadResponse = await fetch(presignedUrlResponse.data, {
-      method: "PUT",
-      headers: { "Content-Type": file.type },
-      body: file
-    });
-
-    if (uploadResponse.status === 200) {
-      addImage(`${s3ArticleBucket}/${s3ImageFolder}/${file.name}`)
+    if (imageUrl) {
+      addImage(imageUrl);
       setFile(null);
       setImageDialogOpen(false);
     }
@@ -285,11 +268,14 @@ const ToolBar = () => {
             {file?.name}
           </Typography>:<></>
         }
-        {fileUploadError ?? <Typography sx={{width: "100%"}}>{fileUploadError}</Typography>}
+        {fileUploadError ?? 
+          <Typography sx={{width: "100%"}}>
+            {fileUploadError}
+          </Typography>}
       </Box>
 
       {file && !fileUploadError ? 
-        <Button onClick={() => uploadFile()}>Upload</Button>
+        <Button onClick={() => uploadImage()}>Upload</Button>
         : <Button onClick={() => addImage()}>Add</Button>
       }
       {file ? 
@@ -305,8 +291,7 @@ const ToolBar = () => {
       top: "20px",
       zIndex: 10,
       backgroundColor: "inherit",
-      paddingBottom: 1,
-      paddingTop: 2
+      paddingTop: 1
     }}>
       {linkDialogOpen && !imageDialogOpen && renderLinkInput()}
       {!linkDialogOpen && imageDialogOpen && renderImageInput()}

@@ -42,7 +42,7 @@ const WikiDocumantationScreen = () => {
   const { articleApi } = useLambdasApi();
   const initLoadingState = articleAtomValue?.length === 0;
   const [loading, setLoading] = useState(initLoadingState);
-  const [creating,  setCreating] = useState(true);
+  const [creating,  setCreating] = useState(false);
   const [articles, setArticles] = useState<ArticleMetadata[]>(articleAtomValue);
   const [dispayedArticles, setDisplayedArticles] = useState<ArticleMetadata[]>(articleAtomValue);
   const [tags, setTags] = useState<string[]>([]);
@@ -371,11 +371,8 @@ const WikiDocumantationScreen = () => {
       (
         <>
           {creating ? (
-            <>
-              {renderTitle(strings.wikiDocumentation.createArticle)}
-              <CreateArticleForm/>
-            </>
-          ) : 
+            <CreateArticleForm/>
+          ) :
           (
             <>
               {renderTitle(strings.wikiDocumentation.cardTitle)}

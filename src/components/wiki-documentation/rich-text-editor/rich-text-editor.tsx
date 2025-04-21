@@ -82,26 +82,28 @@ const RichTextEditorLexical = forwardRef((props, ref) => {
 
   return (
     <LexicalComposer initialConfig={initialConfig}>
-      <Card sx={{ 
-        marginTop: 4, 
-        padding: 2, 
-        height: "auto",
-        overflow: "visible",
-        position: "relative"
-      }}>  
+      <Card
+        variant='outlined'
+        sx={{ 
+          marginTop: 4, 
+          padding: 2, 
+          paddingTop: 0,
+          height: "auto",
+          overflow: "visible",
+          position: "relative"
+        }}
+      >  
         <ToolBar/>
         <Box sx={{ 
-          minHeight: "400px",
+          minHeight: "200px",
           padding: 1,
-          paddingTop: 2, 
+          paddingTop: 1, 
           borderTop: '1px solid #eee'
         }}>
           <RichTextPlugin
             contentEditable={
               <ContentEditable
-                aria-placeholder={'Enter some text...'}
                 className='editor'
-                placeholder={<p>Enter some text...</p>}
               />
             }
             ErrorBoundary={LexicalErrorBoundary}
@@ -112,7 +114,6 @@ const RichTextEditorLexical = forwardRef((props, ref) => {
           <LinkPlugin /> 
           <ListPlugin />
           <TabIndentationPlugin/>
-          
         </Box>
       </Card>
     </LexicalComposer>
