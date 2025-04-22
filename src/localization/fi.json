@@ -317,5 +317,8 @@
     "atTheEndOf": "{0} lopussa",
     "hour": "tunti",  
     "hours": "Tuntia"
+  },
+  "notOptedInDescription": {
+    "description": "Hyväksy käyttäjätietojen käsittely nähdäksesi tämä osio"
   }
 }

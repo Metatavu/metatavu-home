@@ -317,5 +317,8 @@
     "atTheEndOf": "At the end of {0}",
     "hour": "hour",
     "hours": "hours"
+  },
+  "notOptedInDescription": {
+    "description": "Accept the processing of user data to view this section."
   }
 }

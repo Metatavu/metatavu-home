@@ -418,8 +418,13 @@ export interface Localized extends LocalizedStringsMethods {
     hour: string;
     hours: string;
   };
-}
-
+  /**
+   * Translations related to if user is not Severa Opt in
+   */
+  notOptedInDescription: {
+    description: string;
+  };
+};
 /**
  * Initialized localized strings
  */

@@ -24,7 +24,7 @@ const HomeScreen = () => {
     <Grid
       sx={{
         background: "#f5f5f5",
-        borderRadius: 2,
+        borderRadius: 1,
         boxShadow: "0px 2px 8px rgba(0,0,0,0.05)",
         marginBottom: 2,
         minHeight: 120,
@@ -34,11 +34,16 @@ const HomeScreen = () => {
       }}
     >
       <Grid sx={{ padding: 2 }}>
-        <Grid sx={{ marginBottom: 1, fontWeight: "bold", fontSize: 18 }}>
+        <Grid sx={{ fontWeight: "bold", fontSize: 22 }}>
           {title}
         </Grid>
         {!hasSeveraUserId ? (
-          <Skeleton variant="rectangular" height={80} sx={{ borderRadius: 1 }} />
+          <>
+            <div style={{ color: "#888", fontSize: 15, padding: "12px 0" }}>
+              {strings.notOptedInDescription.description}
+            </div>
+            <Skeleton variant="rectangular" height={20} sx={{ borderRadius: 1, marginTop: 1, width: "100%" }} />
+          </>
         ) : (
           content
         )}
@@ -63,18 +68,10 @@ const HomeScreen = () => {
         </Grid>
       </Grid>
       <Grid item xs={12} sm={6}>
-        {developerMode &&
-          renderCardWithSkeleton(
-            strings.vacationsCard.vacations,
-            <VacationsCard />
-          )}
+        {developerMode && <VacationsCard />}
       </Grid>
       <Grid item xs={12} sm={6}>
-        {developerMode &&
-          renderCardWithSkeleton(
-            strings.questionnaireCard.questionnaires,
-            <QuestionnaireCard />
-          )}
+        {developerMode && <QuestionnaireCard />}
       </Grid>
     </Grid>
   );
