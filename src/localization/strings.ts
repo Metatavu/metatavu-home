@@ -428,10 +428,17 @@ export interface Localized extends LocalizedStringsMethods {
     created: string;
     read: string;
     create: string;
+    back: string;
     searchArticle: string;
     createArticle: string;
+    uploadImage: string;
+    imagePreview: string;
     labelTitle: string;
     labelPath: string;
+    labelTags: string;
+    labelImage: string;
+    labelDescription: string;
+    labelLink: string;
   }
 }
 

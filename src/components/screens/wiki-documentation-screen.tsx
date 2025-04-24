@@ -38,27 +38,28 @@ const colors = wikiScreenColors;
 const WikiDocumantationScreen = () => {
   const setError = useSetAtom(errorAtom);
   const setArticlesAtom = useSetAtom(articleAtom);
-  const articleAtomValue = useAtomValue(articleAtom);
+  const articles = useAtomValue(articleAtom);
   const { articleApi } = useLambdasApi();
-  const initLoadingState = articleAtomValue?.length === 0;
+  const initLoadingState = articles?.length === 0;
   const [loading, setLoading] = useState(initLoadingState);
-  const [creating,  setCreating] = useState(false);
-  const [articles, setArticles] = useState<ArticleMetadata[]>(articleAtomValue);
-  const [dispayedArticles, setDisplayedArticles] = useState<ArticleMetadata[]>(articleAtomValue);
+  const [formOpen,  setFormOpen] = useState(false);
+  const [dispayedArticles, setDisplayedArticles] = useState<ArticleMetadata[]>(articles);
   const [tags, setTags] = useState<string[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [selectOpen, setSelectOpen] = useState(false);
   const [searchInput, setSearchInput] = useState("");
 
   useEffect(() => {
-    if (articleAtomValue.length === 0) getArticles();
-    else getTags(articleAtomValue);
-  }, []);
+    if (articles.length === 0) getArticles();
+    else {
+      getTags(articles);
+      setDisplayedArticles(articles);
+    }
+  }, [articles]);
 
   const getArticles = async () => {
     try {
       const fetchedArticles = await articleApi.getArticles();
-      setArticles(fetchedArticles);
       setDisplayedArticles(fetchedArticles);
       setArticlesAtom(fetchedArticles);
       getTags(fetchedArticles);
@@ -137,8 +138,8 @@ const WikiDocumantationScreen = () => {
     },
     "& .MuiAutocomplete-paper": {
       marginTop: "10px",
-      backgroundColor: colors.toolbar.main,
-      color: colors.toolbar.text
+      backgroundColor: colors.button.main,
+      color: colors.button.text
     }
   });
 
@@ -154,7 +155,7 @@ const WikiDocumantationScreen = () => {
       <Box sx={{ 
         display: "flex", 
         justifyContent: "center", 
-        backgroundColor: colors.toolbar.main,
+        backgroundColor: colors.button.main,
         
       }}>
         <Autocomplete
@@ -178,7 +179,7 @@ const WikiDocumantationScreen = () => {
               key={`tags-option-${option}`}
             >
               <Checkbox sx={{
-                  color: colors.toolbar.text, 
+                  color: colors.button.text, 
                   marginRight: 2,
                 }} 
                 checked={selected} 
@@ -224,9 +225,9 @@ const WikiDocumantationScreen = () => {
               display: "grid",
               columnGap: 3,
               rowGap: 1,
-              gridTemplateColumns: "repeat(2, 1fr)",
-              "@media (min-width: 900px)": {
-                gridTemplateColumns: "repeat(4, 1fr)"
+              gridTemplateColumns: {
+                xs: "repeat(2, 1fr)",
+                md: "repeat(3, 1fr)"
               }
             }
           }}
@@ -237,7 +238,7 @@ const WikiDocumantationScreen = () => {
 
   const renderCreateButton = () => (
     <Button
-      onClick={()=>setCreating(true)}
+      onClick={() => setFormOpen(true)}
       variant="contained"
       sx={{
         width: {
@@ -246,9 +247,9 @@ const WikiDocumantationScreen = () => {
           xs:"35%"
         },
         height: "55px",
-        backgroundColor: colors.toolbar.main,
-        color: colors.toolbar.text,
-        "&:hover": {backgroundColor: colors.toolbar.hover}
+        backgroundColor: colors.button.main,
+        color: colors.button.text,
+        "&:hover": {backgroundColor: colors.button.hover}
       }}
     >
       <Typography 
@@ -265,12 +266,12 @@ const WikiDocumantationScreen = () => {
     <Button variant="contained" sx={{
       maxWidth: "32px", 
       height: "55px",
-      backgroundColor: colors.toolbar.main, 
-      "&:hover": {backgroundColor: colors.toolbar.hover}
+      backgroundColor: colors.button.main, 
+      "&:hover": {backgroundColor: colors.button.hover}
     }} 
     size="small"
     >
-      <GridViewIcon sx={{color: colors.toolbar.text}}/>
+      <GridViewIcon sx={{color: colors.button.text}}/>
     </Button>
   )
 
@@ -282,7 +283,7 @@ const WikiDocumantationScreen = () => {
           sm: "40%", 
           xs:"35%"
         },
-        color: colors.toolbar.text,
+        color: colors.button.text,
         '& .css-eqd77p-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.MuiSelect-select': {
           height: '38px'
         },
@@ -297,12 +298,12 @@ const WikiDocumantationScreen = () => {
         displayEmpty
         inputProps={{ 'aria-label': 'Without label' }}
         sx={{
-          backgroundColor: colors.toolbar.main, 
+          backgroundColor: colors.button.main, 
           boxShadow: 2, 
           borderBottomLeftRadius: selectOpen ? "0px" : "15px",
           borderBottomRightRadius: selectOpen ? "0px" : "15px",
           "&:hover": {
-            backgroundColor: colors.toolbar.hover
+            backgroundColor: colors.button.hover
           }
         }}
         MenuProps={{
@@ -310,16 +311,16 @@ const WikiDocumantationScreen = () => {
             sx: {
               borderTopLeftRadius: "0px",
               borderTopRightRadius: "0px",
-              backgroundColor: colors.toolbar.main
+              backgroundColor: colors.button.main
             },
           },
         }}
       >
         {tags.map(tag => 
           <MenuItem sx={{
-            backgroundColor: colors.toolbar.main, 
+            backgroundColor: colors.button.main, 
             "&:hover": {
-              backgroundColor: colors.toolbar.hover
+              backgroundColor: colors.button.hover
             }}} 
             value=""
           >
@@ -370,8 +371,8 @@ const WikiDocumantationScreen = () => {
       ) : 
       (
         <>
-          {creating ? (
-            <CreateArticleForm/>
+          {formOpen ? (
+            <CreateArticleForm setFormOpen={setFormOpen}/>
           ) :
           (
             <>

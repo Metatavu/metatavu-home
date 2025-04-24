@@ -9,7 +9,6 @@ export const  OnChangePlugin = (
   const [editor] = useLexicalComposerContext();
   useEffect(() => {
     return editor.registerUpdateListener((listener) => {
-      console.log(editor.getEditorState().toJSON())
       setEditorState(listener.editorState)
     });
   }, [editor]);

@@ -1,33 +1,34 @@
-import { forwardRef, useImperativeHandle, useState} from 'react';
-
-import {AutoFocusPlugin} from '@lexical/react/LexicalAutoFocusPlugin';
-import {LexicalComposer} from '@lexical/react/LexicalComposer';
-import {RichTextPlugin} from '@lexical/react/LexicalRichTextPlugin';
-import {ContentEditable} from '@lexical/react/LexicalContentEditable';
-import {HistoryPlugin} from '@lexical/react/LexicalHistoryPlugin';
+import { 
+  forwardRef, 
+  useImperativeHandle, 
+  useState 
+} from 'react';
+import { AutoFocusPlugin } from '@lexical/react/LexicalAutoFocusPlugin';
+import { LexicalComposer } from '@lexical/react/LexicalComposer';
+import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
+import { ContentEditable } from '@lexical/react/LexicalContentEditable';
+import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
 import {LexicalErrorBoundary} from '@lexical/react/LexicalErrorBoundary';
-
-import {OnChangePlugin} from "./plugins"
 import { Box, Card } from '@mui/material';
-import ToolBar from './toolbar';
-import lexicalTheme from './config';
-import "./editor.css";
 import { HeadingNode, QuoteNode } from '@lexical/rich-text';
-import {ListItemNode, ListNode} from "@lexical/list";
-import {LinkNode} from "@lexical/link";
-import {CodeNode} from "@lexical/code";
-import {ImageNode} from './image-node';
-import { LinkPlugin } from '@lexical/react/LexicalLinkPlugin';
+import { ListItemNode, ListNode } from "@lexical/list";
+import { LinkNode } from "@lexical/link";
+import { CodeNode } from "@lexical/code";
+import { ImageNode } from './nodes/image-node';
 import {
   $convertFromMarkdownString,
   $convertToMarkdownString,
   TRANSFORMERS
 } from '@lexical/markdown';
 import { ListPlugin } from '@lexical/react/LexicalListPlugin';
-import {TabIndentationPlugin} from '@lexical/react/LexicalTabIndentationPlugin';
+import { LinkPlugin } from '@lexical/react/LexicalLinkPlugin';
+import { TabIndentationPlugin } from '@lexical/react/LexicalTabIndentationPlugin';
+import { OnChangePlugin } from "./plugins"
+import ToolBar from './plugins/toolbar-plugin';
 import type { EditorState } from 'lexical';
-import { IMAGE_TRANSFORMER } from './custom-transformers';
-
+import { IMAGE_TRANSFORMER } from './md-transformers';
+import lexicalTheme from './config';
+import "./editor.css";
 
 const TRANSFORMERS_WITH_IMAGE = [
   IMAGE_TRANSFORMER,
@@ -41,26 +42,30 @@ const onError = (error: Error) => {
 const RichTextEditorLexical = forwardRef((props, ref) => {
   const [editorState, setEditorState] = useState<EditorState>();
 
-  const markdown = `[Example](https://example.com) asdf dad 
+  // const markdown = `[Example](https://example.com) asdf dad 
 
-  \`\`\`code block 
-  asdfasdf
-  asdfas
-  dfasdfasdf
-  \`\`\`
+  // \`\`\`code block 
+  // asdfasdf
+  // asdfas
+  // dfasdfasdf
+  // \`\`\`
 
-  <script>console.log("I am called")</script>
+  // <script>console.log("I am called")</script>
 
-  **bold text**   ![Image](https://images.unsplash.com/photo-1478098711619-5ab0b478d6e6?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8Y2F0fGVufDB8fDB8fHww) `;
+  // **bold text**   ![Image](https://images.unsplash.com/photo-1478098711619-5ab0b478d6e6?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8Y2F0fGVufDB8fDB8fHww) `;
+
+
+  const markdown = ""
+
 
   useImperativeHandle(ref, () => ({
     getMarkdownContent: () => {
       if (!editorState) return;
-      let merkdown = ""
+      let markdown = ""
       editorState.read(() => {
-        merkdown = $convertToMarkdownString(TRANSFORMERS_WITH_IMAGE);
+        markdown = $convertToMarkdownString(TRANSFORMERS_WITH_IMAGE);
       });
-      return merkdown;
+      return markdown;
     }
   }));
 
@@ -77,7 +82,7 @@ const RichTextEditorLexical = forwardRef((props, ref) => {
       LinkNode,
       ImageNode
     ],
-    editorState: () =>  $convertFromMarkdownString(markdown, TRANSFORMERS_WITH_IMAGE)
+    editorState: () => $convertFromMarkdownString(markdown, TRANSFORMERS_WITH_IMAGE)
   };
 
   return (
@@ -87,7 +92,7 @@ const RichTextEditorLexical = forwardRef((props, ref) => {
         sx={{ 
           marginTop: 4, 
           padding: 2, 
-          paddingTop: 0,
+          paddingTop: 1,
           height: "auto",
           overflow: "visible",
           position: "relative"
@@ -102,17 +107,15 @@ const RichTextEditorLexical = forwardRef((props, ref) => {
         }}>
           <RichTextPlugin
             contentEditable={
-              <ContentEditable
-                className='editor'
-              />
+              <ContentEditable className='editor'/>
             }
             ErrorBoundary={LexicalErrorBoundary}
           />
-          <HistoryPlugin />
-          <AutoFocusPlugin />
+          <HistoryPlugin/>
+          <AutoFocusPlugin/>
           <OnChangePlugin setEditorState={setEditorState}/>
-          <LinkPlugin /> 
-          <ListPlugin />
+          <LinkPlugin/> 
+          <ListPlugin/>
           <TabIndentationPlugin/>
         </Box>
       </Card>

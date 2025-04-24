@@ -13,7 +13,7 @@ import { $createHeadingNode, $createQuoteNode, type HeadingTagType } from '@lexi
 import { $isLinkNode, TOGGLE_LINK_COMMAND } from '@lexical/link';
 import { INSERT_ORDERED_LIST_COMMAND, INSERT_UNORDERED_LIST_COMMAND, type ListType } from '@lexical/list';
 import { $createCodeNode } from '@lexical/code';
-import { $createImageNode } from './image-node';
+import { $createImageNode } from '../nodes/image-node';
 import { 
   Box,
   Button,
@@ -36,6 +36,10 @@ import LinkOffIcon from '@mui/icons-material/LinkOff';
 import TitleIcon from '@mui/icons-material/Title';
 import { uploadFile } from 'src/utils/s3-file-utils';
 import { useLambdasApi } from 'src/hooks/use-api';
+import strings from 'src/localization/strings';
+import { wikiScreenColors } from 'src/theme';
+
+const colors = wikiScreenColors;
 
 interface TextCommand {
   key: string,
@@ -80,10 +84,19 @@ const ToolBar = () => {
     { key: 'OL', icon: <FormatListNumberedIcon />, handler: () => formatList("number") },
     { key: 'Code Block', style: 'code-block', icon: <CodeIcon />, handler: () => formatCode() },
     { key: 'add-link', icon: isLinkSelcted ? <LinkOffIcon /> : <InsertLinkIcon/>, 
-      handler: () => isLinkSelcted 
-        ? editor.dispatchCommand(TOGGLE_LINK_COMMAND, null) 
-        : setLinkDialogOpen(!linkDialogOpen)},
-    { key: 'add-image', icon:  <InsertPhotoIcon/>, handler: () => {setImageDialogOpen(!imageDialogOpen); setFileUploadError("")}}
+      handler: isLinkSelcted 
+        ? () => editor.dispatchCommand(TOGGLE_LINK_COMMAND, null) 
+        : () => {
+          setLinkDialogOpen(!linkDialogOpen)
+          setImageDialogOpen(false);
+        }
+      },
+    { key: 'add-image', icon:  <InsertPhotoIcon/>, 
+      handler: () => {
+        setImageDialogOpen(!imageDialogOpen); 
+        setLinkDialogOpen(false);
+        setFileUploadError("")
+      }}
   ], [isLinkSelcted, linkDialogOpen, imageDialogOpen]);
 
   const formatText = (command: TextFormatType) => {
@@ -189,8 +202,8 @@ const ToolBar = () => {
   };
 
   const handleFileChange = (event: any) => {
+    console.log("called")
     const file = event.target.files[0];
-    console.log(file.type)
     if (file.type?.includes("image/")) {
       setFile(file);
       setFileUploadError("");
@@ -213,21 +226,22 @@ const ToolBar = () => {
   };
 
   const renderLinkInput = () => (
-    <Card sx={{ 
-      position: "absolute", 
-      top: {md: "80px", xs: "100px"}, 
-      right: 2, 
-      padding: 1,
-      zIndex: 20
-    }}
+    <Card 
+      sx={{ 
+        position: "absolute", 
+        top: {md: "80px", xs: "100px"}, 
+        right: 2, 
+        padding: 1,
+        zIndex: 20
+      }}
     >
       <TextField 
         sx={{width: "100%"}}
         value={link}
         onInput={handleInputChange("link")}
-        placeholder='aEnter link'
+        size="small"
+        label={strings.wikiDocumentation.labelLink}
       />
-
       <Button onClick={() => addLink()}>Add</Button>
       <Button onClick={() => setLinkDialogOpen(false)}>Close</Button>
     </Card>
@@ -246,15 +260,24 @@ const ToolBar = () => {
         sx={{width: "100%"}}
         value={imageLink}
         onInput={handleInputChange("imageLink")}
-        placeholder='Enter image link'
+        size="small"
+        label={strings.wikiDocumentation.labelImage}
       />
       <Button
         variant="contained"
         component="label"
-        sx={{ marginTop: 1, marginBottom: 1 }}
         fullWidth
+        sx={{ 
+          marginTop: 1, 
+          marginBottom: 1,
+          backgroundColor: colors.button.main, 
+          color: colors.button.text, 
+          "&:hover": {
+            backgroundColor: colors.button.hover
+          } 
+      }}
       >
-        Upload File
+        {strings.wikiDocumentation.uploadImage}
         <input
           style={{width: "100%"}}
           type="file"
@@ -304,6 +327,7 @@ const ToolBar = () => {
           <IconButton 
             key={`inline-command-${command.key}`}
             onClick={() => command.handler()}
+            sx={{fontSize: "21px", fontWeight: "bold"}}
           >
             {command.icon}
           </IconButton>

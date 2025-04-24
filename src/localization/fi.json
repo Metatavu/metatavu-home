@@ -325,9 +325,16 @@
     "created": "luotu",
     "read": "luettu",
     "create": "luoda",
+    "back": "takaisin",
     "searchArticle": "Etsi artikkeli...",
     "createArticle": "Luo uusi artikkeli",
+    "uploadImage": "Lataa kuva",
+    "imagePreview": "Esikatselu",
     "labelTitle": "Otsikko",
-    "labelPath": "Polku"
+    "labelPath": "Polku",
+    "labelTags": "Tunnisteet",
+    "labelImage": "Kuvan URL-osoite",
+    "labelDescription": "Kuvaus",
+    "labelLink": ""
   }
 }

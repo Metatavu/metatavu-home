@@ -325,9 +325,16 @@
     "created": "created",
     "read": "read",
     "create": "create",
+    "back": "back",
     "searchArticle": "Search for an article...",
-    "createArticle": "Create new article",
+    "createArticle": "Create article",
+    "uploadImage": "Upload image",
+    "imagePreview": "Preview",
     "labelTitle": "Title",
-    "labelPath": "Path"
+    "labelPath": "Path",
+    "labelTags": "Tags",
+    "labelImage": "Image URL",
+    "labelDescription": "Desciption",
+    "labelLink": "Link"
   }
 }
