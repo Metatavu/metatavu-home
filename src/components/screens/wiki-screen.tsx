@@ -15,13 +15,14 @@ import {
   Checkbox,
   styled,
   type PopperProps,
-  Popper
+  Popper,
+  type SelectChangeEvent
 } from "@mui/material";
 import { useAtomValue, useSetAtom } from "jotai";
 import { useLambdasApi } from "src/hooks/use-api";
 import { errorAtom } from "src/atoms/error";
 import type { ArticleMetadata } from "src/generated/homeLambdasClient";
-import { articleAtom } from "src/atoms/article";
+import { articleAtom, draftArticleAtom } from "src/atoms/article";
 import { Link } from "react-router-dom";
 import { Search } from "@mui/icons-material";
 import GridViewIcon from "@mui/icons-material/GridView";
@@ -29,6 +30,7 @@ import CarouselArticleCards from "../wiki-documentation/carousel-article-cards";
 import strings from "src/localization/strings";
 import { wikiScreenColors } from "src/theme";
 import CreateOrEditArticleForm from "../wiki-documentation/create-article-form";
+import UserRoleUtils from "src/utils/user-role-utils";
 
 const colors = wikiScreenColors;
 
@@ -36,8 +38,11 @@ const colors = wikiScreenColors;
  * Wiki documentation screen component displaying a list of articles.
  */
 const WikiScreen = () => {
+  const adminMode = UserRoleUtils.adminMode();
   const setError = useSetAtom(errorAtom);
   const setArticlesAtom = useSetAtom(articleAtom);
+  const setDraftArticlesAtom = useSetAtom(draftArticleAtom);
+  const draftArticles = useAtomValue(draftArticleAtom);
   const articles = useAtomValue(articleAtom);
   const { articleApi } = useLambdasApi();
   const initLoadingState = articles?.length === 0;
@@ -46,20 +51,24 @@ const WikiScreen = () => {
   const [dispayedArticles, setDisplayedArticles] = useState<ArticleMetadata[]>(articles);
   const [tags, setTags] = useState<string[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const [selectOpen, setSelectOpen] = useState(false);
   const [searchInput, setSearchInput] = useState("");
+  const [displayOption, setDisplayOption] = useState("all");
 
   useEffect(() => {
     if (articles.length === 0) getArticles();
     else {
-      getTags(articles);
+      getTags(adminMode ? articles.concat(draftArticles) : articles);
       setDisplayedArticles(articles);
     }
-  }, [articles]);
+  }, [articles, draftArticles]);
 
   const getArticles = async () => {
     try {
       const fetchedArticles = await articleApi.getArticles();
+      if (adminMode) {
+        const fetchedDraftArticles = await articleApi.getArticles({draft: true});
+        setDraftArticlesAtom(fetchedDraftArticles);
+      }
       setDisplayedArticles(fetchedArticles);
       setArticlesAtom(fetchedArticles);
       getTags(fetchedArticles);
@@ -82,24 +91,34 @@ const WikiScreen = () => {
     setSearchInput(newSearchInput || "");
 
     if (!newSearchInput || newSearchInput === "") {
-      setDisplayedArticles(articles);
+      setDisplayedArticles(adminMode && displayOption === "draft" ? draftArticles : articles);
       return;
     }
 
-    const filteredArticles = articles.filter(article => 
-      article.title.toLowerCase().includes(newSearchInput.toLowerCase()) && 
-      selectedTags.every(tag => article.tags?.includes(tag))
+    const filteredArticles = (adminMode && displayOption === "draft" ? draftArticles : articles)
+      .filter(article => 
+        article.title.toLowerCase().includes(newSearchInput.toLowerCase()) && 
+        selectedTags.every(tag => article.tags?.includes(tag))
     );
     setDisplayedArticles(filteredArticles);
   }
 
   const handleSelectedTagChange = (values: string[]) => {
     setSelectedTags(values);
-    const filteredArticles = articles.filter(article => 
-      article.title.toLowerCase().includes(searchInput.toLowerCase()) && 
-      values.every(tag => article.tags?.includes(tag))
+    const filteredArticles = (adminMode && displayOption === "draft" ? draftArticles : articles)
+      .filter(article => 
+        article.title.toLowerCase().includes(searchInput.toLowerCase()) && 
+        values.every(tag => article.tags?.includes(tag))
     );
     setDisplayedArticles(filteredArticles);
+  }
+
+  const handleDisplayOptionChange = (event: SelectChangeEvent<string>) => {
+    const newOption = event.target.value;
+    setDisplayOption(newOption);
+    if (newOption === "draft") 
+      setDisplayedArticles(draftArticles)
+    else setDisplayedArticles(articles)
   }
 
   const renderArticleCard = (article: ArticleMetadata) => (
@@ -130,7 +149,7 @@ const WikiScreen = () => {
           </Typography>
       </Card>
     </Link>
-  )
+  );
 
   const CustomPopper = styled((props: PopperProps) => <Popper {...props} placement="bottom" />)({
     "& .MuiAutocomplete-noOptions": {
@@ -146,8 +165,9 @@ const WikiScreen = () => {
   const renderSearch = () => (
     <Card sx={{
       width: {
-        md:"65%",
-        xs:"100%"
+        lg: adminMode ? "55%" : "73%",
+        md: adminMode ? "55%" : "calc(100% - 80px)",
+        xs: adminMode ? "100%": "calc(100% - 80px);"
       }, 
       boxShadow: 2, 
       marginBottom: {xs: 2}
@@ -242,9 +262,9 @@ const WikiScreen = () => {
       variant="contained"
       sx={{
         width: {
-          md: "15%",
-          sm: "40%", 
-          xs:"35%"
+          lg: "17%",
+          md: adminMode ? "17%" : "100%",
+          xs: adminMode ? "40%" : "100%"
         },
         height: "55px",
         backgroundColor: colors.button.main,
@@ -263,13 +283,15 @@ const WikiScreen = () => {
   )
 
   const renderListViewButton = () => (
-    <Button variant="contained" sx={{
-      maxWidth: "32px", 
-      height: "55px",
-      backgroundColor: colors.button.main, 
-      "&:hover": {backgroundColor: colors.button.hover}
-    }} 
-    size="small"
+    <Button 
+      variant="contained" 
+      sx={{
+        maxWidth: "32px", 
+        height: "55px",
+        backgroundColor: colors.button.main, 
+        "&:hover": {backgroundColor: colors.button.hover}
+      }} 
+      size="small"
     >
       <GridViewIcon sx={{color: colors.button.text}}/>
     </Button>
@@ -279,29 +301,27 @@ const WikiScreen = () => {
     <FormControl
       sx={{
         width: {
-          md: "10%", 
+          md: "17%", 
           sm: "40%", 
           xs:"35%"
         },
         color: colors.button.text,
-        '& .css-eqd77p-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.MuiSelect-select': {
-          height: '38px'
-        },
         "& fieldset": { border: 'none' },
       }}
-      size="small"
+      size="medium"
     >
       <Select
-        value={1}
-        onOpen={() => setSelectOpen(true)}
-        onClose={() => setSelectOpen(false)}
+        value={displayOption}
+        onChange={handleDisplayOptionChange}
         displayEmpty
         inputProps={{ 'aria-label': 'Without label' }}
         sx={{
           backgroundColor: colors.button.main, 
           boxShadow: 2, 
-          borderBottomLeftRadius: selectOpen ? "0px" : "15px",
-          borderBottomRightRadius: selectOpen ? "0px" : "15px",
+          textAlign: "center",
+          color: colors.button.text,
+          fontWeight: "bold",
+          textTransform: "uppercase",
           "&:hover": {
             backgroundColor: colors.button.hover
           }
@@ -316,17 +336,26 @@ const WikiScreen = () => {
           },
         }}
       >
-        {tags.map(tag => 
-          <MenuItem sx={{
-            backgroundColor: colors.button.main, 
-            "&:hover": {
-              backgroundColor: colors.button.hover
-            }}} 
-            value=""
-          >
-            <em>{tag}</em>
-          </MenuItem>
-        )}
+        <MenuItem sx={{
+          color: colors.button.text,
+          backgroundColor: colors.button.main, 
+          "&:hover": {
+            backgroundColor: colors.button.hover
+          }}} 
+          value="all"
+        >
+          all
+        </MenuItem> 
+        <MenuItem sx={{
+          color: colors.button.text,
+          backgroundColor: colors.button.main, 
+          "&:hover": {
+            backgroundColor: colors.button.hover
+          }}} 
+          value="draft"
+        >
+          draft
+        </MenuItem>
       </Select>
     </FormControl>
   )
@@ -352,7 +381,7 @@ const WikiScreen = () => {
       }}
     >
       {renderSearch()}
-      {renderDropdownMenu()}
+      {adminMode && renderDropdownMenu()}
       {renderListViewButton()}
       {renderCreateButton()}
     </Grid>
@@ -372,19 +401,19 @@ const WikiScreen = () => {
       (
         <>
           {formOpen ? (
-            <CreateOrEditArticleForm setFormOpen={setFormOpen} action="create" adminMode={false}/>
+            <CreateOrEditArticleForm setFormOpen={setFormOpen} action="create" adminMode={adminMode}/>
           ) :
           (
             <>
-              {renderTitle(strings.wikiDocumentation.cardTitle)}
+              {!adminMode && renderTitle(strings.wikiDocumentation.cardTitle)}
               {articles && articles.length !== 0 ? 
                 <>
-                  <CarouselArticleCards articles={articles}/>
-                  <Box sx={{paddingLeft: 3, paddingRight: 3}}>
+                  {!adminMode && <CarouselArticleCards articles={articles}/>}
+                  <Box sx={adminMode ? {marginTop: 4} : {paddingLeft: 3, paddingRight: 3}}>
                     {renderToolBar()}
                     <Grid 
                       container 
-                      spacing={3}
+                      spacing={4}
                       textAlign={"center"}
                     >
                       {dispayedArticles.map(article => 

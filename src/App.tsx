@@ -24,7 +24,6 @@ import QuestionnaireManager from "./components/questionnaire/questionnaire-manag
 import { QuestionnairePreviewMode } from "./types";
 import ArticleScreen from "./components/screens/wiki-article-screen";
 import WikiScreen from "./components/screens/wiki-screen";
-import AdminWikiScreen from "./components/screens/admin-wiki-screen";
 
 /**
  * Application component
@@ -115,7 +114,7 @@ const App = () => {
         },
         {
           path: "/admin/wiki-documentation",
-          element: <AdminWikiScreen />
+          element: <WikiScreen />
         },
         {
           path: "/admin/wiki-documentation/*",
