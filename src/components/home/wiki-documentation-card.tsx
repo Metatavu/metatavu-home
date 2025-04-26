@@ -15,22 +15,22 @@ import { Link } from "react-router-dom";
 import UserRoleUtils from "src/utils/user-role-utils";
 import type {  ArticleMetadata } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
-import { articleAtom } from "src/atoms/article";
+import { articleAtom, draftArticleAtom } from "src/atoms/article";
 
 /**
  * Component for displaying last read, created or updated article for Wiki Documentation.
  */
 const WikiDocumentationCard = () => { 
   const setError = useSetAtom(errorAtom);
-  const setArticlesAtom = useSetAtom(articleAtom);
-  const articlesAtom = useAtomValue(articleAtom);
   const adminMode = UserRoleUtils.adminMode();
+  const articlesAtom = adminMode ? useAtomValue(draftArticleAtom) : useAtomValue(articleAtom);
+  const setArticlesAtom = adminMode ? useSetAtom(draftArticleAtom) : useSetAtom(articleAtom);
   const { articleApi } = useLambdasApi();
   const [loading, setLoading] = useState(false);
   const [lastUpdatedArticle, setLastUpdatedArticle] = useState<ArticleMetadata>(articlesAtom[0]);
 
   /**
-   * Fetch a last updated article.
+   * Fetch last updated article.
    */
   useEffect(() => {
     if (articlesAtom.length === 0)
@@ -40,7 +40,7 @@ const WikiDocumentationCard = () => {
   const getLastUpdatedArticle = async () => {
     setLoading(true);
     try {
-      const fetchedArticles = await articleApi.getArticles();
+      const fetchedArticles = await articleApi.getArticles(adminMode ? {draft: true} : {});
       setLastUpdatedArticle(fetchedArticles[0]);
       setArticlesAtom(fetchedArticles);
     } catch (error) {
@@ -160,21 +160,12 @@ const WikiDocumentationCard = () => {
           }
         }}
       >
-        {adminMode ? (
-          <CardContent>
-            <Typography variant="h6" fontWeight={"bold"} style={{ marginTop: 6, marginBottom: 3 }}>
-              {strings.balanceCard.employeeBalances}
-            </Typography>
-            <Typography variant="body1">{strings.wikiDocumentation.cardTitle}</Typography>
-          </CardContent>
-        ) : (
-          <CardContent>
-            <Typography variant="h6" fontWeight={"bold"} style={{ marginTop: 6, marginBottom: 3 }}>
-              {strings.wikiDocumentation.cardTitle}
-            </Typography>
-            {loading ? <Skeleton/> : renderCardContent()}
-          </CardContent>
-        )}
+        <CardContent>
+          <Typography variant="h6" fontWeight={"bold"} style={{ marginTop: 6, marginBottom: 3 }}>
+            {strings.wikiDocumentation.cardTitle}
+          </Typography>
+          {loading ? <Skeleton/> : renderCardContent()}
+        </CardContent>
       </Card>
     </Link>
   );

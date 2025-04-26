@@ -429,6 +429,8 @@ export interface Localized extends LocalizedStringsMethods {
     read: string;
     create: string;
     back: string;
+    save: string;
+    edit: string;
     searchArticle: string;
     createArticle: string;
     uploadImage: string;

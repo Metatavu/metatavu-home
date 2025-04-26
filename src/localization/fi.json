@@ -326,6 +326,8 @@
     "read": "luettu",
     "create": "luoda",
     "back": "takaisin",
+    "save": "tallentaa",
+    "edit": "muokata",
     "searchArticle": "Etsi artikkeli...",
     "createArticle": "Luo uusi artikkeli",
     "uploadImage": "Lataa kuva",

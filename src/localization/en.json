@@ -326,6 +326,8 @@
     "read": "read",
     "create": "create",
     "back": "back",
+    "save": "save",
+    "edit": "edit",
     "searchArticle": "Search for an article...",
     "createArticle": "Create article",
     "uploadImage": "Upload image",

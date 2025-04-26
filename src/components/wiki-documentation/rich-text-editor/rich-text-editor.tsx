@@ -29,34 +29,25 @@ import type { EditorState } from 'lexical';
 import { IMAGE_TRANSFORMER } from './md-transformers';
 import lexicalTheme from './config';
 import "./editor.css";
+import { useSetAtom } from 'jotai';
+import { errorAtom } from 'src/atoms/error';
 
 const TRANSFORMERS_WITH_IMAGE = [
   IMAGE_TRANSFORMER,
   ...TRANSFORMERS
 ];
 
-const onError = (error: Error) => {
-  console.error(error.message);
+interface Props {
+  markdownContent: string;
 }
 
-const RichTextEditorLexical = forwardRef((props, ref) => {
+const RichTextEditorLexical = forwardRef(({markdownContent=""}: Props, ref) => {
   const [editorState, setEditorState] = useState<EditorState>();
+  const setError = useSetAtom(errorAtom);
 
-  // const markdown = `[Example](https://example.com) asdf dad 
-
-  // \`\`\`code block 
-  // asdfasdf
-  // asdfas
-  // dfasdfasdf
-  // \`\`\`
-
-  // <script>console.log("I am called")</script>
-
-  // **bold text**   ![Image](https://images.unsplash.com/photo-1478098711619-5ab0b478d6e6?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8Y2F0fGVufDB8fDB8fHww) `;
-
-
-  const markdown = ""
-
+  const onError = (error: Error) => {
+    setError(error.message);
+  }
 
   useImperativeHandle(ref, () => ({
     getMarkdownContent: () => {
@@ -82,7 +73,7 @@ const RichTextEditorLexical = forwardRef((props, ref) => {
       LinkNode,
       ImageNode
     ],
-    editorState: () => $convertFromMarkdownString(markdown, TRANSFORMERS_WITH_IMAGE)
+    editorState: () => $convertFromMarkdownString(markdownContent, TRANSFORMERS_WITH_IMAGE)
   };
 
   return (

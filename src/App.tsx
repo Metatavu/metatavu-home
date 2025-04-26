@@ -22,8 +22,9 @@ import QuestionnaireScreen from "./components/screens/questionnaire-screen";
 import NewQuestionnaireBuilder from "./components/questionnaire/new-questionnaire-builder";
 import QuestionnaireManager from "./components/questionnaire/questionnaire-manager";
 import { QuestionnairePreviewMode } from "./types";
-import WikiDocumantationScreen from "./components/screens/wiki-documentation-screen";
 import ArticleScreen from "./components/screens/wiki-article-screen";
+import WikiScreen from "./components/screens/wiki-screen";
+import AdminWikiScreen from "./components/screens/admin-wiki-screen";
 
 /**
  * Application component
@@ -67,7 +68,7 @@ const App = () => {
         },
         {
           path: "/wiki-documentation",
-          element: <WikiDocumantationScreen />
+          element: <WikiScreen />
         },
         {
           path: "/wiki-documentation/*",
@@ -111,6 +112,14 @@ const App = () => {
         {
           path: "/admin/questionnaire/:id/edit",
           element: <QuestionnaireManager mode={QuestionnairePreviewMode.EDIT} />
+        },
+        {
+          path: "/admin/wiki-documentation",
+          element: <AdminWikiScreen />
+        },
+        {
+          path: "/admin/wiki-documentation/*",
+          element: <ArticleScreen />
         }
       ]
     }

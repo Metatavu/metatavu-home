@@ -27,15 +27,15 @@ import { Search } from "@mui/icons-material";
 import GridViewIcon from "@mui/icons-material/GridView";
 import CarouselArticleCards from "../wiki-documentation/carousel-article-cards";
 import strings from "src/localization/strings";
-import CreateArticleForm from "../wiki-documentation/create-article-form";
 import { wikiScreenColors } from "src/theme";
+import CreateOrEditArticleForm from "../wiki-documentation/create-article-form";
 
 const colors = wikiScreenColors;
 
 /**
  * Wiki documentation screen component displaying a list of articles.
  */
-const WikiDocumantationScreen = () => {
+const WikiScreen = () => {
   const setError = useSetAtom(errorAtom);
   const setArticlesAtom = useSetAtom(articleAtom);
   const articles = useAtomValue(articleAtom);
@@ -332,10 +332,10 @@ const WikiDocumantationScreen = () => {
   )
 
   const renderTitle = (text: string) => (
-    <Typography variant="h5" sx={{ 
+    <Typography variant="h4" sx={{ 
       fontWeight: "bold", 
       marginTop: 4, 
-      marginBottom: 2, 
+      marginBottom: 1, 
       marginLeft: 3
     }}>
       {text}
@@ -347,7 +347,7 @@ const WikiDocumantationScreen = () => {
       container 
       justifyContent={"space-between"} 
       sx={{
-        marginTop: articles.length !== 0 ? 8 : 2, 
+        marginTop: articles.length !== 0 ? 4 : 2, 
         marginBottom: 2
       }}
     >
@@ -372,7 +372,7 @@ const WikiDocumantationScreen = () => {
       (
         <>
           {formOpen ? (
-            <CreateArticleForm setFormOpen={setFormOpen}/>
+            <CreateOrEditArticleForm setFormOpen={setFormOpen} action="create" adminMode={false}/>
           ) :
           (
             <>
@@ -405,4 +405,4 @@ const WikiDocumantationScreen = () => {
   );
 };
 
-export default WikiDocumantationScreen;
+export default WikiScreen;
