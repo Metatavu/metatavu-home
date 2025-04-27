@@ -324,6 +324,9 @@
     "updated": "päivitetty",
     "created": "luotu",
     "read": "luettu",
+    "pendingArticles": "You have {0} articles pending review",
+    "noPendingArticles": "Ei tarkistusta odottavia artikkeleita.",
+    "noArticlesFound": "Artikkeleita ei löytynyt.",
     "create": "luoda",
     "back": "takaisin",
     "save": "tallentaa",
@@ -337,6 +340,6 @@
     "labelTags": "Tunnisteet",
     "labelImage": "Kuvan URL-osoite",
     "labelDescription": "Kuvaus",
-    "labelLink": ""
+    "labelLink": "Sinulla on {0} artikkelia odottamassa tarkistusta."
   }
 }

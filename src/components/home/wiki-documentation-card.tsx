@@ -148,6 +148,25 @@ const WikiDocumentationCard = () => {
     )
   }
 
+  const renderAdminCardContent = () => (
+    <Grid container>
+      <Grid style={{ marginBottom: 1 }} item xs={1}>
+        <DescriptionOutlinedIcon style={{ marginTop: 1}} />
+      </Grid>
+      {loading ? <Skeleton /> 
+        : 
+        <Grid item xs={11}>
+          <Typography variant="body1" sx={{paddingTop: "2px"}}>
+            {articlesAtom.length === 0 
+              ? strings.wikiDocumentation.noPendingArticles
+              : strings.formatString(strings.wikiDocumentation.pendingArticles, articlesAtom.length)
+            }
+          </Typography>
+        </Grid>
+      }
+    </Grid>
+  )
+
   return (
     <Link
       to={adminMode ? "/admin/wiki-documentation" : "/wiki-documentation"}
@@ -164,7 +183,14 @@ const WikiDocumentationCard = () => {
           <Typography variant="h6" fontWeight={"bold"} style={{ marginTop: 6, marginBottom: 3 }}>
             {strings.wikiDocumentation.cardTitle}
           </Typography>
-          {loading ? <Skeleton/> : renderCardContent()}
+          {loading ? <Skeleton/> : 
+            <>
+              {adminMode
+                ?  renderAdminCardContent()
+                : renderCardContent() 
+              }
+            </>
+          }
         </CardContent>
       </Card>
     </Link>

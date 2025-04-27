@@ -41,7 +41,11 @@ interface Props {
   markdownContent: string;
 }
 
-const RichTextEditorLexical = forwardRef(({markdownContent=""}: Props, ref) => {
+interface EditorRef {
+  getMarkdownContent: () => string | undefined;
+}
+
+const RichTextEditorLexical = forwardRef<EditorRef, Props>(({markdownContent=""}, ref) => {
   const [editorState, setEditorState] = useState<EditorState>();
   const setError = useSetAtom(errorAtom);
 
@@ -80,6 +84,7 @@ const RichTextEditorLexical = forwardRef(({markdownContent=""}: Props, ref) => {
     <LexicalComposer initialConfig={initialConfig}>
       <Card
         variant='outlined'
+        elevation={0}
         sx={{ 
           marginTop: 4, 
           padding: 2, 

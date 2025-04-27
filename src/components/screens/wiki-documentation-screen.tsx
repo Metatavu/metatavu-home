@@ -22,10 +22,11 @@ import { useAtomValue, useSetAtom } from "jotai";
 import { useLambdasApi } from "src/hooks/use-api";
 import { errorAtom } from "src/atoms/error";
 import type { ArticleMetadata } from "src/generated/homeLambdasClient";
-import { articleAtom, draftArticleAtom } from "src/atoms/article";
+import { articleAtom, draftArticleAtom, tagsAtom } from "src/atoms/article";
 import { Link } from "react-router-dom";
 import { Search } from "@mui/icons-material";
 import GridViewIcon from "@mui/icons-material/GridView";
+import SearchOffIcon from '@mui/icons-material/SearchOff';
 import CarouselArticleCards from "../wiki-documentation/carousel-article-cards";
 import strings from "src/localization/strings";
 import { wikiScreenColors } from "src/theme";
@@ -37,19 +38,20 @@ const colors = wikiScreenColors;
 /**
  * Wiki documentation screen component displaying a list of articles.
  */
-const WikiScreen = () => {
+const WikiDocumentationScreen = () => {
   const adminMode = UserRoleUtils.adminMode();
   const setError = useSetAtom(errorAtom);
   const setArticlesAtom = useSetAtom(articleAtom);
   const setDraftArticlesAtom = useSetAtom(draftArticleAtom);
+  const setTags = useSetAtom(tagsAtom)
   const draftArticles = useAtomValue(draftArticleAtom);
   const articles = useAtomValue(articleAtom);
+  const tags = useAtomValue(tagsAtom);
   const { articleApi } = useLambdasApi();
   const initLoadingState = articles?.length === 0;
   const [loading, setLoading] = useState(initLoadingState);
   const [formOpen,  setFormOpen] = useState(false);
   const [dispayedArticles, setDisplayedArticles] = useState<ArticleMetadata[]>(articles);
-  const [tags, setTags] = useState<string[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [searchInput, setSearchInput] = useState("");
   const [displayOption, setDisplayOption] = useState("all");
@@ -65,13 +67,14 @@ const WikiScreen = () => {
   const getArticles = async () => {
     try {
       const fetchedArticles = await articleApi.getArticles();
+      setDisplayedArticles(fetchedArticles);
+      setArticlesAtom(fetchedArticles);
       if (adminMode) {
         const fetchedDraftArticles = await articleApi.getArticles({draft: true});
         setDraftArticlesAtom(fetchedDraftArticles);
+        getTags(fetchedArticles.concat(fetchedDraftArticles));
       }
-      setDisplayedArticles(fetchedArticles);
-      setArticlesAtom(fetchedArticles);
-      getTags(fetchedArticles);
+      else getTags(fetchedArticles);
     } catch (error) {
       setError(`${error}`);
     }
@@ -123,14 +126,17 @@ const WikiScreen = () => {
 
   const renderArticleCard = (article: ArticleMetadata) => (
     <Link to={article.path}>
-      <Card sx={{
-        padding: "20px", 
-        position: "relative", 
-        borderRadius: "20px",
-        width: { lg: "260px" },
-        maxWidth: { md: "360px", sm: "400px" },
-        height: { lg: "274px", md: "294px", sm: "310px" }
-      }}>
+      <Card 
+        key={`article-card-${article.id}`}
+        sx={{
+          padding: "20px", 
+          position: "relative", 
+          borderRadius: "20px",
+          width: { lg: "260px" },
+          maxWidth: { md: "360px", sm: "400px" },
+          height: { lg: "274px", md: "294px", sm: "310px" }
+        }}
+      >
         <Box
           component="img"
           sx={{
@@ -246,8 +252,8 @@ const WikiScreen = () => {
               columnGap: 3,
               rowGap: 1,
               gridTemplateColumns: {
-                xs: "repeat(2, 1fr)",
-                md: "repeat(3, 1fr)"
+                xs: adminMode ? "repeat(2, 1fr)" : "repeat(2, 1fr)",
+                md: adminMode ? "repeat(2, 1fr)" : "repeat(3, 1fr)"
               }
             }
           }}
@@ -401,12 +407,16 @@ const WikiScreen = () => {
       (
         <>
           {formOpen ? (
-            <CreateOrEditArticleForm setFormOpen={setFormOpen} action="create" adminMode={adminMode}/>
+            <CreateOrEditArticleForm 
+              setFormOpen={setFormOpen} 
+              action="create" 
+              adminMode={adminMode}
+            />
           ) :
           (
             <>
               {!adminMode && renderTitle(strings.wikiDocumentation.cardTitle)}
-              {articles && articles.length !== 0 ? 
+              {dispayedArticles.length !== 0 ? 
                 <>
                   {!adminMode && <CarouselArticleCards articles={articles}/>}
                   <Box sx={adminMode ? {marginTop: 4} : {paddingLeft: 3, paddingRight: 3}}>
@@ -417,14 +427,27 @@ const WikiScreen = () => {
                       textAlign={"center"}
                     >
                       {dispayedArticles.map(article => 
-                        <Grid item lg={3} md={4} sm={6} xs={12}>
+                        <Grid item lg={3} md={4} sm={6} xs={12} key={`article-grid-item-${article.id}`}>
                           {renderArticleCard(article)}
                         </Grid>
                       )}
                     </Grid>
                   </Box>
                 </>
-                : renderToolBar()
+                : 
+                <>
+                  {renderToolBar()}
+                  <Grid 
+                    container 
+                    justifyContent="center"
+                    sx={{color: colors.button.text}}
+                  >
+                    <SearchOffIcon/>
+                    <Typography variant="body1" sx={{}}>
+                      {strings.wikiDocumentation.noArticlesFound} 
+                    </Typography> 
+                  </Grid>            
+                </>
               }
             </>
           )}
@@ -434,4 +457,4 @@ const WikiScreen = () => {
   );
 };
 
-export default WikiScreen;
+export default WikiDocumentationScreen;

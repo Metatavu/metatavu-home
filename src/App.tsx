@@ -23,7 +23,7 @@ import NewQuestionnaireBuilder from "./components/questionnaire/new-questionnair
 import QuestionnaireManager from "./components/questionnaire/questionnaire-manager";
 import { QuestionnairePreviewMode } from "./types";
 import ArticleScreen from "./components/screens/wiki-article-screen";
-import WikiScreen from "./components/screens/wiki-screen";
+import WikiDocumentationScreen from "./components/screens/wiki-documentation-screen";
 
 /**
  * Application component
@@ -67,7 +67,7 @@ const App = () => {
         },
         {
           path: "/wiki-documentation",
-          element: <WikiScreen />
+          element: <WikiDocumentationScreen />
         },
         {
           path: "/wiki-documentation/*",
@@ -114,7 +114,7 @@ const App = () => {
         },
         {
           path: "/admin/wiki-documentation",
-          element: <WikiScreen />
+          element: <WikiDocumentationScreen />
         },
         {
           path: "/admin/wiki-documentation/*",

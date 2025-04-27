@@ -12,9 +12,9 @@ const CarouselArticleCards = ({articles}: {articles: ArticleMetadata[]}) => {
   const [jumping, setJumping] = useState(false);
 
   const clonedArticles = [
-    articles[articles.length - 1],
+    {...articles[articles.length - 1], id: "last-article-clone"},
     ...articles,
-    articles[0]
+    {...articles[0], id: "first-article-clone"}
   ];
 
   const articlesCount = clonedArticles.length;

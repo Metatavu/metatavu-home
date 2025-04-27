@@ -1,4 +1,15 @@
-import { Autocomplete, Box, Button, Card, Checkbox, Chip, Grid, Popper, type PopperProps, styled, TextField } from "@mui/material"
+import { 
+  Autocomplete, 
+  Box, 
+  Button, 
+  Card, 
+  Checkbox, 
+  Grid, 
+  Popper, 
+  type PopperProps, 
+  styled, 
+  TextField 
+} from "@mui/material"
 import strings from "src/localization/strings";
 import { type ChangeEvent, type KeyboardEvent, type SyntheticEvent, useRef, useState } from "react";
 import RichTextEditorLexical from "./rich-text-editor/rich-text-editor";
@@ -6,22 +17,20 @@ import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
 import { uploadFile } from "src/utils/s3-file-utils";
 import { useLambdasApi } from "src/hooks/use-api";
 import ActionButton from "./action-button";
-import { useSetAtom } from "jotai";
-import { articleAtom, draftArticleAtom } from "src/atoms/article";
+import { useAtomValue, useSetAtom } from "jotai";
+import { articleAtom, draftArticleAtom, tagsAtom } from "src/atoms/article";
 import { errorAtom } from "src/atoms/error";
 import type { Article } from "src/generated/homeLambdasClient";
-
-const tags = [
-  "security",
-  "tutorial",
-  "trainee"
-]
 
 interface Props {
   setFormOpen: (value: boolean) => void;
   adminMode: boolean;
   action: "edit"|"create";
   article?: Article;
+}
+
+interface EditorRef {
+  getMarkdownContent: () => string;
 }
 
 const CreateOrEditArticleForm = ({
@@ -34,13 +43,15 @@ const CreateOrEditArticleForm = ({
   const setError = useSetAtom(errorAtom);
   const setArticlesAtom = useSetAtom(articleAtom);
   const setDraftArticlesAtom = useSetAtom(draftArticleAtom);
-  const editorRef = useRef(null);
+  const setTags = useSetAtom(tagsAtom);
+  const tags = useAtomValue(tagsAtom);
+  const editorRef = useRef<EditorRef>(null);
   const [title, setTitle] = useState(article ? article.title : "");
   const [path, setPath] = useState(article ? article.path : "");
   const [coverImage, setCoverImage] = useState(article ? article.coverImage : "");
   const [description, setDescription] = useState(article ? article.description : "");
   const [imagePreview, setImagPreview] = useState(false);
-  const [selectedTags, setSelectedTags] = useState<string[]>(article ? article.tags||[] : []);
+  const [selectedTags, setSelectedTags] = useState<string[]>(article ? article.tags || [] : []);
   const [tag, setTag] = useState("");
 
   const handleCreate = async () => {
@@ -58,7 +69,10 @@ const CreateOrEditArticleForm = ({
     }
     try {
       const response = await articleApi.createArticle({article: newArticle});
-      if (!adminMode) setDraftArticlesAtom((articles) => [response, ...articles]);
+      if (!adminMode) {
+        setDraftArticlesAtom((articles) => [response, ...articles]);
+        setTags((tags) => [...new Set<string>(tags.concat(selectedTags))])
+      }
       else setArticlesAtom((articles) => [response, ...articles]);
       setFormOpen(false);
     }
@@ -74,11 +88,12 @@ const CreateOrEditArticleForm = ({
     const updatedArticle = {
       path: path,
       title: title,
-      createdBy: "Kseniia",
-      content: content,
+      content: content || "",
       tags: selectedTags,
       coverImage: coverImage,
       description: description,
+      createdBy: article.createdBy,
+      updatedBy: "Josh",
       draft: !adminMode
     }
     try {
@@ -91,6 +106,7 @@ const CreateOrEditArticleForm = ({
         if (article.draft) setDraftArticlesAtom((articles) => articles.filter(article => article.id!==response.id));
         else setArticlesAtom((articles) => articles.filter(article => article.id!==response.id))
         setArticlesAtom((articles) => [response, ...articles]);
+        setTags((tags) => [...new Set<string>(tags.concat(selectedTags))])
       }
       setFormOpen(false);
     }

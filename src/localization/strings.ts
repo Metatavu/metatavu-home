@@ -427,6 +427,9 @@ export interface Localized extends LocalizedStringsMethods {
     updated: string;
     created: string;
     read: string;
+    pendingArticles: string;
+    noPendingArticles: string;
+    noArticlesFound: string;
     create: string;
     back: string;
     save: string;
