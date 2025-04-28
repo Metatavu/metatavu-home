@@ -77,10 +77,10 @@ const CreateOrEditArticleForm = ({
     try {
       const response = await articleApi.createArticle({article: newArticle});
       if (!adminMode) {
-        setDraftArticlesAtom((articles) => [response, ...articles]);
+        setDraftArticlesAtom((articles) => [response, ...(articles || [])]);
         setTags((tags) => [...new Set<string>(tags.concat(selectedTags))])
       }
-      else setArticlesAtom((articles) => [response, ...articles]);
+      else setArticlesAtom((articles) => [response, ...(articles || [])]);
       setFormOpen(false);
     }
     catch (error: any) {
@@ -92,7 +92,7 @@ const CreateOrEditArticleForm = ({
   const handleEdit = async () => {
     if (!editorRef.current || !article?.id) return;
     const content = editorRef.current?.getMarkdownContent();
-    const updatedArticle = {
+    const updatedArticle: Article = {
       path: path,
       title: title,
       content: content || "",
@@ -100,19 +100,20 @@ const CreateOrEditArticleForm = ({
       coverImage: coverImage,
       description: description,
       createdBy: article.createdBy,
-      updatedBy: `${loggedInUser?.firstName} ${loggedInUser?.lastName}`,
+      lastUpdatedBy: `${loggedInUser?.firstName} ${loggedInUser?.lastName}`,
       draft: !adminMode
     }
+
     try {
       const response = await articleApi.updateArticle({article: updatedArticle, id: article.id});
       if (!adminMode) {
-        setDraftArticlesAtom((articles) => [response, ...articles]);
-        setArticlesAtom((articles) => articles.filter(article => article.id!==response.id));
+        setDraftArticlesAtom((articles) => [response, ...(articles || [])]);
+        setArticlesAtom((articles) => (articles || []).filter(article => article.id!==response.id));
       }
       else {
-        if (article.draft) setDraftArticlesAtom((articles) => articles.filter(article => article.id!==response.id));
-        else setArticlesAtom((articles) => articles.filter(article => article.id!==response.id))
-        setArticlesAtom((articles) => [response, ...articles]);
+        if (article.draft) setDraftArticlesAtom((articles) => (articles || []).filter(article => article.id!==response.id));
+        else setArticlesAtom((articles) => (articles || []).filter(article => article.id!==response.id))
+        setArticlesAtom((articles) => [response, ...(articles || [])]);
         setTags((tags) => [...new Set<string>(tags.concat(selectedTags))])
       }
       setFormOpen(false);
