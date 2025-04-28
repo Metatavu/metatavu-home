@@ -320,10 +320,10 @@
   },
   "wikiDocumentation": {
     "cardTitle": "Wiki Documentation",
-    "lastActivityArticle": "Last {0} article:",
-    "updated": "updated",
-    "created": "created",
-    "read": "read",
+    "article": "article:",
+    "lastUpdated": "Last updated",
+    "lastCreated": "Last created",
+    "lastRead": "Last read",
     "pendingArticles": "You have {0} articles pending review.",
     "noPendingArticles": "No articles pending review.",
     "noArticlesFound": "No articles found.",
@@ -340,6 +340,8 @@
     "labelTags": "Tags",
     "labelImage": "Image URL",
     "labelDescription": "Desciption",
-    "labelLink": "Link"
+    "labelLink": "Link",
+    "draft": "draft",
+    "allArticles": "all"
   }
 }

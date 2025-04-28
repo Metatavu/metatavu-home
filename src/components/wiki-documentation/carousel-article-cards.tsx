@@ -1,4 +1,4 @@
-import { Box, Card, Grid, IconButton, Typography } from "@mui/material";
+import { Box, Card, Chip, Grid, IconButton, Typography } from "@mui/material";
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import { useEffect, useState } from "react";
@@ -105,7 +105,19 @@ const CarouselArticleCards = ({articles}: {articles: ArticleMetadata[]}) => {
                 />
               </Grid>
               <Grid item sm={6} xs={12}>
-                <Typography variant="h5" sx={{ fontWeight: "bold", fontSize: "25px" }}>
+                <Typography 
+                  variant="h5"
+                  sx={{ 
+                    fontWeight: "bold", 
+                    fontSize: "25px",
+                    overflow: "hidden",
+                    whiteSpace: "normal",
+                    wordBreak: "break-word",
+                    display: "-webkit-box",
+                    WebkitBoxOrient: "vertical",
+                    WebkitLineClamp: 1
+                  }}
+                >
                   {article.title}
                 </Typography>
                 <Typography sx={{ 
@@ -118,10 +130,13 @@ const CarouselArticleCards = ({articles}: {articles: ArticleMetadata[]}) => {
                   wordBreak: "break-word",
                   display: "-webkit-box",
                   WebkitBoxOrient: "vertical",
-                  WebkitLineClamp: { md: 5, sm: 4, xs: 3 }
+                  WebkitLineClamp: { md: 6, sm: 4, xs: 3 }
                 }}>
                   {article.description}
                 </Typography>
+                {article.tags?.map((tag) => 
+                  <Chip label={tag} sx={{marginRight: 1}} key={`carousel-${article.id}-${tag}`}/>
+                )}
               </Grid>
             </Grid>
           </Box>

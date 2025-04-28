@@ -16,9 +16,10 @@ import UserRoleUtils from "src/utils/user-role-utils";
 import type {  ArticleMetadata } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
 import { articleAtom, draftArticleAtom } from "src/atoms/article";
+import { getLastActivityString } from "src/utils/wiki-utils";
 
 /**
- * Component for displaying last read, created or updated article for Wiki Documentation.
+ * Card component for displaying last read, created or updated article for Wiki Documentation.
  */
 const WikiDocumentationCard = () => { 
   const setError = useSetAtom(errorAtom);
@@ -43,29 +44,16 @@ const WikiDocumentationCard = () => {
       const fetchedArticles = await articleApi.getArticles(adminMode ? {draft: true} : {});
       setLastUpdatedArticle(fetchedArticles[0]);
       setArticlesAtom(fetchedArticles);
-    } catch (error) {
-      setError(`${error}`);
+    } catch (error: any) {
+      const message = (await error.response.json()).message;
+      setError(message);
     }
     setLoading(false);
   };
 
   const renderCardContent = () => {
     if (!lastUpdatedArticle || !lastUpdatedArticle.lastUpdatedAt) return;
-    const {
-      lastUpdatedAt,
-      createdAt,
-      lastReadAt
-    } = lastUpdatedArticle;
-
-    let lastActivityType = "";
-
-    if (lastUpdatedAt.getTime() === createdAt?.getTime())
-      lastActivityType = strings.wikiDocumentation.created
-
-    else if (lastUpdatedAt.getTime() === lastReadAt?.getTime()) 
-      lastActivityType = strings.wikiDocumentation.read;
-
-    else lastActivityType = strings.wikiDocumentation.updated;
+    const lastActivityData = getLastActivityString(lastUpdatedArticle);
 
     return (
       <>
@@ -75,13 +63,25 @@ const WikiDocumentationCard = () => {
           </Grid>
           <Grid item xs={11}>
             {loading ? <Skeleton /> 
-              : <Typography variant="body1" sx={{paddingTop: "2px"}}>
-                {strings.formatString(strings.wikiDocumentation.lastActivityArticle, lastActivityType)}
+              : 
+              <Typography variant="body1" sx={{paddingTop: "2px"}}>
+                {strings.formatString(
+                  "{0} {1}",
+                  lastActivityData.action,
+                  strings.wikiDocumentation.article
+                )}
               </Typography>
             }
           </Grid>
         </Grid>
-        <Card style={{ marginTop: "15px", padding: "15px", borderRadius: "20px", backgroundColor: "#fafafa"}}>
+        <Card 
+          sx={{ 
+            marginTop: "15px", 
+            padding: "15px", 
+            borderRadius: "20px", 
+            backgroundColor: "#fafafa"
+          }}
+        >
           <Grid container spacing={1}>
             <Grid item xs={6} sm={12} md={5} lg={4} marginBottom={{sm: "15px", md: "0"}}>
               <Box
@@ -131,14 +131,14 @@ const WikiDocumentationCard = () => {
               <Typography variant="body1">
                 {strings.formatString(
                   "{0} {1}",
-                  lastActivityType[0].toUpperCase() + lastActivityType.slice(1), 
-                  lastUpdatedAt.toLocaleDateString())
+                  lastActivityData.action, 
+                  lastUpdatedArticle.lastUpdatedAt.toLocaleDateString())
                 }
               </Typography>
               <Typography variant="body1">
                 {strings.formatString(
-                  "By {0}",
-                  "Viille Juatialainen")
+                  "by {0}",
+                  lastActivityData.user || "")
                 }
               </Typography>
             </Grid>

@@ -20,7 +20,9 @@ import ActionButton from "./action-button";
 import { useAtomValue, useSetAtom } from "jotai";
 import { articleAtom, draftArticleAtom, tagsAtom } from "src/atoms/article";
 import { errorAtom } from "src/atoms/error";
-import type { Article } from "src/generated/homeLambdasClient";
+import type { Article, User } from "src/generated/homeLambdasClient";
+import { usersAtom } from "src/atoms/user";
+import { userProfileAtom } from "src/atoms/auth";
 
 interface Props {
   setFormOpen: (value: boolean) => void;
@@ -53,6 +55,11 @@ const CreateOrEditArticleForm = ({
   const [imagePreview, setImagPreview] = useState(false);
   const [selectedTags, setSelectedTags] = useState<string[]>(article ? article.tags || [] : []);
   const [tag, setTag] = useState("");
+  const users = useAtomValue(usersAtom);
+  const userProfile = useAtomValue(userProfileAtom);
+  const loggedInUser = users.find(
+    (users: User) => users.id === userProfile?.id
+  );
 
   const handleCreate = async () => {
     if (!editorRef.current) return;
@@ -60,7 +67,7 @@ const CreateOrEditArticleForm = ({
     const newArticle = {
       path: path,
       title: title,
-      createdBy: "Kseniia",
+      createdBy: `${loggedInUser?.firstName} ${loggedInUser?.lastName}`,
       content: content,
       tags: selectedTags,
       coverImage: coverImage,
@@ -93,7 +100,7 @@ const CreateOrEditArticleForm = ({
       coverImage: coverImage,
       description: description,
       createdBy: article.createdBy,
-      updatedBy: "Josh",
+      updatedBy: `${loggedInUser?.firstName} ${loggedInUser?.lastName}`,
       draft: !adminMode
     }
     try {

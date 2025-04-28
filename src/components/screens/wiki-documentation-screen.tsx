@@ -16,7 +16,8 @@ import {
   styled,
   type PopperProps,
   Popper,
-  type SelectChangeEvent
+  type SelectChangeEvent,
+  Chip
 } from "@mui/material";
 import { useAtomValue, useSetAtom } from "jotai";
 import { useLambdasApi } from "src/hooks/use-api";
@@ -32,6 +33,7 @@ import strings from "src/localization/strings";
 import { wikiScreenColors } from "src/theme";
 import CreateOrEditArticleForm from "../wiki-documentation/create-article-form";
 import UserRoleUtils from "src/utils/user-role-utils";
+import { getLastActivityString } from "src/utils/wiki-utils";
 
 const colors = wikiScreenColors;
 
@@ -51,7 +53,8 @@ const WikiDocumentationScreen = () => {
   const initLoadingState = articles?.length === 0;
   const [loading, setLoading] = useState(initLoadingState);
   const [formOpen,  setFormOpen] = useState(false);
-  const [dispayedArticles, setDisplayedArticles] = useState<ArticleMetadata[]>(articles);
+  const [displayedArticles, setDisplayedArticles] = useState<ArticleMetadata[]>(articles);
+  const [lastUpdatedArticles, setlastUpdatedArticles] = useState<ArticleMetadata[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [searchInput, setSearchInput] = useState("");
   const [displayOption, setDisplayOption] = useState("all");
@@ -59,6 +62,7 @@ const WikiDocumentationScreen = () => {
   useEffect(() => {
     if (articles.length === 0) getArticles();
     else {
+      if (!adminMode) getLastUpdatedArticles(articles);
       getTags(adminMode ? articles.concat(draftArticles) : articles);
       setDisplayedArticles(articles);
     }
@@ -75,19 +79,53 @@ const WikiDocumentationScreen = () => {
         getTags(fetchedArticles.concat(fetchedDraftArticles));
       }
       else getTags(fetchedArticles);
-    } catch (error) {
-      setError(`${error}`);
+      if (!adminMode) getLastUpdatedArticles(fetchedArticles)
+    } catch (error: any) {
+      const message = (await error.response.json()).message;
+      setError(message);
     }
     setTimeout(()=> {
       setLoading(false);
     }, 1000)
   };
 
-  const getTags = (fetchedArticles: ArticleMetadata[]) => {
-    const allTags = fetchedArticles.flatMap(article => article.tags || []);
+  const getTags = (articles: ArticleMetadata[]) => {
+    const allTags = articles.flatMap(article => article.tags || []);
     const uniqueTags = [...new Set(allTags)];
     setTags(uniqueTags);
-  }
+  };
+
+  const getLastUpdatedArticles = (articles: ArticleMetadata[]) => {
+    let lastCreatedArticleFound = false;
+    let lastUpdatedArticleFound = false;
+    let lastReadArticleFound = false;
+    const lastUpdatedArticles = [];
+    let i = 0;
+    while (
+      (!lastCreatedArticleFound 
+      || !lastUpdatedArticleFound 
+      || !lastReadArticleFound)
+      && i < articles.length
+    ) {
+      const lastUpdatedAt = articles[i].lastUpdatedAt?.getTime();
+      const createdAt = articles[i].createdAt?.getTime();
+      const lastReadAt = articles[i].lastReadAt?.getTime();
+      if (!lastCreatedArticleFound && lastUpdatedAt === createdAt) {
+        lastUpdatedArticles.push(articles[i])
+        lastCreatedArticleFound = true;
+      }
+      else if (!lastReadArticleFound && lastUpdatedAt === lastReadAt) {
+        lastUpdatedArticles.push(articles[i])
+        lastReadArticleFound = true;
+      }
+      else if (!lastUpdatedArticleFound) {
+        lastUpdatedArticles.push(articles[i])
+        lastUpdatedArticleFound = true;
+      }
+      i++
+    }
+    setlastUpdatedArticles(lastUpdatedArticles)
+  };
 
   const handleSearchInputChange = (event: any) => {
     const newSearchInput = event.target.value;
@@ -104,7 +142,7 @@ const WikiDocumentationScreen = () => {
         selectedTags.every(tag => article.tags?.includes(tag))
     );
     setDisplayedArticles(filteredArticles);
-  }
+  };
 
   const handleSelectedTagChange = (values: string[]) => {
     setSelectedTags(values);
@@ -114,7 +152,7 @@ const WikiDocumentationScreen = () => {
         values.every(tag => article.tags?.includes(tag))
     );
     setDisplayedArticles(filteredArticles);
-  }
+  };;
 
   const handleDisplayOptionChange = (event: SelectChangeEvent<string>) => {
     const newOption = event.target.value;
@@ -122,42 +160,85 @@ const WikiDocumentationScreen = () => {
     if (newOption === "draft") 
       setDisplayedArticles(draftArticles)
     else setDisplayedArticles(articles)
+  };
+
+  const renderArticleCard = (article: ArticleMetadata) => {
+    if (!article || !article.lastUpdatedAt) return;
+    const lastActivityData = getLastActivityString(article);
+
+    return (
+      <Link to={article.path} style={{ textDecoration: "none"}}>
+        <Card 
+          key={`article-card-${article.id}`}
+          sx={{
+            padding: "20px", 
+            position: "relative", 
+            borderRadius: "20px",
+            width: { lg: "260px" },
+            maxWidth: { md: "360px", sm: "400px" },
+            height: { lg: "354px", md: "374px", sm: "380px", xs: "485px" }
+          }}
+        >
+          <Box
+            component="img"
+            sx={{
+              width: "100%",
+              height: { lg: "170px", md: "190px", sm: "200px", xs: "300px" },
+              borderRadius: "20px",
+              marginRight: "10px",
+              objectFit: "cover",
+              overflow: "hidden"
+            }}
+            alt={article.title}
+            src={article.coverImage}
+          />
+            <Typography 
+              variant="h6" 
+              sx={{
+                paddingLeft: "5px",
+                textAlign: "left", 
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "normal",
+                wordBreak: "break-word",
+                display: "-webkit-box",
+                WebkitBoxOrient: "vertical",
+                WebkitLineClamp: 1
+              }}
+            >
+              {article.title}
+            </Typography>
+            <Typography variant="body1" sx={{ paddingLeft: "5px", textAlign: "left" }}>
+              {strings.formatString(
+                "{0} {1}",
+                lastActivityData.action, 
+                article.lastUpdatedAt.toLocaleDateString())
+              }
+            </Typography>
+            <Typography variant="body1" sx={{ paddingLeft: "5px", textAlign: "left" }}>
+              {strings.formatString(
+                "by {0}",
+                lastActivityData.user || "")
+              }
+            </Typography>
+            <Box sx={{
+              textAlign: "left", 
+              marginTop: 1, 
+              maxHeight: "38px", 
+              overflow: "hidden"
+              }}
+            >
+              {article.tags?.map((tag) => 
+                <Chip label={tag} sx={{marginRight: 1, marginTop: 0.5}} key={`${article.id}-${tag}`}/>
+              )}
+            </Box>
+        </Card>
+      </Link>
+    )
   }
 
-  const renderArticleCard = (article: ArticleMetadata) => (
-    <Link to={article.path}>
-      <Card 
-        key={`article-card-${article.id}`}
-        sx={{
-          padding: "20px", 
-          position: "relative", 
-          borderRadius: "20px",
-          width: { lg: "260px" },
-          maxWidth: { md: "360px", sm: "400px" },
-          height: { lg: "274px", md: "294px", sm: "310px" }
-        }}
-      >
-        <Box
-          component="img"
-          sx={{
-            width: "100%",
-            height: { lg: "170px", md: "190px", sm: "200px", xs: "300px" },
-            borderRadius: "20px",
-            marginRight: "10px",
-            objectFit: "cover",
-            overflow: "hidden"
-          }}
-          alt={article.title}
-          src={article.coverImage}
-        />
-          <Typography variant="h6" sx={{textAlign: "left", paddingLeft: "20px"}}>
-            {article.title}
-          </Typography>
-      </Card>
-    </Link>
-  );
-
-  const CustomPopper = styled((props: PopperProps) => <Popper {...props} placement="bottom" />)({
+  const CustomPopper = styled((props: PopperProps) => 
+    <Popper {...props} placement="bottom" />)({
     "& .MuiAutocomplete-noOptions": {
       display: "none"
     },
@@ -260,7 +341,7 @@ const WikiDocumentationScreen = () => {
         />
       </Box>
     </Card>
-  )
+  );
 
   const renderCreateButton = () => (
     <Button
@@ -286,7 +367,7 @@ const WikiDocumentationScreen = () => {
         {strings.wikiDocumentation.create}
       </Typography>
     </Button>
-  )
+  );
 
   const renderListViewButton = () => (
     <Button 
@@ -301,7 +382,7 @@ const WikiDocumentationScreen = () => {
     >
       <GridViewIcon sx={{color: colors.button.text}}/>
     </Button>
-  )
+  );
 
   const renderDropdownMenu = () => (
     <FormControl
@@ -335,14 +416,17 @@ const WikiDocumentationScreen = () => {
         MenuProps={{
           PaperProps: {
             sx: {
+              marginTop: "10px",
               borderTopLeftRadius: "0px",
               borderTopRightRadius: "0px",
-              backgroundColor: colors.button.main
+              backgroundColor: colors.button.main,
             },
           },
         }}
       >
         <MenuItem sx={{
+          textTransform: "uppercase",
+          paddingLeft: 3,
           color: colors.button.text,
           backgroundColor: colors.button.main, 
           "&:hover": {
@@ -350,9 +434,11 @@ const WikiDocumentationScreen = () => {
           }}} 
           value="all"
         >
-          all
+          {strings.wikiDocumentation.allArticles}
         </MenuItem> 
         <MenuItem sx={{
+          textTransform: "uppercase",
+          paddingLeft: 3,
           color: colors.button.text,
           backgroundColor: colors.button.main, 
           "&:hover": {
@@ -360,11 +446,11 @@ const WikiDocumentationScreen = () => {
           }}} 
           value="draft"
         >
-          draft
+          {strings.wikiDocumentation.draft}
         </MenuItem>
       </Select>
     </FormControl>
-  )
+  );
 
   const renderTitle = (text: string) => (
     <Typography variant="h4" sx={{ 
@@ -375,7 +461,7 @@ const WikiDocumentationScreen = () => {
     }}>
       {text}
     </Typography>
-  )
+  );
 
   const renderToolBar = () => (
     <Grid
@@ -391,68 +477,82 @@ const WikiDocumentationScreen = () => {
       {renderListViewButton()}
       {renderCreateButton()}
     </Grid>
-  )
+  );
 
   return (
     <>
-      {loading ? (
-        <Card sx={{ 
-          p: "25%", 
-          display: "flex", 
-          justifyContent: "center" 
-        }}>
-          <CircularProgress sx={{ scale: "150%" }} />
-        </Card>
-      ) : 
-      (
-        <>
-          {formOpen ? (
-            <CreateOrEditArticleForm 
-              setFormOpen={setFormOpen} 
-              action="create" 
-              adminMode={adminMode}
-            />
-          ) :
-          (
-            <>
-              {!adminMode && renderTitle(strings.wikiDocumentation.cardTitle)}
-              {dispayedArticles.length !== 0 ? 
-                <>
-                  {!adminMode && <CarouselArticleCards articles={articles}/>}
-                  <Box sx={adminMode ? {marginTop: 4} : {paddingLeft: 3, paddingRight: 3}}>
-                    {renderToolBar()}
+      {loading 
+        ? (
+          <Card sx={{ 
+            p: "25%", 
+            display: "flex", 
+            justifyContent: "center" 
+          }}>
+            <CircularProgress sx={{ scale: "150%" }} />
+          </Card>
+        ) 
+        : (
+          <>
+            {formOpen ? (
+              <CreateOrEditArticleForm 
+                setFormOpen={setFormOpen} 
+                action="create" 
+                adminMode={adminMode}
+              />
+            ) :
+            (
+              <>
+                {!adminMode 
+                  ? 
+                  <>
+                    {renderTitle(strings.wikiDocumentation.cardTitle)}
+                    <CarouselArticleCards articles={lastUpdatedArticles}/>
+                  </> 
+                  : <></>
+                }
+                <Box sx={adminMode 
+                  ? {marginTop: 4, marginBottom: 4} 
+                  : {paddingLeft: 2, paddingRight: 2, marginBottom: 4}}
+                >
+                  {renderToolBar()}
+                  {displayedArticles.length !== 0 ? 
                     <Grid 
                       container 
-                      spacing={4}
+                      spacing={adminMode ? 4 : 3}
                       textAlign={"center"}
                     >
-                      {dispayedArticles.map(article => 
-                        <Grid item lg={3} md={4} sm={6} xs={12} key={`article-grid-item-${article.id}`}>
+                      {displayedArticles.map(article => 
+                        <Grid 
+                          item 
+                          lg={3} 
+                          md={4} 
+                          sm={6} 
+                          xs={12} 
+                          key={`article-grid-item-${article.id}`}
+                        >
                           {renderArticleCard(article)}
                         </Grid>
                       )}
                     </Grid>
-                  </Box>
-                </>
-                : 
-                <>
-                  {renderToolBar()}
-                  <Grid 
-                    container 
-                    justifyContent="center"
-                    sx={{color: colors.button.text}}
-                  >
-                    <SearchOffIcon/>
-                    <Typography variant="body1" sx={{}}>
-                      {strings.wikiDocumentation.noArticlesFound} 
-                    </Typography> 
-                  </Grid>            
-                </>
-              }
-            </>
-          )}
-        </>
-      )}
+                    :
+                    <Grid 
+                      container 
+                      justifyContent="center"
+                      sx={{color: colors.button.text}}
+                    >
+                      <SearchOffIcon/>
+                      <Typography variant="body1">
+                        {strings.wikiDocumentation.noArticlesFound} 
+                      </Typography> 
+                    </Grid>
+                  }
+                </Box>
+              </>
+              )
+            }
+          </>
+        )
+      }
     </>
   );
 };

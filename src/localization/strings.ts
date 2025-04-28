@@ -423,10 +423,10 @@ export interface Localized extends LocalizedStringsMethods {
    */
   wikiDocumentation: {
     cardTitle: string;
-    lastActivityArticle: string;
-    updated: string;
-    created: string;
-    read: string;
+    article: string;
+    lastUpdated: string;
+    lastCreated: string;
+    lastRead: string;
     pendingArticles: string;
     noPendingArticles: string;
     noArticlesFound: string;
@@ -444,6 +444,8 @@ export interface Localized extends LocalizedStringsMethods {
     labelImage: string;
     labelDescription: string;
     labelLink: string;
+    draft: string;
+    allArticles: string;
   }
 }
 

@@ -320,10 +320,10 @@
   },
   "wikiDocumentation": {
     "cardTitle": "Wiki Dokumentaatio",
-    "lastActivityArticle": "Viimeksi {0} artikkeli:",
-    "updated": "päivitetty",
-    "created": "luotu",
-    "read": "luettu",
+    "article": "artikkeli:",
+    "lastUpdated": "Viimeksi päivitetty",
+    "lastCreated": "Viimeksi luotu",
+    "lastRead": "Viimeksi luettu",
     "pendingArticles": "You have {0} articles pending review",
     "noPendingArticles": "Ei tarkistusta odottavia artikkeleita.",
     "noArticlesFound": "Artikkeleita ei löytynyt.",
@@ -340,6 +340,8 @@
     "labelTags": "Tunnisteet",
     "labelImage": "Kuvan URL-osoite",
     "labelDescription": "Kuvaus",
-    "labelLink": "Sinulla on {0} artikkelia odottamassa tarkistusta."
+    "labelLink": "Sinulla on {0} artikkelia odottamassa tarkistusta.",
+    "draft": "luonnos",
+    "allArticles": "kaikki"
   }
 }

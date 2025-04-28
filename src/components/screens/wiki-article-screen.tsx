@@ -1,8 +1,8 @@
 import { Card, CircularProgress, Grid } from "@mui/material";
 import { useEffect, useState } from "react";
-import type { Article } from "src/generated/homeLambdasClient";
+import type { Article, User } from "src/generated/homeLambdasClient";
 import strings from "src/localization/strings";
-import { useSetAtom } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { useParams } from "react-router";
 import { errorAtom } from "src/atoms/error";
 import { useLambdasApi } from "src/hooks/use-api";
@@ -12,11 +12,11 @@ import CreateOrEditArticleForm from "../wiki-documentation/create-article-form";
 import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
 import { Link } from "react-router-dom";
 import UserRoleUtils from "src/utils/user-role-utils";
+import { usersAtom } from "src/atoms/user";
+import { userProfileAtom } from "src/atoms/auth";
 
 /**
- * Manager page for user to interact with the questionnaire; fill and edit
- *
- * @param props component properties
+ * Article screen component displaying the article content.
  */
 const ArticleScreen = () => {
   const adminMode = UserRoleUtils.adminMode();
@@ -26,6 +26,11 @@ const ArticleScreen = () => {
   const [article, setArticle] = useState<Article>();
   const [loading, setLoading] = useState(true);
   const [formOpen,  setFormOpen] = useState(false);
+  const users = useAtomValue(usersAtom);
+  const userProfile = useAtomValue(userProfileAtom);
+  const loggedInUser = users.find(
+    (users: User) => users.id === userProfile?.id
+  );
 
   useEffect(() => {
     fetchArticle();
@@ -33,12 +38,13 @@ const ArticleScreen = () => {
 
   const closeForm = () => setFormOpen(false);
 
-  const fetchArticle = async() => {
+  const fetchArticle = async () => {
     if (path) {
       setLoading(true);
       try {
         const article = await articleApi.getArticle({ path });
         setArticle(article);
+        recordReadArticle(article)
       } catch(error: any) {
         const message = (await error.response.json()).message;
         setError(message);
@@ -47,6 +53,19 @@ const ArticleScreen = () => {
     setTimeout(()=> {
       setLoading(false);
     }, 1000)
+  }
+
+  const recordReadArticle = async (article?: Article) => {
+    const user = `${loggedInUser?.firstName} ${loggedInUser?.lastName}`;
+    if (!article || !article.id) return;
+    if (article.readBy?.includes(user)) return;
+    try {
+      await articleApi.readArticle({id: article.id, readArticleRequest: {user: user}})
+      setArticle(prev => prev ? { ...prev, readBy: [...(prev.readBy || []), user] } : prev);
+    } catch(error: any) {
+      const message = (await error.response.json()).message;
+      setError(message);
+    }
   }
 
   return (
