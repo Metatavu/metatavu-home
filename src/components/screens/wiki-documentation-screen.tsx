@@ -17,7 +17,7 @@ import {
   type PopperProps,
   Popper,
   type SelectChangeEvent,
-  Chip
+  Pagination
 } from "@mui/material";
 import { useAtomValue, useSetAtom } from "jotai";
 import { useLambdasApi } from "src/hooks/use-api";
@@ -37,6 +37,7 @@ import ArticleCard from "../wiki-documentation/article-card";
 import ArticleListItem from "../wiki-documentation/article-list-item";
 
 const colors = wikiScreenColors;
+const itemsPerPage = 4;
 
 /**
  * Wiki documentation screen component displaying a list of articles.
@@ -56,10 +57,12 @@ const WikiDocumentationScreen = () => {
   const [formOpen,  setFormOpen] = useState(false);
   const [listView, setListView] = useState(false);
   const [displayedArticles, setDisplayedArticles] = useState<ArticleMetadata[]>(articles || []);
+  const [displayedArticlesOnPage, setDisplayedArticlesOnPage] = useState<ArticleMetadata[]>(articles?.slice(0, itemsPerPage) || []);
   const [lastUpdatedArticles, setlastUpdatedArticles] = useState<ArticleMetadata[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [searchInput, setSearchInput] = useState("");
   const [displayOption, setDisplayOption] = useState("all");
+  const [pageNumber, setPageNumber] = useState(1);
 
   useEffect(() => {
     if (!articles) getArticles();
@@ -70,10 +73,15 @@ const WikiDocumentationScreen = () => {
     }
   }, [articles, draftArticles]);
 
+  useEffect(() => {
+    setDisplayedArticlesOnPage(displayedArticles.slice((pageNumber - 1) * itemsPerPage, itemsPerPage * pageNumber));
+  }, [pageNumber]);
+
   const getArticles = async () => {
     try {
       const fetchedArticles = await articleApi.getArticles();
       setDisplayedArticles(fetchedArticles || []);
+      setDisplayedArticlesOnPage(fetchedArticles.slice(0, itemsPerPage));
       setArticlesAtom(fetchedArticles || []);
       if (adminMode) {
         const fetchedDraftArticles = await articleApi.getArticles({draft: true});
@@ -456,13 +464,13 @@ const WikiDocumentationScreen = () => {
                   : {paddingLeft: 2, paddingRight: 2, marginBottom: 4}}
                 >
                   {renderToolBar()}
-                  {displayedArticles.length !== 0 ? 
+                  {displayedArticlesOnPage.length !== 0 ? 
                     <Grid 
                       container 
                       spacing={adminMode ? 4 : 3}
                       textAlign={"center"}
                     >
-                      {displayedArticles.map(article => 
+                      {displayedArticlesOnPage.map(article => 
                         <Grid 
                           item 
                           lg={!listView ? 3 : 12} 
@@ -499,6 +507,14 @@ const WikiDocumentationScreen = () => {
                     </Grid>
                   }
                 </Box>
+                <Grid container justifyContent="center" sx={{ marginBottom: 3 }}>
+                  <Pagination 
+                    size="large"
+                    count={Math.floor(displayedArticles?.length / itemsPerPage) + 1}  
+                    onChange={(_event, page) => setPageNumber(page)} 
+                    page={pageNumber}
+                  />
+                </Grid> 
               </>
               )
             }
