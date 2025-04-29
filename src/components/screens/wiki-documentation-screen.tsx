@@ -24,7 +24,6 @@ import { useLambdasApi } from "src/hooks/use-api";
 import { errorAtom } from "src/atoms/error";
 import type { ArticleMetadata } from "src/generated/homeLambdasClient";
 import { articleAtom, draftArticleAtom, tagsAtom } from "src/atoms/article";
-import { Link } from "react-router-dom";
 import { Search } from "@mui/icons-material";
 import GridViewIcon from "@mui/icons-material/GridView";
 import FormatListBulletedOutlinedIcon from '@mui/icons-material/FormatListBulletedOutlined';
@@ -34,7 +33,8 @@ import strings from "src/localization/strings";
 import { wikiScreenColors } from "src/theme";
 import CreateOrEditArticleForm from "../wiki-documentation/create-article-form";
 import UserRoleUtils from "src/utils/user-role-utils";
-import { getLastActivityString } from "src/utils/wiki-utils";
+import ArticleCard from "../wiki-documentation/article-card";
+import ArticleListItem from "../wiki-documentation/article-list-item";
 
 const colors = wikiScreenColors;
 
@@ -175,204 +175,6 @@ const WikiDocumentationScreen = () => {
     else setDisplayedArticles(articles || [])
   };
 
-  const renderArticleCard = (article: ArticleMetadata) => {
-    if (!article || !article.lastUpdatedAt) return;
-    const lastActivityData = getLastActivityString(article);
-
-    return (
-      <Link to={article.path} style={{ textDecoration: "none"}}>
-        <Card 
-          key={`article-card-${article.id}`}
-          sx={{
-            padding: "20px", 
-            position: "relative", 
-            borderRadius: "20px",
-            width: { lg: "260px" },
-            maxWidth: { md: "360px", sm: "400px" },
-            height: adminMode ? { lg: "394px", md: "414px", sm: "420px", xs: "530px" } 
-            : { lg: "354px", md: "374px", sm: "380px", xs: "485px" }
-          }}
-        >
-          <Box
-            component="img"
-            sx={{
-              width: "100%",
-              height: { lg: "170px", md: "190px", sm: "200px", xs: "300px" },
-              borderRadius: "20px",
-              marginRight: "10px",
-              objectFit: "cover",
-              overflow: "hidden"
-            }}
-            alt={article.title}
-            src={article.coverImage}
-          />
-          <Typography 
-            variant="h6" 
-            sx={{
-              paddingLeft: "5px",
-              textAlign: "left", 
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "normal",
-              wordBreak: "break-word",
-              display: "-webkit-box",
-              WebkitBoxOrient: "vertical",
-              WebkitLineClamp: 1
-            }}
-          >
-            {article.title}
-          </Typography>
-          <Typography variant="body1" sx={{ paddingLeft: "5px", textAlign: "left" }}>
-            {strings.formatString(
-              "{0} {1}",
-              lastActivityData.action, 
-              article.lastUpdatedAt.toLocaleDateString())
-            }
-          </Typography>
-          <Typography variant="body1" sx={{ paddingLeft: "5px", textAlign: "left" }}>
-            {strings.formatString(
-              "by {0}",
-              lastActivityData.user || "")
-            }
-          </Typography>
-          <Box sx={{
-            textAlign: "left", 
-            marginTop: 1, 
-            maxHeight: "38px", 
-            overflow: "hidden"
-            }}
-          >
-            {article.tags?.map((tag) => 
-              <Chip label={tag} sx={{marginRight: 1, marginTop: 0.5}} key={`${article.id}-${tag}`}/>
-            )}
-          </Box>
-          {adminMode && 
-            <Button 
-              variant="outlined" 
-              size="small" 
-              sx={{marginTop: 2, zIndex: 10}} 
-              fullWidth
-              onClick={(event) => {
-                event.preventDefault(); 
-                handleDelete(article.id)
-              }}
-            >
-              delete
-            </Button>
-          }
-        </Card>
-      </Link>
-    )
-  }
-
-  const renderArticleListItem = (article: ArticleMetadata) => {
-    if (!article || !article.lastUpdatedAt) return;
-    const lastActivityData = getLastActivityString(article);
-
-    return (
-      <Link to={article.path} style={{ textDecoration: "none"}}>
-        <Card 
-          key={`article-card-${article.id}`}
-          sx={{
-            padding: "20px", 
-            position: "relative", 
-            borderRadius: "20px",
-            width: "100%"
-          }}
-        >
-          <Grid container spacing={3}>
-            <Grid item lg={2.7} md={3.5} sm={5} xs={12}>
-              <Box
-                component="img"
-                sx={{
-                  width: "100%",
-                  height: { lg: "185px", md: "190px", sm: "215px", xs: "300px" },
-                  borderRadius: "20px",
-                  marginRight: "10px",
-                  objectFit: "cover",
-                  overflow: "hidden"
-                }}
-                alt={article.title}
-                src={article.coverImage}
-              />
-            </Grid>
-            <Grid item lg={8.6} md={8} sm={6} xs={12}>
-              <Typography 
-                variant="h6" 
-                sx={{
-                  paddingLeft: "5px",
-                  textAlign: "left", 
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  whiteSpace: "normal",
-                  wordBreak: "break-word",
-                  display: "-webkit-box",
-                  WebkitBoxOrient: "vertical",
-                  WebkitLineClamp: 1,
-                  marginBottom: adminMode ? 1.5 : 3
-                }}
-              >
-                {article.title}
-              </Typography>
-              <Typography 
-                sx={{
-                  paddingLeft: "5px",
-                  textAlign: "left", 
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  whiteSpace: "normal",
-                  wordBreak: "break-word",
-                  display: "-webkit-box",
-                  WebkitBoxOrient: "vertical",
-                  WebkitLineClamp: {xs: 2, sm: adminMode ? 2 : 3}
-                }}
-              >
-                {article.description}
-              </Typography>
-              <Grid container justifyContent={"space-between"} sx={{ marginTop: {lg: 1.5, md: 2, sm: 1.5}}}  direction={{ xs: "column", md: "row" }}>
-                <Grid item sx={{order: {xs: 2, md: 1}}}>
-                  <Box sx={{
-                    textAlign: "left", 
-                    maxHeight: "38px", 
-                    overflow: "hidden",
-                    }}
-                  >
-                    {article.tags?.map((tag) => 
-                      <Chip label={tag} sx={{ marginRight: 1, marginTop: 0.5}} key={`${article.id}-${tag}`}/>
-                    )}
-                  </Box>
-                </Grid>
-                <Grid item sx={{order: {as: 1, md: 2}}}>
-                  <Typography variant="body1" sx={{ paddingLeft: "5px", textAlign: "left", paddingTop: 0.5 }}>
-                    {strings.formatString(
-                      "{0} {1} by {2}",
-                      lastActivityData.action, 
-                      article.lastUpdatedAt.toLocaleDateString(),
-                      lastActivityData.user || "")
-                    }
-                  </Typography>
-                </Grid>
-              </Grid>
-              {adminMode && 
-                <Button 
-                  variant="outlined" 
-                  size="small" 
-                  sx={{marginTop: 1, zIndex: 10}} 
-                  fullWidth
-                  onClick={(event) => {
-                    event.preventDefault(); 
-                    handleDelete(article.id)
-                  }}
-                >
-                  delete
-                </Button>
-              }
-            </Grid>
-          </Grid>
-        </Card>
-      </Link>
-    )
-  }
 
   const CustomPopper = styled((props: PopperProps) => 
     <Popper {...props} placement="bottom" />)({
@@ -670,8 +472,16 @@ const WikiDocumentationScreen = () => {
                           key={`article-grid-item-${article.id}`}
                         >
                           {listView 
-                            ? renderArticleListItem(article)
-                            : renderArticleCard(article)
+                            ? <ArticleListItem 
+                                article={article} 
+                                adminMode={adminMode} 
+                                handleDelete={handleDelete}
+                              />
+                            : <ArticleCard 
+                                article={article} 
+                                adminMode={adminMode} 
+                                handleDelete={handleDelete}
+                              />
                           }
                         </Grid>
                       )}

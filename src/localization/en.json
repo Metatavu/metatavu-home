@@ -331,6 +331,7 @@
     "back": "back",
     "save": "save",
     "edit": "edit",
+    "confirm": "confirm",
     "searchArticle": "Search for an article...",
     "createArticle": "Create article",
     "uploadImage": "Upload image",
@@ -342,6 +343,7 @@
     "labelDescription": "Desciption",
     "labelLink": "Link",
     "draft": "draft",
-    "allArticles": "all"
+    "allArticles": "all",
+    "connectedArticles": "Connected articles"
   }
 }

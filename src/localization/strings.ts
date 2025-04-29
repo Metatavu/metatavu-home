@@ -434,6 +434,7 @@ export interface Localized extends LocalizedStringsMethods {
     back: string;
     save: string;
     edit: string;
+    confirm: string;
     searchArticle: string;
     createArticle: string;
     uploadImage: string;
@@ -446,6 +447,7 @@ export interface Localized extends LocalizedStringsMethods {
     labelLink: string;
     draft: string;
     allArticles: string;
+    connectedArticles: string;
   }
 }
 

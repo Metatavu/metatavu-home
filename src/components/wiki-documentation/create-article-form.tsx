@@ -5,6 +5,7 @@ import {
   Card, 
   Checkbox, 
   Grid, 
+  IconButton, 
   Popper, 
   type PopperProps, 
   styled, 
@@ -23,6 +24,7 @@ import { errorAtom } from "src/atoms/error";
 import type { Article, User } from "src/generated/homeLambdasClient";
 import { usersAtom } from "src/atoms/user";
 import { userProfileAtom } from "src/atoms/auth";
+import ClearIcon from '@mui/icons-material/Clear';
 
 interface Props {
   setFormOpen: (value: boolean) => void;
@@ -129,7 +131,7 @@ const CreateOrEditArticleForm = ({
   const handleTitleChange = (event: any) => {
     const newInput = event.target.value;
     setTitle(newInput);
-    setPath(`${encodeURIComponent(newInput.replaceAll(" ", "_"))}`);
+    setPath(`${(newInput.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9\-_]/g, ''))}`);
   }
 
   const handlePathChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -193,7 +195,10 @@ const CreateOrEditArticleForm = ({
           </ActionButton>
           : 
           <ActionButton onClick={handleEdit}>
-            {strings.wikiDocumentation.save}
+            {adminMode && article?.draft
+              ? strings.wikiDocumentation.confirm 
+              : strings.wikiDocumentation.save
+            }
           </ActionButton>
         }
         </Grid>
@@ -276,16 +281,34 @@ const CreateOrEditArticleForm = ({
               onInput={handleImageLinkChange}
               label={strings.wikiDocumentation.labelImage}
             />
-            {imagePreview
-              ? <img 
-                style={{ 
-                  height: "150px", 
-                  borderRadius: "15px", 
-                  marginTop: "16px"
-                }} 
-                src={coverImage} 
-                alt="cover-image"
-              /> : <></>
+            {imagePreview && coverImage?.length !== 0
+              ? <Grid container>
+                  <img 
+                    style={{ 
+                      height: "150px", 
+                      borderRadius: "15px", 
+                      marginTop: "16px",
+                      marginLeft: 3
+                    }} 
+                    src={coverImage} 
+                    alt="cover-image"
+                  />
+                  <Grid item sx={{ posistion: "relative" }}>
+                    <IconButton 
+                      sx={{ 
+                        posistion: "absolute",
+                        top: "50%", 
+                        transform: "translateY(-50%)"
+                      }}
+                      onClick={() => {
+                        setCoverImage("")
+                        setImagPreview(false)
+                      }}
+                    >
+                      <ClearIcon/>
+                    </IconButton>
+                  </Grid>            
+                </Grid> : <></>
             }
             {!coverImage ?
               <Button
@@ -295,7 +318,7 @@ const CreateOrEditArticleForm = ({
               >
                 {strings.wikiDocumentation.uploadImage}
                 <input
-                  style={{width: "100%"}}
+                  style={{ width: "100%" }}
                   type="file"
                   hidden
                   onChange={handleFileChange}

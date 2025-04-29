@@ -331,6 +331,7 @@
     "back": "takaisin",
     "save": "tallentaa",
     "edit": "muokata",
+    "confirm": "vahvistaa",
     "searchArticle": "Etsi artikkeli...",
     "createArticle": "Luo uusi artikkeli",
     "uploadImage": "Lataa kuva",
@@ -342,6 +343,7 @@
     "labelDescription": "Kuvaus",
     "labelLink": "Sinulla on {0} artikkelia odottamassa tarkistusta.",
     "draft": "luonnos",
-    "allArticles": "kaikki"
+    "allArticles": "kaikki",
+    "connectedArticles": "Aiheeseen liittyvät artikkelit"
   }
 }

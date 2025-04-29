@@ -1,0 +1,125 @@
+import { Card, Grid, Box, Typography, Chip, Button } from "@mui/material";
+import { Link } from "react-router-dom";
+import type { ArticleMetadata } from "src/generated/homeLambdasClient";
+import strings from "src/localization/strings";
+import { getLastActivityString } from "src/utils/wiki-utils";
+
+
+
+interface Props {
+  article: ArticleMetadata,
+  adminMode?: boolean,
+  handleDelete?: (articleId?: string) => void
+}
+
+
+const ArticleListItem = ({article, adminMode=false, handleDelete} : Props) => {
+  if (!article || !article.lastUpdatedAt) return;
+  const lastActivityData = getLastActivityString(article);
+
+  return (
+    <Link to={article.path} style={{ textDecoration: "none"}}>
+      <Card 
+        key={`article-card-${article.id}`}
+        sx={{
+          padding: "20px", 
+          position: "relative", 
+          borderRadius: "20px",
+          width: "100%"
+        }}
+      >
+        <Grid container spacing={3}>
+          <Grid item lg={2.7} md={3.5} sm={5} xs={12}>
+            <Box
+              component="img"
+              sx={{
+                width: "100%",
+                height: { lg: "185px", md: "190px", sm: "215px", xs: "300px" },
+                borderRadius: "20px",
+                marginRight: "10px",
+                objectFit: "cover",
+                overflow: "hidden"
+              }}
+              alt={article.title}
+              src={article.coverImage}
+            />
+          </Grid>
+          <Grid item lg={8.6} md={8} sm={6} xs={12}>
+            <Typography 
+              variant="h6" 
+              sx={{
+                paddingLeft: "5px",
+                textAlign: "left", 
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "normal",
+                wordBreak: "break-word",
+                display: "-webkit-box",
+                WebkitBoxOrient: "vertical",
+                WebkitLineClamp: 1,
+                marginBottom: adminMode ? 1.5 : 3
+              }}
+            >
+              {article.title}
+            </Typography>
+            <Typography 
+              sx={{
+                paddingLeft: "5px",
+                textAlign: "left", 
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "normal",
+                wordBreak: "break-word",
+                display: "-webkit-box",
+                WebkitBoxOrient: "vertical",
+                WebkitLineClamp: {xs: 2, sm: adminMode ? 2 : 3}
+              }}
+            >
+              {article.description}
+            </Typography>
+            <Grid container justifyContent={"space-between"} sx={{ marginTop: {lg: 1.5, md: 2, sm: 1.5}}}  direction={{ xs: "column", md: "row" }}>
+              <Grid item sx={{order: {xs: 2, md: 1}}}>
+                <Box sx={{
+                  textAlign: "left", 
+                  maxHeight: "38px", 
+                  overflow: "hidden",
+                  }}
+                >
+                  {article.tags?.map((tag) => 
+                    <Chip label={tag} sx={{ marginRight: 1, marginTop: 0.5}} key={`${article.id}-${tag}`}/>
+                  )}
+                </Box>
+              </Grid>
+              <Grid item sx={{order: {as: 1, md: 2}}}>
+                <Typography variant="body1" sx={{ paddingLeft: "5px", textAlign: "left", paddingTop: 0.5 }}>
+                  {strings.formatString(
+                    "{0} {1} by {2}",
+                    lastActivityData.action, 
+                    article.lastUpdatedAt.toLocaleDateString(),
+                    lastActivityData.user || "")
+                  }
+                </Typography>
+              </Grid>
+            </Grid>
+            {adminMode && handleDelete && 
+              <Button 
+                variant="outlined" 
+                size="small" 
+                sx={{marginTop: 1, zIndex: 10}} 
+                fullWidth
+                onClick={(event) => {
+                  event.preventDefault(); 
+                  handleDelete(article.id)
+                }}
+              >
+                {strings.questionnaireTable.delete}
+              </Button>
+            }
+          </Grid>
+        </Grid>
+      </Card>
+    </Link>
+  )
+}
+
+export default ArticleListItem;
