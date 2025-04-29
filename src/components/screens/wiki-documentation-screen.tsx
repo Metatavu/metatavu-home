@@ -75,7 +75,7 @@ const WikiDocumentationScreen = () => {
 
   useEffect(() => {
     setDisplayedArticlesOnPage(displayedArticles.slice((pageNumber - 1) * itemsPerPage, itemsPerPage * pageNumber));
-  }, [pageNumber]);
+  }, [pageNumber, displayedArticles]);
 
   const getArticles = async () => {
     try {
@@ -507,14 +507,16 @@ const WikiDocumentationScreen = () => {
                     </Grid>
                   }
                 </Box>
-                <Grid container justifyContent="center" sx={{ marginBottom: 3 }}>
-                  <Pagination 
-                    size="large"
-                    count={Math.floor(displayedArticles?.length / itemsPerPage) + 1}  
-                    onChange={(_event, page) => setPageNumber(page)} 
-                    page={pageNumber}
-                  />
-                </Grid> 
+                {displayedArticles.length > itemsPerPage &&
+                  <Grid container justifyContent="center" sx={{ marginBottom: 3 }}>
+                    <Pagination 
+                      size="large"
+                      count={Math.floor(displayedArticles?.length / itemsPerPage) + 1}  
+                      onChange={(_event, page) => setPageNumber(page)} 
+                      page={pageNumber}
+                    />
+                  </Grid> 
+                }
               </>
               )
             }
