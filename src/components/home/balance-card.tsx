@@ -50,9 +50,7 @@ const BalanceCard = () => {
         });
         setUsersFlextime(fetchedUsersFlextime);
       } catch (error) {
-        setTimeout(() => {
-          setError(`${strings.error.fetchFailedFlextime}, ${error}`);
-        }, 3000); 
+        setError(`${strings.error.fetchFailedFlextime}, ${error}`);
       }
     }
     setLoading(false);
