@@ -319,16 +319,24 @@ const AdminVacationManagementScreen: React.FC = () => {
           InputProps={{ startAdornment: <InputAdornment position="start"><SearchIcon /></InputAdornment> }}
         />
       </Paper>
-      <TableContainer component={Paper}>
-        <Table>
+      
+      {/* Updated TableContainer with fixed layout and no horizontal scroll */}
+      <TableContainer 
+        component={Paper} 
+        sx={{ 
+          width: "100%", 
+          overflowX: "hidden"  // Prevent horizontal scrolling
+        }}
+      >
+        <Table sx={{ tableLayout: "fixed", width: "100%" }}>
           <TableHead>
             <TableRow>
-              <TableCell>Name</TableCell>
-              <TableCell>Username</TableCell>
-              <TableCell>Email</TableCell>
-              <TableCell align="right" sx={{ whiteSpace: 'nowrap' }}>{currentYear} Total</TableCell>
-              <TableCell align="right" sx={{ whiteSpace: 'nowrap' }}>{currentYear} Remaining</TableCell>
-              <TableCell align="center">Actions</TableCell>
+              <TableCell sx={{ width: "18%" }}>Name</TableCell>
+              <TableCell sx={{ width: "18%" }}>Username</TableCell>
+              <TableCell sx={{ width: "24%" }}>Email</TableCell>
+              <TableCell align="right" sx={{ width: "14%", whiteSpace: 'nowrap' }}>{currentYear} Total</TableCell>
+              <TableCell align="right" sx={{ width: "14%", whiteSpace: 'nowrap' }}>{currentYear} Remaining</TableCell>
+              <TableCell align="center" sx={{ width: "12%" }}>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -339,17 +347,28 @@ const AdminVacationManagementScreen: React.FC = () => {
             ) : (
               filteredUsers.map(user => (
                 <TableRow key={user.id}>
-                  <TableCell>{displayName(user)}</TableCell>
-                  <TableCell>{user.username}</TableCell>
-                  <TableCell>{user.email}</TableCell>
-                  <TableCell align="right" sx={{ whiteSpace: 'nowrap' }}>
+                  <TableCell sx={{ overflow: "hidden", textOverflow: "ellipsis" }}>
+                    {displayName(user)}
+                  </TableCell>
+                  <TableCell sx={{ overflow: "hidden", textOverflow: "ellipsis" }}>
+                    {user.username}
+                  </TableCell>
+                  <TableCell sx={{ overflow: "hidden", textOverflow: "ellipsis" }}>
+                    {user.email}
+                  </TableCell>
+                  <TableCell align="right">
                     {getVacationDaysValue(user, currentYear)} days
                   </TableCell>
-                  <TableCell align="right" sx={{ whiteSpace: 'nowrap' }}>
+                  <TableCell align="right">
                     {getVacationDaysValue(user, currentYear, true)} days
                   </TableCell>
-                  <TableCell align="center">
-                    <IconButton onClick={() => handleEditUser(user)}><EditIcon /></IconButton>
+                  <TableCell align="center" sx={{ minWidth: "60px" }}>
+                    <IconButton 
+                      onClick={() => handleEditUser(user)}
+                      sx={{ padding: "8px" }}
+                    >
+                      <EditIcon />
+                    </IconButton>
                   </TableCell>
                 </TableRow>
               ))
