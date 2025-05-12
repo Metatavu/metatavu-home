@@ -69,6 +69,9 @@ interface NotificationState {
  * Provides interface to view and edit vacation allocations for all users
  */
 const AdminVacationManagementScreen: React.FC = () => {
+  // Get the current year
+  const currentYear = new Date().getFullYear();
+  
   if (!UserRoleUtils.adminMode()) {
     return (
       <Box sx={{ p: 3 }}>
@@ -121,7 +124,7 @@ const AdminVacationManagementScreen: React.FC = () => {
   const fetchUsers = async (): Promise<void> => {
     setLoading(true);
     try {
-      const response = await axios.get<User[]>('http://localhost:3000/admin/users');
+      const response = await axios.get<User[]>('http://localhost:3000/users');
       setUsers(response.data);
       setFilteredUsers(response.data);
     } catch (err) {
@@ -169,7 +172,11 @@ const AdminVacationManagementScreen: React.FC = () => {
     setCurrentUser(user);
     const data: VacationDays = {};
     
-    for (let year = 2023; year <= 2026; year++) {
+    // Calculate year range: current year and 3 years in the future
+    const startYear = currentYear;
+    const endYear = currentYear + 3;
+    
+    for (let year = startYear; year <= endYear; year++) {
       let total = '0';
       let remaining = '0';
 
@@ -257,7 +264,7 @@ const AdminVacationManagementScreen: React.FC = () => {
         }
       };
       await axios.put(
-        `http://localhost:3000/admin/users/${currentUser.id}/vacation`, 
+        `http://localhost:3000/users/${currentUser.id}/vacation`, 
         payload
       );
       await fetchUsers();
@@ -319,8 +326,8 @@ const AdminVacationManagementScreen: React.FC = () => {
               <TableCell>Name</TableCell>
               <TableCell>Username</TableCell>
               <TableCell>Email</TableCell>
-              <TableCell align="right">2025 Total</TableCell>
-              <TableCell align="right">2025 Remaining</TableCell>
+              <TableCell align="right" sx={{ whiteSpace: 'nowrap' }}>{currentYear} Total</TableCell>
+              <TableCell align="right" sx={{ whiteSpace: 'nowrap' }}>{currentYear} Remaining</TableCell>
               <TableCell align="center">Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -335,11 +342,11 @@ const AdminVacationManagementScreen: React.FC = () => {
                   <TableCell>{displayName(user)}</TableCell>
                   <TableCell>{user.username}</TableCell>
                   <TableCell>{user.email}</TableCell>
-                  <TableCell align="right">
-                    {getVacationDaysValue(user, 2025)} days
+                  <TableCell align="right" sx={{ whiteSpace: 'nowrap' }}>
+                    {getVacationDaysValue(user, currentYear)} days
                   </TableCell>
-                  <TableCell align="right">
-                    {getVacationDaysValue(user, 2025, true)} days
+                  <TableCell align="right" sx={{ whiteSpace: 'nowrap' }}>
+                    {getVacationDaysValue(user, currentYear, true)} days
                   </TableCell>
                   <TableCell align="center">
                     <IconButton onClick={() => handleEditUser(user)}><EditIcon /></IconButton>

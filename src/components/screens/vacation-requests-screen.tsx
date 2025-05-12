@@ -276,50 +276,7 @@ const VacationRequestsScreen = () => {
         />
       </Card>
       
-      {/* Admin Tools Section - Only visible in admin mode */}
-      {adminMode && (
-        <Card sx={{ margin: 0, padding: "16px", width: "100%", marginBottom: "16px" }}>
-          <Typography variant="h6" gutterBottom>
-            Admin Tools
-          </Typography>
-          <Grid container spacing={2}>
-            <Grid item xs={12} md={6}>
-              <Box
-                sx={{
-                  border: "1px solid rgba(0, 0, 0, 0.12)",
-                  borderRadius: "4px",
-                  padding: "16px",
-                  height: "100%",
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "space-between"
-                }}
-              >
-                <div>
-                  <Typography variant="subtitle1" fontWeight="bold">
-                    User Vacation Management
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                    View and update individual user vacation day allocations and remaining days.
-                  </Typography>
-                </div>
-                <Box sx={{ mt: 2 }}>
-                  <Button
-                    component={Link}
-                    to="/admin/vacation-management"
-                    variant="contained"
-                    color="primary"
-                    startIcon={<PeopleAlt />}
-                    fullWidth
-                  >
-                    Manage User Vacation Days
-                  </Button>
-                </Box>
-              </Box>
-            </Grid>
-          </Grid>
-        </Card>
-      )}
+      {/* Admin Tools Section has been removed */}
       
       <Card sx={{ margin: 0, padding: "10px", width: "100%" }}>
         <Link to={adminMode ? "/admin" : "/"} style={{ textDecoration: "none" }}>

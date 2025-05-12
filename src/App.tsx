@@ -107,10 +107,7 @@ const App = () => {
           path: "/admin/questionnaire/:id/edit",
           element: <QuestionnaireManager mode={QuestionnairePreviewMode.EDIT} />
         },
-        {
-          path: "/admin/vacation-management",
-          element: <AdminVacationManagementScreen />
-        }
+        
       ]
     }
   ]);
