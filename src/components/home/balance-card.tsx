@@ -33,17 +33,26 @@ const BalanceCard = () => {
    * Fetch user's flextime data when it is undefined.
    */
   useEffect(() => {
-    if (!usersFlextime) {
+    // This card shows admin links if adminMode is true, no personal flextime for the admin themselves.
+    // So, only fetch if not adminMode and flextime data is not yet available.
+    if (!adminMode && !usersFlextime) {
       getUsersFlextimes();
+    } else if (adminMode) {
+      // If in admin mode, we are not displaying personal flextime, so ensure loading is false.
+      setLoading(false);
     }
-  }, [users]);
+    // Adding usersFlextime to dependencies to prevent re-fetch if data is already loaded.
+    // Adding adminMode to control fetching based on user role.
+    // loggedInUser and severaUserId are derived from users and userProfile, which are in the original deps or implied.
+  }, [users, userProfile, adminMode, usersFlextime]);
 
   /**
    * Initialize logged in users's time data.
    */
   const getUsersFlextimes = async () => {
     setLoading(true);
-    if (loggedInUser) {
+    // Only proceed if loggedInUser exists and has a valid severaUserId
+    if (loggedInUser && severaUserId) {
       try {
         const fetchedUsersFlextime = await flexTimeApi.getFlextimeBySeveraUserId({
           severaUserId
@@ -51,9 +60,16 @@ const BalanceCard = () => {
         setUsersFlextime(fetchedUsersFlextime);
       } catch (error) {
         setError(`${strings.error.fetchFailedFlextime}, ${error}`);
+      } finally {
+        setLoading(false); // Ensure loading is set to false after the try/catch block
       }
+    } else {
+      // If loggedInUser exists, is not in adminMode, but severaUserId is missing, set a specific error.
+      if (loggedInUser && !severaUserId && !adminMode) {
+        setError(strings.error.noSeveraUserId);
+      }
+      setLoading(false); // Conditions for API call not met, ensure loading is false.
     }
-    setLoading(false);
   };
 
   /**
