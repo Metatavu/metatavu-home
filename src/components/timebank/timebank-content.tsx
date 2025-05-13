@@ -3,8 +3,8 @@ import strings from "src/localization/strings";
 import { useAtomValue } from "jotai";
 import { personsAtom } from "src/atoms/person";
 import UserRoleUtils from "src/utils/user-role-utils";
-import SummaryTimEntriesCard from "./summary-time-entries-card";
-import SpecificTimeEntriesCard from "./specific-time-entries-card";
+// import SummaryTimEntriesCard from "./summary-time-entries-card";
+// import SpecificTimeEntriesCard from "./specific-time-entries-card";
 
 /**
  * Component properties
@@ -50,9 +50,9 @@ const TimebankContent = ({
           </Card>
         </Grow>
       )}
-      <SummaryTimEntriesCard selectedEmployeeId={selectedEmployeeId}/>
+      {/* <SummaryTimEntriesCard selectedEmployeeId={selectedEmployeeId}/> */}
       <br />
-      <SpecificTimeEntriesCard selectedEmployeeId={selectedEmployeeId}/> 
+      {/* <SpecificTimeEntriesCard selectedEmployeeId={selectedEmployeeId}/>  */}
       <br />
     </>
   );

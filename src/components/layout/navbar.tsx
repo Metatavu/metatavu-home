@@ -16,7 +16,6 @@ import strings from "src/localization/strings";
 import { authAtom, userProfileAtom } from "src/atoms/auth";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import NavItems from "./navitems";
-import SyncButton from "./sync-button";
 import { avatarsAtom, personsAtom } from "src/atoms/person";
 import type { Person } from "src/generated/client";
 import config from "src/app/config";
@@ -103,7 +102,6 @@ const NavBar = () => {
                 <SettingsIcon />
               </IconButton>
             </Tooltip>
-            {import.meta.env.DEV && <SyncButton />}
             <LocalizationButtons />
             
             <Box>

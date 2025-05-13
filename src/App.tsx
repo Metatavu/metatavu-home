@@ -12,7 +12,7 @@ import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import Layout from "./components/layout/layout";
 import ErrorHandler from "./components/contexts/error-handler";
 import ErrorScreen from "./components/screens/error-screen";
-import TimebankViewAllScreen from "./components/screens/timebank-view-all-screen";
+// import TimebankViewAllScreen from "./components/screens/timebank-view-all-screen";
 import AdminScreen from "./components/screens/admin-screen";
 import { Settings } from "luxon";
 import { useMemo, useState } from "react";
@@ -28,17 +28,7 @@ import SettingsScreen from "./components/screens/settings-screen"
  */
 const App = () => {
   const language = useAtomValue(languageAtom);
-  const [userConsent, setUserConsent] = useState<boolean>(false);
 
-
-  const handleSaveConsent = async (isAccepted: boolean) => {
-    try {
-      setUserConsent(isAccepted);
-      console.log("Consent successfully!");
-    } catch (error) {
-      console.error("Error saving consent:", error);
-    }
-  };
   useMemo(() => {
     Settings.defaultLocale = language;
   }, [language]);
@@ -75,7 +65,7 @@ const App = () => {
         },
         {
           path: "/settings",
-          element: <SettingsScreen onSave={handleSaveConsent} initialConsent={userConsent} />
+          element: <SettingsScreen />
         }
       ]
     },
@@ -96,10 +86,10 @@ const App = () => {
           path: "/admin/vacations",
           element: <VacationRequestsScreen />
         },
-        {
-          path: "/admin/timebank/viewall",
-          element: <TimebankViewAllScreen />
-        },
+        // {
+        //   path: "/admin/timebank/viewall",
+        //   element: <TimebankViewAllScreen />
+        // },
         {
           path: "/admin/sprintview",
           element: <SprintViewScreen />
