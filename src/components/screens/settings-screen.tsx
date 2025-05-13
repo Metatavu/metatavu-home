@@ -11,17 +11,12 @@ import { useLambdasApi } from "src/hooks/use-api";
  */
 const SettingsScreen = () => {
   const { usersApi } = useLambdasApi();
-  
-  const auth = useAtomValue(authAtom);
   const userProfile = useAtomValue(userProfileAtom);
-  
-  console.log("auth is", auth);
-  console.log("user profile is", userProfile);
-  // TODO: get email and keycloak Id from the token
-  
-  // TODO: Consent is given should come from the user keycloak token- if it contains severaUserId then consent is true
-  const [isConsentGiven, setIsConsentGiven] = useState(false);
   const setError = useSetAtom(errorAtom);
+  
+  const [isConsentGiven, setIsConsentGiven] = useState(
+    Boolean(userProfile?.attributes?.severaUserId)
+  );
 
   const handleToggleChange = () => {
     grantSeveraOptInConsent();
@@ -29,17 +24,21 @@ const SettingsScreen = () => {
 
   const grantSeveraOptInConsent = async () => {
       try {
+        if (!userProfile?.email || !userProfile?.id) {
+          setError("Missing user email or ID.");
+          return;
+        }
+
         const consent = await usersApi.updateUserAttribute({
-          id: userId,
-          attributeName: "severaUserId",
-          updateUserAttributeRequest: {email: email}
+          updateUserAttributeRequest: { email: userProfile?.email },
+          id: userProfile?.id,
+          attributeName: "severaUserId"
         });
-        // TODO: Use the response to update the state
-        // setIsConsentGiven();
+
+        setIsConsentGiven(true);
       } catch (error) {
         console.error("Error fetching consent:", error);
-        // TODO: Error messages in the UI should be localized
-        setError("Error fetching consent");
+        setError(`${strings.error.fetchFailedFlextime}, ${error}`);
       }
     };
 
