@@ -40,14 +40,6 @@ export const addTag = (
     };
   }
   
-  const MAX_TAG_LENGTH = 50;
-  if (trimmedTag.length > MAX_TAG_LENGTH) {
-    return {
-      updatedQuestionnaire: questionnaire,
-      error: strings.questionnaireTags.tagTooLongError.replace("{max}", MAX_TAG_LENGTH.toString())
-    };
-  }
-  
   const tagExists = questionnaire.tags?.some(
     (tag) => tag.toLowerCase() === trimmedTag.toLowerCase()
   );
@@ -56,14 +48,6 @@ export const addTag = (
     return { 
       updatedQuestionnaire: questionnaire, 
       error: strings.questionnaireTags.duplicateTagError 
-    };
-  }
-  
-  const MAX_TAGS = 10;
-  if (questionnaire.tags && questionnaire.tags.length >= MAX_TAGS) {
-    return {
-      updatedQuestionnaire: questionnaire,
-      error: strings.questionnaireTags.maxTagsError
     };
   }
 

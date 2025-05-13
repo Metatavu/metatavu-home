@@ -34,28 +34,24 @@ import { usersAtom } from "src/atoms/user";
 import { userProfileAtom } from "src/atoms/auth";
 import type { User } from "src/generated/homeLambdasClient";
 
-interface EnhancedQuestionnaire extends Questionnaire {
-  tags?: string[];
-}
-
 /**
  * Questionnaire Table Component
  *
  * @returns Questionnaires from DynamoDB rendered in a x-data-grid table
  */
-  const QuestionnaireTable = () => {
+const QuestionnaireTable = () => {
   const adminMode = UserRoleUtils.adminMode();
   const navigate = useNavigate();
   const [_, setMode] = useState<QuestionnairePreviewMode>();
   const { questionnairesApi } = useLambdasApi();
-  const [questionnaires, setQuestionnaires] = useState<EnhancedQuestionnaire[]>([]);
-  const [filteredQuestionnaires, setFilteredQuestionnaires] = useState<EnhancedQuestionnaire[]>([]);
+  const [questionnaires, setQuestionnaires] = useState<Questionnaire[]>([]);
+  const [filteredQuestionnaires, setFilteredQuestionnaires] = useState<Questionnaire[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [deleteTitle, setDeleteTitle] = useState<string | null>(null);
-  const [selectedQuestionnaire, setSelectedQuestionnaire] = useState<EnhancedQuestionnaire | null>(null);
+  const [selectedQuestionnaire, setSelectedQuestionnaire] = useState<Questionnaire | null>(null);
   const [tagPopoverAnchor, setTagPopoverAnchor] = useState<HTMLElement | null>(null);
   const [currentTags, setCurrentTags] = useState<string[]>([]);
   const setError = useSetAtom(errorAtom);
@@ -154,12 +150,12 @@ interface EnhancedQuestionnaire extends Questionnaire {
   };
 
   const handleRowClick = (params: GridRowParams) => {
-    setSelectedQuestionnaire(params.row as EnhancedQuestionnaire);
+    setSelectedQuestionnaire(params.row as Questionnaire);
     setMode(QuestionnairePreviewMode.FILL);
     navigate(`/questionnaire/${params.row.id}`);
   };
 
-  const handleEditClick = (questionnaire: EnhancedQuestionnaire) => {
+  const handleEditClick = (questionnaire: Questionnaire) => {
     setSelectedQuestionnaire(questionnaire);
     setMode(QuestionnairePreviewMode.EDIT);
     navigate(`${questionnaire.id}/edit`);
@@ -183,18 +179,18 @@ interface EnhancedQuestionnaire extends Questionnaire {
     const visibleTags = tags.slice(0, MAX_VISIBLE_TAGS);
     const hiddenTagsCount = Math.max(0, tags.length - MAX_VISIBLE_TAGS);
     
-    const allTagsTooltip = tags.join(', ');
+    const allTagsTooltip = tags.join(", ");
     
     return (
       <Box 
         sx={{ 
-          display: 'flex', 
-          flexWrap: 'nowrap',
+          display: "flex", 
+          flexWrap: "nowrap",
           gap: 0.5,
-          overflow: 'hidden',
-          alignItems: 'center',
-          width: '100%',
-          height: '100%'
+          overflow: "hidden",
+          alignItems: "center",
+          width: "100%",
+          height: "100%"
         }}
         title={allTagsTooltip}
       >
@@ -208,12 +204,12 @@ interface EnhancedQuestionnaire extends Questionnaire {
                 icon={<LabelIcon />}
                 variant="outlined"
                 sx={{ 
-                  margin: '1px',
-                  maxWidth: '120px',
-                  '& .MuiChip-label': {
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap'
+                  margin: "1px",
+                  maxWidth: "120px",
+                  "& .MuiChip-label": {
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap"
                   }
                 }}
                 onClick={(e) => {
@@ -229,9 +225,9 @@ interface EnhancedQuestionnaire extends Questionnaire {
                 label={strings.formatString(strings.questionnaireTags.moreCount, hiddenTagsCount)}
                 sx={{
                   flexShrink: 0,
-                  backgroundColor: 'rgba(0, 0, 0, 0.08)',
-                  '&:hover': {
-                    backgroundColor: 'rgba(0, 0, 0, 0.12)'
+                  backgroundColor: "rgba(0, 0, 0, 0.08)",
+                  "&:hover": {
+                    backgroundColor: "rgba(0, 0, 0, 0.12)"
                   }
                 }}
                 onClick={(e) => handleTagMoreClick(e, tags)}
@@ -259,8 +255,8 @@ interface EnhancedQuestionnaire extends Questionnaire {
       sortable: false,
       filterable: true,
       renderHeader: () => (
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <LabelIcon sx={{ mr: 0.5, fontSize: '1.25rem' }} />
+        <Box sx={{ display: "flex", alignItems: "center" }}>
+          <LabelIcon sx={{ mr: 0.5, fontSize: "1.25rem" }} />
           <Typography variant="subtitle2">{strings.questionnaireTags.title}</Typography>
         </Box>
       )
@@ -276,13 +272,13 @@ interface EnhancedQuestionnaire extends Questionnaire {
                 name="edit"
                 variant="outlined"
                 color="success"
-                onClick={() => handleEditClick(params.row as EnhancedQuestionnaire)}
+                onClick={() => handleEditClick(params.row as Questionnaire)}
                 sx={{ 
                   mr: 0.8, 
-                  minWidth: '100px',
-                  width: 'auto', 
-                  height: 'auto',
-                  fontSize: '0.80rem' 
+                  minWidth: "100px",
+                  width: "auto", 
+                  height: "auto",
+                  fontSize: "0.80rem" 
                 }}
               >
                 <EditIcon sx={{ color: "success.main", mr: 0.3 }} />
@@ -294,10 +290,10 @@ interface EnhancedQuestionnaire extends Questionnaire {
                 color="secondary"
                 onClick={() => handleOpenDialog(params.row.id, params.row.title)}
                 sx={{ 
-                  minWidth: '85px',
-                  width: 'auto', 
-                  height: 'auto',
-                  fontSize: '0.80rem',
+                  minWidth: "85px",
+                  width: "auto", 
+                  height: "auto",
+                  fontSize: "0.80rem",
                 }}
               >
                 <DeleteForeverIcon sx={{ color: "red", mr: 0.3 }} />
@@ -336,23 +332,23 @@ interface EnhancedQuestionnaire extends Questionnaire {
       anchorEl={tagPopoverAnchor}
       onClose={handleCloseTagPopover}
       anchorOrigin={{
-        vertical: 'bottom',
-        horizontal: 'center',
+        vertical: "bottom",
+        horizontal: "center",
       }}
       transformOrigin={{
-        vertical: 'top',
-        horizontal: 'center',
+        vertical: "top",
+        horizontal: "center",
       }}
       slotProps={{
         paper: { 
-          sx: { maxWidth: '400px', p: 2 } 
+          sx: { maxWidth: "400px", p: 2 } 
         }
       }}
     >
       <Typography variant="subtitle2" sx={{ mb: 1 }}>
         {strings.questionnaireTags.allTags} ({currentTags.length})
       </Typography>
-      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
         {currentTags.map((tag) => (
           <Chip
             key={tag}
@@ -362,9 +358,9 @@ interface EnhancedQuestionnaire extends Questionnaire {
             variant="outlined"
             onClick={() => handleTagClick(tag)}
             sx={{ 
-              cursor: 'pointer',
-              '&:hover': {
-                backgroundColor: 'rgba(0, 0, 0, 0.08)'
+              cursor: "pointer",
+              "&:hover": {
+                backgroundColor: "rgba(0, 0, 0, 0.08)"
               }
             }}
           />
@@ -422,11 +418,11 @@ interface EnhancedQuestionnaire extends Questionnaire {
           ref={dataGridRef}
           sx={{ 
             margin: 0,
-            '& .MuiDataGrid-cell': {
-              padding: '8px', 
+            "& .MuiDataGrid-cell": {
+              padding: "8px", 
             },
-            '& .MuiDataGrid-columnHeader': {
-              padding: '0 8px', 
+            "& .MuiDataGrid-columnHeader": {
+              padding: "0 8px", 
             }
           }}
           rows={filteredQuestionnaires}

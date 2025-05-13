@@ -149,7 +149,7 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
    * @param event - Key press event
    */
   const handleTagKeyDown = (event: React.KeyboardEvent) => {
-    if (event.key === 'Enter') {
+    if (event.key === "Enter") {
       event.preventDefault();
       handleAddTag();
     }
@@ -297,8 +297,8 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
           
           {/* Tags Section */}
           <Box sx={{ mb: 4 }}>
-            <Typography variant="subtitle1" sx={{ mb: 1 }}>{(strings as any).tags?.title || "Tags"}</Typography>
-            <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', mb: 2 }}>
+            <Typography variant="subtitle1" sx={{ mb: 1 }}>{strings.questionnaireTags?.title || "Tags"}</Typography>
+            <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", mb: 2 }}>
               {editedQuestionnaire.tags?.map((tag, index) => (
                 <Chip
                   key={index}
@@ -314,8 +314,8 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
                 </Typography>
               )}
             </Box>
-            <Box sx={{ display: 'flex', gap: 1, alignItems: 'flex-start', flexDirection: 'column' }}>
-              <Box sx={{ display: 'flex', gap: 1, width: '100%' }}>
+            <Box sx={{ display: "flex", gap: 1, alignItems: "flex-start", flexDirection: "column" }}>
+              <Box sx={{ display: "flex", gap: 1, width: "100%" }}>
                 <TextField
                   label = {strings.questionnaireTags.addTagPlaceholder}
                   value={newTag}
@@ -334,12 +334,12 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
                   onClick={handleAddTag}
                   size="small"
                   sx={{ 
-                    height: '48px',
-                    minWidth: '90px',
-                    textTransform: 'uppercase',
-                    backgroundColor: '#212121',
-                    '&:hover': {
-                      backgroundColor: '#000000'
+                    height: "48px",
+                    minWidth: "90px",
+                    textTransform: "uppercase",
+                    backgroundColor: "#212121",
+                    "&:hover": {
+                      backgroundColor: "#000000"
                     }
                   }}
                 >

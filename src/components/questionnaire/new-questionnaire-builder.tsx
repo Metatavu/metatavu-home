@@ -55,12 +55,10 @@ const NewQuestionnaireBuilder = () => {
   const [tagInput, setTagInput] = useState<string>("");
   const [tagError, setTagError] = useState<string | null>(null);
   const isDisabled = !isFormValid(questionnaire);
+
  /**
  * Function to handle input change in the questionnaire title and description
- *
  * @param event - The change event from the input field
- * @param questionnaire - The current questionnaire state object
- * @returns Updated questionnaire object with the new input value
  */
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     setQuestionnaire(prevQuestionnaire => 
@@ -70,7 +68,6 @@ const NewQuestionnaireBuilder = () => {
 
   /**
  * Function to handle tag input change
- * 
  * @param event - The change event from the input field that contains the new tag value
  */
   const handleTagInputChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -172,30 +169,29 @@ const NewQuestionnaireBuilder = () => {
   };
 
   /**
-   * Function to save the new questionnaire
-   */
-  const saveQuestionnaire = async () => {
-    setLoading(true);
-    try {
-      const createdQuestionnaire = await questionnairesApi.createQuestionnaires(
-        {
-          questionnaire: {
-            title: questionnaire.title,
-            description: questionnaire.description,
-            questions: questionnaire.questions,
-            passScore: questionnaire.passScore,
-            tags: questionnaire.tags, 
-          },
-        }
-      );
-      closeAndClear();
-      navigate(-1);
-      return createdQuestionnaire;
-    } catch (error) {
-      setError(`${strings.error.questionnaireSaveFailed}, ${error}`);
-    }
-    setLoading(false);
-  };
+ * Function to save the new questionnaire
+ */
+const saveQuestionnaire = async () => {
+  setLoading(true);
+  try {
+    const createdQuestionnaire = await questionnairesApi.createQuestionnaires({
+      questionnaire: {
+        title: questionnaire.title,
+        description: questionnaire.description,
+        questions: questionnaire.questions,
+        passScore: questionnaire.passScore,
+        tags: questionnaire.tags || [],
+        passedUsers: []
+      }
+    });
+    closeAndClear();
+    navigate(-1);
+    return createdQuestionnaire;
+  } catch (error) {
+    setError(`${strings.error.questionnaireSaveFailed}, ${error}`);
+  }
+  setLoading(false);
+};
 
   return (
     <>
