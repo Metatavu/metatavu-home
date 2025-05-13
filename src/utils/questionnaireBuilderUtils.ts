@@ -177,19 +177,27 @@ export const countCorrectAnswers = (questionnaire: Questionnaire): number => {
  * @returns Tooltip message
  */
 export const getTooltipMessage = (questionnaire: Questionnaire): string => {
-  const isTitleEmpty = !questionnaire.title.trim();
-  const isDescriptionEmpty = !questionnaire.description.trim();
+  if (!questionnaire.title || !questionnaire.description) {
+    return "Please provide both title and description";
+  }
 
-  if (isTitleEmpty && isDescriptionEmpty) {
-    return strings.newQuestionnaireBuilder.tooltipBothEmpty;
+  if (!questionnaire.questions || questionnaire.questions.length === 0) {
+    return "Please add at least one question";
   }
-  if (isTitleEmpty) {
-    return strings.newQuestionnaireBuilder.tooltipEmptyTitle;
+
+  const hasAnyCorrectAnswers = questionnaire.questions.some(question => 
+    question.answerOptions && question.answerOptions.some(option => option.isCorrect)
+  );
+
+  if (!hasAnyCorrectAnswers) {
+    return "Please mark at least one answer as correct by checking the box";
   }
-  if (isDescriptionEmpty) {
-    return strings.newQuestionnaireBuilder.tooltipEmptyDescription;
+
+  if (questionnaire.passScore === undefined || questionnaire.passScore === null) {
+    return "Please set a required pass score using the slider";
   }
-  return "";
+
+  return "Save questionnaire";
 };
 
 /**
@@ -214,5 +222,24 @@ export const createEmptyQuestionnaire = (): Questionnaire => {
  * @returns Boolean indicating if form is valid
  */
 export const isFormValid = (questionnaire: Questionnaire): boolean => {
-  return !!questionnaire.title && !!questionnaire.description;
+  // Check required fields
+  if (!questionnaire.title || !questionnaire.description) {
+    return false;
+  }
+  if (!questionnaire.questions || questionnaire.questions.length === 0) {
+    return false;
+  }
+  // Check if any question has at least one correct answer
+  const hasAnyCorrectAnswers = questionnaire.questions.some(question => 
+    question.answerOptions && question.answerOptions.some(option => option.isCorrect)
+  );
+
+  if (!hasAnyCorrectAnswers) {
+    return false;
+  }
+
+  if (questionnaire.passScore === undefined || questionnaire.passScore === null) {
+    return false;
+  }
+  return true;
 };
