@@ -25,17 +25,17 @@ const SettingsScreen = () => {
   const grantSeveraOptInConsent = async () => {
       try {
         if (!userProfile?.email || !userProfile?.id) {
-          setError("Missing user email or ID.");
+          setError(strings.error.missingEmailOrId);
           return;
         }
 
-        const consent = await usersApi.updateUserAttribute({
+        const response = await usersApi.updateUserAttribute({
           updateUserAttributeRequest: { email: userProfile?.email },
           id: userProfile?.id,
           attributeName: "severaUserId"
         });
 
-        setIsConsentGiven(true);
+        setIsConsentGiven(Boolean(response.updatedKeycloakAttributes?.severaUserId));
       } catch (error) {
         console.error("Error fetching consent:", error);
         setError(`${strings.error.fetchFailedFlextime}, ${error}`);
