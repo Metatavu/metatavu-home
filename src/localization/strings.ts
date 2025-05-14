@@ -216,6 +216,7 @@ export interface Localized extends LocalizedStringsMethods {
   form: {
     submit: string;
     update: string;
+    restoreDefault: string;
   };
   /**
    * Translation related to table toolbar

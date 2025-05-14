@@ -1,4 +1,4 @@
-import { Button, FormControl, FormLabel, TextField } from "@mui/material";
+import { Button, FormControl, FormLabel, TextField, Box } from "@mui/material";
 import { type ChangeEvent, useEffect } from "react";
 import DateRangePicker from "../../../generics/date-range-picker";
 import { type DateRange, ToolbarFormModes } from "src/types";
@@ -7,6 +7,7 @@ import { hasAllPropsDefined } from "src/utils/check-utils";
 import strings from "src/localization/strings";
 import { calculateTotalVacationDays } from "src/utils/time-utils";
 import type { VacationRequest } from "src/generated/homeLambdasClient";
+import UserRoleUtils from "src/utils/user-role-utils";
 
 /**
  * Component properties
@@ -33,24 +34,33 @@ const ToolbarFormFields = ({
   dateRange,
   setDateRange
 }: Props) => {
+  const adminMode = UserRoleUtils.adminMode();
   // TODO: This will be used again when we have a solution for various work contracts in place
   // const userProfile = useAtomValue(userProfileAtom);
   // const [users] = useAtom(usersAtom);
   // const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
 
   useEffect(() => {
-    setVacationRequestData({
-      ...vacationRequestData,
-      startDate: dateRange.start.toJSDate(),
-      endDate: dateRange.end.toJSDate(),
-      days: calculateTotalVacationDays(
-        dateRange.start,
-        dateRange.end,
-        // FIXME: implement a proper solution for various work contracts
-        // getWorkingWeek(loggedInUser)
-        [true, true, true, true, true, false, false]
-      )
-    });
+    if (!adminMode) {
+      setVacationRequestData({
+        ...vacationRequestData,
+        startDate: dateRange.start.toJSDate(),
+        endDate: dateRange.end.toJSDate(),
+        days: calculateTotalVacationDays(
+          dateRange.start,
+          dateRange.end,
+          // FIXME: implement a proper solution for various work contracts
+          // getWorkingWeek(loggedInUser)
+          [true, true, true, true, true, false, false]
+        )
+      });
+    } else {
+      setVacationRequestData({
+        ...vacationRequestData,
+        startDate: dateRange.start.toJSDate(),
+        endDate: dateRange.end.toJSDate()
+      });
+    }
   }, [dateRange]);
 
   /**
@@ -65,26 +75,90 @@ const ToolbarFormFields = ({
     });
   };
 
+  /**
+   * Handle days change
+   *
+   * @param value days string
+   */
+  const handleDaysChange = (value: string) => {
+    const daysValue = Number.parseInt(value) || 0;
+    setVacationRequestData({
+      ...vacationRequestData,
+      days: daysValue
+    });
+  };
+
+  /**
+   * Handle restore default days
+   */
+  const handleRestoreDefaultDays = () => {
+    const defaultDays = calculateTotalVacationDays(dateRange.start, dateRange.end, [
+      true,
+      true,
+      true,
+      true,
+      true,
+      false,
+      false
+    ]);
+
+    setVacationRequestData({
+      ...vacationRequestData,
+      days: defaultDays
+    });
+  };
+
   return (
     <FormControl sx={{ width: "100%" }}>
-      <FormLabel>{strings.vacationRequest.message}</FormLabel>
-      <TextField
-        required
-        error={!vacationRequestData.message?.length}
-        value={vacationRequestData.message}
-        onChange={(event: ChangeEvent<HTMLInputElement>) => {
-          handleVacationRequestDataChange(event.target.value);
-        }}
-        sx={{ marginBottom: "5px" }}
-      />
-      <FormLabel sx={{ marginBottom: "5px" }}>{strings.vacationRequest.days}</FormLabel>
-      <DateRangePicker
-        dateTimeTomorrow={dateTimeTomorrow}
-        dateRange={dateRange}
-        setDateRange={setDateRange}
-      />
+      {!adminMode && (
+        <>
+          <FormLabel>{strings.vacationRequest.message}</FormLabel>
+          <TextField
+            required
+            error={!vacationRequestData.message?.length}
+            value={vacationRequestData.message}
+            onChange={(event: ChangeEvent<HTMLInputElement>) => {
+              handleVacationRequestDataChange(event.target.value);
+            }}
+            sx={{ marginBottom: "5px" }}
+          />
+        </>
+      )}
+
+      {adminMode ? (
+        <>
+          <FormLabel>{strings.vacationRequest.days}</FormLabel>
+          <Box sx={{ display: "flex", alignItems: "flex-start", gap: 1, mb: 1 }}>
+            <TextField
+              type="number"
+              value={vacationRequestData.days ?? ""}
+              onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                handleDaysChange(event.target.value);
+              }}
+              inputProps={{ min: 0 }}
+              sx={{ flexGrow: 1 }}
+            />
+            <Button variant="outlined" size="medium" onClick={handleRestoreDefaultDays}>
+              {strings.form.restoreDefault}
+            </Button>
+          </Box>
+        </>
+      ) : (
+        <>
+          <FormLabel sx={{ marginBottom: "5px" }}>{strings.vacationRequest.days}</FormLabel>
+          <DateRangePicker
+            dateTimeTomorrow={dateTimeTomorrow}
+            dateRange={dateRange}
+            setDateRange={setDateRange}
+          />
+        </>
+      )}
+
       <Button
-        disabled={!hasAllPropsDefined(vacationRequestData) || !vacationRequestData.message?.length}
+        disabled={
+          !adminMode &&
+          (!hasAllPropsDefined(vacationRequestData) || !vacationRequestData.message?.length)
+        }
         type="submit"
         variant="contained"
         size="large"

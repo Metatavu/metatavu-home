@@ -182,7 +182,8 @@
   },
   "form": {
     "submit": "Lähetä",
-    "update": "Päivitä"
+    "update": "Päivitä",
+    "restoreDefault": "Palauta loman kuluttamat päivät"
   },
   "tableToolbar": {
     "delete": "Poista",
