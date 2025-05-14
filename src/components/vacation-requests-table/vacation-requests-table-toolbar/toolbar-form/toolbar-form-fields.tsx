@@ -78,7 +78,7 @@ const ToolbarFormFields = ({
   /**
    * Handle days change
    *
-   * @param value days value
+   * @param value days string
    */
   const handleDaysChange = (value: string) => {
     const daysValue = Number.parseInt(value) || 0;
@@ -131,11 +131,11 @@ const ToolbarFormFields = ({
           <Box sx={{ display: "flex", alignItems: "flex-start", gap: 1, mb: 1 }}>
             <TextField
               type="number"
-              value={vacationRequestData.days}
+              value={vacationRequestData.days ?? ""}
               onChange={(event: ChangeEvent<HTMLInputElement>) => {
                 handleDaysChange(event.target.value);
               }}
-              inputProps={{ min: 1 }}
+              inputProps={{ min: 0 }}
               sx={{ flexGrow: 1 }}
             />
             <Button variant="outlined" size="medium" onClick={handleRestoreDefaultDays}>

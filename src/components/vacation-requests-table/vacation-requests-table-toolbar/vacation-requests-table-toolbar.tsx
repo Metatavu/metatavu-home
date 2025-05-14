@@ -74,7 +74,6 @@ const TableToolbar = ({
   const multiSelectionSize = adminMode ? 6 : 12;
   const gridItemSize = selectedRowIds?.length === 1 ? singleSelectionSize : multiSelectionSize;
   const disableEditButton = false;
-
   useEffect(() => {
     setTitle(getToolbarTitle(toolbarFormMode));
     if (adminMode && toolbarFormMode === ToolbarFormModes.NONE) {
@@ -142,8 +141,10 @@ const TableToolbar = ({
                 setValue={(open) => {
                   setToolbarFormMode(ToolbarFormModes.EDIT); // ensure edit mode
                   setFormOpen(open);
+                  
                 }}
                 disabled={disableEditButton}
+
               />
             </ToolbarGridItem>
           )}

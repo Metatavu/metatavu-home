@@ -182,7 +182,8 @@
   "form": {
     "submit": "Submit",
     "update": "Update",
-    "restoreDefault": "Restore default"
+    "restoreDefault": "Restore default holiday days consumed"
+
   },
   "tableToolbar": {
     "delete": "Delete",
