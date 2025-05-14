@@ -73,10 +73,7 @@ const TableToolbar = ({
   const singleSelectionSize = 6;
   const multiSelectionSize = adminMode ? 6 : 12;
   const gridItemSize = selectedRowIds?.length === 1 ? singleSelectionSize : multiSelectionSize;
-  const disableEditButton =
-    rows.find((request: VacationsDataGridRow) => request.id === selectedRowIds[0])?.status !==
-    VacationRequestStatuses.PENDING;
-
+  const disableEditButton = false;
   useEffect(() => {
     setTitle(getToolbarTitle(toolbarFormMode));
     if (adminMode && toolbarFormMode === ToolbarFormModes.NONE) {
@@ -135,14 +132,19 @@ const TableToolbar = ({
           <ToolbarGridItem item sm={gridItemSize} xs={6}>
             <ToolbarDeleteButton setConfirmationHandlerOpen={setConfirmationHandlerOpen} />
           </ToolbarGridItem>
-          {selectedRowIds?.length === 1 && !adminMode && (
+          {selectedRowIds?.length === 1 && (
             <ToolbarGridItem item sm={adminMode ? 3 : 6} xs={6}>
               <FormToggleButton
                 title={strings.tableToolbar.edit}
                 ButtonIcon={Edit}
                 value={formOpen}
-                setValue={setFormOpen}
+                setValue={(open) => {
+                  setToolbarFormMode(ToolbarFormModes.EDIT); // ensure edit mode
+                  setFormOpen(open);
+                  
+                }}
                 disabled={disableEditButton}
+
               />
             </ToolbarGridItem>
           )}

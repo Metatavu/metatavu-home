@@ -110,7 +110,7 @@ const VacationRequestsTable = ({
           ? getTotalVacationRequestStatus(vacationRequest.status)
           : VacationRequestStatuses.PENDING;
 
-        if (vacationRequest.message.length) {
+        if (vacationRequest.message?.length) {
           row.message = vacationRequest.message;
         }
 
