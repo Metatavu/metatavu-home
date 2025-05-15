@@ -326,6 +326,6 @@
     "saveSettings": "Save settings",
     "accept": "Accept",
     "decline":"Decline",
-    "consentToDataProcessing": "Consent to data prosessing"
+    "consentToDataProcessing": "Grant permissions for processing your Severa data to gain additional Home features."
   }
 }
