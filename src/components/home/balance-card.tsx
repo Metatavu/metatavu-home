@@ -33,7 +33,7 @@ const BalanceCard = () => {
    * Fetch user's flextime data when it is undefined.
    */
   useEffect(() => {
-    // This card shows admin links if adminMode is true, no personal flextime for the admin themselves.
+    // This card shows admin links if adminMode is true, not personal flextime for the admin themselves.
     // So, only fetch if not adminMode and flextime data is not yet available.
     if (!adminMode && !usersFlextime) {
       getUsersFlextimes();
