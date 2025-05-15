@@ -41,26 +41,19 @@ const ToolbarFormFields = ({
   // const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
 
   useEffect(() => {
-    if (!adminMode) {
-      setVacationRequestData({
-        ...vacationRequestData,
-        startDate: dateRange.start.toJSDate(),
-        endDate: dateRange.end.toJSDate(),
-        days: calculateTotalVacationDays(
-          dateRange.start,
-          dateRange.end,
-          // FIXME: implement a proper solution for various work contracts
-          // getWorkingWeek(loggedInUser)
-          [true, true, true, true, true, false, false]
-        )
-      });
-    } else {
-      setVacationRequestData({
-        ...vacationRequestData,
-        startDate: dateRange.start.toJSDate(),
-        endDate: dateRange.end.toJSDate()
-      });
-    }
+    setVacationRequestData({
+      ...vacationRequestData,
+      startDate: dateRange.start.toJSDate(),
+      endDate: dateRange.end.toJSDate(),
+      days: calculateTotalVacationDays(
+        dateRange.start,
+        dateRange.end,
+        // FIXME: implement a proper solution for various work contracts
+        // getWorkingWeek(loggedInUser)
+        [true, true, true, true, true, false, false]
+      )
+    });
+    
   }, [dateRange]);
 
   /**

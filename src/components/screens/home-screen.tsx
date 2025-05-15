@@ -9,18 +9,24 @@ import { usersAtom } from "src/atoms/user";
 import { userProfileAtom } from "src/atoms/auth";
 import { useAtomValue } from "jotai";
 import strings from "src/localization/strings";
+import type { ReactNode } from "react";
 
 /**
  * Home screen component
  */
 const HomeScreen = () => {
-  const developerMode = UserRoleUtils.developerMode();
-  const users = useAtomValue(usersAtom);
+    const users = useAtomValue(usersAtom);
   const userProfile = useAtomValue(userProfileAtom);
   const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
   const hasSeveraUserId = !!loggedInUser?.attributes?.severaUserId;
-
-  const renderCardWithSkeleton = (title: string, content: React.ReactNode) => (
+  /**
+   * Renders a card with a skeleton loader
+   *
+   * @param title - Title of the card
+   * @param content - Content to render inside the card
+   * @returns ReactNode containing the card
+   */
+  const renderCardWithSkeleton = (title: string, content: ReactNode) => (
     <Grid
       sx={{
         background: "#f5f5f5",
@@ -48,30 +54,28 @@ const HomeScreen = () => {
           content
         )}
       </Grid>
-    </Grid>
-  );
+        </Grid>
+      );
 
-  return (
-    <Grid container spacing={2}>
+      return (
+        <Grid container spacing={2}>
       <Grid item xs={12} sm={6}>
-        {developerMode &&
-          renderCardWithSkeleton(
-            strings.balanceCard.balance,
-            <BalanceCard />
-          )}
+        {renderCardWithSkeleton(
+          strings.balanceCard.balance,
+          <BalanceCard />
+        )}
         <Grid item xs={12} style={{ marginTop: "16px" }}>
-          {developerMode &&
-            renderCardWithSkeleton(
-              strings.sprint.sprintview,
-              <SprintViewCard />
-            )}
+          {renderCardWithSkeleton(
+            strings.sprint.sprintview,
+            <SprintViewCard />
+          )}
         </Grid>
       </Grid>
       <Grid item xs={12} sm={6}>
-        {developerMode && <VacationsCard />}
+        {<VacationsCard />}
       </Grid>
       <Grid item xs={12} sm={6}>
-        {developerMode && <QuestionnaireCard />}
+        {<QuestionnaireCard />}
       </Grid>
     </Grid>
   );
