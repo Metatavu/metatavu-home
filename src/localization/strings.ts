@@ -24,6 +24,7 @@ export interface Localized extends LocalizedStringsMethods {
     hello: string;
     logout: string;
     home: string;
+    settings: string
     timebank: string;
     vacations: string;
     onCall: string;
@@ -52,6 +53,7 @@ export interface Localized extends LocalizedStringsMethods {
     questionnaireDeleteFailed: string;
     questionnaireUpdateFailed: string;
     fetchFailedFlextime: string;
+    missingEmailOrId: string;
     noSeveraUserId: string;
     noFlextimeData: string;
   };
@@ -418,6 +420,15 @@ export interface Localized extends LocalizedStringsMethods {
     atTheEndOf: string;
     hour: string;
     hours: string;
+  };
+  /**
+   * Translation related settings screen
+   */
+  settingsScreen: {
+    saveSettings: string;
+    accept: string,
+    decline: string;
+    consentToDataProcessing: string;
   };
   /**
    * Translations related to if user is not Severa Opt in

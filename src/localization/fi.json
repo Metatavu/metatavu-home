@@ -10,6 +10,7 @@
     "hello": "Hei",
     "logout": "Kirjaudu ulos",
     "home": "Koti",
+    "settings": "Asetukset",
     "timebank": "Timebank",
     "vacations": "Lomat",
     "onCall": "Päivystys",
@@ -35,6 +36,7 @@
     "questionnaireDeleteFailed": "Kyselylomakkeen poistaminen epäonnistui",
     "questionnaireUpdateFailed": "Kyselylomakkeen päivittäminen epäonnistui",
     "fetchFailedFlextime": "Joustotyöaikatietojen hakeminen epäonnistui",
+    "missingEmailOrId": "Sähköposti tai käyttäjätunnus puuttuu",
     "noSeveraUserId": "Käyttäjältä puuttuu Severa-käyttäjätunnus, ota yhteyttä Metatavun kehitystiimiin lisätietoja varten.",
     "noFlextimeData": "Jotain meni pieleen joustotyöaikatietoja haettaessa"
   },
@@ -318,6 +320,12 @@
     "atTheEndOf": "{0} lopussa",
     "hour": "tunti",  
     "hours": "Tuntia"
+  },
+  "settingsScreen": {
+    "saveSettings": "Tallena Asetukset",
+    "accept": "Hyväksy",
+    "decline":"En hyväksy",
+    "consentToDataProcessing": "Suostumus tietojen käsittelyyn"
   },
   "notOptedInDescription": {
     "description": "Hyväksy käyttäjätietojen käsittely nähdäksesi tämä osio"
