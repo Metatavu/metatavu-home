@@ -26,17 +26,19 @@ export const handleQuestionnaireInputChange = (
  * 
  * @param tagInput - The tag to be added
  * @param questionnaire - The current questionnaire state object
+ * @param strings - The localization strings object
  * @returns Object containing updated questionnaire and any error message
  */
 export const addTag = (
   tagInput: string,
-  questionnaire: Questionnaire
+  questionnaire: Questionnaire,
+  strings: any
 ): { updatedQuestionnaire: Questionnaire; error: string | null } => {
   const trimmedTag = tagInput.trim();
   if (!trimmedTag) {
     return { 
       updatedQuestionnaire: questionnaire, 
-      error: "Tag cannot be empty" 
+      error: strings.questionnaireTags.emptyTagError 
     };
   }
   
@@ -44,7 +46,7 @@ export const addTag = (
   if (currentTags.includes(trimmedTag)) {
     return { 
       updatedQuestionnaire: questionnaire, 
-      error: "Tag already exists!" 
+      error: strings.questionnaireTags.duplicateTagError 
     };
   }
   
@@ -193,40 +195,53 @@ export const createEmptyQuestionnaire = (): Questionnaire => {
 };
 
 /**
- * Validates a questionnaire and returns validation result with error message if invalid
+ * Enum for validation conditions that replaces string-based error types
+ */
+export enum ValidationCondition {
+  VALID = "valid",
+  TITLE_AND_DESCRIPTION_EMPTY = "titleAndDescriptionEmpty",
+  TITLE_EMPTY = "titleEmpty",
+  DESCRIPTION_EMPTY = "descriptionEmpty",
+  NO_QUESTIONS = "noQuestions",
+  NO_CORRECT_ANSWERS = "noCorrectAnswers", 
+  NO_PASS_SCORE = "noPassScore"
+}
+
+/**
+ * Validates a questionnaire and returns validation result
  * 
  * @param questionnaire - The questionnaire to validate
- * @returns An object containing isValid flag and an error message code if invalid
+ * @returns An object containing isValid flag and the validation condition
  */
 export const validateQuestionnaire = (questionnaire: Questionnaire): { 
   isValid: boolean; 
-  errorType: string | null;
+  condition: ValidationCondition;
 } => {
   if (!questionnaire.title && !questionnaire.description) {
     return { 
       isValid: false, 
-      errorType: "bothEmpty" 
+      condition: ValidationCondition.TITLE_AND_DESCRIPTION_EMPTY 
     };
   }
   
   if (!questionnaire.title) {
     return { 
       isValid: false, 
-      errorType: "emptyTitle" 
+      condition: ValidationCondition.TITLE_EMPTY 
     };
   }
   
   if (!questionnaire.description) {
     return { 
       isValid: false, 
-      errorType: "emptyDescription" 
+      condition: ValidationCondition.DESCRIPTION_EMPTY 
     };
   }
   
   if (!questionnaire.questions || questionnaire.questions.length === 0) {
     return { 
       isValid: false, 
-      errorType: "noQuestions" 
+      condition: ValidationCondition.NO_QUESTIONS 
     };
   }
   
@@ -237,19 +252,19 @@ export const validateQuestionnaire = (questionnaire: Questionnaire): {
   if (!hasAnyCorrectAnswers) {
     return { 
       isValid: false, 
-      errorType: "noCorrectAnswers" 
+      condition: ValidationCondition.NO_CORRECT_ANSWERS 
     };
   }
   
   if (questionnaire.passScore === undefined || questionnaire.passScore === null) {
     return { 
       isValid: false, 
-      errorType: "noPassScore" 
+      condition: ValidationCondition.NO_PASS_SCORE 
     };
   }
   return { 
     isValid: true, 
-    errorType: null 
+    condition: ValidationCondition.VALID 
   };
 };
 
@@ -276,43 +291,26 @@ export const getValidationTooltipMessage = (
   questionnaire: Questionnaire, 
   strings: any
 ): string => {
-  const { errorType } = validateQuestionnaire(questionnaire);
+  const { condition } = validateQuestionnaire(questionnaire);
   
-  if (!errorType) {
+  if (condition === ValidationCondition.VALID) {
     return ""; 
   }
   
-  switch(errorType) {
-    case "bothEmpty":
+  switch(condition) {
+    case ValidationCondition.TITLE_AND_DESCRIPTION_EMPTY:
       return strings.newQuestionnaireBuilder.tooltipBothEmpty;
-    case "emptyTitle":
+    case ValidationCondition.TITLE_EMPTY:
       return strings.newQuestionnaireBuilder.tooltipEmptyTitle;
-    case "emptyDescription":
+    case ValidationCondition.DESCRIPTION_EMPTY:
       return strings.newQuestionnaireBuilder.tooltipEmptyDescription;
-    case "noQuestions":
-      return strings.error.questionnaireSaveFailed + ", " + "At least one question is required";
-    case "noCorrectAnswers":
-      return strings.error.questionnaireSaveFailed + ", " + "At least one answer must be marked as correct";
-    case "noPassScore":
-      return strings.error.questionnaireSaveFailed + ", " + "Please set a required score using the slider";
+    case ValidationCondition.NO_QUESTIONS:
+      return strings.error.questionnaireSaveFailed;
+    case ValidationCondition.NO_CORRECT_ANSWERS:
+      return strings.error.questionnaireSaveFailed;
+    case ValidationCondition.NO_PASS_SCORE:
+      return strings.error.questionnaireSaveFailed;
     default:
       return strings.error.generic;
   }
-};
-
-/**
- * Legacy function for backward compatibility
- * @deprecated Use getValidationTooltipMessage instead
- */
-export const getTooltipMessage = (questionnaire: Questionnaire): string => {
-  if (!questionnaire.title && !questionnaire.description) {
-    return "Title and description are required";
-  }
-  if (!questionnaire.title) {
-    return "Title is required";
-  }
-  if (!questionnaire.description) {
-    return "Description is required";
-  }
-  return "";
 };

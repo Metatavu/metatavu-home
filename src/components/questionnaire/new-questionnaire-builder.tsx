@@ -79,7 +79,7 @@ const NewQuestionnaireBuilder = () => {
    * Function to handle adding a tag
    */
   const handleAddTag = () => {
-    const { updatedQuestionnaire, error } = addTag(tagInput, questionnaire);
+    const { updatedQuestionnaire, error } = addTag(tagInput, questionnaire, strings);
     
     if (error) {
       setTagError(error);
