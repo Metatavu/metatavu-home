@@ -107,7 +107,7 @@ export const addQuestion = (
   questionnaire: Questionnaire
 ): Questionnaire => {
   const newQuestion: Question = {
-    questionText: questionText, // Using questionText to match interface
+    questionText: questionText, 
     answerOptions: answerOptions
   };
 
