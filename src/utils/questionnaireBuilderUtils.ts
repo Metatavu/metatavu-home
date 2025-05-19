@@ -32,10 +32,7 @@ export const addTag = (
   tagInput: string,
   questionnaire: Questionnaire
 ): { updatedQuestionnaire: Questionnaire; error: string | null } => {
-  // Remove leading/trailing whitespace
   const trimmedTag = tagInput.trim();
-  
-  // Validate the tag
   if (!trimmedTag) {
     return { 
       updatedQuestionnaire: questionnaire, 
@@ -43,7 +40,6 @@ export const addTag = (
     };
   }
   
-  // Check if the tag already exists
   const currentTags = questionnaire.tags || [];
   if (currentTags.includes(trimmedTag)) {
     return { 
@@ -52,12 +48,10 @@ export const addTag = (
     };
   }
   
-  // Add the new tag
   const updatedQuestionnaire = {
     ...questionnaire,
     tags: [...currentTags, trimmedTag]
   };
-  
   return { updatedQuestionnaire, error: null };
 };
 
@@ -208,7 +202,6 @@ export const validateQuestionnaire = (questionnaire: Questionnaire): {
   isValid: boolean; 
   errorType: string | null;
 } => {
-  // Check for title and description
   if (!questionnaire.title && !questionnaire.description) {
     return { 
       isValid: false, 
@@ -230,7 +223,6 @@ export const validateQuestionnaire = (questionnaire: Questionnaire): {
     };
   }
   
-  // Check if there are any questions
   if (!questionnaire.questions || questionnaire.questions.length === 0) {
     return { 
       isValid: false, 
@@ -238,7 +230,6 @@ export const validateQuestionnaire = (questionnaire: Questionnaire): {
     };
   }
   
-  // Check if any question has a correct answer
   const hasAnyCorrectAnswers = questionnaire.questions.some(question => 
     question.answerOptions && question.answerOptions.some(option => option.isCorrect)
   );
@@ -250,15 +241,12 @@ export const validateQuestionnaire = (questionnaire: Questionnaire): {
     };
   }
   
-  // Check if pass score is set
   if (questionnaire.passScore === undefined || questionnaire.passScore === null) {
     return { 
       isValid: false, 
       errorType: "noPassScore" 
     };
   }
-  
-  // All validations passed
   return { 
     isValid: true, 
     errorType: null 
@@ -291,10 +279,9 @@ export const getValidationTooltipMessage = (
   const { errorType } = validateQuestionnaire(questionnaire);
   
   if (!errorType) {
-    return ""; // No error
+    return ""; 
   }
   
-  // Map error types to existing localized strings
   switch(errorType) {
     case "bothEmpty":
       return strings.newQuestionnaireBuilder.tooltipBothEmpty;
