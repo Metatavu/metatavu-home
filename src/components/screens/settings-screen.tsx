@@ -57,17 +57,19 @@ const SettingsScreen = () => {
         <Typography variant="body1" sx={{ marginRight: 2 }}>
           {strings.settingsScreen.decline}
         </Typography>
-        {isLoading ? (
-          <CircularProgress size={24} />
-        ) : (
+        <Box display="flex" alignItems="center">
           <Switch
             checked={isConsentGiven}
             onChange={handleToggleChange}
             inputProps={{ "aria-label": "information" }}
-            disabled={isConsentGiven}
+            disabled={isConsentGiven || isLoading}
           />
-        )}
-
+          {isLoading && (
+            <Box ml={1}>
+              <CircularProgress size={20} />
+            </Box>
+          )}
+        </Box>
         <Typography variant="body1" sx={{ marginLeft: 2 }}>
           {strings.settingsScreen.accept}
         </Typography>
