@@ -37,7 +37,7 @@ import {
   removeQuestion,
   editQuestion,
   countCorrectAnswers,
-  getTooltipMessage,
+  getValidationTooltipMessage,
   createEmptyQuestionnaire,
   isFormValid
 } from "src/utils/questionnaireBuilderUtils";
@@ -150,8 +150,6 @@ const NewQuestionnaireBuilder = () => {
  *
  * @param index - The index of the question to be edited
  * @param updatedQuestion - The new question data to replace the existing question
- * @param questionnaire - The current questionnaire state object
- * @returns Updated questionnaire object with the edited question
  */
   const editQuestionInPreview = (index: number, updatedQuestion: Question) => {
     setQuestionnaire(prevQuestionnaire => 
@@ -172,29 +170,7 @@ const NewQuestionnaireBuilder = () => {
    * Function to save the new questionnaire
    */
   const saveQuestionnaire = async () => {
-    // Enhanced validation before saving
-    if (!questionnaire.title || !questionnaire.description) {
-      setError(strings.error.questionnaireSaveFailed + ", Title and description are required");
-      return;
-    }
-    if (!questionnaire.questions || questionnaire.questions.length === 0) {
-      setError(strings.error.questionnaireSaveFailed + ", At least one question is required");
-      return;
-    }
-    const hasAnyCorrectAnswers = questionnaire.questions.some(question => 
-      question.answerOptions && question.answerOptions.some(option => option.isCorrect)
-    );
-
-    if (!hasAnyCorrectAnswers) {
-      setError(strings.error.questionnaireSaveFailed + ", At least one answer must be marked as correct");
-      return;
-    }
-    // Check if passScore is set
-    if (questionnaire.passScore === undefined || questionnaire.passScore === null) {
-      setError(strings.error.questionnaireSaveFailed + ", Please set a required score using the slider");
-      return;
-    }
-
+    // Button is already disabled if form is invalid, so no need for validation here
     setLoading(true);
     try {
       const createdQuestionnaire = await questionnairesApi.createQuestionnaires({
@@ -373,7 +349,11 @@ const NewQuestionnaireBuilder = () => {
                   sx={{ mt: 1, mb: 1, width: "70%" }}
                 />
               </Box>
-              <Tooltip title={getTooltipMessage(questionnaire)} placement="bottom">
+              <Tooltip 
+                title={getValidationTooltipMessage(questionnaire, strings)} 
+                placement="bottom"
+                disableHoverListener={isFormValid(questionnaire)}
+              >
                 <span>
                   <Button
                     sx={{ display: "flex", alignItems: "center", mt: 6, mr: 4 }}

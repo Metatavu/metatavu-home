@@ -1,209 +1,192 @@
-import type { ChangeEvent } from "react";
-import type { Question, AnswerOption, Questionnaire } from "src/generated/homeLambdasClient";
-import strings from "src/localization/strings";
+import {
+  Questionnaire,
+  AnswerOption,
+  Question,
+} from "src/generated/homeLambdasClient";
 
 /**
  * Function to handle input change in the questionnaire title and description
- *
- * @param event Change event from input
- * @param questionnaire Current questionnaire state
- * @returns Updated questionnaire object
+ * @param event - The change event from the input field
+ * @param questionnaire - The current questionnaire state object
+ * @returns Updated questionnaire object with the new input value
  */
 export const handleQuestionnaireInputChange = (
-  event: ChangeEvent<HTMLInputElement>,
+  event: React.ChangeEvent<HTMLInputElement>,
   questionnaire: Questionnaire
 ): Questionnaire => {
   const { name, value } = event.target;
   return {
     ...questionnaire,
-    [name]: value,
+    [name]: value
   };
 };
 
 /**
- * Function to handle adding a tag to the questionnaire
+ * Function to add a tag to the questionnaire
  * 
- * @param tagInput Current tag input value
- * @param questionnaire Current questionnaire state
- * @returns Object with updated questionnaire and error message if any
+ * @param tagInput - The tag to be added
+ * @param questionnaire - The current questionnaire state object
+ * @returns Object containing updated questionnaire and any error message
  */
 export const addTag = (
-  tagInput: string, 
+  tagInput: string,
   questionnaire: Questionnaire
 ): { updatedQuestionnaire: Questionnaire; error: string | null } => {
+  // Remove leading/trailing whitespace
   const trimmedTag = tagInput.trim();
   
+  // Validate the tag
   if (!trimmedTag) {
     return { 
       updatedQuestionnaire: questionnaire, 
-      error: strings.questionnaireTags.emptyTagError 
+      error: "Tag cannot be empty" 
     };
   }
   
-  const tagExists = questionnaire.tags?.some(
-    (tag) => tag.toLowerCase() === trimmedTag.toLowerCase()
-  );
-  
-  if (tagExists) {
+  // Check if the tag already exists
+  const currentTags = questionnaire.tags || [];
+  if (currentTags.includes(trimmedTag)) {
     return { 
       updatedQuestionnaire: questionnaire, 
-      error: strings.questionnaireTags.duplicateTagError 
+      error: "Tag already exists!" 
     };
   }
-
-  return {
-    updatedQuestionnaire: {
-      ...questionnaire,
-      tags: [...questionnaire.tags || [], trimmedTag],
-    },
-    error: null
+  
+  // Add the new tag
+  const updatedQuestionnaire = {
+    ...questionnaire,
+    tags: [...currentTags, trimmedTag]
   };
+  
+  return { updatedQuestionnaire, error: null };
 };
 
 /**
  * Function to remove a tag from the questionnaire
  * 
- * @param tagToRemove Tag to be removed
- * @param questionnaire Current questionnaire state
- * @returns Updated questionnaire object
+ * @param tagToRemove - The tag to be removed from the questionnaire
+ * @param questionnaire - The current questionnaire state object
+ * @returns Updated questionnaire object with the tag removed
  */
 export const removeTag = (
   tagToRemove: string,
   questionnaire: Questionnaire
 ): Questionnaire => {
+  const currentTags = questionnaire.tags || [];
   return {
     ...questionnaire,
-    tags: questionnaire.tags?.filter((tag) => tag !== tagToRemove) || [],
+    tags: currentTags.filter(tag => tag !== tagToRemove)
   };
 };
 
 /**
- * Function to handle slider that sets the minimum score to pass the questionnaire
- *
- * @param value New slider value
- * @param questionnaire Current questionnaire state
- * @returns Updated questionnaire object
+ * Function to update the pass score of the questionnaire
+ * 
+ * @param value - The new pass score value
+ * @param questionnaire - The current questionnaire state object
+ * @returns Updated questionnaire object with the new pass score
  */
 export const updatePassScore = (
   value: number | number[],
   questionnaire: Questionnaire
 ): Questionnaire => {
+  const passScore = typeof value === 'number' ? value : value[0];
   return {
     ...questionnaire,
-    passScore: value as number,
+    passScore
   };
 };
 
 /**
- * Functions to add new question to Questionnaire that is being built
- *
- * @param questionText Question text
- * @param answerOptions Array of answer options
- * @param questionnaire Current questionnaire state
- * @returns Updated questionnaire object
+ * Function to add a new question to the questionnaire
+ * 
+ * @param questionText - The text content of the question to be added
+ * @param answerOptions - Array of answer options for the question
+ * @param questionnaire - The current questionnaire state object
+ * @returns Updated questionnaire object with the new question added
  */
 export const addQuestion = (
-  questionText: string, 
+  questionText: string,
   answerOptions: AnswerOption[],
   questionnaire: Questionnaire
 ): Questionnaire => {
+  const newQuestion: Question = {
+    questionText: questionText, // Using questionText to match interface
+    answerOptions: answerOptions
+  };
+
   return {
     ...questionnaire,
-    questions: [
-      ...questionnaire.questions,
-      { questionText, answerOptions },
-    ],
+    questions: [...(questionnaire.questions || []), newQuestion]
   };
 };
 
 /**
- * Function to delete question from the questionnaire that is being built
- *
- * @param index Index of the question to remove
- * @param questionnaire Current questionnaire state
- * @returns Updated questionnaire object
+ * Function to remove a question from the questionnaire
+ * 
+ * @param index - The index of the question to remove
+ * @param questionnaire - The current questionnaire state object
+ * @returns Updated questionnaire object with the question removed
  */
 export const removeQuestion = (
   index: number,
   questionnaire: Questionnaire
 ): Questionnaire => {
+  const updatedQuestions = [...(questionnaire.questions || [])];
+  updatedQuestions.splice(index, 1);
+  
   return {
     ...questionnaire,
-    questions: questionnaire.questions.filter((_, i) => i !== index),
+    questions: updatedQuestions
   };
 };
 
 /**
- * Function to edit question in the questionnaire that is being built
+ * Function to edit a question in the questionnaire
  *
- * @param index Index of the question to edit
- * @param updatedQuestion Updated question data
- * @param questionnaire Current questionnaire state
- * @returns Updated questionnaire object
+ * @param index - The index of the question to be edited
+ * @param updatedQuestion - The new question data to replace the existing question
+ * @param questionnaire - The current questionnaire state object
+ * @returns Updated questionnaire object with the edited question
  */
 export const editQuestion = (
-  index: number, 
+  index: number,
   updatedQuestion: Question,
   questionnaire: Questionnaire
 ): Questionnaire => {
+  const updatedQuestions = [...(questionnaire.questions || [])];
+  updatedQuestions[index] = updatedQuestion;
+  
   return {
     ...questionnaire,
-    questions: questionnaire.questions.map((question, i) =>
-      i === index ? updatedQuestion : question
-    ),
+    questions: updatedQuestions
   };
 };
 
 /**
- * Function to count all correct answers in the questionnaire, used for passScore determination
+ * Function to count the total number of correct answers in a questionnaire
  * 
- * @param questionnaire Current questionnaire state
- * @returns Number of correct answers
+ * @param questionnaire - The questionnaire to count correct answers for
+ * @returns The total count of correct answers across all questions
  */
 export const countCorrectAnswers = (questionnaire: Questionnaire): number => {
-  return questionnaire.questions.reduce((count, question) => {
-    return (
-      count +
-      (question.answerOptions?.filter((option) => option.isCorrect).length ||
-        0)
-    );
+  if (!questionnaire.questions) return 0;
+  
+  return questionnaire.questions.reduce((total, question) => {
+    if (!question.answerOptions) return total;
+    
+    const correctAnswersCount = question.answerOptions.filter(
+      option => option.isCorrect
+    ).length;
+    
+    return total + correctAnswersCount;
   }, 0);
 };
 
 /**
- * Function to check and set the tooltip message based on form state
+ * Creates an empty questionnaire object with default values
  * 
- * @param questionnaire Current questionnaire state
- * @returns Tooltip message
- */
-export const getTooltipMessage = (questionnaire: Questionnaire): string => {
-  if (!questionnaire.title || !questionnaire.description) {
-    return "Please provide both title and description";
-  }
-
-  if (!questionnaire.questions || questionnaire.questions.length === 0) {
-    return "Please add at least one question";
-  }
-
-  const hasAnyCorrectAnswers = questionnaire.questions.some(question => 
-    question.answerOptions && question.answerOptions.some(option => option.isCorrect)
-  );
-
-  if (!hasAnyCorrectAnswers) {
-    return "Please mark at least one answer as correct by checking the box";
-  }
-
-  if (questionnaire.passScore === undefined || questionnaire.passScore === null) {
-    return "Please set a required pass score using the slider";
-  }
-
-  return "Save questionnaire";
-};
-
-/**
- * Function to create empty questionnaire object
- * 
- * @returns Empty questionnaire object
+ * @returns A new empty questionnaire object
  */
 export const createEmptyQuestionnaire = (): Questionnaire => {
   return {
@@ -211,35 +194,138 @@ export const createEmptyQuestionnaire = (): Questionnaire => {
     description: "",
     questions: [],
     passScore: 0,
-    tags: [],
+    tags: []
   };
 };
 
 /**
- * Function to check if form is valid for submission
+ * Validates a questionnaire and returns validation result with error message if invalid
  * 
- * @param questionnaire Current questionnaire state
- * @returns Boolean indicating if form is valid
+ * @param questionnaire - The questionnaire to validate
+ * @returns An object containing isValid flag and an error message code if invalid
  */
-export const isFormValid = (questionnaire: Questionnaire): boolean => {
-  // Check required fields
-  if (!questionnaire.title || !questionnaire.description) {
-    return false;
+export const validateQuestionnaire = (questionnaire: Questionnaire): { 
+  isValid: boolean; 
+  errorType: string | null;
+} => {
+  // Check for title and description
+  if (!questionnaire.title && !questionnaire.description) {
+    return { 
+      isValid: false, 
+      errorType: "bothEmpty" 
+    };
   }
+  
+  if (!questionnaire.title) {
+    return { 
+      isValid: false, 
+      errorType: "emptyTitle" 
+    };
+  }
+  
+  if (!questionnaire.description) {
+    return { 
+      isValid: false, 
+      errorType: "emptyDescription" 
+    };
+  }
+  
+  // Check if there are any questions
   if (!questionnaire.questions || questionnaire.questions.length === 0) {
-    return false;
+    return { 
+      isValid: false, 
+      errorType: "noQuestions" 
+    };
   }
-  // Check if any question has at least one correct answer
+  
+  // Check if any question has a correct answer
   const hasAnyCorrectAnswers = questionnaire.questions.some(question => 
     question.answerOptions && question.answerOptions.some(option => option.isCorrect)
   );
-
+  
   if (!hasAnyCorrectAnswers) {
-    return false;
+    return { 
+      isValid: false, 
+      errorType: "noCorrectAnswers" 
+    };
   }
-
+  
+  // Check if pass score is set
   if (questionnaire.passScore === undefined || questionnaire.passScore === null) {
-    return false;
+    return { 
+      isValid: false, 
+      errorType: "noPassScore" 
+    };
   }
-  return true;
+  
+  // All validations passed
+  return { 
+    isValid: true, 
+    errorType: null 
+  };
+};
+
+/**
+ * Checks if a questionnaire form is valid for submission
+ * 
+ * @param questionnaire - The questionnaire to validate
+ * @returns Boolean indicating whether the form is valid
+ */
+export const isFormValid = (questionnaire: Questionnaire): boolean => {
+  const { isValid } = validateQuestionnaire(questionnaire);
+  return isValid;
+};
+
+/**
+ * Gets appropriate tooltip message for a questionnaire's validation state
+ * Using only existing localization strings
+ * 
+ * @param questionnaire - The questionnaire to get tooltip message for
+ * @param strings - The localization strings object
+ * @returns Localized tooltip message based on validation result
+ */
+export const getValidationTooltipMessage = (
+  questionnaire: Questionnaire, 
+  strings: any
+): string => {
+  const { errorType } = validateQuestionnaire(questionnaire);
+  
+  if (!errorType) {
+    return ""; // No error
+  }
+  
+  // Map error types to existing localized strings
+  switch(errorType) {
+    case "bothEmpty":
+      return strings.newQuestionnaireBuilder.tooltipBothEmpty;
+    case "emptyTitle":
+      return strings.newQuestionnaireBuilder.tooltipEmptyTitle;
+    case "emptyDescription":
+      return strings.newQuestionnaireBuilder.tooltipEmptyDescription;
+    case "noQuestions":
+      return strings.error.questionnaireSaveFailed + ", " + "At least one question is required";
+    case "noCorrectAnswers":
+      return strings.error.questionnaireSaveFailed + ", " + "At least one answer must be marked as correct";
+    case "noPassScore":
+      return strings.error.questionnaireSaveFailed + ", " + "Please set a required score using the slider";
+    default:
+      return strings.error.generic;
+  }
+};
+
+/**
+ * Legacy function for backward compatibility
+ * @deprecated Use getValidationTooltipMessage instead
+ */
+export const getTooltipMessage = (questionnaire: Questionnaire): string => {
+  if (!questionnaire.title && !questionnaire.description) {
+    return "Title and description are required";
+  }
+  if (!questionnaire.title) {
+    return "Title is required";
+  }
+  if (!questionnaire.description) {
+    return "Description is required";
+  }
+  return "";
 };
