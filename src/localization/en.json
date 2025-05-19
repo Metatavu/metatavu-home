@@ -185,7 +185,6 @@
     "submit": "Submit",
     "update": "Update",
     "restoreDefault": "Restore default holiday days consumed"
-
   },
   "tableToolbar": {
     "delete": "Delete",
@@ -327,5 +326,8 @@
     "accept": "Accept",
     "decline":"Decline",
     "consentToDataProcessing": "Grant permissions for processing your Severa data to gain additional Home features."
+  },
+  "notOptedInDescription": {
+    "description": "Accept the processing of user data to view this section."
   }
 }

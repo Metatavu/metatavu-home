@@ -141,7 +141,6 @@ const TableToolbar = ({
                 setValue={(open) => {
                   setToolbarFormMode(ToolbarFormModes.EDIT); // ensure edit mode
                   setFormOpen(open);
-                  
                 }}
                 disabled={disableEditButton}
 

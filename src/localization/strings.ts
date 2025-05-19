@@ -430,8 +430,13 @@ export interface Localized extends LocalizedStringsMethods {
     decline: string;
     consentToDataProcessing: string;
   };
-}
-
+  /**
+   * Translations related to if user is not Severa Opt in
+   */
+  notOptedInDescription: {
+    description: string;
+  };
+};
 /**
  * Initialized localized strings
  */

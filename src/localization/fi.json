@@ -326,5 +326,8 @@
     "accept": "Hyväksy",
     "decline":"En hyväksy",
     "consentToDataProcessing": "Suostumus tietojen käsittelyyn"
+  },
+  "notOptedInDescription": {
+    "description": "Hyväksy käyttäjätietojen käsittely nähdäksesi tämä osio"
   }
 }
