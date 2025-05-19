@@ -5,6 +5,7 @@ import { errorAtom } from "src/atoms/error";
 import { useAtomValue, useSetAtom } from "jotai";
 import { authAtom, userProfileAtom } from "src/atoms/auth";
 import { useLambdasApi } from "src/hooks/use-api";
+import { CircularProgress } from "@mui/material";
 
 /**
  * Settings screen component
@@ -56,12 +57,17 @@ const SettingsScreen = () => {
         <Typography variant="body1" sx={{ marginRight: 2 }}>
           {strings.settingsScreen.decline}
         </Typography>
-        <Switch
-          checked={isConsentGiven}
-          onChange={handleToggleChange}
-          inputProps={{ "aria-label": "information" }}
-          disabled={isConsentGiven || isLoading}
-        />
+        {isLoading ? (
+          <CircularProgress size={24} />
+        ) : (
+          <Switch
+            checked={isConsentGiven}
+            onChange={handleToggleChange}
+            inputProps={{ "aria-label": "information" }}
+            disabled={isConsentGiven}
+          />
+        )}
+
         <Typography variant="body1" sx={{ marginLeft: 2 }}>
           {strings.settingsScreen.accept}
         </Typography>
