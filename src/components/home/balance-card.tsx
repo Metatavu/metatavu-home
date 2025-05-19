@@ -33,27 +33,30 @@ const BalanceCard = () => {
    * Fetch user's flextime data when it is undefined.
    */
   useEffect(() => {
-    if (!usersFlextime) {
+    // This card shows admin links if adminMode is true, not personal flextime for the admin themselves.
+    // So, only fetch if not adminMode and flextime data is not yet available.
+    if (!adminMode && !usersFlextime) {
       getUsersFlextimes();
     }
-  }, [users]);
+  }, [users, userProfile, adminMode, usersFlextime]);
 
   /**
    * Initialize logged in users's time data.
    */
   const getUsersFlextimes = async () => {
+    if (!loggedInUser || !severaUserId) return;
+    
     setLoading(true);
-    if (loggedInUser) {
-      try {
-        const fetchedUsersFlextime = await flexTimeApi.getFlextimeBySeveraUserId({
-          severaUserId
-        });
-        setUsersFlextime(fetchedUsersFlextime);
-      } catch (error) {
-        setError(`${strings.error.fetchFailedFlextime}, ${error}`);
-      }
+    try {
+      const fetchedUsersFlextime = await flexTimeApi.getFlextimeBySeveraUserId({
+        severaUserId
+      });
+      setUsersFlextime(fetchedUsersFlextime);
+    } catch (error) {
+      setError(`${strings.error.fetchFailedFlextime}, ${error}`);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   /**

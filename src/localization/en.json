@@ -10,6 +10,7 @@
     "hello": "Hi",
     "logout": "Log out",
     "home": "Home",
+    "settings": "Settings" ,
     "timebank": "Timebank",
     "vacations": "Vacations",
     "onCall": "On Call",
@@ -35,7 +36,7 @@
     "questionnaireSaveFailed": "Error while saving questionnaire",
     "questionnaireUpdateFailed": "Error while updating questionnaire",
     "fetchFailedFlextime": "Error while fetching flextime data",
-    "noSeveraUserId": "One of your user is missing severaUserId, please contact a member of the metatavu home development team for more information.",
+    "noSeveraUserId" : "One of your user is missing severaUserId, please contact a member of the metatavu home development team for more information.",
     "noFlextimeData": "Something went wrong while fetching your flextime data"
   },
   "localization": {
@@ -181,7 +182,8 @@
   },
   "form": {
     "submit": "Submit",
-    "update": "Update"
+    "update": "Update",
+    "restoreDefault": "Restore default holiday days consumed"
   },
   "tableToolbar": {
     "delete": "Delete",
@@ -330,5 +332,14 @@
     "atTheEndOf": "At the end of {0}",
     "hour": "hour",
     "hours": "hours"
+  },
+  "settingsScreen": {
+    "saveSettings": "Save settings",
+    "accept": "Accept",
+    "decline":"Decline",
+    "consentToDataProcessing": "Grant permissions for processing your Severa data to gain additional Home features."
+  },
+  "notOptedInDescription": {
+    "description": "Accept the processing of user data to view this section."
   }
 }
