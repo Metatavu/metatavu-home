@@ -53,7 +53,6 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
     if (!editedQuestionnaire.tags) {
       setEditedQuestionnaire(prev => ({...prev, tags: []}));
     }
-    
     const hasChanges = !isEqual(editedQuestionnaire, questionnaire);
     const isValid = validateEditedQuestionnaire(editedQuestionnaire);
     setSaveEnabled(hasChanges && isValid);
@@ -70,7 +69,6 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
    */
   const validateEditedQuestionnaire = (questionnaire: Questionnaire): boolean => {
     const { title, description, questions } = questionnaire;
-
     if (!title || !description) return false;
     if (questions.length === 0) return false;
     if (!questionnaire.questions.every(isQuestionValid)) return false;
@@ -88,7 +86,7 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
     if (!question.questionText || !question.questionText.trim()) {
       return false;
     }
-    
+  
     if (!question.answerOptions || question.answerOptions.length === 0) {
       return false;
     }
@@ -131,7 +129,6 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
       ...prev,
       tags: [...(prev.tags || []), trimmedTag]
     }));
-  
     setNewTag("");
     setTagError(null);
   };
@@ -175,7 +172,6 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
 
   /**
    * Handle change event for answer option in question
-   *
    * @param questionIndex number
    * @param optionIndex number
    * @param updatedFields - The updated fields for the question
@@ -188,13 +184,11 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
     const updatedOptions = editedQuestionnaire.questions[questionIndex].answerOptions.map(
       (option, i) => (i === optionIndex ? { ...option, ...updatedFields } : option)
     );
-
     handleQuestionChange(questionIndex, { answerOptions: updatedOptions });
   };
 
   /**
    * Function to add a new answer option to a question
-   * 
    * @param questionIndex - Index of the question
    */
   const handleAddAnswerOption = (questionIndex: number) => {
@@ -202,14 +196,12 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
       label: "",
       isCorrect: false
     };
-    
     const updatedOptions = [...editedQuestionnaire.questions[questionIndex].answerOptions, newOption];
     handleQuestionChange(questionIndex, { answerOptions: updatedOptions });
   };
 
   /**
    * Function to remove an answer option from a question
-   * 
    * @param questionIndex - Index of the question
    * @param optionIndex - Index of the answer option to remove
    */
@@ -230,12 +222,9 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
     questionText,
     answerOptions
   }: { questionText: string; answerOptions: AnswerOption[] }) => {
-    // Only add if the question has text and at least one answer option
     if (!questionText.trim() || !answerOptions || answerOptions.length === 0) {
       return;
     }
-    
-    // Filter out empty answer options
     const validAnswerOptions = answerOptions.filter(option => option.label && option.label.trim());
     
     if (validAnswerOptions.length === 0) {
@@ -250,7 +239,6 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
 
   /**
    * Function to delete question from Questionnaire
-   *
    * @param questionIndex number
    */
   const handleDeleteQuestion = (questionIndex: number) => {
@@ -270,9 +258,7 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
       return count + (question.answerOptions?.filter((option) => option.isCorrect).length || 0);
     }, 0);
   };
-
   const maxCorrectAnswers = countEditedCorrectAnswers();
-
   /**
    * Function to handle passScore change
    *
