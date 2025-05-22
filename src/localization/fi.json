@@ -307,6 +307,8 @@
     "question": "Kysymys",
     "deleteQuestion": "Poista kysymys",
     "passScoreLabel": "Pistemäärä",
+    "answerOption": "Vastausvaihtoehto",
+    "addAnswerOption": "Lisää vastausvaihtoehto",
     "passScoreMax": "Maksimipistemäärä",
     "update": "Päivitä kysely",
     "clearPassedUsers": "Tyhjennä läpäisseet käyttäjät tästä kyselystä",

@@ -409,6 +409,8 @@ export interface Localized extends LocalizedStringsMethods {
     update: string;
     clearPassedUsers: string;
     snackbarMessageSuccess: string;
+    answerOption: string;        
+    addAnswerOption: string;
   };
   /**
    * Translations related to tags

@@ -416,7 +416,7 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
                         label: e.target.value
                       })
                     }
-                    placeholder={`Answer option ${optionIndex + 1}`}
+                    placeholder={`${strings.questionnaireEdit.answerOption} ${optionIndex + 1}`}
                     fullWidth
                     size="small"
                   />
@@ -425,7 +425,7 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
                       onClick={() => handleRemoveAnswerOption(questionIndex, optionIndex)}
                       color="error"
                       size="small"
-                      sx={{ ml: 1, minWidth: 'auto', px: 1 }}
+                      sx={{ ml: 1, minWidth: "auto", px: 1 }}
                     >
                       ✕
                     </Button>
@@ -440,7 +440,7 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
                   size="small"
                   color="primary"
                 >
-                  + Add Answer Option
+                  + {strings.questionnaireEdit.addAnswerOption}
                 </Button>
                 
                 <Button

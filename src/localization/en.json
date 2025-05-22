@@ -306,6 +306,8 @@
     "descriptionLabel": "Description",
     "question": "Question",
     "deleteQuestion": "Delete question",
+    "answerOption": "Answer option",
+    "addAnswerOption": "Add Answer Option",
     "passScoreLabel": "Pass score",
     "passScoreMax": "Max pass score:",
     "update": "Update Questionnaire",
