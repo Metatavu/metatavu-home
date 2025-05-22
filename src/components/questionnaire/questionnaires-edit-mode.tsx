@@ -85,14 +85,23 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
    * @returns boolean - True if the question is valid, false otherwise
    */
   const isQuestionValid = (question: Question): boolean => {
-    if (!question.questionText || question.answerOptions.length === 0) {
+    // Check if question text exists and is not empty
+    if (!question.questionText || !question.questionText.trim()) {
       return false;
     }
-    const hasEmptyLabel = question.answerOptions.some((option) => !option.label.trim());
+    
+    // Check if there are answer options
+    if (!question.answerOptions || question.answerOptions.length === 0) {
+      return false;
+    }
+    
+    // Check if all answer options have labels
+    const hasEmptyLabel = question.answerOptions.some((option) => !option.label || !option.label.trim());
     if (hasEmptyLabel) {
       return false;
     }
 
+    // Check if at least one answer is marked as correct
     const hasCorrectAnswer = question.answerOptions.some((option) => option.isCorrect);
     return hasCorrectAnswer;
   };
@@ -188,6 +197,34 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
   };
 
   /**
+   * Function to add a new answer option to a question
+   * 
+   * @param questionIndex - Index of the question
+   */
+  const handleAddAnswerOption = (questionIndex: number) => {
+    const newOption: AnswerOption = {
+      label: "",
+      isCorrect: false
+    };
+    
+    const updatedOptions = [...editedQuestionnaire.questions[questionIndex].answerOptions, newOption];
+    handleQuestionChange(questionIndex, { answerOptions: updatedOptions });
+  };
+
+  /**
+   * Function to remove an answer option from a question
+   * 
+   * @param questionIndex - Index of the question
+   * @param optionIndex - Index of the answer option to remove
+   */
+  const handleRemoveAnswerOption = (questionIndex: number, optionIndex: number) => {
+    const updatedOptions = editedQuestionnaire.questions[questionIndex].answerOptions.filter(
+      (_, index) => index !== optionIndex
+    );
+    handleQuestionChange(questionIndex, { answerOptions: updatedOptions });
+  };
+
+  /**
    * Functions to add new question to Questionnaire
    *
    * @param questionText string
@@ -197,9 +234,21 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
     questionText,
     answerOptions
   }: { questionText: string; answerOptions: AnswerOption[] }) => {
+    // Only add if the question has text and at least one answer option
+    if (!questionText.trim() || !answerOptions || answerOptions.length === 0) {
+      return;
+    }
+    
+    // Filter out empty answer options
+    const validAnswerOptions = answerOptions.filter(option => option.label && option.label.trim());
+    
+    if (validAnswerOptions.length === 0) {
+      return;
+    }
+    
     setEditedQuestionnaire((prevQuestionnaire) => ({
       ...prevQuestionnaire,
-      questions: [...prevQuestionnaire.questions, { questionText, answerOptions }]
+      questions: [...prevQuestionnaire.questions, { questionText: questionText.trim(), answerOptions: validAnswerOptions }]
     }));
   };
 
@@ -350,52 +399,80 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
           </Box>
           
           {editedQuestionnaire.questions.map((question, questionIndex) => (
-            <div key={questionIndex}>
+            <Card key={questionIndex} sx={{ mb: 2, p: 2, border: '1px solid #e0e0e0' }}>
               <TextField
                 label={`${strings.questionnaireEdit.question} ${questionIndex + 1}`}
                 value={question.questionText}
                 onChange={(e) =>
-                  handleQuestionChange(questionIndex, { ...question, questionText: e.target.value })
+                  handleQuestionChange(questionIndex, { questionText: e.target.value })
                 }
                 fullWidth
                 margin="normal"
+                required
               />
-              <Box>
-                {question.answerOptions.map((option, optionIndex) => (
-                  <Box key={optionIndex} sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-                    <Checkbox
-                      sx={{ mr: 1 }}
-                      color="success"
-                      checked={option.isCorrect}
-                      onChange={() =>
-                        handleAnswerOptionChange(questionIndex, optionIndex, {
-                          isCorrect: !option.isCorrect
-                        })
-                      }
-                    />
-                    <TextField
-                      value={option.label}
-                      onChange={(e) =>
-                        handleAnswerOptionChange(questionIndex, optionIndex, {
-                          label: e.target.value
-                        })
-                      }
-                      fullWidth
-                    />
-                  </Box>
-                ))}
+              
+              <Typography variant="subtitle2" sx={{ mt: 2, mb: 1 }}>
+                Answer Options:
+              </Typography>
+              
+              {question.answerOptions.map((option, optionIndex) => (
+                <Box key={optionIndex} sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+                  <Checkbox
+                    sx={{ mr: 1 }}
+                    color="success"
+                    checked={option.isCorrect}
+                    onChange={() =>
+                      handleAnswerOptionChange(questionIndex, optionIndex, {
+                        isCorrect: !option.isCorrect
+                      })
+                    }
+                  />
+                  <TextField
+                    value={option.label}
+                    onChange={(e) =>
+                      handleAnswerOptionChange(questionIndex, optionIndex, {
+                        label: e.target.value
+                      })
+                    }
+                    placeholder={`Answer option ${optionIndex + 1}`}
+                    fullWidth
+                    size="small"
+                  />
+                  {question.answerOptions.length > 1 && (
+                    <Button
+                      onClick={() => handleRemoveAnswerOption(questionIndex, optionIndex)}
+                      color="error"
+                      size="small"
+                      sx={{ ml: 1, minWidth: 'auto', px: 1 }}
+                    >
+                      ✕
+                    </Button>
+                  )}
+                </Box>
+              ))}
+              
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
+                <Button
+                  onClick={() => handleAddAnswerOption(questionIndex)}
+                  variant="outlined"
+                  size="small"
+                  color="primary"
+                >
+                  + Add Answer Option
+                </Button>
+                
+                <Button
+                  onClick={() => handleDeleteQuestion(questionIndex)}
+                  variant="contained"
+                  color="error"
+                  size="small"
+                >
+                  {strings.questionnaireEdit.deleteQuestion}
+                </Button>
               </Box>
-              <Button
-                sx={{ color: "black", float: "right", mb: 2 }}
-                size="small"
-                onClick={() => handleDeleteQuestion(questionIndex)}
-                variant="contained"
-                color="secondary"
-              >
-                {strings.questionnaireEdit.deleteQuestion}
-              </Button>
-            </div>
+            </Card>
           ))}
+          
           <NewQuestionCard handleAddQuestion={handleAddQuestion} />
           <CardActions
             sx={{
