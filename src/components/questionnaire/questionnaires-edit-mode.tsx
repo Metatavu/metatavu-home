@@ -85,23 +85,19 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
    * @returns boolean - True if the question is valid, false otherwise
    */
   const isQuestionValid = (question: Question): boolean => {
-    // Check if question text exists and is not empty
     if (!question.questionText || !question.questionText.trim()) {
       return false;
     }
     
-    // Check if there are answer options
     if (!question.answerOptions || question.answerOptions.length === 0) {
       return false;
     }
     
-    // Check if all answer options have labels
     const hasEmptyLabel = question.answerOptions.some((option) => !option.label || !option.label.trim());
     if (hasEmptyLabel) {
       return false;
     }
 
-    // Check if at least one answer is marked as correct
     const hasCorrectAnswer = question.answerOptions.some((option) => option.isCorrect);
     return hasCorrectAnswer;
   };

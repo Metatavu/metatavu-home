@@ -3,6 +3,7 @@ import {
   AnswerOption,
   Question,
 } from "src/generated/homeLambdasClient";
+import { Localized } from "src/localization/strings";
 
 /**
  * Function to handle input change in the questionnaire title and description
@@ -32,12 +33,7 @@ export const handleQuestionnaireInputChange = (
 export const addTag = (
   tagInput: string,
   questionnaire: Questionnaire,
-  strings: {
-    questionnaireTags: {
-      emptyTagError: string;
-      duplicateTagError: string;
-    };
-  }
+  strings: Localized
 ): { updatedQuestionnaire: Questionnaire; error: string | null } => {
   const trimmedTag = tagInput.trim();
   if (!trimmedTag) {
