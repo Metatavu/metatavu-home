@@ -32,7 +32,12 @@ export const handleQuestionnaireInputChange = (
 export const addTag = (
   tagInput: string,
   questionnaire: Questionnaire,
-  strings: any
+  strings: {
+    questionnaireTags: {
+      emptyTagError: string;
+      duplicateTagError: string;
+    };
+  }
 ): { updatedQuestionnaire: Questionnaire; error: string | null } => {
   const trimmedTag = tagInput.trim();
   if (!trimmedTag) {
@@ -289,7 +294,17 @@ export const isFormValid = (questionnaire: Questionnaire): boolean => {
  */
 export const getValidationTooltipMessage = (
   questionnaire: Questionnaire, 
-  strings: any
+  strings: {
+    newQuestionnaireBuilder: {
+      tooltipBothEmpty: string;
+      tooltipEmptyTitle: string;
+      tooltipEmptyDescription: string;
+    };
+    error: {
+      questionnaireSaveFailed: string;
+      generic: string;
+    };
+  }
 ): string => {
   const { condition } = validateQuestionnaire(questionnaire);
   
