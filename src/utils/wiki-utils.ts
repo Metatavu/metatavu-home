@@ -10,7 +10,7 @@ export const getLastActivityString = (article: ArticleMetadata) => {
 
   if (lastUpdatedAt?.getTime() === createdAt?.getTime())
     return { 
-      action: strings.wikiDocumentation.lastCreated, 
+      action: strings.wikiDocumentation.created, 
       user: article.createdBy 
     }
 

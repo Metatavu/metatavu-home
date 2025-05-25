@@ -31,6 +31,7 @@ interface Props {
   adminMode: boolean;
   action: "edit"|"create";
   article?: Article;
+  setArticle?: (value: Article) => void
 }
 
 interface EditorRef {
@@ -41,6 +42,7 @@ const CreateOrEditArticleForm = ({
   setFormOpen, 
   action="create", 
   article, 
+  setArticle,
   adminMode
 } : Props) => {
   const {articleApi} = useLambdasApi();
@@ -116,7 +118,8 @@ const CreateOrEditArticleForm = ({
         if (article.draft) setDraftArticlesAtom((articles) => (articles || []).filter(article => article.id!==response.id));
         else setArticlesAtom((articles) => (articles || []).filter(article => article.id!==response.id))
         setArticlesAtom((articles) => [response, ...(articles || [])]);
-        setTags((tags) => [...new Set<string>(tags.concat(selectedTags))])
+        setTags((tags) => [...new Set<string>(tags.concat(selectedTags))]);
+        if (setArticle) setArticle(updatedArticle);
       }
       setFormOpen(false);
     }

@@ -45,10 +45,10 @@ const ArticleScreen = () => {
     if (path) {
       setLoading(true);
       try {
-        const article = await articleApi.getArticle({ path });
+        const article = await articleApi.getArticleByPath({ path });
         if (!adminMode) { 
           const connectedArticles = await articleApi.getArticles(
-            {path: article.path
+            {pathPrefix: article.path
               .slice(0, article.path.lastIndexOf("/"))
             }
           );
@@ -96,6 +96,7 @@ const ArticleScreen = () => {
               setFormOpen={setFormOpen} 
               action="edit" 
               article={article}
+              setArticle={setArticle}
               adminMode={adminMode}
             />
           : <>
@@ -159,7 +160,9 @@ const ArticleScreen = () => {
                       {strings.wikiDocumentation.connectedArticles}
                     </Typography>
                     {connectedArticles.map((article) => (
-                      <ArticleListItem article={article} key={`connected-article-${article.id}`}/>
+                      <Box sx={{ marginBottom: 4 }}>
+                        <ArticleListItem article={article} key={`connected-article-${article.id}`}/>
+                      </Box>
                     ))}
                   </Box>
                 }

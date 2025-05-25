@@ -322,7 +322,7 @@
     "cardTitle": "Wiki Documentation",
     "article": "article:",
     "lastUpdated": "Last updated",
-    "lastCreated": "Last created",
+    "created": "Created",
     "lastRead": "Last read",
     "pendingArticles": "You have {0} articles pending review.",
     "noPendingArticles": "No articles pending review.",

@@ -425,7 +425,7 @@ export interface Localized extends LocalizedStringsMethods {
     cardTitle: string;
     article: string;
     lastUpdated: string;
-    lastCreated: string;
+    created: string;
     lastRead: string;
     pendingArticles: string;
     noPendingArticles: string;

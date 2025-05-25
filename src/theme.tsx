@@ -64,6 +64,16 @@ export const theme: Theme = createTheme({
           backgroundColor: "#f5f5f5"
         }
       }
+    },
+    MuiChip: {
+      defaultProps: {
+        color: "default"
+      },
+      styleOverrides: {
+        root: {
+          backgroundColor: "#F9A0A0"
+        }
+      }
     }
   },
   shape: {

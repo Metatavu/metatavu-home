@@ -1,4 +1,4 @@
-import {useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { 
   CircularProgress, 
   Card, 
@@ -37,7 +37,7 @@ import ArticleCard from "../wiki-documentation/article-card";
 import ArticleListItem from "../wiki-documentation/article-list-item";
 
 const colors = wikiScreenColors;
-const itemsPerPage = 4;
+const itemsPerPage = 12;
 
 /**
  * Wiki documentation screen component displaying a list of articles.
@@ -66,7 +66,7 @@ const WikiDocumentationScreen = () => {
 
   useEffect(() => {
     if (!articles) getArticles();
-    else if (articles.length !== 0){
+    else if (articles.length !== 0) {
       if (!adminMode) getLastUpdatedArticles(articles);
       getTags(adminMode ? articles.concat(draftArticles || []) : articles);
       setDisplayedArticles(articles);
@@ -453,11 +453,12 @@ const WikiDocumentationScreen = () => {
             ) :
             (
               <>
-                {!adminMode &&
+                {!adminMode ?
                   <>
                     {renderTitle(strings.wikiDocumentation.cardTitle)}
-                    {lastUpdatedArticles.length !== 0 && <CarouselArticleCards articles={lastUpdatedArticles}/>}
+                    {<CarouselArticleCards articles={lastUpdatedArticles}/> }
                   </> 
+                  : <></>
                 }
                 <Box sx={adminMode 
                   ? {marginTop: 4, marginBottom: 4} 

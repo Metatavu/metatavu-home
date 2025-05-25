@@ -322,7 +322,7 @@
     "cardTitle": "Wiki Dokumentaatio",
     "article": "artikkeli:",
     "lastUpdated": "Viimeksi päivitetty",
-    "lastCreated": "Viimeksi luotu",
+    "created": "Luotu",
     "lastRead": "Viimeksi luettu",
     "pendingArticles": "You have {0} articles pending review",
     "noPendingArticles": "Ei tarkistusta odottavia artikkeleita.",

@@ -97,7 +97,7 @@ const WikiDocumentationCard = () => {
                 objectFit: "cover",
                 overflow: "hidden"
               }}
-              alt="The house from the offer."
+              alt="alternative text"
               src={lastUpdatedArticle.coverImage}
             />
           </Grid>
