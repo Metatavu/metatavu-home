@@ -33,11 +33,11 @@ const SoftwareScreen = () => {
   const auth = useAtomValue(authAtom);
   const loggedUserId = auth?.token?.sub ?? "";
   const [isGridView, setIsGridView] = useState(true);
-  const [applications, setApplications] = useAtom(softwareAtom);
+  const [software, setApplications] = useAtom(softwareAtom);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const [searchValue, setSearchValue] = useState<string>("");
+  const [searchValue, setSearchValue] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showAll, setShowAll] = useState(false);
   const recommendationRef = useRef<null | HTMLDivElement>(null);
@@ -57,11 +57,11 @@ const SoftwareScreen = () => {
    *
    * @returns The list of filtered applications owned by the logged in user.
    */
-  const myApplications = useMemo(
-    () => applications.filter((app) =>
-      app.users?.includes(loggedUserId) && app.status === "ACCEPTED"
+  const mySoftware = useMemo(
+    () => software.filter((software) =>
+      software.users?.includes(loggedUserId) && software.status === "ACCEPTED"
     ),
-    [applications, loggedUserId]
+    [software, loggedUserId]
   );
 
   /**
@@ -69,14 +69,14 @@ const SoftwareScreen = () => {
    *
    * @returns Filtered applications matching the search and tags.
    */
-  const filteredApplications = useMemo(() => {
-    return myApplications.filter((app) => {
-      const matchesName = app.name.toLowerCase().includes(searchValue.toLowerCase());
-      const matchesTags = selectedTags.length === 0 || (app.tags && selectedTags.some(tag => app.tags?.includes(tag)));
-      const matchesTagSearch = app.tags?.some((tag) => tag.toLowerCase().includes(searchValue.toLowerCase()));
+  const filteredSoftware = useMemo(() => {
+    return mySoftware.filter((software) => {
+      const matchesName = software.name.toLowerCase().includes(searchValue.toLowerCase());
+      const matchesTags = selectedTags.length === 0 || (software.tags && selectedTags.some(tag => software.tags?.includes(tag)));
+      const matchesTagSearch = software.tags?.some((tag) => tag.toLowerCase().includes(searchValue.toLowerCase()));
       return (matchesName || matchesTagSearch) && matchesTags;
     });
-  }, [myApplications, selectedTags, searchValue]
+  }, [mySoftware, selectedTags, searchValue]
   );
 
   /**
@@ -85,8 +85,8 @@ const SoftwareScreen = () => {
    * @returns The list of recommended applications.
    */
   const recommendedApplications = useMemo(
-    () => applications.filter((app) => app.recommend?.includes(loggedUserId)),
-    [applications, loggedUserId]
+    () => software.filter((app) => app.recommend?.includes(loggedUserId)),
+    [software, loggedUserId]
   );
 
   /**
@@ -96,9 +96,9 @@ const SoftwareScreen = () => {
    */
   const filteredTags = useMemo(() => {
     const tags = new Set<string>();
-    filteredApplications.forEach((app) => app.tags?.forEach((tag) => tags.add(tag)));
+    filteredSoftware.forEach((app) => app.tags?.forEach((tag) => tags.add(tag)));
     return Array.from(tags);
-  }, [filteredApplications]);
+  }, [filteredSoftware]);
 
   /**
    * Fetches all software data.
@@ -106,10 +106,9 @@ const SoftwareScreen = () => {
    */
   const fetchSoftwareData = async () => {
     setLoading(true);
-    setError(null);
     try {
-      const fetchedApplications = await softwareApi.listSoftware();
-      setApplications(fetchedApplications);
+      const fetchedSoftware = await softwareApi.listSoftware();
+      setApplications(fetchedSoftware);
     } catch (error) {
       setError(`Error fetching software data: ${error}`);
     } finally {
@@ -127,7 +126,7 @@ const SoftwareScreen = () => {
     setLoading(true);
 
     try {
-      const app = applications.find(app => app.id === appId);
+      const app = software.find(app => app.id === appId);
 
       if (app) {
         const isUserInApp = app.users?.includes(loggedUserId);
@@ -155,8 +154,11 @@ const SoftwareScreen = () => {
    * Fetches the software data if the user is logged in.
    */
   useEffect(() => {
-    fetchSoftwareData();
-  }, [loggedUserId, auth]);
+    if (loggedUserId){
+      fetchSoftwareData();
+    }
+  }, []);
+
 
   if (loading) {
     return (
@@ -269,7 +271,7 @@ const SoftwareScreen = () => {
           <Grid item mr={2}>
             <Sidebar
               onTagSelection={setSelectedTags}
-              filteredApplicationsCount={filteredApplications.length}
+              filteredApplicationsCount={filteredSoftware.length}
               availableTags={filteredTags}
               onSearch={setSearchValue}
             />
@@ -288,13 +290,13 @@ const SoftwareScreen = () => {
               <Content
                 applications={
                   showAll ?
-                    filteredApplications :
-                    filteredApplications.slice(0, 4)
+                    filteredSoftware :
+                    filteredSoftware.slice(0, 4)
                 }
                 isGridView={isGridView}
               />
             )}
-            {filteredApplications.length > 4 && (
+            {filteredSoftware.length > 4 && (
               <Box textAlign="center" mt={3}>
                 <Button
                   variant="contained"
@@ -337,7 +339,7 @@ const SoftwareScreen = () => {
         handleClose={() => setIsModalOpen(false)}
         handleSave={createSoftware}
         disabled={loading}
-        existingSoftwareList={applications}
+        existingSoftwareList={software}
       />
     </Container>
   );

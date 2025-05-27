@@ -37,7 +37,7 @@ const Sidebar: FunctionComponent<SidebarProps> = ({
 }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const [searchValue, setSearchValue] = useState<string>("");
+  const [searchValue, setSearchValue] = useState("");
 
   /**
    * Filters available tags based on the search input and selected tags.

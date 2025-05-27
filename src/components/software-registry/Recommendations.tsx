@@ -24,7 +24,6 @@ interface RecommendationsProps {
  * This component renders a list of recommended software for the user, displayed in a carousel format.
  * Each application is displayed as a card, and user can add an application to their list.
  *
- * @component
  * @param RecommendationsProps the props for the Recommendations component.
  * @returns The rendered Recommendations component.
  */

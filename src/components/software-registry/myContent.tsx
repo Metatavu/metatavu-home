@@ -30,14 +30,14 @@ const Content: FunctionComponent<ContentProps> = ({ applications, isGridView }) 
           key={app.id} 
         >
           <AppCard
-            id={app.id || ''}
+            id={app.id || ""}
             image={app.image}
             name={app.name}
             description={app.description}
             tags={app.tags || []}
             isGridView={isGridView} 
-            url={''}
-            createdBy={''}
+            url={""}
+            createdBy={""}
             />
         </Grid>
       ))}

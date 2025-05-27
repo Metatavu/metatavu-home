@@ -10,12 +10,12 @@ import SoftwareRegistryCard from "../home/software-registry-card";
  * Admin screen component
  */
 const AdminScreen = () => {
-  const developerMode = UserRoleUtils.developerMode();
-  const balanceCard = developerMode ? <BalanceCard /> : null;
-  const sprintViewCard = developerMode ? <SprintViewCard /> : null;
-  const vacationsCard = developerMode ? <VacationsCard /> : null;
-  const questionairesCard = developerMode ? <QuestionnaireCard /> : null;
-  const softwareRegistryCard = developerMode ? <SoftwareRegistryCard /> : null;
+  //const developerMode = UserRoleUtils.developerMode();
+  const balanceCard = <BalanceCard />;
+  const sprintViewCard = <SprintViewCard />;
+  const vacationsCard = <VacationsCard /> ;
+  const questionairesCard = <QuestionnaireCard /> ;
+  const softwareRegistryCard = <SoftwareRegistryCard />;
 
   return (
     <Grid container spacing={2}>

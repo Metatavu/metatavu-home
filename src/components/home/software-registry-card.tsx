@@ -2,7 +2,7 @@ import { Card, CardContent, Typography, Skeleton, Grid, CardMedia } from "@mui/m
 import { Link } from "react-router-dom";
 import strings from "../../localization/strings";
 import UserRoleUtils from "../../utils/user-role-utils";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useLambdasApi } from "src/hooks/use-api";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { errorAtom } from "src/atoms/error";
@@ -34,7 +34,7 @@ const SoftwareRegistryCard = () => {
     }
   };
 
-  useMemo(() => {
+  useEffect(() => {
     fetchSoftware();
   }, []);
 

@@ -47,17 +47,17 @@ const statusOptions = [
 /**
  * All software screen component
  */
-const AllSoftwareScreen: React.FC = () => {
+const AllSoftwareScreen = () => {
   const { softwareApi } = useLambdasApi();
-  const [applications, setApplications] = useState<SoftwareRegistry[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [software, setApplications] = useState<SoftwareRegistry[]>([]);
+  const [loading, setLoading] = useState(true);
   const auth = useAtomValue(authAtom);
   const loggedUserId = auth?.token?.sub ?? "";
   const adminMode = UserRoleUtils.adminMode();
   const [selectedStatus, setSelectedStatus] = useState<string>("ALL");
   const [error, setError] = useState<string | null>(null);
   const [searchTerms, setSearchTerms] = useState<string[]>([]);
-  const [inputValue, setInputValue] = useState<string>("");
+  const [inputValue, setInputValue] = useState("");
   const [isGridView, setIsGridView] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showAll, setShowAll] = useState(false);
@@ -79,7 +79,6 @@ const AllSoftwareScreen: React.FC = () => {
    */
   const fetchSoftwareData = async () => {
     setLoading(true);
-    setError(null);
     try {
       const fetchedApplications = await softwareApi.listSoftware();
       setApplications(fetchedApplications);
@@ -92,38 +91,48 @@ const AllSoftwareScreen: React.FC = () => {
 
   /**
    * Filters the applications based on the input and search terms.
+   * @param software - A software registry item to be tested against the search filters.
+   * @returns `true` if the application matches both the user input and all search terms; otherwise, `false`
    */
-  const filterBySearchTerms = (app: SoftwareRegistry): boolean => {
+  const filterBySearchTerms = (software: SoftwareRegistry): boolean => {
     const lowerCaseInput = inputValue.toLowerCase();
-    const matchesInput = app.name.toLowerCase().includes(lowerCaseInput) ||
-      (app.tags ?? []).some(tag => tag.toLowerCase().includes(lowerCaseInput));
+    const matchesInput = software.name.toLowerCase().includes(lowerCaseInput) ||
+      (software.tags ?? []).some(tag => tag.toLowerCase().includes(lowerCaseInput));
 
     const matchesTerms = searchTerms.every(term => {
       const lowerCaseTerm = term.toLowerCase();
       return (
-        app.name.toLowerCase().includes(lowerCaseTerm) ||
-        (app.tags ?? []).some(tag => tag.toLowerCase().includes(lowerCaseTerm))
+        software.name.toLowerCase().includes(lowerCaseTerm) ||
+        (software.tags ?? []).some(tag => tag.toLowerCase().includes(lowerCaseTerm))
       );
     });
 
     return matchesInput && matchesTerms;
   };
 
-  const filterByStatus = (app: SoftwareRegistry, status: string): boolean => {
-    return status === "ALL" || app.status === status;
+  /**
+ * Filters the application by its status.
+ *
+ * @param software - The software application to check.
+ * @param status - The status filter value (e.g., "ALL", "PENDING", etc.).
+ * @returns `true` if the application matches the given status or if the status is "ALL"; otherwise, `false`.
+ */
+  const filterByStatus = (software: SoftwareRegistry, status: string): boolean => {
+    return status === "ALL" || software.status === status;
   };
 
   const filteredApplications = useMemo(() => {
-    return applications.filter(app => {
+    return software.filter(app => {
       const matchesSearch = filterBySearchTerms(app);
       const matchesStatus = filterByStatus(app, selectedStatus);
       return matchesSearch && matchesStatus;
     });
-  }, [applications, inputValue, searchTerms, selectedStatus]);
+  }, [software, inputValue, searchTerms, selectedStatus]);
 
   /**
    * Handles the input for search terms.
    * Adds new search terms when the "Enter" key is pressed.
+   * @param event - The keyboard event triggered by the user pressing a key inside the input field.
    */
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter" && inputValue.trim() !== "") {
@@ -138,6 +147,7 @@ const AllSoftwareScreen: React.FC = () => {
 
   /**
    * Deletes a search term chip.
+   * @param chipToDelete - The search term (chip) to remove from the list.
    */
   const handleDeleteChip = (chipToDelete: string) => {
     setSearchTerms((prevChips) =>
@@ -153,25 +163,18 @@ const AllSoftwareScreen: React.FC = () => {
    */
   const handleStatusChange = async (id: string, newStatus: SoftwareStatus) => {
     try {
-      const appToUpdate = applications.find(app => app.id === id);
+      const softwareToUpdate = software.find(software => software.id === id);
 
-      if (appToUpdate) {
+      if (softwareToUpdate) {
         const updatedApp: SoftwareRegistry = {
-          ...appToUpdate,
-          status: newStatus,
-          name: appToUpdate.name || "",
-          description: appToUpdate.description || "",
-          review: appToUpdate.review || "",
-          url: appToUpdate.url || "",
-          image: appToUpdate.image || "",
-          tags: appToUpdate.tags || [],
-          users: appToUpdate.users || []
+          ...softwareToUpdate,
+          status: newStatus
         };
 
-        const updatedApplications = applications.map(app =>
-          app.id === id ? updatedApp : app
+        const updatedSoftwares = software.map(software =>
+          software.id === id ? updatedApp : software
         );
-        setApplications(updatedApplications);
+        setApplications(updatedSoftwares);
 
         await softwareApi.updateSoftwareById({
           id,
@@ -179,7 +182,7 @@ const AllSoftwareScreen: React.FC = () => {
         });
       }
     } catch (error) {
-      console.error(`Error updating status: ${error}`);
+      setError(`Error updating status: ${error}`);
     }
   };
 
@@ -190,28 +193,28 @@ const AllSoftwareScreen: React.FC = () => {
    */
   const handleSave = async (id: string) => {
     try {
-      const applicationToUpdate = applications.find(app => app.id === id);
-      if (!applicationToUpdate) {
+      const softwareToUpdate = software.find(software => software.id === id);
+      if (!softwareToUpdate) {
         throw new Error(`Application with ID ${id} not found`);
       }
 
-      const updatedUsers = applicationToUpdate.users ? [...applicationToUpdate.users, loggedUserId] : [loggedUserId];
+      const updatedUsers = softwareToUpdate.users ? [...softwareToUpdate.users, loggedUserId] : [loggedUserId];
 
-      const updatedApplications = applications.map(app =>
-        app.id === id ? { ...app, users: updatedUsers, isInMyApplications: true } : app
+      const updatedApplications = software.map(software =>
+        software.id === id ? { ...software, users: updatedUsers, isInMyApplications: true } : software
       );
       setApplications(updatedApplications);
 
       await softwareApi.updateSoftwareById({
         id,
         softwareRegistry: {
-          ...applicationToUpdate,
+          ...softwareToUpdate,
           users: updatedUsers,
         }
       });
 
     } catch (error) {
-      console.error(`Error saving the app: ${error}`);
+      setError(`Error saving the app: ${error}`);
     }
   };
 
@@ -240,17 +243,17 @@ const AllSoftwareScreen: React.FC = () => {
     if (!selectedApplicationId) return;
 
     try {
-      const applicationToDelete = applications.find(app => app.id === selectedApplicationId);
+      const applicationToDelete = software.find(app => app.id === selectedApplicationId);
       if (!applicationToDelete) {
         throw new Error(`Application with ID ${selectedApplicationId} not found`);
       }
 
-      const updatedApplications = applications.filter(app => app.id !== selectedApplicationId);
+      const updatedApplications = software.filter(app => app.id !== selectedApplicationId);
       setApplications(updatedApplications);
 
       await softwareApi.deleteSoftwareById({ id: selectedApplicationId });
     } catch (error) {
-      console.error(`Error deleting the app: ${error}`);
+      setError(`Error deleting the app: ${error}`);
     } finally {
       closeDeleteDialog();
     }
@@ -471,7 +474,7 @@ const AllSoftwareScreen: React.FC = () => {
         handleClose={() => setIsModalOpen(false)}
         handleSave={createSoftware}
         disabled={loading}
-        existingSoftwareList={applications}
+        existingSoftwareList={software}
       />
 
       {/* Delete Confirmation Dialog */}

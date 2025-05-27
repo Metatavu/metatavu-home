@@ -61,9 +61,10 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
   const { usersApi } = useLambdasApi();
   const [userList, setUserList] = useState<User[]>([]);
   const [software, setSoftware] = useState<SoftwareRegistry>(softwareData || initialSoftwareState);
-  const [tags, setTags] = useState<string>("");
-  const [nameExists, setNameExists] = useState<boolean>(false);
+  const [tags, setTags] = useState("");
+  const [nameExists, setNameExists] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   /**
    * Fetch the list of users when the modal opens.
@@ -74,7 +75,7 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
         const users = await usersApi.listUsers();
         setUserList(users);
       } catch (error) {
-        console.error("Error fetching users:", error);
+        setError(`Error fetching users: ${error}`);
       }
     };
 
