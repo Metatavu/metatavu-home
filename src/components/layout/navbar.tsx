@@ -8,20 +8,21 @@ import {
   Menu,
   Container,
   Tooltip,
-  Avatar
+  Avatar,
+  Button
 } from "@mui/material";
 import LocalizationButtons from "../layout-components/localization-buttons";
 import strings from "src/localization/strings";
 import { authAtom, userProfileAtom } from "src/atoms/auth";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import NavItems from "./navitems";
-import SyncButton from "./sync-button";
 import { avatarsAtom, personsAtom } from "src/atoms/person";
 import type { Person } from "src/generated/client";
 import config from "src/app/config";
 import { useLambdasApi } from "src/hooks/use-api";
 import { errorAtom } from "src/atoms/error";
-
+import SettingsIcon from '@mui/icons-material/Settings';
+import { useNavigate } from "react-router-dom";
 /**
  * NavBar component
  */
@@ -33,6 +34,7 @@ const NavBar = () => {
   const userProfile = useAtomValue(userProfileAtom);
   const setError = useSetAtom(errorAtom);
   const { slackAvatarsApi } = useLambdasApi();
+  const navigate = useNavigate();
   const loggedInPerson = persons.find(
     (person: Person) =>
       person.id === config.person.forecastUserIdOverride || person.keycloakId === userProfile?.id
@@ -64,6 +66,14 @@ const NavBar = () => {
   };
 
   /**
+   * handles open settings screen
+   */
+  const handleSettingsClick = () => {
+    navigate("/settings");
+  };
+
+
+  /**
    * Fetch Slack avatars
    */
   const getSlackAvatars = async () => {
@@ -87,8 +97,13 @@ const NavBar = () => {
         <Container maxWidth="xl">
           <Toolbar disableGutters>
             <NavItems />
-            {import.meta.env.DEV && <SyncButton />}
+            <Tooltip title={strings.header.settings}>
+              <IconButton onClick={handleSettingsClick} color="inherit">
+                <SettingsIcon />
+              </IconButton>
+            </Tooltip>
             <LocalizationButtons />
+            
             <Box>
               <Tooltip title={strings.header.openUserMenu}>
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>

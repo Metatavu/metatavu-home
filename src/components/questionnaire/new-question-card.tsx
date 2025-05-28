@@ -2,7 +2,6 @@ import {
   Box,
   Button,
   Card,
-  CardActionArea,
   CardActions,
   CardContent,
   Checkbox,
@@ -11,68 +10,67 @@ import {
 } from "@mui/material";
 import type React from "react";
 import { useState } from "react";
+import type { AnswerOption } from "src/generated/homeLambdasClient";
 import strings from "src/localization/strings";
 
 /**
- * Interface for the NewQuestionnaireCard component
+ * Interface for the NewQuestionCard component
  */
 interface Props {
-  handleAddQuestionSubmit: (
-    questionText: string,
-    options: { label: string; value: boolean }[]
-  ) => void;
+  handleAddQuestion: ({
+    questionText,
+    answerOptions
+  }: { questionText: string; answerOptions: AnswerOption[] }) => void;
 }
 
 /**
- * New Questionnaire Card Component
+ * New Question Card Component
+ *
+ * @params handleAddQuestion
  */
-const NewQuestionnaireCard = ({handleAddQuestionSubmit}: Props) => {
-  
+const NewQuestionCard = ({ handleAddQuestion }: Props) => {
   const [questionText, setQuestionText] = useState("");
-  const [options, setOptions] = useState([
-    { label: "", value: false }
-  ]);
+  const [answerOptions, setAnswerOptions] = useState([{ label: "", isCorrect: false }]);
 
   /**
-   * Handle options label (answer option) change
+   * Handle answerOptions label (answer option) change
+   *
    * @param index
    */
   const handleAnswerLabelChange = (
     index: number,
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    const updatedOptions = [...options];
-    updatedOptions[index].label = event.target.value;
-    setOptions(updatedOptions);
+    const updatedAnswerOptions = [...answerOptions];
+    updatedAnswerOptions[index].label = event.target.value;
+    setAnswerOptions(updatedAnswerOptions);
   };
 
   /**
-   * Handle options value change (checkbox)
+   * Handle answerOptions value change (checkbox)
+   *
    * @param index
    */
   const handleCheckboxChange = (index: number) => {
-    const updatedOptions = [...options];
-    updatedOptions[index].value = !updatedOptions[index].value;
-    setOptions(updatedOptions);
+    const updatedAnswerOptions = [...answerOptions];
+    updatedAnswerOptions[index].isCorrect = !updatedAnswerOptions[index].isCorrect;
+    setAnswerOptions(updatedAnswerOptions);
   };
 
   /**
    * Handle adding a new option (adds an empty option to the list)
    */
   const handleAddNewOption = () => {
-    setOptions([...options, { label: "", value: false }]);
+    setAnswerOptions([...answerOptions, { label: "", isCorrect: false }]);
   };
 
   /**
-   * Handle saving the question (submitting the question and options + resetting the form)
+   * Handle adding new question (submitting the question and answerOptions + resetting the form)
    */
-  const handleSaveQuestion = () => {
-    handleAddQuestionSubmit(questionText, options);
-
+  const handleAddNewQuestion = () => {
+    handleAddQuestion({ questionText, answerOptions });
     setQuestionText("");
-    setOptions([
-      { label: "", value: false }
-    ]);
+    setAnswerOptions([{ label: "", isCorrect: false }]);
   };
 
   return (
@@ -100,12 +98,10 @@ const NewQuestionnaireCard = ({handleAddQuestionSubmit}: Props) => {
             onChange={(e) => setQuestionText(e.target.value)}
             fullWidth
           />
-
           <Typography variant="body1" sx={{ mt: 2 }}>
             {strings.newQuestionnaireCard.correctAnswer}
           </Typography>
-
-          {options.map((option, index) => (
+          {answerOptions.map((option, index) => (
             <Box
               key={index}
               sx={{
@@ -117,7 +113,7 @@ const NewQuestionnaireCard = ({handleAddQuestionSubmit}: Props) => {
             >
               <Box sx={{ flexShrink: 0, display: "flex", alignItems: "center" }}>
                 <Checkbox
-                  checked={option.value}
+                  checked={option.isCorrect}
                   onChange={() => handleCheckboxChange(index)}
                   name={`option-${index + 1}`}
                   color="success"
@@ -136,6 +132,7 @@ const NewQuestionnaireCard = ({handleAddQuestionSubmit}: Props) => {
                   id="textfield-answer-option"
                   variant="outlined"
                   label={strings.newQuestionnaireCard.answerLabel}
+                  placeholder={strings.newQuestionnaireCard.insertAnswerLabel}
                   value={option.label}
                   onChange={(e) => handleAnswerLabelChange(index, e)}
                   fullWidth
@@ -144,20 +141,37 @@ const NewQuestionnaireCard = ({handleAddQuestionSubmit}: Props) => {
               </Box>
             </Box>
           ))}
-          <Button onClick={handleAddNewOption} sx={{ mt: 3 }}>
-            <Typography sx={{ fontWeight: "bold", mb: 2 }}>{strings.newQuestionnaireCard.addAnswer}</Typography>
-          </Button>
-          <CardActionArea>
-            <CardActions>
-              <Button size="large" variant="contained" onClick={handleSaveQuestion}>
-                {strings.newQuestionnaireCard.saveAnswer}
-              </Button>
-            </CardActions>
-          </CardActionArea>
+          <CardActions
+            sx={{
+              display: "flex",
+              width: "100%",
+              mt: 4,
+              justifyContent: "space-between"
+            }}
+          >
+            <Button
+              sx={{ alignItems: "center" }}
+              size="large"
+              variant="text"
+              onClick={handleAddNewOption}
+            >
+              <Typography sx={{ fontWeight: "bold" }}>
+                {strings.newQuestionnaireCard.addAnswer}
+              </Typography>
+            </Button>
+            <Button
+              sx={{ alignItems: "center" }}
+              size="large"
+              variant="contained"
+              onClick={handleAddNewQuestion}
+            >
+              {strings.newQuestionnaireCard.saveAnswer}
+            </Button>
+          </CardActions>
         </CardContent>
       </Card>
     </>
   );
 };
 
-export default NewQuestionnaireCard;
+export default NewQuestionCard;

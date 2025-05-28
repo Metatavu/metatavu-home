@@ -1,26 +1,20 @@
-import { Button, FormControl, FormLabel, MenuItem, TextField } from "@mui/material";
-import getVacationTypeByString from "src/utils/vacation-type-utils";
+import { Button, FormControl, FormLabel, TextField, Box } from "@mui/material";
 import { type ChangeEvent, useEffect } from "react";
 import DateRangePicker from "../../../generics/date-range-picker";
-import { type DateRange, ToolbarFormModes, type VacationData } from "src/types";
+import { type DateRange, ToolbarFormModes } from "src/types";
 import type { DateTime } from "luxon";
 import { hasAllPropsDefined } from "src/utils/check-utils";
 import strings from "src/localization/strings";
-import LocalizationUtils from "src/utils/localization-utils";
 import { calculateTotalVacationDays } from "src/utils/time-utils";
-import { useAtom, useAtomValue } from "jotai";
-import config from "src/app/config";
-import { userProfileAtom } from "src/atoms/auth";
-import { personsAtom } from "src/atoms/person";
-import { VacationType, type Person } from "src/generated/client";
-import { DAYS_OF_WEEK } from "src/components/constants";
+import type { VacationRequest } from "src/generated/homeLambdasClient";
+import UserRoleUtils from "src/utils/user-role-utils";
 
 /**
  * Component properties
  */
 interface Props {
-  vacationData: VacationData;
-  setVacationData: (vacationDate: VacationData) => void;
+  vacationRequestData: VacationRequest;
+  setVacationRequestData: (vacationRequestData: VacationRequest) => void;
   dateTimeTomorrow: DateTime;
   toolbarFormMode: ToolbarFormModes;
   dateRange: DateRange;
@@ -33,115 +27,138 @@ interface Props {
  * @param props component properties
  */
 const ToolbarFormFields = ({
-  vacationData,
-  setVacationData,
+  vacationRequestData,
+  setVacationRequestData,
   dateTimeTomorrow,
   toolbarFormMode,
   dateRange,
   setDateRange
 }: Props) => {
-  const userProfile = useAtomValue(userProfileAtom);
-  const [persons] = useAtom(personsAtom);
-  const loggedInPerson = persons.find(
-    (person: Person) =>
-      person.id === config.person.forecastUserIdOverride || person.keycloakId === userProfile?.id
-  );
+  const adminMode = UserRoleUtils.adminMode();
+  // TODO: This will be used again when we have a solution for various work contracts in place
+  // const userProfile = useAtomValue(userProfileAtom);
+  // const [users] = useAtom(usersAtom);
+  // const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
 
   useEffect(() => {
-    setVacationData({
-      ...vacationData,
-      startDate: dateRange.start,
-      endDate: dateRange.end,
-      days: calculateTotalVacationDays(
-        dateRange.start,
-        dateRange.end,
-        getWorkingWeek(loggedInPerson)
-      )
-    });
-  }, [dateRange]);
-
-  /**
-   * Handle vacation type change
-   *
-   * @param value vacation type string
-   */
-  const handleVacationTypeChange = (value: string) => {
-    const vacationType = getVacationTypeByString(value);
-    if (vacationType) {
-      setVacationData({
-        ...vacationData,
-        type: vacationType
+    if (!adminMode) {
+      setVacationRequestData({
+        ...vacationRequestData,
+        startDate: dateRange.start.toJSDate(),
+        endDate: dateRange.end.toJSDate(),
+        days: calculateTotalVacationDays(
+          dateRange.start,
+          dateRange.end,
+          // FIXME: implement a proper solution for various work contracts
+          // getWorkingWeek(loggedInUser)
+          [true, true, true, true, true, false, false]
+        )
+      });
+    } else {
+      setVacationRequestData({
+        ...vacationRequestData,
+        startDate: dateRange.start.toJSDate(),
+        endDate: dateRange.end.toJSDate()
       });
     }
-  };
+  }, [dateRange]);
 
   /**
    * Handle vacation data change
    *
    * @param value message string
    */
-  const handleVacationDataChange = (value: string) => {
-    setVacationData({
-      ...vacationData,
+  const handleVacationRequestDataChange = (value: string) => {
+    setVacationRequestData({
+      ...vacationRequestData,
       message: value
     });
   };
 
   /**
-   * Get a list of working days
+   * Handle days change
    *
-   * @param loggedInPerson Person
+   * @param value days string
    */
-  const getWorkingWeek = (loggedInPerson?: Person) => {
-    const workingWeek = new Array(DAYS_OF_WEEK.length).fill(false);
-    if (!loggedInPerson) return workingWeek;
-
-    DAYS_OF_WEEK.forEach((weekDay, index) => {
-      if (loggedInPerson[weekDay as keyof typeof loggedInPerson] !== 0) {
-        workingWeek[index] = true;
-      }
+  const handleDaysChange = (value: string) => {
+    const daysValue = Number.parseInt(value) || 0;
+    setVacationRequestData({
+      ...vacationRequestData,
+      days: daysValue
     });
-    return workingWeek;
+  };
+
+  /**
+   * Handle restore default days
+   */
+  const handleRestoreDefaultDays = () => {
+    const defaultDays = calculateTotalVacationDays(dateRange.start, dateRange.end, [
+      true,
+      true,
+      true,
+      true,
+      true,
+      false,
+      false
+    ]);
+
+    setVacationRequestData({
+      ...vacationRequestData,
+      days: defaultDays
+    });
   };
 
   return (
     <FormControl sx={{ width: "100%" }}>
-      <TextField
-        select
-        label={strings.vacationRequest.type}
-        name="type"
-        value={String(vacationData.type)}
-        onChange={(event) => {
-          handleVacationTypeChange(event.target.value);
-        }}
-        sx={{ marginBottom: "5px", width: "100%" }}
-      >
-        {Object.keys(VacationType).map((vacationType) => {
-          return (
-            <MenuItem key={vacationType} value={vacationType}>
-              {LocalizationUtils.getLocalizedVacationRequestType(vacationType as VacationType)}
-            </MenuItem>
-          );
-        })}
-      </TextField>
-      <FormLabel>{strings.vacationRequest.message}</FormLabel>
-      <TextField
-        required
-        error={!vacationData.message?.length}
-        value={vacationData.message}
-        onChange={(event: ChangeEvent<HTMLInputElement>) => {
-          handleVacationDataChange(event.target.value);
-        }}
-        sx={{ marginBottom: "5px" }}
-      />
-      <FormLabel sx={{ marginBottom: "5px" }}>{strings.vacationRequest.days}</FormLabel>
-      <DateRangePicker
-        dateTimeTomorrow={dateTimeTomorrow}
-        dateRange={dateRange}
-        setDateRange={setDateRange}
-      />
+      {!adminMode && (
+        <>
+          <FormLabel>{strings.vacationRequest.message}</FormLabel>
+          <TextField
+            required
+            error={!vacationRequestData.message?.length}
+            value={vacationRequestData.message}
+            onChange={(event: ChangeEvent<HTMLInputElement>) => {
+              handleVacationRequestDataChange(event.target.value);
+            }}
+            sx={{ marginBottom: "5px" }}
+          />
+        </>
+      )}
+
+      {adminMode ? (
+        <>
+          <FormLabel>{strings.vacationRequest.days}</FormLabel>
+          <Box sx={{ display: "flex", alignItems: "flex-start", gap: 1, mb: 1 }}>
+            <TextField
+              type="number"
+              value={vacationRequestData.days ?? ""}
+              onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                handleDaysChange(event.target.value);
+              }}
+              inputProps={{ min: 0 }}
+              sx={{ flexGrow: 1 }}
+            />
+            <Button variant="outlined" size="medium" onClick={handleRestoreDefaultDays}>
+              {strings.form.restoreDefault}
+            </Button>
+          </Box>
+        </>
+      ) : (
+        <>
+          <FormLabel sx={{ marginBottom: "5px" }}>{strings.vacationRequest.days}</FormLabel>
+          <DateRangePicker
+            dateTimeTomorrow={dateTimeTomorrow}
+            dateRange={dateRange}
+            setDateRange={setDateRange}
+          />
+        </>
+      )}
+
       <Button
-        disabled={!hasAllPropsDefined(vacationData) || !vacationData.message?.length}
+        disabled={
+          !adminMode &&
+          (!hasAllPropsDefined(vacationRequestData) || !vacationRequestData.message?.length)
+        }
         type="submit"
         variant="contained"
         size="large"
