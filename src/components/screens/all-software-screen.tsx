@@ -23,7 +23,8 @@ import {
 } from "@mui/material";
 import Content from "../software-registry/allContent";
 import { useLambdasApi } from "src/hooks/use-api";
-import type { SoftwareRegistry, SoftwareStatus } from "src/generated/homeLambdasClient";
+import type { SoftwareRegistry } from "src/generated/homeLambdasClient";
+import { SoftwareStatus } from "src/generated/homeLambdasClient";
 import strings from "src/localization/strings";
 import GridViewIcon from "@mui/icons-material/GridView";
 import ListViewIcon from "@mui/icons-material/List";
@@ -35,14 +36,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import useCreateSoftware from "src/hooks/use-create-software";
 import AddSoftwareModal from "../software-registry/AddSoftwareModal";
 
-const statusOptions = [
-  { value: "ALL", label: "Show all" },
-  { value: "PENDING", label: "Pending" },
-  { value: "UNDER_REVIEW", label: "Under review" },
-  { value: "ACCEPTED", label: "Accepted" },
-  { value: "DEPRECATED", label: "Deprecated" },
-  { value: "DECLINED", label: "Declined" },
-];
+
 
 /**
  * All software screen component
@@ -54,7 +48,7 @@ const AllSoftwareScreen = () => {
   const auth = useAtomValue(authAtom);
   const loggedUserId = auth?.token?.sub ?? "";
   const adminMode = UserRoleUtils.adminMode();
-  const [selectedStatus, setSelectedStatus] = useState<string>("ALL");
+  const [selectedStatus, setSelectedStatus] = useState<SoftwareStatusFilterOptions>("ALL");
   const [error, setError] = useState<string | null>(null);
   const [searchTerms, setSearchTerms] = useState<string[]>([]);
   const [inputValue, setInputValue] = useState("");
@@ -64,6 +58,15 @@ const AllSoftwareScreen = () => {
   const { createSoftware } = useCreateSoftware(loggedUserId, setApplications);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedApplicationId, setSelectedApplicationId] = useState<string | null>(null);
+
+const allStatusValues = ["ALL", ...Object.values(SoftwareStatus)] as const;
+
+type SoftwareStatusFilterOptions = typeof allStatusValues[number];
+
+const statusOptions = allStatusValues.map((value) => ({
+  value,
+  label: strings.softwareStatus[value.toLowerCase() as keyof typeof strings.softwareStatus]
+}));
 
   /**
    * Fetches the list of all software applications from the API.

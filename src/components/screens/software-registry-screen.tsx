@@ -17,6 +17,7 @@ import { authAtom } from "src/atoms/auth";
 import { useLambdasApi } from "src/hooks/use-api";
 import { softwareAtom } from "src/atoms/software";
 import type { SoftwareRegistry } from "src/generated/homeLambdasClient";
+import { SoftwareStatus } from "src/generated/homeLambdasClient";
 import GridViewIcon from "@mui/icons-material/GridView";
 import ListViewIcon from "@mui/icons-material/List";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
@@ -59,7 +60,7 @@ const SoftwareScreen = () => {
    */
   const mySoftware = useMemo(
     () => software.filter((software) =>
-      software.users?.includes(loggedUserId) && software.status === "ACCEPTED"
+      software.users?.includes(loggedUserId) && software.status === SoftwareStatus.ACCEPTED
     ),
     [software, loggedUserId]
   );

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useLambdasApi } from "src/hooks/use-api";
 import { SoftwareRegistry } from "src/generated/homeLambdasClient";
+import strings from "src/localization/strings";
 
 const useCreateSoftware = (loggedUserId: string, setApplications: React.Dispatch<React.SetStateAction<SoftwareRegistry[]>>) => {
   const { softwareApi } = useLambdasApi();
@@ -21,7 +22,7 @@ const useCreateSoftware = (loggedUserId: string, setApplications: React.Dispatch
       });
       setApplications((prev) => [createdSoftware, ...prev]);
     } catch (error) {
-      setError(`Error creating software: ${error}`);
+      setError(`${strings.softwareRegistry.errorCreatingSoftware} ${error}`);
     } finally {
       setLoading(false);
     }

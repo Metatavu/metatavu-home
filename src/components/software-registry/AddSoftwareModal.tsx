@@ -16,6 +16,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import strings from "src/localization/strings";
 import type { SoftwareRegistry, User } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
+import { useTransition } from "react";
 
 /**
  * AddSoftwareModal component props
@@ -75,7 +76,7 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
         const users = await usersApi.listUsers();
         setUserList(users);
       } catch (error) {
-        setError(`Error fetching users: ${error}`);
+        setError(`${strings.error.fetchFailedGeneral}: ${error}`);
       }
     };
 
@@ -279,7 +280,7 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
                   </li>
                 )}
                 renderInput={(params) => (
-                  <TextField {...params} label="Recommend" placeholder="Search and select users" />
+                  <TextField {...params} label={strings.softwareRegistry.recommend} placeholder={strings.softwareRegistry.searchPlaceholder} />
                 )}
               />
             </Grid>

@@ -12,7 +12,8 @@ import {
 } from "@mui/material";
 import { Link } from "react-router-dom";
 import AddIcon from "@mui/icons-material/Add";
-import { SoftwareRegistry } from "src/generated/homeLambdasClient";
+import type { SoftwareRegistry } from "src/generated/homeLambdasClient";
+import strings from "src/localization/strings";
 
 interface RecommendCardProps {
   app: SoftwareRegistry;
@@ -89,8 +90,8 @@ const RecommendCard: React.FC<RecommendCardProps> = ({
               }}
             >
               {loadingUsers[app.createdBy]
-                ? "Loading..."
-                : userNames[app.createdBy] || "Unknown User"}
+                ? strings.softwareRegistry.loading
+                : userNames[app.createdBy] || strings.softwareRegistry.errorUnknownUser}
             </Typography>
           </Box>
           <Box

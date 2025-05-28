@@ -171,14 +171,19 @@ export interface Localized extends LocalizedStringsMethods {
     newSoftware: string;
     alreadyExists: string;
     delete: string;
+    searchPlaceholder: string;
+    loading: string;
+    errorUnknownUser: string;
+    errorCreatingSoftware: string;
   };
 
   /**
    * Software status related translations
    */
   softwareStatus: {
+    all:string;
     pending: string;
-    underReview: string;
+    under_review: string;
     accepted: string;
     deprecated: string;
     declined: string;

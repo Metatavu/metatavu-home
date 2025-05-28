@@ -140,11 +140,16 @@
     "noPending": "Ei uutta sovellusta",
     "newSoftware": "Uusi sovelluksia",
     "alreadyExists": "Nimi on jo olemassa",
-    "delete": "Poista"
+    "delete": "Poista",
+    "searchPlaceholder": "Etsi ja valitse käyttäjiä",
+    "loading": "Lastaus...",
+    "errorUnknownUser": "Tuntematon käyttäjä",
+    "errorCreatingSoftware": "Virhe ohjelmiston luomisessa"
   },
   "softwareStatus": {
+    "all": "Kaikki",
     "pending": "Odottaa",
-    "underReview": "Arvioinnissa",
+    "under_review": "Arvioinnissa",
     "accepted": "Hyväksytty",
     "deprecated": "Vanhentunut",
     "declined": "Hylätty"

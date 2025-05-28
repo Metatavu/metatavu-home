@@ -133,18 +133,23 @@
     "ownReview": "Own review",
     "recommend": "Recommend",
     "cancel": "Cancel",
-    "submit": "Submit for approvel",
+    "submit": "Submit for approval",
     "addedSuccessfully": "Added successfully",
     "showMore": "Show more",
     "showLess": "Show less",
     "noPending": "No new software",
     "newSoftware": "New software",
     "alreadyExists": "Name already exists",
-    "delete": "Delete"
+    "delete": "Delete",
+    "searchPlaceholder": "Search and select users",
+    "loading": "Loading...",
+    "errorUnknownUser": "Unknown user",
+    "errorCreatingSoftware": "Error creating software:"
   },
   "softwareStatus": {
+    "all": "All",
     "pending": "Pending",
-    "underReview": "Under review",
+    "under_review": "Under review",
     "accepted": "Accepted",
     "deprecated": "Deprecated",
     "declined": "Declined"

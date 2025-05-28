@@ -47,11 +47,11 @@ const MainCard: React.FC<CardProps> = ({
 
   // Move statusInfo here so it updates with language changes
   const statusInfo: { [key in SoftwareStatus]: { color: string; displayText: string } } = {
-    PENDING: { color: "#f7cb73", displayText: strings.softwareStatus.pending },
-    UNDER_REVIEW: { color: "#077e8c", displayText: strings.softwareStatus.underReview },
-    ACCEPTED: { color: "#47b758", displayText: strings.softwareStatus.accepted },
-    DEPRECATED: { color: "#9f9080", displayText: strings.softwareStatus.deprecated },
-    DECLINED: { color: "#c82922", displayText: strings.softwareStatus.declined }
+    [SoftwareStatus.PENDING]: { color: "#f7cb73", displayText: strings.softwareStatus.pending },
+    [SoftwareStatus.UNDER_REVIEW]: { color: "#077e8c", displayText: strings.softwareStatus.under_review },
+    [SoftwareStatus.ACCEPTED]: { color: "#47b758", displayText: strings.softwareStatus.accepted },
+    [SoftwareStatus.DEPRECATED]: { color: "#9f9080", displayText: strings.softwareStatus.deprecated },
+    [SoftwareStatus.DECLINED]: { color: "#c82922", displayText: strings.softwareStatus.declined }
   };
 
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -130,7 +130,7 @@ const MainCard: React.FC<CardProps> = ({
     <Box
       sx={{ display: "flex", alignItems: "center", justifyContent: "left", padding: "8px 16px" }}
     >
-      {status === "ACCEPTED" && !isInMyApplications && (
+      {status === SoftwareStatus.ACCEPTED && !isInMyApplications && (
         <Button
           variant="contained"
           size="small"
@@ -151,7 +151,7 @@ const MainCard: React.FC<CardProps> = ({
           {strings.softwareRegistry.addApplication}
         </Button>
       )}
-      {status === "ACCEPTED" && isInMyApplications && (
+      {status === SoftwareStatus.ACCEPTED && isInMyApplications && (
         <Button
           variant="contained"
           size="small"
@@ -168,7 +168,7 @@ const MainCard: React.FC<CardProps> = ({
           {strings.softwareRegistry.added}
         </Button>
       )}
-      {status === "PENDING" && (
+      {status === SoftwareStatus.PENDING && (
         <Button
           variant="contained"
           size="small"
