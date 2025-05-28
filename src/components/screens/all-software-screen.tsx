@@ -330,7 +330,7 @@ const statusOptions = allStatusValues.map((value) => ({
             <FormControl sx={{ minWidth: "120px" }}>
               <Select
                 value={selectedStatus}
-                onChange={(e) => setSelectedStatus(e.target.value)}
+                onChange={(e) => setSelectedStatus(e.target.value as SoftwareStatusFilterOptions)}
                 variant="outlined"
                 sx={{
                   borderRadius: "10px",
