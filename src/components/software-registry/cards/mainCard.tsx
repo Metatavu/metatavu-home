@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import type React from "react";
 import {
   Card,
   CardContent,
@@ -415,7 +416,7 @@ const MainCard: React.FC<CardProps> = ({
                 size="small"
                 onClick={(e) => {
                   e.stopPropagation();
-                  onRemove && onRemove();
+                  onRemove?.();
                 }}
                 sx={{
                   textTransform: "none",

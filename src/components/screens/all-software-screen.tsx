@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
+import type React from "react";
 import {
   Card,
   CircularProgress,
@@ -44,11 +45,12 @@ import AddSoftwareModal from "../software-registry/AddSoftwareModal";
 const AllSoftwareScreen = () => {
   const { softwareApi } = useLambdasApi();
   const [software, setApplications] = useState<SoftwareRegistry[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const auth = useAtomValue(authAtom);
   const loggedUserId = auth?.token?.sub ?? "";
   const adminMode = UserRoleUtils.adminMode();
-  const [selectedStatus, setSelectedStatus] = useState<SoftwareStatusFilterOptions>("ALL");
+  const allStatusValues = ["ALL", ...Object.values(SoftwareStatus)] as const;
+  const [selectedStatus, setSelectedStatus] = useState<SoftwareStatusFilterOptions>(allStatusValues[0]);
   const [error, setError] = useState<string | null>(null);
   const [searchTerms, setSearchTerms] = useState<string[]>([]);
   const [inputValue, setInputValue] = useState("");
@@ -58,8 +60,6 @@ const AllSoftwareScreen = () => {
   const { createSoftware } = useCreateSoftware(loggedUserId, setApplications);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedApplicationId, setSelectedApplicationId] = useState<string | null>(null);
-
-const allStatusValues = ["ALL", ...Object.values(SoftwareStatus)] as const;
 
 type SoftwareStatusFilterOptions = typeof allStatusValues[number];
 
@@ -121,7 +121,7 @@ const statusOptions = allStatusValues.map((value) => ({
  * @returns `true` if the application matches the given status or if the status is "ALL"; otherwise, `false`.
  */
   const filterByStatus = (software: SoftwareRegistry, status: string): boolean => {
-    return status === "ALL" || software.status === status;
+    return status === allStatusValues[0] || software.status === status;
   };
 
   const filteredApplications = useMemo(() => {
