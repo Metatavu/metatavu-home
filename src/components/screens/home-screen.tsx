@@ -1,24 +1,28 @@
 import { Grid, Skeleton } from "@mui/material";
 import BalanceCard from "../home/balance-card";
-import QuestionnaireCard from "../home/questionnaire-card";
 import VacationsCard from "../home/vacations-card";
 import SprintViewCard from "../home/sprint-view-card";
-import UserRoleUtils from "src/utils/user-role-utils";
 import type { User } from "src/generated/homeLambdasClient";
 import { usersAtom } from "src/atoms/user";
 import { userProfileAtom } from "src/atoms/auth";
 import { useAtomValue } from "jotai";
 import strings from "src/localization/strings";
 import type { ReactNode } from "react";
+import QuestionnaireProgress from "src/components/home/questionnaire-progress";
+import { useNavigate } from "react-router-dom";
+import UserRoleUtils from "src/utils/user-role-utils";
 
 /**
  * Home screen component
  */
 const HomeScreen = () => {
-    const users = useAtomValue(usersAtom);
+  const users = useAtomValue(usersAtom);
   const userProfile = useAtomValue(userProfileAtom);
   const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
   const hasSeveraUserId = !!loggedInUser?.attributes?.severaUserId;
+  const navigate = useNavigate();
+  const adminMode = UserRoleUtils.adminMode();
+  
   /**
    * Renders a card with a skeleton loader
    *
@@ -54,11 +58,42 @@ const HomeScreen = () => {
           content
         )}
       </Grid>
-        </Grid>
-      );
+    </Grid>
+  );
 
-      return (
-        <Grid container spacing={2}>
+  /**
+   * Renders the questionnaire card
+   * 
+   * @returns ReactNode containing the questionnaire card
+   */
+  const renderQuestionnaireCard = () => (
+    <Grid
+      sx={{
+        background: "#f5f5f5",
+        borderRadius: 1,
+        boxShadow: "0px 2px 8px rgba(0,0,0,0.05)",
+        marginBottom: 2,
+        minHeight: 120,
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "flex-start",
+        cursor: "pointer",
+        transition: "all 0.3s ease",
+        "&:hover": {
+          boxShadow: "0px 4px 12px rgba(0,0,0,0.1)",
+          transform: "translateY(-2px)"
+        }
+      }}
+      onClick={() => navigate(adminMode ? "/admin/questionnaire" : "/questionnaire")}
+    >
+      <Grid sx={{ padding: 2 }}>
+        <QuestionnaireProgress />
+      </Grid>
+    </Grid>
+  );
+
+  return (
+    <Grid container spacing={2}>
       <Grid item xs={12} sm={6}>
         {renderCardWithSkeleton(
           strings.balanceCard.balance,
@@ -72,10 +107,10 @@ const HomeScreen = () => {
         </Grid>
       </Grid>
       <Grid item xs={12} sm={6}>
-        {<VacationsCard />}
+        <VacationsCard />
       </Grid>
       <Grid item xs={12} sm={6}>
-        {<QuestionnaireCard />}
+        {renderQuestionnaireCard()}
       </Grid>
     </Grid>
   );
