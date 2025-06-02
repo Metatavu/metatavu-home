@@ -47,26 +47,6 @@ const getConfigurationFactory =
   };
 
 /**
- * API client with request functions to several endpoints
- *
- * @param accessToken Access token required for authentication
- *
- * @returns Configured API request functions
- */
-export const getApiClient = (accessToken?: string) => {
-  const getConfiguration = getConfigurationFactory(
-    Configuration,
-    config.api.baseUrl,
-    accessToken
-  );
-  return {
-    dailyEntriesApi: new DailyEntriesApi(getConfiguration()),
-    personsApi: new PersonsApi(getConfiguration()),
-    synchronizeApi: new SynchronizeApi(getConfiguration()),
-  };
-};
-
-/**
  * Metatavu Home Lambda API client with request functions to several endpoints
  *
  * @param accessToken Access token required for authentication

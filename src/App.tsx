@@ -12,10 +12,10 @@ import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import Layout from "./components/layout/layout";
 import ErrorHandler from "./components/contexts/error-handler";
 import ErrorScreen from "./components/screens/error-screen";
-import TimebankViewAllScreen from "./components/screens/timebank-view-all-screen";
+// import TimebankViewAllScreen from "./components/screens/timebank-view-all-screen";
 import AdminScreen from "./components/screens/admin-screen";
 import { Settings } from "luxon";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import RestrictedContentProvider from "./components/providers/restricted-content-provider";
 import SprintViewScreen from "./components/screens/sprint-view-screen";
 import QuestionnaireScreen from "./components/screens/questionnaire-screen";
@@ -24,6 +24,7 @@ import QuestionnaireManager from "./components/questionnaire/questionnaire-manag
 import { QuestionnairePreviewMode } from "./types";
 import ArticleScreen from "./components/screens/wiki-article-screen";
 import WikiDocumentationScreen from "./components/screens/wiki-documentation-screen";
+import SettingsScreen from "./components/screens/settings-screen"
 
 /**
  * Application component
@@ -72,6 +73,10 @@ const App = () => {
         {
           path: "/wiki-documentation/*",
           element: <ArticleScreen />
+        },
+        {
+          path: "/settings",
+          element: <SettingsScreen />
         }
       ]
     },
@@ -92,10 +97,10 @@ const App = () => {
           path: "/admin/vacations",
           element: <VacationRequestsScreen />
         },
-        {
-          path: "/admin/timebank/viewall",
-          element: <TimebankViewAllScreen />
-        },
+        // {
+        //   path: "/admin/timebank/viewall",
+        //   element: <TimebankViewAllScreen />
+        // },
         {
           path: "/admin/sprintview",
           element: <SprintViewScreen />

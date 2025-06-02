@@ -5,13 +5,22 @@ import {
   Dialog,
   DialogActions,
   DialogTitle,
-  Typography
+  Typography,
+  Chip,
+  Box,
+  TextField,
+  InputAdornment,
+  IconButton,
+  Popover
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import PendingIcon from "@mui/icons-material/Pending";
-import { useState, useEffect } from "react";
+import LabelIcon from "@mui/icons-material/Label";
+import SearchIcon from "@mui/icons-material/Search";
+import ClearIcon from "@mui/icons-material/Clear";
+import { useState, useEffect, useRef } from "react";
 import type { Questionnaire } from "src/generated/homeLambdasClient";
 import strings from "src/localization/strings";
 import UserRoleUtils from "src/utils/user-role-utils";
@@ -36,23 +45,33 @@ const QuestionnaireTable = () => {
   const [_, setMode] = useState<QuestionnairePreviewMode>();
   const { questionnairesApi } = useLambdasApi();
   const [questionnaires, setQuestionnaires] = useState<Questionnaire[]>([]);
+  const [filteredQuestionnaires, setFilteredQuestionnaires] = useState<Questionnaire[]>([]);
+  const [searchTerm, setSearchTerm] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [deleteTitle, setDeleteTitle] = useState<string | null>(null);
   const [selectedQuestionnaire, setSelectedQuestionnaire] = useState<Questionnaire | null>(null);
+  const [tagPopoverAnchor, setTagPopoverAnchor] = useState<HTMLElement | null>(null);
+  const [currentTags, setCurrentTags] = useState<string[]>([]);
   const setError = useSetAtom(errorAtom);
   const users = useAtomValue(usersAtom);
   const userProfile = useAtomValue(userProfileAtom);
   const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
+  const dataGridRef = useRef(null);
   
-
   useEffect(() => {
     const fetchQuestionnaires = async () => {
       setLoading(true);
       try {
-        const questionnaires = await questionnairesApi.listQuestionnaires();
-        setQuestionnaires(questionnaires);
+        const response = await questionnairesApi.listQuestionnaires();
+        const processedQuestionnaires = response.map(question => ({
+          ...question,
+          tags: question.tags || [] 
+        }));
+        
+        setQuestionnaires(processedQuestionnaires);
+        setFilteredQuestionnaires(processedQuestionnaires);
       } catch (error) {
         setError(`${strings.error.questionnaireLoadFailed}, ${error}`);
       }
@@ -61,21 +80,53 @@ const QuestionnaireTable = () => {
     fetchQuestionnaires();
   }, []);
 
-  /**
-   * Function to open the dialog for deleting the questionnaire
-   *
-   * @param id - Questionnaire ID
-   * @param title - Questionnaire Title
-   */
+  useEffect(() => {
+    if (!searchTerm.trim()) {
+      setFilteredQuestionnaires(questionnaires);
+      return;
+    }
+
+    const lowerCaseSearchTerm = searchTerm.toLowerCase().trim();
+    const filtered = questionnaires.filter((questionnaire) => {
+      const titleMatch = questionnaire.title?.toLowerCase().includes(lowerCaseSearchTerm);
+      const tagMatch = questionnaire.tags?.some(tag => 
+        tag.toLowerCase().includes(lowerCaseSearchTerm)
+      );
+      return titleMatch || tagMatch;
+    });
+    
+    setFilteredQuestionnaires(filtered);
+  }, [searchTerm, questionnaires]);
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const handleClearSearch = () => {
+    setSearchTerm("");
+  };
+
+  const handleTagMoreClick = (event: React.MouseEvent<HTMLElement>, tags: string[]) => {
+    event.stopPropagation(); 
+    setTagPopoverAnchor(event.currentTarget);
+    setCurrentTags(tags);
+  };
+
+  const handleCloseTagPopover = () => {
+    setTagPopoverAnchor(null);
+  };
+
+  const handleTagClick = (tag: string) => {
+    setSearchTerm(tag);
+    handleCloseTagPopover();
+  };
+
   const handleOpenDialog = (id: string, title: string) => {
     setDeleteId(id);
     setDeleteTitle(title);
     setDialogOpen(true);
   };
 
-  /**
-   * Function to close the dialog for deleting the questionnaire
-   */
   const handleCloseDialog = () => {
     setDialogOpen(false);
     setDeleteId(null);
@@ -83,16 +134,13 @@ const QuestionnaireTable = () => {
     setSelectedQuestionnaire(null);
   };
 
-  /**
-   * Function to delete the questionnaire
-   */
   const handleConfirmDelete = async () => {
     if (!deleteId) return;
     setLoading(true);
     try {
       await questionnairesApi.deleteQuestionnaires({ id: deleteId });
-      setQuestionnaires((prevQuestionnaires: Questionnaire[]) =>
-        prevQuestionnaires.filter((questionnaire: Questionnaire) => questionnaire.id !== deleteId)
+      setQuestionnaires((prevQuestionnaires) =>
+        prevQuestionnaires.filter((questionnaire) => questionnaire.id !== deleteId)
       );
       handleCloseDialog();
     } catch (error) {
@@ -101,36 +149,20 @@ const QuestionnaireTable = () => {
     setLoading(false);
   };
 
-  /**
-   * Function to handle select Questionnaire from x-data-grid as a row
-   *
-   * @param params
-   */
   const handleRowClick = (params: GridRowParams) => {
     setSelectedQuestionnaire(params.row as Questionnaire);
     setMode(QuestionnairePreviewMode.FILL);
     navigate(`/questionnaire/${params.row.id}`);
   };
 
-  /**
-   * Function to handle open editor for Questionnaire
-   *
-   * @param questionnaire - Questionnaire to edit
-   */
   const handleEditClick = (questionnaire: Questionnaire) => {
     setSelectedQuestionnaire(questionnaire);
     setMode(QuestionnairePreviewMode.EDIT);
     navigate(`${questionnaire.id}/edit`);
   };
 
-  /**
-   * Function to render the status cell to check if LoggerInUser has passed the questionnaire
-   *
-   * @param params
-   */
   const renderStatusCell = (params: GridRenderCellParams) => {
     const userHasPassed = params.row.passedUsers?.includes(loggedInUser?.id);
-
     return userHasPassed ? (
       <CheckCircleIcon sx={{ color: "green" }} />
     ) : (
@@ -139,8 +171,145 @@ const QuestionnaireTable = () => {
   };
 
   /**
-   * Function to render the confirm delete dialog
+   * Function to render the tags cell with improved styling and overflow handling
    */
+  const renderTagsCell = (params: GridRenderCellParams) => {
+    const tags: string[] = Array.isArray(params.row.tags) ? params.row.tags : [];
+    const MAX_VISIBLE_TAGS = 1;
+    const visibleTags = tags.slice(0, MAX_VISIBLE_TAGS);
+    const hiddenTagsCount = Math.max(0, tags.length - MAX_VISIBLE_TAGS);
+    
+    const allTagsTooltip = tags.join(", ");
+    
+    return (
+      <Box 
+        sx={{ 
+          display: "flex", 
+          flexWrap: "nowrap",
+          gap: 0.5,
+          overflow: "hidden",
+          alignItems: "center",
+          width: "100%",
+          height: "100%"
+        }}
+        title={allTagsTooltip}
+      >
+        {tags.length > 0 ? (
+          <>
+            {visibleTags.map((tag: string) => (
+              <Chip
+                key={tag}
+                label={tag}
+                size="small"
+                icon={<LabelIcon />}
+                variant="outlined"
+                sx={{ 
+                  margin: "1px",
+                  maxWidth: "120px",
+                  "& .MuiChip-label": {
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap"
+                  }
+                }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSearchTerm(tag); 
+                }}
+              />
+            ))}
+      
+            {hiddenTagsCount > 0 && (
+              <Chip
+                size="small"
+                label={strings.formatString(strings.questionnaireTags.moreCount, hiddenTagsCount)}
+                sx={{
+                  flexShrink: 0,
+                  backgroundColor: "rgba(0, 0, 0, 0.08)",
+                  "&:hover": {
+                    backgroundColor: "rgba(0, 0, 0, 0.12)"
+                  }
+                }}
+                onClick={(e) => handleTagMoreClick(e, tags)}
+              />
+            )}
+          </>
+        ) : (
+          <Typography variant="body2" color="text.secondary">
+            {strings.questionnaireTags.noTags}
+          </Typography>
+        )}
+      </Box>
+    );
+  };
+
+  const columns = [
+    { field: "title", headerName: `${strings.questionnaireTable.title}`, flex: 3 },
+    { field: "description", headerName: `${strings.questionnaireTable.description}`, flex: 5 },
+    { 
+      field: "tags", 
+      headerName: strings.questionnaireTags.title || "Tags",
+      flex: 3,
+      minWidth: 180,
+      renderCell: renderTagsCell,
+      sortable: false,
+      filterable: true,
+      renderHeader: () => (
+        <Box sx={{ display: "flex", alignItems: "center" }}>
+          <LabelIcon sx={{ mr: 0.5, fontSize: "1.25rem" }} />
+          <Typography variant="subtitle2">{strings.questionnaireTags.title}</Typography>
+        </Box>
+      )
+    },
+    adminMode
+      ? {
+          field: "actions",
+          headerName: `${strings.questionnaireTable.actions}`,
+          flex: 2.5,
+          renderCell: (params: GridRenderCellParams) => (
+            <>
+              <Button
+                name="edit"
+                variant="outlined"
+                color="success"
+                onClick={() => handleEditClick(params.row as Questionnaire)}
+                sx={{ 
+                  mr: 0.8, 
+                  minWidth: "100px",
+                  width: "auto", 
+                  height: "auto",
+                  fontSize: "0.80rem" 
+                }}
+              >
+                <EditIcon sx={{ color: "success.main", mr: 0.3 }} />
+                {strings.questionnaireTable.edit}
+              </Button>
+              <Button
+                name="delete"
+                variant="contained"
+                color="secondary"
+                onClick={() => handleOpenDialog(params.row.id, params.row.title)}
+                sx={{ 
+                  minWidth: "85px",
+                  width: "auto", 
+                  height: "auto",
+                  fontSize: "0.80rem",
+                }}
+              >
+                <DeleteForeverIcon sx={{ color: "red", mr: 0.3 }} />
+                {strings.questionnaireTable.delete}
+              </Button>
+            </>
+          )
+        }
+      : {
+          field: "status",
+          headerName: `${strings.questionnaireTable.status}`,
+          flex: 1,
+          renderCell: renderStatusCell
+        }
+  ];
+
   const renderConfirmDeleteDialog = () => (
     <Dialog open={dialogOpen} onClose={handleCloseDialog}>
       <DialogTitle>
@@ -157,45 +326,48 @@ const QuestionnaireTable = () => {
     </Dialog>
   );
 
-  const columns = [
-    { field: "title", headerName: `${strings.questionnaireTable.title}`, flex: 3 },
-    { field: "description", headerName: `${strings.questionnaireTable.description}`, flex: 5 },
-    adminMode
-      ? {
-          field: "actions",
-          headerName: `${strings.questionnaireTable.actions}`,
-          flex: 2.5,
-          renderCell: (params: GridRenderCellParams) => (
-            <>
-              <Button
-                name="edit"
-                variant="outlined"
-                color="success"
-                onClick={() => handleEditClick(params.row as Questionnaire)}
-                sx={{ mr: 1 }}
-              >
-                <EditIcon sx={{ color: "success.main", mr: 1 }} />
-                {strings.questionnaireTable.edit}
-              </Button>
-              <Button
-                name="delete"
-                variant="contained"
-                color="secondary"
-                onClick={() => handleOpenDialog(params.row.id, params.row.title)}
-              >
-                <DeleteForeverIcon sx={{ color: "red", mr: 1 }} />
-                {strings.questionnaireTable.delete}
-              </Button>
-            </>
-          )
+  const renderTagPopover = () => (
+    <Popover
+      open={Boolean(tagPopoverAnchor)}
+      anchorEl={tagPopoverAnchor}
+      onClose={handleCloseTagPopover}
+      anchorOrigin={{
+        vertical: "bottom",
+        horizontal: "center",
+      }}
+      transformOrigin={{
+        vertical: "top",
+        horizontal: "center",
+      }}
+      slotProps={{
+        paper: { 
+          sx: { maxWidth: "400px", p: 2 } 
         }
-      : {
-          field: "status",
-          headerName: `${strings.questionnaireTable.status}`,
-          flex: 1,
-          renderCell: renderStatusCell
-        }
-  ];
+      }}
+    >
+      <Typography variant="subtitle2" sx={{ mb: 1 }}>
+        {strings.questionnaireTags.allTags} ({currentTags.length})
+      </Typography>
+      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+        {currentTags.map((tag) => (
+          <Chip
+            key={tag}
+            label={tag}
+            size="small"
+            icon={<LabelIcon />}
+            variant="outlined"
+            onClick={() => handleTagClick(tag)}
+            sx={{ 
+              cursor: "pointer",
+              "&:hover": {
+                backgroundColor: "rgba(0, 0, 0, 0.08)"
+              }
+            }}
+          />
+        ))}
+      </Box>
+    </Popover>
+  );
 
   return (
     <>
@@ -216,16 +388,58 @@ const QuestionnaireTable = () => {
             ? selectedQuestionnaire.title
             : strings.questionnaireScreen.currentQuestionnaires}
         </Typography>
+        
+        <Box sx={{ px: 2, pb: 2 }}>
+          <TextField
+            fullWidth
+            value={searchTerm}
+            onChange={handleSearchChange}
+            placeholder={strings.questionnaireTags.searchPlaceholder}
+            variant="outlined"
+            size="small"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+              endAdornment: searchTerm && (
+                <InputAdornment position="end">
+                  <IconButton size="small" onClick={handleClearSearch}>
+                    <ClearIcon />
+                  </IconButton>
+                </InputAdornment>
+              )
+            }}
+          />
+        </Box>
+        
         <DataGrid
-          sx={{ margin: 0 }}
-          rows={questionnaires}
+          ref={dataGridRef}
+          sx={{ 
+            margin: 0,
+            "& .MuiDataGrid-cell": {
+              padding: "8px", 
+            },
+            "& .MuiDataGrid-columnHeader": {
+              padding: "0 8px", 
+            }
+          }}
+          rows={filteredQuestionnaires}
           columns={columns}
           pagination
           getRowId={(row) => row.id || ""}
           disableRowSelectionOnClick
           onRowClick={adminMode ? undefined : handleRowClick}
+          initialState={{
+            pagination: {
+              paginationModel: { pageSize: 10 }
+            },
+          }}
+          pageSizeOptions={[5, 10, 25, 50, 100]}
         />
       </Paper>
+      {renderTagPopover()}
       {renderConfirmDeleteDialog()}
     </>
   );

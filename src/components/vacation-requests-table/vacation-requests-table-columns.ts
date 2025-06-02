@@ -6,7 +6,7 @@ import { formatDate } from "src/utils/time-utils";
 /**
  * Vacation requests table columns component
  */
-const VacationRequestsTableColumns = () => {
+const VacationRequestsTableColumns = (): GridColDef[] => {
   /**
    * Define columns for data grid
    */

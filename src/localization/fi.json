@@ -10,6 +10,7 @@
     "hello": "Hei",
     "logout": "Kirjaudu ulos",
     "home": "Koti",
+    "settings": "Asetukset",
     "timebank": "Timebank",
     "vacations": "Lomat",
     "onCall": "Päivystys",
@@ -35,6 +36,7 @@
     "questionnaireDeleteFailed": "Kyselylomakkeen poistaminen epäonnistui",
     "questionnaireUpdateFailed": "Kyselylomakkeen päivittäminen epäonnistui",
     "fetchFailedFlextime": "Joustotyöaikatietojen hakeminen epäonnistui",
+    "missingEmailOrId": "Sähköposti tai käyttäjätunnus puuttuu",
     "noSeveraUserId": "Käyttäjältä puuttuu Severa-käyttäjätunnus, ota yhteyttä Metatavun kehitystiimiin lisätietoja varten.",
     "noFlextimeData": "Jotain meni pieleen joustotyöaikatietoja haettaessa"
   },
@@ -81,16 +83,16 @@
     "showMyTasks": "Tehtäväni ",
     "toDo": "Odotuksessa",
     "inProgress": "Käynnissä",
-    "allTasks" : "Kaikki tehtävät",
-    "notFound" : "Tulosta ei löytynyt",
+    "allTasks": "Kaikki tehtävät",
+    "notFound": "Tulosta ei löytynyt",
     "projectName": "Projekti",
     "search": "Hae tehtävää, projektia tai vastaanottajaa",
     "unAllocated": "Kohdistamaton aika:",
     "sprintDate": "Sprint",
     "completed": "Valmis",
     "current": "Nykyinen: {0}-{1}",
-    "startDate":"Aloituspäivämäärä",
-    "deadLine":"Määräaika",
+    "startDate": "Aloituspäivämäärä",
+    "deadLine": "Määräaika",
     "actualWorkHours": "Todelliset työajat",
     "back":"Takaisin",
     "filter": "Suodata",
@@ -181,7 +183,8 @@
   },
   "form": {
     "submit": "Lähetä",
-    "update": "Päivitä"
+    "update": "Päivitä",
+    "restoreDefault": "Palauta loman kuluttamat päivät"
   },
   "tableToolbar": {
     "delete": "Poista",
@@ -249,7 +252,7 @@
     "back": "Takaisin"
   },
   "newQuestionnaireBuilder": {
-    "makeNewQuestionnaire" : "Tee uusi kysely",
+    "makeNewQuestionnaire": "Tee uusi kysely",
     "title": "Otsikko",
     "insertTitle": "Syötä otsikko",
     "saveButton": "Tallenna kysely",
@@ -304,10 +307,25 @@
     "question": "Kysymys",
     "deleteQuestion": "Poista kysymys",
     "passScoreLabel": "Pistemäärä",
+    "answerOption": "Vastausvaihtoehto",
+    "addAnswerOption": "Lisää vastausvaihtoehto",
     "passScoreMax": "Maksimipistemäärä",
     "update": "Päivitä kysely",
     "clearPassedUsers": "Tyhjennä läpäisseet käyttäjät tästä kyselystä",
     "snackbarMessageSuccess": "Kysely päivitetty onnistuneesti"
+  },
+  "questionnaireTags": {
+    "title": "Tagit",
+    "searchPlaceholder": "Hae otsikon tai tagien mukaan...",
+    "allTags": "Kaikki tagit",
+    "emptyTagError": "Tagi ei voi olla tyhjä",
+    "duplicateTagError": "Tagi on jo olemassa!",
+    "tagTooLongError": "Tagi ei voi olla pidempi kuin {max} merkkiä.",
+    "maxTagsError": "Enintään 10 tagia sallittu",
+    "addTag": "Lisää tagi",
+    "addTagPlaceholder": "Lisää tagi...",
+    "noTags": "Ei tageja vielä lisätty",
+    "moreCount": "+{0} lisää"
   },
   "balanceCard": {
     "totalFlextimeBalance": "Kokonaisbalanssi:",
@@ -315,7 +333,7 @@
     "viewAllTimeEntries": "Kaikki henkilöstön aikakirjaukset ja saldot",
     "balance": "Saldo",
     "atTheEndOf": "{0} lopussa",
-    "hour": "tunti",  
+    "hour": "tunti",
     "hours": "Tuntia"
   },
   "wikiDocumentation": {
@@ -345,5 +363,14 @@
     "draft": "luonnos",
     "allArticles": "kaikki",
     "connectedArticles": "Aiheeseen liittyvät artikkelit"
+  },
+  "settingsScreen": {
+    "saveSettings": "Tallena Asetukset",
+    "accept": "Hyväksy",
+    "decline":"En hyväksy",
+    "consentToDataProcessing": "Suostumus tietojen käsittelyyn"
+  },
+  "notOptedInDescription": {
+    "description": "Hyväksy käyttäjätietojen käsittely nähdäksesi tämä osio"
   }
 }
