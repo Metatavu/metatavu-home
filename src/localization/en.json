@@ -10,7 +10,7 @@
     "hello": "Hi",
     "logout": "Log out",
     "home": "Home",
-    "settings": "Settings" ,
+    "settings": "Settings",
     "timebank": "Timebank",
     "vacations": "Vacations",
     "onCall": "On Call",
@@ -37,7 +37,7 @@
     "questionnaireUpdateFailed": "Error while updating questionnaire",
     "fetchFailedFlextime": "Error while fetching flextime data",
     "missingEmailOrId": "Missing email or ID",
-    "noSeveraUserId" : "One of your user is missing severaUserId, please contact a member of the metatavu home development team for more information.",
+    "noSeveraUserId": "One of your user is missing severaUserId, please contact a member of the metatavu home development team for more information.",
     "noFlextimeData": "Something went wrong while fetching your flextime data"
   },
   "localization": {
@@ -94,7 +94,7 @@
     "startDate": "Start Date",
     "deadLine": "Deadline",
     "actualWorkHours": "Actual Work Hours",
-    "back":"Back",
+    "back": "Back",
     "filter": "Filter by",
     "filterType": "Filter type",
     "project": "Project",
@@ -327,6 +327,13 @@
     "noTags": "No tags added yet",
     "moreCount": "+{0} more"
   },
+  "questionnaireProgress": {
+    "title": "Questionnaires",
+    "progressText": "You have passed {0} out of {1} questionnaires",
+    "allCompleted": "Congratulations! You've completed all questionnaires!",
+    "loading": "Loading questionnaires..."
+  },
+
   "balanceCard": {
     "totalFlextimeBalance": "Total flextime balance:",
     "employeeBalances": "Employee time totals and balances",
@@ -339,7 +346,7 @@
   "settingsScreen": {
     "saveSettings": "Save settings",
     "accept": "Accept",
-    "decline":"Decline",
+    "decline": "Decline",
     "consentToDataProcessing": "Grant permissions for processing your Severa data to gain additional Home features."
   },
   "notOptedInDescription": {
