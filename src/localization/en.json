@@ -328,11 +328,11 @@
     "moreCount": "+{0} more"
   },
   "questionnaireProgress": {
-    "title": "Questionnaires",
-    "progressText": "You have passed {0} out of {1} questionnaires",
-    "allCompleted": "Congratulations! You've completed all questionnaires!",
-    "loading": "Loading questionnaires..."
-  },
+  "title": "Questionnaires",
+  "progressText": "You have passed {0} out of {1} questionnaires",
+  "allCompleted": "Congratulations! You've completed all questionnaires!",
+  "loading": "Loading questionnaires..."
+ },
   "balanceCard": {
     "totalFlextimeBalance": "Total flextime balance:",
     "employeeBalances": "Employee time totals and balances",

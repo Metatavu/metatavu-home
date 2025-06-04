@@ -1,4 +1,4 @@
-import { Grid, Skeleton } from "@mui/material";
+import { Grid, Skeleton, Card, CardContent, Typography, Box } from "@mui/material";
 import BalanceCard from "../home/balance-card";
 import VacationsCard from "../home/vacations-card";
 import SprintViewCard from "../home/sprint-view-card";
@@ -9,7 +9,7 @@ import { useAtomValue } from "jotai";
 import strings from "src/localization/strings";
 import type { ReactNode } from "react";
 import QuestionnaireProgress from "src/components/home/questionnaire-progress";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import UserRoleUtils from "src/utils/user-role-utils";
 
 /**
@@ -20,7 +20,6 @@ const HomeScreen = () => {
   const userProfile = useAtomValue(userProfileAtom);
   const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
   const hasSeveraUserId = !!loggedInUser?.attributes?.severaUserId;
-  const navigate = useNavigate();
   const adminMode = UserRoleUtils.adminMode();
   
   /**
@@ -67,29 +66,26 @@ const HomeScreen = () => {
    * @returns ReactNode containing the questionnaire card
    */
   const renderQuestionnaireCard = () => (
-    <Grid
-      sx={{
-        background: "#f5f5f5",
-        borderRadius: 1,
-        boxShadow: "0px 2px 8px rgba(0,0,0,0.05)",
-        marginBottom: 2,
-        minHeight: 120,
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "flex-start",
-        cursor: "pointer",
-        transition: "all 0.3s ease",
-        "&:hover": {
-          boxShadow: "0px 4px 12px rgba(0,0,0,0.1)",
-          transform: "translateY(-2px)"
-        }
-      }}
-      onClick={() => navigate(adminMode ? "/admin/questionnaire" : "/questionnaire")}
-    >
-      <Grid sx={{ padding: 2 }}>
-        <QuestionnaireProgress />
-      </Grid>
-    </Grid>
+    <Link to={adminMode ? "/admin/questionnaire" : "/questionnaire"} style={{ textDecoration: "none" }}>
+      <Card
+        sx={{
+          "&:hover": {
+            background: "#efefef"
+          }
+        }}
+      >
+        <CardContent>
+          <Typography variant="h6" fontWeight={"bold"} style={{ marginTop: 6, marginBottom: 3 }}>
+            {strings.questionnaireProgress?.title || "Questionnaires"}
+          </Typography>
+          <Grid container>
+            <Box sx={{ width: "100%", display: "flex", flexDirection: "column" }}>
+              <QuestionnaireProgress />
+            </Box>
+          </Grid>
+        </CardContent>
+      </Card>
+    </Link>
   );
 
   return (

@@ -1,6 +1,6 @@
 import { CardContent, Skeleton, Typography } from "@mui/material";
 import { useAtomValue, useSetAtom } from "jotai";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { userProfileAtom } from "src/atoms/auth";
 import { errorAtom } from "src/atoms/error";
 import { usersAtom } from "src/atoms/user";
@@ -31,7 +31,16 @@ const SprintViewCardContent = () => {
   const [resourceAllocations, setResourceAllocations] = useState<ResourceAllocations[]>([]);
   const { resourceAllocationsApi } = useLambdasApi();
   const setError = useSetAtom(errorAtom);
-  const filteredAllocations = filterAllocations(resourceAllocations, adminMode)
+  const filteredAllocations = filterAllocations(resourceAllocations, adminMode);
+  const isMountedRef = useRef(true);
+
+  useEffect(() => {
+    isMountedRef.current = true;
+    
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
 
   useEffect(() => {
     getAllocationsAndProjects();
@@ -41,19 +50,27 @@ const SprintViewCardContent = () => {
    * Get ResourceAllocation data using severaUserId
    */
   const getAllocationsAndProjects = async () => {
+    if (!loggedInUser || resourceAllocations.length > 0) return;
+    
     setLoading(true);
-    if (loggedInUser && !resourceAllocations.length) {
-      try {
-        const severaUserId = getSeveraUserId(loggedInUser);
-        const fetchedResourceAllocations = adminMode
-          ? await resourceAllocationsApi.getAllResourceAllocations()
-          : await resourceAllocationsApi.getAllResourceAllocations({ severaUserId });
+    
+    try {
+      const severaUserId = getSeveraUserId(loggedInUser);
+      const fetchedResourceAllocations = adminMode
+        ? await resourceAllocationsApi.getAllResourceAllocations()
+        : await resourceAllocationsApi.getAllResourceAllocations({ severaUserId });
+      if (isMountedRef.current) {
         setResourceAllocations(fetchedResourceAllocations);
-      } catch (error) {
+      }
+    } catch (error) {
+      if (isMountedRef.current && error instanceof Error && !error.message.includes('aborted')) {
         setError(`${strings.sprintRequestError.fetchResourceAllocationsError}, ${error}`);
       }
+    } finally {
+      if (isMountedRef.current) {
+        setLoading(false);
+      }
     }
-    setLoading(false);
   };
 
   /**
@@ -90,6 +107,7 @@ const SprintViewCardContent = () => {
       )}
     </>
   );
+  
   return <>{!loggedInUser || loading ? <Skeleton /> : renderBarChart()}</>;
 };
 

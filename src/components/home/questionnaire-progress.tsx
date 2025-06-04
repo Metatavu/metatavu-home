@@ -45,26 +45,20 @@ const QuestionnaireProgress = () => {
 
   if (loading) {
     return (
-      <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', p: 2 }}>
+      <Box sx={{ width: "100%", display: "flex", justifyContent: "center", p: 2 }}>
         <CircularProgress size={30} />
       </Box>
     );
   }
 
   return (
-    <Box sx={{ width: '100%' }}>
-      <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold', fontSize: 22 }}>
-        {strings.questionnaireProgress?.title || "Questionnaires"}
-      </Typography>
-      
-      <Typography variant="body1" color="text.secondary">
-        {strings.formatString(
-          strings.questionnaireProgress?.progressText || "You have passed {0} out of {1} questionnaires",
-          passedCount,
-          totalCount
-        )}
-      </Typography>
-    </Box>
+    <Typography>
+      {strings.formatString(
+        strings.questionnaireProgress?.progressText || "You have passed {0} out of {1} questionnaires",
+        passedCount,
+        totalCount
+      )}
+    </Typography>
   );
 };
 
