@@ -47,14 +47,12 @@ const HomeScreen = () => {
   return (
     <Grid container spacing={2}>
       <Grid item xs={12} sm={6}>
-        {/* Balance Card - render directly or show skeleton */}
         {hasSeveraUserId ? (
           <BalanceCard />
         ) : (
           renderSkeletonCard(strings.balanceCard.balance)
         )}
         
-        {/* Sprint View Card - render directly or show skeleton */}
         <Grid item xs={12} style={{ marginTop: "16px" }}>
           {hasSeveraUserId ? (
             <SprintViewCard />
