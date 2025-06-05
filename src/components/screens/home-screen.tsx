@@ -9,6 +9,7 @@ import { usersAtom } from "src/atoms/user";
 import { userProfileAtom } from "src/atoms/auth";
 import { useAtomValue } from "jotai";
 import strings from "src/localization/strings";
+import type { ReactNode } from "react";
 
 /**
  * Home screen component
@@ -20,44 +21,47 @@ const HomeScreen = () => {
   const hasSeveraUserId = !!loggedInUser?.attributes?.severaUserId;
 
   /**
-   * Renders a skeleton placeholder when user hasn't opted in
+   * Renders a card with a skeleton loader or content
    *
    * @param title - Title of the card
-   * @returns ReactNode containing the skeleton card
+   * @param content - Content to render inside the card
+   * @returns ReactNode containing the card or skeleton
    */
-  const renderSkeletonCard = (title: string) => (
-    <Card
-      sx={{
-        marginBottom: 2,
-        minHeight: 120,
-      }}
-    >
-      <CardContent>
-        <Typography variant="h6" fontWeight="bold" sx={{ marginBottom: 2 }}>
-          {title}
-        </Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ marginBottom: 2 }}>
-          {strings.notOptedInDescription.description}
-        </Typography>
-        <Skeleton variant="rectangular" height={20} sx={{ borderRadius: 1, width: "100%" }} />
-      </CardContent>
-    </Card>
-  );
+  const renderCardWithSkeleton = (title: string, content: ReactNode) => {
+    if (!hasSeveraUserId) {
+      return (
+        <Card
+          sx={{
+            marginBottom: 2,
+            minHeight: 120,
+          }}
+        >
+          <CardContent>
+            <Typography variant="h6" fontWeight="bold" sx={{ marginBottom: 2 }}>
+              {title}
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ marginBottom: 2 }}>
+              {strings.notOptedInDescription.description}
+            </Typography>
+            <Skeleton variant="rectangular" height={20} sx={{ borderRadius: 1, width: "100%" }} />
+          </CardContent>
+        </Card>
+      );
+    }
+    return content;
+  };
 
   return (
     <Grid container spacing={2}>
       <Grid item xs={12} sm={6}>
-        {hasSeveraUserId ? (
+        {renderCardWithSkeleton(
+          strings.balanceCard.balance,
           <BalanceCard />
-        ) : (
-          renderSkeletonCard(strings.balanceCard.balance)
         )}
-        
         <Grid item xs={12} style={{ marginTop: "16px" }}>
-          {hasSeveraUserId ? (
+          {renderCardWithSkeleton(
+            strings.sprint.sprintview,
             <SprintViewCard />
-          ) : (
-            renderSkeletonCard(strings.sprint.sprintview)
           )}
         </Grid>
       </Grid>
