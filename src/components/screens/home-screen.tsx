@@ -34,7 +34,6 @@ const HomeScreen = () => {
         background: "#f5f5f5",
         borderRadius: 1,
         boxShadow: "0px 2px 8px rgba(0,0,0,0.05)",
-        marginBottom: 2,
         minHeight: 120,
         display: "flex",
         flexDirection: "column",
@@ -64,9 +63,9 @@ const HomeScreen = () => {
    */
   const cards : ReactNode[] = [
     renderCardWithSkeleton(strings.balanceCard.balance, <BalanceCard />),
-    renderCardWithSkeleton(strings.sprint.sprintview, <SprintViewCard />),
-    <VacationsCard key="vacations" />,
-    <QuestionnaireCard key="questionnaire" />
+    <Box sx={{minHeight:325}}>{renderCardWithSkeleton(strings.sprint.sprintview, <SprintViewCard />)}</Box>,
+    <VacationsCard />,
+    <QuestionnaireCard />
   ];
 
   return (

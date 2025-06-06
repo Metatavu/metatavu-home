@@ -39,7 +39,6 @@ export default class UserRoleUtils {
    */
   public static readonly isTester = () => {
     const accessToken = useAtomValue(authAtom)?.token;
-
     if (!accessToken?.realm_access) return false;
 
     return accessToken.realm_access.roles.includes("tester");

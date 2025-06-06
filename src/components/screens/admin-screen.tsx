@@ -4,6 +4,7 @@ import VacationsCard from "../home/vacations-card";
 import SprintViewCard from "../home/sprint-view-card";
 import UserRoleUtils from "src/utils/user-role-utils";
 import QuestionnaireCard from "../home/questionnaire-card";
+import { Box } from "@mui/material";
 
 /**
  * Admin screen component
@@ -18,10 +19,11 @@ const AdminScreen = () => {
    * Сard collection, new component cards should be added here
    */
   const cards = [
-    isPrivilegedUser && <BalanceCard key="balance" />,
-    isPrivilegedUser && <SprintViewCard key="sprint" />,
-    isPrivilegedUser && <VacationsCard key="vacations" />,
-    isPrivilegedUser && <QuestionnaireCard key="questionnaire" />
+    isPrivilegedUser && <BalanceCard/>,
+    isPrivilegedUser && <Box sx={{minHeight:260}}><SprintViewCard/></Box>,
+    isPrivilegedUser && <VacationsCard/>,
+    isPrivilegedUser && <QuestionnaireCard/>,
+    isPrivilegedUser && <BalanceCard/>
   ].filter(Boolean);
 
   return (
