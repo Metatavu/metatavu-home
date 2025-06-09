@@ -19,7 +19,7 @@ const QuestionnaireCard = () => {
       return (
         <CardContent>
           <Typography variant="h6" fontWeight={"bold"} style={{ marginTop: 6, marginBottom: 3 }}>
-            {strings.questionnaireCard?.questionnairesBuilder || "Questionnaires builder"}
+            {strings.questionnaireCard?.questionnairesBuilder}
           </Typography>
         </CardContent>
       );
@@ -28,7 +28,7 @@ const QuestionnaireCard = () => {
     return (
       <CardContent>
         <Typography variant="h6" fontWeight={"bold"} style={{ marginTop: 6, marginBottom: 3 }}>
-          {strings.questionnaireProgress?.title || "Questionnaires"}
+          {strings.questionnaireProgress?.title}
         </Typography>
         <Grid container>
           <Box sx={{ width: "100%", display: "flex", flexDirection: "column" }}>
