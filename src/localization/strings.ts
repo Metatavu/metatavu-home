@@ -428,6 +428,12 @@ export interface Localized extends LocalizedStringsMethods {
     noTags: string;
     moreCount: string;
   };
+  questionnaireProgress: {
+  title: string;
+  progressText: string;
+  allCompleted: string;
+  loading: string;
+};
   /**
    * Translations related to Balance Card
    */

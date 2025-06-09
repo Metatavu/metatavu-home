@@ -327,6 +327,12 @@
     "noTags": "Ei tageja vielä lisätty",
     "moreCount": "+{0} lisää"
   },
+  "questionnaireProgress": {
+  "title": "Kyselyt",
+  "progressText": "Olet läpäissyt {0} kyselyä {1} kyselystä",
+  "allCompleted": "Onnittelut! Olet suorittanut kaikki kyselyt!",
+  "loading": "Ladataan kyselyitä..."
+},
   "balanceCard": {
     "totalFlextimeBalance": "Kokonaisbalanssi:",
     "employeeBalances": "Henkilöstön aikakirjaukset ja saldot",
