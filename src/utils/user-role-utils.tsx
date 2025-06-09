@@ -33,6 +33,18 @@ export default class UserRoleUtils {
   };
 
   /**
+   * Check if the logged-in user has an tester role
+   *
+   * @returns boolean, indicates if user is tester
+   */
+  public static readonly isTester = () => {
+    const accessToken = useAtomValue(authAtom)?.token;
+    if (!accessToken?.realm_access) return false;
+
+    return accessToken.realm_access.roles.includes("tester");
+  };
+
+  /**
    * Check if the logged-in user has admin role and is in admin route
    *
    * @returns boolean, indicates if user is admin and in admin route
