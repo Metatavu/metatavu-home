@@ -1,16 +1,14 @@
-import { Grid, Skeleton, Card, CardContent, Typography, Box } from "@mui/material";
+import { Grid, Skeleton } from "@mui/material";
 import BalanceCard from "../home/balance-card";
 import VacationsCard from "../home/vacations-card";
 import SprintViewCard from "../home/sprint-view-card";
+import QuestionnaireCard from "../home/questionnaire-card";
 import type { User } from "src/generated/homeLambdasClient";
 import { usersAtom } from "src/atoms/user";
 import { userProfileAtom } from "src/atoms/auth";
 import { useAtomValue } from "jotai";
 import strings from "src/localization/strings";
 import type { ReactNode } from "react";
-import QuestionnaireProgress from "src/components/home/questionnaire-progress";
-import { Link } from "react-router-dom";
-import UserRoleUtils from "src/utils/user-role-utils";
 
 /**
  * Home screen component
@@ -20,7 +18,6 @@ const HomeScreen = () => {
   const userProfile = useAtomValue(userProfileAtom);
   const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
   const hasSeveraUserId = !!loggedInUser?.attributes?.severaUserId;
-  const adminMode = UserRoleUtils.adminMode();
   
   /**
    * Renders a card with a skeleton loader
@@ -60,34 +57,6 @@ const HomeScreen = () => {
     </Grid>
   );
 
-  /**
-   * Renders the questionnaire card
-   * 
-   * @returns ReactNode containing the questionnaire card
-   */
-  const renderQuestionnaireCard = () => (
-    <Link to={adminMode ? "/admin/questionnaire" : "/questionnaire"} style={{ textDecoration: "none" }}>
-      <Card
-        sx={{
-          "&:hover": {
-            background: "#efefef"
-          }
-        }}
-      >
-        <CardContent>
-          <Typography variant="h6" fontWeight={"bold"} style={{ marginTop: 6, marginBottom: 3 }}>
-            {strings.questionnaireProgress?.title || "Questionnaires"}
-          </Typography>
-          <Grid container>
-            <Box sx={{ width: "100%", display: "flex", flexDirection: "column" }}>
-              <QuestionnaireProgress />
-            </Box>
-          </Grid>
-        </CardContent>
-      </Card>
-    </Link>
-  );
-
   return (
     <Grid container spacing={2}>
       <Grid item xs={12} sm={6}>
@@ -106,7 +75,7 @@ const HomeScreen = () => {
         <VacationsCard />
       </Grid>
       <Grid item xs={12} sm={6}>
-        {renderQuestionnaireCard()}
+        <QuestionnaireCard />
       </Grid>
     </Grid>
   );

@@ -16,13 +16,12 @@ const QuestionnaireProgress = () => {
   const userProfile = useAtomValue(userProfileAtom);
   const users = useAtomValue(usersAtom);
   const [questionnaires, setQuestionnaires] = useState<Questionnaire[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   
   const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
 
   useEffect(() => {
     const fetchQuestionnaires = async () => {
-      setLoading(true);
       try {
         const response = await questionnairesApi.listQuestionnaires();
         setQuestionnaires(response);
