@@ -63,7 +63,7 @@ const HomeScreen = () => {
    */
   const cards : ReactNode[] = [
     renderCardWithSkeleton(strings.balanceCard.balance, <BalanceCard />),
-    <Box sx={{minHeight:325}}>{renderCardWithSkeleton(strings.sprint.sprintview, <SprintViewCard />)}</Box>,
+    renderCardWithSkeleton(strings.sprint.sprintview, <SprintViewCard />),
     <VacationsCard />,
     <QuestionnaireCard />
   ];

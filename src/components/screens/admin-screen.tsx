@@ -22,8 +22,7 @@ const AdminScreen = () => {
     isPrivilegedUser && <BalanceCard/>,
     isPrivilegedUser && <Box sx={{minHeight:260}}><SprintViewCard/></Box>,
     isPrivilegedUser && <VacationsCard/>,
-    isPrivilegedUser && <QuestionnaireCard/>,
-    isPrivilegedUser && <BalanceCard/>
+    isPrivilegedUser && <QuestionnaireCard/>
   ].filter(Boolean);
 
   return (

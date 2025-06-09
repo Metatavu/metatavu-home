@@ -88,7 +88,8 @@ const BalanceCard = () => {
         sx={{
           "&:hover": {
             background: "#efefef"
-          }
+          },
+          minHeight: 150
         }}
       >
         {adminMode ? (
