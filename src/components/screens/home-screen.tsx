@@ -24,16 +24,13 @@ const HomeScreen = () => {
   /**
    * Renders a card with a skeleton loader
    *
-   * @param title - Title of the card
    * @param content - Content to render inside the card
    * @returns ReactNode containing the card
    */
-  const renderCardWithSkeleton = (title: string, content: ReactNode) => (
+  const renderCardWithSkeleton = (content: ReactNode) => (
     <Box
       sx={{
-        background: "#f5f5f5",
         borderRadius: 1,
-        boxShadow: "0px 2px 8px rgba(0,0,0,0.05)",
         minHeight: 120,
         display: "flex",
         flexDirection: "column",
@@ -41,19 +38,20 @@ const HomeScreen = () => {
       }}
     >
       <Grid sx={{ padding: 2 }}>
-      <Box sx={{ fontWeight: "bold", fontSize: 22 }}>
-        {title}
-      </Box>
-      {!hasSeveraUserId ? (
-        <>
-          <div style={{ color: "#888", fontSize: 15, padding: "12px 0" }}>
-            {strings.notOptedInDescription.description}
-          </div>
-          <Skeleton variant="rectangular" height={20} sx={{ borderRadius: 1, marginTop: 1, width: "100%" }} />
-        </>
-      ) : (
-        content
-      )}
+        {!hasSeveraUserId ? (
+          <>
+            <div style={{ color: "#888", fontSize: 15, padding: "12px 0" }}>
+              {strings.notOptedInDescription.description}
+            </div>
+            <Skeleton
+              variant="rectangular"
+              height={20}
+              sx={{ borderRadius: 1, marginTop: 1, width: "100%" }}
+            />
+          </>
+        ) : (
+          content
+        )}
       </Grid>
     </Box>
   );
@@ -61,9 +59,9 @@ const HomeScreen = () => {
   /**
    * Сard collection, new component cards should be added here
    */
-  const cards : ReactNode[] = [
-    renderCardWithSkeleton(strings.balanceCard.balance, <BalanceCard />),
-    renderCardWithSkeleton(strings.sprint.sprintview, <SprintViewCard />),
+  const cards: ReactNode[] = [
+    renderCardWithSkeleton(<BalanceCard />),
+    renderCardWithSkeleton(<SprintViewCard />),
     <VacationsCard />,
     <QuestionnaireCard />
   ];
