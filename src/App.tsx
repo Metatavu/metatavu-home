@@ -19,6 +19,9 @@ import { useMemo, useState } from "react";
 import RestrictedContentProvider from "./components/providers/restricted-content-provider";
 import SprintViewScreen from "./components/screens/sprint-view-screen";
 import QuestionnaireScreen from "./components/screens/questionnaire-screen";
+import SoftwareRegistryScreen from "./components/screens/software-registry-screen";
+import AllSoftwareScreen from "./components/screens/all-software-screen";
+import SoftwareDetails from "./components/software-registry/SoftwareDetails";
 import NewQuestionnaireBuilder from "./components/questionnaire/new-questionnaire-builder";
 import QuestionnaireManager from "./components/questionnaire/questionnaire-manager";
 import { QuestionnairePreviewMode } from "./types";
@@ -56,6 +59,22 @@ const App = () => {
         {
           path: "/sprintview",
           element: <SprintViewScreen />
+        },
+        {
+          path: "/softwareregistry",
+          element: <SoftwareRegistryScreen />
+        },
+        {
+          path: "/softwareregistry/:id",
+          element: <SoftwareDetails />
+        },
+        {
+          path: "/softwareregistry/allsoftware",
+          element: <AllSoftwareScreen />
+        },
+        {
+          path: "/softwareregistry/allsoftware/:id",
+          element: <SoftwareDetails />
         },
         {
           path: "/questionnaire",

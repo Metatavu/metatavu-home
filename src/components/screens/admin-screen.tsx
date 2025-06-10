@@ -5,7 +5,9 @@ import SprintViewCard from "../home/sprint-view-card";
 import UserRoleUtils from "src/utils/user-role-utils";
 import QuestionnaireCard from "../home/questionnaire-card";
 import VacationManagementCard from "../home/vacation-management-card";
+import SoftwareRegistryCard from "../home/software-registry-card";
 import { Box } from "@mui/material";
+
 
 /**
  * Admin screen component
@@ -15,15 +17,16 @@ const AdminScreen = () => {
   const isTesterMode = UserRoleUtils.isTester();
 
   const isPrivilegedUser = isDeveloperMode || isTesterMode;
-  
+
   /**
    * Сard collection, new component cards should be added here
    */
   const cards = [
-    isPrivilegedUser && <BalanceCard/>,
-    isPrivilegedUser && <Box sx={{minHeight:260}}><SprintViewCard/></Box>,
-    isPrivilegedUser && <VacationsCard/>,
-    isPrivilegedUser && <QuestionnaireCard/>,
+    isPrivilegedUser && <BalanceCard key="balance" />,
+    isPrivilegedUser && <Box key="sprint" sx={{minHeight:260}}><SprintViewCard /></Box>,
+    isPrivilegedUser && <VacationsCard key="vacations" />,
+    isPrivilegedUser && <QuestionnaireCard key="questionnaire"/>,
+    isPrivilegedUser && <SoftwareRegistryCard key="software"  />,
     isPrivilegedUser && (
       <Box sx={{ maxHeight: 420 }}>
         <VacationManagementCard />
