@@ -10,6 +10,7 @@
     "hello": "Hi",
     "logout": "Log out",
     "home": "Home",
+    "settings": "Settings" ,
     "timebank": "Timebank",
     "vacations": "Vacations",
     "onCall": "On Call",
@@ -35,6 +36,7 @@
     "questionnaireSaveFailed": "Error while saving questionnaire",
     "questionnaireUpdateFailed": "Error while updating questionnaire",
     "fetchFailedFlextime": "Error while fetching flextime data",
+    "missingEmailOrId": "Missing email or ID",
     "noSeveraUserId" : "One of your user is missing severaUserId, please contact a member of the metatavu home development team for more information.",
     "noFlextimeData": "Something went wrong while fetching your flextime data"
   },
@@ -81,16 +83,16 @@
     "showMyTasks": "My tasks",
     "toDo": "To do",
     "inProgress": "In progress",
-    "allTasks" : "All tasks",
-    "notFound" : "No result found",
+    "allTasks": "All tasks",
+    "notFound": "No result found",
     "projectName": "Project",
     "search": "Search for a task, project or assignee",
     "unAllocated": "Unallocated Time:",
     "sprintDate": "Sprint",
-    "completed": "Done", 
+    "completed": "Done",
     "current": "Current: {0}-{1}",
-    "startDate":"Start Date",
-    "deadLine":"Deadline",
+    "startDate": "Start Date",
+    "deadLine": "Deadline",
     "actualWorkHours": "Actual Work Hours",
     "back":"Back",
     "filter": "Filter by",
@@ -181,7 +183,8 @@
   },
   "form": {
     "submit": "Submit",
-    "update": "Update"
+    "update": "Update",
+    "restoreDefault": "Restore default holiday days consumed"
   },
   "tableToolbar": {
     "delete": "Delete",
@@ -238,14 +241,14 @@
   "questionnaireCard": {
     "questionnairesBuilder": "Questionnaires builder",
     "questionnaires": "Questionnaires",
-    "progressBar": "Progress Bar"   
+    "progressBar": "Progress Bar"
   },
   "questionnaireScreen": {
     "currentQuestionnaires": "Current Questionnaires",
     "buildNewQuestionnaire": "Build New Questionnaire",
     "status": "Status:",
     "edit": "Edit",
-    "delete": "Delete", 
+    "delete": "Delete",
     "back": "Back"
   },
   "newQuestionnaireBuilder": {
@@ -287,7 +290,7 @@
   },
   "questionnaireManager": {
     "passed": "You have passed the questionnaire with {0} correct answers out of {1}.",
-    "failed": "You have failed the questionnaire with {0} correct answers out of {1}.", 
+    "failed": "You have failed the questionnaire with {0} correct answers out of {1}.",
     "goBack": "Go back",
     "submit": "Submit"
   },
@@ -303,11 +306,26 @@
     "descriptionLabel": "Description",
     "question": "Question",
     "deleteQuestion": "Delete question",
+    "answerOption": "Answer option",
+    "addAnswerOption": "Add Answer Option",
     "passScoreLabel": "Pass score",
     "passScoreMax": "Max pass score:",
     "update": "Update Questionnaire",
     "clearPassedUsers": "Remove all passed users from this questionnaire",
     "snackbarMessageSuccess": "Updated questionnaire successfully"
+  },
+  "questionnaireTags": {
+    "title": "Tags",
+    "searchPlaceholder": "Search by title or tags...",
+    "allTags": "All Tags",
+    "emptyTagError": "Tag cannot be empty",
+    "duplicateTagError": "Tag already exists!",
+    "tagTooLongError": "Tag cannot be longer than {max} characters",
+    "maxTagsError": "Maximum of 10 tags allowed",
+    "addTag": "Add tag",
+    "addTagPlaceholder": "Add a tag...",
+    "noTags": "No tags added yet",
+    "moreCount": "+{0} more"
   },
   "balanceCard": {
     "totalFlextimeBalance": "Total flextime balance:",
@@ -317,5 +335,14 @@
     "atTheEndOf": "At the end of {0}",
     "hour": "hour",
     "hours": "hours"
+  },
+  "settingsScreen": {
+    "saveSettings": "Save settings",
+    "accept": "Accept",
+    "decline":"Decline",
+    "consentToDataProcessing": "Grant permissions for processing your Severa data to gain additional Home features."
+  },
+  "notOptedInDescription": {
+    "description": "Accept the processing of user data to view this section."
   }
 }

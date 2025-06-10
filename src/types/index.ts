@@ -186,3 +186,67 @@ export const SprintViewFilterTypes = {
   project: "project",
   user: "user",
 };
+
+/**
+ * Represents a user in the system.
+ */
+export interface User {
+  id: string;
+  username: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  enabled: boolean;
+  
+  /**
+   * Optional user attributes, such as vacation days by year.
+   * Each key maps to an array of strings in the format "year:value".
+   */
+  attributes?: {
+    [key: string]: string[];
+  };
+}
+
+/**
+ * Represents vacation information for a specific year.
+ */
+export interface VacationYear {
+  /**
+   * Total vacation days assigned for the year.
+   */
+  total: string;
+
+  /**
+   * Remaining unspent vacation days for the year.
+   */
+  remaining: string;
+}
+
+/**
+ * A map of vacation data grouped by year.
+ * Example: { "2024": { total: "20", remaining: "5" } }
+ */
+export interface VacationDays {
+  [year: string]: VacationYear;
+}
+
+/**
+ * Represents the state of a UI notification (e.g., Snackbar).
+ */
+export interface NotificationState {
+  /**
+   * Whether the notification is visible.
+   */
+  open: boolean;
+
+  /**
+   * The message content to display.
+   */
+  message: string;
+
+  /**
+   * The severity level of the notification.
+   * Can be 'success', 'error', 'info', or 'warning'.
+   */
+  severity: 'success' | 'error' | 'info' | 'warning';
+}

@@ -116,8 +116,7 @@ const VacationRequestsTable = ({
           ? getTotalVacationRequestStatus(status)
           : VacationRequestStatuses.PENDING;
 
-        // Safely check message
-        if (vacationRequest.message && vacationRequest.message.length) {
+        if (vacationRequest.message.length) {
           row.message = vacationRequest.message;
         }
 

@@ -1,7 +1,8 @@
-import QuestionnairePreview from "src/components/questionnaire/questionnaire-preview";
 import en from "./en.json";
 import fi from "./fi.json";
-import LocalizedStrings, { type LocalizedStringsMethods } from "localized-strings";
+import LocalizedStrings, {
+  type LocalizedStringsMethods,
+} from "localized-strings";
 
 /**
  * Localized strings
@@ -24,6 +25,7 @@ export interface Localized extends LocalizedStringsMethods {
     hello: string;
     logout: string;
     home: string;
+    settings: string
     timebank: string;
     vacations: string;
     onCall: string;
@@ -52,6 +54,7 @@ export interface Localized extends LocalizedStringsMethods {
     questionnaireDeleteFailed: string;
     questionnaireUpdateFailed: string;
     fetchFailedFlextime: string;
+    missingEmailOrId: string;
     noSeveraUserId: string;
     noFlextimeData: string;
   };
@@ -214,6 +217,7 @@ export interface Localized extends LocalizedStringsMethods {
   form: {
     submit: string;
     update: string;
+    restoreDefault: string;
   };
   /**
    * Translation related to table toolbar
@@ -349,7 +353,7 @@ export interface Localized extends LocalizedStringsMethods {
   };
   /**
    * Translations related to New Questionnaire Card
-    */
+   */
   newQuestionnaireCard: {
     newQuestion: string;
     questionLabel: string;
@@ -361,7 +365,7 @@ export interface Localized extends LocalizedStringsMethods {
   };
   /**
    * Translations related to Questionnaire Table
-   */ 
+   */
   questionnaireTable: {
     title: string;
     description: string;
@@ -372,7 +376,7 @@ export interface Localized extends LocalizedStringsMethods {
     confirmDeleteTitle: string;
     cancel: string;
     confirm: string;
-  }; 
+  };
   /**
    * Translations related to Questionnaire Interaction Screen
    */
@@ -405,6 +409,24 @@ export interface Localized extends LocalizedStringsMethods {
     update: string;
     clearPassedUsers: string;
     snackbarMessageSuccess: string;
+    answerOption: string;        
+    addAnswerOption: string;
+  };
+  /**
+   * Translations related to tags
+   */
+  questionnaireTags: {
+    title: string;         
+    searchPlaceholder: string; 
+    allTags: string;     
+    emptyTagError: string;
+    duplicateTagError: string;
+    tagTooLongError: string;
+    maxTagsError: string;
+    addTag: string;
+    addTagPlaceholder: string;
+    noTags: string;
+    moreCount: string;
   };
   /**
    * Translations related to Balance Card
@@ -418,8 +440,22 @@ export interface Localized extends LocalizedStringsMethods {
     hour: string;
     hours: string;
   };
-}
-
+  /**
+   * Translation related settings screen
+   */
+  settingsScreen: {
+    saveSettings: string;
+    accept: string,
+    decline: string;
+    consentToDataProcessing: string;
+  };
+  /**
+   * Translations related to if user is not Severa Opt in
+   */
+  notOptedInDescription: {
+    description: string;
+  };
+};
 /**
  * Initialized localized strings
  */

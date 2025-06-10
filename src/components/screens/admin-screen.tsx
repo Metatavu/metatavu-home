@@ -12,7 +12,7 @@ import VacationManagementCard from "../home/vacation-management-card";
  */
 const AdminScreen = () => {
   const developerMode = UserRoleUtils.developerMode();
-  const adminMode = UserRoleUtils.adminMode();
+  // const adminMode = UserRoleUtils.adminMode();
 
   const balanceCard = developerMode ? <BalanceCard /> : null;
   const sprintViewCard = developerMode ? <SprintViewCard /> : null;
