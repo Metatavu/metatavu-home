@@ -4,6 +4,7 @@ import VacationsCard from "../home/vacations-card";
 import SprintViewCard from "../home/sprint-view-card";
 import UserRoleUtils from "src/utils/user-role-utils";
 import QuestionnaireCard from "../home/questionnaire-card";
+import VacationManagementCard from "../home/vacation-management-card";
 import { Box } from "@mui/material";
 
 /**
@@ -22,7 +23,13 @@ const AdminScreen = () => {
     isPrivilegedUser && <BalanceCard/>,
     isPrivilegedUser && <Box sx={{minHeight:260}}><SprintViewCard/></Box>,
     isPrivilegedUser && <VacationsCard/>,
-    isPrivilegedUser && <QuestionnaireCard/>
+    isPrivilegedUser && <QuestionnaireCard/>,
+    isPrivilegedUser && (
+      <Box sx={{ maxHeight: 420 }}>
+        <VacationManagementCard />
+      </Box>
+    )
+        
   ].filter(Boolean);
 
   return (

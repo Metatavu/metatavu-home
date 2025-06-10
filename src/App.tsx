@@ -22,6 +22,8 @@ import QuestionnaireScreen from "./components/screens/questionnaire-screen";
 import NewQuestionnaireBuilder from "./components/questionnaire/new-questionnaire-builder";
 import QuestionnaireManager from "./components/questionnaire/questionnaire-manager";
 import { QuestionnairePreviewMode } from "./types";
+import AdminVacationManagementScreen from "./components/screens/admin-vacation-management/admin-vacation-management-screen";
+
 import SettingsScreen from "./components/screens/settings-screen"
 /**
  * Application component
@@ -93,6 +95,10 @@ const App = () => {
         {
           path: "/admin/sprintview",
           element: <SprintViewScreen />
+        },
+        {
+          path: "/admin/vacation-management",
+          element: <AdminVacationManagementScreen />
         },
         {
           path: "/admin/questionnaire",
