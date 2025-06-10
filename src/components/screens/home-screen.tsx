@@ -1,4 +1,5 @@
-import { Grid, Skeleton } from "@mui/material";
+import { Skeleton, Box, Grid } from "@mui/material";
+import CardGridWrapper from "../home/common/card-grid-wrapper";
 import BalanceCard from "../home/balance-card";
 import QuestionnaireCard from "../home/questionnaire-card";
 import VacationsCard from "../home/vacations-card";
@@ -15,10 +16,11 @@ import type { ReactNode } from "react";
  * Home screen component
  */
 const HomeScreen = () => {
-    const users = useAtomValue(usersAtom);
+  const users = useAtomValue(usersAtom);
   const userProfile = useAtomValue(userProfileAtom);
   const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
   const hasSeveraUserId = !!loggedInUser?.attributes?.severaUserId;
+
   /**
    * Renders a card with a skeleton loader
    *
@@ -27,12 +29,11 @@ const HomeScreen = () => {
    * @returns ReactNode containing the card
    */
   const renderCardWithSkeleton = (title: string, content: ReactNode) => (
-    <Grid
+    <Box
       sx={{
         background: "#f5f5f5",
         borderRadius: 1,
         boxShadow: "0px 2px 8px rgba(0,0,0,0.05)",
-        marginBottom: 2,
         minHeight: 120,
         display: "flex",
         flexDirection: "column",
@@ -40,44 +41,37 @@ const HomeScreen = () => {
       }}
     >
       <Grid sx={{ padding: 2 }}>
-        <Grid sx={{ fontWeight: "bold", fontSize: 22 }}>
-          {title}
-        </Grid>
-        {!hasSeveraUserId ? (
-          <>
-            <div style={{ color: "#888", fontSize: 15, padding: "12px 0" }}>
-              {strings.notOptedInDescription.description}
-            </div>
-            <Skeleton variant="rectangular" height={20} sx={{ borderRadius: 1, marginTop: 1, width: "100%" }} />
-          </>
-        ) : (
-          content
-        )}
+      <Box sx={{ fontWeight: "bold", fontSize: 22 }}>
+        {title}
+      </Box>
+      {!hasSeveraUserId ? (
+        <>
+          <div style={{ color: "#888", fontSize: 15, padding: "12px 0" }}>
+            {strings.notOptedInDescription.description}
+          </div>
+          <Skeleton variant="rectangular" height={20} sx={{ borderRadius: 1, marginTop: 1, width: "100%" }} />
+        </>
+      ) : (
+        content
+      )}
       </Grid>
-        </Grid>
-      );
+    </Box>
+  );
 
-      return (
-        <Grid container spacing={2}>
-      <Grid item xs={12} sm={6}>
-        {renderCardWithSkeleton(
-          strings.balanceCard.balance,
-          <BalanceCard />
-        )}
-        <Grid item xs={12} style={{ marginTop: "16px" }}>
-          {renderCardWithSkeleton(
-            strings.sprint.sprintview,
-            <SprintViewCard />
-          )}
-        </Grid>
-      </Grid>
-      <Grid item xs={12} sm={6}>
-        {<VacationsCard />}
-      </Grid>
-      <Grid item xs={12} sm={6}>
-        {<QuestionnaireCard />}
-      </Grid>
-    </Grid>
+  /**
+   * Сard collection, new component cards should be added here
+   */
+  const cards : ReactNode[] = [
+    renderCardWithSkeleton(strings.balanceCard.balance, <BalanceCard />),
+    renderCardWithSkeleton(strings.sprint.sprintview, <SprintViewCard />),
+    <VacationsCard />,
+    <QuestionnaireCard />
+  ];
+
+  return (
+    <CardGridWrapper>
+      {cards}
+    </CardGridWrapper>
   );
 };
 

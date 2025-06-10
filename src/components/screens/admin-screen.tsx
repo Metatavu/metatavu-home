@@ -1,48 +1,41 @@
-// src/components/screens/admin-screen.tsx
-import { Grid } from "@mui/material";
+import CardGridWrapper from "../home/common/card-grid-wrapper";
 import BalanceCard from "../home/balance-card";
 import VacationsCard from "../home/vacations-card";
 import SprintViewCard from "../home/sprint-view-card";
 import UserRoleUtils from "src/utils/user-role-utils";
 import QuestionnaireCard from "../home/questionnaire-card";
 import VacationManagementCard from "../home/vacation-management-card";
+import { Box } from "@mui/material";
 
 /**
  * Admin screen component
  */
 const AdminScreen = () => {
-  const developerMode = UserRoleUtils.developerMode();
-  // const adminMode = UserRoleUtils.adminMode();
+  const isDeveloperMode = UserRoleUtils.isDeveloper();
+  const isTesterMode = UserRoleUtils.isTester();
 
-  const balanceCard = developerMode ? <BalanceCard /> : null;
-  const sprintViewCard = developerMode ? <SprintViewCard /> : null;
-  const vacationsCard = developerMode ? <VacationsCard /> : null;
-  const questionairesCard = developerMode ? <QuestionnaireCard /> : null;
-  const vacationManagementCard = <VacationManagementCard />;
+  const isPrivilegedUser = isDeveloperMode || isTesterMode;
+  
+  /**
+   * Сard collection, new component cards should be added here
+   */
+  const cards = [
+    isPrivilegedUser && <BalanceCard/>,
+    isPrivilegedUser && <Box sx={{minHeight:260}}><SprintViewCard/></Box>,
+    isPrivilegedUser && <VacationsCard/>,
+    isPrivilegedUser && <QuestionnaireCard/>,
+    isPrivilegedUser && (
+      <Box sx={{ maxHeight: 420 }}>
+        <VacationManagementCard />
+      </Box>
+    )
+        
+  ].filter(Boolean);
 
   return (
-    <Grid container spacing={2}>
-      {/* First row */}
-      <Grid item xs={12} sm={6}>
-        {balanceCard}
-      </Grid>
-      <Grid item xs={12} sm={6}>
-        {vacationsCard}
-      </Grid>
-      
-      {/* Second row */}
-      <Grid item xs={12} sm={6}>
-        {sprintViewCard}
-      </Grid>
-      
-      {/* Third row */}
-      <Grid item xs={12} sm={6}>
-        {questionairesCard}
-      </Grid>
-      <Grid item xs={12} sm={6}>
-        {vacationManagementCard}
-      </Grid>
-    </Grid>
+    <CardGridWrapper>
+      {cards}
+    </CardGridWrapper>
   );
 };
 
