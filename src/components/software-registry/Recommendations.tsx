@@ -27,10 +27,7 @@ interface RecommendationsProps {
  * @param RecommendationsProps the props for the Recommendations component.
  * @returns The rendered Recommendations component.
  */
-const Recommendations: FunctionComponent<RecommendationsProps> = ({
-  applications,
-  onAddUser,
-}) => {
+const Recommendations = ({ applications, onAddUser }: RecommendationsProps) => {
   const swiperRef = useRef<any>(null); // Reference to Swiper
   const navigate = useNavigate();
   const { usersApi } = useLambdasApi();

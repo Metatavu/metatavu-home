@@ -21,11 +21,11 @@ const AdminScreen = () => {
    * Сard collection, new component cards should be added here
    */
   const cards = [
-    isPrivilegedUser && <BalanceCard />,
-    isPrivilegedUser && <Box sx={{minHeight:260}}><SprintViewCard /></Box>,
-    isPrivilegedUser && <VacationsCard />,
-    isPrivilegedUser && <QuestionnaireCard />,
-    isPrivilegedUser && <SoftwareRegistryCard />
+    isPrivilegedUser && <BalanceCard key="balance" />,
+    isPrivilegedUser && <Box key="sprint" sx={{minHeight:260}}><SprintViewCard /></Box>,
+    isPrivilegedUser && <VacationsCard key="vacations" />,
+    isPrivilegedUser && <QuestionnaireCard key="questionnaire"/>,
+    isPrivilegedUser && <SoftwareRegistryCard key="software"  />
   ].filter(Boolean);
 
   return (

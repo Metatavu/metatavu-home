@@ -28,7 +28,7 @@ interface RecommendCardProps {
   }>>;
 }
 
-const RecommendCard: React.FC<RecommendCardProps> = ({
+const RecommendCard = ({
   app,
   onAddUser,
   fetchUserName,
@@ -36,7 +36,7 @@ const RecommendCard: React.FC<RecommendCardProps> = ({
   loadingUsers,
   loadingAppId,
   setLoadingAppId,
-}) => {
+}: RecommendCardProps) => {
   useEffect(() => {
     if (app.createdBy) {
       fetchUserName(app.createdBy);

@@ -27,15 +27,7 @@ interface ContentProps {
  * @param ContentProps The props for the Content component.
  * @returns The rendered Content component.
  */
-const Content: FunctionComponent<ContentProps> = ({
-  applications,
-  isGridView,
-  onStatusChange,
-  adminMode,
-  onRemove,
-  onSave,
-  loggedUserId,
-}) => {
+const Content = ({ applications, isGridView, onStatusChange, adminMode, onRemove, onSave, loggedUserId }: ContentProps) => {
   return (
     <Grid container spacing={2}>
       {applications.map((app) => {
