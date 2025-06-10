@@ -10,6 +10,7 @@
     "hello": "Hei",
     "logout": "Kirjaudu ulos",
     "home": "Koti",
+    "settings": "Asetukset",
     "timebank": "Timebank",
     "vacations": "Lomat",
     "onCall": "Päivystys",
@@ -35,6 +36,7 @@
     "questionnaireDeleteFailed": "Kyselylomakkeen poistaminen epäonnistui",
     "questionnaireUpdateFailed": "Kyselylomakkeen päivittäminen epäonnistui",
     "fetchFailedFlextime": "Joustotyöaikatietojen hakeminen epäonnistui",
+    "missingEmailOrId": "Sähköposti tai käyttäjätunnus puuttuu",
     "noSeveraUserId": "Käyttäjältä puuttuu Severa-käyttäjätunnus, ota yhteyttä Metatavun kehitystiimiin lisätietoja varten.",
     "noFlextimeData": "Jotain meni pieleen joustotyöaikatietoja haettaessa"
   },
@@ -236,7 +238,8 @@
   },
   "form": {
     "submit": "Lähetä",
-    "update": "Päivitä"
+    "update": "Päivitä",
+    "restoreDefault": "Palauta loman kuluttamat päivät"
   },
   "tableToolbar": {
     "delete": "Poista",
@@ -359,11 +362,32 @@
     "question": "Kysymys",
     "deleteQuestion": "Poista kysymys",
     "passScoreLabel": "Pistemäärä",
+    "answerOption": "Vastausvaihtoehto",
+    "addAnswerOption": "Lisää vastausvaihtoehto",
     "passScoreMax": "Maksimipistemäärä",
     "update": "Päivitä kysely",
     "clearPassedUsers": "Tyhjennä läpäisseet käyttäjät tästä kyselystä",
     "snackbarMessageSuccess": "Kysely päivitetty onnistuneesti"
   },
+  "questionnaireTags": {
+    "title": "Tagit",
+    "searchPlaceholder": "Hae otsikon tai tagien mukaan...",
+    "allTags": "Kaikki tagit",
+    "emptyTagError": "Tagi ei voi olla tyhjä",
+    "duplicateTagError": "Tagi on jo olemassa!",
+    "tagTooLongError": "Tagi ei voi olla pidempi kuin {max} merkkiä.",
+    "maxTagsError": "Enintään 10 tagia sallittu",
+    "addTag": "Lisää tagi",
+    "addTagPlaceholder": "Lisää tagi...",
+    "noTags": "Ei tageja vielä lisätty",
+    "moreCount": "+{0} lisää"
+  },
+  "questionnaireProgress": {
+  "title": "Kyselyt",
+  "progressText": "Olet läpäissyt {0} kyselyä {1} kyselystä",
+  "allCompleted": "Onnittelut! Olet suorittanut kaikki kyselyt!",
+  "loading": "Ladataan kyselyitä..."
+},
   "balanceCard": {
     "totalFlextimeBalance": "Kokonaisbalanssi:",
     "employeeBalances": "Henkilöstön aikakirjaukset ja saldot",
@@ -372,5 +396,14 @@
     "atTheEndOf": "{0} lopussa",
     "hour": "tunti",
     "hours": "Tuntia"
+  },
+  "settingsScreen": {
+    "saveSettings": "Tallena Asetukset",
+    "accept": "Hyväksy",
+    "decline":"En hyväksy",
+    "consentToDataProcessing": "Suostumus tietojen käsittelyyn"
+  },
+  "notOptedInDescription": {
+    "description": "Hyväksy käyttäjätietojen käsittely nähdäksesi tämä osio"
   }
 }
