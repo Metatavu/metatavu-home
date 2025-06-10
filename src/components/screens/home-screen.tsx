@@ -11,6 +11,7 @@ import { userProfileAtom } from "src/atoms/auth";
 import { useAtomValue } from "jotai";
 import strings from "src/localization/strings";
 import type { ReactNode } from "react";
+import SoftwareRegistryCard from "../home/software-registry-card";
 
 /**
  * Home screen component
@@ -20,6 +21,11 @@ const HomeScreen = () => {
   const userProfile = useAtomValue(userProfileAtom);
   const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
   const hasSeveraUserId = !!loggedInUser?.attributes?.severaUserId;
+  const isDeveloperMode = UserRoleUtils.isDeveloper();
+  const isTesterMode = UserRoleUtils.isTester();
+
+  const isPrivilegedUser = isDeveloperMode || isTesterMode;
+
 
   /**
    * Renders a card with a skeleton loader
@@ -58,15 +64,21 @@ const HomeScreen = () => {
     </Box>
   );
 
-  /**
-   * Сard collection, new component cards should be added here
-   */
-  const cards : ReactNode[] = [
-    renderCardWithSkeleton(strings.balanceCard.balance, <BalanceCard />),
-    renderCardWithSkeleton(strings.sprint.sprintview, <SprintViewCard />),
-    <VacationsCard />,
-    <QuestionnaireCard />
-  ];
+  const cards: ReactNode[] = [
+  isPrivilegedUser && (
+    <Box key="balance">
+      {renderCardWithSkeleton(strings.balanceCard.balance, <BalanceCard />)}
+    </Box>
+  ),
+  isPrivilegedUser && (
+    <Box key="sprint">
+      {renderCardWithSkeleton(strings.sprint.sprintview, <SprintViewCard />)}
+    </Box>
+  ),
+  isPrivilegedUser && <VacationsCard key="vacations" />,
+  isPrivilegedUser && <QuestionnaireCard key="questionnaire" />,
+  isPrivilegedUser && <SoftwareRegistryCard key="software" />
+].filter(Boolean);
 
   return (
     <CardGridWrapper>
