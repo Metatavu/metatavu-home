@@ -49,7 +49,7 @@ const BalanceCard = () => {
     setLoading(true);
     try {
       const fetchedUsersFlextime = await flexTimeApi.getFlextimeBySeveraUserId({
-        severaUserId
+        userId: severaUserId
       });
       setUsersFlextime(fetchedUsersFlextime);
     } catch (error) {
