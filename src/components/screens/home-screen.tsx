@@ -1,4 +1,5 @@
-import { Grid, Skeleton } from "@mui/material";
+import { Skeleton, Box, Grid } from "@mui/material";
+import CardGridWrapper from "../home/common/card-grid-wrapper";
 import BalanceCard from "../home/balance-card";
 import QuestionnaireCard from "../home/questionnaire-card";
 import VacationsCard from "../home/vacations-card";
@@ -11,19 +12,22 @@ import { useAtomValue } from "jotai";
 import WikiDocumentationCard from "../home/wiki-documentation-card";
 import strings from "src/localization/strings";
 import type { ReactNode } from "react";
+import SoftwareRegistryCard from "../home/software-registry-card";
 
 /**
  * Home screen component
  */
 const HomeScreen = () => {
-  const developerMode = UserRoleUtils.developerMode();
   const users = useAtomValue(usersAtom);
   const userProfile = useAtomValue(userProfileAtom);
   const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
 
-  const wikiDocumentationCard = developerMode ? <WikiDocumentationCard/> : null;
-
   const hasSeveraUserId = !!loggedInUser?.attributes?.severaUserId;
+  const isDeveloperMode = UserRoleUtils.isDeveloper();
+  const isTesterMode = UserRoleUtils.isTester();
+
+  const isPrivilegedUser = isDeveloperMode || isTesterMode;
+
   /**
    * Renders a card with a skeleton loader
    *
@@ -32,12 +36,11 @@ const HomeScreen = () => {
    * @returns ReactNode containing the card
    */
   const renderCardWithSkeleton = (title: string, content: ReactNode) => (
-    <Grid
+    <Box
       sx={{
         background: "#f5f5f5",
         borderRadius: 1,
         boxShadow: "0px 2px 8px rgba(0,0,0,0.05)",
-        marginBottom: 2,
         minHeight: 120,
         display: "flex",
         flexDirection: "column",
@@ -45,47 +48,44 @@ const HomeScreen = () => {
       }}
     >
       <Grid sx={{ padding: 2 }}>
-        <Grid sx={{ fontWeight: "bold", fontSize: 22 }}>
-          {title}
-        </Grid>
-        {!hasSeveraUserId ? (
-          <>
-            <div style={{ color: "#888", fontSize: 15, padding: "12px 0" }}>
-              {strings.notOptedInDescription.description}
-            </div>
-            <Skeleton variant="rectangular" height={20} sx={{ borderRadius: 1, marginTop: 1, width: "100%" }} />
-          </>
-        ) : (
-          content
-        )}
+      <Box sx={{ fontWeight: "bold", fontSize: 22 }}>
+        {title}
+      </Box>
+      {!hasSeveraUserId ? (
+        <>
+          <div style={{ color: "#888", fontSize: 15, padding: "12px 0" }}>
+            {strings.notOptedInDescription.description}
+          </div>
+          <Skeleton variant="rectangular" height={20} sx={{ borderRadius: 1, marginTop: 1, width: "100%" }} />
+        </>
+      ) : (
+        content
+      )}
       </Grid>
-    </Grid>
+    </Box>
   );
 
+  const cards: ReactNode[] = [
+  isPrivilegedUser && (
+    <Box key="balance">
+      {renderCardWithSkeleton(strings.balanceCard.balance, <BalanceCard />)}
+    </Box>
+  ),
+  isPrivilegedUser && (
+    <Box key="sprint">
+      {renderCardWithSkeleton(strings.sprint.sprintview, <SprintViewCard />)}
+    </Box>
+  ),
+  isPrivilegedUser && <VacationsCard key="vacations" />,
+  isPrivilegedUser && <QuestionnaireCard key="questionnaire" />,
+  isPrivilegedUser && <SoftwareRegistryCard key="software" />,
+  isPrivilegedUser && <WikiDocumentationCard key="wiki" />
+].filter(Boolean);
+
   return (
-    <Grid container spacing={2}>
-      <Grid item xs={12} sm={6}>
-        {renderCardWithSkeleton(
-          strings.balanceCard.balance,
-          <BalanceCard />
-        )}
-        <Grid item xs={12} style={{ marginTop: "16px" }}>
-          {renderCardWithSkeleton(
-            strings.sprint.sprintview,
-            <SprintViewCard />
-          )}
-        </Grid>
-      </Grid>
-      <Grid item xs={12} sm={6}>
-        {<VacationsCard />}
-      </Grid>
-      <Grid item xs={12} sm={6}>
-        {<QuestionnaireCard />}
-      </Grid>
-      <Grid item xs={12}>
-        {wikiDocumentationCard}
-      </Grid>
-    </Grid>
+    <CardGridWrapper>
+      {cards}
+    </CardGridWrapper>
   );
 };
 

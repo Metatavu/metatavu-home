@@ -49,7 +49,7 @@ const BalanceCard = () => {
     setLoading(true);
     try {
       const fetchedUsersFlextime = await flexTimeApi.getFlextimeBySeveraUserId({
-        severaUserId
+        userId: severaUserId
       });
       setUsersFlextime(fetchedUsersFlextime);
     } catch (error) {
@@ -88,7 +88,8 @@ const BalanceCard = () => {
         sx={{
           "&:hover": {
             background: "#efefef"
-          }
+          },
+          minHeight: 150
         }}
       >
         {adminMode ? (

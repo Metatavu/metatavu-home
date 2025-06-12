@@ -1,48 +1,39 @@
-import { Grid } from "@mui/material";
+import CardGridWrapper from "../home/common/card-grid-wrapper";
 import BalanceCard from "../home/balance-card";
 import VacationsCard from "../home/vacations-card";
 import SprintViewCard from "../home/sprint-view-card";
 import UserRoleUtils from "src/utils/user-role-utils";
 import QuestionnaireCard from "../home/questionnaire-card";
 import WikiDocumentationCard from "../home/wiki-documentation-card";
+import SoftwareRegistryCard from "../home/software-registry-card";
+import { Box } from "@mui/material";
+
 
 /**
  * Admin screen component
  */
 const AdminScreen = () => {
-  const developerMode = UserRoleUtils.developerMode();
-  const balanceCard = developerMode ? <BalanceCard /> : null;
-  const sprintViewCard = developerMode ? <SprintViewCard /> : null;
-  const vacationsCard = developerMode ? <VacationsCard /> : null;
-  const questionairesCard = developerMode ? <QuestionnaireCard /> : null;
-  const wikiDocumentationCard = developerMode ? <WikiDocumentationCard/> : null;
+  const isDeveloperMode = UserRoleUtils.isDeveloper();
+  const isTesterMode = UserRoleUtils.isTester();
+
+  const isPrivilegedUser = isDeveloperMode || isTesterMode;
+
+  /**
+   * Сard collection, new component cards should be added here
+   */
+  const cards = [
+    isPrivilegedUser && <BalanceCard key="balance" />,
+    isPrivilegedUser && <Box key="sprint" sx={{minHeight:260}}><SprintViewCard /></Box>,
+    isPrivilegedUser && <VacationsCard key="vacations" />,
+    isPrivilegedUser && <QuestionnaireCard key="questionnaire" />,
+    isPrivilegedUser && <SoftwareRegistryCard key="software" />,
+    isPrivilegedUser && <WikiDocumentationCard key="wiki" />
+  ].filter(Boolean);
 
   return (
-    <Grid container spacing={2}>
-      <Grid item xs={12} sm={6}>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            {balanceCard}
-          </Grid>
-          <Grid item xs={12}>
-            {sprintViewCard}
-          </Grid>
-          <Grid item xs={12}>
-            {questionairesCard}
-          </Grid>
-        </Grid>
-      </Grid>
-      <Grid item xs={12} sm={6}>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            {vacationsCard}
-          </Grid>
-          <Grid item xs={12}>
-            {wikiDocumentationCard}
-          </Grid>
-        </Grid>
-      </Grid>
-    </Grid>
+    <CardGridWrapper>
+      {cards}
+    </CardGridWrapper>
   );
 };
 
