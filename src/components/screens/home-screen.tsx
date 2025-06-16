@@ -26,7 +26,6 @@ const HomeScreen = () => {
 
   const isPrivilegedUser = isDeveloperMode || isTesterMode;
 
-
   /**
    * Renders a card with a skeleton loader
    *
@@ -37,8 +36,9 @@ const HomeScreen = () => {
   const renderCardWithSkeleton = (title: string, content: ReactNode) => (
     <Box
       sx={{
-        
+        background: "#ffffff",
         borderRadius: 1,
+        boxShadow: "0px 2px 8px rgba(0,0,0,0.05)",
         minHeight: 120,
         display: "flex",
         flexDirection: "column",
@@ -46,37 +46,46 @@ const HomeScreen = () => {
       }}
     >
       <Grid sx={{ padding: 2 }}>
-      <Box sx={{ fontWeight: "bold", fontSize: 22 }}>
-      </Box>
-      {!hasSeveraUserId ? (
-        <>
-          <div style={{ color: "#888", fontSize: 15, padding: "12px 0" }}>
-            {strings.notOptedInDescription.description}
-          </div>
-          <Skeleton variant="rectangular" height={20} sx={{ borderRadius: 1, marginTop: 1, width: "100%" }} />
-        </>
-      ) : (
-        content
-      )}
+        <Box sx={{ fontWeight: "bold", fontSize: 22 }}>
+          {title}
+        </Box>
+        {!hasSeveraUserId ? (
+          <>
+            <div style={{ color: "#888", fontSize: 15, padding: "12px 0" }}>
+              {strings.notOptedInDescription.description}
+            </div>
+            <Skeleton variant="rectangular" height={20} sx={{ borderRadius: 1, marginTop: 1, width: "100%" }} />
+          </>
+        ) : (
+          content
+        )}
       </Grid>
     </Box>
   );
 
   const cards: ReactNode[] = [
-  isPrivilegedUser && (
-    <Box key="balance">
-      {renderCardWithSkeleton(strings.balanceCard.balance, <BalanceCard />)}
-    </Box>
-  ),
-  isPrivilegedUser && (
-    <Box key="sprint">
-      {renderCardWithSkeleton(strings.sprint.sprintview, <SprintViewCard />)}
-    </Box>
-  ),
-  isPrivilegedUser && <VacationsCard key="vacations" />,
-  isPrivilegedUser && <QuestionnaireCard key="questionnaire" />,
-  isPrivilegedUser && <SoftwareRegistryCard key="software" />
-].filter(Boolean);
+    isPrivilegedUser && (
+      <Box key="balance">
+        {!hasSeveraUserId ? (
+          renderCardWithSkeleton(strings.balanceCard.balance, <></>)
+        ) : (
+          <BalanceCard />
+        )}
+      </Box>
+    ),
+    isPrivilegedUser && (
+      <Box key="sprint" sx={{minHeight:260}}>
+        {!hasSeveraUserId ? (
+          renderCardWithSkeleton(strings.sprint.sprintview, <></>)
+        ) : (
+          <SprintViewCard />
+        )}
+      </Box>
+    ),
+    isPrivilegedUser && <VacationsCard key="vacations" />,
+    isPrivilegedUser && <QuestionnaireCard key="questionnaire" />,
+    isPrivilegedUser && <SoftwareRegistryCard key="software" />
+  ].filter(Boolean);
 
   return (
     <CardGridWrapper>
