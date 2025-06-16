@@ -11,6 +11,7 @@ import { userProfileAtom } from "src/atoms/auth";
 import { useAtomValue } from "jotai";
 import strings from "src/localization/strings";
 import type { ReactNode } from "react";
+import SoftwareRegistryCard from "../home/software-registry-card";
 
 /**
  * Home screen component
@@ -20,16 +21,23 @@ const HomeScreen = () => {
   const userProfile = useAtomValue(userProfileAtom);
   const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
   const hasSeveraUserId = !!loggedInUser?.attributes?.severaUserId;
+  const isDeveloperMode = UserRoleUtils.isDeveloper();
+  const isTesterMode = UserRoleUtils.isTester();
+
+  const isPrivilegedUser = isDeveloperMode || isTesterMode;
+
 
   /**
    * Renders a card with a skeleton loader
    *
+   * @param title - Title of the card
    * @param content - Content to render inside the card
    * @returns ReactNode containing the card
    */
-  const renderCardWithSkeleton = (content: ReactNode) => (
+  const renderCardWithSkeleton = (title: string, content: ReactNode) => (
     <Box
       sx={{
+        
         borderRadius: 1,
         minHeight: 120,
         display: "flex",
@@ -38,33 +46,37 @@ const HomeScreen = () => {
       }}
     >
       <Grid sx={{ padding: 2 }}>
-        {!hasSeveraUserId ? (
-          <>
-            <div style={{ color: "#888", fontSize: 15, padding: "12px 0" }}>
-              {strings.notOptedInDescription.description}
-            </div>
-            <Skeleton
-              variant="rectangular"
-              height={20}
-              sx={{ borderRadius: 1, marginTop: 1, width: "100%" }}
-            />
-          </>
-        ) : (
-          content
-        )}
+      <Box sx={{ fontWeight: "bold", fontSize: 22 }}>
+      </Box>
+      {!hasSeveraUserId ? (
+        <>
+          <div style={{ color: "#888", fontSize: 15, padding: "12px 0" }}>
+            {strings.notOptedInDescription.description}
+          </div>
+          <Skeleton variant="rectangular" height={20} sx={{ borderRadius: 1, marginTop: 1, width: "100%" }} />
+        </>
+      ) : (
+        content
+      )}
       </Grid>
     </Box>
   );
 
-  /**
-   * Сard collection, new component cards should be added here
-   */
   const cards: ReactNode[] = [
-    renderCardWithSkeleton(<BalanceCard />),
-    renderCardWithSkeleton(<SprintViewCard />),
-    <VacationsCard />,
-    <QuestionnaireCard />
-  ];
+  isPrivilegedUser && (
+    <Box key="balance">
+      {renderCardWithSkeleton(strings.balanceCard.balance, <BalanceCard />)}
+    </Box>
+  ),
+  isPrivilegedUser && (
+    <Box key="sprint">
+      {renderCardWithSkeleton(strings.sprint.sprintview, <SprintViewCard />)}
+    </Box>
+  ),
+  isPrivilegedUser && <VacationsCard key="vacations" />,
+  isPrivilegedUser && <QuestionnaireCard key="questionnaire" />,
+  isPrivilegedUser && <SoftwareRegistryCard key="software" />
+].filter(Boolean);
 
   return (
     <CardGridWrapper>
