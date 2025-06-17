@@ -39,7 +39,7 @@ const HomeScreen = () => {
         background: "#ffffff",
         borderRadius: 1,
         boxShadow: "0px 2px 8px rgba(0,0,0,0.05)",
-        minHeight: 120,
+        minHeight: title === strings.sprint.sprintview ? 270 : 120, 
         display: "flex",
         flexDirection: "column",
         justifyContent: "flex-start"
@@ -74,7 +74,7 @@ const HomeScreen = () => {
       </Box>
     ),
     isPrivilegedUser && (
-      <Box key="sprint" sx={{minHeight:260}}>
+      <Box key="sprint" sx={{ minHeight: 270 }}>
         {!hasSeveraUserId ? (
           renderCardWithSkeleton(strings.sprint.sprintview, <></>)
         ) : (
