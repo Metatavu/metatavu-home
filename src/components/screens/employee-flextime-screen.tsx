@@ -35,15 +35,17 @@ interface UserFlextimeData {
 }
 
 /**
- * Fetch users with their flextime data for opted-in users
+ * Fetches flextime data for all opted-in users.
+ * @param keywordId - The keyword to filter users (default: "isSeveraOptIn").
+ * @returns A Promise resolving to a list of user flextime data.
  */
 const fetchUsersFlextime = async (keywordId: string = "isSeveraOptIn"): Promise<UserFlextimeData[]> => {
   try {
     const response = await fetch(`http://localhost:3000/users/flextime?keywordId=${encodeURIComponent(keywordId)}`, {
       method: "GET",
       headers: {
-        "Content-Type": "application/json",
-      },
+        "Content-Type": "application/json"
+      }
     });
 
     if (!response.ok) {
@@ -52,14 +54,14 @@ const fetchUsersFlextime = async (keywordId: string = "isSeveraOptIn"): Promise<
 
     const data: UserFlextimeData[] = await response.json();
     return data;
-  } catch (error) {
-    console.error("Failed to fetch users flextime:", error);
+  } catch {
     throw new Error("Failed to load employee time data");
   }
 };
 
 /**
- * Full-screen component for displaying employee flextime data in a dedicated tab
+ * Full-screen view for displaying flextime data for all employees.
+ * @returns A React functional component rendering the employee flextime screen.
  */
 const EmployeeFlextimeScreen: React.FC = () => {
   const [usersFlextime, setUsersFlextime] = useState<UserFlextimeData[]>([]);
@@ -71,31 +73,48 @@ const EmployeeFlextimeScreen: React.FC = () => {
     loadFlextimeData();
   }, []);
 
+  /**
+   * Loads flextime data from the backend and handles loading/error state.
+   */
   const loadFlextimeData = async () => {
     try {
       setLoading(true);
       setError(null);
       const data = await fetchUsersFlextime("isSeveraOptIn");
       setUsersFlextime(data);
-    } catch (err) {
+    } catch {
       setError("Failed to load employee time data");
     } finally {
       setLoading(false);
     }
   };
 
+  /**
+   * Formats a flextime balance in hours with appropriate sign.
+   * @param hours - The number of hours.
+   * @returns A string representation of the formatted balance.
+   */
   const formatFlextimeHours = (hours: number | null): string => {
     if (hours === null || hours === undefined) return "N/A";
     const sign = hours >= 0 ? "+" : "";
     return `${sign}${hours.toFixed(2)}h`;
   };
 
+  /**
+   * Determines the color to use for a flextime balance value.
+   * @param hours - The flextime balance.
+   * @returns A string hex color.
+   */
   const getFlextimeColor = (hours: number | null): string => {
     if (hours === null || hours === undefined) return "#666";
     return hours >= 0 ? "#4caf50" : "#f44336";
   };
 
-  const getTotalBalance = () => {
+  /**
+   * Calculates the total flextime balance of all users.
+   * @returns The numeric total balance.
+   */
+  const getTotalBalance = (): number => {
     return usersFlextime.reduce((sum, user) => sum + (user.flextime.totalFlextimeBalance || 0), 0);
   };
 
