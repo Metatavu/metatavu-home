@@ -25,7 +25,8 @@ import SoftwareDetails from "./components/software-registry/SoftwareDetails";
 import NewQuestionnaireBuilder from "./components/questionnaire/new-questionnaire-builder";
 import QuestionnaireManager from "./components/questionnaire/questionnaire-manager";
 import { QuestionnairePreviewMode } from "./types";
-import SettingsScreen from "./components/screens/settings-screen"
+import SettingsScreen from "./components/screens/settings-screen";
+import EmployeeFlextimeScreen from "src/components/screens/employee-flextime-screen";
 /**
  * Application component
  */
@@ -44,49 +45,51 @@ const App = () => {
       children: [
         {
           path: "/",
-          element: <HomeScreen />
+          element: <HomeScreen />,
         },
         {
           path: "/vacations",
-          element: <VacationRequestsScreen />
+          element: <VacationRequestsScreen />,
         },
         {
           path: "/timebank",
-          element: <TimebankScreen />
+          element: <TimebankScreen />,
         },
         {
           path: "/sprintview",
-          element: <SprintViewScreen />
+          element: <SprintViewScreen />,
         },
         {
           path: "/softwareregistry",
-          element: <SoftwareRegistryScreen />
+          element: <SoftwareRegistryScreen />,
         },
         {
           path: "/softwareregistry/:id",
-          element: <SoftwareDetails />
+          element: <SoftwareDetails />,
         },
         {
           path: "/softwareregistry/allsoftware",
-          element: <AllSoftwareScreen />
+          element: <AllSoftwareScreen />,
         },
         {
           path: "/softwareregistry/allsoftware/:id",
-          element: <SoftwareDetails />
+          element: <SoftwareDetails />,
         },
         {
           path: "/questionnaire",
-          element: <QuestionnaireScreen />
+          element: <QuestionnaireScreen />,
         },
         {
           path: "/questionnaire/:id",
-          element: <QuestionnaireManager mode={QuestionnairePreviewMode.FILL} />
+          element: (
+            <QuestionnaireManager mode={QuestionnairePreviewMode.FILL} />
+          ),
         },
         {
           path: "/settings",
-          element: <SettingsScreen />
-        }
-      ]
+          element: <SettingsScreen />,
+        },
+      ],
     },
     {
       path: "/admin",
@@ -99,49 +102,58 @@ const App = () => {
       children: [
         {
           path: "/admin",
-          element: <AdminScreen />
+          element: <AdminScreen />,
         },
         {
           path: "/admin/vacations",
-          element: <VacationRequestsScreen />
+          element: <VacationRequestsScreen />,
         },
         // {
         //    path: "/admin/timebank/viewall",
         //    element: <TimebankViewAllScreen />
         //  },
         {
+          path: "/admin/employee-flextime",
+          element: <EmployeeFlextimeScreen />,
+        },
+        {
           path: "/admin/sprintview",
-          element: <SprintViewScreen />
+          element: <SprintViewScreen />,
         },
         {
           path: "/admin/allsoftware",
-          element: <AllSoftwareScreen />
+          element: <AllSoftwareScreen />,
         },
         {
           path: "/admin/allsoftware/:id",
-          element: <SoftwareDetails />
+          element: <SoftwareDetails />,
         },
         {
           path: "/admin/questionnaire",
-          element: <QuestionnaireScreen />
+          element: <QuestionnaireScreen />,
         },
         {
           path: "/admin/newQuestionnaire",
-          element: <NewQuestionnaireBuilder />
+          element: <NewQuestionnaireBuilder />,
         },
         {
           path: "/admin/questionnaire/:id/edit",
-          element: <QuestionnaireManager mode={QuestionnairePreviewMode.EDIT} />
+          element: (
+            <QuestionnaireManager mode={QuestionnairePreviewMode.EDIT} />
+          ),
         },
-      ]
-    }
+      ],
+    },
   ]);
   return (
     <div className="App">
       <ThemeProvider theme={theme}>
         <ErrorHandler>
           <AuthenticationProvider>
-            <LocalizationProvider dateAdapter={AdapterLuxon} adapterLocale={language}>
+            <LocalizationProvider
+              dateAdapter={AdapterLuxon}
+              adapterLocale={language}
+            >
               <CssBaseline>
                 <RouterProvider router={router} />
               </CssBaseline>

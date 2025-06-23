@@ -4,7 +4,7 @@ import ScheduleIcon from "@mui/icons-material/Schedule";
 import { errorAtom } from "src/atoms/error";
 import { useAtomValue, useSetAtom } from "jotai";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { userProfileAtom } from "src/atoms/auth";
 import UserRoleUtils from "src/utils/user-role-utils";
 import { DateTime } from "luxon";
@@ -15,7 +15,16 @@ import { useLambdasApi } from "src/hooks/use-api";
 import { getSeveraUserId } from "src/utils/user-utils";
 
 /**
- * Component for displaying user's balance
+ * Card component that displays either personal flextime balance for regular users
+ * or provides admin access to view all employees' flextime data in the same tab.
+ * 
+ * @component
+ * @returns React functional component that renders a balance card
+ * 
+ * @description
+ * - For regular users: Shows personal flextime balance with link to timebank
+ * - For admin users: Shows clickable card that navigates to employee flextime page
+ * - Handles loading states and error management for flextime data fetching
  */
 const BalanceCard = () => {
   const users = useAtomValue(usersAtom);
@@ -28,24 +37,26 @@ const BalanceCard = () => {
   const { flexTimeApi } = useLambdasApi();
   const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
   const severaUserId = getSeveraUserId(loggedInUser);
+  const navigate = useNavigate();
 
   /**
-   * Fetch user's flextime data when it is undefined.
+   * Effect hook that fetches flextime data for the logged-in user.
+   * Only executes for non-admin users when flextime data is not yet available.
    */
   useEffect(() => {
-    // This card shows admin links if adminMode is true, not personal flextime for the admin themselves.
-    // So, only fetch if not adminMode and flextime data is not yet available.
     if (!adminMode && !usersFlextime) {
       getUsersFlextimes();
     }
   }, [users, userProfile, adminMode, usersFlextime]);
 
   /**
-   * Initialize logged in users's time data.
+   * Asynchronously retrieves flextime balance data for the currently logged-in user.
+   * 
+   * @async
+   * @returns Promise<void> Resolves when flextime data is fetched and state is updated
    */
   const getUsersFlextimes = async () => {
     if (!loggedInUser || !severaUserId) return;
-    
     setLoading(true);
     try {
       const fetchedUsersFlextime = await flexTimeApi.getFlextimeBySeveraUserId({
@@ -60,7 +71,17 @@ const BalanceCard = () => {
   };
 
   /**
-   * Render user's flextime data.
+   * Event handler that navigates to the employee flextime page in the same tab.
+   * Used when admin users click the balance card.
+   */
+  const handleAdminCardClick = () => {
+    navigate("/admin/employee-flextime");
+  };
+
+  /**
+   * Renders the user's personal flextime balance with appropriate styling.
+   * 
+   * @returns JSX.Element Typography component displaying balance or error message
    */
   const renderUserFlextime = () => {
     if (!usersFlextime?.totalFlextimeBalance) {
@@ -70,7 +91,6 @@ const BalanceCard = () => {
     const textColor = totalFlextimeBalance >= 0 ? "green" : "red";
     const hourLabel =
       totalFlextimeBalance === 1 ? strings.balanceCard.hour : strings.balanceCard.hours;
-
     return (
       <Typography variant="body1">
         {strings.balanceCard.totalFlextimeBalance}{" "}
@@ -79,11 +99,33 @@ const BalanceCard = () => {
     );
   };
 
+  if (adminMode) {
+    return (
+      <Card
+        sx={{
+          "&:hover": {
+            background: "#efefef",
+            transform: "translateY(-2px)",
+            boxShadow: 3
+          },
+          minHeight: 150,
+          cursor: "pointer",
+          transition: "all 0.2s ease-in-out"
+        }}
+        onClick={handleAdminCardClick}
+      >
+        <CardContent>
+          <Typography variant="h6" fontWeight={"bold"} style={{ marginTop: 6, marginBottom: 3 }}>
+            {strings.balanceCard.employeeBalances}
+          </Typography>
+          <Typography variant="body1">{strings.balanceCard.viewAllTimeEntries}</Typography>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
-    <Link
-      to={adminMode ? "/admin/timebank/viewall" : "/timebank"}
-      style={{ textDecoration: "none" }}
-    >
+    <Link to="/timebank" style={{ textDecoration: "none" }}>
       <Card
         sx={{
           "&:hover": {
@@ -92,31 +134,22 @@ const BalanceCard = () => {
           minHeight: 150
         }}
       >
-        {adminMode ? (
-          <CardContent>
-            <Typography variant="h6" fontWeight={"bold"} style={{ marginTop: 6, marginBottom: 3 }}>
-              {strings.balanceCard.employeeBalances}
-            </Typography>
-            <Typography variant="body1">{strings.balanceCard.viewAllTimeEntries}</Typography>
-          </CardContent>
-        ) : (
-          <CardContent>
-            <Typography variant="h6" fontWeight={"bold"} style={{ marginTop: 6, marginBottom: 3 }}>
-              {strings.balanceCard.balance}
-            </Typography>
-            <Grid container>
-              <Grid item xs={12}>
-                {strings.formatString(strings.balanceCard.atTheEndOf, yesterday.toLocaleString())}
-              </Grid>
-              <Grid style={{ marginBottom: 1 }} item xs={1}>
-                <ScheduleIcon style={{ marginTop: 1 }} />
-              </Grid>
-              <Grid item xs={11}>
-                {loading ? <Skeleton /> : renderUserFlextime()}
-              </Grid>
+        <CardContent>
+          <Typography variant="h6" fontWeight={"bold"} style={{ marginTop: 6, marginBottom: 3 }}>
+            {strings.balanceCard.balance}
+          </Typography>
+          <Grid container>
+            <Grid item xs={12}>
+              {strings.formatString(strings.balanceCard.atTheEndOf, yesterday.toLocaleString())}
             </Grid>
-          </CardContent>
-        )}
+            <Grid style={{ marginBottom: 1 }} item xs={1}>
+              <ScheduleIcon style={{ marginTop: 1 }} />
+            </Grid>
+            <Grid item xs={11}>
+              {loading ? <Skeleton /> : renderUserFlextime()}
+            </Grid>
+          </Grid>
+        </CardContent>
       </Card>
     </Link>
   );
