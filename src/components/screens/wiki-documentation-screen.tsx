@@ -280,7 +280,7 @@ const WikiDocumentationScreen = () => {
               columnGap: 3,
               rowGap: 1,
               gridTemplateColumns: {
-                xs: adminMode ? "repeat(2, 1fr)" : "repeat(2, 1fr)",
+                xs: "repeat(2, 1fr)",
                 md: adminMode ? "repeat(2, 1fr)" : "repeat(3, 1fr)"
               }
             }

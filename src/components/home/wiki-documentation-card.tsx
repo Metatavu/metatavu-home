@@ -24,8 +24,15 @@ import { getLastActivityString } from "src/utils/wiki-utils";
 const WikiDocumentationCard = () => { 
   const setError = useSetAtom(errorAtom);
   const adminMode = UserRoleUtils.adminMode();
-  const articlesAtom = adminMode ? useAtomValue(draftArticleAtom) : useAtomValue(articleAtom);
-  const setArticlesAtom = adminMode ? useSetAtom(draftArticleAtom) : useSetAtom(articleAtom);
+ 
+  
+  const draftArticles = useAtomValue(draftArticleAtom);
+const normalArticles = useAtomValue(articleAtom);
+const setDraftArticles = useSetAtom(draftArticleAtom);
+const setNormalArticles = useSetAtom(articleAtom);
+
+const articlesAtom = adminMode ? draftArticles : normalArticles;
+const setArticlesAtom = adminMode ? setDraftArticles : setNormalArticles;
   const { articleApi } = useLambdasApi();
   const [loading, setLoading] = useState(false);
   const [lastUpdatedArticle, setLastUpdatedArticle] = useState<ArticleMetadata>();
