@@ -1,4 +1,5 @@
-import type React from 'react';
+import type { User } from "src/generated/homeLambdasClient/models/User";
+import UserRow from "./UserRow";
 import {
   Table,
   TableBody,
@@ -10,48 +11,60 @@ import {
   CircularProgress,
   Typography,
   Box,
-} from '@mui/material';
-import UserRow from './UserRow';
-import type { User } from '../../../types/index';
+} from "@mui/material";
+import strings from "../../../localization/strings";
 
+/** Props for the UserTable component */
 interface UserTableProps {
   users: User[];
   loading: boolean;
   onEdit: (user: User) => void;
 }
 
-const UserTable: React.FC<UserTableProps> = ({ users, loading, onEdit }) => {
+/**
+ * Displays a table of users with vacation information.
+ * @param users - Array of users to display.
+ * @param loading - Whether data is loading.
+ * @param onEdit - Callback to edit a user.
+ * @returns User table or loading/empty state UI.
+ */
+const UserTable = ({ users, loading, onEdit }: UserTableProps) => {
   if (loading) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
+      <Box sx={{ display: "flex", justifyContent: "center", p: 3 }}>
         <CircularProgress />
       </Box>
     );
   }
-
   if (users.length === 0) {
     return (
       <Typography align="center" sx={{ p: 3 }}>
-        No users found
+        {strings.userTable.noUsersFound}
       </Typography>
     );
   }
-
+  const currentYear = new Date().getFullYear();
   return (
     <TableContainer component={Paper} sx={{ mb: 3 }}>
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>Name</TableCell>
-            <TableCell>Username</TableCell>
-            <TableCell>Email</TableCell>
-            <TableCell align="right">Current Year Total</TableCell>
-            <TableCell align="right">Remaining Days</TableCell>
-            <TableCell align="center">Actions</TableCell>
+            <TableCell>{strings.userTable.name}</TableCell>
+            <TableCell>{strings.userTable.email}</TableCell>
+            <TableCell align="right">
+              {strings.userTable.currentYearTotal.replace(
+                "{year}",
+                String(currentYear)
+              )}
+            </TableCell>
+            <TableCell align="right">
+              {strings.userTable.remainingDays}
+            </TableCell>
+            <TableCell align="center">{strings.userTable.actions}</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {users.map(user => (
+          {users.map((user) => (
             <UserRow key={user.id} user={user} onEdit={onEdit} />
           ))}
         </TableBody>

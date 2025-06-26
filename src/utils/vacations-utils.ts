@@ -1,50 +1,71 @@
-import type { VacationDays } from '../types';
-import type { User } from '../types';
+import type { User } from "src/generated/homeLambdasClient/models/User";
+import type { YearlyVacationDays } from "src/generated/homeLambdasClient/models/YearlyVacationDays";
 
+/**
+ * A mapping of years to their corresponding vacation data.
+ */
+export type VacationDays = Record<string, YearlyVacationDays>;
+
+/**
+ * Parses vacation day data from a User object into a structured VacationDays object.
+ *
+ * @param user - The user object containing encoded vacation day data.
+ * @returns A VacationDays object with total and remaining vacation days for each year.
+ */
 export function parseVacationDays(user: User): VacationDays {
   const vacationDaysByYear = user.attributes?.vacationDaysByYear || [];
-  const unspentVacationDaysByYear = user.attributes?.unspentVacationDaysByYear || [];
+  const unspentVacationDaysByYear =
+    user.attributes?.unspentVacationDaysByYear || [];
 
   const totalByYear: Record<string, number> = {};
   const remainingByYear: Record<string, number> = {};
   const vacationData: VacationDays = {};
 
-  vacationDaysByYear.forEach(str => {
-    const [year, val] = str.split(':');
+  vacationDaysByYear.forEach((str) => {
+    const [year, val] = str.split(":");
     if (year) totalByYear[year] = Number.parseInt(val, 10) || 0;
   });
 
-  unspentVacationDaysByYear.forEach(str => {
-    const [year, val] = str.split(':');
+  unspentVacationDaysByYear.forEach((str) => {
+    const [year, val] = str.split(":");
     if (year) remainingByYear[year] = Number.parseInt(val, 10) || 0;
   });
 
-  const allYears = new Set([...Object.keys(totalByYear), ...Object.keys(remainingByYear)]);
+  const allYears = new Set([
+    ...Object.keys(totalByYear),
+    ...Object.keys(remainingByYear),
+  ]);
 
-  allYears.forEach(year => {
+  allYears.forEach((year) => {
     vacationData[year] = {
-      total: String(totalByYear[year] ?? 0),      // convert number to string
-      remaining: String(remainingByYear[year] ?? 0), // convert number to string
+      total: totalByYear[year] ?? 0,
+      remaining: remainingByYear[year] ?? 0,
     };
   });
 
   const currentYear = new Date().getFullYear().toString();
   if (!vacationData[currentYear]) {
-    vacationData[currentYear] = { total: '0', remaining: '0' }; // strings here
+    vacationData[currentYear] = { total: 0, remaining: 0 };
   }
 
   return vacationData;
 }
 
-export function formatVacationDaysPayload(vacationDays: VacationDays): {
-  [year: string]: { total: number; remaining: number };
-} {
-  const payload: { [year: string]: { total: number; remaining: number } } = {};
+/**
+ * Converts a VacationDays object into a normalized payload format with non-negative numeric values.
+ *
+ * @param vacationDays - The VacationDays object.
+ * @returns An object mapping years to validated numeric vacation totals and remaining days.
+ */
+export function formatVacationDaysPayload(
+  vacationDays: VacationDays
+): VacationDays {
+  const payload: VacationDays = {};
 
   Object.entries(vacationDays).forEach(([year, data]) => {
     payload[year] = {
-      total: Math.max(0, Number(data.total) || 0),
-      remaining: Math.max(0, Number(data.remaining) || 0),
+      total: Math.max(0, data.total ?? 0),
+      remaining: Math.max(0, data.remaining ?? 0),
     };
   });
 

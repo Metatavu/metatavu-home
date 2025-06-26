@@ -1,141 +1,176 @@
-import type React from 'react';
-import { useState, useEffect } from 'react';
+import type React from "react";
+import { useState, useEffect, useMemo } from "react";
+import { Container, Typography, Box, Pagination } from "@mui/material";
+import UserSearchBar from "./UserSearchBar";
+import UserTable from "./UsersTable";
+import EditVacationDialog from "./EditVacationDialog";
+import { useLambdasApi } from "src/hooks/use-api";
+import { useSetAtom, useAtom } from "jotai";
+import { usersAtom } from "src/atoms/user";
+import { errorAtom } from "src/atoms/error";
+import type { User } from "src/generated/homeLambdasClient/models/User";
+import type { YearlyVacationDays } from "src/generated/homeLambdasClient/models/YearlyVacationDays";
+import {
+  parseVacationDays,
+  formatVacationDaysPayload,
+} from "../../../utils/vacations-utils";
+import strings from "src/localization/strings";
 
-import { Container, Typography, Box, Pagination } from '@mui/material';
+/**
+ * Vacation days keyed by year.
+ */
+type VacationDays = Record<string, YearlyVacationDays>;
 
-import UserSearchBar from './UserSearchBar';
-import UserTable from './UsersTable';
-import EditVacationDialog from './EditVacationDialog';
-import NotificationSnackbar from './NotificationSnackbar';
+/**
+ * Admin screen for managing users' vacation days.
+ *
+ * Provides search, pagination, and edit functionality
+ * for updating vacation day allocations.
+ *
+ * @returns React component for the admin vacation management screen.
+ */
+const AdminVacationManagementScreen = () => {
+  const { usersApi } = useLambdasApi();
+  const [users, setUsers] = useAtom(usersAtom);
+  const setError = useSetAtom(errorAtom);
+  const [searchKeyword, setSearchKeyword] = useState("");
 
-import type { User, VacationDays, NotificationState } from '../../../types/index';
-import { parseVacationDays, formatVacationDaysPayload } from '../../../utils/vacations-utils';
+  /**
+   * Filters users by search keyword matching their full name or email.
+   */
+  const filteredUsers = useMemo(() => {
+    const keyword = searchKeyword.toLowerCase();
+    return users.filter((user) => {
+      const fullName = `${user.firstName} ${user.lastName}`.toLowerCase();
+      const email = user.email?.toLowerCase() ?? "";
+      return fullName.includes(keyword) || email.includes(keyword);
+    });
+  }, [users, searchKeyword]);
 
-import { useUsers } from '../../../hooks/useUser'; // Import your custom hook
-
-const AdminVacationManagementScreen: React.FC = () => {
-  // Use custom hook for users data & filtering
-  const { filteredUsers, searchKeyword, setSearchKeyword, loading, fetchUsers } = useUsers();
-
-  // Local states
-  const [editDialogOpen, setEditDialogOpen] = useState<boolean>(false);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [vacationDays, setVacationDays] = useState<VacationDays>({});
-  const [saving, setSaving] = useState<boolean>(false);
-  const [notification, setNotification] = useState<NotificationState>({
-    open: false,
-    message: '',
-    severity: 'info',
-  });
-
-  // Validation state for enabling/disabling Save button
+  const [saving, setSaving] = useState(false);
   const [isValid, setIsValid] = useState(true);
-
-  // Pagination state
   const [page, setPage] = useState(1);
   const rowsPerPage = 10;
 
-  // Reset page when searchKeyword or filteredUsers change
   useEffect(() => {
     setPage(1);
   }, [searchKeyword, filteredUsers]);
 
-  // Open edit dialog and load vacation days for selected user
+  /**
+   * Opens the edit vacation dialog for a specific user,
+   * parsing their vacation days into local state.
+   *
+   * @param user The user whose vacation days will be edited.
+   */
   const handleEditUser = (user: User) => {
     setCurrentUser(user);
     setVacationDays(parseVacationDays(user));
     setEditDialogOpen(true);
   };
 
-  // Close dialog and reset state
+  /**
+   * Closes the edit vacation dialog and resets local state.
+   */
   const handleCloseDialog = () => {
     setEditDialogOpen(false);
     setCurrentUser(null);
     setVacationDays({});
   };
 
-  // Handle changes in vacation days input fields
-  const handleVacationChange = (year: string, field: 'total' | 'remaining', value: string) => {
-    setVacationDays(prev => ({
+  /**
+   * Updates the vacation days state when user edits input fields.
+   *
+   * @param year The year of the vacation days being edited.
+   * @param field Either "total" or "remaining" vacation days.
+   * @param value The new value as string input, converted to number.
+   */
+  const handleVacationChange = (
+    year: string,
+    field: "total" | "remaining",
+    value: string
+  ) => {
+    setVacationDays((prev) => ({
       ...prev,
       [year]: {
         ...prev[year],
-        [field]: value,
+        [field]: Number(value),
       },
     }));
   };
 
-  // Validate vacation days anytime vacationDays changes
+  /**
+   * Validates vacation days whenever they change,
+   * updating the validity state.
+   */
   useEffect(() => {
     setIsValid(isVacationDaysValid(vacationDays));
   }, [vacationDays]);
 
-  // Save updated vacation days to backend
+  /**
+   * Saves the edited vacation days for the current user
+   * via the users API and updates the global users list.
+   */
   const handleSaveVacationDays = async () => {
     if (!currentUser) return;
-
     setSaving(true);
-
     try {
       const formattedPayload = formatVacationDaysPayload(vacationDays);
-
-      // Wrap payload inside { vacationDays: ... } as backend expects
-      const bodyPayload = {
-        vacationDays: formattedPayload,
-      };
-
-      await fetch(`http://localhost:3000/users/${currentUser.id}/vacationDays`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(bodyPayload),
+      await usersApi.updateUserVacation({
+        userId: currentUser.id,
+        updateUserVacationRequest: {
+          vacationDays: formattedPayload,
+        },
       });
 
-      // Refresh users from backend to keep data fresh
-      fetchUsers();
-
-      setNotification({
-        open: true,
-        message: 'Vacation days updated successfully!',
-        severity: 'success',
-      });
+      const updatedUser = await usersApi.findUser({ userId: currentUser.id });
+      setUsers((prevUsers) =>
+        prevUsers.map((user) =>
+          user.id === updatedUser.id ? updatedUser : user
+        )
+      );
 
       handleCloseDialog();
     } catch (_error) {
-      setNotification({
-        open: true,
-        message: 'Failed to save vacation days.',
-        severity: 'error',
-      });
+      setError("Failed to save vacation days.");
     } finally {
       setSaving(false);
     }
   };
 
-  // Close notification snackbar
-  const handleCloseNotification = () => {
-    setNotification(prev => ({ ...prev, open: false }));
-  };
-
-  // Pagination change handler
-  const handlePageChange = (_event: React.ChangeEvent<unknown>, value: number) => {
+  /**
+   * Handles changing the current page in the pagination control.
+   *
+   * @param _event The change event (ignored).
+   * @param value The new page number selected.
+   */
+  const handlePageChange = (
+    _event: React.ChangeEvent<unknown>,
+    value: number
+  ) => {
     setPage(value);
   };
 
-  // Calculate paginated users to show on current page
-  const paginatedUsers = filteredUsers.slice((page - 1) * rowsPerPage, page * rowsPerPage);
+  const paginatedUsers = filteredUsers.slice(
+    (page - 1) * rowsPerPage,
+    page * rowsPerPage
+  );
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4 }}>
       <Typography variant="h4" gutterBottom>
-        Admin Vacation Management
+        {strings.adminVacationManagement.heading}
       </Typography>
-
       <Box sx={{ mb: 3 }}>
         <UserSearchBar value={searchKeyword} onChange={setSearchKeyword} />
       </Box>
-
-      <UserTable users={paginatedUsers} loading={loading} onEdit={handleEditUser} />
-
+      <UserTable
+        users={paginatedUsers}
+        loading={false}
+        onEdit={handleEditUser}
+      />
       <Box display="flex" justifyContent="center" mt={2}>
         <Pagination
           count={Math.ceil(filteredUsers.length / rowsPerPage)}
@@ -144,7 +179,6 @@ const AdminVacationManagementScreen: React.FC = () => {
           color="primary"
         />
       </Box>
-
       <EditVacationDialog
         open={editDialogOpen}
         user={currentUser}
@@ -155,23 +189,22 @@ const AdminVacationManagementScreen: React.FC = () => {
         onSave={handleSaveVacationDays}
         disableSave={!isValid || saving}
       />
-
-      <NotificationSnackbar
-        open={notification.open}
-        message={notification.message}
-        severity={notification.severity}
-        onClose={handleCloseNotification}
-      />
     </Container>
   );
 };
 
-// Validation function to ensure remaining <= total and no remaining > 0 when total == 0
+/**
+ * Validates the vacation days ensuring:
+ * - Total is not zero when remaining is positive.
+ * - Remaining does not exceed total.
+ *
+ * @param vacDays Vacation days keyed by year.
+ * @returns True if valid; false otherwise.
+ */
 const isVacationDaysValid = (vacDays: VacationDays): boolean => {
   for (const year in vacDays) {
     const total = Number(vacDays[year].total);
     const remaining = Number(vacDays[year].remaining);
-
     if (total === 0 && remaining > 0) return false;
     if (remaining > total) return false;
   }

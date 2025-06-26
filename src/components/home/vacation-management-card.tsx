@@ -1,38 +1,43 @@
-// src/components/home/vacation-management-card.tsx
-import React from 'react';
-import { Paper, Typography, Button, Card, CardContent } from '@mui/material';
-import { Person } from '@mui/icons-material'; 
-import { Link } from 'react-router-dom';
+import { Card, CardContent, Typography, Box } from "@mui/material";
+import { Link } from "react-router-dom";
+import strings from "../../localization/strings";
 
 /**
- * Component for the vacation management card on the admin page
+ * Clickable card linking to the admin vacation management page.
+ * Used on the admin dashboard to navigate to vacation day management.
+ * @returns React element for the vacation management card.
  */
-const VacationManagementCard: React.FC = () => {
+const VacationManagementCard = () => {
   return (
-    <Card sx={{ height: '100%' }}>
-      <CardContent>
-        <Typography variant="h5" gutterBottom>User Vacation Management</Typography>
-        <Typography variant="body1" paragraph>
-          View and update individual user vacation day allocations and remaining days.
-        </Typography>
-        <Button
-          component={Link}
-          to="/admin/vacation-management"
-          variant="contained"
-          color="primary"
-          startIcon={<Person />}
-          fullWidth
-          sx={{
-            textTransform: 'uppercase',
-            backgroundColor: 'rgba(0, 0, 0, 0.87)', // Dark background to match existing buttons
-            borderRadius: '4px',
-            padding: '8px 16px'
-          }}
-        >
-          MANAGE USER VACATION DAYS
-        </Button>
-      </CardContent>
-    </Card>
+    <Link to="/admin/vacation-management" style={{ textDecoration: "none" }}>
+      <Card
+        sx={{
+          height: "100%",
+          "&:hover": {
+            background: "#efefef",
+            cursor: "pointer",
+          },
+        }}
+      >
+        <CardContent>
+          <Typography variant="h6" fontWeight="bold" sx={{ marginTop: 1, marginBottom: 1 }}>
+            {strings.adminVacationManagement.title}
+          </Typography>
+          <Typography variant="body2" paragraph>
+            {strings.adminVacationManagement.description}
+          </Typography>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              mt: 2,
+              color: "rgba(0, 0, 0, 0.54)",
+            }}
+          />
+        </CardContent>
+      </Card>
+    </Link>
   );
 };
 

@@ -1,4 +1,3 @@
-import type React from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -8,22 +7,61 @@ import {
   TextField,
   Typography,
   Box,
-  CircularProgress
-} from '@mui/material';
-import type { VacationDays, User } from '../../../types/index';
+  CircularProgress,
+} from "@mui/material";
+import type { YearlyVacationDays } from "../../../generated/homeLambdasClient/models/YearlyVacationDays";
+import type { User } from "src/generated/homeLambdasClient/models/User";
+import strings from "../../../localization/strings";
 
+type VacationDaysMap = Record<string, YearlyVacationDays>;
 interface EditVacationDialogProps {
   open: boolean;
   user: User | null;
-  vacationDays: VacationDays;
+  vacationDays: Record<string, any>;
   loading: boolean;
   onClose: () => void;
-  onChange: (year: string, field: 'total' | 'remaining', value: string) => void;
+  onChange: (
+    year: string,
+    field: keyof YearlyVacationDays,
+    value: string
+  ) => void;
   onSave: () => void;
-  disableSave: boolean; 
+  disableSave: boolean;
 }
 
-const EditVacationDialog: React.FC<EditVacationDialogProps> = ({
+/**
+ * Normalizes the input vacation days object by converting values to numbers.
+ *
+ * @param input - Vacation days input object with year keys.
+ * @returns A normalized VacationDaysMap with numbers for total and remaining days.
+ */
+const normalizeVacationDays = (input: Record<string, any>): VacationDaysMap => {
+  const result: VacationDaysMap = {};
+  for (const [year, data] of Object.entries(input)) {
+    result[year] = {
+      total: Number(data.total) || 0,
+      remaining: Number(data.remaining) || 0,
+    };
+  }
+  return result;
+};
+
+/**
+ * Dialog component for editing vacation days for a user.
+ *
+ * Displays inputs for total and remaining vacation days per year.
+ *
+ * @param open - Controls whether the dialog is open.
+ * @param user - The user whose vacation days are being edited.
+ * @param vacationDays - The current vacation days data.
+ * @param loading - Loading state while saving.
+ * @param onClose - Callback to close the dialog.
+ * @param onChange - Callback when vacation days change.
+ * @param onSave - Callback to save vacation days.
+ * @param disableSave - Whether the save button should be disabled.
+ * @returns A MUI Dialog element or null if no user is provided.
+ */
+const EditVacationDialog = ({
   open,
   user,
   vacationDays,
@@ -31,33 +69,39 @@ const EditVacationDialog: React.FC<EditVacationDialogProps> = ({
   onClose,
   onChange,
   onSave,
-  disableSave  // <-- add disableSave here
-}) => {
+  disableSave,
+}: EditVacationDialogProps) => {
   if (!user) return null;
 
-  const years = Object.keys(vacationDays).filter(year => Number.parseInt(year) <= new Date().getFullYear());
+  const normalizedVacationDays = normalizeVacationDays(vacationDays);
+  const years = Object.keys(normalizedVacationDays).filter(
+    (year) => Number.parseInt(year) <= new Date().getFullYear()
+  );
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-      <DialogTitle>Edit Vacation Days: {user.firstName} {user.lastName}</DialogTitle>
+      <DialogTitle>
+        {strings.adminVacationManagement.editTitle}: {user.firstName}{" "}
+        {user.lastName}
+      </DialogTitle>
       <DialogContent dividers>
-        {years.map(year => (
+        {years.map((year) => (
           <Box key={year} sx={{ mb: 3 }}>
             <Typography variant="h6">{year}</Typography>
-            <Box sx={{ display: 'flex', gap: 2, mt: 1 }}>
+            <Box sx={{ display: "flex", gap: 2, mt: 1 }}>
               <TextField
-                label="Total Days"
+                label={strings.adminVacationManagement.totalDays}
                 type="number"
-                value={vacationDays[year].total}
-                onChange={(e) => onChange(year, 'total', e.target.value)}
+                value={normalizedVacationDays[year]?.total ?? 0}
+                onChange={(e) => onChange(year, "total", e.target.value)}
                 InputProps={{ inputProps: { min: 0 } }}
                 fullWidth
               />
               <TextField
-                label="Remaining Days"
+                label={strings.adminVacationManagement.remainingDays}
                 type="number"
-                value={vacationDays[year].remaining}
-                onChange={(e) => onChange(year, 'remaining', e.target.value)}
+                value={normalizedVacationDays[year]?.remaining ?? 0}
+                onChange={(e) => onChange(year, "remaining", e.target.value)}
                 InputProps={{ inputProps: { min: 0 } }}
                 fullWidth
               />
@@ -66,10 +110,15 @@ const EditVacationDialog: React.FC<EditVacationDialogProps> = ({
         ))}
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} color="inherit">Cancel</Button>
-        {/* Disable Save if loading or disableSave is true */}
-        <Button variant="contained" onClick={onSave} disabled={loading || disableSave}>
-          {loading ? <CircularProgress size={24} /> : 'Save'}
+        <Button onClick={onClose} color="inherit">
+          {strings.label.cancel}
+        </Button>
+        <Button
+          variant="contained"
+          onClick={onSave}
+          disabled={loading || disableSave}
+        >
+          {loading ? <CircularProgress size={24} /> : strings.label.save}
         </Button>
       </DialogActions>
     </Dialog>
