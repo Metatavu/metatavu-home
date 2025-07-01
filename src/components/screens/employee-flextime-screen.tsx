@@ -41,7 +41,7 @@ interface UserFlextimeData {
  */
 const fetchUsersFlextime = async (keywordId: string = "isSeveraOptIn"): Promise<UserFlextimeData[]> => {
   try {
-    const response = await fetch(`http://localhost:3000/users/flextime?keywordId=${encodeURIComponent(keywordId)}`, {
+    const response = await fetch(`http://localhost:3000/severa/users/flextime?keywordId=${encodeURIComponent(keywordId)}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json"

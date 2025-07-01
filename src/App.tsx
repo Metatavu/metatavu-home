@@ -113,7 +113,7 @@ const App = () => {
         //    element: <TimebankViewAllScreen />
         //  },
         {
-          path: "/admin/employee-flextime",
+          path: "/admin/severa/employee-flextime",
           element: <EmployeeFlextimeScreen />,
         },
         {

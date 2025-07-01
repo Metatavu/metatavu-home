@@ -75,7 +75,7 @@ const BalanceCard = () => {
    * Used when admin users click the balance card.
    */
   const handleAdminCardClick = () => {
-    navigate("/admin/employee-flextime");
+    navigate("/admin/severa/employee-flextime");
   };
 
   /**
