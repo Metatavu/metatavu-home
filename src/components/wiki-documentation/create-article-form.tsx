@@ -37,7 +37,15 @@ interface Props {
 interface EditorRef {
   getMarkdownContent: () => string;
 }
-
+/**
+ * Form for creating or editing an article.
+ * 
+ * @param setFormOpen - Controls form visibility.
+ * @param action - "create" or "edit" mode (default: "create").
+ * @param article - Article data for editing (optional).
+ * @param setArticle - Updates article state externally.
+ * @param adminMode - Enables admin-specific features (optional).
+ */
 const CreateOrEditArticleForm = ({
   setFormOpen, 
   action="create", 
@@ -64,7 +72,11 @@ const CreateOrEditArticleForm = ({
   const loggedInUser = users.find(
     (users: User) => users.id === userProfile?.id
   );
-
+/**
+ * Handles creating a new article using the editor content and form state.
+ * Sends the article data to the API and updates local state accordingly.
+ * Closes the form on success or sets an error message on failure.
+ */
   const handleCreate = async () => {
     if (!editorRef.current) return;
     const content = editorRef.current?.getMarkdownContent();
@@ -92,7 +104,11 @@ const CreateOrEditArticleForm = ({
       setError(message);
     }
   }
-
+/**
+ * Handles updating an existing article with current form and editor content.
+ * Sends updated data to the API, updates local state, and manages tag sets.
+ * Closes the form on success or sets an error message on failure.
+ */
   const handleEdit = async () => {
     if (!editorRef.current || !article?.id) return;
     const content = editorRef.current?.getMarkdownContent();
@@ -296,10 +312,10 @@ const CreateOrEditArticleForm = ({
                     src={coverImage} 
                     alt="cover-image"
                   />
-                  <Grid item sx={{ posistion: "relative" }}>
+                  <Grid item sx={{ position: "relative" }}>
                     <IconButton 
                       sx={{ 
-                        posistion: "absolute",
+                        position: "absolute",
                         top: "50%", 
                         transform: "translateY(-50%)"
                       }}

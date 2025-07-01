@@ -1,8 +1,7 @@
 import { 
   Grid, 
   Typography, 
-  Card, 
-  CardContent, 
+  Card,
   Skeleton, 
   Box
 } from "@mui/material";
@@ -17,6 +16,7 @@ import type {  ArticleMetadata } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
 import { articleAtom, draftArticleAtom } from "src/atoms/article";
 import { getLastActivityString } from "src/utils/wiki-utils";
+import { last } from "lodash";
 
 /**
  * Card component for displaying last read, created or updated article for Wiki Documentation.
@@ -24,28 +24,30 @@ import { getLastActivityString } from "src/utils/wiki-utils";
 const WikiDocumentationCard = () => { 
   const setError = useSetAtom(errorAtom);
   const adminMode = UserRoleUtils.adminMode();
- 
-  
   const draftArticles = useAtomValue(draftArticleAtom);
-const normalArticles = useAtomValue(articleAtom);
-const setDraftArticles = useSetAtom(draftArticleAtom);
-const setNormalArticles = useSetAtom(articleAtom);
-
-const articlesAtom = adminMode ? draftArticles : normalArticles;
-const setArticlesAtom = adminMode ? setDraftArticles : setNormalArticles;
+  const normalArticles = useAtomValue(articleAtom);
+  const setDraftArticles = useSetAtom(draftArticleAtom);
+  const setNormalArticles = useSetAtom(articleAtom);
+  const articlesAtom = adminMode ? draftArticles : normalArticles;
+  const setArticlesAtom = adminMode ? setDraftArticles : setNormalArticles;
   const { articleApi } = useLambdasApi();
   const [loading, setLoading] = useState(false);
   const [lastUpdatedArticle, setLastUpdatedArticle] = useState<ArticleMetadata>();
 
   /**
-   * Fetch last updated article.
+   * Fetches the last updated article from the API.
+   * Sets the article in the global state and handles loading and errors.
    */
   useEffect(() => {
     if (!articlesAtom)
       getLastUpdatedArticle();
     else setLastUpdatedArticle(articlesAtom[0]);
   }, []);
-
+/**
+ * Retrieves the list of articles from the API.
+ * Sets the first article as the last updated article.
+ * Updates the articles atom with the fetched articles.
+ */
   const getLastUpdatedArticle = async () => {
     setLoading(true);
     try {
@@ -58,9 +60,12 @@ const setArticlesAtom = adminMode ? setDraftArticles : setNormalArticles;
     }
     setLoading(false);
   };
-
+/**
+ *  Renders the card content for the last updated article.
+ * Displays the article title, last activity, and cover image.
+ */
   const renderCardContent = () => {
-    if (!lastUpdatedArticle || !lastUpdatedArticle.lastUpdatedAt) return;
+    if (!lastUpdatedArticle?.lastUpdatedAt) return;
     const lastActivityData = getLastActivityString(lastUpdatedArticle);
 
     return (
@@ -138,7 +143,7 @@ const setArticlesAtom = adminMode ? setDraftArticles : setNormalArticles;
             <Typography variant="body1">
               {strings.formatString(
                 "by {0}",
-                lastActivityData.user || "")
+                lastActivityData.user ?? "")
               }
             </Typography>
           </Grid>
@@ -146,7 +151,10 @@ const setArticlesAtom = adminMode ? setDraftArticles : setNormalArticles;
       </>
     )
   }
-
+/**
+ * Renders the admin card content.
+ * Displays the number of pending articles or a message when there are none.
+ */
   const renderAdminCardContent = () => (
     <Grid container>
       <Grid style={{ marginBottom: 1 }} item xs={1}>
@@ -158,7 +166,7 @@ const setArticlesAtom = adminMode ? setDraftArticles : setNormalArticles;
           <Typography variant="body1" sx={{paddingTop: "2px"}}>
             {articlesAtom?.length === 0 
               ? strings.wikiDocumentation.noPendingArticles
-              : strings.formatString(strings.wikiDocumentation.pendingArticles, articlesAtom?.length || 0)
+              : strings.formatString(strings.wikiDocumentation.pendingArticles, articlesAtom?.length ?? 0)
             }
           </Typography>
         </Grid>

@@ -7,7 +7,12 @@ interface Props {
   children: string | JSX.Element,
   onClick?: () => void
 }
-
+/**
+ * A full-width styled MUI Button with custom colors and optional click handler.
+ *
+ * @param children - Content to display inside the button.
+ * @param onClick - Optional function called when the button is clicked.
+ */
 const ActionButton = ({children, onClick}: Props) => (
   <Button 
     variant="contained" 

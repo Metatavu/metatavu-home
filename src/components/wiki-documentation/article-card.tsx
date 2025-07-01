@@ -9,7 +9,14 @@ interface Props {
   adminMode: boolean,
   handleDelete: (articleId?: string) => void
 }
-
+/**
+ * Displays an article summary card with image, title, activity info, tags,
+ * and optionally a delete button in admin mode.
+ *
+ * @param article - Article metadata to display.
+ * @param adminMode - Flag to show admin controls like delete button.
+ * @param handleDelete - Callback function to delete the article.
+ */
 const ArticleCard = ({article, adminMode, handleDelete} : Props) => {
   if (!article || !article.lastUpdatedAt) return;
   const lastActivityData = getLastActivityString(article);

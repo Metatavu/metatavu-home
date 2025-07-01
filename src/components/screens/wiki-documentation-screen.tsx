@@ -56,8 +56,8 @@ const WikiDocumentationScreen = () => {
   const [loading, setLoading] = useState(initLoadingState);
   const [formOpen,  setFormOpen] = useState(false);
   const [listView, setListView] = useState(false);
-  const [displayedArticles, setDisplayedArticles] = useState<ArticleMetadata[]>(articles || []);
-  const [displayedArticlesOnPage, setDisplayedArticlesOnPage] = useState<ArticleMetadata[]>(articles?.slice(0, itemsPerPage) || []);
+  const [displayedArticles, setDisplayedArticles] = useState<ArticleMetadata[]>(articles ?? []);
+  const [displayedArticlesOnPage, setDisplayedArticlesOnPage] = useState<ArticleMetadata[]>(articles?.slice(0, itemsPerPage) ?? []);
   const [lastUpdatedArticles, setlastUpdatedArticles] = useState<ArticleMetadata[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [searchInput, setSearchInput] = useState("");
@@ -68,7 +68,7 @@ const WikiDocumentationScreen = () => {
     if (!articles) getArticles();
     else if (articles.length !== 0) {
       if (!adminMode) getLastUpdatedArticles(articles);
-      getTags(adminMode ? articles.concat(draftArticles || []) : articles);
+      getTags(adminMode ? articles.concat(draftArticles ?? []) : articles);
       setDisplayedArticles(articles);
     }
   }, [articles, draftArticles]);
@@ -76,13 +76,17 @@ const WikiDocumentationScreen = () => {
   useEffect(() => {
     setDisplayedArticlesOnPage(displayedArticles.slice((pageNumber - 1) * itemsPerPage, itemsPerPage * pageNumber));
   }, [pageNumber, displayedArticles]);
-
+/**
+ * Fetches all articles from the API and updates the relevant atoms.
+ * If the user is in admin mode, it also fetches draft articles.
+ * Additionally, updates the tag list and retrieves the last updated articles.
+ */
   const getArticles = async () => {
     try {
       const fetchedArticles = await articleApi.getArticles();
-      setDisplayedArticles(fetchedArticles || []);
+      setDisplayedArticles(fetchedArticles ?? []);
       setDisplayedArticlesOnPage(fetchedArticles.slice(0, itemsPerPage));
-      setArticlesAtom(fetchedArticles || []);
+      setArticlesAtom(fetchedArticles ?? []);
       if (adminMode) {
         const fetchedDraftArticles = await articleApi.getArticles({draft: true});
         setDraftArticlesAtom(fetchedDraftArticles);
@@ -98,13 +102,22 @@ const WikiDocumentationScreen = () => {
       setLoading(false);
     }, 1000)
   };
-
+/**
+ * Extracts unique tags from the provided articles and updates the tags atom.
+ *
+ * @param {ArticleMetadata[]} articles - The list of articles to extract tags from.
+ */
   const getTags = (articles: ArticleMetadata[]) => {
-    const allTags = articles.flatMap(article => article.tags || []);
+    const allTags = articles.flatMap(article => article.tags ?? []);
     const uniqueTags = [...new Set(allTags)];
     setTags(uniqueTags);
   };
-
+/**
+ * Retrieves the most recently created, updated, and read articles from the provided list.
+ * Updates the lastUpdatedArticles state with these selected articles.
+ *
+ * @param {ArticleMetadata[]} articles - The list of articles to process.
+ */
   const getLastUpdatedArticles = (articles: ArticleMetadata[]) => {
     let lastCreatedArticleFound = false;
     let lastUpdatedArticleFound = false;
@@ -136,51 +149,76 @@ const WikiDocumentationScreen = () => {
     }
     setlastUpdatedArticles(lastUpdatedArticles)
   };
-
+/**
+ * Deletes the specified article by its ID and updates the articles atom.
+ *
+ * @param {string | undefined} articleId - The ID of the article to delete.
+ */
   const handleDelete = async(articleId?: string) => {
     if (!articleId) return;
     try {
       await articleApi.deleteArticle({id: articleId});
-      setArticlesAtom((articles) => (articles || []).filter(article => article.id !== articleId))
+      setArticlesAtom((articles) => (articles ?? []).filter(article => article.id !== articleId))
     } catch(error: any) {
       const message = (await error.response.json()).message;
       setError(message);
     }
   }
-
+/**
+ * Handles changes in the search input field.
+ * Filters articles based on the search query and selected tags.
+ *
+ * @param {any} event - The input change event containing the search query.
+ */
   const handleSearchInputChange = (event: any) => {
     const newSearchInput = event.target.value;
-    setSearchInput(newSearchInput || "");
+    setSearchInput(newSearchInput ?? "");
 
     if (!newSearchInput || newSearchInput === "") {
-      setDisplayedArticles(adminMode && displayOption === "draft" ? draftArticles || [] : articles || []);
+      setDisplayedArticles(adminMode && displayOption === "draft" ? draftArticles ?? [] : articles ?? []);
       return;
     }
-
-    const filteredArticles = (adminMode && displayOption === "draft" ? draftArticles || [] : articles || [])
+/**
+ * Filters articles by search input and selected tags.
+ * Displays draft articles if in admin mode with "draft" selected, otherwise displays all articles.
+ *
+ * @param {string} newSearchInput - Search text to match in article titles.
+ * @param {string[]} selectedTags - Tags that must be included in the articles.
+ */
+    const filteredArticles = (adminMode && displayOption === "draft" ? draftArticles ?? [] : articles ?? [])
       .filter(article => 
         article.title.toLowerCase().includes(newSearchInput.toLowerCase()) && 
         selectedTags.every(tag => article.tags?.includes(tag))
     );
     setDisplayedArticles(filteredArticles);
   };
-
+/**
+ * Handles the selection of tags from the autocomplete component.
+ * Filters the articles based on the selected tags and search input.
+ *
+ * @param {string[]} values - The array of selected tag strings.
+ */
   const handleSelectedTagChange = (values: string[]) => {
     setSelectedTags(values);
-    const filteredArticles = (adminMode && displayOption === "draft" ? draftArticles || [] : articles || [])
+    const filteredArticles = (adminMode && displayOption === "draft" ? draftArticles ?? [] : articles ?? [])
       .filter(article => 
         article.title.toLowerCase().includes(searchInput.toLowerCase()) && 
         values.every(tag => article.tags?.includes(tag))
     );
     setDisplayedArticles(filteredArticles);
   };;
-
+/**
+ * Handles the change of the display option between all articles and draft articles.
+ * Updates the displayed articles based on the selected option.
+ *
+ * @param {SelectChangeEvent<string>} event - The change event triggered by the select input.
+ */
   const handleDisplayOptionChange = (event: SelectChangeEvent<string>) => {
     const newOption = event.target.value;
     setDisplayOption(newOption);
     if (newOption === "draft") 
-      setDisplayedArticles(draftArticles || [])
-    else setDisplayedArticles(articles || [])
+      setDisplayedArticles(draftArticles ?? [])
+    else setDisplayedArticles(articles ?? [])
   };
 
 
@@ -195,7 +233,10 @@ const WikiDocumentationScreen = () => {
       color: colors.button.text
     }
   });
-
+/**
+ * Renders the search bar component with autocomplete and tag selection.
+ * Allows filtering articles based on input text and selected tags.
+ */
   const renderSearch = () => (
     <Card sx={{
       width: {
@@ -288,8 +329,7 @@ const WikiDocumentationScreen = () => {
         />
       </Box>
     </Card>
-  );
-
+  )
   const renderCreateButton = () => (
     <Button
       onClick={() => setFormOpen(true)}
@@ -430,102 +470,106 @@ const WikiDocumentationScreen = () => {
     </Grid>
   );
 
+  if (loading) {
   return (
-    <>
-      {loading 
-        ? (
-          <Card sx={{ 
-            p: "25%", 
-            display: "flex", 
-            justifyContent: "center" 
-          }}>
-            <CircularProgress sx={{ scale: "150%" }} />
-          </Card>
-        ) 
-        : (
-          <>
-            {formOpen ? (
-              <CreateOrEditArticleForm 
-                setFormOpen={setFormOpen} 
-                action="create" 
-                adminMode={adminMode}
-              />
-            ) :
-            (
-              <>
-                {!adminMode ?
-                  <>
-                    {renderTitle(strings.wikiDocumentation.cardTitle)}
-                    {<CarouselArticleCards articles={lastUpdatedArticles}/> }
-                  </> 
-                  : <></>
-                }
-                <Box sx={adminMode 
-                  ? {marginTop: 4, marginBottom: 4} 
-                  : {paddingLeft: 2, paddingRight: 2, marginBottom: 4}}
-                >
-                  {renderToolBar()}
-                  {displayedArticlesOnPage.length !== 0 ? 
-                    <Grid 
-                      container 
-                      spacing={adminMode ? 4 : 3}
-                      textAlign={"center"}
-                    >
-                      {displayedArticlesOnPage.map(article => 
-                        <Grid 
-                          item 
-                          lg={!listView ? 3 : 12} 
-                          md={!listView ? 4 : 12} 
-                          sm={!listView ? 6 : 12} 
-                          xs={12} 
-                          key={`article-grid-item-${article.id}`}
-                        >
-                          {listView 
-                            ? <ArticleListItem 
-                                article={article} 
-                                adminMode={adminMode} 
-                                handleDelete={handleDelete}
-                              />
-                            : <ArticleCard 
-                                article={article} 
-                                adminMode={adminMode} 
-                                handleDelete={handleDelete}
-                              />
-                          }
-                        </Grid>
-                      )}
-                    </Grid>
-                    :
-                    <Grid 
-                      container 
-                      justifyContent="center"
-                      sx={{color: colors.button.text}}
-                    >
-                      <SearchOffIcon/>
-                      <Typography variant="body1">
-                        {strings.wikiDocumentation.noArticlesFound} 
-                      </Typography> 
-                    </Grid>
-                  }
-                </Box>
-                {displayedArticles.length > itemsPerPage &&
-                  <Grid container justifyContent="center" sx={{ marginBottom: 3 }}>
-                    <Pagination 
-                      size="large"
-                      count={Math.floor(displayedArticles?.length / itemsPerPage) + 1}  
-                      onChange={(_event, page) => setPageNumber(page)} 
-                      page={pageNumber}
-                    />
-                  </Grid> 
-                }
-              </>
-              )
-            }
-          </>
-        )
-      }
-    </>
+    <Card
+      sx={{
+        p: "25%",
+        display: "flex",
+        justifyContent: "center"
+      }}
+    >
+      <CircularProgress sx={{ scale: "150%" }} />
+    </Card>
   );
+}
+
+return (
+  <>
+    {formOpen ? (
+      <CreateOrEditArticleForm
+        setFormOpen={setFormOpen}
+        action="create"
+        adminMode={adminMode}
+      />
+    ) : (
+      <>
+        {!adminMode ? (
+          <>
+            {renderTitle(strings.wikiDocumentation.cardTitle)}
+            <CarouselArticleCards articles={lastUpdatedArticles} />
+          </>
+        ) : (
+          <></>
+        )}
+
+        <Box
+          sx={
+            adminMode
+              ? { marginTop: 4, marginBottom: 4 }
+              : { paddingLeft: 2, paddingRight: 2, marginBottom: 4 }
+          }
+        >
+          {renderToolBar()}
+          {displayedArticlesOnPage.length !== 0 ? (
+            <Grid
+              container
+              spacing={adminMode ? 4 : 3}
+              textAlign={"center"}
+            >
+              {displayedArticlesOnPage.map((article) => (
+                <Grid
+                  item
+                  lg={!listView ? 3 : 12}
+                  md={!listView ? 4 : 12}
+                  sm={!listView ? 6 : 12}
+                  xs={12}
+                  key={`article-grid-item-${article.id}`}
+                >
+                  {listView ? (
+                    <ArticleListItem
+                      article={article}
+                      adminMode={adminMode}
+                      handleDelete={handleDelete}
+                    />
+                  ) : (
+                    <ArticleCard
+                      article={article}
+                      adminMode={adminMode}
+                      handleDelete={handleDelete}
+                    />
+                  )}
+                </Grid>
+              ))}
+            </Grid>
+          ) : (
+            <Grid
+              container
+              justifyContent="center"
+              sx={{ color: colors.button.text }}
+            >
+              <SearchOffIcon />
+              <Typography variant="body1">
+                {strings.wikiDocumentation.noArticlesFound}
+              </Typography>
+            </Grid>
+          )}
+        </Box>
+
+        {displayedArticles.length > itemsPerPage && (
+          <Grid container justifyContent="center" sx={{ marginBottom: 3 }}>
+            <Pagination
+              size="large"
+              count={Math.floor(displayedArticles?.length / itemsPerPage) + 1}
+              onChange={(_event, page) => setPageNumber(page)}
+              page={pageNumber}
+            />
+          </Grid>
+        )}
+      </>
+    )}
+  </>
+);
 };
 
 export default WikiDocumentationScreen;
