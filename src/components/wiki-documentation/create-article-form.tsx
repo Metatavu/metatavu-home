@@ -72,11 +72,11 @@ const CreateOrEditArticleForm = ({
   const loggedInUser = users.find(
     (users: User) => users.id === userProfile?.id
   );
-/**
- * Handles creating a new article using the editor content and form state.
- * Sends the article data to the API and updates local state accordingly.
- * Closes the form on success or sets an error message on failure.
- */
+  /**
+   * Handles creating a new article using the editor content and form state.
+   * Sends the article data to the API and updates local state accordingly.
+   * Closes the form on success or sets an error message on failure.
+   */
   const handleCreate = async () => {
     if (!editorRef.current) return;
     const content = editorRef.current?.getMarkdownContent();
@@ -104,11 +104,11 @@ const CreateOrEditArticleForm = ({
       setError(message);
     }
   }
-/**
- * Handles updating an existing article with current form and editor content.
- * Sends updated data to the API, updates local state, and manages tag sets.
- * Closes the form on success or sets an error message on failure.
- */
+  /**
+   * Handles updating an existing article with current form and editor content.
+   * Sends updated data to the API, updates local state, and manages tag sets.
+   * Closes the form on success or sets an error message on failure.
+   */
   const handleEdit = async () => {
     if (!editorRef.current || !article?.id) return;
     const content = editorRef.current?.getMarkdownContent();

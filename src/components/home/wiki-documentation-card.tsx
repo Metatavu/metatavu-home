@@ -43,11 +43,11 @@ const WikiDocumentationCard = () => {
       getLastUpdatedArticle();
     else setLastUpdatedArticle(articlesAtom[0]);
   }, []);
-/**
- * Retrieves the list of articles from the API.
- * Sets the first article as the last updated article.
- * Updates the articles atom with the fetched articles.
- */
+  /**
+   * Retrieves the list of articles from the API.
+   * Sets the first article as the last updated article.
+   * Updates the articles atom with the fetched articles.
+    */
   const getLastUpdatedArticle = async () => {
     setLoading(true);
     try {
@@ -60,10 +60,10 @@ const WikiDocumentationCard = () => {
     }
     setLoading(false);
   };
-/**
- *  Renders the card content for the last updated article.
- * Displays the article title, last activity, and cover image.
- */
+  /**
+   * Renders the card content for the last updated article.
+   * Displays the article title, last activity, and cover image.
+   */
   const renderCardContent = () => {
     if (!lastUpdatedArticle?.lastUpdatedAt) return;
     const lastActivityData = getLastActivityString(lastUpdatedArticle);
@@ -151,10 +151,10 @@ const WikiDocumentationCard = () => {
       </>
     )
   }
-/**
- * Renders the admin card content.
- * Displays the number of pending articles or a message when there are none.
- */
+  /**
+   * Renders the admin card content.
+   * Displays the number of pending articles or a message when there are none.
+   */
   const renderAdminCardContent = () => (
     <Grid container>
       <Grid style={{ marginBottom: 1 }} item xs={1}>

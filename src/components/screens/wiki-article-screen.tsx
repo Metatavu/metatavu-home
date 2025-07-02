@@ -40,10 +40,10 @@ const ArticleScreen = () => {
   }, [path]);
 
   const closeForm = () => setFormOpen(false);
-/**
- * Loads article and connected articles by path, updates state,
- * records article read, handles errors, and manages loading state.
- */
+  /**
+   * Loads article and connected articles by path, updates state,
+   * records article read, handles errors, and manages loading state.
+   */
   const fetchArticle = async () => {
     if (path) {
       setLoading(true);
@@ -70,16 +70,16 @@ const ArticleScreen = () => {
       setLoading(false);
     }, 1000)
   }
-/**
- * Records that the currently logged-in user has read the specified article.
- * 
- * If the article or its ID is missing, or if the user has already been recorded as having read it,
- * the function exits early without making an API call.
- * 
- * @param {Article | undefined} article - The article object to mark as read.
- * 
- * @returns {Promise<void>} A promise that resolves once the read record is processed.
- */
+  /**
+   * Records that the currently logged-in user has read the specified article.
+   * 
+   * If the article or its ID is missing, or if the user has already been recorded as having read it,
+   * the function exits early without making an API call.
+   * 
+   * @param {Article | undefined} article - The article object to mark as read.
+   * 
+   * @returns {Promise<void>} A promise that resolves once the read record is processed.
+   */
   const recordReadArticle = async (article?: Article) => {
     const user = `${loggedInUser?.firstName} ${loggedInUser?.lastName}`;
     if (!article || !article.id) return;

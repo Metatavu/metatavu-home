@@ -76,11 +76,11 @@ const WikiDocumentationScreen = () => {
   useEffect(() => {
     setDisplayedArticlesOnPage(displayedArticles.slice((pageNumber - 1) * itemsPerPage, itemsPerPage * pageNumber));
   }, [pageNumber, displayedArticles]);
-/**
- * Fetches all articles from the API and updates the relevant atoms.
- * If the user is in admin mode, it also fetches draft articles.
- * Additionally, updates the tag list and retrieves the last updated articles.
- */
+  /**
+   * Fetches all articles from the API and updates the relevant atoms.
+   * If the user is in admin mode, it also fetches draft articles.
+   * Additionally, updates the tag list and retrieves the last updated articles.
+   */
   const getArticles = async () => {
     try {
       const fetchedArticles = await articleApi.getArticles();
@@ -102,22 +102,22 @@ const WikiDocumentationScreen = () => {
       setLoading(false);
     }, 1000)
   };
-/**
- * Extracts unique tags from the provided articles and updates the tags atom.
- *
- * @param {ArticleMetadata[]} articles - The list of articles to extract tags from.
- */
+  /**
+   * Extracts unique tags from the provided articles and updates the tags atom.
+   *
+   * @param {ArticleMetadata[]} articles - The list of articles to extract tags from.
+   */
   const getTags = (articles: ArticleMetadata[]) => {
     const allTags = articles.flatMap(article => article.tags ?? []);
     const uniqueTags = [...new Set(allTags)];
     setTags(uniqueTags);
   };
-/**
- * Retrieves the most recently created, updated, and read articles from the provided list.
- * Updates the lastUpdatedArticles state with these selected articles.
- *
- * @param {ArticleMetadata[]} articles - The list of articles to process.
- */
+  /**
+   * Retrieves the most recently created, updated, and read articles from the provided list.
+   * Updates the lastUpdatedArticles state with these selected articles.
+   *
+   * @param {ArticleMetadata[]} articles - The list of articles to process.
+   */
   const getLastUpdatedArticles = (articles: ArticleMetadata[]) => {
     let lastCreatedArticleFound = false;
     let lastUpdatedArticleFound = false;
@@ -149,11 +149,11 @@ const WikiDocumentationScreen = () => {
     }
     setlastUpdatedArticles(lastUpdatedArticles)
   };
-/**
- * Deletes the specified article by its ID and updates the articles atom.
- *
- * @param {string | undefined} articleId - The ID of the article to delete.
- */
+  /**
+   * Deletes the specified article by its ID and updates the articles atom.
+   *
+   * @param {string | undefined} articleId - The ID of the article to delete.
+    */
   const handleDelete = async(articleId?: string) => {
     if (!articleId) return;
     try {
@@ -164,12 +164,12 @@ const WikiDocumentationScreen = () => {
       setError(message);
     }
   }
-/**
- * Handles changes in the search input field.
- * Filters articles based on the search query and selected tags.
- *
- * @param {any} event - The input change event containing the search query.
- */
+  /**
+   * Handles changes in the search input field.
+   * Filters articles based on the search query and selected tags.
+   *
+   * @param {any} event - The input change event containing the search query.
+   */
   const handleSearchInputChange = (event: any) => {
     const newSearchInput = event.target.value;
     setSearchInput(newSearchInput ?? "");
@@ -178,13 +178,7 @@ const WikiDocumentationScreen = () => {
       setDisplayedArticles(adminMode && displayOption === "draft" ? draftArticles ?? [] : articles ?? []);
       return;
     }
-/**
- * Filters articles by search input and selected tags.
- * Displays draft articles if in admin mode with "draft" selected, otherwise displays all articles.
- *
- * @param {string} newSearchInput - Search text to match in article titles.
- * @param {string[]} selectedTags - Tags that must be included in the articles.
- */
+
     const filteredArticles = (adminMode && displayOption === "draft" ? draftArticles ?? [] : articles ?? [])
       .filter(article => 
         article.title.toLowerCase().includes(newSearchInput.toLowerCase()) && 
@@ -192,12 +186,12 @@ const WikiDocumentationScreen = () => {
     );
     setDisplayedArticles(filteredArticles);
   };
-/**
- * Handles the selection of tags from the autocomplete component.
- * Filters the articles based on the selected tags and search input.
- *
- * @param {string[]} values - The array of selected tag strings.
- */
+  /**
+   * Handles the selection of tags from the autocomplete component.
+   * Filters the articles based on the selected tags and search input.
+   *
+   * @param {string[]} values - The array of selected tag strings.
+   */
   const handleSelectedTagChange = (values: string[]) => {
     setSelectedTags(values);
     const filteredArticles = (adminMode && displayOption === "draft" ? draftArticles ?? [] : articles ?? [])
@@ -207,12 +201,12 @@ const WikiDocumentationScreen = () => {
     );
     setDisplayedArticles(filteredArticles);
   };;
-/**
- * Handles the change of the display option between all articles and draft articles.
- * Updates the displayed articles based on the selected option.
- *
- * @param {SelectChangeEvent<string>} event - The change event triggered by the select input.
- */
+  /**
+   * Handles the change of the display option between all articles and draft articles.
+   * Updates the displayed articles based on the selected option.
+   *
+   * @param {SelectChangeEvent<string>} event - The change event triggered by the select input.
+   */
   const handleDisplayOptionChange = (event: SelectChangeEvent<string>) => {
     const newOption = event.target.value;
     setDisplayOption(newOption);
@@ -233,7 +227,7 @@ const WikiDocumentationScreen = () => {
       color: colors.button.text
     }
   });
-/**
+  /**
  * Renders the search bar component with autocomplete and tag selection.
  * Allows filtering articles based on input text and selected tags.
  */
@@ -494,15 +488,12 @@ return (
       />
     ) : (
       <>
-        {!adminMode ? (
-          <>
-            {renderTitle(strings.wikiDocumentation.cardTitle)}
-            <CarouselArticleCards articles={lastUpdatedArticles} />
-          </>
-        ) : (
-          <></>
-        )}
-
+        {!adminMode && (  
+      <>  
+        {renderTitle(strings.wikiDocumentation.cardTitle)}  
+        <CarouselArticleCards articles={lastUpdatedArticles} />  
+      </>  
+    )} 
         <Box
           sx={
             adminMode
