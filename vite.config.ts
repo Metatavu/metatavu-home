@@ -46,7 +46,10 @@ const getDefine = async ({ mode }: UserConfig) => {
   });
 
   return Object.entries(secrets).reduce((acc, [key, value]) => {
-    acc[`import.meta.env.${key}`] = JSON.stringify(value);
+    if (key.startsWith("VITE_")) {
+      acc[`import.meta.env.${key}`] = JSON.stringify(value);
+    }
+    
     return acc;
   }, {});
 };
