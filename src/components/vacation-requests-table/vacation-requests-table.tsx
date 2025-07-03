@@ -1,4 +1,8 @@
-import { DataGrid, type GridRowId, type GridRowSelectionModel } from "@mui/x-data-grid";
+import {
+  DataGrid,
+  type GridRowId,
+  type GridRowSelectionModel,
+} from "@mui/x-data-grid";
 import { useMemo, useRef, useState } from "react";
 import { Box, styled } from "@mui/material";
 import TableToolbar from "./vacation-requests-table-toolbar/vacation-requests-table-toolbar";
@@ -10,10 +14,13 @@ import VacationRequestsTableColumns from "./vacation-requests-table-columns";
 import strings from "src/localization/strings";
 import { Inventory } from "@mui/icons-material";
 import { displayedVacationRequestsAtom } from "src/atoms/vacation";
-import { type VacationRequest, VacationRequestStatuses } from "src/generated/homeLambdasClient";
+import {
+  type VacationRequest,
+  VacationRequestStatuses,
+} from "src/generated/homeLambdasClient";
 import {
   getTotalVacationRequestStatus,
-  getVacationRequestStatusColor
+  getVacationRequestStatusColor,
 } from "src/utils/vacation-status-utils";
 import { DateTime } from "luxon";
 import LocalizationUtils from "src/utils/localization-utils";
@@ -31,7 +38,9 @@ interface Props {
     selectedRowIds: GridRowId[],
     rows: VacationsDataGridRow[]
   ) => Promise<void>;
-  createVacationRequest: (vacationRequestData: VacationRequest) => Promise<void>;
+  createVacationRequest: (
+    vacationRequestData: VacationRequest
+  ) => Promise<void>;
   updateVacationRequest: (
     vacationRequestData: VacationRequest,
     vacationRequestId: string
@@ -55,16 +64,18 @@ const VacationRequestsTable = ({
   createVacationRequest,
   updateVacationRequest,
   updateVacationRequestStatus,
-  loading
+  loading,
 }: Props) => {
-  const vacationRequests = useAtomValue(displayedVacationRequestsAtom);
+  const vacationRequests = useAtomValue(displayedVacationRequestsAtom) || [];
   const containerRef = useRef(null);
   const [formOpen, setFormOpen] = useState(false);
-  const [selectedRowIds, setSelectedRowIds] = useState<GridRowSelectionModel>([]);
+  const [selectedRowIds, setSelectedRowIds] = useState<GridRowSelectionModel>(
+    []
+  );
   const [rows, setRows] = useState<VacationsDataGridRow[]>([]);
   const language = useAtomValue(languageAtom);
   const columns = VacationRequestsTableColumns();
-  const users = useAtomValue(usersAtom);
+  const users = useAtomValue(usersAtom) || [];
   const userProfile = useAtomValue(userProfileAtom);
   const dataGridHeight = 700;
   const dataGridRowHeight = 52;
@@ -84,14 +95,16 @@ const VacationRequestsTable = ({
 
     const row: VacationsDataGridRow = {
       id: vacationRequest.id,
-      type: LocalizationUtils.getLocalizedVacationRequestType(vacationRequest.type),
+      type: LocalizationUtils.getLocalizedVacationRequestType(
+        vacationRequest.type
+      ),
       personFullName: usersFullName,
       updatedAt: DateTime.fromJSDate(vacationRequest.updatedAt),
       startDate: DateTime.fromJSDate(vacationRequest.startDate),
       endDate: DateTime.fromJSDate(vacationRequest.endDate),
       days: vacationRequest.days,
       message: strings.vacationRequest.noMessage,
-      status: VacationRequestStatuses.PENDING
+      status: VacationRequestStatuses.PENDING,
     };
     return row;
   };
@@ -103,17 +116,19 @@ const VacationRequestsTable = ({
    */
   const createDataGridRows = (vacationRequests: VacationRequest[]) => {
     const rows: VacationsDataGridRow[] = [];
-    if (vacationRequests.length) {
+    if (Array.isArray(vacationRequests) && vacationRequests.length > 0) {
       vacationRequests.forEach((vacationRequest) => {
+        if (!vacationRequest) return;
         const row = createDataGridRow(vacationRequest);
-        row.status = vacationRequest.status?.length
-          ? getTotalVacationRequestStatus(vacationRequest.status)
-          : VacationRequestStatuses.PENDING;
+        const status = vacationRequest.status;
+        row.status =
+          Array.isArray(status) && status.length > 0
+            ? getTotalVacationRequestStatus(status)
+            : VacationRequestStatuses.PENDING;
 
         if (vacationRequest.message?.length) {
           row.message = vacationRequest.message;
         }
-
         if (vacationRequest.userId) {
           row.personFullName = getVacationRequestPersonFullName(
             vacationRequest,
@@ -127,34 +142,27 @@ const VacationRequestsTable = ({
     return rows;
   };
 
-  /**
-   * Set selected data grid rows
-   */
   useMemo(() => {
     setSelectedRowIds([]);
   }, [deleteVacationRequests]);
 
-  /**
-   * Set data grid rows
-   */
   useMemo(() => {
-    setRows(createDataGridRows(vacationRequests));
+    try {
+      setRows(createDataGridRows(vacationRequests));
+    } catch (error) {
+      console.error("Error creating data grid rows:", error);
+      setRows([]);
+    }
   }, [vacationRequests, formOpen, language]);
 
-  /**
-   * Styled grid overlay component
-   */
   const StyledGridOverlay = styled("div")(() => ({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    height: "100%"
+    height: "100%",
   }));
 
-  /**
-   * Custom no rows overlay component
-   */
   const CustomNoRowsOverlay = () => (
     <StyledGridOverlay>
       <Inventory />
@@ -162,9 +170,6 @@ const VacationRequestsTable = ({
     </StyledGridOverlay>
   );
 
-  /**
-   * Custom skeleton table rows component
-   */
   const CustomSkeletonTableRows = () => (
     <SkeletonTableRows
       dataGridHeight={dataGridHeight}
@@ -177,14 +182,20 @@ const VacationRequestsTable = ({
     <Box
       sx={{
         "& .APPROVED": {
-          color: `${getVacationRequestStatusColor(VacationRequestStatuses.APPROVED)}`
+          color: `${getVacationRequestStatusColor(
+            VacationRequestStatuses.APPROVED
+          )}`,
         },
         "& .DECLINED": {
-          color: `${getVacationRequestStatusColor(VacationRequestStatuses.DECLINED)}`
+          color: `${getVacationRequestStatusColor(
+            VacationRequestStatuses.DECLINED
+          )}`,
         },
         "& .PENDING": {
-          color: `${getVacationRequestStatusColor(VacationRequestStatuses.PENDING)}`
-        }
+          color: `${getVacationRequestStatusColor(
+            VacationRequestStatuses.PENDING
+          )}`,
+        },
       }}
       ref={containerRef}
     >
@@ -213,7 +224,7 @@ const VacationRequestsTable = ({
         loading={loading && !rows.length}
         slots={{
           loadingOverlay: CustomSkeletonTableRows,
-          noRowsOverlay: CustomNoRowsOverlay
+          noRowsOverlay: CustomNoRowsOverlay,
         }}
         columns={columns}
         checkboxSelection
@@ -221,8 +232,8 @@ const VacationRequestsTable = ({
         isRowSelectable={() => !formOpen}
         initialState={{
           sorting: {
-            sortModel: [{ field: "updatedAt", sort: "asc" }]
-          }
+            sortModel: [{ field: "updatedAt", sort: "asc" }],
+          },
         }}
       />
     </Box>

@@ -4,13 +4,15 @@
     "pleaseWait": "Please wait, this could take a moment..."
   },
   "label": {
-    "currentLocaleLabel": "Current Locale:"
+    "currentLocaleLabel": "Current Locale:",
+    "cancel": "Cancel",
+    "save": "Save"
   },
   "header": {
     "hello": "Hi",
     "logout": "Log out",
     "home": "Home",
-    "settings": "Settings" ,
+    "settings": "Settings",
     "timebank": "Timebank",
     "vacations": "Vacations",
     "onCall": "On Call",
@@ -37,7 +39,7 @@
     "questionnaireUpdateFailed": "Error while updating questionnaire",
     "fetchFailedFlextime": "Error while fetching flextime data",
     "missingEmailOrId": "Missing email or ID",
-    "noSeveraUserId" : "One of your users is missing severaUserId, please contact a member of the metatavu home development team for more information.",
+    "noSeveraUserId": "One of your users is missing severaUserId, please contact a member of the metatavu home development team for more information.",
     "noFlextimeData": "Something went wrong while fetching your flextime data"
   },
   "localization": {
@@ -383,11 +385,11 @@
     "moreCount": "+{0} more"
   },
   "questionnaireProgress": {
-  "title": "Questionnaires",
-  "progressText": "You have passed {0} out of {1} questionnaires",
-  "allCompleted": "Congratulations! You've completed all questionnaires!",
-  "loading": "Loading questionnaires..."
- },
+    "title": "Questionnaires",
+    "progressText": "You have passed {0} out of {1} questionnaires",
+    "allCompleted": "Congratulations! You've completed all questionnaires!",
+    "loading": "Loading questionnaires..."
+  },
   "balanceCard": {
     "totalFlextimeBalance": "Total flextime balance:",
     "employeeBalances": "Employee time totals and balances",
@@ -400,10 +402,37 @@
   "settingsScreen": {
     "saveSettings": "Save settings",
     "accept": "Accept",
-    "decline":"Decline",
+    "decline": "Decline",
     "consentToDataProcessing": "Grant permissions for processing your Severa data to gain additional Home features."
   },
   "notOptedInDescription": {
     "description": "Accept the processing of user data to view this section."
+  },
+  "adminVacationManagement": {
+    "heading": "Admin Vacation Management",
+    "title": "User Vacation Management",
+    "description": "View and update individual user vacation day allocations and remaining days.",
+    "buttonLabel": "Manage User Vacation Days",
+    "editTitle": "Edit Vacation Days",
+    "totalDays": "Total Days",
+    "remainingDays": "Remaining Days"
+  },
+  "userSearch": {
+    "placeholder": "Search users by name or email"
+  },
+  "userRow": {
+    "day": "Day"
+  },
+  "userTable": {
+    "name": "Name",
+    "username": "Username",
+    "email": "Email",
+    "currentYearTotal": "Current Year Total",
+    "remainingDays": "Remaining Days",
+    "actions": "Actions",
+    "noUsersFound": "No users found"
+  },
+  "pagination": {
+    "ariaLabel": "Page navigation"
   }
 }

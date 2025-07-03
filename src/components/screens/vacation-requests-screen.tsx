@@ -1,4 +1,4 @@
-import { Button, Card, Typography } from "@mui/material";
+import { Button, Card, Typography, Box, Grid } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import VacationRequestsTable from "../vacation-requests-table/vacation-requests-table";
 import type { User } from "src/generated/homeLambdasClient";
@@ -16,7 +16,7 @@ import {
 } from "src/atoms/vacation";
 import UserRoleUtils from "src/utils/user-role-utils";
 import { Link } from "react-router-dom";
-import { KeyboardReturn } from "@mui/icons-material";
+import { KeyboardReturn, PeopleAlt } from "@mui/icons-material";
 import { renderVacationDaysTextForScreen } from "src/utils/vacation-days-utils";
 import { usersAtom } from "src/atoms/user";
 
@@ -275,6 +275,9 @@ const VacationRequestsScreen = () => {
           loading={loading}
         />
       </Card>
+      
+      {/* Admin Tools Section has been removed */}
+      
       <Card sx={{ margin: 0, padding: "10px", width: "100%" }}>
         <Link to={adminMode ? "/admin" : "/"} style={{ textDecoration: "none" }}>
           <Button variant="contained" sx={{ padding: "10px", width: "100%" }}>

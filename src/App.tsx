@@ -25,6 +25,8 @@ import SoftwareDetails from "./components/software-registry/SoftwareDetails";
 import NewQuestionnaireBuilder from "./components/questionnaire/new-questionnaire-builder";
 import QuestionnaireManager from "./components/questionnaire/questionnaire-manager";
 import { QuestionnairePreviewMode } from "./types";
+import AdminVacationManagementScreen from "./components/screens/admin-vacation-management/admin-vacation-management-screen";
+
 import SettingsScreen from "./components/screens/settings-screen"
 /**
  * Application component
@@ -114,12 +116,8 @@ const App = () => {
           element: <SprintViewScreen />
         },
         {
-          path: "/admin/allsoftware",
-          element: <AllSoftwareScreen />
-        },
-        {
-          path: "/admin/allsoftware/:id",
-          element: <SoftwareDetails />
+          path: "/admin/vacation-management",
+          element: <AdminVacationManagementScreen />
         },
         {
           path: "/admin/questionnaire",

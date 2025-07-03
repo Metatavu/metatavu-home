@@ -9,7 +9,7 @@ import type { ReactNode } from "react";
 export enum ToolbarFormModes {
   CREATE = "CREATE",
   EDIT = "EDIT",
-  NONE = "NONE"
+  NONE = "NONE",
 }
 
 /**
@@ -72,7 +72,7 @@ export enum Worktime {
   Billable = "billableProject",
   NonBillable = "nonBillableProject",
   Internal = "internal",
-  Expected = "expected"
+  Expected = "expected",
 }
 
 /**
@@ -92,7 +92,7 @@ export enum WorkTimeCategory {
   INTERNAL = "Internal",
   EXPECTED = "Expected",
   BALANCE = "Balance",
-  LOGGED = "Logged"
+  LOGGED = "Logged",
 }
 
 /**
@@ -163,7 +163,7 @@ export interface QuestionOption {
 export enum QuestionnairePreviewMode {
   FILL = "FILL",
   EDIT = "EDIT",
-  PREVIEW = "PREVIEW"
+  PREVIEW = "PREVIEW",
 }
 
 /**
