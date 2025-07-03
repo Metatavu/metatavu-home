@@ -45,49 +45,47 @@ const App = () => {
       children: [
         {
           path: "/",
-          element: <HomeScreen />,
+          element: <HomeScreen />
         },
         {
           path: "/vacations",
-          element: <VacationRequestsScreen />,
+          element: <VacationRequestsScreen />
         },
         {
           path: "/timebank",
-          element: <TimebankScreen />,
+          element: <TimebankScreen />
         },
         {
           path: "/sprintview",
-          element: <SprintViewScreen />,
+          element: <SprintViewScreen />
         },
         {
           path: "/softwareregistry",
-          element: <SoftwareRegistryScreen />,
+          element: <SoftwareRegistryScreen />
         },
         {
           path: "/softwareregistry/:id",
-          element: <SoftwareDetails />,
+          element: <SoftwareDetails />
         },
         {
           path: "/softwareregistry/allsoftware",
-          element: <AllSoftwareScreen />,
+          element: <AllSoftwareScreen />
         },
         {
           path: "/softwareregistry/allsoftware/:id",
-          element: <SoftwareDetails />,
+          element: <SoftwareDetails />
         },
         {
           path: "/questionnaire",
-          element: <QuestionnaireScreen />,
+          element: <QuestionnaireScreen />
         },
         {
           path: "/questionnaire/:id",
-          element: (
-            <QuestionnaireManager mode={QuestionnairePreviewMode.FILL} />
-          ),
+          element: <QuestionnaireManager mode={QuestionnairePreviewMode.FILL} />
         },
         {
           path: "/settings",
-          element: <SettingsScreen />,
+          element: <SettingsScreen />
         },
       ],
     },
@@ -102,11 +100,11 @@ const App = () => {
       children: [
         {
           path: "/admin",
-          element: <AdminScreen />,
+          element: <AdminScreen />
         },
         {
           path: "/admin/vacations",
-          element: <VacationRequestsScreen />,
+          element: <VacationRequestsScreen />
         },
         // {
         //    path: "/admin/timebank/viewall",
@@ -114,33 +112,31 @@ const App = () => {
         //  },
         {
           path: "/admin/severa/employee-flextime",
-          element: <EmployeeFlextimeScreen />,
+          element: <EmployeeFlextimeScreen />
         },
         {
           path: "/admin/sprintview",
-          element: <SprintViewScreen />,
+          element: <SprintViewScreen />
         },
         {
           path: "/admin/allsoftware",
-          element: <AllSoftwareScreen />,
+          element: <AllSoftwareScreen />
         },
         {
           path: "/admin/allsoftware/:id",
-          element: <SoftwareDetails />,
+          element: <SoftwareDetails />
         },
         {
           path: "/admin/questionnaire",
-          element: <QuestionnaireScreen />,
+          element: <QuestionnaireScreen />
         },
         {
           path: "/admin/newQuestionnaire",
-          element: <NewQuestionnaireBuilder />,
+          element: <NewQuestionnaireBuilder />
         },
         {
           path: "/admin/questionnaire/:id/edit",
-          element: (
-            <QuestionnaireManager mode={QuestionnairePreviewMode.EDIT} />
-          ),
+          element: <QuestionnaireManager mode={QuestionnairePreviewMode.EDIT} />
         },
       ],
     },
@@ -150,10 +146,7 @@ const App = () => {
       <ThemeProvider theme={theme}>
         <ErrorHandler>
           <AuthenticationProvider>
-            <LocalizationProvider
-              dateAdapter={AdapterLuxon}
-              adapterLocale={language}
-            >
+            <LocalizationProvider dateAdapter={AdapterLuxon} adapterLocale={language}>
               <CssBaseline>
                 <RouterProvider router={router} />
               </CssBaseline>
