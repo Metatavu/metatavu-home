@@ -66,23 +66,6 @@ const HomeScreen = () => {
   );
 
   const cards: ReactNode[] = [
-<<<<<<< HEAD
-  isPrivilegedUser && (
-    <Box key="balance">
-      {renderCardWithSkeleton(strings.balanceCard.balance, <BalanceCard />)}
-    </Box>
-  ),
-  isPrivilegedUser && (
-    <Box key="sprint">
-      {renderCardWithSkeleton(strings.sprint.sprintview, <SprintViewCard />)}
-    </Box>
-  ),
-  isPrivilegedUser && <VacationsCard key="vacations" />,
-  isPrivilegedUser && <QuestionnaireCard key="questionnaire" />,
-  isPrivilegedUser && <SoftwareRegistryCard key="software" />,
-  isPrivilegedUser && <WikiDocumentationCard key="wiki" />
-].filter(Boolean);
-=======
     isPrivilegedUser && (
       <Box key="balance">
         {!hasSeveraUserId ? (
@@ -103,9 +86,9 @@ const HomeScreen = () => {
     ),
     isPrivilegedUser && <VacationsCard key="vacations" />,
     isPrivilegedUser && <QuestionnaireCard key="questionnaire" />,
-    isPrivilegedUser && <SoftwareRegistryCard key="software" />
+    isPrivilegedUser && <SoftwareRegistryCard key="software" />,
+    isPrivilegedUser && <WikiDocumentationCard key="wiki" />
   ].filter(Boolean);
->>>>>>> origin/develop
 
   return (
     <CardGridWrapper>
