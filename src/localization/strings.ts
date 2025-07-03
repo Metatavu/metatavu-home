@@ -17,6 +17,8 @@ export interface Localized extends LocalizedStringsMethods {
   };
   label: {
     currentLocaleLabel: string;
+    cancel: string;
+    save: string;
   };
   /**
    * Translations related to header
@@ -25,7 +27,7 @@ export interface Localized extends LocalizedStringsMethods {
     hello: string;
     logout: string;
     home: string;
-    settings: string
+    settings: string;
     timebank: string;
     vacations: string;
     onCall: string;
@@ -184,7 +186,7 @@ export interface Localized extends LocalizedStringsMethods {
    * Software status related translations
    */
   softwareStatus: {
-    all:string;
+    all: string;
     pending: string;
     under_review: string;
     accepted: string;
@@ -492,11 +494,11 @@ export interface Localized extends LocalizedStringsMethods {
     moreCount: string;
   };
   questionnaireProgress: {
-  title: string;
-  progressText: string;
-  allCompleted: string;
-  loading: string;
-};
+    title: string;
+    progressText: string;
+    allCompleted: string;
+    loading: string;
+  };
   /**
    * Translations related to Balance Card
    */
@@ -555,7 +557,49 @@ export interface Localized extends LocalizedStringsMethods {
   notOptedInDescription: {
     description: string;
   };
-};
+  /**
+   * Translations for Admin Vacation Management Card
+   */
+  adminVacationManagement: {
+    heading: string;
+    title: string;
+    description: string;
+    buttonLabel: string;
+    editTitle: string;
+    totalDays: string;
+    remainingDays: string;
+  };
+  /**
+   * Translations for User Search Bar component
+   */
+  userSearch: {
+    placeholder: string;
+  };
+  /**
+   * Translations for User row component
+   */
+  userRow: {
+    day: string;
+  };
+  /**
+   * Translations for User Table component
+   */
+  userTable: {
+    name: string;
+    username: string;
+    email: string;
+    currentYearTotal: string; // Use a placeholder like "Total Days {year}"
+    remainingDays: string;
+    actions: string;
+    noUsersFound: string;
+  };
+  /**
+   * General or pagination
+   */
+  pagination: {
+    ariaLabel: string;
+  };
+}
 /**
  * Initialized localized strings
  */

@@ -27,6 +27,7 @@ import QuestionnaireManager from "./components/questionnaire/questionnaire-manag
 import { QuestionnairePreviewMode } from "./types";
 import ArticleScreen from "./components/screens/wiki-article-screen";
 import WikiDocumentationScreen from "./components/screens/wiki-documentation-screen";
+import AdminVacationManagementScreen from "./components/screens/admin-vacation-management/admin-vacation-management-screen";
 import SettingsScreen from "./components/screens/settings-screen"
 
 /**
@@ -125,12 +126,8 @@ const App = () => {
           element: <SprintViewScreen />
         },
         {
-          path: "/admin/allsoftware",
-          element: <AllSoftwareScreen />
-        },
-        {
-          path: "/admin/allsoftware/:id",
-          element: <SoftwareDetails />
+          path: "/admin/vacation-management",
+          element: <AdminVacationManagementScreen />
         },
         {
           path: "/admin/questionnaire",
