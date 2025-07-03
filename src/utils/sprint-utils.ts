@@ -161,10 +161,11 @@ const getAssigneeWorkHours = (workHours: WorkHours[], phase: Phase) => {
  * @returns PhaseRow
  */
 export const mapPhasesToRows = (phase: Phase, workHours: WorkHours[], userId: string, resourceAllocations: ResourceAllocations[], adminMode: boolean) : PhaseRow | null=> {
-  const workHour = workHours.find(workHour => workHour.phase?.severaPhaseId === phase.severaPhaseId && workHour.user?.severaUserId === userId);
-  if(!workHour && !adminMode) {
-    return null;
-  }
+  const workHour = workHours.find(
+    workHour =>
+      workHour.phase?.severaPhaseId === phase.severaPhaseId &&
+      workHour.user?.severaUserId === userId
+  );
   return {
     id: phase.severaPhaseId || "",
     title: phase.name || "",
