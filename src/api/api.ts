@@ -17,6 +17,7 @@ import {
   UsersApi,
   WorkHoursApi,
   VacationRequestsApi,
+  ArticleApi,
 } from "../generated/homeLambdasClient";
 
 /**
@@ -68,6 +69,7 @@ export const getLambdasApiClient = (accessToken?: string) => {
     flexTimeApi: new FlexTimeApi(getConfiguration()),
     workHoursApi: new WorkHoursApi(getConfiguration()),
     questionnairesApi: new QuestionnairesApi(getConfiguration()),
-    vacationRequestsApi: new VacationRequestsApi(getConfiguration())
+    vacationRequestsApi: new VacationRequestsApi(getConfiguration()),
+    articleApi: new ArticleApi(getConfiguration())
   };
 };

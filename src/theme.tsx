@@ -57,9 +57,34 @@ export const theme: Theme = createTheme({
           backgroundColor: "#f5f5f5"
         }
       }
+    },
+    MuiPaper: {
+      styleOverrides: {
+        root: {
+          backgroundColor: "#f5f5f5"
+        }
+      }
+    },
+    MuiChip: {
+      defaultProps: {
+        color: "default"
+      },
+      styleOverrides: {
+        root: {
+          backgroundColor: "#F9A0A0"
+        }
+      }
     }
   },
   shape: {
     borderRadius: 15
   }
 });
+
+export const wikiScreenColors = {
+  button : {
+    main: "#E9E8E8",
+    hover: "#DCD8D8",
+    text: "#787272"
+  }
+}
