@@ -4,7 +4,9 @@
     "pleaseWait": "Odota, tässä voi mennä hetki..."
   },
   "label": {
-    "currentLocaleLabel": "Nykyinen kieli:"
+    "currentLocaleLabel": "Nykyinen kieli:",
+    "cancel": "Peruuta",
+    "save": "Tallenna"
   },
   "header": {
     "hello": "Hei",
@@ -383,11 +385,11 @@
     "moreCount": "+{0} lisää"
   },
   "questionnaireProgress": {
-  "title": "Kyselyt",
-  "progressText": "Olet läpäissyt {0} kyselyä {1} kyselystä",
-  "allCompleted": "Onnittelut! Olet suorittanut kaikki kyselyt!",
-  "loading": "Ladataan kyselyitä..."
-},
+    "title": "Kyselyt",
+    "progressText": "Olet läpäissyt {0} kyselyä {1} kyselystä",
+    "allCompleted": "Onnittelut! Olet suorittanut kaikki kyselyt!",
+    "loading": "Ladataan kyselyitä..."
+  },
   "balanceCard": {
     "totalFlextimeBalance": "Kokonaisbalanssi:",
     "employeeBalances": "Henkilöstön aikakirjaukset ja saldot",
@@ -400,10 +402,38 @@
   "settingsScreen": {
     "saveSettings": "Tallena Asetukset",
     "accept": "Hyväksy",
-    "decline":"En hyväksy",
+    "decline": "En hyväksy",
     "consentToDataProcessing": "Suostumus tietojen käsittelyyn"
   },
   "notOptedInDescription": {
     "description": "Hyväksy käyttäjätietojen käsittely nähdäksesi tämä osio"
+  },
+  "adminVacationManagement": {
+    "heading": "Ylläpitäjän lomien hallinta",
+    "title": "Käyttäjän lomahallinta",
+    "description": "Näytä ja päivitä yksittäisten käyttäjien lomapäivien määrät ja jäljellä olevat päivät.",
+    "buttonLabel": "Hallitse käyttäjän lomapäiviä",
+    "editTitle": "Muokkaa lomapäiviä",
+    "totalDays": "Kokonaispäivät",
+    "remainingDays": "Jäljellä olevat päivät"
+  },
+  "userSearch": {
+    "placeholder": "Hae käyttäjiä nimen tai sähköpostin perusteella"
+  },
+  "userRow": {
+    "day": "Päivä"
+  },
+  "userTable": {
+    "name": "Nimi",
+    "username": "Käyttäjätunnus",
+    "email": "Sähköposti",
+    "currentYearTotal": "Kuluvan vuoden yhteensä",
+    "remainingDays": "Jäljellä olevat päivät",
+    "actions": "Toiminnot",
+    "noUsersFound": "Käyttäjiä ei löytynyt"
+  },
+
+  "pagination": {
+    "ariaLabel": "Sivunavigointi"
   }
 }
