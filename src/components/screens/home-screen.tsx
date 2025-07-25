@@ -13,6 +13,7 @@ import WikiDocumentationCard from "../home/wiki-documentation-card";
 import strings from "src/localization/strings";
 import type { ReactNode } from "react";
 import SoftwareRegistryCard from "../home/software-registry-card";
+import OnCallCard from "../home/oncall-card";
 
 /**
  * Home screen component
@@ -87,7 +88,8 @@ const HomeScreen = () => {
     isPrivilegedUser && <VacationsCard key="vacations" />,
     isPrivilegedUser && <QuestionnaireCard key="questionnaire" />,
     isPrivilegedUser && <SoftwareRegistryCard key="software" />,
-    isPrivilegedUser && <WikiDocumentationCard key="wiki" />
+    isPrivilegedUser && <WikiDocumentationCard key="wiki" />,
+    isPrivilegedUser && <OnCallCard key="oncall" />,
   ].filter(Boolean);
 
   return (

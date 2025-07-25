@@ -599,7 +599,27 @@ export interface Localized extends LocalizedStringsMethods {
   pagination: {
     ariaLabel: string;
   };
+
+  /**
+   * Translations related to On Call
+   */
+  oncall: {
+    title: string;
+    previousYear: string;
+    nextYear: string;
+    oncallShifts: string;
+    paid: string;
+    notPaid: string;
+    calendar: string;
+    list: string;
+    selectView: string;
+    noOnCallPerson: string;
+    onCallPersonExists: string;
+    fetchFailed: string;
+    updatePaidStatusForWeek: string;
+  };
 }
+
 /**
  * Initialized localized strings
  */

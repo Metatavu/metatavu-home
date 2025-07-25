@@ -8,6 +8,7 @@ import WikiDocumentationCard from "../home/wiki-documentation-card";
 import VacationManagementCard from "../home/vacation-management-card";
 import SoftwareRegistryCard from "../home/software-registry-card";
 import { Box } from "@mui/material";
+import OnCallCard from "../home/oncall-card";
 
 
 /**
@@ -28,10 +29,9 @@ const AdminScreen = () => {
     isPrivilegedUser && <VacationsCard key="vacations" />,
     isPrivilegedUser && <QuestionnaireCard key="questionnaire" />,
     isPrivilegedUser && <SoftwareRegistryCard key="software" />,
-    isPrivilegedUser && <QuestionnaireCard key="questionnaire"/>,
     isPrivilegedUser && <Box key="vacationManagement" sx={{ maxHeight: 420 }}><VacationManagementCard /></Box>,
-    isPrivilegedUser && <SoftwareRegistryCard key="software"  />,
-    isPrivilegedUser && <WikiDocumentationCard key="wiki" />
+    isPrivilegedUser && <WikiDocumentationCard key="wiki" />,
+    isPrivilegedUser && <OnCallCard key="oncall" />,
   ].filter(Boolean);
 
   return (

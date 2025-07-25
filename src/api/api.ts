@@ -18,8 +18,8 @@ import {
   WorkHoursApi,
   VacationRequestsApi,
   ArticleApi,
+  OnCallApi
 } from "../generated/homeLambdasClient";
-
 /**
  * Generic type that accepts parameters within the @ConfigurationParameters interface
  */
@@ -70,6 +70,7 @@ export const getLambdasApiClient = (accessToken?: string) => {
     workHoursApi: new WorkHoursApi(getConfiguration()),
     questionnairesApi: new QuestionnairesApi(getConfiguration()),
     vacationRequestsApi: new VacationRequestsApi(getConfiguration()),
-    articleApi: new ArticleApi(getConfiguration())
+    articleApi: new ArticleApi(getConfiguration()),
+    onCallApi: new OnCallApi(getConfiguration())
   };
 };
