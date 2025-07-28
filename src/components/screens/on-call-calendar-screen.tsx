@@ -56,7 +56,7 @@ const OnCallCalendarScreen = () => {
 
   useEffect(() => {
     getCurrentOnCallPerson();
-  }, []);
+  }, [onCallData]);
 
   /**
    * Fetches on call data
