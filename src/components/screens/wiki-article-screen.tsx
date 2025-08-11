@@ -133,37 +133,87 @@ const ArticleScreen = () => {
               </ActionButton>
               </Grid>
             </Grid>
-            <Card sx={{padding: 3, paddingTop: 0, marginBottom: 3}}>
-              <ReactMarkdown 
-                components={{
-                  img: ({node, ...props}) => (
-                    <img 
-                      {...props} 
-                      alt={props.alt} 
-                      style={{ 
-                        display: "block", 
-                        width: "100%",
-                        borderRadius: "15px"
-                      }}
-                    />
-                  ),
-                  code: ({node, inline, ...props}) => (
-                    <code 
-                      {...props}
-                      className={!inline ? "editor-code" : ""}
-                    />
-                  ),
-                  blockquote: ({node, ...props}) => (
-                    <blockquote  
-                      {...props}
-                      className={"editor-quote"}
-                    />
-                  )
-                }}
-              >
-                {article?.content || ""}
-              </ReactMarkdown>
-            </Card>
+            <Card sx={{ padding: 3, paddingTop: 0, marginBottom: 3 }}>
+  {/* Title */}
+  {article?.title && (
+    <Typography variant="h4" sx={{ marginBottom: 2 }}>
+      {article.title}
+    </Typography>
+  )}
+
+  {/* Main Image */}
+  {article?.coverImage && (
+    <Box
+      component="img"
+      src={article.coverImage}
+      alt={article.title || "Article Image"}
+      sx={{
+        width: "100%",
+        maxHeight: 400,
+        objectFit: "cover",
+        borderRadius: 2,
+        mb: 2
+      }}
+    />
+  )}
+  
+
+  {/* Created / Updated Dates */}
+  <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+    {article?.createdAt && `Created: ${new Date(article.createdAt).toLocaleDateString()}`}
+    {article?.lastUpdatedAt && ` | Updated: ${new Date(article.lastUpdatedAt).toLocaleDateString()}`}
+    
+  </Typography>
+
+  {/* Tags */}
+  {article?.tags && article.tags.length > 0 && (
+    <Box sx={{ mb: 2 }}>
+      {article.tags.map((tag: string) => (
+        <Box
+          component="span"
+          sx={{
+            display: "inline-block",
+            backgroundColor: "#e0e0e0",
+            borderRadius: "20px",
+            px: 2,
+            py: 0.5,
+            mr: 1,
+            mb: 1,
+            fontSize: "0.875rem"
+          }}
+        >
+          {tag}
+        </Box>
+      ))}
+    </Box>
+  )}
+
+  {/* Markdown Content */}
+  <ReactMarkdown
+    components={{
+      img: ({ node, ...props }) => (
+        <img
+          {...props}
+          alt={props.alt || ""}
+          style={{
+            display: "block",
+            width: "100%",
+            borderRadius: "15px",
+            marginBottom: "1rem"
+          }}
+        />
+      ),
+      code: ({ node, inline, ...props }) => (
+        <code {...props} className={!inline ? "editor-code" : ""} />
+      ),
+      blockquote: ({ node, ...props }) => (
+        <blockquote {...props} className="editor-quote" />
+      )
+    }}
+  >
+    {article?.content || ""}
+  </ReactMarkdown>
+</Card>
             {!adminMode &&
               <>
                 {connectedArticles.length !== 0 && 

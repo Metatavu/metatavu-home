@@ -196,6 +196,13 @@ const CreateOrEditArticleForm = ({
     }
   });
 
+  const isFormValid = Boolean(
+  title.trim() &&
+  path.trim() &&
+  coverImage?.trim() &&
+  description?.trim() &&
+  editorRef.current?.getMarkdownContent()?.trim()
+);
   return (
     <>
       <Grid container spacing={1.5} sx={{ marginBottom: 3, marginTop: 0.5 }}>
@@ -209,7 +216,7 @@ const CreateOrEditArticleForm = ({
         </Grid>
         <Grid item xs={6}>
         {action === "create" ?
-          <ActionButton onClick={handleCreate}>
+          <ActionButton onClick={handleCreate} disabled={!isFormValid}>
             {strings.wikiDocumentation.create}
           </ActionButton>
           : 
@@ -228,7 +235,7 @@ const CreateOrEditArticleForm = ({
           size="small"
           value={title}
           onChange={handleTitleChange}
-          label={strings.wikiDocumentation.labelTitle}
+          label={`${strings.wikiDocumentation.labelTitle} *`}
         />
         <Grid container spacing={1.5}>
           <Grid item md={6} xs={12}>
@@ -237,7 +244,7 @@ const CreateOrEditArticleForm = ({
               size="small" 
               value={path}
               onChange={handlePathChange}
-              label={strings.wikiDocumentation.labelPath}
+              label={`${strings.wikiDocumentation.labelPath} *`}
             />
           </Grid>
           <Grid item md={6} xs={12}>
@@ -298,7 +305,7 @@ const CreateOrEditArticleForm = ({
               size="small"
               value={coverImage}
               onInput={handleImageLinkChange}
-              label={strings.wikiDocumentation.labelImage}
+              label={`${strings.wikiDocumentation.labelImage} *`}
             />
             {imagePreview && coverImage?.length !== 0
               ? <Grid container>
@@ -364,7 +371,7 @@ const CreateOrEditArticleForm = ({
               rows={3}
               value={description}
               onInput={handleDescriptionChange}
-              label={strings.wikiDocumentation.labelDescription}
+              label={`${strings.wikiDocumentation.labelDescription} *`}
             />
           </Grid>
         </Grid>
