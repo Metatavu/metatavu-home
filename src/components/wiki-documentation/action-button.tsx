@@ -18,13 +18,14 @@ const ActionButton = ({children, disabled, onClick}: Props) => (
   <Button 
     variant="contained" 
     sx={{
-      width: "100%", 
-      backgroundColor: colors.button.main, 
-      color: colors.button.text, 
+      width: "100%",
+      backgroundColor: colors.button.main,
+      color: colors.button.text,
+      cursor: disabled ? "not-allowed" : "pointer",
       "&:hover": {
         backgroundColor: colors.button.hover
       }
-    }} 
+    }}
     onClick={onClick}
     disabled={disabled}
   >

@@ -128,9 +128,9 @@ const ArticleScreen = () => {
               </Link>
               </Grid>
               <Grid item xs={6}>
-              <ActionButton onClick={() => setFormOpen(true)}>
-                {strings.wikiDocumentation.edit}
-              </ActionButton>
+                <ActionButton onClick={() => setFormOpen(true)}>
+                  {strings.wikiDocumentation.edit}
+                </ActionButton>
               </Grid>
             </Grid>
             <Card sx={{ padding: 3, paddingTop: 0, marginBottom: 3 }}>
@@ -146,7 +146,7 @@ const ArticleScreen = () => {
     <Box
       component="img"
       src={article.coverImage}
-      alt={article.title || "Article Image"}
+      alt={article.title || strings.wikiDocumentation.imagePreview}
       sx={{
         width: "100%",
         maxHeight: 400,
@@ -156,8 +156,6 @@ const ArticleScreen = () => {
       }}
     />
   )}
-  
-
   {/* Created / Updated Dates */}
   <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
     {article?.createdAt && `Created: ${new Date(article.createdAt).toLocaleDateString()}`}

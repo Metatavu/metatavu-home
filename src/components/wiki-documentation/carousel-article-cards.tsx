@@ -11,7 +11,6 @@ import { Link } from "react-router-dom";
 const CarouselArticleCards = ({articles}: {articles: ArticleMetadata[]}) => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [jumping, setJumping] = useState(false);
-  console.log("Articles data:", articles);
 
   const clonedArticles = [
     {...articles[articles.length - 1], id: "last-article-clone"},
@@ -83,8 +82,12 @@ const CarouselArticleCards = ({articles}: {articles: ArticleMetadata[]}) => {
    <Link
        to={`/wiki-documentation/${article.path}`}
        key={`article-card-${article.id}`}
-      style={{ textDecoration: "none", color: "inherit", flex: "0 0 100%" }}
-      >
+       style={{
+         textDecoration: "none",
+         color: "inherit",
+         flex: "0 0 100%"
+        }}
+  >
           <Box
             key={`article-card-${article.id}`}
             sx={{
@@ -142,13 +145,16 @@ const CarouselArticleCards = ({articles}: {articles: ArticleMetadata[]}) => {
                   {article.description}
                 </Typography>
                 {article.tags?.map((tag) => 
-                  <Chip label={tag} sx={{marginRight: 1}} key={`carousel-${article.id}-${tag}`}/>
+                  <Chip
+                    label={tag}
+                    sx={{ marginRight: 1 }}
+                    key={`carousel-${article.id}-${tag}`}
+                  />
                 )}
               </Grid>
             </Grid>
           </Box>
           </Link>
-
         ))}
       </Box>
     </Card>
