@@ -80,9 +80,9 @@ const CarouselArticleCards = ({articles}: {articles: ArticleMetadata[]}) => {
       >
         {clonedArticles.map((article) => (
    <Link
-       to={`/wiki-documentation/${article.path}`}
-       key={`article-card-${article.id}`}
-       style={{
+         to={`/wiki-documentation/${article.path}`}
+         key={`article-card-${article.id}`}
+         style={{
          textDecoration: "none",
          color: "inherit",
          flex: "0 0 100%"

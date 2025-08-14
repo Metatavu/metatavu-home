@@ -237,7 +237,7 @@ const CreateOrEditArticleForm = ({
           onChange={handleTitleChange}
           label={strings.wikiDocumentation.labelTitle}
           required
-          />
+        />
         <Grid container spacing={1.5}>
           <Grid item md={6} xs={12}>
             <TextField 
@@ -380,7 +380,7 @@ const CreateOrEditArticleForm = ({
             />
           </Grid>
         </Grid>
-        <RichTextEditorLexical ref={editorRef} markdownContent={article?.content || "This need to be filled"}/>
+        <RichTextEditorLexical ref={editorRef} markdownContent={article?.content || "Article content is required"}/>
       </Card>
     </>
   )
