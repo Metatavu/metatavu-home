@@ -6,6 +6,7 @@ const colors = wikiScreenColors;
 interface Props {
   children: string | JSX.Element,
   onClick?: () => void
+  disabled?: boolean;
 }
 /**
  * A full-width styled MUI Button with custom colors and optional click handler.
@@ -13,18 +14,20 @@ interface Props {
  * @param children - Content to display inside the button.
  * @param onClick - Optional function called when the button is clicked.
  */
-const ActionButton = ({children, onClick}: Props) => (
+const ActionButton = ({children, disabled, onClick}: Props) => (
   <Button 
     variant="contained" 
     sx={{
-      width: "100%", 
-      backgroundColor: colors.button.main, 
-      color: colors.button.text, 
+      width: "100%",
+      backgroundColor: colors.button.main,
+      color: colors.button.text,
+      cursor: disabled ? "not-allowed" : "pointer",
       "&:hover": {
         backgroundColor: colors.button.hover
       }
-    }} 
+    }}
     onClick={onClick}
+    disabled={disabled}
   >
     {children}
   </Button>

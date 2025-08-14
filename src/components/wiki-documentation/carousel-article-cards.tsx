@@ -3,6 +3,7 @@ import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import { useEffect, useState } from "react";
 import type { ArticleMetadata } from "src/generated/homeLambdasClient";
+import { Link } from "react-router-dom";
 
 /**
  * Carousel component displaying article cards.
@@ -78,6 +79,15 @@ const CarouselArticleCards = ({articles}: {articles: ArticleMetadata[]}) => {
         }}
       >
         {clonedArticles.map((article) => (
+   <Link
+         to={`/wiki-documentation/${article.path}`}
+         key={`article-card-${article.id}`}
+         style={{
+         textDecoration: "none",
+         color: "inherit",
+         flex: "0 0 100%"
+        }}
+  >
           <Box
             key={`article-card-${article.id}`}
             sx={{
@@ -135,11 +145,16 @@ const CarouselArticleCards = ({articles}: {articles: ArticleMetadata[]}) => {
                   {article.description}
                 </Typography>
                 {article.tags?.map((tag) => 
-                  <Chip label={tag} sx={{marginRight: 1}} key={`carousel-${article.id}-${tag}`}/>
+                  <Chip
+                    label={tag}
+                    sx={{ marginRight: 1 }}
+                    key={`carousel-${article.id}-${tag}`}
+                  />
                 )}
               </Grid>
             </Grid>
           </Box>
+          </Link>
         ))}
       </Box>
     </Card>

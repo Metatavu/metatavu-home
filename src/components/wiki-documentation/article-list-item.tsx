@@ -7,7 +7,7 @@ import { getLastActivityString } from "src/utils/wiki-utils";
 interface Props {
   article: ArticleMetadata,
   adminMode?: boolean,
-  handleDelete?: (articleId?: string) => void
+  handleDelete?: (articleId?: string) => void 
 }
 /**
  * Renders a responsive article list item with image, title, description, tags, and activity info.
