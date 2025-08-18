@@ -13,6 +13,7 @@ import WikiDocumentationCard from "../home/wiki-documentation-card";
 import strings from "src/localization/strings";
 import type { ReactNode } from "react";
 import SoftwareRegistryCard from "../home/software-registry-card";
+import Onboarding from "../onboarding/Onboarding";
 
 /**
  * Home screen component
@@ -41,22 +42,24 @@ const HomeScreen = () => {
         background: "#ffffff",
         borderRadius: 1,
         boxShadow: "0px 2px 8px rgba(0,0,0,0.05)",
-        minHeight: title === strings.sprint.sprintview ? 270 : 120, 
+        minHeight: title === strings.sprint.sprintview ? 270 : 120,
         display: "flex",
         flexDirection: "column",
-        justifyContent: "flex-start"
+        justifyContent: "flex-start",
       }}
     >
       <Grid sx={{ padding: 2 }}>
-        <Box sx={{ fontWeight: "bold", fontSize: 22 }}>
-          {title}
-        </Box>
+        <Box sx={{ fontWeight: "bold", fontSize: 22 }}>{title}</Box>
         {!hasSeveraUserId ? (
           <>
             <div style={{ color: "#888", fontSize: 15, padding: "12px 0" }}>
               {strings.notOptedInDescription.description}
             </div>
-            <Skeleton variant="rectangular" height={20} sx={{ borderRadius: 1, marginTop: 1, width: "100%" }} />
+            <Skeleton
+              variant="rectangular"
+              height={20}
+              sx={{ borderRadius: 1, marginTop: 1, width: "100%" }}
+            />
           </>
         ) : (
           content
@@ -67,7 +70,7 @@ const HomeScreen = () => {
 
   const cards: ReactNode[] = [
     isPrivilegedUser && (
-      <Box key="balance">
+      <Box key="balance" id="balance-card">
         {!hasSeveraUserId ? (
           renderCardWithSkeleton(strings.balanceCard.balance, <></>)
         ) : (
@@ -76,7 +79,7 @@ const HomeScreen = () => {
       </Box>
     ),
     isPrivilegedUser && (
-      <Box key="sprint" sx={{ minHeight: 270 }}>
+      <Box key="sprint" id="sprint-view-card" sx={{ minHeight: 270 }}>
         {!hasSeveraUserId ? (
           renderCardWithSkeleton(strings.sprint.sprintview, <></>)
         ) : (
@@ -84,16 +87,38 @@ const HomeScreen = () => {
         )}
       </Box>
     ),
-    isPrivilegedUser && <VacationsCard key="vacations" />,
-    isPrivilegedUser && <QuestionnaireCard key="questionnaire" />,
-    isPrivilegedUser && <SoftwareRegistryCard key="software" />,
-    isPrivilegedUser && <WikiDocumentationCard key="wiki" />
+    isPrivilegedUser && (
+      <Box key="vacations" id="vacations-card">
+        <VacationsCard />
+      </Box>
+    ),
+    isPrivilegedUser && (
+      <Box key="questionnaire" id="questionnaire-card">
+        <QuestionnaireCard />
+      </Box>
+    ),
+    isPrivilegedUser && (
+      <Box key="software" id="software-registry-card">
+        <SoftwareRegistryCard />
+      </Box>
+    ),
+    isPrivilegedUser && (
+      <Box key="wiki" id="wiki-documentation-card">
+        <WikiDocumentationCard />
+      </Box>
+    ),
   ].filter(Boolean);
 
   return (
-    <CardGridWrapper>
-      {cards}
-    </CardGridWrapper>
+    <>
+      <Box id="home-screen">
+        <CardGridWrapper>{cards}</CardGridWrapper>
+      </Box>
+
+      <Box id="onboarding-complete" sx={{ display: "none" }} />
+
+      <Onboarding />
+    </>
   );
 };
 
