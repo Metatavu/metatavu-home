@@ -93,7 +93,7 @@ const HomeScreen = () => {
       </Box>
     ),
     isPrivilegedUser && (
-      <Box key="questionnaire" id="questionnaire-card">
+      <Box key="questionnaires" id="questionnaires-card">
         <QuestionnaireCard />
       </Box>
     ),

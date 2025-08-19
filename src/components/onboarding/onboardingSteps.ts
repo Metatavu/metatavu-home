@@ -40,6 +40,11 @@ export const onboardingSteps = [
     selector: "#software-registry-card",
   },
   {
+  title: "Questionnaires",
+  content: "View and answer questionnaires here.",
+  selector: "#questionnaires-card",
+  },
+  {
     title: "Complete the Onboarding",
     content: "Finish the onboarding process to get started.",
     selector: "#onboarding-complete",
