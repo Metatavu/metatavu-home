@@ -96,7 +96,6 @@ const OnCallCalendarScreen = () => {
       week: weekNumber,
       paid: !paid
     };
-    console.log("Updating paid status:", updateParameters);
     await onCallApi.updatePaid({ onCallPaid: updateParameters });
     refreshOnCallData();
   };
@@ -138,8 +137,6 @@ const renderCurrentOnCall = () => {
     for (const entry of onCallData) {
       map.set(entry.week, entry);
     }
-    console.log("onCallData", onCallData);
-    console.log("onCallByWeek", map);
     return map;
   }, [onCallData]);
 
@@ -281,7 +278,7 @@ const renderCurrentOnCall = () => {
 
   const DAY_SIZE = 56; // size of each day cell in the calendar
 
-  const StyledPickersDay = styled(PickersDay)(({ theme }) => ({
+  const StyledPickersDay = styled(PickersDay<DateTime>)(({ theme }) => ({
     width: DAY_SIZE,
     height: DAY_SIZE,
     fontSize: 18,
