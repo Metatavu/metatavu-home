@@ -1,4 +1,3 @@
-// src/components/onboarding/Onboarding.tsx
 import React, { useEffect, useRef, useState } from "react";
 import { Box, Paper, Typography, Button, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
@@ -7,22 +6,33 @@ import { onboardingSteps } from "./onboardingSteps";
 const POPUP_WIDTH = 320;
 const POPUP_HEIGHT = 140;
 
-export default function Onboarding() {
+/**
+ * Onboarding component
+ *
+ * Displays guided onboarding tooltips around selected UI elements.
+ */
+const Onboarding: React.FC = () => {
   const [stepIndex, setStepIndex] = useState<number | null>(null);
   const [targetRect, setTargetRect] = useState<DOMRect | null>(null);
   const rafRef = useRef<number | null>(null);
 
-  // helper: safely query selector
-  const query = (selector?: string | null) => {
+  /**
+   * Safely query a DOM element by selector.
+   *
+   * @param selector - CSS selector string
+   * @returns Element or null if not found
+   */
+  const query = (selector?: string | null): Element | null => {
     if (!selector) return null;
-    try {
-      return document.querySelector(selector);
-    } catch {
-      return null;
-    }
+    return document.querySelector(selector);
   };
 
-  // find next valid step index at or after 'from'
+  /**
+   * Find the next valid onboarding step starting from a given index.
+   *
+   * @param from - Index to start searching from
+   * @returns Index of valid step or null
+   */
   const findNextValid = (from = 0): number | null => {
     for (let i = from; i < onboardingSteps.length; i++) {
       if (query(onboardingSteps[i].selector)) return i;
@@ -30,7 +40,12 @@ export default function Onboarding() {
     return null;
   };
 
-  // find previous valid step index at or before 'from'
+  /**
+   * Find the previous valid onboarding step starting from a given index.
+   *
+   * @param from - Index to start searching backwards from
+   * @returns Index of valid step or null
+   */
   const findPrevValid = (from: number): number | null => {
     for (let i = from; i >= 0; i--) {
       if (query(onboardingSteps[i].selector)) return i;
@@ -38,13 +53,13 @@ export default function Onboarding() {
     return null;
   };
 
-  // initialize to first valid step on mount
+  // Initialize onboarding at the first valid step after mount
   useEffect(() => {
     const first = findNextValid(0);
     setStepIndex(first);
   }, []);
 
-  // update target rect whenever step changes
+  // Update the targetRect whenever the current step changes
   useEffect(() => {
     if (stepIndex === null) {
       setTargetRect(null);
@@ -53,7 +68,7 @@ export default function Onboarding() {
     const step = onboardingSteps[stepIndex];
     const el = query(step.selector);
     if (!el) {
-      // if the targeted element is gone, try to find the next available step
+      // if element disappeared, skip forward to next available step
       const next = findNextValid(stepIndex + 1);
       setStepIndex(next);
       return;
@@ -61,7 +76,7 @@ export default function Onboarding() {
     setTargetRect(el.getBoundingClientRect());
   }, [stepIndex]);
 
-  // keep targetRect updated on scroll/resize
+  // Keep the popup aligned to targetRect on scroll/resize
   useEffect(() => {
     const update = () => {
       if (stepIndex === null) return;
@@ -72,7 +87,7 @@ export default function Onboarding() {
     };
 
     const onResize = () => {
-      // throttle with rAF
+      // throttle updates with requestAnimationFrame
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
       rafRef.current = requestAnimationFrame(update);
     };
@@ -87,7 +102,7 @@ export default function Onboarding() {
     };
   }, [stepIndex]);
 
-  // navigation handlers that skip invalid selectors
+  // Navigation helpers
   const handleNext = () => {
     if (stepIndex === null) return setStepIndex(null);
     const next = findNextValid(stepIndex + 1);
@@ -105,50 +120,66 @@ export default function Onboarding() {
   if (stepIndex === null) return null;
 
   const step = onboardingSteps[stepIndex];
-  // compute popup position
-const computePosition = () => {
-  if (!targetRect) {
-    // fallback center
-    return {
-      left: Math.max((window.innerWidth - POPUP_WIDTH) / 2, 12),
-      top: Math.max((window.innerHeight - POPUP_HEIGHT) / 2, 12),
-    };
-  }
 
-  const pos = step.position ?? "bottom-center";
-  const { top, left, width, height } = targetRect;
-  const pageTop = top + window.scrollY;
-  const pageLeft = left + window.scrollX;
+  /**
+   * Compute popup position relative to targetRect.
+   *
+   * @returns CSS coordinates { left, top }
+   */
+  const computePosition = () => {
+    if (!targetRect) {
+      // fallback: center of screen
+      return {
+        left: Math.max((window.innerWidth - POPUP_WIDTH) / 2, 12),
+        top: Math.max((window.innerHeight - POPUP_HEIGHT) / 2, 12),
+      };
+    }
 
-  // Center popup for LAST step
-  if (stepIndex === onboardingSteps.length - 1) {
-    return {
-      left: (window.innerWidth - POPUP_WIDTH) / 2,
-      top: (window.innerHeight - POPUP_HEIGHT) / 2 + window.scrollY,
-    };
-  }
+    const pos = step.position ?? "bottom-center";
+    const { top, left, width, height } = targetRect;
+    const pageTop = top + window.scrollY;
+    const pageLeft = left + window.scrollX;
 
-  switch (pos) {
-    case "center":
-      return { left: pageLeft, top: pageTop - POPUP_HEIGHT - 12 };
-    case "top-center":
-      return { left: pageLeft + width / 2 - POPUP_WIDTH / 2, top: pageTop + 50 - POPUP_HEIGHT + 120 }; // untouched
-    case "top-right":
-      return { left: pageLeft + width - POPUP_WIDTH, top: pageTop - POPUP_HEIGHT - 12 };
-    case "bottom-left":
-      return { left: pageLeft, top: pageTop + height + 12 };
-    case "bottom-right":
-      return { left: pageLeft + width - POPUP_WIDTH, top: pageTop + height + 12 };
-    default:
-      return { left: pageLeft + width / 2 - POPUP_WIDTH / 2, top: pageTop + height + 12 };
-  }
-};
+    if (stepIndex === onboardingSteps.length - 1) {
+      return {
+        left: (window.innerWidth - POPUP_WIDTH) / 2,
+        top: (window.innerHeight - POPUP_HEIGHT) / 2 + window.scrollY,
+      };
+    }
+
+    switch (pos) {
+      case "center":
+        return { left: pageLeft, top: pageTop - POPUP_HEIGHT - 12 };
+      case "top-center":
+        return {
+          left: pageLeft + width / 2 - POPUP_WIDTH / 2,
+          top: pageTop + 50 - POPUP_HEIGHT + 120,
+        };
+      case "top-right":
+        return {
+          left: pageLeft + width - POPUP_WIDTH,
+          top: pageTop - POPUP_HEIGHT - 12,
+        };
+      case "bottom-left":
+        return { left: pageLeft, top: pageTop + height + 12 };
+      case "bottom-right":
+        return {
+          left: pageLeft + width - POPUP_WIDTH,
+          top: pageTop + height + 12,
+        };
+      default:
+        return {
+          left: pageLeft + width / 2 - POPUP_WIDTH / 2,
+          top: pageTop + height + 12,
+        };
+    }
+  };
 
   const { left, top } = computePosition();
 
   return (
     <>
-      {/* highlight around target */}
+      {/* highlight box */}
       {targetRect && (
         <Box
           sx={{
@@ -167,7 +198,7 @@ const computePosition = () => {
         />
       )}
 
-      {/* popup */}
+      {/* popup card */}
       <Box
         sx={{
           position: "absolute",
@@ -206,4 +237,6 @@ const computePosition = () => {
       </Box>
     </>
   );
-}
+};
+
+export default Onboarding;
