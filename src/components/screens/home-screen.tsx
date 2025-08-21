@@ -9,6 +9,7 @@ import type { User } from "src/generated/homeLambdasClient";
 import { usersAtom } from "src/atoms/user";
 import { userProfileAtom } from "src/atoms/auth";
 import { useAtomValue } from "jotai";
+import WikiDocumentationCard from "../home/wiki-documentation-card";
 import strings from "src/localization/strings";
 import type { ReactNode } from "react";
 import SoftwareRegistryCard from "../home/software-registry-card";
@@ -20,6 +21,7 @@ const HomeScreen = () => {
   const users = useAtomValue(usersAtom);
   const userProfile = useAtomValue(userProfileAtom);
   const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
+
   const hasSeveraUserId = !!loggedInUser?.attributes?.severaUserId;
   const isDeveloperMode = UserRoleUtils.isDeveloper();
   const isTesterMode = UserRoleUtils.isTester();
@@ -84,7 +86,8 @@ const HomeScreen = () => {
     ),
     isPrivilegedUser && <VacationsCard key="vacations" />,
     isPrivilegedUser && <QuestionnaireCard key="questionnaire" />,
-    isPrivilegedUser && <SoftwareRegistryCard key="software" />
+    isPrivilegedUser && <SoftwareRegistryCard key="software" />,
+    isPrivilegedUser && <WikiDocumentationCard key="wiki" />
   ].filter(Boolean);
 
   return (

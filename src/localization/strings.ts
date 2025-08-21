@@ -512,6 +512,37 @@ export interface Localized extends LocalizedStringsMethods {
     hours: string;
   };
   /**
+   * Translations related to Wiki Documentation service
+   */
+  wikiDocumentation: {
+    cardTitle: string;
+    article: string;
+    lastUpdated: string;
+    created: string;
+    lastRead: string;
+    pendingArticles: string;
+    noPendingArticles: string;
+    noArticlesFound: string;
+    create: string;
+    back: string;
+    save: string;
+    edit: string;
+    confirm: string;
+    searchArticle: string;
+    createArticle: string;
+    uploadImage: string;
+    imagePreview: string;
+    labelTitle: string;
+    labelPath: string;
+    labelTags: string;
+    labelImage: string;
+    labelDescription: string;
+    labelLink: string;
+    draft: string;
+    allArticles: string;
+    connectedArticles: string;
+  }
+  /**
    * Translation related settings screen
    */
   settingsScreen: {

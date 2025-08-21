@@ -1,0 +1,78 @@
+.editor-paragraph {
+  margin: 0.5em 0;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.editor-heading-h1 {
+  font-size: 2em;
+  font-weight: bold;
+}
+
+.editor-heading-h2 {
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+.editor-heading-h3 {
+  font-size: 1em;
+  font-weight: bold;
+}
+
+.editor-text-bold {
+  font-weight: bold;
+}
+
+.editor-text-italic {
+  font-style: italic;
+}
+
+.editor-text-underline {
+  text-decoration: underline;
+}
+
+.editor-text-strikethrough {
+  text-decoration: line-through;
+}
+
+.editor-code {
+  background-color: #E9E8E8;
+  color: #727272;
+  border-radius: 15px;
+  font-family: Courier, monospace;
+  letter-spacing: 1px;
+  display: block;
+  padding: 15px;
+  padding-left: 30px;
+  line-height: 1.5;
+  font-size: 13px;
+  margin: 0;
+  overflow-x: auto;
+  position: relative;
+  tab-size: 2;
+}
+
+.editor-quote {
+  margin: 0;
+  margin-left: 20px;
+  margin-bottom: 10px;
+  font-size: 15px;
+  color: rgb(101, 103, 107);
+  border-left-color: rgb(206, 208, 212);
+  border-left-width: 4px;
+  border-left-style: solid;
+  padding-left: 16px;
+}
+
+.editor {
+  min-height: 400px;
+}
+
+.editor:focus {
+  outline: none;
+}
+
+li:has(> ol),
+li:has(> ul) {
+  list-style-type: none;
+}

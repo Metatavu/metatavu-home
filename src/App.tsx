@@ -25,7 +25,10 @@ import SoftwareDetails from "./components/software-registry/SoftwareDetails";
 import NewQuestionnaireBuilder from "./components/questionnaire/new-questionnaire-builder";
 import QuestionnaireManager from "./components/questionnaire/questionnaire-manager";
 import { QuestionnairePreviewMode } from "./types";
-import SettingsScreen from "./components/screens/settings-screen";
+import ArticleScreen from "./components/screens/wiki-article-screen";
+import WikiDocumentationScreen from "./components/screens/wiki-documentation-screen";
+import AdminVacationManagementScreen from "./components/screens/admin-vacation-management/admin-vacation-management-screen";
+import SettingsScreen from "./components/screens/settings-screen"
 import EmployeeFlextimeScreen from "src/components/screens/employee-flextime-screen";
 /**
  * Application component
@@ -84,6 +87,14 @@ const App = () => {
           element: <QuestionnaireManager mode={QuestionnairePreviewMode.FILL} />
         },
         {
+          path: "/wiki-documentation",
+          element: <WikiDocumentationScreen />
+        },
+        {
+          path: "/wiki-documentation/*",
+          element: <ArticleScreen />
+        },
+        {
           path: "/settings",
           element: <SettingsScreen />
         },
@@ -138,8 +149,16 @@ const App = () => {
           path: "/admin/questionnaire/:id/edit",
           element: <QuestionnaireManager mode={QuestionnairePreviewMode.EDIT} />
         },
-      ],
-    },
+        {
+          path: "/admin/wiki-documentation",
+          element: <WikiDocumentationScreen />
+        },
+        {
+          path: "/admin/wiki-documentation/*",
+          element: <ArticleScreen />
+        }
+      ]
+    }
   ]);
   return (
     <div className="App">
