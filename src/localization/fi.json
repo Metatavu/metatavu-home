@@ -478,6 +478,9 @@
     "noOnCallPerson": "Päivystäjää ei ole tälle viikolle",
     "onCallPersonExists": "Tämän viikon päivystäjä:",
     "fetchFailed": "Päivystystietojen haku epäonnistui",
-    "updatePaidStatusForWeek": "Päivitä viikon maksutila"
+    "updatePaidStatusForWeek": "Päivitä viikon maksutila",
+    "person": "Henkilö",
+    "paidStatus": "Maksatus",
+    "date": "Päivämäärä"
   }
 }

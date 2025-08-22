@@ -16,19 +16,11 @@ interface Props {
 
 /**
  * On call list view component
+ * 
  * @param props component properties
  */
 const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Props) => {
   const onCallData = useAtomValue(onCallAtom);
-
-  /**
-   * Increases or decreases the selected year by 1
-   * @param operation + or -
-   */
-  const incrementYear = (operation: string) => {
-    if (operation === "+") setSelectedDate(selectedDate.plus({ year: 1 }));
-    else setSelectedDate(selectedDate.minus({ year: 1 }));
-  };
 
   const columns: GridColDef[] = [
     {
@@ -87,14 +79,14 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
         </Typography>
         <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
           <Button
-            onClick={() => incrementYear("-")}
+            onClick={() => setSelectedDate(selectedDate.minus({ year: 1 }))}
             variant="outlined"
             disabled={selectedDate.year === 2020}
           >
             {strings.oncall.previousYear}
           </Button>
           <Button
-            onClick={() => incrementYear("+")}
+            onClick={() => setSelectedDate(selectedDate.plus({ year: 1 }))}
             variant="outlined"
             disabled={selectedDate.year === DateTime.now().year}
           >

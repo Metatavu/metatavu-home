@@ -23,13 +23,13 @@ const OnCallCard = () => {
 
   /**
    * Fetches on-call data for a specific year
-   * @param year
+   * 
+   * @param year Number
    */
   const getOnCallData = async (year: number) => {
     try {
       const fetchedData = await onCallApi.listOnCallData({ year: year.toString() });
       setOnCallData(fetchedData);
-      getCurrentOnCallPerson();
     } catch (error) {
       setError(`${strings.oncall.fetchFailed}, ${error}`);
     }
@@ -37,6 +37,7 @@ const OnCallCard = () => {
 
   /**
    * Gets the current on-call person
+   * 
    * @returns string containing current on-call person
    */
   const getCurrentOnCallPerson = () => {

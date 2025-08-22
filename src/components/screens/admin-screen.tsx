@@ -10,7 +10,6 @@ import SoftwareRegistryCard from "../home/software-registry-card";
 import { Box } from "@mui/material";
 import OnCallCard from "../home/oncall-card";
 
-
 /**
  * Admin screen component
  */

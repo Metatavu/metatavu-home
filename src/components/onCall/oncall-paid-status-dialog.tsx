@@ -9,13 +9,17 @@ import {
   Box,
   Switch,
   Chip,
-  Button
+  Button,
+  CircularProgress
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { DateTime } from "luxon";
 import type { OnCallWeek } from "../../types";
 import strings from "src/localization/strings";
 
+/**
+ * Props for OnCallPaidStatusDialog component
+ */
 interface Props {
   open: boolean;
   setOpen: (value: boolean) => void;
@@ -24,14 +28,29 @@ interface Props {
   refreshOnCallData?: () => void;
 }
 
-const getWeekRange = (isoDate: string) => {
+/**
+ * Returns formatted week range for a given ISO date
+ * 
+ * @param isoDate ISO date string
+ * @returns Formatted week range string
+ */
+const getWeekRange = (isoDate: string): string => {
   const date = DateTime.fromISO(isoDate);
   const start = date.startOf("week").toFormat("dd.MM.yyyy");
   const end = date.endOf("week").toFormat("dd.MM.yyyy");
   return `${start} - ${end}`;
 };
 
-const OnCallHandler = ({
+/**
+ * Dialog component for updating paid status of an on-call week
+ * 
+ * @param open Whether the dialog is open
+ * @param setOpen Function to set dialog open state
+ * @param onCallEntry On-call week entry
+ * @param updatePaidStatus Function to update paid status
+ * @param refreshOnCallData Optional function to refresh on-call data
+ */
+const OnCallPaidStatusDialog = ({
   open,
   setOpen,
   onCallEntry,
@@ -46,7 +65,10 @@ const OnCallHandler = ({
   const year = DateTime.fromISO(String(onCallEntry.date)).year;
   const weekRange = getWeekRange(String(onCallEntry.date));
 
-  const handleStatusChange = async () => {
+  /**
+   * Handles paid status change for the on-call week
+   */
+  const handlePaidStatusChange = async () => {
     setLoading(true);
     await updatePaidStatus(year, weekNumber, onCallEntry.paid);
     setLoading(false);
@@ -74,10 +96,14 @@ const OnCallHandler = ({
       <DialogContent dividers>
         <Box sx={{ mb: 2 }}>
           <Typography variant="subtitle1">
-            <b>Person:</b> {onCallEntry.username}
+            <Typography component="span" fontWeight="bold" display="inline">
+              {strings.oncall.person}:
+            </Typography> {onCallEntry.username}
           </Typography>
           <Typography variant="subtitle1" sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <b>Paid Status:</b>
+            <Typography component="span" fontWeight="bold" display="inline">
+              {strings.oncall.paidStatus}:
+            </Typography>
             <Chip
               label={onCallEntry.paid ? strings.oncall.paid : strings.oncall.notPaid}
               color={onCallEntry.paid ? "success" : "default"}
@@ -88,20 +114,27 @@ const OnCallHandler = ({
             />
           </Typography>
           <Typography variant="subtitle1">
-            <b>Date:</b> {weekRange}
+            <Typography component="span" fontWeight="bold" display="inline">
+              {strings.oncall.date}:
+            </Typography> {weekRange}
           </Typography>
         </Box>
         <Box sx={{ display: "flex", alignItems: "center", gap: 2, mt: 2 }}>
           <Typography>
             {strings.oncall.notPaid}
           </Typography>
-          <Switch
-            checked={onCallEntry.paid}
-            onChange={handleStatusChange}
-            color="success"
-            disabled={loading}
-            inputProps={{ "aria-label": "Paid status switch" }}
-          />
+          <Box sx={{ position: "relative", display: "inline-flex", alignItems: "center" }}>
+            <Switch
+              checked={onCallEntry.paid}
+              onChange={handlePaidStatusChange}
+              color="success"
+              disabled={loading}
+              inputProps={{ "aria-label": "Paid status switch" }}
+            />
+            {loading && (
+              <CircularProgress size={32} sx={{ position: "absolute", left: 0, top: -4, zIndex: 1 }} />
+            )}
+          </Box>
           <Typography>
             {strings.oncall.paid}
           </Typography>
@@ -116,4 +149,4 @@ const OnCallHandler = ({
   );
 };
 
-export default OnCallHandler;
+export default OnCallPaidStatusDialog;

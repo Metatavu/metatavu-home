@@ -617,6 +617,9 @@ export interface Localized extends LocalizedStringsMethods {
     onCallPersonExists: string;
     fetchFailed: string;
     updatePaidStatusForWeek: string;
+    person: string;
+    paidStatus: string;
+    date: string;
   };
 }
 

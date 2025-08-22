@@ -20,8 +20,8 @@ import { errorAtom } from "../../atoms/error";
 import strings from "../../localization/strings";
 import { stringToColor } from "../../utils/oncall-utils";
 import type { OnCallWeek } from "../../types";
-import OnCallHandler from "../contexts/oncall-handler";
-import OnCallListView from "../oncall-calendars/oncall-list-view";
+import OnCallPaidStatusDialog from "../onCall/oncall-paid-status-dialog";
+import OnCallListView from "../onCall/oncall-list-view";
 import type { OnCallPaid } from "src/generated/homeLambdasClient";
 import type { OnCall } from "src/generated/homeLambdasClient/models/OnCall";
 import { red } from "@mui/material/colors";
@@ -45,10 +45,10 @@ const OnCallCalendarScreen = () => {
   const [open, setOpen] = useState(false);
   const [isCalendarView, setIsCalendarView] = useState(validateJSONString());
   const [selectedDate, setSelectedDate] = useState<DateTime>(DateTime.now());
-  const [onCallPerson, setOnCallPerson] = useState("");
+  const [onCallPerson, setOnCallPerson] = useState<string | null>(null);
   const [selectedOnCallWeek, setSelectedOnCallWeek] = useState<OnCallWeek>();
   const setError = useSetAtom(errorAtom);
-  const [isLoading, setIsLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     getOnCallData(selectedDate.year);
@@ -63,14 +63,14 @@ const OnCallCalendarScreen = () => {
    * @param year year of entries to search
    */
   const getOnCallData = async (year: number) => {
-    setIsLoading(true);
+    setLoading(true);
     try {
       const fetchedData = await onCallApi.listOnCallData({ year: year.toString() });
       setOnCallData(fetchedData);
     } catch (error) {
       setError(`${strings.oncall.fetchFailed}, ${error}`);
     }
-    setIsLoading(false);
+    setLoading(false);
   };
 
   /**
@@ -83,12 +83,16 @@ const OnCallCalendarScreen = () => {
       setOnCallPerson(currentOnCallPerson);
     }
     else {
-      setOnCallPerson("No person on call");
+      setOnCallPerson(null);
     }
   };
 
   /**
    * Updates the selected paid status
+   *
+   * @param year - Year of the on-call week
+   * @param weekNumber - Week number to update
+   * @param paid - Current paid status (will be toggled)
    */
   const updatePaidStatus = async (year: number, weekNumber: number, paid: boolean) => {
     const updateParameters: OnCallPaid = {
@@ -101,31 +105,30 @@ const OnCallCalendarScreen = () => {
   };
 
   /**
- * Renders the current week's on call person if they exist
- */
-const renderCurrentOnCall = () => {
-  const isValidPerson = onCallPerson !== "No person on call" && onCallPerson !== null;
-
-  return (
-    <Typography
-      sx={{
-        textAlign: "center",
-        margin: 2,
-        color: isValidPerson ? "#5acc31" : red[700],
-        fontWeight: "bold",
-      }}
-    >
-      {isValidPerson ? (
-        <>
-          {strings.oncall.onCallPersonExists}
-          <b style={{ color: "black", fontWeight: "bold" }}> {onCallPerson}</b>
-        </>
-      ) : (
-        strings.oncall.noOnCallPerson
-      )}
-    </Typography>
-  );
-};
+   * Renders the current week's on call person if they exist
+   */
+  const renderCurrentOnCall = () => {
+    const isValidPerson = onCallPerson !== null;
+    return (
+      <Typography
+        sx={{
+          textAlign: "center",
+          margin: 2,
+          color: isValidPerson ? "#5acc31" : red[700],
+          fontWeight: "bold",
+        }}
+      >
+        {isValidPerson ? (
+          <>
+            {strings.oncall.onCallPersonExists}
+            <b style={{ color: "black", fontWeight: "bold" }}> {onCallPerson}</b>
+          </>
+        ) : (
+          strings.oncall.noOnCallPerson
+        )}
+      </Typography>
+    );
+  };
 
 
 
@@ -142,6 +145,8 @@ const renderCurrentOnCall = () => {
 
   /**
    * Handles render between list view and calendar view
+   *
+   * @param toggle - true for calendar view, false for list view
    */
   const handleCalendarViewChange = (toggle: boolean) => {
     setIsCalendarView(toggle);
@@ -152,7 +157,7 @@ const renderCurrentOnCall = () => {
    * Renders calendar or list view
    */
   const renderCalendarOrList = () => {
-    if (isLoading)
+    if (loading)
       return (
         <CalendarContainer>
           <CircularProgress sx={{ scale: "150%" }} />
@@ -183,16 +188,9 @@ const renderCurrentOnCall = () => {
   };
 
   /**
-   * Selects a paid status to update and handles the rendering of oncall handler
-   */
-  const selectWeekToUpdate = (onCallWeek: OnCallWeek[], date: DateTime) => {
-    const selectedWeek = onCallWeek.find((item) => item.date === date.toISODate());
-    setSelectedOnCallWeek(selectedWeek);
-    setOpen(true);
-  };
-
-  /**
    * Fills the calendar days with on-call data
+   *
+   * @param props - Properties for rendering a calendar day
    */
   const fillCalendarDays = (props: PickersDayProps<DateTime>) => {
     const { day, outsideCurrentMonth, ...other } = props;
@@ -208,15 +206,13 @@ const renderCurrentOnCall = () => {
 
     const handleDayClick = () => {
       if (onCallDayData) {
-        selectWeekToUpdate(
-          [{
-            date: day.toISODate(),
-            username: onCallDayData.username,
-            paid: onCallDayData.paid,
-            badgeColor: stringToColor(onCallDayData.username)
-          }],
-          day
-        );
+        setSelectedOnCallWeek({
+          date: day.toISODate(),
+          username: onCallDayData.username,
+          paid: onCallDayData.paid,
+          badgeColor: stringToColor(onCallDayData.username)
+        });
+        setOpen(true);
       }
     };
 
@@ -276,11 +272,11 @@ const renderCurrentOnCall = () => {
 
   const WEEK_NUMBER_WIDTH = 40; // width for week number column
 
-  const DAY_SIZE = 56; // size of each day cell in the calendar
+  const DAY_WIDTH = 56; // width of each day cell in the calendar
 
   const StyledPickersDay = styled(PickersDay<DateTime>)(({ theme }) => ({
-    width: DAY_SIZE,
-    height: DAY_SIZE,
+    width: DAY_WIDTH,
+    height: DAY_WIDTH,
     fontSize: 18,
     border: `1px solid ${theme.palette.divider}`,
     borderRadius: 8,
@@ -299,8 +295,8 @@ const renderCurrentOnCall = () => {
     flexDirection: "column",
     alignItems: "center",
     margin: "auto",
-    minWidth: WEEK_NUMBER_WIDTH + DAY_SIZE * 7 + 80,
-    maxWidth: WEEK_NUMBER_WIDTH + DAY_SIZE * 7 + 80,
+    minWidth: WEEK_NUMBER_WIDTH + DAY_WIDTH * 7 + 80,
+    maxWidth: WEEK_NUMBER_WIDTH + DAY_WIDTH * 7 + 80,
     border: `2px solid ${theme.palette.divider}`,
     borderRadius: 16,
     background: theme.palette.background.paper,
@@ -322,39 +318,39 @@ const renderCurrentOnCall = () => {
       <GlobalStyles styles={{
         // Container for the week
         ".MuiDayCalendar-weekContainer": {
-          minHeight: DAY_SIZE + 8,
+          minHeight: DAY_WIDTH + 8,
         },
         // Root container for the day
         ".MuiDayCalendar-root": {
-          minWidth: WEEK_NUMBER_WIDTH + DAY_SIZE * 7 + 32,
+          minWidth: WEEK_NUMBER_WIDTH + DAY_WIDTH * 7 + 32,
           maxWidth: "none",
         },
         // Container for the days (to prevent clipping)
         ".MuiPickersSlideTransition-root": {
-          minHeight: (DAY_SIZE + 8) * 6,
-          height: (DAY_SIZE + 8) * 6,
+          minHeight: (DAY_WIDTH + 8) * 6,
+          height: (DAY_WIDTH + 8) * 6,
         },
         // Container for the calendar
         ".MuiDateCalendar-root": {
-          minWidth: WEEK_NUMBER_WIDTH + DAY_SIZE * 7 + 32,
+          minWidth: WEEK_NUMBER_WIDTH + DAY_WIDTH * 7 + 32,
           maxWidth: "none",
-          minHeight: (DAY_SIZE + 8) * 6 + 120,
-          height: (DAY_SIZE + 8) * 6 + 120,
+          minHeight: (DAY_WIDTH + 8) * 6 + 120,
+          height: (DAY_WIDTH + 8) * 6 + 120,
         },
         // Header for days of the week (Mon, Tue, ...)
         ".MuiDayCalendar-header": {
-          minWidth: WEEK_NUMBER_WIDTH + DAY_SIZE * 7 + 32,
+          minWidth: WEEK_NUMBER_WIDTH + DAY_WIDTH * 7 + 32,
           maxWidth: "none",
           display: "grid",
-          gridTemplateColumns: `${WEEK_NUMBER_WIDTH}px repeat(7, ${DAY_SIZE}px)`,
+          gridTemplateColumns: `${WEEK_NUMBER_WIDTH}px repeat(7, ${DAY_WIDTH}px)`,
           marginLeft: 0,
           marginRight: 0,
         },
         // Cell with headers of days of the week
         ".MuiDayCalendar-weekDayLabel": {
-          width: DAY_SIZE,
-          minWidth: DAY_SIZE,
-          maxWidth: DAY_SIZE,
+          width: DAY_WIDTH,
+          minWidth: DAY_WIDTH,
+          maxWidth: DAY_WIDTH,
           fontSize: 16,
           textAlign: "center",
           padding: 0,
@@ -383,7 +379,7 @@ const renderCurrentOnCall = () => {
         <Select
           labelId="calendarSelect"
           id="calendarSelect"
-          label="Select calendar view"
+          label={strings.oncall.selectView}
           value={isCalendarView ? "Calendar" : "List"}
         >
           <MenuItem value={"Calendar"} onClick={() => handleCalendarViewChange(true)}>
@@ -394,7 +390,7 @@ const renderCurrentOnCall = () => {
           </MenuItem>
         </Select>
       </FormControl>
-      <OnCallHandler
+      <OnCallPaidStatusDialog
         open={open}
         setOpen={setOpen}
         onCallEntry={selectedOnCallWeek}
