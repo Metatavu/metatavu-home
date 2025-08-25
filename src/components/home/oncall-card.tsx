@@ -38,7 +38,7 @@ const OnCallCard = () => {
   /**
    * Gets the current on-call person
    * 
-   * @returns string containing current on-call person
+   * @returns JSX.Element containing current on-call person
    */
   const getCurrentOnCallPerson = () => {
     const currentWeek = DateTime.now().weekNumber;
@@ -52,7 +52,7 @@ const OnCallCard = () => {
           {strings.oncall.onCallPersonExists} <b>{currentOnCallPerson}</b>
         </>
       );
-    return strings.oncall.noOnCallPerson;
+    return <>{strings.oncall.noOnCallPerson}</>;
   };
 
   return (
