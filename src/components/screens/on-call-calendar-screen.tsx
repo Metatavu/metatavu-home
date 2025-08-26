@@ -110,23 +110,22 @@ const OnCallCalendarScreen = () => {
   const renderCurrentOnCall = () => {
     const isValidPerson = onCallPerson !== null;
     return (
-      <Typography
-        sx={{
-          textAlign: "center",
-          margin: 2,
-          color: isValidPerson ? "#5acc31" : red[700],
-          fontWeight: "bold",
-        }}
-      >
+      <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", margin: 2 }}>
         {isValidPerson ? (
           <>
-            {strings.oncall.onCallPersonExists}
-            <b style={{ color: "black", fontWeight: "bold" }}> {onCallPerson}</b>
+            <Typography sx={{ color: "#5acc31", fontWeight: "bold", textAlign: "center" }}>
+              {strings.oncall.onCallPersonExists}
+            </Typography>
+            <Typography sx={{ color: "black", fontWeight: "bold", ml: 1 }}>
+              {onCallPerson}
+            </Typography>
           </>
         ) : (
-          strings.oncall.noOnCallPerson
+          <Typography sx={{ color: red[700], fontWeight: "bold", textAlign: "center" }}>
+            {strings.oncall.noOnCallPerson}
+          </Typography>
         )}
-      </Typography>
+      </Box>
     );
   };
 

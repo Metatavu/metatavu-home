@@ -95,13 +95,16 @@ const OnCallPaidStatusDialog = ({
       </DialogTitle>
       <DialogContent dividers>
         <Box sx={{ mb: 2 }}>
-          <Typography variant="subtitle1">
-            <Typography component="span" fontWeight="bold" display="inline">
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <Typography variant="subtitle1" fontWeight="bold" display="inline">
               {strings.oncall.person}:
-            </Typography> {onCallEntry.username}
-          </Typography>
-          <Typography variant="subtitle1" sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <Typography component="span" fontWeight="bold" display="inline">
+            </Typography>
+            <Typography variant="subtitle1" display="inline">
+              {onCallEntry.username}
+            </Typography>
+          </Box>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <Typography variant="subtitle1" fontWeight="bold" display="inline">
               {strings.oncall.paidStatus}:
             </Typography>
             <Chip
@@ -112,12 +115,15 @@ const OnCallPaidStatusDialog = ({
                 color: "#fff"
               }}
             />
-          </Typography>
-          <Typography variant="subtitle1">
-            <Typography component="span" fontWeight="bold" display="inline">
+          </Box>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <Typography variant="subtitle1" fontWeight="bold" display="inline">
               {strings.oncall.date}:
-            </Typography> {weekRange}
-          </Typography>
+            </Typography>
+            <Typography variant="subtitle1" display="inline">
+              {weekRange}
+            </Typography>
+          </Box>
         </Box>
         <Box sx={{ display: "flex", alignItems: "center", gap: 2, mt: 2 }}>
           <Typography>

@@ -45,9 +45,7 @@ const getDefine = async ({ mode }: UserConfig) => {
     path: VAULT_PATH
   });
 
-  //Ovverride VITE_HOME_LAMBDAS_BASE_URL with .env value if it exists
-  const merged = {...secrets,VITE_HOME_LAMBDAS_BASE_URL: env.VITE_HOME_LAMBDAS_BASE_URL ?? secrets.VITE_HOME_LAMBDAS_BASE_URL};
-  return Object.entries(merged).reduce((acc, [key, value]) => {
+  return Object.entries(secrets).reduce((acc, [key, value]) => {
     if (key.startsWith("VITE_")) {
       acc[`import.meta.env.${key}`] = JSON.stringify(value);
     }
