@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Box, Paper, Typography, Button, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import { onboardingSteps } from "./onboardingSteps";
+import { getOnboardingSteps } from "./onboardingSteps";
+import strings from "src/localization/strings";
 
 const POPUP_WIDTH = 320;
 const POPUP_HEIGHT = 140;
@@ -13,8 +14,18 @@ const POPUP_HEIGHT = 140;
  */
 const Onboarding: React.FC = () => {
   const [stepIndex, setStepIndex] = useState<number | null>(null);
+  /**
+   * Local storage key for onboarding completion status
+   * Used to persist onboarding state across sessions.
+   */
+  const ONBOARDING_KEY = "onboardingComplete";
   const [targetRect, setTargetRect] = useState<DOMRect | null>(null);
   const rafRef = useRef<number | null>(null);
+
+  /**
+   * Always get the latest steps for the current language
+   */
+  const onboardingSteps = getOnboardingSteps();
 
   /**
    * Safely query a DOM element by selector.
@@ -53,13 +64,21 @@ const Onboarding: React.FC = () => {
     return null;
   };
 
-  // Initialize onboarding at the first valid step after mount
+  /**
+   * On mount, check if onboarding has already been completed (via localStorage).
+   * If not, show onboarding starting from the first valid step.
+   */
   useEffect(() => {
-    const first = findNextValid(0);
-    setStepIndex(first);
+    const completed = localStorage.getItem(ONBOARDING_KEY);
+    if (!completed) {
+      const first = findNextValid(0);
+      setStepIndex(first);
+    }
   }, []);
 
-  // Update the targetRect whenever the current step changes
+  /**
+   * Update the targetRect whenever the current step changes
+   */
   useEffect(() => {
     if (stepIndex === null) {
       setTargetRect(null);
@@ -68,7 +87,9 @@ const Onboarding: React.FC = () => {
     const step = onboardingSteps[stepIndex];
     const el = query(step.selector);
     if (!el) {
-      // if element disappeared, skip forward to next available step
+      /**
+       * if element disappeared, skip forward to next available step
+       */
       const next = findNextValid(stepIndex + 1);
       setStepIndex(next);
       return;
@@ -76,7 +97,9 @@ const Onboarding: React.FC = () => {
     setTargetRect(el.getBoundingClientRect());
   }, [stepIndex]);
 
-  // Keep the popup aligned to targetRect on scroll/resize
+  /**
+   * Keep the popup aligned to targetRect on scroll/resize
+   */
   useEffect(() => {
     const update = () => {
       if (stepIndex === null) return;
@@ -87,7 +110,9 @@ const Onboarding: React.FC = () => {
     };
 
     const onResize = () => {
-      // throttle updates with requestAnimationFrame
+      /**
+       * Throttle updates with requestAnimationFrame
+       */
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
       rafRef.current = requestAnimationFrame(update);
     };
@@ -102,7 +127,10 @@ const Onboarding: React.FC = () => {
     };
   }, [stepIndex]);
 
-  // Navigation helpers
+  /**
+   * Navigation helpers
+   */
+
   const handleNext = () => {
     if (stepIndex === null) return setStepIndex(null);
     const next = findNextValid(stepIndex + 1);
@@ -115,7 +143,13 @@ const Onboarding: React.FC = () => {
     setStepIndex(prev);
   };
 
-  const handleClose = () => setStepIndex(null);
+  /**
+   * Close the onboarding popup and persist completion in localStorage.
+   */
+  const handleClose = () => {
+    setStepIndex(null);
+    localStorage.setItem(ONBOARDING_KEY, "true");
+  };
 
   if (stepIndex === null) return null;
 
@@ -128,7 +162,9 @@ const Onboarding: React.FC = () => {
    */
   const computePosition = () => {
     if (!targetRect) {
-      // fallback: center of screen
+      /**
+       * Fallback: center of screen
+       */
       return {
         left: Math.max((window.innerWidth - POPUP_WIDTH) / 2, 12),
         top: Math.max((window.innerHeight - POPUP_HEIGHT) / 2, 12),
@@ -208,7 +244,13 @@ const Onboarding: React.FC = () => {
           zIndex: 1400,
         }}
       >
-        <Paper elevation={6} sx={{ p: 2 }}>
+        <Paper elevation={8} sx={{
+          p: 2,
+          backgroundColor: 'background.paper',
+          border: '2px solid',
+          borderColor: 'primary.main',
+          boxShadow: (theme) => `0 8px 32px ${theme.palette.primary.main}66`,
+        }}>
           <Box display="flex" justifyContent="space-between" alignItems="center">
             <Typography variant="subtitle1">{step.title}</Typography>
             <IconButton size="small" onClick={handleClose}>
@@ -222,16 +264,22 @@ const Onboarding: React.FC = () => {
 
           <Box display="flex" justifyContent="space-between" alignItems="center" mt={2}>
             <Button size="small" onClick={handlePrev} disabled={findPrevValid(stepIndex - 1) === null}>
-              Previous
+              {strings.onboarding.prev}
             </Button>
 
             <Typography variant="caption">
               {stepIndex + 1} / {onboardingSteps.length}
             </Typography>
 
-            <Button size="small" onClick={handleNext} disabled={findNextValid(stepIndex + 1) === null}>
-              Next
-            </Button>
+            {stepIndex === onboardingSteps.length - 1 ? (
+              <Button size="small" onClick={handleClose}>
+                {strings.onboarding.close}
+              </Button>
+            ) : (
+              <Button size="small" onClick={handleNext} disabled={findNextValid(stepIndex + 1) === null}>
+                {strings.onboarding.next}
+              </Button>
+            )}
           </Box>
         </Paper>
       </Box>

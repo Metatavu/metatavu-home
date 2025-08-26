@@ -599,6 +599,30 @@ export interface Localized extends LocalizedStringsMethods {
   pagination: {
     ariaLabel: string;
   };
+  /**
+   * Translations related to Onboarding
+   */
+  onboarding: {
+    prev: string;
+    next: string;
+    close: string;
+    welcomeTitle: string;
+    welcomeContent: string;
+    balanceTitle: string;
+    balanceContent: string;
+    sprintTitle: string;
+    sprintContent: string;
+    vacationsTitle: string;
+    vacationsContent: string;
+    questionnaireTitle: string;
+    questionnaireContent: string;
+    softwareTitle: string;
+    softwareContent: string;
+    wikiTitle: string;
+    wikiContent: string;
+    doneTitle: string;
+    doneContent: string;
+  };
 }
 /**
  * Initialized localized strings

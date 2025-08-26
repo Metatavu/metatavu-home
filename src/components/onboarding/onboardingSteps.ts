@@ -7,46 +7,51 @@ export type OnboardingStep = {
   content: string;
 };
 
-export const onboardingSteps = [
-  {
-    title: "Welcome to the Home Screen",
-    content: "This is your dashboard where you can see your balance, sprints, and more.",
-    selector: "#home-screen",
-    position: "top-center", 
-  },
-  {
-    title: "Check your Balance",
-    content: "This card shows your total flextime balance.",
-    selector: "#balance-card",
-  },
-  {
-    title: "View Sprint Progress",
-    content: "Track ongoing sprints and deadlines here.",
-    selector: "#sprint-view-card",
-  },
-  {
-    title: "Manage Vacations",
-    content: "Request and manage your vacation days easily.",
-    selector: "#vacations-card",
-  },
-  {
-    title: "Access Wiki Documentation",
-    content: "Find helpful resources and documentation here.",
-    selector: "#wiki-documentation-card",
-  },
-  {
-    title: "Software Registry",
-    content: "Browse and manage software used in your projects.",
-    selector: "#software-registry-card",
-  },
-  {
-  title: "Questionnaires",
-  content: "View and answer questionnaires here.",
-  selector: "#questionnaires-card",
-  },
-  {
-    title: "Complete the Onboarding",
-    content: "Finish the onboarding process to get started.",
-    selector: "#onboarding-complete",
-  },
-];
+/**
+ * Returns onboarding steps using the current language from strings
+ */
+export function getOnboardingSteps(): OnboardingStep[] {
+  return [
+    {
+      title: strings.onboarding.welcomeTitle,
+      content: strings.onboarding.welcomeContent,
+      selector: "#home-screen",
+      position: "top-center",
+    },
+    {
+      title: strings.onboarding.balanceTitle,
+      content: strings.onboarding.balanceContent,
+      selector: "#balance-card",
+    },
+    {
+      title: strings.onboarding.sprintTitle,
+      content: strings.onboarding.sprintContent,
+      selector: "#sprint-view-card",
+    },
+    {
+      title: strings.onboarding.vacationsTitle,
+      content: strings.onboarding.vacationsContent,
+      selector: "#vacations-card",
+    },
+    {
+      title: strings.onboarding.wikiTitle,
+      content: strings.onboarding.wikiContent,
+      selector: "#wiki-documentation-card",
+    },
+    {
+      title: strings.onboarding.softwareTitle,
+      content: strings.onboarding.softwareContent,
+      selector: "#software-registry-card",
+    },
+    {
+      title: strings.onboarding.questionnaireTitle,
+      content: strings.onboarding.questionnaireContent,
+      selector: "#questionnaires-card",
+    },
+    {
+      title: strings.onboarding.doneTitle,
+      content: strings.onboarding.doneContent,
+      selector: "#onboarding-complete",
+    },
+  ];
+}
