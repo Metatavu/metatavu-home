@@ -29,8 +29,7 @@ const AdminScreen = () => {
     isPrivilegedUser && <QuestionnaireCard key="questionnaire" />,
     isPrivilegedUser && <SoftwareRegistryCard key="software" />,
     isPrivilegedUser && <Box key="vacationManagement" sx={{ maxHeight: 420 }}><VacationManagementCard /></Box>,
-    isPrivilegedUser && <WikiDocumentationCard key="wiki" />,
-    isPrivilegedUser && <OnCallCard key="oncall" />,
+    isPrivilegedUser && <WikiDocumentationCard key="wiki" />
   ].filter(Boolean);
 
   return (

@@ -4,6 +4,7 @@ import { Box, Button, Checkbox, Typography } from "@mui/material";
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
 import { DateTime } from "luxon";
 import strings from "src/localization/strings";
+import UserRoleUtils from "src/utils/user-role-utils";
 
 /**
  * Component properties
@@ -21,19 +22,25 @@ interface Props {
  */
 const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Props) => {
   const onCallData = useAtomValue(onCallAtom);
+  const isAccounted = UserRoleUtils.isAccounted();
 
   const columns: GridColDef[] = [
     {
       field: "paid",
       headerName: strings.oncall.paid,
+      headerAlign: "center",
+      align: "center",
       flex: 1,
       sortable: false,
       renderCell: (params) => (
         <Checkbox
           onChange={async () => {
-            await updatePaidStatus(selectedDate.year, params.row.week, params.value);
+            if (isAccounted) {
+              await updatePaidStatus(selectedDate.year, params.row.week, params.value);
+            }
           }}
           checked={params.value}
+          disabled={!isAccounted}
           sx={{
             color: params.value ? "#7bd15c" : "#f44336",
             "&.Mui-checked": {

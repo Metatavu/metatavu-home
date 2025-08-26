@@ -1,4 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
+import UserRoleUtils from "src/utils/user-role-utils";
 import { DateCalendar, PickersDay, type PickersDayProps } from "@mui/x-date-pickers";
 import {
   Badge,
@@ -47,6 +48,7 @@ const OnCallCalendarScreen = () => {
   const [selectedDate, setSelectedDate] = useState<DateTime>(DateTime.now());
   const [onCallPerson, setOnCallPerson] = useState<string | null>(null);
   const [selectedOnCallWeek, setSelectedOnCallWeek] = useState<OnCallWeek>();
+  const isAccounted = UserRoleUtils.isAccounted();
   const setError = useSetAtom(errorAtom);
   const [loading, setLoading] = useState(false);
 
@@ -204,7 +206,7 @@ const OnCallCalendarScreen = () => {
       : "";
 
     const handleDayClick = () => {
-      if (onCallDayData) {
+      if (onCallDayData && isAccounted) {
         setSelectedOnCallWeek({
           date: day.toISODate(),
           username: onCallDayData.username,
