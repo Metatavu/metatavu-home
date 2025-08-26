@@ -45,15 +45,15 @@ export default class UserRoleUtils {
   };
 
   /**
-   * Check if the logged-in user has an accounted role
+   * Check if the logged-in user has an accountant role
    *
-   * @returns boolean, indicates if user is accounted
+   * @returns boolean, indicates if user is accountant
    */
-  public static readonly isAccounted = () => {
+  public static readonly isAccountant = () => {
     const accessToken = useAtomValue(authAtom)?.token;
     if (!accessToken?.realm_access) return false;
 
-    return accessToken.realm_access.roles.includes("accounted");
+    return accessToken.realm_access.roles.includes("accountant");
   };
 
   /**

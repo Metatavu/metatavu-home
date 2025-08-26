@@ -22,7 +22,7 @@ interface Props {
  */
 const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Props) => {
   const onCallData = useAtomValue(onCallAtom);
-  const isAccounted = UserRoleUtils.isAccounted();
+  const isAccountant = UserRoleUtils.isAccountant();
 
   const columns: GridColDef[] = [
     {
@@ -35,12 +35,12 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
       renderCell: (params) => (
         <Checkbox
           onChange={async () => {
-            if (isAccounted) {
+            if (isAccountant) {
               await updatePaidStatus(selectedDate.year, params.row.week, params.value);
             }
           }}
           checked={params.value}
-          disabled={!isAccounted}
+          disabled={!isAccountant}
           sx={{
             color: params.value ? "#7bd15c" : "#f44336",
             "&.Mui-checked": {

@@ -48,7 +48,7 @@ const OnCallCalendarScreen = () => {
   const [selectedDate, setSelectedDate] = useState<DateTime>(DateTime.now());
   const [onCallPerson, setOnCallPerson] = useState<string | null>(null);
   const [selectedOnCallWeek, setSelectedOnCallWeek] = useState<OnCallWeek>();
-  const isAccounted = UserRoleUtils.isAccounted();
+  const isAccountant = UserRoleUtils.isAccountant();
   const setError = useSetAtom(errorAtom);
   const [loading, setLoading] = useState(false);
 
@@ -206,7 +206,7 @@ const OnCallCalendarScreen = () => {
       : "";
 
     const handleDayClick = () => {
-      if (onCallDayData && isAccounted) {
+      if (onCallDayData && isAccountant) {
         setSelectedOnCallWeek({
           date: day.toISODate(),
           username: onCallDayData.username,
