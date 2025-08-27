@@ -25,7 +25,6 @@ interface Props {
   setOpen: (value: boolean) => void;
   onCallEntry: OnCallWeek | undefined;
   updatePaidStatus: (year: number, week: number, paid: boolean) => Promise<void>;
-  refreshOnCallData?: () => void;
 }
 
 /**
@@ -54,8 +53,7 @@ const OnCallPaidStatusDialog = ({
   open,
   setOpen,
   onCallEntry,
-  updatePaidStatus,
-  refreshOnCallData
+  updatePaidStatus
 }: Props) => {
   const [loading, setLoading] = useState(false);
 
@@ -74,7 +72,6 @@ const OnCallPaidStatusDialog = ({
     await updatePaidStatus(year, weekNumber, onCallEntry.paid);
     setLoading(false);
     setOpen(false);
-    if (refreshOnCallData) refreshOnCallData();
   };
 
   return (

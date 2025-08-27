@@ -102,8 +102,19 @@ const OnCallCalendarScreen = () => {
       week: weekNumber,
       paid: !paid
     };
-    await onCallApi.updatePaid({ onCallPaid: updateParameters });
-    refreshOnCallData();
+    try {
+      await onCallApi.updatePaid({ onCallPaid: updateParameters });
+      // Locally update paid status
+      setOnCallData(prev =>
+        prev.map(item =>
+          item.year === year && item.week === weekNumber
+            ? { ...item, paid: !paid }
+            : item
+        )
+      );
+    } catch (error) {
+      setError(`${error}`);
+    }
   };
 
   /**
@@ -313,13 +324,6 @@ const OnCallCalendarScreen = () => {
     overflow: "auto",
   }));
 
-  /**
-   * Updates the paid status and refreshes the on-call data
-   */
-  const refreshOnCallData = () => {
-    getOnCallData(selectedDate.year);
-  };
-
   return (
     <Box sx={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
       {/* Global styles for correct calendar layout */}
@@ -403,7 +407,6 @@ const OnCallCalendarScreen = () => {
         setOpen={setOpen}
         onCallEntry={selectedOnCallWeek}
         updatePaidStatus={updatePaidStatus}
-        refreshOnCallData={refreshOnCallData}
       />
       {renderCurrentOnCall()}
       {renderCalendarOrList()}
