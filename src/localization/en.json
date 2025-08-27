@@ -479,6 +479,7 @@
     "updatePaidStatusForWeek": "Update paid status for week",
     "person": "Person",
     "paidStatus": "Paid Status",
-    "date": "Date"
+    "date": "Date",
+    "noUsernameOnCall": "No username on call"
   }
 }

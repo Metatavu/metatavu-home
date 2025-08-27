@@ -481,6 +481,7 @@
     "updatePaidStatusForWeek": "Päivitä viikon maksutila",
     "person": "Henkilö",
     "paidStatus": "Maksatus",
-    "date": "Päivämäärä"
+    "date": "Päivämäärä",
+    "noUsernameOnCall": "Ei käyttäjätunnusta"
   }
 }

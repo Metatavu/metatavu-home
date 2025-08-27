@@ -620,6 +620,7 @@ export interface Localized extends LocalizedStringsMethods {
     person: string;
     paidStatus: string;
     date: string;
+    noUsernameOnCall: string;
   };
 }
 

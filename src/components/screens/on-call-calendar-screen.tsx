@@ -201,9 +201,15 @@ const OnCallCalendarScreen = () => {
     // Show badge only on the first day of the week
     const showBadge = day.weekday === 1 && onCallDayData;
 
-    const initials = onCallDayData?.username
+    // If there is no username, showing "!"
+    const hasUsername = !!onCallDayData?.username;
+    const initials = hasUsername
       ? onCallDayData.username.split(" ").map(s => s[0]).join("").toUpperCase()
-      : "";
+      : "!";
+
+    const badgeColor = hasUsername
+      ? stringToColor(onCallDayData.username)
+      : "#d32f2f"; //Red color if there is no username
 
     const handleDayClick = () => {
       if (onCallDayData && isAccountant) {
@@ -225,8 +231,8 @@ const OnCallCalendarScreen = () => {
             badgeContent={initials}
             sx={{
               ".MuiBadge-badge": {
-                backgroundColor: stringToColor(onCallDayData.username),
-                color: "#000",
+                backgroundColor: badgeColor,
+                color: "#fff",
                 right: 60,
                 top: 10,
                 minWidth: 24,
@@ -234,6 +240,7 @@ const OnCallCalendarScreen = () => {
                 fontSize: 12,
                 border: "1px none #000",
                 zIndex: 1,
+                fontWeight: hasUsername ? "normal" : "bold"
               },
             }}
           >

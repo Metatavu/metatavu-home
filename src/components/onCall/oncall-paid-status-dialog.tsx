@@ -64,6 +64,7 @@ const OnCallPaidStatusDialog = ({
   const weekNumber = DateTime.fromISO(String(onCallEntry.date)).weekNumber;
   const year = DateTime.fromISO(String(onCallEntry.date)).year;
   const weekRange = getWeekRange(String(onCallEntry.date));
+  const hasUsername = !!onCallEntry.username;
 
   /**
    * Handles paid status change for the on-call week
@@ -99,8 +100,8 @@ const OnCallPaidStatusDialog = ({
             <Typography variant="subtitle1" fontWeight="bold" display="inline">
               {strings.oncall.person}:
             </Typography>
-            <Typography variant="subtitle1" display="inline">
-              {onCallEntry.username}
+            <Typography variant="subtitle1" display="inline" color={hasUsername ? "textPrimary" : "error"}>
+              {hasUsername ? onCallEntry.username : strings.oncall.noUsernameOnCall}
             </Typography>
           </Box>
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
