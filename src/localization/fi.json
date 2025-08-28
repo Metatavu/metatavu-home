@@ -482,6 +482,7 @@
     "person": "Henkilö",
     "paidStatus": "Maksatus",
     "date": "Päivämäärä",
-    "noUsernameOnCall": "Ei käyttäjätunnusta"
+    "noUsernameOnCall": "-",
+    "errorUpdatingPaidStatus": "Päivystysvuoron maksutilan päivittäminen epäonnistui"
   }
 }

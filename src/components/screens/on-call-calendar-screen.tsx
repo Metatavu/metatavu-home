@@ -104,7 +104,6 @@ const OnCallCalendarScreen = () => {
     };
     try {
       await onCallApi.updatePaid({ onCallPaid: updateParameters });
-      // Locally update paid status
       setOnCallData(prev =>
         prev.map(item =>
           item.year === year && item.week === weekNumber
@@ -113,7 +112,7 @@ const OnCallCalendarScreen = () => {
         )
       );
     } catch (error) {
-      setError(`${error}`);
+      setError(`${strings.oncall.errorUpdatingPaidStatus}, ${error}`);
     }
   };
 

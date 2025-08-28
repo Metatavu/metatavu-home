@@ -480,6 +480,7 @@
     "person": "Person",
     "paidStatus": "Paid Status",
     "date": "Date",
-    "noUsernameOnCall": "No username on call"
+    "noUsernameOnCall": "-",
+    "errorUpdatingPaidStatus": "Failed to update on-call shift paid status"
   }
 }

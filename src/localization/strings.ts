@@ -621,6 +621,7 @@ export interface Localized extends LocalizedStringsMethods {
     paidStatus: string;
     date: string;
     noUsernameOnCall: string;
+    errorUpdatingPaidStatus: string;
   };
 }
 
