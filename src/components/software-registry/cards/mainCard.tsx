@@ -134,6 +134,7 @@ const MainCard: React.FC<CardProps> = ({
       {status === SoftwareStatus.ACCEPTED && !isInMyApplications && (
         <Button
           variant="contained"
+          color="secondary"
           size="small"
           disabled={false}
           onClick={(e) => {
@@ -144,7 +145,6 @@ const MainCard: React.FC<CardProps> = ({
             textTransform: "none",
             color: "#fff",
             marginRight: "6px",
-            background: "#f9473b",
             borderRadius: "25px",
             "&:hover": { background: "#000" }
           }}
@@ -217,7 +217,7 @@ const MainCard: React.FC<CardProps> = ({
    */
   const renderTags = () => (
     <Box>
-      {tags.map((tag) => (
+      {tags.slice(0, 3).map((tag) => (
         <Chip
           key={tag}
           label={tag}
@@ -266,14 +266,17 @@ const MainCard: React.FC<CardProps> = ({
               }}
             />
             <CardContent sx={{ padding: 0 }}>
-              <Typography gutterBottom variant="h6" sx={{ fontSize: "16px", fontWeight: "bold" }}>
+              <Typography gutterBottom variant="h6"
+                overflow={"hidden"}
+                textOverflow={"ellipsis"}
+                whiteSpace={"nowrap"}
+                >
                 {name}
               </Typography>
               <Box sx={{ minHeight: "70px" }}>
                 <Typography
+                variant="body1"
                   sx={{
-                    fontSize: "14px",
-                    fontWeight: "bold",
                     display: "-webkit-box",
                     WebkitLineClamp: 3,
                     WebkitBoxOrient: "vertical",
@@ -347,8 +350,6 @@ const MainCard: React.FC<CardProps> = ({
                   gutterBottom
                   variant="h6"
                   sx={{
-                    fontSize: "16px",
-                    fontWeight: "bold",
                     marginBottom: "4px"
                   }}
                 >
@@ -391,6 +392,7 @@ const MainCard: React.FC<CardProps> = ({
             <Button
               variant="contained"
               size="small"
+              color="secondary"
               disabled={isInMyApplications}
               onClick={(e) => {
                 e.stopPropagation();
@@ -399,7 +401,6 @@ const MainCard: React.FC<CardProps> = ({
               sx={{
                 textTransform: "none",
                 color: "#fff",
-                background: "#f9473b",
                 borderRadius: "25px",
                 fontSize: "12px",
                 marginBottom: "8px",
