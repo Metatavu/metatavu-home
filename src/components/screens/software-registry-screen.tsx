@@ -9,7 +9,9 @@ import {
   IconButton,
   Card,
 } from "@mui/material";
+import { KeyboardReturn } from "@mui/icons-material";
 import { useState, useEffect, useMemo, useRef } from "react";
+import { Link } from "react-router-dom";
 import Content from "../software-registry/myContent";
 import strings from "src/localization/strings";
 import { useAtom, useAtomValue } from "jotai";
@@ -342,6 +344,14 @@ const SoftwareScreen = () => {
         disabled={loading}
         existingSoftwareList={software}
       />
+      <Card sx={{ margin: 0, padding: "10px", width: "100%" }}>
+        <Link to={"/"} style={{ textDecoration: "none" }}>
+          <Button variant="contained" sx={{ padding: "10px", width: "100%" }}>
+            <KeyboardReturn sx={{ marginRight: "10px" }} />
+            <Typography>{strings.wikiDocumentation.back}</Typography>
+          </Button>
+        </Link>
+      </Card>
     </Container>
   );
 };
