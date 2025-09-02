@@ -92,8 +92,7 @@ const RecommendCard = ({
             whiteSpace={"nowrap"}
             overflow={"hidden"}
             textOverflow={"ellipsis"}
-            mt={1}
-            
+            mt={1}            
           >
             {app.name}
           </Typography>
@@ -117,12 +116,10 @@ const RecommendCard = ({
             justifyContent="flex-start"
             flexWrap="nowrap"
             width ="100%"
-            
             sx={{
               height: "30px",
               gap: 0.5,
               marginTop: "8px",
-              
             }}
           >
             {app.tags?.slice(0, 3).map((tag) => (
@@ -140,7 +137,6 @@ const RecommendCard = ({
                   whiteSpace: "nowrap",
                   maxWidth: "80px",
                   minWidth:"80px"
-                
                 }}
               />
             ))}

@@ -58,8 +58,7 @@ export const theme: Theme = createTheme({
     },
     info:{
       main: "#F9473B"
-    }
-    
+    }    
   },
   components: {
     MuiCssBaseline: {

@@ -233,13 +233,13 @@ const SoftwareDetails: FunctionComponent = () => {
           <Typography variant="h4" gutterBottom>
             {strings.softwareRegistry.description}
           </Typography>
-          <Typography variant="body1"sx={{ wordBreak: "break-word", overflowWrap: "break-word",  whiteSpace: "normal", maxHeight:"220px",overflowY: "auto",   }}>{software.description}</Typography>
+          <Typography variant="body1"sx={{ wordBreak: "break-word", overflowWrap: "break-word",  whiteSpace: "normal", maxHeight:"220px",overflowY: "auto"}}>{software.description}</Typography>
         </Grid>
         <Grid item xs={12} md={6}>
           <Typography variant="h4" gutterBottom>
             {strings.softwareRegistry.review}
           </Typography>
-          <Typography variant="body1" sx={{wordBreak:"break-word", overflowWrap:"break-word",whiteSpace: "normal", maxHeight:"220px",overflowY: "auto",   }}>{software.review}</Typography>
+          <Typography variant="body1" sx={{wordBreak:"break-word", overflowWrap:"break-word",whiteSpace: "normal", maxHeight:"220px",overflowY: "auto"}}>{software.review}</Typography>
         </Grid>
       </Grid>
       <Box textAlign="center" m={4}>

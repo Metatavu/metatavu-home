@@ -97,7 +97,7 @@ const AppCard: FunctionComponent<AppCardProps> = ({
       ) : (
         <Card
           sx={{
-            width: "960px",
+            width: "100%",
             display: "flex",
             backgroundColor: "#fff",
             borderRadius: "10px",
