@@ -113,6 +113,7 @@
     "noRecommendations": "Ei suosituksia",
     "recommendationMessage": "Sinulla on {recommendationCount} uutta suositusta!",
     "allApplications": "Kaikki sovellukset",
+    "back": "Takaisin",
     "addApplication": "Lisää sovellus",
     "tags": "Tagit",
     "filter": "Rajaa",

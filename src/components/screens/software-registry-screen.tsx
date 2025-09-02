@@ -348,7 +348,7 @@ const SoftwareScreen = () => {
         <Link to={"/"} style={{ textDecoration: "none" }}>
           <Button variant="contained" sx={{ padding: "10px", width: "100%" }}>
             <KeyboardReturn sx={{ marginRight: "10px" }} />
-            <Typography>{strings.wikiDocumentation.back}</Typography>
+            <Typography>{strings.softwareRegistry.back}</Typography>
           </Button>
         </Link>
       </Card>
