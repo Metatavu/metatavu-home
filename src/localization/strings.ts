@@ -427,6 +427,10 @@ export interface Localized extends LocalizedStringsMethods {
     insertAnswerLabel: string;
     addAnswer: string;
     saveAnswer: string;
+    tooltipBothEmpty: string;
+    tooltipEmptyQuestion: string;
+    tooltipEmptyAnswers: string;
+    
   };
   /**
    * Translations related to Questionnaire Table

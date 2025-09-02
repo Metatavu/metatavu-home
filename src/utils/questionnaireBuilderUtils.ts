@@ -204,6 +204,9 @@ export enum ValidationCondition {
   TITLE_EMPTY = "titleEmpty",
   DESCRIPTION_EMPTY = "descriptionEmpty",
   NO_QUESTIONS = "noQuestions",
+  QUESTIONS_AND_ANSWERS_EMPTY = "questionsAndAnswersEmpty",
+  QUESTIONS_EMPTY = "emptyQuestions",
+  ANSWERS_EMPTY = "emptyAnswers",
   NO_CORRECT_ANSWERS = "noCorrectAnswers", 
   NO_PASS_SCORE = "noPassScore"
 }
@@ -280,6 +283,17 @@ export const isFormValid = (questionnaire: Questionnaire): boolean => {
   return isValid;
 };
 
+export const isQuestionValid = (question: Question): boolean => {
+  if (!question.questionText || 
+      question.questionText.trim() === "" || 
+      !question.answerOptions || question.answerOptions.length === 0 || 
+      !question.answerOptions.every(option=>option.label.trim() !=="")) {
+    return false;
+  }
+  return true;
+
+};
+
 /**
  * Gets appropriate tooltip message for a questionnaire's validation state
  * Using only existing localization strings
@@ -325,3 +339,74 @@ export const getValidationTooltipMessage = (
       return strings.error.generic;
   }
 };
+
+export const validateQuestion = (question: Question): { 
+  isValid: boolean; 
+  condition: ValidationCondition;
+} => {
+  const hasText = question.questionText?.trim() !== "";
+  const hasAnswers = question.answerOptions && question.answerOptions.length > 0 && 
+  question.answerOptions.every(option => option.label.trim() !== "");
+
+  if (!hasText && !hasAnswers) {
+    return { 
+      isValid: false, 
+      condition: ValidationCondition.QUESTIONS_AND_ANSWERS_EMPTY
+    };
+  }
+
+  if (!hasText) {
+    return { 
+      isValid: false, 
+      condition: ValidationCondition.QUESTIONS_EMPTY
+    };
+  }
+
+  if (!hasAnswers) {
+    return { 
+      isValid: false, 
+      condition: ValidationCondition.ANSWERS_EMPTY
+    };
+  }
+
+  return { 
+    isValid: true, 
+    condition: ValidationCondition.VALID 
+  };
+};
+
+export const getQuestionValidationTooltipMessage = (
+  question: Question, 
+  strings: {
+    newQuestionnaireCard: {
+      tooltipBothEmpty: string;
+      tooltipEmptyQuestion: string;
+      tooltipEmptyAnswers: string;
+    };
+    error: {
+      questionnaireSaveFailed: string;
+      generic: string;
+    };
+  }
+): string => {
+  const { condition } = validateQuestion(question);
+  
+  if (condition === ValidationCondition.VALID) {
+    return ""; 
+  }
+  
+  switch(condition) {
+    case ValidationCondition.NO_QUESTIONS:
+      return strings.error.questionnaireSaveFailed;
+    case ValidationCondition.QUESTIONS_AND_ANSWERS_EMPTY:
+      return strings.newQuestionnaireCard.tooltipBothEmpty;
+    case ValidationCondition.QUESTIONS_EMPTY:
+    return strings.newQuestionnaireCard.tooltipEmptyQuestion;
+    case ValidationCondition.ANSWERS_EMPTY:
+    return strings.newQuestionnaireCard.tooltipEmptyAnswers;
+    default:
+      return strings.error.generic;
+  }
+};
+
+

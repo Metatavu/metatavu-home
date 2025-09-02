@@ -332,7 +332,10 @@
     "answerLabel": "Syötä vastaus",
     "insertAnswerLabel": "Syötä vastaus",
     "addAnswer": "+ Lisää uusi vastausvaihtoehto",
-    "saveAnswer": "Lisää kysymys"
+    "saveAnswer": "Lisää kysymys",
+    "tooltipBothEmpty": "Kysymys ja vastausvaihtoehdot eivät voi olla tyhjiä",
+    "tooltipEmptyQuestion": "Kysymys ei voi olla tyhjä",
+    "tooltipEmptyAnswers": "Vastausvaihtoehdot eivät voi olla tyhjiä"
   },
   "questionnaireTable": {
     "title": "Otsikko",

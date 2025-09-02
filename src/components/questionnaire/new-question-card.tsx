@@ -6,12 +6,14 @@ import {
   CardContent,
   Checkbox,
   TextField,
-  Typography
+  Typography,
+  Tooltip
 } from "@mui/material";
 import type React from "react";
 import { useState } from "react";
 import type { AnswerOption } from "src/generated/homeLambdasClient";
 import strings from "src/localization/strings";
+import { isQuestionValid, getQuestionValidationTooltipMessage} from "src/utils/questionnaireBuilderUtils";
 
 /**
  * Interface for the NewQuestionCard component
@@ -31,7 +33,7 @@ interface Props {
 const NewQuestionCard = ({ handleAddQuestion }: Props) => {
   const [questionText, setQuestionText] = useState("");
   const [answerOptions, setAnswerOptions] = useState([{ label: "", isCorrect: false }]);
-
+  const isDisabled = !isQuestionValid({ questionText, answerOptions });
   /**
    * Handle answerOptions label (answer option) change
    *
@@ -95,6 +97,7 @@ const NewQuestionCard = ({ handleAddQuestion }: Props) => {
             multiline
             rows={6}
             value={questionText}
+            required
             onChange={(e) => setQuestionText(e.target.value)}
             fullWidth
           />
@@ -134,6 +137,7 @@ const NewQuestionCard = ({ handleAddQuestion }: Props) => {
                   label={strings.newQuestionnaireCard.answerLabel}
                   placeholder={strings.newQuestionnaireCard.insertAnswerLabel}
                   value={option.label}
+                  required
                   onChange={(e) => handleAnswerLabelChange(index, e)}
                   fullWidth
                   sx={{ mt: 2 }}
@@ -159,14 +163,23 @@ const NewQuestionCard = ({ handleAddQuestion }: Props) => {
                 {strings.newQuestionnaireCard.addAnswer}
               </Typography>
             </Button>
+            <Tooltip 
+                title={getQuestionValidationTooltipMessage({questionText, answerOptions}, strings)} 
+                placement="bottom"
+                disableHoverListener={isQuestionValid({ questionText, answerOptions })}
+              >
+            <span>
             <Button
               sx={{ alignItems: "center" }}
               size="large"
               variant="contained"
               onClick={handleAddNewQuestion}
+              disabled={isDisabled}
             >
               {strings.newQuestionnaireCard.saveAnswer}
             </Button>
+            </span>
+            </Tooltip>
           </CardActions>
         </CardContent>
       </Card>

@@ -332,7 +332,10 @@
     "answerLabel": "Answer option",
     "insertAnswerLabel": "Insert answer option",
     "addAnswer": "+ Add new answer option",
-    "saveAnswer": "Add question"
+    "saveAnswer": "Add question",
+    "tooltipBothEmpty": "Question and answer options cannot be empty",
+    "tooltipEmptyQuestion": "Question cannot be empty",
+    "tooltipEmptyAnswers": "Answer options cannot be empty"
   },
   "questionnaireTable": {
     "title": "Title",
