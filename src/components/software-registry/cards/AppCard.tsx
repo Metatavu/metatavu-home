@@ -81,7 +81,6 @@ const AppCard: FunctionComponent<AppCardProps> = ({
                     key={tag}
                     label={tag}
                     sx={{
-                      
                       borderRadius: "5px",
                       padding: "5px",
                       margin: "-5px",

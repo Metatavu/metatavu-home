@@ -209,7 +209,6 @@ const SoftwareDetails: FunctionComponent = () => {
               key={tag}
               component="span"
               sx={{
-                
                 backgroundColor: "#F9473B",
                 color: "#fff",
                 padding: "6px 8px",
