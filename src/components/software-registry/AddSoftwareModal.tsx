@@ -68,7 +68,7 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-    /**
+  /**
    * Fetch the list of users when the modal opens.
    */
   useEffect(() => {
@@ -91,9 +91,8 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
    */
   useEffect(() => {
     const nameAlreadyExists = existingSoftwareList.some(
-      (item) => 
-      item.id !== software.id &&
-      item.name.toLowerCase() === software.name.toLowerCase().trim()
+      (item) =>
+        item.id !== software.id && item.name.toLowerCase() === software.name.toLowerCase().trim()
     );
     setNameExists(nameAlreadyExists);
   }, [software.name, existingSoftwareList]);
@@ -152,14 +151,9 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
     }
   };
 
-  const isFormValid = Boolean(
-  software.name.trim() &&
-  software.image.trim() &&
-  software.url.trim() 
-  );
+  const isFormValid = Boolean(software.name.trim() && software.image.trim() && software.url.trim());
 
   const hiddenTagsCount = Math.max(0, (software?.tags?.length ?? 0) - 3);
-
 
   return (
     <>
@@ -229,7 +223,7 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
                 helperText={strings.softwareRegistry.URLExample}
               />
             </Grid>
-            <Grid item xs={6} >
+            <Grid item xs={6}>
               <TextField
                 fullWidth
                 label={strings.softwareRegistry.tags}
@@ -237,50 +231,61 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
                 onChange={(e) => setTags(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleAddTag()}
               />
-              <Box mt={1}
+              <Box
+                mt={1}
                 display="flex"
                 justifyContent="space-between"
                 alignItems="flex-start"
                 flexWrap="wrap"
-                gap={1}>
-              <Box display="flex" alignItems="center" flexWrap="wrap" gap={1} maxWidth="calc(100% - 100px)">
-                {(software.tags || []).slice(0,3).map((tag) => (
-                  <Chip key={tag} label={tag} onDelete={() => handleDeleteTag(tag)} />
-                ))}
-                  {hiddenTagsCount > 0 && (
-              <Chip
-                size="small"
-                label={strings.formatString(strings.questionnaireTags.moreCount, hiddenTagsCount)}
-                sx={{
-                  flexShrink: 0,
-                  backgroundColor: "rgba(0, 0, 0, 0.08)",
-                  "&:hover": {
-                    backgroundColor: "rgba(0, 0, 0, 0.12)"
-                  }
-                }}
-              />
-            )}
-                </Box>
-            <Button
-                variant="contained"
-                color="primary"
-                onClick={handleAddTag}
-                size="small"
-                sx={{
-                  height: "40px",
-                  minWidth: "90px",
-                  flexShrink: 0,
-                  marginTop: "8px",
-                  display: "block",
-                  fontSize: "16px",
-                  backgroundColor: "#212121",
-                  "&:hover": {
-                    backgroundColor: "#000000",
-                  },
-                }}
+                gap={1}
               >
-                {strings.questionnaireTags.addTag}
-              </Button>
+                <Box
+                  display="flex"
+                  alignItems="center"
+                  flexWrap="wrap"
+                  gap={1}
+                  maxWidth="calc(100% - 100px)"
+                >
+                  {(software.tags || []).slice(0, 3).map((tag) => (
+                    <Chip key={tag} label={tag} onDelete={() => handleDeleteTag(tag)} />
+                  ))}
+                  {hiddenTagsCount > 0 && (
+                    <Chip
+                      size="small"
+                      label={strings.formatString(
+                        strings.questionnaireTags.moreCount,
+                        hiddenTagsCount
+                      )}
+                      sx={{
+                        flexShrink: 0,
+                        backgroundColor: "rgba(0, 0, 0, 0.08)",
+                        "&:hover": {
+                          backgroundColor: "rgba(0, 0, 0, 0.12)"
+                        }
+                      }}
+                    />
+                  )}
+                </Box>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleAddTag}
+                  size="small"
+                  sx={{
+                    height: "40px",
+                    minWidth: "90px",
+                    flexShrink: 0,
+                    marginTop: "8px",
+                    display: "block",
+                    fontSize: "16px",
+                    backgroundColor: "#212121",
+                    "&:hover": {
+                      backgroundColor: "#000000"
+                    }
+                  }}
+                >
+                  {strings.questionnaireTags.addTag}
+                </Button>
               </Box>
             </Grid>
             <Grid item xs={12}>
@@ -332,7 +337,11 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
                   </li>
                 )}
                 renderInput={(params) => (
-                  <TextField {...params} label={strings.softwareRegistry.recommend} placeholder={strings.softwareRegistry.searchPlaceholder} />
+                  <TextField
+                    {...params}
+                    label={strings.softwareRegistry.recommend}
+                    placeholder={strings.softwareRegistry.searchPlaceholder}
+                  />
                 )}
               />
             </Grid>
@@ -371,7 +380,7 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
                   borderRadius: "25px",
                   "&:hover": { background: "#000" }
                 }}
-                disabled={disabled || nameExists || !isFormValid} 
+                disabled={disabled || nameExists || !isFormValid}
               >
                 {strings.softwareRegistry.submit}
               </Button>

@@ -1,8 +1,6 @@
 import en from "./en.json";
 import fi from "./fi.json";
-import LocalizedStrings, {
-  type LocalizedStringsMethods,
-} from "localized-strings";
+import LocalizedStrings, { type LocalizedStringsMethods } from "localized-strings";
 
 /**
  * Localized strings
@@ -430,7 +428,6 @@ export interface Localized extends LocalizedStringsMethods {
     tooltipBothEmpty: string;
     tooltipEmptyQuestion: string;
     tooltipEmptyAnswers: string;
-    
   };
   /**
    * Translations related to Questionnaire Table
@@ -545,7 +542,7 @@ export interface Localized extends LocalizedStringsMethods {
     draft: string;
     allArticles: string;
     connectedArticles: string;
-  }
+  };
   /**
    * Translation related settings screen
    */

@@ -22,7 +22,7 @@ import AddSoftwareModal from "./AddSoftwareModal";
 
 /**
  * Component for displaying detailed information about a specific software entry.
- * Allows users to view software details, add the software to their applications, 
+ * Allows users to view software details, add the software to their applications,
  * remove it from their applications, and edit the software details.
  *
  * @component
@@ -51,11 +51,8 @@ const SoftwareDetails: FunctionComponent = () => {
    * Fetches all software to list
    */
   useEffect(() => {
-  fetchSoftwaresToList();
-}, []);
-
-
-
+    fetchSoftwaresToList();
+  }, []);
 
   /**
    * Fetches software details based on the id from the route parameters.
@@ -77,11 +74,10 @@ const SoftwareDetails: FunctionComponent = () => {
     }
   };
 
-
   /**
    * This function retrieves the list of software applications from the API and updates the state.
    */
-  const fetchSoftwaresToList= async () => {
+  const fetchSoftwaresToList = async () => {
     setLoading(true);
     try {
       const fetchedSoftware = await softwareApi.listSoftware();
@@ -100,7 +96,7 @@ const SoftwareDetails: FunctionComponent = () => {
   const fetchUserName = async (userId: string) => {
     try {
       const users = await usersApi.listUsers();
-      const user = users.find(u => u.id === userId);
+      const user = users.find((u) => u.id === userId);
       if (user) {
         setCreatedByUserName(`${user.firstName} ${user.lastName}`);
       }
@@ -134,7 +130,7 @@ const SoftwareDetails: FunctionComponent = () => {
   const handleAddSoftware = async () => {
     if (!id || !software) return;
     try {
-      const updatedUsers = [...software.users || "", loggedUserId];
+      const updatedUsers = [...(software.users || ""), loggedUserId];
       await softwareApi.updateSoftwareById({
         id,
         softwareRegistry: { ...software, users: updatedUsers }
@@ -154,7 +150,7 @@ const SoftwareDetails: FunctionComponent = () => {
     try {
       await softwareApi.updateSoftwareById({
         id,
-        softwareRegistry: updatedSoftware,
+        softwareRegistry: updatedSoftware
       });
       setSoftware(updatedSoftware);
       setIsEditModalOpen(false);
@@ -169,7 +165,7 @@ const SoftwareDetails: FunctionComponent = () => {
         sx={{
           p: "25%",
           display: "flex",
-          justifyContent: "center",
+          justifyContent: "center"
         }}
       >
         <Box sx={{ textAlign: "center" }}>
@@ -178,7 +174,7 @@ const SoftwareDetails: FunctionComponent = () => {
             sx={{
               scale: "150%",
               mt: "5%",
-              mb: "5%",
+              mb: "5%"
             }}
           />
         </Box>
@@ -226,11 +222,14 @@ const SoftwareDetails: FunctionComponent = () => {
       </Box>
       <Box textAlign="center" mb={4}>
         {software.image && (
-          <img src={software.image}
+          <img
+            src={software.image}
             alt={software.name}
-            style={{ width: "150px", height: "150px" }} />
+            style={{ width: "150px", height: "150px" }}
+          />
         )}
-        <Typography gutterBottom
+        <Typography
+          gutterBottom
           sx={{
             color: "#000",
             fontSize: "30px",
@@ -250,7 +249,7 @@ const SoftwareDetails: FunctionComponent = () => {
                 padding: "6px 8px",
                 borderRadius: "4px",
                 fontSize: "14px",
-                fontWeight: 450,
+                fontWeight: 450
               }}
             >
               {tag}
@@ -292,8 +291,8 @@ const SoftwareDetails: FunctionComponent = () => {
               borderColor: "#000",
               "&:hover": {
                 borderColor: "#000",
-                backgroundColor: "#f0f0f0",
-              },
+                backgroundColor: "#f0f0f0"
+              }
             }}
             onClick={handleRemoveSoftware}
           >
@@ -311,8 +310,8 @@ const SoftwareDetails: FunctionComponent = () => {
               color: "#fff",
               backgroundColor: "#f9473b",
               "&:hover": {
-                backgroundColor: "#e63946",
-              },
+                backgroundColor: "#e63946"
+              }
             }}
             onClick={handleAddSoftware}
           >
@@ -329,7 +328,7 @@ const SoftwareDetails: FunctionComponent = () => {
             fontSize: "18px",
             background: "#000",
             borderRadius: "25px",
-            "&:hover": { background: "grey" },
+            "&:hover": { background: "grey" }
           }}
           onClick={() => setIsEditModalOpen(true)}
         >
