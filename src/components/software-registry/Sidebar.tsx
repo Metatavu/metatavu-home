@@ -112,12 +112,12 @@ const Sidebar: FunctionComponent<SidebarProps> = ({
           }}
         >
           <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-            <Typography variant="h6">{strings.softwareRegistry.filter}</Typography>
+            <Typography variant="subtitle2">{strings.softwareRegistry.filter}</Typography>
             <IconButton onClick={toggleSidebar}>
               <CloseIcon />
             </IconButton>
           </Box>
-          <Typography variant="body2" color="primary" gutterBottom>
+          <Typography variant="body1" sx={{color: theme => theme.palette.info.main}} gutterBottom>
             {filteredApplicationsCount} {strings.softwareRegistry.results}
           </Typography>
           <TextField
@@ -144,7 +144,7 @@ const Sidebar: FunctionComponent<SidebarProps> = ({
               mb: 2,
             }}
           />
-          <Typography variant="body2" gutterBottom>
+          <Typography variant="subtitle2" gutterBottom>
             {strings.softwareRegistry.tags}
           </Typography>
           <Box display="flex" flexWrap="wrap" gap={1} mb={2}>

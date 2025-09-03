@@ -44,7 +44,8 @@ const AppCard: FunctionComponent<AppCardProps> = ({
           <CardActionArea sx={{ padding: "16px" }}>
             <CardMedia
               component="img"
-              height="90"
+              height="100px"
+              width="240"
               image={image}
               alt={name}
               sx={{
@@ -57,18 +58,13 @@ const AppCard: FunctionComponent<AppCardProps> = ({
               <Typography
                 gutterBottom
                 variant="h6"
-                sx={{
-                  fontSize: "16px",
-                  fontWeight: "bold",
-                }}
               >
                 {name}
               </Typography>
-              <Box sx={{ minHeight: "90px" }}>
+              <Box sx={{ minHeight: "90px" }} marginBottom={2}>
                 <Typography
+                variant="body1"
                   sx={{
-                    fontSize: "14px",
-                    fontWeight: "bold",
                     display: "-webkit-box",
                     WebkitLineClamp: 4,
                     WebkitBoxOrient: "vertical",
@@ -79,19 +75,29 @@ const AppCard: FunctionComponent<AppCardProps> = ({
                   {description}
                 </Typography>
               </Box>
-              <Box alignItems="center" sx={{ minHeight: "60px", maxHeight: "60px" }}>
-                {tags.map((tag) => (
+              <Box
+                display="flex"
+                alignItems="center"
+                justifyContent="flex-start"
+                flexWrap="nowrap"
+                width ="100%"
+                sx={{
+                  height: "30px",
+                  gap: 2,
+                  marginTop: "-8px",
+                }}
+                >
+                {tags.slice(0,3).map((tag) => (
                   <Chip
                     key={tag}
                     label={tag}
                     sx={{
-                      height: "25px",
                       borderRadius: "5px",
-                      padding: "0px",
-                      margin: "2px",
-                      backgroundColor: "#ff4d4f",
+                      padding: "5px",
+                      margin: "-5px",
+                      backgroundColor: "#F9473B",
                       color: "#fff",
-                      fontSize: "12px",
+                      fontSize: "14px",
                     }}
                   />
                 ))}
@@ -124,8 +130,8 @@ const AppCard: FunctionComponent<AppCardProps> = ({
           >
             <Box
               sx={{
-                width: "150px",
-                height: "100px",
+                width: "80px",
+                height: "130px",
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
@@ -150,8 +156,6 @@ const AppCard: FunctionComponent<AppCardProps> = ({
                 gutterBottom
                 variant="h6"
                 sx={{
-                  fontSize: "16px",
-                  fontWeight: "bold",
                   marginBottom: "4px",
                 }}
               >
@@ -159,18 +163,21 @@ const AppCard: FunctionComponent<AppCardProps> = ({
               </Typography>
               <Box>
                 <Typography
-                  sx={{
+                 sx={{
+                    display: "-webkit-box",
+                    WebkitLineClamp: 3,
+                    WebkitBoxOrient: "vertical",
                     overflow: "hidden",
                     textOverflow: "ellipsis",
-                    maxHeight: "48px",
-                    whiteSpace: "normal",
+                    maxWidth: "200px",
+                    maxHeight: "80px",
                   }}
                 >
                   {description}
                 </Typography>
               </Box>
               <Box display="flex" alignItems="center" gap={0.5} sx={{ flexWrap: "wrap", marginTop: "8px" }}>
-                {tags.map((tag) => (
+                {tags.slice(0,3).map((tag) => (
                   <Chip
                     key={tag}
                     label={tag}
@@ -178,6 +185,7 @@ const AppCard: FunctionComponent<AppCardProps> = ({
                       borderRadius: "5px",
                       backgroundColor: "#ff4d4f",
                       color: "#fff",
+                      padding: "5px",
                     }}
                   />
                 ))}

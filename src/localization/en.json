@@ -465,5 +465,27 @@
   },
   "pagination": {
     "ariaLabel": "Page navigation"
-  }
+  },
+  "onboarding": {
+  "prev": "Previous",
+  "next": "Next",
+  "close": "Close",
+  "welcomeTitle": "Welcome to the Home Screen",
+  "welcomeContent": "This is your dashboard where you can see your balance, sprints, and more.",
+  "balanceTitle": "Balance",
+  "balanceContent": "Check your total flextime balance here.",
+  "sprintTitle": "Sprint view",
+  "sprintContent": "See your allocation and time entries.",
+  "vacationsTitle": "Vacation requests",
+  "vacationsContent": "Track upcoming vacations and statuses.",
+  "questionnaireTitle": "Questionnaires",
+  "questionnaireContent": "Build and answer questionnaires.",
+  "softwareTitle": "Software registry",
+  "softwareContent": "Find and manage company software.",
+  "wikiTitle": "Wiki Documentation",
+  "wikiContent": "Read or create documentation.",
+  "doneTitle": "Complete the Onboarding",
+  "doneContent": "You're all set! You can restart from Settings."
+}
+
 }
