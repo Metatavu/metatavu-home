@@ -180,17 +180,13 @@ const SoftwareDetails: FunctionComponent = () => {
 
   return (
     <Container sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-      <Box my={4} display="flex" alignItems="center">
-        <IconButton aria-label="back" onClick={() => navigate(-1)}>
+      <Box my={4} display="flex" alignItems="center" position="relative">
+        <IconButton aria-label="back" onClick={() => navigate(-1)} sx={{position: "absolute", left: 0}}>
           <ArrowBackIcon />
         </IconButton>
         <Box flexGrow={1} textAlign="center">
           <Typography
-            variant="h4"
-            sx={{
-              color: "#000",
-              fontWeight: "bold"
-            }}
+            variant="h2"
           >
             {strings.softwareRegistry.application}
           </Typography>
@@ -200,14 +196,10 @@ const SoftwareDetails: FunctionComponent = () => {
         {software.image && (
           <img src={software.image}
             alt={software.name}
-            style={{ width: "150px", height: "150px" }} />
+            style={{ width: "200px", height: "200px", objectFit: "contain" }} />
         )}
         <Typography gutterBottom
-          sx={{
-            color: "#000",
-            fontSize: "30px",
-            fontWeight: "bold"
-          }}
+        variant="h3"
         >
           {software.name}
         </Typography>
@@ -217,10 +209,10 @@ const SoftwareDetails: FunctionComponent = () => {
               key={tag}
               component="span"
               sx={{
-                backgroundColor: "#ff4d4f",
+                backgroundColor: "#F9473B",
                 color: "#fff",
                 padding: "6px 8px",
-                borderRadius: "4px",
+                borderRadius: "5px",
                 fontSize: "14px",
                 fontWeight: 450,
               }}
@@ -232,22 +224,22 @@ const SoftwareDetails: FunctionComponent = () => {
         <Typography gutterBottom sx={{ color: "#000", fontWeight: "bold" }}>
           {createdByUserName} - {new Date(software.createdAt || "").toLocaleDateString()}
         </Typography>
-        <Link href={software.url} target="_blank" rel="noopener" sx={{ color: "#ff4d4f" }}>
+        <Link href={software.url} target="_blank" rel="noopener" sx={{ color: "#F9473B" }}>
           {software.url}
         </Link>
       </Box>
       <Grid container spacing={4} mb={4}>
         <Grid item xs={12} md={6}>
-          <Typography sx={{ fontWeight: "bold" }} gutterBottom>
+          <Typography variant="h4" gutterBottom>
             {strings.softwareRegistry.description}
           </Typography>
-          <Typography variant="body1">{software.description}</Typography>
+          <Typography variant="body1"sx={{ wordBreak: "break-word", overflowWrap: "break-word",  whiteSpace: "normal", maxHeight:"220px",overflowY: "auto"}}>{software.description}</Typography>
         </Grid>
         <Grid item xs={12} md={6}>
-          <Typography sx={{ fontWeight: "bold" }} gutterBottom>
+          <Typography variant="h4" gutterBottom>
             {strings.softwareRegistry.review}
           </Typography>
-          <Typography variant="body1">{software.review}</Typography>
+          <Typography variant="body1" sx={{wordBreak:"break-word", overflowWrap:"break-word",whiteSpace: "normal", maxHeight:"220px",overflowY: "auto"}}>{software.review}</Typography>
         </Grid>
       </Grid>
       <Box textAlign="center" m={4}>
@@ -274,16 +266,15 @@ const SoftwareDetails: FunctionComponent = () => {
         ) : (
           <Button
             variant="contained"
-            color="primary"
+            color="secondary"
             sx={{
               textTransform: "none",
               borderRadius: "25px",
               fontSize: "16px",
               fontWeight: "bold",
               color: "#fff",
-              backgroundColor: "#f9473b",
               "&:hover": {
-                backgroundColor: "#e63946",
+                backgroundColor: "#000",
               },
             }}
             onClick={handleAddSoftware}

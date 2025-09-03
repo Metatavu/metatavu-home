@@ -309,14 +309,13 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
               </Button>
               <Button
                 variant="contained"
-                color="primary"
+                color="secondary"
                 onClick={handleSubmit}
                 sx={{
                   marginLeft: "4px",
                   textTransform: "none",
                   color: "#fff",
                   fontSize: "18px",
-                  background: "#f9473b",
                   borderRadius: "25px",
                   "&:hover": { background: "#000" }
                 }}

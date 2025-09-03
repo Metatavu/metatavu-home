@@ -297,19 +297,18 @@ const statusOptions = allStatusValues.map((value) => ({
           mt={4}
         >
           <Typography
-            variant="h4"
-            sx={{ fontWeight: "bold", fontSize: "28px", color: "#333" }}
+            variant="h3"
           >
             {strings.softwareRegistry.allApplications}
           </Typography>
           <Button
             variant="contained"
+            color="secondary"
             onClick={() => setIsModalOpen(true)}
             sx={{
               textTransform: "none",
               color: "#fff",
               fontSize: "18px",
-              background: "#f9473b",
               borderRadius: "100px",
               "&:hover": { background: "#000" },
             }}
@@ -332,16 +331,6 @@ const statusOptions = allStatusValues.map((value) => ({
                 value={selectedStatus}
                 onChange={(e) => setSelectedStatus(e.target.value as SoftwareStatusFilterOptions)}
                 variant="outlined"
-                sx={{
-                  borderRadius: "10px",
-                  height: "45px",
-                  backgroundColor: "#f9473b",
-                  color: "#fff",
-                  padding: "0 15px",
-                  "& .MuiSvgIcon-root": {
-                    color: "#fff",
-                  },
-                }}
                 IconComponent={ExpandMoreIcon}
               >
                 {statusOptions.map((option) => (
@@ -388,7 +377,7 @@ const statusOptions = allStatusValues.map((value) => ({
               <IconButton
                 onClick={() => setIsGridView(true)}
                 sx={{
-                  backgroundColor: isGridView ? "#f9473b" : "#f2f2f2",
+                  backgroundColor: isGridView ? "#F9473B" : "#f2f2f2",
                   color: isGridView ? "#fff" : "#000",
                   borderRadius: "8px",
                   padding: "10px",
@@ -406,7 +395,7 @@ const statusOptions = allStatusValues.map((value) => ({
               <IconButton
                 onClick={() => setIsGridView(false)}
                 sx={{
-                  backgroundColor: !isGridView ? "#f9473b" : "#f2f2f2",
+                  backgroundColor: !isGridView ? "#F9473B" : "#f2f2f2",
                   color: !isGridView ? "#fff" : "#000",
                   borderRadius: "8px",
                   padding: "10px",
@@ -449,13 +438,12 @@ const statusOptions = allStatusValues.map((value) => ({
               <Box textAlign="center" mt={3}>
                 <Button
                   variant="contained"
-                  color="primary"
+                  color="secondary"
                   onClick={() => setShowAll(!showAll)}
                   sx={{
                     textTransform: "none",
                     color: "#fff",
                     fontSize: "18px",
-                    background: "#f9473b",
                     borderRadius: "100px",
                     "&:hover": { background: "#000" },
                   }}
