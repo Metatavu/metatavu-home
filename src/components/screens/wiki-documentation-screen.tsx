@@ -558,7 +558,7 @@ return (
             />
           </Grid>
         )}
-        <Card sx={{ margin: 0, padding: "10px", width: "100%" }}>
+        <Card sx={{ mt: 2, width: "100%" }}>
           <Link to={adminMode ? "/admin" : "/"} style={{ textDecoration: "none" }}>
             <Button variant="contained" sx={{ padding: "10px", width: "100%" }}>
               <KeyboardReturn sx={{ marginRight: "10px" }} />
