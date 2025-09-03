@@ -14,36 +14,20 @@ const POPUP_HEIGHT = 140;
  */
 const Onboarding: React.FC = () => {
   const [stepIndex, setStepIndex] = useState<number | null>(null);
-  /**
-   * Local storage key for onboarding completion status
-   * Used to persist onboarding state across sessions.
-   */
   const ONBOARDING_KEY = "onboardingComplete";
   const [targetRect, setTargetRect] = useState<DOMRect | null>(null);
   const rafRef = useRef<number | null>(null);
 
-  /**
-   * Always get the latest steps for the current language
-   */
+  // Always get the latest steps for the current language
   const onboardingSteps = getOnboardingSteps();
 
-  /**
-   * Safely query a DOM element by selector.
-   *
-   * @param selector - CSS selector string
-   * @returns Element or null if not found
-   */
+  // Safely query a DOM element by selector.
   const query = (selector?: string | null): Element | null => {
     if (!selector) return null;
     return document.querySelector(selector);
   };
 
-  /**
-   * Find the next valid onboarding step starting from a given index.
-   *
-   * @param from - Index to start searching from
-   * @returns Index of valid step or null
-   */
+  // Find the next valid onboarding step starting from a given index.
   const findNextValid = (from = 0): number | null => {
     for (let i = from; i < onboardingSteps.length; i++) {
       if (query(onboardingSteps[i].selector)) return i;
@@ -51,12 +35,8 @@ const Onboarding: React.FC = () => {
     return null;
   };
 
-  /**
-   * Find the previous valid onboarding step starting from a given index.
-   *
-   * @param from - Index to start searching backwards from
-   * @returns Index of valid step or null
-   */
+  // Find the previous valid onboarding step starting from a given index.
+
   const findPrevValid = (from: number): number | null => {
     for (let i = from; i >= 0; i--) {
       if (query(onboardingSteps[i].selector)) return i;
@@ -64,10 +44,7 @@ const Onboarding: React.FC = () => {
     return null;
   };
 
-  /**
-   * On mount, check if onboarding has already been completed (via localStorage).
-   * If not, show onboarding starting from the first valid step.
-   */
+  // On mount, check if onboarding has already been completed (via localStorage).
   useEffect(() => {
     const completed = localStorage.getItem(ONBOARDING_KEY);
     if (!completed) {
@@ -76,9 +53,7 @@ const Onboarding: React.FC = () => {
     }
   }, []);
 
-  /**
-   * Update the targetRect whenever the current step changes
-   */
+  // Update the targetRect whenever the current step changes
   useEffect(() => {
     if (stepIndex === null) {
       setTargetRect(null);
@@ -87,9 +62,7 @@ const Onboarding: React.FC = () => {
     const step = onboardingSteps[stepIndex];
     const el = query(step.selector);
     if (!el) {
-      /**
-       * if element disappeared, skip forward to next available step
-       */
+      // If element disappeared, skip forward to next available step
       const next = findNextValid(stepIndex + 1);
       setStepIndex(next);
       return;
@@ -97,9 +70,7 @@ const Onboarding: React.FC = () => {
     setTargetRect(el.getBoundingClientRect());
   }, [stepIndex]);
 
-  /**
-   * Keep the popup aligned to targetRect on scroll/resize
-   */
+  // Keep the popup aligned to targetRect on scroll/resize
   useEffect(() => {
     const update = () => {
       if (stepIndex === null) return;
@@ -110,9 +81,7 @@ const Onboarding: React.FC = () => {
     };
 
     const onResize = () => {
-      /**
-       * Throttle updates with requestAnimationFrame
-       */
+      // Throttle updates with requestAnimationFrame
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
       rafRef.current = requestAnimationFrame(update);
     };
@@ -127,10 +96,6 @@ const Onboarding: React.FC = () => {
     };
   }, [stepIndex]);
 
-  /**
-   * Navigation helpers
-   */
-
   const handleNext = () => {
     if (stepIndex === null) return setStepIndex(null);
     const next = findNextValid(stepIndex + 1);
@@ -143,9 +108,7 @@ const Onboarding: React.FC = () => {
     setStepIndex(prev);
   };
 
-  /**
-   * Close the onboarding popup and persist completion in localStorage.
-   */
+  // Close the onboarding popup and persist completion in localStorage.
   const handleClose = () => {
     setStepIndex(null);
     localStorage.setItem(ONBOARDING_KEY, "true");
@@ -162,9 +125,7 @@ const Onboarding: React.FC = () => {
    */
   const computePosition = () => {
     if (!targetRect) {
-      /**
-       * Fallback: center of screen
-       */
+      // Fallback: center of screen
       return {
         left: Math.max((window.innerWidth - POPUP_WIDTH) / 2, 12),
         top: Math.max((window.innerHeight - POPUP_HEIGHT) / 2, 12),
@@ -246,9 +207,9 @@ const Onboarding: React.FC = () => {
       >
         <Paper elevation={8} sx={{
           p: 2,
-          backgroundColor: 'background.paper',
-          border: '2px solid',
-          borderColor: 'primary.main',
+          backgroundColor: "background.paper",
+          border: "2px solid",
+          borderColor: "primary.main",
           boxShadow: (theme) => `0 8px 32px ${theme.palette.primary.main}66`,
         }}>
           <Box display="flex" justifyContent="space-between" alignItems="center">
