@@ -44,7 +44,7 @@ const AppCard: FunctionComponent<AppCardProps> = ({
           <CardActionArea sx={{ padding: "16px" }}>
             <CardMedia
               component="img"
-              height="100"
+              height="100px"
               width="240"
               image={image}
               alt={name}
@@ -75,7 +75,18 @@ const AppCard: FunctionComponent<AppCardProps> = ({
                   {description}
                 </Typography>
               </Box>
-              <Box alignItems="center" sx={{ minHeight: "60px", maxHeight: "60px" }}>
+              <Box
+                display="flex"
+                alignItems="center"
+                justifyContent="flex-start"
+                flexWrap="nowrap"
+                width ="100%"
+                sx={{
+                  height: "30px",
+                  gap: 2,
+                  marginTop: "-8px",
+                }}
+                >
                 {tags.slice(0,3).map((tag) => (
                   <Chip
                     key={tag}

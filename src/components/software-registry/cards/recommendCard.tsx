@@ -57,11 +57,10 @@ const RecommendCard = ({
           boxShadow: "0px 6px 14px rgba(0, 0, 0, 0.3)",
         },
         position: "relative",
-        
       }}
     >
       <CardActionArea component={Link} to={`${app.id}`} sx={{ padding: "16px" }}>
-         <Box
+        <Box
           sx={{
             height: 80,
             width: 130,

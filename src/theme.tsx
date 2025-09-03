@@ -29,24 +29,24 @@ export const theme: Theme = createTheme({
       fontStyle: "bold"
     },
     subtitle1:{
-      fontWeight:600,
-      fontSize:18,
+      fontWeight: 600,
+      fontSize: 18,
       color: "#f9473b"
     },
     subtitle2:{
-      fontWeight:400,
-      fontSize:20,
-      fontStyle:"regular"
+      fontWeight: 400,
+      fontSize: 20,
+      fontStyle: "regular"
     },
     body1:{
-      fontWeight:400,
-      fontSize:16,
-      fontStyle:"regular"
+      fontWeight: 400,
+      fontSize: 16,
+      fontStyle: "regular"
     },
     body2:{
-      fontWeight:400,
-      fontSize:16,
-      fontStyle:"regular",
+      fontWeight: 400,
+      fontSize: 16,
+      fontStyle: "regular",
     },
   },
   palette: {
@@ -64,29 +64,29 @@ export const theme: Theme = createTheme({
     MuiCssBaseline: {
       styleOverrides: `
         @font-face {
-          font-family: 'Poppins';
-          src: local('Poppins'), url(${PoppinsRegular}) format('truetype');
+          font-family: "Poppins";
+          src: local("Poppins"), url(${PoppinsRegular}) format("truetype");
           font-weight: 400;
           font-style: normal;
         }
           @font-face {
-          font-family: 'Poppins';
-          src: local('Poppins'), url(${PoppinsMedium}) format('truetype');
+          font-family: "Poppins";
+          src: local("Poppins"), url(${PoppinsMedium}) format("truetype");
           font-weight: 500;
         }
           @font-face {
-          font-family: 'Poppins';
-          src: local('Poppins'), url(${PoppinsSemiBold}) format('truetype');
+          font-family: "Poppins";
+          src: local("Poppins"), url(${PoppinsSemiBold}) format("truetype");
           font-weight: 600;
         }
           @font-face {
-          font-family: 'Poppins';
-          src: local('Poppins'), url(${PoppinsBold}) format('truetype');
+          font-family: "Poppins";
+          src: local("Poppins"), url(${PoppinsBold}) format("truetype");
           font-weight: 700;
         }
         @font-face {
-          font-family: 'Poppins';
-          src: local('Poppins'), url(${PoppinsBlack}) format('truetype');
+          font-family: "Poppins";
+          src: local("Poppins"), url(${PoppinsBlack}) format("truetype");
           font-weight: 900;
         }
       `

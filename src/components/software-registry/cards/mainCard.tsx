@@ -233,6 +233,21 @@ const MainCard: React.FC<CardProps> = ({
           }}
         />
       ))}
+      {tags.length > 3 && (
+        <Chip
+          label={`+${tags.length - 3}`}
+          sx={{
+            height: "25px",
+            borderRadius: "5px",
+            padding: "0px",
+            margin: "2px",
+            backgroundColor: "#ff4d4f",
+            color: "#fff",
+            fontSize: "12px",
+            whiteSpace: "nowrap"
+          }}
+          />
+      )}
     </Box>
   );
 
