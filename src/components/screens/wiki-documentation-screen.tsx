@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
-import { 
-  CircularProgress, 
-  Card, 
-  Box, 
-  TextField, 
-  Grid, 
+import {
+  CircularProgress,
+  Card,
+  Box,
+  TextField,
+  Grid,
   Typography,
-  Button, 
-  FormControl, 
-  Select, 
-  MenuItem, 
+  Button,
+  FormControl,
+  Select,
+  MenuItem,
   Autocomplete,
   IconButton,
   Checkbox,
@@ -26,8 +26,8 @@ import type { ArticleMetadata } from "src/generated/homeLambdasClient";
 import { articleAtom, draftArticleAtom, tagsAtom } from "src/atoms/article";
 import { Search } from "@mui/icons-material";
 import GridViewIcon from "@mui/icons-material/GridView";
-import FormatListBulletedOutlinedIcon from '@mui/icons-material/FormatListBulletedOutlined';
-import SearchOffIcon from '@mui/icons-material/SearchOff';
+import FormatListBulletedOutlinedIcon from "@mui/icons-material/FormatListBulletedOutlined";
+import SearchOffIcon from "@mui/icons-material/SearchOff";
 import CarouselArticleCards from "../wiki-documentation/carousel-article-cards";
 import strings from "src/localization/strings";
 import { wikiScreenColors } from "src/theme";
@@ -47,17 +47,19 @@ const WikiDocumentationScreen = () => {
   const setError = useSetAtom(errorAtom);
   const setArticlesAtom = useSetAtom(articleAtom);
   const setDraftArticlesAtom = useSetAtom(draftArticleAtom);
-  const setTags = useSetAtom(tagsAtom)
+  const setTags = useSetAtom(tagsAtom);
   const draftArticles = useAtomValue(draftArticleAtom);
   const articles = useAtomValue(articleAtom);
   const tags = useAtomValue(tagsAtom);
   const { articleApi } = useLambdasApi();
   const initLoadingState = !articles;
   const [loading, setLoading] = useState(initLoadingState);
-  const [formOpen,  setFormOpen] = useState(false);
+  const [formOpen, setFormOpen] = useState(false);
   const [listView, setListView] = useState(false);
   const [displayedArticles, setDisplayedArticles] = useState<ArticleMetadata[]>(articles ?? []);
-  const [displayedArticlesOnPage, setDisplayedArticlesOnPage] = useState<ArticleMetadata[]>(articles?.slice(0, itemsPerPage) ?? []);
+  const [displayedArticlesOnPage, setDisplayedArticlesOnPage] = useState<ArticleMetadata[]>(
+    articles?.slice(0, itemsPerPage) ?? []
+  );
   const [lastUpdatedArticles, setlastUpdatedArticles] = useState<ArticleMetadata[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [searchInput, setSearchInput] = useState("");
@@ -74,7 +76,9 @@ const WikiDocumentationScreen = () => {
   }, [articles, draftArticles]);
 
   useEffect(() => {
-    setDisplayedArticlesOnPage(displayedArticles.slice((pageNumber - 1) * itemsPerPage, itemsPerPage * pageNumber));
+    setDisplayedArticlesOnPage(
+      displayedArticles.slice((pageNumber - 1) * itemsPerPage, itemsPerPage * pageNumber)
+    );
   }, [pageNumber, displayedArticles]);
   /**
    * Fetches all articles from the API and updates the relevant atoms.
@@ -88,19 +92,18 @@ const WikiDocumentationScreen = () => {
       setDisplayedArticlesOnPage(fetchedArticles.slice(0, itemsPerPage));
       setArticlesAtom(fetchedArticles ?? []);
       if (adminMode) {
-        const fetchedDraftArticles = await articleApi.getArticles({draft: true});
+        const fetchedDraftArticles = await articleApi.getArticles({ draft: true });
         setDraftArticlesAtom(fetchedDraftArticles);
         getTags(fetchedArticles.concat(fetchedDraftArticles));
-      }
-      else getTags(fetchedArticles);
-      if (!adminMode) getLastUpdatedArticles(fetchedArticles)
+      } else getTags(fetchedArticles);
+      if (!adminMode) getLastUpdatedArticles(fetchedArticles);
     } catch (error: any) {
       const message = (await error.response.json()).message;
       setError(message);
     }
-    setTimeout(()=> {
+    setTimeout(() => {
       setLoading(false);
-    }, 1000)
+    }, 1000);
   };
   /**
    * Extracts unique tags from the provided articles and updates the tags atom.
@@ -108,7 +111,7 @@ const WikiDocumentationScreen = () => {
    * @param {ArticleMetadata[]} articles - The list of articles to extract tags from.
    */
   const getTags = (articles: ArticleMetadata[]) => {
-    const allTags = articles.flatMap(article => article.tags ?? []);
+    const allTags = articles.flatMap((article) => article.tags ?? []);
     const uniqueTags = [...new Set(allTags)];
     setTags(uniqueTags);
   };
@@ -125,45 +128,41 @@ const WikiDocumentationScreen = () => {
     const lastUpdatedArticles = [];
     let i = 0;
     while (
-      (!lastCreatedArticleFound 
-      || !lastUpdatedArticleFound 
-      || !lastReadArticleFound)
-      && i < articles.length
+      (!lastCreatedArticleFound || !lastUpdatedArticleFound || !lastReadArticleFound) &&
+      i < articles.length
     ) {
       const lastUpdatedAt = articles[i].lastUpdatedAt?.getTime();
       const createdAt = articles[i].createdAt?.getTime();
       const lastReadAt = articles[i].lastReadAt?.getTime();
       if (!lastCreatedArticleFound && lastUpdatedAt === createdAt) {
-        lastUpdatedArticles.push(articles[i])
+        lastUpdatedArticles.push(articles[i]);
         lastCreatedArticleFound = true;
-      }
-      else if (!lastReadArticleFound && lastUpdatedAt === lastReadAt) {
-        lastUpdatedArticles.push(articles[i])
+      } else if (!lastReadArticleFound && lastUpdatedAt === lastReadAt) {
+        lastUpdatedArticles.push(articles[i]);
         lastReadArticleFound = true;
-      }
-      else if (!lastUpdatedArticleFound) {
-        lastUpdatedArticles.push(articles[i])
+      } else if (!lastUpdatedArticleFound) {
+        lastUpdatedArticles.push(articles[i]);
         lastUpdatedArticleFound = true;
       }
-      i++
+      i++;
     }
-    setlastUpdatedArticles(lastUpdatedArticles)
+    setlastUpdatedArticles(lastUpdatedArticles);
   };
   /**
    * Deletes the specified article by its ID and updates the articles atom.
    *
    * @param {string | undefined} articleId - The ID of the article to delete.
-    */
-  const handleDelete = async(articleId?: string) => {
+   */
+  const handleDelete = async (articleId?: string) => {
     if (!articleId) return;
     try {
-      await articleApi.deleteArticle({id: articleId});
-      setArticlesAtom((articles) => (articles ?? []).filter(article => article.id !== articleId))
-    } catch(error: any) {
+      await articleApi.deleteArticle({ id: articleId });
+      setArticlesAtom((articles) => (articles ?? []).filter((article) => article.id !== articleId));
+    } catch (error: any) {
       const message = (await error.response.json()).message;
       setError(message);
     }
-  }
+  };
   /**
    * Handles changes in the search input field.
    * Filters articles based on the search query and selected tags.
@@ -175,14 +174,18 @@ const WikiDocumentationScreen = () => {
     setSearchInput(newSearchInput ?? "");
 
     if (!newSearchInput || newSearchInput === "") {
-      setDisplayedArticles(adminMode && displayOption === "draft" ? draftArticles ?? [] : articles ?? []);
+      setDisplayedArticles(
+        adminMode && displayOption === "draft" ? draftArticles ?? [] : articles ?? []
+      );
       return;
     }
 
-    const filteredArticles = (adminMode && displayOption === "draft" ? draftArticles ?? [] : articles ?? [])
-      .filter(article => 
-        article.title.toLowerCase().includes(newSearchInput.toLowerCase()) && 
-        selectedTags.every(tag => article.tags?.includes(tag))
+    const filteredArticles = (
+      adminMode && displayOption === "draft" ? draftArticles ?? [] : articles ?? []
+    ).filter(
+      (article) =>
+        article.title.toLowerCase().includes(newSearchInput.toLowerCase()) &&
+        selectedTags.every((tag) => article.tags?.includes(tag))
     );
     setDisplayedArticles(filteredArticles);
   };
@@ -194,13 +197,15 @@ const WikiDocumentationScreen = () => {
    */
   const handleSelectedTagChange = (values: string[]) => {
     setSelectedTags(values);
-    const filteredArticles = (adminMode && displayOption === "draft" ? draftArticles ?? [] : articles ?? [])
-      .filter(article => 
-        article.title.toLowerCase().includes(searchInput.toLowerCase()) && 
-        values.every(tag => article.tags?.includes(tag))
+    const filteredArticles = (
+      adminMode && displayOption === "draft" ? draftArticles ?? [] : articles ?? []
+    ).filter(
+      (article) =>
+        article.title.toLowerCase().includes(searchInput.toLowerCase()) &&
+        values.every((tag) => article.tags?.includes(tag))
     );
     setDisplayedArticles(filteredArticles);
-  };;
+  };
   /**
    * Handles the change of the display option between all articles and draft articles.
    * Updates the displayed articles based on the selected option.
@@ -210,14 +215,12 @@ const WikiDocumentationScreen = () => {
   const handleDisplayOptionChange = (event: SelectChangeEvent<string>) => {
     const newOption = event.target.value;
     setDisplayOption(newOption);
-    if (newOption === "draft") 
-      setDisplayedArticles(draftArticles ?? [])
-    else setDisplayedArticles(articles ?? [])
+    if (newOption === "draft") setDisplayedArticles(draftArticles ?? []);
+    else setDisplayedArticles(articles ?? []);
+    setPageNumber(1);
   };
 
-
-  const CustomPopper = styled((props: PopperProps) => 
-    <Popper {...props} placement="bottom" />)({
+  const CustomPopper = styled((props: PopperProps) => <Popper {...props} placement="bottom" />)({
     "& .MuiAutocomplete-noOptions": {
       display: "none"
     },
@@ -228,37 +231,40 @@ const WikiDocumentationScreen = () => {
     }
   });
   /**
- * Renders the search bar component with autocomplete and tag selection.
- * Allows filtering articles based on input text and selected tags.
- */
+   * Renders the search bar component with autocomplete and tag selection.
+   * Allows filtering articles based on input text and selected tags.
+   */
   const renderSearch = () => (
-    <Card sx={{
-      width: {
-        lg: adminMode ? "55%" : "73%",
-        md: adminMode ? "55%" : "calc(100% - 80px)",
-        xs: adminMode ? "100%": "calc(100% - 80px);"
-      }, 
-      boxShadow: 2, 
-      marginBottom: {xs: 2}
-    }}>
-      <Box sx={{ 
-        display: "flex", 
-        justifyContent: "center", 
-        backgroundColor: colors.button.main,
-        
-      }}>
+    <Card
+      sx={{
+        width: {
+          lg: adminMode ? "55%" : "73%",
+          md: adminMode ? "55%" : "calc(100% - 80px)",
+          xs: adminMode ? "100%" : "calc(100% - 80px);"
+        },
+        boxShadow: 2,
+        marginBottom: { xs: 2 }
+      }}
+    >
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          backgroundColor: colors.button.main
+        }}
+      >
         <Autocomplete
           PopperComponent={CustomPopper}
           multiple
           disableCloseOnSelect
           id="checkboxes-tags-select-component"
           options={tags}
-          sx={{width:"100%"}}
+          sx={{ width: "100%" }}
           clearOnBlur={false}
           inputValue={searchInput}
           onInputChange={handleSearchInputChange}
           onChange={(_event, values) => {
-            handleSelectedTagChange(values)
+            handleSelectedTagChange(values);
           }}
           size="small"
           renderOption={(props, option, { selected }) => (
@@ -267,11 +273,12 @@ const WikiDocumentationScreen = () => {
               style={{ display: "flex", alignItems: "center" }}
               key={`tags-option-${option}`}
             >
-              <Checkbox sx={{
-                  color: colors.button.text, 
-                  marginRight: 2,
-                }} 
-                checked={selected} 
+              <Checkbox
+                sx={{
+                  color: colors.button.text,
+                  marginRight: 2
+                }}
+                checked={selected}
               />
               <Box
                 minWidth="5px"
@@ -323,7 +330,7 @@ const WikiDocumentationScreen = () => {
         />
       </Box>
     </Card>
-  )
+  );
   const renderCreateButton = () => (
     <Button
       onClick={() => setFormOpen(true)}
@@ -337,35 +344,32 @@ const WikiDocumentationScreen = () => {
         height: "55px",
         backgroundColor: colors.button.main,
         color: colors.button.text,
-        "&:hover": {backgroundColor: colors.button.hover}
+        "&:hover": { backgroundColor: colors.button.hover }
       }}
     >
-      <Typography 
-        variant={"body1"} 
-        marginLeft={1} 
-        sx={{fontWeight: "bold"}}
-      >
+      <Typography variant={"body1"} marginLeft={1} sx={{ fontWeight: "bold" }}>
         {strings.wikiDocumentation.create}
       </Typography>
     </Button>
   );
 
   const renderListViewButton = () => (
-    <Button 
-      variant="contained" 
+    <Button
+      variant="contained"
       sx={{
-        maxWidth: "32px", 
+        maxWidth: "32px",
         height: "55px",
-        backgroundColor: colors.button.main, 
-        "&:hover": {backgroundColor: colors.button.hover}
-      }} 
+        backgroundColor: colors.button.main,
+        "&:hover": { backgroundColor: colors.button.hover }
+      }}
       size="small"
-      onClick={()=>setListView(!listView)}
+      onClick={() => setListView(!listView)}
     >
-      {listView 
-        ? <FormatListBulletedOutlinedIcon sx={{color: colors.button.text}}/> 
-        : <GridViewIcon sx={{color: colors.button.text}}/>
-      }
+      {listView ? (
+        <FormatListBulletedOutlinedIcon sx={{ color: colors.button.text }} />
+      ) : (
+        <GridViewIcon sx={{ color: colors.button.text }} />
+      )}
     </Button>
   );
 
@@ -373,12 +377,12 @@ const WikiDocumentationScreen = () => {
     <FormControl
       sx={{
         width: {
-          md: "17%", 
-          sm: "40%", 
-          xs:"35%"
+          md: "17%",
+          sm: "40%",
+          xs: "35%"
         },
         color: colors.button.text,
-        "& fieldset": { border: 'none' },
+        "& fieldset": { border: "none" }
       }}
       size="medium"
     >
@@ -386,10 +390,10 @@ const WikiDocumentationScreen = () => {
         value={displayOption}
         onChange={handleDisplayOptionChange}
         displayEmpty
-        inputProps={{ 'aria-label': 'Without label' }}
+        inputProps={{ "aria-label": "Without label" }}
         sx={{
-          backgroundColor: colors.button.main, 
-          boxShadow: 2, 
+          backgroundColor: colors.button.main,
+          boxShadow: 2,
           textAlign: "center",
           color: colors.button.text,
           fontWeight: "bold",
@@ -404,31 +408,35 @@ const WikiDocumentationScreen = () => {
               marginTop: "10px",
               borderTopLeftRadius: "0px",
               borderTopRightRadius: "0px",
-              backgroundColor: colors.button.main,
-            },
-          },
+              backgroundColor: colors.button.main
+            }
+          }
         }}
       >
-        <MenuItem sx={{
-          textTransform: "uppercase",
-          paddingLeft: 3,
-          color: colors.button.text,
-          backgroundColor: colors.button.main, 
-          "&:hover": {
-            backgroundColor: colors.button.hover
-          }}} 
+        <MenuItem
+          sx={{
+            textTransform: "uppercase",
+            paddingLeft: 3,
+            color: colors.button.text,
+            backgroundColor: colors.button.main,
+            "&:hover": {
+              backgroundColor: colors.button.hover
+            }
+          }}
           value="all"
         >
           {strings.wikiDocumentation.allArticles}
-        </MenuItem> 
-        <MenuItem sx={{
-          textTransform: "uppercase",
-          paddingLeft: 3,
-          color: colors.button.text,
-          backgroundColor: colors.button.main, 
-          "&:hover": {
-            backgroundColor: colors.button.hover
-          }}} 
+        </MenuItem>
+        <MenuItem
+          sx={{
+            textTransform: "uppercase",
+            paddingLeft: 3,
+            color: colors.button.text,
+            backgroundColor: colors.button.main,
+            "&:hover": {
+              backgroundColor: colors.button.hover
+            }
+          }}
           value="draft"
         >
           {strings.wikiDocumentation.draft}
@@ -438,22 +446,25 @@ const WikiDocumentationScreen = () => {
   );
 
   const renderTitle = (text: string) => (
-    <Typography variant="h4" sx={{ 
-      fontWeight: "bold", 
-      marginTop: 4, 
-      marginBottom: 1, 
-      marginLeft: 3
-    }}>
+    <Typography
+      variant="h4"
+      sx={{
+        fontWeight: "bold",
+        marginTop: 4,
+        marginBottom: 1,
+        marginLeft: 3
+      }}
+    >
       {text}
     </Typography>
   );
 
   const renderToolBar = () => (
     <Grid
-      container 
-      justifyContent={"space-between"} 
+      container
+      justifyContent={"space-between"}
       sx={{
-        marginTop: articles && articles.length !== 0 ? 4 : 2, 
+        marginTop: articles && articles.length !== 0 ? 4 : 2,
         marginBottom: 2
       }}
     >
@@ -465,102 +476,88 @@ const WikiDocumentationScreen = () => {
   );
 
   if (loading) {
-  return (
-    <Card
-      sx={{
-        p: "25%",
-        display: "flex",
-        justifyContent: "center"
-      }}
-    >
-      <CircularProgress sx={{ scale: "150%" }} />
-    </Card>
-  );
-}
+    return (
+      <Card
+        sx={{
+          p: "25%",
+          display: "flex",
+          justifyContent: "center"
+        }}
+      >
+        <CircularProgress sx={{ scale: "150%" }} />
+      </Card>
+    );
+  }
 
-return (
-  <>
-    {formOpen ? (
-      <CreateOrEditArticleForm
-        setFormOpen={setFormOpen}
-        action="create"
-        adminMode={adminMode}
-      />
-    ) : (
-      <>
-        {!adminMode && (  
-      <>  
-        {renderTitle(strings.wikiDocumentation.cardTitle)}  
-        <CarouselArticleCards articles={lastUpdatedArticles} />  
-      </>  
-    )} 
-        <Box
-          sx={
-            adminMode
-              ? { marginTop: 4, marginBottom: 4 }
-              : { paddingLeft: 2, paddingRight: 2, marginBottom: 4 }
-          }
-        >
-          {renderToolBar()}
-          {displayedArticlesOnPage.length !== 0 ? (
-            <Grid
-              container
-              spacing={adminMode ? 4 : 3}
-              textAlign={"center"}
-            >
-              {displayedArticlesOnPage.map((article) => (
-                <Grid
-                  item
-                  lg={!listView ? 3 : 12}
-                  md={!listView ? 4 : 12}
-                  sm={!listView ? 6 : 12}
-                  xs={12}
-                  key={`article-grid-item-${article.id}`}
-                >
-                  {listView ? (
-                    <ArticleListItem
-                      article={article}
-                      adminMode={adminMode}
-                      handleDelete={handleDelete}
-                    />
-                  ) : (
-                    <ArticleCard
-                      article={article}
-                      adminMode={adminMode}
-                      handleDelete={handleDelete}
-                    />
-                  )}
-                </Grid>
-              ))}
-            </Grid>
-          ) : (
-            <Grid
-              container
-              justifyContent="center"
-              sx={{ color: colors.button.text }}
-            >
-              <SearchOffIcon />
-              <Typography variant="body1">
-                {strings.wikiDocumentation.noArticlesFound}
-              </Typography>
+  return (
+    <>
+      {formOpen ? (
+        <CreateOrEditArticleForm setFormOpen={setFormOpen} action="create" adminMode={adminMode} />
+      ) : (
+        <>
+          {!adminMode && (
+            <>
+              {renderTitle(strings.wikiDocumentation.cardTitle)}
+              <CarouselArticleCards articles={lastUpdatedArticles} />
+            </>
+          )}
+          <Box
+            sx={
+              adminMode
+                ? { marginTop: 4, marginBottom: 4 }
+                : { paddingLeft: 2, paddingRight: 2, marginBottom: 4 }
+            }
+          >
+            {renderToolBar()}
+            {displayedArticlesOnPage.length !== 0 ? (
+              <Grid container spacing={adminMode ? 4 : 3} textAlign={"center"}>
+                {displayedArticlesOnPage.map((article) => (
+                  <Grid
+                    item
+                    lg={!listView ? 3 : 12}
+                    md={!listView ? 4 : 12}
+                    sm={!listView ? 6 : 12}
+                    xs={12}
+                    key={`article-grid-item-${article.id}`}
+                  >
+                    {listView ? (
+                      <ArticleListItem
+                        article={article}
+                        adminMode={adminMode}
+                        handleDelete={handleDelete}
+                      />
+                    ) : (
+                      <ArticleCard
+                        article={article}
+                        adminMode={adminMode}
+                        handleDelete={handleDelete}
+                      />
+                    )}
+                  </Grid>
+                ))}
+              </Grid>
+            ) : (
+              <Grid container justifyContent="center" sx={{ color: colors.button.text }}>
+                <SearchOffIcon />
+                <Typography variant="body1">{strings.wikiDocumentation.noArticlesFound}</Typography>
+              </Grid>
+            )}
+          </Box>
+
+          {displayedArticles.length > itemsPerPage && (
+            <Grid container justifyContent="center" sx={{ marginBottom: 3 }}>
+              <Pagination
+                size="large"
+                count={Math.floor(displayedArticles?.length / itemsPerPage) + 1}
+                onChange={(_event, page) => setPageNumber(page)}
+                page={pageNumber}
+              />
             </Grid>
           )}
-        </Box>
-
-        {displayedArticles.length > itemsPerPage && (
-          <Grid container justifyContent="center" sx={{ marginBottom: 3 }}>
-            <Pagination
-              size="large"
-              count={Math.floor(displayedArticles?.length / itemsPerPage) + 1}
-              onChange={(_event, page) => setPageNumber(page)}
-              page={pageNumber}
-            />
-          </Grid>
-        )}
-      </>
-    )}
-  </>
-);
+        </>
+      )}
+    </>
+  );
 };
 
 export default WikiDocumentationScreen;
