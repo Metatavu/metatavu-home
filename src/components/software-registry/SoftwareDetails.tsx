@@ -80,7 +80,7 @@ const SoftwareDetails: FunctionComponent = () => {
       const fetchedSoftware = await softwareApi.listSoftware();
       setSoftwareList(fetchedSoftware);
     } catch (error) {
-      setError((error as Error).message || "Error fetching software list");
+      setError((error as Error).message || strings.softwareRegistry.errorFetchingSoftwareToList);
     } finally {
       setLoading(false);
     }
