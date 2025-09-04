@@ -354,7 +354,7 @@ const NewQuestionnaireBuilder = () => {
                 placement="bottom"
                 disableHoverListener={isFormValid(questionnaire)}
               >
-                <span>
+                <Box>
                   <Button
                     sx={{ display: "flex", alignItems: "center", mt: 6, mr: 4 }}
                     id="save-submit"
@@ -370,7 +370,7 @@ const NewQuestionnaireBuilder = () => {
                       strings.newQuestionnaireBuilder.saveButton
                     )}
                   </Button>
-                </span>
+                </Box>
               </Tooltip>
             </CardActions>
           </Card>
