@@ -32,7 +32,7 @@ const SoftwareDetails: FunctionComponent = () => {
   const [loading, setLoading] = useState(false);
   const [software, setSoftware] = useState<SoftwareRegistry | null>(null);
   const [softwareList, setSoftwareList] = useAtom(softwareAtom);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string |  { message: string; details?: any } | null>(null);
   const [createdByUserName, setCreatedByUserName] = useState<string>("");
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const navigate = useNavigate();
@@ -47,9 +47,6 @@ const SoftwareDetails: FunctionComponent = () => {
     fetchSoftwareDetails();
   }, [id]);
 
-  /**
-   * Fetches all software to list
-   */
   useEffect(() => {
     fetchSoftwaresToList();
   }, []);
@@ -75,7 +72,7 @@ const SoftwareDetails: FunctionComponent = () => {
   };
 
   /**
-   * This function retrieves the list of software applications from the API and updates the state.
+   * List software and update the state.
    */
   const fetchSoftwaresToList = async () => {
     setLoading(true);
@@ -83,7 +80,7 @@ const SoftwareDetails: FunctionComponent = () => {
       const fetchedSoftware = await softwareApi.listSoftware();
       setSoftwareList(fetchedSoftware);
     } catch (error) {
-      setError(`Error fetching software data: ${error}`);
+      setError({message:strings.softwareRegistry.errorFetchingSoftwareToList, details: error});
     } finally {
       setLoading(false);
     }
@@ -205,15 +202,15 @@ const SoftwareDetails: FunctionComponent = () => {
   return (
     <Container sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       <Box my={4} display="flex" alignItems="center" position="relative">
-        <IconButton aria-label="back" onClick={() => navigate(-1)} sx={{position: "absolute", left: 0}}>
+        <IconButton
+          aria-label="back"
+          onClick={() => navigate(-1)}
+          sx={{ position: "absolute", left: 0 }}
+        >
           <ArrowBackIcon />
         </IconButton>
         <Box flexGrow={1} textAlign="center">
-          <Typography
-            variant="h2"
-          >
-            {strings.softwareRegistry.application}
-          </Typography>
+          <Typography variant="h2">{strings.softwareRegistry.application}</Typography>
         </Box>
       </Box>
       <Box textAlign="center" mb={4}>
@@ -221,10 +218,10 @@ const SoftwareDetails: FunctionComponent = () => {
           <img
             src={software.image}
             alt={software.name}
-            style={{ width: "200px", height: "200px", objectFit: "contain" }} />
+            style={{ width: "200px", height: "200px", objectFit: "contain" }}
+          />
         )}
-        <Typography gutterBottom variant="h3"
-        >
+        <Typography gutterBottom variant="h3">
           {software.name}
         </Typography>
         <Box display="flex" justifyContent="center" flexWrap="wrap" gap={1} mb={2}>
@@ -257,13 +254,35 @@ const SoftwareDetails: FunctionComponent = () => {
           <Typography variant="h4" gutterBottom>
             {strings.softwareRegistry.description}
           </Typography>
-          <Typography variant="body1"sx={{ wordBreak: "break-word", overflowWrap: "break-word",  whiteSpace: "normal", maxHeight:"220px",overflowY: "auto"}}>{software.description}</Typography>
+          <Typography
+            variant="body1"
+            sx={{
+              wordBreak: "break-word",
+              overflowWrap: "break-word",
+              whiteSpace: "normal",
+              maxHeight: "220px",
+              overflowY: "auto"
+            }}
+          >
+            {software.description}
+          </Typography>
         </Grid>
         <Grid item xs={12} md={6}>
           <Typography variant="h4" gutterBottom>
             {strings.softwareRegistry.review}
           </Typography>
-          <Typography variant="body1" sx={{wordBreak:"break-word", overflowWrap:"break-word",whiteSpace: "normal", maxHeight:"220px",overflowY: "auto"}}>{software.review}</Typography>
+          <Typography
+            variant="body1"
+            sx={{
+              wordBreak: "break-word",
+              overflowWrap: "break-word",
+              whiteSpace: "normal",
+              maxHeight: "220px",
+              overflowY: "auto"
+            }}
+          >
+            {software.review}
+          </Typography>
         </Grid>
       </Grid>
       <Box textAlign="center" m={4}>
@@ -298,8 +317,8 @@ const SoftwareDetails: FunctionComponent = () => {
               fontWeight: "bold",
               color: "#fff",
               "&:hover": {
-                backgroundColor: "#000",
-              },
+                backgroundColor: "#000"
+              }
             }}
             onClick={handleAddSoftware}
           >

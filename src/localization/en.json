@@ -148,7 +148,8 @@
     "searchPlaceholder": "Search and select users",
     "loading": "Loading...",
     "errorUnknownUser": "Unknown user",
-    "errorCreatingSoftware": "Error creating software:"
+    "errorCreatingSoftware": "Error creating software:",
+    "errorFetchingSoftwareToList": "Error fetching software to list:"
   },
   "softwareStatus": {
     "all": "All",

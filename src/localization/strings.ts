@@ -178,6 +178,7 @@ export interface Localized extends LocalizedStringsMethods {
     loading: string;
     errorUnknownUser: string;
     errorCreatingSoftware: string;
+    errorFetchingSoftwareToList: string;
   };
 
   /**

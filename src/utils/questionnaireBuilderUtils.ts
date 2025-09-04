@@ -186,18 +186,17 @@ export const createEmptyQuestionnaire = (): Questionnaire => {
 /**
  * Enum for validation conditions that replaces string-based error types
  */
-export enum ValidationCondition {
-  VALID = "valid",
-  TITLE_AND_DESCRIPTION_EMPTY = "titleAndDescriptionEmpty",
-  TITLE_EMPTY = "titleEmpty",
-  DESCRIPTION_EMPTY = "descriptionEmpty",
-  NO_QUESTIONS = "noQuestions",
-  QUESTIONS_AND_ANSWERS_EMPTY = "questionsAndAnswersEmpty",
-  QUESTIONS_EMPTY = "emptyQuestions",
-  ANSWERS_EMPTY = "emptyAnswers",
-  NO_CORRECT_ANSWERS = "noCorrectAnswers",
-  NO_PASS_SCORE = "noPassScore"
-}
+export type ValidationCondition =
+  | "valid"
+  | "titleAndDescriptionEmpty"
+  | "titleEmpty"
+  | "descriptionEmpty"
+  | "noQuestions"
+  | "questionsAndAnswersEmpty"
+  | "emptyQuestions"
+  | "emptyAnswers"
+  | "noCorrectAnswers"
+  | "noPassScore";
 
 /**
  * Validates a questionnaire and returns validation result
@@ -212,55 +211,33 @@ export const validateQuestionnaire = (
   condition: ValidationCondition;
 } => {
   if (!questionnaire.title && !questionnaire.description) {
-    return {
-      isValid: false,
-      condition: ValidationCondition.TITLE_AND_DESCRIPTION_EMPTY
-    };
+    return { isValid: false, condition: "titleAndDescriptionEmpty" };
   }
 
   if (!questionnaire.title) {
-    return {
-      isValid: false,
-      condition: ValidationCondition.TITLE_EMPTY
-    };
+    return { isValid: false, condition: "titleEmpty" };
   }
 
   if (!questionnaire.description) {
-    return {
-      isValid: false,
-      condition: ValidationCondition.DESCRIPTION_EMPTY
-    };
+    return { isValid: false, condition: "descriptionEmpty" };
   }
 
   if (!questionnaire.questions || questionnaire.questions.length === 0) {
-    return {
-      isValid: false,
-      condition: ValidationCondition.NO_QUESTIONS
-    };
+    return { isValid: false, condition: "noQuestions" };
   }
 
   const hasAnyCorrectAnswers = questionnaire.questions.some(
-    (question) =>
-      question.answerOptions && question.answerOptions.some((option) => option.isCorrect)
+    (q) => q.answerOptions && q.answerOptions.some((opt) => opt.isCorrect)
   );
-
   if (!hasAnyCorrectAnswers) {
-    return {
-      isValid: false,
-      condition: ValidationCondition.NO_CORRECT_ANSWERS
-    };
+    return { isValid: false, condition: "noCorrectAnswers" };
   }
 
   if (questionnaire.passScore === undefined || questionnaire.passScore === null) {
-    return {
-      isValid: false,
-      condition: ValidationCondition.NO_PASS_SCORE
-    };
+    return { isValid: false, condition: "noPassScore" };
   }
-  return {
-    isValid: true,
-    condition: ValidationCondition.VALID
-  };
+
+  return { isValid: true, condition: "valid" };
 };
 
 /**
@@ -274,6 +251,17 @@ export const isFormValid = (questionnaire: Questionnaire): boolean => {
   return isValid;
 };
 
+/**
+ * Checks whether a question is valid.
+ *
+ * A question is considered valid if:
+ * - It has non-empty text.
+ * - It has at least one answer option.
+ * - All answer options have non-empty labels.
+ *
+ * @param question - The question object to validate.
+ * @returns `true` if the question is valid, otherwise `false`.
+ */
 export const isQuestionValid = (question: Question): boolean => {
   if (
     !question.questionText ||
@@ -311,28 +299,32 @@ export const getValidationTooltipMessage = (
 ): string => {
   const { condition } = validateQuestionnaire(questionnaire);
 
-  if (condition === ValidationCondition.VALID) {
-    return "";
-  }
+  if (condition === "valid") return "";
 
   switch (condition) {
-    case ValidationCondition.TITLE_AND_DESCRIPTION_EMPTY:
+    case "titleAndDescriptionEmpty":
       return strings.newQuestionnaireBuilder.tooltipBothEmpty;
-    case ValidationCondition.TITLE_EMPTY:
+    case "titleEmpty":
       return strings.newQuestionnaireBuilder.tooltipEmptyTitle;
-    case ValidationCondition.DESCRIPTION_EMPTY:
+    case "descriptionEmpty":
       return strings.newQuestionnaireBuilder.tooltipEmptyDescription;
-    case ValidationCondition.NO_QUESTIONS:
-      return strings.error.questionnaireSaveFailed;
-    case ValidationCondition.NO_CORRECT_ANSWERS:
-      return strings.error.questionnaireSaveFailed;
-    case ValidationCondition.NO_PASS_SCORE:
+    case "noQuestions":
+    case "noCorrectAnswers":
+    case "noPassScore":
       return strings.error.questionnaireSaveFailed;
     default:
       return strings.error.generic;
   }
 };
 
+/**
+ * Validates a question object by checking if it has text and answer options.
+ *
+ * @param question - The question object to validate.
+ * @returns An object containing:
+ *  - `isValid`: whether the question passes validation
+ *  - `condition`: a ValidationCondition indicating which part of the question is invalid, if any
+ */
 export const validateQuestion = (
   question: Question
 ): {
@@ -343,35 +335,31 @@ export const validateQuestion = (
   const hasAnswers =
     question.answerOptions &&
     question.answerOptions.length > 0 &&
-    question.answerOptions.every((option) => option.label.trim() !== "");
+    question.answerOptions.every((o) => o.label.trim() !== "");
 
   if (!hasText && !hasAnswers) {
-    return {
-      isValid: false,
-      condition: ValidationCondition.QUESTIONS_AND_ANSWERS_EMPTY
-    };
+    return { isValid: false, condition: "questionsAndAnswersEmpty" };
   }
-
   if (!hasText) {
-    return {
-      isValid: false,
-      condition: ValidationCondition.QUESTIONS_EMPTY
-    };
+    return { isValid: false, condition: "emptyQuestions" };
   }
-
   if (!hasAnswers) {
-    return {
-      isValid: false,
-      condition: ValidationCondition.ANSWERS_EMPTY
-    };
+    return { isValid: false, condition: "emptyAnswers" };
   }
 
-  return {
-    isValid: true,
-    condition: ValidationCondition.VALID
-  };
+  return { isValid: true, condition: "valid" };
 };
 
+/**
+ * Returns a validation tooltip message for a given question.
+ *
+ * Uses {@link validateQuestion} to determine the validation condition
+ * and maps it to a localized tooltip or error string.
+ *
+ * @param question - The question object to validate.
+ * @param strings - A collection of localized tooltip and error messages.
+ * @returns The appropriate tooltip message, or an empty string if the question is valid.
+ */
 export const getQuestionValidationTooltipMessage = (
   question: Question,
   strings: {
@@ -388,19 +376,17 @@ export const getQuestionValidationTooltipMessage = (
 ): string => {
   const { condition } = validateQuestion(question);
 
-  if (condition === ValidationCondition.VALID) {
-    return "";
-  }
+  if (condition === "valid") return "";
 
   switch (condition) {
-    case ValidationCondition.NO_QUESTIONS:
-      return strings.error.questionnaireSaveFailed;
-    case ValidationCondition.QUESTIONS_AND_ANSWERS_EMPTY:
+    case "questionsAndAnswersEmpty":
       return strings.newQuestionnaireCard.tooltipBothEmpty;
-    case ValidationCondition.QUESTIONS_EMPTY:
+    case "emptyQuestions":
       return strings.newQuestionnaireCard.tooltipEmptyQuestion;
-    case ValidationCondition.ANSWERS_EMPTY:
+    case "emptyAnswers":
       return strings.newQuestionnaireCard.tooltipEmptyAnswers;
+    case "noQuestions":
+      return strings.error.questionnaireSaveFailed;
     default:
       return strings.error.generic;
   }

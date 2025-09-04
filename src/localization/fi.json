@@ -148,7 +148,8 @@
     "searchPlaceholder": "Etsi ja valitse käyttäjiä",
     "loading": "Lastaus...",
     "errorUnknownUser": "Tuntematon käyttäjä",
-    "errorCreatingSoftware": "Virhe ohjelmiston luomisessa"
+    "errorCreatingSoftware": "Virhe ohjelmiston luomisessa",
+    "errorFetchingSoftwareToList": "Virhe ohjelmistojen hakemisessa listattavaksi"
   },
   "softwareStatus": {
     "all": "Kaikki",

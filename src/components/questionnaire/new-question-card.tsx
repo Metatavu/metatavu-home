@@ -13,7 +13,10 @@ import type React from "react";
 import { useState } from "react";
 import type { AnswerOption } from "src/generated/homeLambdasClient";
 import strings from "src/localization/strings";
-import { isQuestionValid, getQuestionValidationTooltipMessage} from "src/utils/questionnaireBuilderUtils";
+import {
+  isQuestionValid,
+  getQuestionValidationTooltipMessage
+} from "src/utils/questionnaireBuilderUtils";
 
 /**
  * Interface for the NewQuestionCard component
@@ -163,22 +166,22 @@ const NewQuestionCard = ({ handleAddQuestion }: Props) => {
                 {strings.newQuestionnaireCard.addAnswer}
               </Typography>
             </Button>
-            <Tooltip 
-                title={getQuestionValidationTooltipMessage({questionText, answerOptions}, strings)} 
-                placement="bottom"
-                disableHoverListener={isQuestionValid({ questionText, answerOptions })}
-              >
-            <span>
-            <Button
-              sx={{ alignItems: "center" }}
-              size="large"
-              variant="contained"
-              onClick={handleAddNewQuestion}
-              disabled={isDisabled}
+            <Tooltip
+              title={getQuestionValidationTooltipMessage({ questionText, answerOptions }, strings)}
+              placement="bottom"
+              disableHoverListener={isQuestionValid({ questionText, answerOptions })}
             >
-              {strings.newQuestionnaireCard.saveAnswer}
-            </Button>
-            </span>
+              <Box>
+                <Button
+                  sx={{ alignItems: "center" }}
+                  size="large"
+                  variant="contained"
+                  onClick={handleAddNewQuestion}
+                  disabled={isDisabled}
+                >
+                  {strings.newQuestionnaireCard.saveAnswer}
+                </Button>
+              </Box>
             </Tooltip>
           </CardActions>
         </CardContent>
