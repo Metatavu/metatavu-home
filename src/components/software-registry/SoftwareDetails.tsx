@@ -32,7 +32,7 @@ const SoftwareDetails: FunctionComponent = () => {
   const [loading, setLoading] = useState(false);
   const [software, setSoftware] = useState<SoftwareRegistry | null>(null);
   const [softwareList, setSoftwareList] = useAtom(softwareAtom);
-  const [error, setError] = useState<string |  { message: string; details?: any } | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [createdByUserName, setCreatedByUserName] = useState<string>("");
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const navigate = useNavigate();
@@ -80,7 +80,7 @@ const SoftwareDetails: FunctionComponent = () => {
       const fetchedSoftware = await softwareApi.listSoftware();
       setSoftwareList(fetchedSoftware);
     } catch (error) {
-      setError({message:strings.softwareRegistry.errorFetchingSoftwareToList, details: error});
+      setError((error as Error).message || "Error fetching software list");
     } finally {
       setLoading(false);
     }
