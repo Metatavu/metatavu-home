@@ -25,6 +25,7 @@ import { userProfileAtom } from "src/atoms/auth";
 import { errorAtom } from "src/atoms/error";
 import { usersAtom } from "src/atoms/user";
 import TaskTable from "src/components/sprint-view-table/tasks-table";
+import BackButton from "../generics/back-button";
 import type {
   ResourceAllocations,
   ResourceAllocationsProject,
@@ -113,7 +114,7 @@ const SprintViewScreen = () => {
       ) : (
         /* TODO: Need to fetch the status from home-lambdas first for phases, then recreate filter in metatavu-home */
         /* <TaskStatusFilter setFilter={setFilter} /> */
-        <Container maxWidth="lg" sx={{ mt: 4 }}>
+        <Container maxWidth="lg" sx={{ mt: 4}}>
           <Paper elevation={3} sx={{ padding: 4, borderRadius: 3 }}>
             <Stack spacing={3}>
               {adminMode && (
@@ -202,16 +203,9 @@ const SprintViewScreen = () => {
                   />
                 ))
               )}
-              <Card sx={{ mt: 4, width: "100%" }}>
-                <Link to={adminMode ? "/admin" : "/"} style={{ textDecoration: "none" }}>
-                  <Button variant="contained" sx={{ p: 2, width: "100%" }}>
-                    <KeyboardReturn sx={{ marginRight: "10px" }} />
-                    <Typography>{strings.sprint.back}</Typography>
-                  </Button>
-                </Link>
-              </Card>
             </Stack>
           </Paper>
+         <BackButton />
         </Container>
       )}
     </>

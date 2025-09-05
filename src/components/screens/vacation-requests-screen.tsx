@@ -19,6 +19,7 @@ import { Link } from "react-router-dom";
 import { KeyboardReturn, PeopleAlt } from "@mui/icons-material";
 import { renderVacationDaysTextForScreen } from "src/utils/vacation-days-utils";
 import { usersAtom } from "src/atoms/user";
+import BackButton from "../generics/back-button";
 
 /**
  * Vacation requests screen
@@ -278,14 +279,7 @@ const VacationRequestsScreen = () => {
       
       {/* Admin Tools Section has been removed */}
       
-      <Card sx={{ margin: 0, padding: "10px", width: "100%" }}>
-        <Link to={adminMode ? "/admin" : "/"} style={{ textDecoration: "none" }}>
-          <Button variant="contained" sx={{ padding: "10px", width: "100%" }}>
-            <KeyboardReturn sx={{ marginRight: "10px" }} />
-            <Typography>{strings.vacationsScreen.back}</Typography>
-          </Button>
-        </Link>
-      </Card>
+      <BackButton />
     </>
   );
 };

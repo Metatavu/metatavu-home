@@ -27,6 +27,7 @@ import useCreateSoftware from "src/hooks/use-create-software";
 import Recommendations from "../software-registry/Recommendations";
 import AddSoftwareModal from "../software-registry/AddSoftwareModal";
 import Sidebar from "../software-registry/Sidebar";
+import BackButton from "../generics/back-button";
 
 /**
  * Software registry screen component
@@ -344,14 +345,7 @@ const SoftwareScreen = () => {
         disabled={loading}
         existingSoftwareList={software}
       />
-      <Card sx={{ mt: 2, width: "100%"}}>
-        <Link to={"/"} style={{ textDecoration: "none" }}>
-          <Button variant="contained" sx={{ padding: "10px", width: "100%"}}>
-            <KeyboardReturn sx={{ marginRight: "10px" }} />
-            <Typography>{strings.softwareRegistry.back}</Typography>
-          </Button>
-        </Link>
-      </Card>
+      <BackButton />
     </Container>
   );
 };

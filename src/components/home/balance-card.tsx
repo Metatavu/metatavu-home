@@ -81,10 +81,7 @@ const BalanceCard = () => {
 
   return (
     <Link
-    /*** AK
-     * removed "timebank" so that card is not clickable, issue:252
-     ***/
-      to={adminMode ? "/admin/timebank/viewall" : "/"}
+      to={adminMode ? "/admin" : "/"}
       style={{ textDecoration: "none" }}
     >
       <Card
