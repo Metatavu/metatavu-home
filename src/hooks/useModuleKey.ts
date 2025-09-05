@@ -1,16 +1,20 @@
 import { useLocation } from "react-router-dom";
 import strings from "src/localization/strings";
 
-type StringsKey = keyof typeof strings;
+type KeysWithBack = {
+  [K in keyof typeof strings]: (typeof strings)[K] extends { back: string }
+    ? K
+    : never;
+}[keyof typeof strings];
 
 /**
- * Generic hook that maps a URL path segment to a strings key.
+ * Generic hook that maps a URL path segment to a strings key with `.back`.
  * Enforces type safety and throws if no valid mapping exists.
  */
-export function useModuleKey<T extends StringsKey>(
-  mapping: Record<string, T>,
+export function useModuleKey(
+  mapping: Record<string, KeysWithBack>,
   adminRoot = "admin"
-): T {
+): KeysWithBack {
   const location = useLocation();
   const isAdminPath = location.pathname.startsWith(`/${adminRoot}`);
   const pathSegments = location.pathname.split("/").filter(Boolean);
@@ -27,7 +31,7 @@ export function useModuleKey<T extends StringsKey>(
 
   if (!(moduleKey in strings)) {
     throw new Error(
-      `useModuleKey: Module key '${moduleKey}' does not exist in strings.ts`
+      `useModuleKey: Module key '${String(moduleKey)}' does not exist in strings.ts`
     );
   }
 

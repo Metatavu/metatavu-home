@@ -1,10 +1,15 @@
 import type strings from "src/localization/strings";
 
-export const urlToStringsKeyMap: Record<string, keyof typeof strings> = {
+type KeysWithBack = {
+  [K in keyof typeof strings]: (typeof strings)[K] extends { back: string }
+    ? K
+    : never;
+}[keyof typeof strings];
+
+export const urlToStringsKeyMap: Record<string, KeysWithBack> = {
   "wiki-documentation": "wikiDocumentation",
   softwareregistry: "softwareRegistry",
   sprintview: "sprint",
-  settings: "settingsScreen",
   questionnaire: "questionnaireScreen",
   vacations: "vacationsScreen",
   "vacation-management": "vacationsScreen",
