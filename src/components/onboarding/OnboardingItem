@@ -1,0 +1,16 @@
+// types/onboarding.ts
+export type OnboardingPosition =
+  | 'top-left'
+  | 'top-center'
+  | 'top-right'
+  | 'bottom-left'
+  | 'bottom-center'
+  | 'bottom-right'
+  | 'center';
+
+export interface OnboardingItem {
+  title: string;
+  content: string;
+  selector: string; // CSS selector of the element to anchor
+  position: OnboardingPosition;
+}

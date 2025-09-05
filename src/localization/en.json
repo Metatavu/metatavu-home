@@ -148,7 +148,8 @@
     "searchPlaceholder": "Search and select users",
     "loading": "Loading...",
     "errorUnknownUser": "Unknown user",
-    "errorCreatingSoftware": "Error creating software:"
+    "errorCreatingSoftware": "Error creating software:",
+    "errorFetchingSoftwareToList": "Error fetching software to list:"
   },
   "softwareStatus": {
     "all": "All",
@@ -332,7 +333,10 @@
     "answerLabel": "Answer option",
     "insertAnswerLabel": "Insert answer option",
     "addAnswer": "+ Add new answer option",
-    "saveAnswer": "Add question"
+    "saveAnswer": "Add question",
+    "tooltipBothEmpty": "Question and answer options cannot be empty",
+    "tooltipEmptyQuestion": "Question cannot be empty",
+    "tooltipEmptyAnswers": "Answer options cannot be empty"
   },
   "questionnaireTable": {
     "title": "Title",
@@ -462,5 +466,27 @@
   },
   "pagination": {
     "ariaLabel": "Page navigation"
-  }
+  },
+  "onboarding": {
+  "prev": "Previous",
+  "next": "Next",
+  "close": "Close",
+  "welcomeTitle": "Welcome to the Home Screen",
+  "welcomeContent": "This is your dashboard where you can see your balance, sprints, and more.",
+  "balanceTitle": "Balance",
+  "balanceContent": "Check your total flextime balance here.",
+  "sprintTitle": "Sprint view",
+  "sprintContent": "See your allocation and time entries.",
+  "vacationsTitle": "Vacation requests",
+  "vacationsContent": "Track upcoming vacations and statuses.",
+  "questionnaireTitle": "Questionnaires",
+  "questionnaireContent": "Build and answer questionnaires.",
+  "softwareTitle": "Software registry",
+  "softwareContent": "Find and manage company software.",
+  "wikiTitle": "Wiki Documentation",
+  "wikiContent": "Read or create documentation.",
+  "doneTitle": "Complete the Onboarding",
+  "doneContent": "You're all set! You can restart from Settings."
+}
+
 }

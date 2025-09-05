@@ -14,8 +14,9 @@ import {
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import strings from "src/localization/strings";
 import { useLambdasApi } from "src/hooks/use-api";
-import { useAtomValue } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import { authAtom } from "src/atoms/auth";
+import { softwareAtom } from "src/atoms/software";
 import { SoftwareRegistry } from "src/generated/homeLambdasClient";
 import AddSoftwareModal from "./AddSoftwareModal";
 import UserRoleUtils from "src/utils/user-role-utils";
@@ -31,6 +32,7 @@ const SoftwareDetails: FunctionComponent = () => {
   const { id } = useParams<{ id: string }>();
   const [loading, setLoading] = useState(false);
   const [software, setSoftware] = useState<SoftwareRegistry | null>(null);
+  const [softwareList, setSoftwareList] = useAtom(softwareAtom);
   const [error, setError] = useState<string | null>(null);
   const [createdByUserName, setCreatedByUserName] = useState<string>("");
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -47,6 +49,10 @@ const SoftwareDetails: FunctionComponent = () => {
     fetchSoftwareDetails();
   }, [id]);
 
+  useEffect(() => {
+    fetchSoftwaresToList();
+  }, []);
+
   /**
    * Fetches software details based on the id from the route parameters.
    * Also fetches the name of the user who created the software.
@@ -62,6 +68,21 @@ const SoftwareDetails: FunctionComponent = () => {
       }
     } catch (error) {
       setError((error as Error).message || "Error fetching software details");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  /**
+   * List software and update the state.
+   */
+  const fetchSoftwaresToList = async () => {
+    setLoading(true);
+    try {
+      const fetchedSoftware = await softwareApi.listSoftware();
+      setSoftwareList(fetchedSoftware);
+    } catch (error) {
+      setError((error as Error).message || strings.softwareRegistry.errorFetchingSoftwareToList);
     } finally {
       setLoading(false);
     }
@@ -306,24 +327,22 @@ const SoftwareDetails: FunctionComponent = () => {
             {strings.softwareRegistry.addToMyApps}
           </Button>
         )}
-        {adminMode && (
-          <Button
-            variant="contained"
-            color="secondary"
-            sx={{
-              textTransform: "none",
-              color: "#fff",
-              marginLeft: "20px",
-              fontSize: "18px",
-              background: "#000",
-              borderRadius: "25px",
-              "&:hover": { background: "grey" }
-            }}
-            onClick={() => setIsEditModalOpen(true)}
-          >
-            {strings.softwareRegistry.editApp}
-          </Button>
-        )}
+        <Button
+          variant="contained"
+          color="secondary"
+          sx={{
+            textTransform: "none",
+            color: "#fff",
+            marginLeft: "20px",
+            fontSize: "18px",
+            background: "#000",
+            borderRadius: "25px",
+            "&:hover": { background: "grey" }
+          }}
+          onClick={() => setIsEditModalOpen(true)}
+        >
+          {strings.softwareRegistry.editApp}
+        </Button>
       </Box>
       {software && (
         <AddSoftwareModal
@@ -332,7 +351,7 @@ const SoftwareDetails: FunctionComponent = () => {
           handleSave={handleEditSoftware}
           disabled={loading}
           softwareData={software}
-          existingSoftwareList={[]}
+          existingSoftwareList={softwareList}
         />
       )}
     </Container>
