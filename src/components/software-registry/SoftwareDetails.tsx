@@ -327,22 +327,24 @@ const SoftwareDetails: FunctionComponent = () => {
             {strings.softwareRegistry.addToMyApps}
           </Button>
         )}
-        <Button
-          variant="contained"
-          color="secondary"
-          sx={{
-            textTransform: "none",
-            color: "#fff",
-            marginLeft: "20px",
-            fontSize: "18px",
-            background: "#000",
-            borderRadius: "25px",
-            "&:hover": { background: "grey" }
-          }}
-          onClick={() => setIsEditModalOpen(true)}
-        >
-          {strings.softwareRegistry.editApp}
-        </Button>
+        {adminMode && (
+          <Button
+            variant="contained"
+            color="secondary"
+            sx={{
+              textTransform: "none",
+              color: "#fff",
+              marginLeft: "20px",
+              fontSize: "18px",
+              background: "#000",
+              borderRadius: "25px",
+              "&:hover": { background: "grey" }
+            }}
+            onClick={() => setIsEditModalOpen(true)}
+          >
+            {strings.softwareRegistry.editApp}
+          </Button>
+        )}
       </Box>
       {software && (
         <AddSoftwareModal
