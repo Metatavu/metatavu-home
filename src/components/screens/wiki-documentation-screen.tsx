@@ -25,6 +25,7 @@ import { useLambdasApi } from "src/hooks/use-api";
 import { errorAtom } from "src/atoms/error";
 import type { ArticleMetadata } from "src/generated/homeLambdasClient";
 import { articleAtom, draftArticleAtom, tagsAtom } from "src/atoms/article";
+import { Search } from "@mui/icons-material";
 import GridViewIcon from "@mui/icons-material/GridView";
 import FormatListBulletedOutlinedIcon from '@mui/icons-material/FormatListBulletedOutlined';
 import SearchOffIcon from '@mui/icons-material/SearchOff';
