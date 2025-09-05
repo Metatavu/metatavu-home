@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, } from "react";
 import type React from "react";
 import {
   Modal,
@@ -17,7 +17,6 @@ import CloseIcon from "@mui/icons-material/Close";
 import strings from "src/localization/strings";
 import type { SoftwareRegistry, User } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
-import { useTransition } from "react";
 
 /**
  * AddSoftwareModal component props

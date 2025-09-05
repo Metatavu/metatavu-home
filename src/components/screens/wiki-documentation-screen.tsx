@@ -25,7 +25,6 @@ import { useLambdasApi } from "src/hooks/use-api";
 import { errorAtom } from "src/atoms/error";
 import type { ArticleMetadata } from "src/generated/homeLambdasClient";
 import { articleAtom, draftArticleAtom, tagsAtom } from "src/atoms/article";
-import { KeyboardReturn, Search } from "@mui/icons-material";
 import GridViewIcon from "@mui/icons-material/GridView";
 import FormatListBulletedOutlinedIcon from '@mui/icons-material/FormatListBulletedOutlined';
 import SearchOffIcon from '@mui/icons-material/SearchOff';
@@ -34,7 +33,6 @@ import strings from "src/localization/strings";
 import { wikiScreenColors } from "src/theme";
 import CreateOrEditArticleForm from "../wiki-documentation/create-article-form";
 import UserRoleUtils from "src/utils/user-role-utils";
-import { Link } from "react-router-dom";
 import ArticleCard from "../wiki-documentation/article-card";
 import ArticleListItem from "../wiki-documentation/article-list-item";
 

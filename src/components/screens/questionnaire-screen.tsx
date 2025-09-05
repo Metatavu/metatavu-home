@@ -1,8 +1,7 @@
 import { Card, Grid } from "@mui/material";
-import { Typography, Button } from "@mui/material";
+import { Button } from "@mui/material";
 import { Link } from "react-router-dom";
 import UserRoleUtils from "src/utils/user-role-utils";
-import { KeyboardReturn } from "@mui/icons-material";
 import strings from "src/localization/strings";
 import QuestionnaireTable from "../questionnaire/questionnaire-table";
 import BackButton from "../generics/back-button";

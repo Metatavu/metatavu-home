@@ -1,4 +1,4 @@
-import { Button, Card, Typography, Box, Grid } from "@mui/material";
+import { Card } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import VacationRequestsTable from "../vacation-requests-table/vacation-requests-table";
 import type { User } from "src/generated/homeLambdasClient";
@@ -15,8 +15,6 @@ import {
   vacationRequestsAtom
 } from "src/atoms/vacation";
 import UserRoleUtils from "src/utils/user-role-utils";
-import { Link } from "react-router-dom";
-import { KeyboardReturn, PeopleAlt } from "@mui/icons-material";
 import { renderVacationDaysTextForScreen } from "src/utils/vacation-days-utils";
 import { usersAtom } from "src/atoms/user";
 import BackButton from "../generics/back-button";
