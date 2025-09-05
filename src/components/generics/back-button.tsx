@@ -18,7 +18,7 @@ const BackButton = ({ sx }: BackButtonProps) => {
     ? (pathSegments[1] as keyof typeof strings)
     : (pathSegments[0] as keyof typeof strings);
 
-  /*** lookup strings to check for "back" */
+  /*** lookup strings localization */
   const label = (() => {
     if (!moduleName) return "Back";
 
