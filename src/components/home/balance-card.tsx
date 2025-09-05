@@ -81,8 +81,8 @@ const BalanceCard = () => {
 
   return (
     <Link
-      to={adminMode ? "/admin" : "/"}
-      style={{ textDecoration: "none" }}
+      to={adminMode ? "/admin/timebank/viewall" : "/timebank"}
+      style={{ textDecoration: "none", pointerEvents: "none" }}
     >
       <Card
         sx={{
