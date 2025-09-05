@@ -1,36 +1,26 @@
-import { Link, useLocation, useNavigation } from "react-router-dom";
-import { Button, Typography, SxProps } from "@mui/material";
+import { Link, useNavigation } from "react-router-dom";
+import { Button, Typography, type SxProps } from "@mui/material";
 import KeyboardReturn from "@mui/icons-material/KeyboardReturn";
 import strings from "src/localization/strings";
+import { urlToStringsKeyMap } from "./url-to-strings-mapper";
+import { useModuleKey } from "src/hooks/useModuleKey";
 
 interface BackButtonProps {
   sx?: SxProps;
 }
 
 const BackButton = ({ sx }: BackButtonProps) => {
-  const location = useLocation();
   const navigation = useNavigation();
-/*** Check path to see user type */
-  const isAdminPath = location.pathname.startsWith("/admin");
-  const pathSegments = location.pathname.split("/").filter(Boolean);
 
-  const moduleName: keyof typeof strings | undefined = isAdminPath
-    ? (pathSegments[1] as keyof typeof strings)
-    : (pathSegments[0] as keyof typeof strings);
+  // Get module key generically
+  const moduleKey = useModuleKey(urlToStringsKeyMap);
 
-  /*** lookup strings localization */
-  const label = (() => {
-    if (!moduleName) return "Back";
+  // Access localized back label
+  const label = (strings as any)[moduleKey].back;
 
-    const page = (strings as any)[moduleName];
-    if (page && typeof page === "object" && typeof page.back === "string") {
-      return page.back;
-    }
-
-    return "Back";
-  })();
-
-  /*** Using template literal to work out previous page based on current path*/
+  // Compute parent path
+  const pathSegments = window.location.pathname.split("/").filter(Boolean);
+  const isAdminPath = window.location.pathname.startsWith("/admin");
   const parentSegments = [...pathSegments];
   parentSegments.pop();
   let destination = `/${parentSegments.join("/")}`;
@@ -48,13 +38,8 @@ const BackButton = ({ sx }: BackButtonProps) => {
           padding: "10px",
           width: "100%",
           transition: "transform 0.2s ease, box-shadow 0.2s ease",
-          "&:hover": {
-            transform: "translateX(-3px)",
-            boxShadow: 3,
-          },
-          "&:active": {
-            transform: "translateX(-1px) scale(0.98)",
-          },
+          "&:hover": { transform: "translateX(-3px)", boxShadow: 3 },
+          "&:active": { transform: "translateX(-1px) scale(0.98)" },
           ...sx,
         }}
       >
