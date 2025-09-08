@@ -10,6 +10,8 @@ type KeysWithBack = {
 /**
  * Generic hook that maps a URL path segment to a strings key with `.back`.
  * Enforces type safety and throws if no valid mapping exists.
+ * @param mapping - Record URL path segment to KeysWithBack (string: value) for keys in strings that have .back
+ * @param adminRoot - Optional string representing admin route prefix (default: "admin")
  */
 export function useModuleKey(
   mapping: Record<string, KeysWithBack>,
