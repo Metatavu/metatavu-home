@@ -66,10 +66,6 @@ const BackButton: React.FC<BackButtonProps> = ({ sx, to }) => {
           padding: "10px",
           width: "100%",
           transition: "transform 0.2s ease, box-shadow 0.2s ease",
-          "&:hover": {
-            transform: "translateX(-3px)",
-            boxShadow: 3,
-          },
           "&:active": {
             transform: "translateX(-1px) scale(0.98)",
           },
