@@ -16,14 +16,14 @@ interface BackButtonProps {
  *
  * @param moduleKey - A key from the `strings` object or null
  */
-function getBackLabel(moduleKey: keyof typeof strings | null): string {
+const getBackLabel = (moduleKey: keyof typeof strings | null): string => {
   if (!moduleKey) return "Back";
   const page = strings[moduleKey];
   if (page && typeof page === "object" && "back" in page && typeof page.back === "string") {
     return page.back;
   }
   return "Back";
-}
+};
 
 const BackButton: React.FC<BackButtonProps> = ({ sx, to }) => {
   const location = useLocation();
