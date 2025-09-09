@@ -3,7 +3,6 @@ import { Button, Typography } from "@mui/material";
 import type { SxProps } from "@mui/material";
 import KeyboardReturn from "@mui/icons-material/KeyboardReturn";
 import strings from "src/localization/strings";
-import { useModuleKey } from "src/hooks/useModuleKey";
 import { urlToStringsKeyMap } from "./url-to-strings-mapper";
 
 interface BackButtonProps {
@@ -12,41 +11,40 @@ interface BackButtonProps {
 }
 
 /**
- * Returns the localized "Back" label for a given module key.
+ * Returns the localized "Back" label for a given module key 
+ * which also allows the translation to function properly.
  *
  * @param moduleKey - A key from the `strings` object or null
  */
 const getBackLabel = (moduleKey: keyof typeof strings | null): string => {
   if (!moduleKey) return "Back";
+
   const page = strings[moduleKey];
-  if (page && typeof page === "object" && "back" in page && typeof page.back === "string") {
-    return page.back;
-  }
-  return "Back";
+  const pageObj = typeof page === 'object' &&page !== null;
+  const incBack = pageObj && "back" in page;
+
+  return incBack ? (page as { back: string }).back : "Back";
 };
 
-const BackButton: React.FC<BackButtonProps> = ({ sx, to }) => {
+/**
+ * Generic styled back button that redirects browser using parent route
+ * 
+ * @param props - Component props
+ * @param props.sx - Optional MUI styling override
+ * @param props.to - Allows destination override if required
+ */
+const BackButton = ({ sx, to }: BackButtonProps) => {
   const location = useLocation();
   const navigation = useNavigation();
 
   const isAdminPath = location.pathname.startsWith("/admin");
   const pathSegments = location.pathname.split("/").filter(Boolean);
 
-  let moduleKey: keyof typeof strings | null = null;
-  try {
-    moduleKey = useModuleKey(urlToStringsKeyMap);
-  } catch {
-    moduleKey = null;
-  }
+  const moduleKey: keyof typeof strings | null =
+    urlToStringsKeyMap[location.pathname] ?? null;
 
   const label = getBackLabel(moduleKey);
-/**
- * Calculates current path and removes parent segment to find destination
- * 
- * @param isAdminPath - True if current path starts with "/admin"
- * @param to - Optional override for destination.
- * 
- */
+
   const parentSegments = [...pathSegments];
   parentSegments.pop();
   let computedDestination = `/${parentSegments.join("/")}`;
