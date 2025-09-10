@@ -18,7 +18,6 @@ import "../wiki-documentation/rich-text-editor/editor.css";
 import ArticleListItem from "../wiki-documentation/article-list-item";
 import { snackbarAtom } from "src/atoms/snackbar";
 import { articleAtom, draftArticleAtom } from "src/atoms/article";
-import { AdminPanelSettings } from "@mui/icons-material";
 
 /**
  * Article screen component displaying the article content.
