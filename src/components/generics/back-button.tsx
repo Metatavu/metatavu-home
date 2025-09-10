@@ -10,7 +10,11 @@ interface BackButtonProps {
 const BackButton = ({ label }: BackButtonProps) => {
   const navigate = useNavigate();
   const isAdmin = UserRoleUtils.adminMode();
-
+/**
+ * Generic back navigation which has fallbacks for no history entries
+ * 
+ * @param navBack Handles action of onClick
+ */
   const navBack = () => {
     if (window.history.length > 1) navigate(-1);
     else if (isAdmin) navigate("/admin");
