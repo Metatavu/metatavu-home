@@ -113,6 +113,7 @@
     "noRecommendations": "No recommendations",
     "recommendationMessage": "There are {recommendationCount} new recommendations for you!",
     "allApplications": "All applications",
+    "back": "Back",
     "addApplication": "Add application",
     "tags": "Tags",
     "filter": "Filter",
