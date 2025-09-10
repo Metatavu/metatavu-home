@@ -203,7 +203,7 @@ const SprintViewScreen = () => {
               )}
             </Stack>
           </Paper>
-         <BackButton />
+         <BackButton label={strings.sprint.back} />
         </Container>
       )}
     </>

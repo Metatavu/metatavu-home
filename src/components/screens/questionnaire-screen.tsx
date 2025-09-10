@@ -34,7 +34,7 @@ const QuestionnaireScreen = () => {
       </Grid>
       <QuestionnaireTable />
     </Card>
-    <BackButton />
+    <BackButton label={strings.questionnaireScreen.back}/>
     </>
     
   );

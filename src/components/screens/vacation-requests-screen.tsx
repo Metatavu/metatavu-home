@@ -277,7 +277,7 @@ const VacationRequestsScreen = () => {
       
       {/* Admin Tools Section has been removed */}
       
-      <BackButton />
+      <BackButton label={strings.vacationsScreen.back} />
     </>
   );
 };

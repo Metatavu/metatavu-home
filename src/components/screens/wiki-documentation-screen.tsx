@@ -558,7 +558,7 @@ return (
             />
           </Grid>
         )}
-        <BackButton />
+        <BackButton label={strings.wikiDocumentation.back} />
       </>
     )}
   </>
