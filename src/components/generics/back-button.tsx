@@ -1,79 +1,60 @@
-import { Link, useLocation, useNavigation } from "react-router-dom";
 import { Button, Typography } from "@mui/material";
-import type { SxProps } from "@mui/material";
+import type { SxProps, Theme } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import KeyboardReturn from "@mui/icons-material/KeyboardReturn";
-import strings from "src/localization/strings";
-import { urlToStringsKeyMap } from "./url-to-strings-mapper";
+import UserRoleUtils from "src/utils/user-role-utils";
 
 interface BackButtonProps {
-  sx?: SxProps;
-  to?: string;
+  fallbackPath?: string;
+  isNavigating?: boolean;
+  sx?: SxProps<Theme>;
+  label?: string;
 }
-
 /**
- * Returns the localized "Back" label for a given module key 
- * which also allows the translation to function properly.
- *
- * @param moduleKey - A key from the `strings` object or null
- */
-const getBackLabel = (moduleKey: keyof typeof strings | null): string => {
-  if (!moduleKey) return "Back";
-
-  const page = strings[moduleKey];
-  const pageObj = typeof page === 'object' &&page !== null;
-  const incBack = pageObj && "back" in page;
-
-  return incBack ? (page as { back: string }).back : "Back";
-};
-
-/**
- * Generic styled back button that redirects browser using parent route
+ * Generic back button based on history/admin role/fallback path
  * 
- * @param props - Component props
- * @param props.sx - Optional MUI styling override
- * @param props.to - Allows destination override if required
+ * @param fallbackPath Fallback path if history is empty and user is not admin
+ * @param isNavigating Disables the button if true to avoid mistaken double navigation
+ * @param sx Additional MUI sx styling
+ * @param label Fixed text label for the button
  */
-const BackButton = ({ sx, to }: BackButtonProps) => {
-  const location = useLocation();
-  const navigation = useNavigation();
+const BackButton = ({
+  fallbackPath = "/",
+  sx,
+  label = "Back",
+  isNavigating = false,
+}: BackButtonProps) => {
+  const navigate = useNavigate();
+  const isAdmin = UserRoleUtils.adminMode();
 
-  const isAdminPath = location.pathname.startsWith("/admin");
-  const pathSegments = location.pathname.split("/").filter(Boolean);
-
-  const moduleKey: keyof typeof strings | null =
-    urlToStringsKeyMap[location.pathname] ?? null;
-
-  const label = getBackLabel(moduleKey);
-
-  const parentSegments = [...pathSegments];
-  parentSegments.pop();
-  let computedDestination = `/${parentSegments.join("/")}`;
-  if (computedDestination === "") computedDestination = isAdminPath ? "/admin" : "/";
-
-  const destination = to ?? computedDestination;
-
-  const isNavigating = navigation.state !== "idle";
+  /**
+   * @param navBack Handles onClick event for navigation
+   */
+  const navBack = () => {
+    if (window.history.length > 1) navigate(-1);
+    else if (isAdmin) navigate("/admin");
+    else navigate(fallbackPath);
+  };
 
   return (
-    <Link to={destination} style={{ textDecoration: "none" }}>
-      <Button
-        variant="contained"
-        disabled={isNavigating}
-        sx={{
-          mt: 3,
-          padding: "10px",
-          width: "100%",
-          transition: "transform 0.2s ease, box-shadow 0.2s ease",
-          "&:active": {
-            transform: "translateX(-1px) scale(0.98)",
-          },
-          ...sx,
-        }}
-      >
-        <KeyboardReturn sx={{ marginRight: "10px" }} />
-        <Typography>{label}</Typography>
-      </Button>
-    </Link>
+    <Button
+      variant="contained"
+      disabled={isNavigating}
+      onClick={navBack}
+      startIcon={<KeyboardReturn />}
+      sx={{
+        mt: 3,
+        padding: "10px",
+        width: "100%",
+        transition: "transform 0.2s ease, box-shadow 0.2s ease",
+        "&:active": { transform: "translateX(-1px) scale(0.98)" },
+        ...sx,
+      }}
+    >
+      <Typography variant="button" component="span">
+        {label}
+      </Typography>
+    </Button>
   );
 };
 
