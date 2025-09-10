@@ -26,7 +26,6 @@ import { usersAtom } from "src/atoms/user";
 import { userProfileAtom } from "src/atoms/auth";
 import ClearIcon from "@mui/icons-material/Clear";
 import { snackbarAtom } from "src/atoms/snackbar";
-import { str } from "envalid";
 
 interface Props {
   setFormOpen: (value: boolean) => void;
