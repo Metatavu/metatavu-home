@@ -142,6 +142,7 @@ export interface Localized extends LocalizedStringsMethods {
     noRecommendations: string;
     recommendationMessage: string;
     allApplications: string;
+    back: string;
     addApplication: string;
     added: string;
     tags: string;

@@ -25,6 +25,7 @@ import useCreateSoftware from "src/hooks/use-create-software";
 import Recommendations from "../software-registry/Recommendations";
 import AddSoftwareModal from "../software-registry/AddSoftwareModal";
 import Sidebar from "../software-registry/Sidebar";
+import BackButton from "../generics/back-button";
 
 /**
  * Software registry screen component
@@ -340,6 +341,7 @@ const SoftwareScreen = () => {
         disabled={loading}
         existingSoftwareList={software}
       />
+      <BackButton label={strings.softwareRegistry.back} />
     </Container>
   );
 };
