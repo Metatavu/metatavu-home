@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import {
-  CircularProgress,
-  Card,
-  Box,
+import BackButton from "../generics/back-button";
+import { 
+  CircularProgress, 
+  Card, 
+  Box, 
   TextField,
-  Grid,
+  Grid, 
   Typography,
   Button,
   FormControl,
@@ -584,7 +585,8 @@ const WikiDocumentationScreen = () => {
               />
             </Grid>
           )}
-        </>
+          <BackButton label={strings.wikiDocumentation.back} />
+      </>
       )}
       <Snackbar
         open={snackbar.open}

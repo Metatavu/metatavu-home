@@ -1,4 +1,4 @@
-import { FunctionComponent, useState, useRef } from "react";
+import { useState, useRef } from "react";
 import { Box, Typography, Grid, IconButton, Button } from "@mui/material";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/swiper-bundle.css";
