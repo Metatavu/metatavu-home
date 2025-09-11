@@ -7,6 +7,7 @@ import { type VacationsDataGridRow, ToolbarFormModes } from "src/types";
 import ToolbarDeleteButton from "./toolbar-delete-button";
 import FormToggleButton from "./toolbar-form-toggle-button";
 import ConfirmationHandler from "../../contexts/confirmation-handler";
+import EditConfirmationHandler from "src/components/contexts/edit-confirmation-handler";
 import strings from "src/localization/strings";
 import { getToolbarTitle } from "src/utils/toolbar-utils";
 import { useAtomValue } from "jotai";
@@ -64,6 +65,8 @@ const TableToolbar = ({
   const [toolbarOpen, setToolbarOpen] = useState(false);
   const [toolbarFormMode, setToolbarFormMode] = useState<ToolbarFormModes>(ToolbarFormModes.NONE);
   const [confirmationHandlerOpen, setConfirmationHandlerOpen] = useState(false);
+  const [editConfirmationHandlerOpen, setEditConfirmationHandlerOpen] = useState(false);
+  const [editVacationsData, setEditVacationsData] = useState<VacationRequest | null>(null);
   const [title, setTitle] = useState(strings.tableToolbar.myRequests);
   const language = useAtomValue(languageAtom);
   const adminMode = UserRoleUtils.adminMode();
@@ -120,12 +123,29 @@ const TableToolbar = ({
     alignItems: "center"
   });
 
+  const handleSaveClick = (data: VacationRequest) => {
+    setEditVacationsData(data);
+    setEditConfirmationHandlerOpen(true);
+  };
+
   return (
     <Box>
       <ConfirmationHandler
         open={confirmationHandlerOpen}
         setOpen={setConfirmationHandlerOpen}
         deleteVacationsData={deleteVacationsData}
+      />
+      <EditConfirmationHandler
+        open={editConfirmationHandlerOpen}
+        setOpen={setEditConfirmationHandlerOpen}
+        onConfirm={async () => {
+          if (editVacationsData?.id) {
+            await updateVacationRequest(editVacationsData, editVacationsData.id);
+            setSelectedRowIds([]);
+            setEditConfirmationHandlerOpen(false);
+            setFormOpen(false);
+          }
+        }}
       />
       {isToolbarVisible ? (
         <ToolbarGridContainer container>
@@ -143,7 +163,6 @@ const TableToolbar = ({
                   setFormOpen(open);
                 }}
                 disabled={disableEditButton}
-
               />
             </ToolbarGridItem>
           )}
@@ -213,6 +232,7 @@ const TableToolbar = ({
           toolbarFormMode={toolbarFormMode}
           setToolbarFormMode={setToolbarFormMode}
           setSelectedRowIds={setSelectedRowIds}
+          onSaveClick={handleSaveClick}
         />
       </Collapse>
     </Box>

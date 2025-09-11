@@ -221,6 +221,7 @@ export interface Localized extends LocalizedStringsMethods {
     cancelButtonText: string;
     title: string;
     message: string;
+    editMessage: string;
   };
   /**
    * Translations related to error handler
@@ -268,6 +269,7 @@ export interface Localized extends LocalizedStringsMethods {
     updateStatusError: string;
     noVacationRequestsFound: string;
     nameNotFound: string;
+    noVacationRequestsStatusFound: string;
   };
   /**
    * Translations related to sprint requests errors
