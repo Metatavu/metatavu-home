@@ -124,6 +124,21 @@ const SoftwareDetails: FunctionComponent = () => {
   };
 
   /**
+   * Disables the AddSoftware button if the software is not approved
+   */
+  const isDisabled = () => {
+    if (
+      software?.status === "DECLINED" ||
+      software?.status === "DEPRECATED" ||
+      software?.status === "UNDER_REVIEW" ||
+      software?.status === "PENDING"
+    ) {
+      return true;
+    }
+    return false;
+  };
+
+  /**
    * Adds the logged in user to the software's users list.
    */
   const handleAddSoftware = async () => {
@@ -312,6 +327,7 @@ const SoftwareDetails: FunctionComponent = () => {
           <Button
             variant="contained"
             color="secondary"
+            disabled={isDisabled()}
             sx={{
               textTransform: "none",
               borderRadius: "25px",
