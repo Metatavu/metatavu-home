@@ -36,6 +36,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import SearchIcon from "@mui/icons-material/Search";
 import useCreateSoftware from "src/hooks/use-create-software";
 import AddSoftwareModal from "../software-registry/AddSoftwareModal";
+import BackButton from "../generics/back-button";
 
 
 
@@ -459,6 +460,7 @@ const statusOptions = allStatusValues.map((value) => ({
           </Grid>
         </Grid>
       </Grid>
+      <BackButton sx={{ marginBottom: 2 }} />
 
       <AddSoftwareModal
         open={isModalOpen}
