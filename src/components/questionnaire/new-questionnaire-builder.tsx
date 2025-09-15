@@ -16,7 +16,6 @@ import { useState, type ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import NewQuestionCard from "./new-question-card";
 import LabelIcon from "@mui/icons-material/Label";
-import UserRoleUtils from "src/utils/user-role-utils";
 import type {
   Questionnaire,
   AnswerOption,
