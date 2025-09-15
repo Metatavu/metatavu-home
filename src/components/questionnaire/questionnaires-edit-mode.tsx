@@ -20,8 +20,6 @@ import { useSetAtom } from "jotai";
 import { errorAtom } from "src/atoms/error";
 import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
-import { Link } from "react-router-dom";
-import { KeyboardReturn } from "@mui/icons-material";
 import isEqual from "lodash/isEqual";
 import BackButton from "../generics/back-button";
 

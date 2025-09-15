@@ -46,7 +46,6 @@ import BackButton from "../generics/back-button";
  * New Questionnaire Builder component
  */
 const NewQuestionnaireBuilder = () => {
-  const adminMode = UserRoleUtils.adminMode();
   const navigate = useNavigate();
   const { questionnairesApi } = useLambdasApi();
   const [loading, setLoading] = useState(false);
