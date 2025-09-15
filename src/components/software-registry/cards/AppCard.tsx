@@ -1,4 +1,3 @@
-import { FunctionComponent } from "react";
 import { 
   Card, 
   CardContent, 
@@ -10,20 +9,20 @@ import {
   Link as MuiLink 
 } from "@mui/material";
 import { Link } from "react-router-dom";
-import { SoftwareRegistry } from "src/generated/homeLambdasClient";
+import type { SoftwareRegistry } from "src/generated/homeLambdasClient";
 
 interface AppCardProps extends SoftwareRegistry {
   isGridView: boolean;
 }
 
-const AppCard: FunctionComponent<AppCardProps> = ({ 
+const AppCard = ({ 
   id, 
   image, 
   name, 
   description, 
   tags = [], 
   isGridView 
-}) => {
+}: AppCardProps) => {
 
   return (
     <MuiLink component={Link} to={`${id}`} underline="none" color="inherit">

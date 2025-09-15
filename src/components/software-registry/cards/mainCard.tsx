@@ -1,5 +1,4 @@
 import { useState } from "react";
-import type React from "react";
 import {
   Card,
   CardContent,
@@ -17,7 +16,8 @@ import {
   ListItemText
 } from "@mui/material";
 import { Link } from "react-router-dom";
-import { SoftwareRegistry, SoftwareStatus } from "src/generated/homeLambdasClient";
+import type { SoftwareRegistry } from "src/generated/homeLambdasClient";
+import { SoftwareStatus } from "src/generated/homeLambdasClient";
 import strings from "src/localization/strings";
 
 interface CardProps extends SoftwareRegistry {
@@ -29,7 +29,7 @@ interface CardProps extends SoftwareRegistry {
   onStatusChange?: (status: SoftwareStatus) => void;
 }
 
-const MainCard: React.FC<CardProps> = ({
+const MainCard = ({
   id,
   image,
   name,
@@ -42,7 +42,7 @@ const MainCard: React.FC<CardProps> = ({
   onSave,
   onRemove,
   onStatusChange
-}) => {
+}: CardProps) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 

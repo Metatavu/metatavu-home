@@ -1,4 +1,3 @@
-import type { FunctionComponent } from 'react';
 import { Grid } from '@mui/material';
 import type { SoftwareRegistry } from 'src/generated/homeLambdasClient';
 import AppCard from './cards/AppCard';
@@ -21,7 +20,10 @@ interface ContentProps {
  * @param ContentProps The props for the Content component.
  * @returns The rendered Content component.
  */
-const Content: FunctionComponent<ContentProps> = ({ applications, isGridView }) => {
+const Content = ({ 
+  applications, 
+  isGridView 
+  }: ContentProps) => {
   return (
     <Grid container spacing={2}>
       {applications.map((app) => (

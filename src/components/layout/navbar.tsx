@@ -9,7 +9,6 @@ import {
   Container,
   Tooltip,
   Avatar,
-  Button
 } from "@mui/material";
 import LocalizationButtons from "../layout-components/localization-buttons";
 import strings from "src/localization/strings";

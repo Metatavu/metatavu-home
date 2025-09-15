@@ -1,4 +1,4 @@
-import { type FunctionComponent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import {
   Container,
@@ -15,7 +15,7 @@ import { useLambdasApi } from "src/hooks/use-api";
 import { useAtom, useAtomValue } from "jotai";
 import { authAtom } from "src/atoms/auth";
 import { softwareAtom } from "src/atoms/software";
-import { SoftwareRegistry } from "src/generated/homeLambdasClient";
+import type { SoftwareRegistry } from "src/generated/homeLambdasClient";
 import AddSoftwareModal from "./AddSoftwareModal";
 import BackButton from "../generics/back-button";
 
@@ -26,7 +26,7 @@ import BackButton from "../generics/back-button";
  *
  * @component
  */
-const SoftwareDetails: FunctionComponent = () => {
+const SoftwareDetails = () => {
   const { id } = useParams<{ id: string }>();
   const [loading, setLoading] = useState(false);
   const [software, setSoftware] = useState<SoftwareRegistry | null>(null);
