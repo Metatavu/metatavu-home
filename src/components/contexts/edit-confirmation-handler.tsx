@@ -1,7 +1,6 @@
 import { Divider, Typography } from "@mui/material";
 import GenericDialog from "../generics/generic-dialog";
 import strings from "src/localization/strings";
-import type { VacationRequest } from "src/generated/client";
 
 /**
  * Component properties
