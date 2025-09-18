@@ -170,9 +170,9 @@ const VacationRequestsScreen = () => {
         (vacationRequest) => vacationRequest.id === vacationRequestId
       );
       if (!vacationRequest) return;
-      let latestStatus = vacationRequest.status?.[0]?.status;
+      let latestStatus = vacationRequest.status?.[0]?.status ?? "PENDING";
       if (!latestStatus) {
-        throw new Error(strings.vacationRequestError.noVacationRequestsStatusFound);
+        setError(strings.vacationRequestError.noVacationRequestsStatusFound);
       }
       if ((!adminMode && latestStatus === "APPROVED") || latestStatus === "DECLINED") {
         latestStatus = "PENDING";
@@ -268,9 +268,7 @@ const VacationRequestsScreen = () => {
           loading={loading}
         />
       </Card>
-
       {/* Admin Tools Section has been removed */}
-
       <BackButton label={strings.vacationsScreen.back} />
     </>
   );

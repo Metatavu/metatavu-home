@@ -26,7 +26,7 @@ export const getHoursAndMinutes = (hours: number): string => {
   const totalMinutes = Math.round(Math.abs(hours) * 60);
   const duration = Duration.fromObject({ minutes: totalMinutes });
   const formatted = duration.toFormat("h 'h' m 'min'");
-  
+
   return isNegative ? `-${formatted}` : formatted;
 };
 
@@ -101,6 +101,41 @@ export const calculateTotalVacationDays = (
     endWeek,
     weeks
   );
+};
+
+/**
+ * Calculates new endDate for vacation request after admin has updated the days count
+ * 
+ * @param startDate - The starting date as a Luxon `DateTime`.
+ * @param totalDays - The total number of vacation days to count.
+ * @param workWeek - An array of 7 booleans (index 0 = Monday, index 6 = Sunday)
+ *                   indicating which days are considered working days.
+ * @returns A Luxon `DateTime` representing the calculated end date.
+ */
+export const calculateEndDateFromDays = (
+  startDate: DateTime,
+  totalDays: number,
+  workWeek: boolean[]
+) => {
+  const workDaysInWeek = workWeek.filter(Boolean).length;
+  let daysAdded = 0;
+  let currentDate = startDate;
+  const [startWeek, endWeek] = getIndexDaysWorking(workWeek);
+  if (!startWeek || !endWeek) return startDate;
+  while (daysAdded < totalDays) {
+    const weekdayIndex = currentDate.weekday;
+    const isWorkingDay = workWeek[weekdayIndex - 1];
+    if (isWorkingDay) {
+      daysAdded++;
+    }
+    if (daysAdded < totalDays && daysAdded % workDaysInWeek === 0 && isWorkingDay) {
+      daysAdded++;
+    }
+    if (daysAdded < totalDays) {
+      currentDate = currentDate.plus({ days: 1 });
+    }
+  }
+  return currentDate;
 };
 
 /**

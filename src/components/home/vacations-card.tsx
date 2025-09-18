@@ -48,14 +48,9 @@ const VacationsCard = () => {
     if (!loggedInUser) return;
     setLoading(true);
     try {
-      let fetchedVacationRequests: VacationRequest[];
-      if (adminMode) {
-        fetchedVacationRequests = await vacationRequestsApi.listVacationRequests({});
-      } else {
-        fetchedVacationRequests = await vacationRequestsApi.listVacationRequests({
-          userId: loggedInUser.id
-        });
-      }
+      const fetchedVacationRequests: VacationRequest[] = adminMode
+        ? await vacationRequestsApi.listVacationRequests({})
+        : await vacationRequestsApi.listVacationRequests({ userId: loggedInUser.id });
       setVacationRequests(fetchedVacationRequests);
     } catch (error) {
       setError(`${strings.vacationRequestError.fetchRequestError}, ${error}`);

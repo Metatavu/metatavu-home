@@ -31,11 +31,9 @@ const EditConfirmationHandler = ({ open, setOpen, onConfirm }: Props) => {
       cancelButtonText={strings.confirmationHandler.cancelButtonText}
       title={strings.confirmationHandler.title}
     >
-      {
-        <Typography marginBottom={3} sx={{ fontSize: 16, fontWeight: "bold" }}>
-          {strings.confirmationHandler.editMessage}
-        </Typography>
-      }
+      <Typography marginBottom={3} sx={{ fontSize: 16, fontWeight: "bold" }}>
+        {strings.confirmationHandler.editMessage}
+      </Typography>
       <Divider />
     </GenericDialog>
   );
