@@ -227,11 +227,11 @@ const CreateOrEditArticleForm = ({
 
   const isFormValid = Boolean(
     title.trim() &&
-      path.trim() &&
-      coverImage?.trim() &&
-      description?.trim() &&
-      editorRef.current?.getMarkdownContent()?.trim()
-  );
+    path.trim() &&
+    coverImage?.trim() &&
+    description?.trim() &&
+    editorRef.current?.getMarkdownContent()?.trim()
+);
   return (
     <>
       <Grid container spacing={1.5} sx={{ marginBottom: 3, marginTop: 0.5 }}>
