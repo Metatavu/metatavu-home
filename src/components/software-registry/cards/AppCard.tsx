@@ -54,7 +54,13 @@ const AppCard: FunctionComponent<AppCardProps> = ({
               }}
             />
             <CardContent sx={{ padding: 0 }}>
-              <Typography gutterBottom variant="h6">
+              <Typography
+                gutterBottom
+                variant="h6"
+                overflow={"hidden"}
+                textOverflow={"ellipsis"}
+                whiteSpace={"nowrap"}
+              >
                 {name}
               </Typography>
               <Box sx={{ minHeight: "90px" }} marginBottom={2}>
