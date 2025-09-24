@@ -275,9 +275,6 @@ const VacationRequestsScreen = () => {
         />
       </Card>
       <BackButton sx={{ mt: 2, marginBottom: 2 }} />
-      {/* Admin Tools Section has been removed */}
-      
-      
     </>
   );
 };
