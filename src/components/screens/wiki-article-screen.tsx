@@ -9,13 +9,12 @@ import { useLambdasApi } from "src/hooks/use-api";
 import ReactMarkdown from "react-markdown";
 import ActionButton from "../wiki-documentation/action-button";
 import CreateOrEditArticleForm from "../wiki-documentation/create-article-form";
-import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
-import { Link } from "react-router-dom";
 import UserRoleUtils from "src/utils/user-role-utils";
 import { usersAtom } from "src/atoms/user";
 import { userProfileAtom } from "src/atoms/auth";
 import "../wiki-documentation/rich-text-editor/editor.css";
 import ArticleListItem from "../wiki-documentation/article-list-item";
+import BackButton from "../generics/back-button";
 import { snackbarAtom } from "src/atoms/snackbar";
 import { articleAtom, draftArticleAtom } from "src/atoms/article";
 
@@ -170,14 +169,7 @@ const ArticleScreen = () => {
             <>
               <Grid container spacing={1.5} sx={{ marginBottom: 3, marginTop: 0.5 }}>
                 <Grid item xs={adminMode ? 6 : 12}>
-                  <Link to={adminMode ? "/admin/wiki-documentation" : "/wiki-documentation"}>
-                    <ActionButton onClick={closeForm}>
-                      <>
-                        <KeyboardReturnIcon sx={{ marginRight: 1 }} />
-                        {strings.wikiDocumentation.back}
-                      </>
-                    </ActionButton>
-                  </Link>
+                  <BackButton onClick={closeForm} sx={{ padding: "6px" }} />
                 </Grid>
                 {adminMode && (
                   <>

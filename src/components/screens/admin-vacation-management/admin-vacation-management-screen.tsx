@@ -180,7 +180,7 @@ const AdminVacationManagementScreen = () => {
           color="primary"
         />
       </Box>
-      <BackButton label={strings.vacationsScreen.back} />
+      <BackButton sx={{ mt: 3, marginBottom: 2 }} />
       <EditVacationDialog
         open={editDialogOpen}
         user={currentUser}

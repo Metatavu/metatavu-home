@@ -575,17 +575,17 @@ const WikiDocumentationScreen = () => {
             )}
           </Box>
 
-          {displayedArticles.length > itemsPerPage && (
-            <Grid container justifyContent="center" sx={{ marginBottom: 3 }}>
-              <Pagination
-                size="large"
-                count={Math.floor(displayedArticles?.length / itemsPerPage) + 1}
-                onChange={(_event, page) => setPageNumber(page)}
-                page={pageNumber}
-              />
-            </Grid>
-          )}
-          <BackButton label={strings.wikiDocumentation.back} />
+        {displayedArticles.length > itemsPerPage && (
+          <Grid container justifyContent="center" sx={{ marginBottom: 3 }}>
+            <Pagination
+              size="large"
+              count={Math.floor(displayedArticles?.length / itemsPerPage) + 1}
+              onChange={(_event, page) => setPageNumber(page)}
+              page={pageNumber}
+            />
+          </Grid>
+        )}
+        <BackButton sx={{ marginBottom: 2 }} />
       </>
       )}
       <Snackbar

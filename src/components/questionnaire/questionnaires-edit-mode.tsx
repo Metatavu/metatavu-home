@@ -20,9 +20,8 @@ import { useSetAtom } from "jotai";
 import { errorAtom } from "src/atoms/error";
 import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
-import { Link } from "react-router-dom";
-import { KeyboardReturn } from "@mui/icons-material";
 import isEqual from "lodash/isEqual";
+import BackButton from "../generics/back-button";
 
 /**
  * Component props
@@ -509,14 +508,7 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
           </CardActions>
         </CardContent>
       </Card>
-      <Card sx={{ mt: 2, width: "100%" }}>
-        <Link to={"/admin/questionnaire"} style={{ textDecoration: "none" }}>
-          <Button variant="contained" sx={{ p: 2, width: "100%" }}>
-            <KeyboardReturn sx={{ marginRight: "10px" }} />
-            <Typography>{strings.questionnaireScreen.back}</Typography>
-          </Button>
-        </Link>
-      </Card>
+      <BackButton sx={{ mt: 3, marginBottom: 2 }} />
       <Snackbar open={snackbarOpen} autoHideDuration={2000} onClose={handleSnackbarClose}>
         <SnackbarContent
           message={strings.questionnaireEdit.snackbarMessageSuccess}

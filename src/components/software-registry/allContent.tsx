@@ -1,4 +1,5 @@
-import { Grid } from "@mui/material";
+import type { FunctionComponent } from "react";
+import { Grid, Box } from "@mui/material";
 import type { SoftwareRegistry, SoftwareStatus } from "src/generated/homeLambdasClient";
 import MainCard from "./cards/mainCard";
 
@@ -17,21 +18,29 @@ interface ContentProps {
 
 /**
  * Content component.
- * 
- * This component is responsible for rendering the layout of software entries. 
- * It uses the `MainCard` component for each software entry and allows for admin actions 
+ *
+ * This component is responsible for rendering the layout of software entries.
+ * It uses the `MainCard` component for each software entry and allows for admin actions
  * such as changing the status or removing software.
  *
  * @component
  * @param ContentProps The props for the Content component.
  * @returns The rendered Content component.
  */
-const Content = ({ applications, isGridView, onStatusChange, adminMode, onRemove, onSave, loggedUserId }: ContentProps) => {
-  return (
+const Content = ({
+  applications,
+  isGridView,
+  onStatusChange,
+  adminMode,
+  onRemove,
+  onSave,
+  loggedUserId
+}: ContentProps) => {
+  return isGridView ? (
     <Grid container spacing={2}>
       {applications.map((app) => {
         const isInMyApplications = app.users?.includes(loggedUserId) || false;
-        
+
         return (
           <Grid item key={app.id}>
             <MainCard
@@ -41,23 +50,49 @@ const Content = ({ applications, isGridView, onStatusChange, adminMode, onRemove
               description={app.description}
               tags={app.tags || []}
               status={app.status}
-              isGridView={isGridView}
+              isGridView={true}
               isAdmin={adminMode}
               onStatusChange={
-                adminMode ? 
-                (newStatus) => 
-                  onStatusChange( app.id || "", newStatus ) : undefined
+                adminMode ? (newStatus) => onStatusChange(app.id || "", newStatus) : undefined
               }
               onSave={() => onSave(app.id || "")}
               onRemove={adminMode ? () => onRemove(app.id || "") : undefined}
-              isInMyApplications={isInMyApplications} 
-              url={""} 
+              isInMyApplications={isInMyApplications}
+              url={""}
               createdBy={""}
-              />
+            />
           </Grid>
         );
       })}
     </Grid>
+  ) : (
+    <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+      {applications.map((app) => {
+        const isInMyApplications = app.users?.includes(loggedUserId) || false;
+
+        return (
+          <MainCard
+            key={app.id}
+            id={app.id || ""}
+            image={app.image}
+            name={app.name}
+            description={app.description}
+            tags={app.tags || []}
+            status={app.status}
+            isGridView={false}
+            isAdmin={adminMode}
+            onStatusChange={
+              adminMode ? (newStatus) => onStatusChange(app.id || "", newStatus) : undefined
+            }
+            onSave={() => onSave(app.id || "")}
+            onRemove={adminMode ? () => onRemove(app.id || "") : undefined}
+            isInMyApplications={isInMyApplications}
+            url={""}
+            createdBy={""}
+          />
+        );
+      })}
+    </Box>
   );
 };
 

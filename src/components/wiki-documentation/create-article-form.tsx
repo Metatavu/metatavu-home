@@ -14,7 +14,7 @@ import {
 import strings from "src/localization/strings";
 import { type ChangeEvent, type KeyboardEvent, type SyntheticEvent, useRef, useState } from "react";
 import RichTextEditorLexical from "./rich-text-editor/rich-text-editor";
-import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
+import BackButton from "../generics/back-button";
 import { uploadFile } from "src/utils/s3-file-utils";
 import { useLambdasApi } from "src/hooks/use-api";
 import ActionButton from "./action-button";
@@ -236,12 +236,11 @@ const CreateOrEditArticleForm = ({
     <>
       <Grid container spacing={1.5} sx={{ marginBottom: 3, marginTop: 0.5 }}>
         <Grid item xs={6}>
-          <ActionButton onClick={closeForm}>
-            <>
-              <KeyboardReturnIcon sx={{ marginRight: 1 }} />
-              {strings.wikiDocumentation.back}
-            </>
-          </ActionButton>
+        <BackButton 
+                onClick={closeForm}
+                disableNavigation
+                sx={{ padding: "6px" }}
+              />
         </Grid>
         <Grid item xs={6}>
           {action === "create" ? (
