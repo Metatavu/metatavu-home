@@ -380,7 +380,7 @@ const NewQuestionnaireBuilder = () => {
         editQuestionInPreview={editQuestionInPreview}
       />
       <BackButton 
-        sx={{ mt: 3, marginBottom: 2 }}
+        styles={{ mt: 3, marginBottom: 2 }}
       />
     </>
   );

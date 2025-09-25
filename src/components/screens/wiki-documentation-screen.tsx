@@ -558,7 +558,9 @@ return (
             />
           </Grid>
         )}
-        <BackButton sx={{ marginBottom: 2 }} />
+        <BackButton 
+          styles={{ marginBottom: 2 }} 
+        />
       </>
     )}
   </>

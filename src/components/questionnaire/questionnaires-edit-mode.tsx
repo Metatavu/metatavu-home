@@ -508,7 +508,9 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
           </CardActions>
         </CardContent>
       </Card>
-      <BackButton sx={{ mt: 3, marginBottom: 2 }} />
+      <BackButton 
+        styles={{ mt: 3, marginBottom: 2 }} 
+      />
       <Snackbar open={snackbarOpen} autoHideDuration={2000} onClose={handleSnackbarClose}>
         <SnackbarContent
           message={strings.questionnaireEdit.snackbarMessageSuccess}

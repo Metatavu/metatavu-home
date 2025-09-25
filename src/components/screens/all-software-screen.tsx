@@ -460,7 +460,9 @@ const statusOptions = allStatusValues.map((value) => ({
           </Grid>
         </Grid>
       </Grid>
-      <BackButton sx={{ marginBottom: 2 }} />
+      <BackButton 
+        styles={{ marginBottom: 2 }} 
+      />
 
       <AddSoftwareModal
         open={isModalOpen}

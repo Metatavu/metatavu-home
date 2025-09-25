@@ -120,7 +120,7 @@ const ArticleScreen = () => {
               <Grid item xs={6}>
               <BackButton 
                 onClick={formOpen ? handleClose : undefined}
-                sx={{ padding: "6px" }}
+                styles={{ padding: "6px" }}
               />
               </Grid>
               <Grid item xs={6}>

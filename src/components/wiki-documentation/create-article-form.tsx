@@ -205,9 +205,9 @@ const CreateOrEditArticleForm = ({
       <Grid container spacing={1.5} sx={{ marginBottom: 3, marginTop: 0.5 }}>
         <Grid item xs={6}>
         <BackButton 
-                onClick={handleClose}
-                sx={{ padding: "6px" }}
-              />
+          onClick={handleClose}
+          styles={{ padding: "6px" }}
+        />
         </Grid>
         <Grid item xs={6}>
         {action === "create" ?

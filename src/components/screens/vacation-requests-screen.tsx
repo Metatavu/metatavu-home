@@ -274,7 +274,9 @@ const VacationRequestsScreen = () => {
           loading={loading}
         />
       </Card>
-      <BackButton sx={{ mt: 2, marginBottom: 2 }} />
+      <BackButton 
+        styles={{ mt: 2, marginBottom: 2 }} 
+      />
     </>
   );
 };

@@ -200,7 +200,13 @@ const SoftwareDetails = () => {
   return (
     <Container sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       <Box my={4} display="flex" alignItems="center" position="relative">
-        <BackButton sx={{ width: "auto", position: "absolute", left: 0 }}/>
+        <BackButton 
+          styles={{ 
+            width: "auto", 
+            position: "absolute", 
+            left: 0 
+          }}
+        />
         <Box flexGrow={1} textAlign="center">
           <Typography variant="h2">{strings.softwareRegistry.application}</Typography>
         </Box>
