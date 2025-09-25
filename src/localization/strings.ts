@@ -1,8 +1,6 @@
 import en from "./en.json";
 import fi from "./fi.json";
-import LocalizedStrings, {
-  type LocalizedStringsMethods,
-} from "localized-strings";
+import LocalizedStrings, { type LocalizedStringsMethods } from "localized-strings";
 
 /**
  * Localized strings
@@ -144,6 +142,7 @@ export interface Localized extends LocalizedStringsMethods {
     noRecommendations: string;
     recommendationMessage: string;
     allApplications: string;
+    back: string;
     addApplication: string;
     added: string;
     tags: string;
@@ -180,6 +179,7 @@ export interface Localized extends LocalizedStringsMethods {
     loading: string;
     errorUnknownUser: string;
     errorCreatingSoftware: string;
+    errorFetchingSoftwareToList: string;
   };
 
   /**
@@ -427,6 +427,9 @@ export interface Localized extends LocalizedStringsMethods {
     insertAnswerLabel: string;
     addAnswer: string;
     saveAnswer: string;
+    tooltipBothEmpty: string;
+    tooltipEmptyQuestion: string;
+    tooltipEmptyAnswers: string;
   };
   /**
    * Translations related to Questionnaire Table
@@ -541,7 +544,7 @@ export interface Localized extends LocalizedStringsMethods {
     draft: string;
     allArticles: string;
     connectedArticles: string;
-  }
+  };
   /**
    * Translation related settings screen
    */
@@ -598,6 +601,30 @@ export interface Localized extends LocalizedStringsMethods {
    */
   pagination: {
     ariaLabel: string;
+  };
+  /**
+   * Translations related to Onboarding
+   */
+  onboarding: {
+    prev: string;
+    next: string;
+    close: string;
+    welcomeTitle: string;
+    welcomeContent: string;
+    balanceTitle: string;
+    balanceContent: string;
+    sprintTitle: string;
+    sprintContent: string;
+    vacationsTitle: string;
+    vacationsContent: string;
+    questionnaireTitle: string;
+    questionnaireContent: string;
+    softwareTitle: string;
+    softwareContent: string;
+    wikiTitle: string;
+    wikiContent: string;
+    doneTitle: string;
+    doneContent: string;
   };
 }
 /**

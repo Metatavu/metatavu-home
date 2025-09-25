@@ -1,4 +1,4 @@
-import { FunctionComponent, useState, useRef } from "react";
+import { useState, useRef } from "react";
 import { Box, Typography, Grid, IconButton, Button } from "@mui/material";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/swiper-bundle.css";
@@ -114,7 +114,7 @@ const Recommendations = ({ applications, onAddUser }: RecommendationsProps) => {
         marginBottom: "30px",
       }}
     >
-      <Typography variant="h5" sx={{ alignSelf: "flex-start", fontWeight: "bold", mb: 2 }}>
+      <Typography variant="h3" sx={{ alignSelf: "flex-start", fontWeight: "bold", mb: 2 }}>
         {strings.softwareRegistry.recommendations}
       </Typography>
 
@@ -139,7 +139,7 @@ const Recommendations = ({ applications, onAddUser }: RecommendationsProps) => {
             <ChevronLeftIcon />
           </IconButton>
 
-          <Swiper ref={swiperRef} spaceBetween={10} slidesPerView="auto">
+          <Swiper ref={swiperRef} spaceBetween={60} slidesPerView="auto" >
             {applications.map((app) => (
               <SwiperSlide key={app.id} style={{ width: "260px" }}>
                 <RecommendCard
@@ -182,13 +182,12 @@ const Recommendations = ({ applications, onAddUser }: RecommendationsProps) => {
       <Box display="flex" justifyContent="center" mt={2}>
         <Button
           variant="contained"
-          color="primary"
+          color="secondary"
           onClick={() => navigate("/softwareregistry/allsoftware")}
           sx={{
             textTransform: "none",
             color: "#fff",
             fontSize: "18px",
-            background: "#f9473b",
             borderRadius: "25px",
             "&:hover": { background: "#000" },
           }}

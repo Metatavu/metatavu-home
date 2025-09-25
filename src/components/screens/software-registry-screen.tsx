@@ -25,6 +25,7 @@ import useCreateSoftware from "src/hooks/use-create-software";
 import Recommendations from "../software-registry/Recommendations";
 import AddSoftwareModal from "../software-registry/AddSoftwareModal";
 import Sidebar from "../software-registry/Sidebar";
+import BackButton from "../generics/back-button";
 
 /**
  * Software registry screen component
@@ -187,12 +188,12 @@ const SoftwareScreen = () => {
   return (
     <Container>
       <Grid container direction="column" alignItems="center" mt={4}>
-        <Typography sx={{ fontWeight: "bold", fontSize: "35px" }} m={4}>
+        <Typography variant="h2" m={4}>
           {strings.softwareRegistry.applications}
         </Typography>
         {recommendedApplications.length > 0 && (
           <Grid item container justifyContent="center" alignItems="center" mb={4}>
-            <Typography variant="h6" sx={{ fontWeight: "bold", fontSize: "20px", color: "#f9473b" }}>
+            <Typography variant="subtitle1">
               {strings.softwareRegistry.recommendationMessage.replace(
                 "{recommendationCount}",
                 recommendedApplications.length.toString()
@@ -201,7 +202,7 @@ const SoftwareScreen = () => {
             <IconButton
               onClick={scrollToRecommendations}
               sx={{
-                color: "#f9473b",
+                color: "#F9473B",
                 backgroundColor: "transparent",
                 ":hover": {
                   backgroundColor: "transparent",
@@ -214,18 +215,17 @@ const SoftwareScreen = () => {
           </Grid>
         )}
         <Grid item container justifyContent="space-between" alignItems="center">
-          <Typography variant="h4" sx={{ fontWeight: "bold", fontSize: "30px" }}>
+          <Typography variant="h3">
             {strings.softwareRegistry.myApplications}
           </Typography>
           <Button
             variant="contained"
-            color="primary"
+            color="secondary"
             onClick={() => setIsModalOpen(true)}
             sx={{
               textTransform: "none",
               color: "#fff",
               fontSize: "18px",
-              background: "#f9473b",
               borderRadius: "100px",
               "&:hover": { background: "#000" },
             }}
@@ -238,7 +238,7 @@ const SoftwareScreen = () => {
             <IconButton
               onClick={() => setIsGridView(true)}
               sx={{
-                backgroundColor: isGridView ? "#f9473b" : "#f2f2f2",
+                backgroundColor: isGridView ? "#F9473B" : "#f2f2f2",
                 color: isGridView ? "#fff" : "#000",
                 borderRadius: "4px",
                 padding: "6px",
@@ -254,7 +254,7 @@ const SoftwareScreen = () => {
             <IconButton
               onClick={() => setIsGridView(false)}
               sx={{
-                backgroundColor: !isGridView ? "#f9473b" : "#f2f2f2",
+                backgroundColor: !isGridView ? "#F9473B" : "#f2f2f2",
                 color: !isGridView ? "#fff" : "#000",
                 borderRadius: "4px",
                 padding: "6px",
@@ -301,13 +301,12 @@ const SoftwareScreen = () => {
               <Box textAlign="center" mt={3}>
                 <Button
                   variant="contained"
-                  color="primary"
+                  color="secondary"
                   onClick={() => setShowAll(!showAll)}
                   sx={{
                     textTransform: "none",
                     color: "#fff",
                     fontSize: "18px",
-                    background: "#f9473b",
                     borderRadius: "100px",
                     "&:hover": { background: "#000" },
                   }}
@@ -342,6 +341,7 @@ const SoftwareScreen = () => {
         disabled={loading}
         existingSoftwareList={software}
       />
+      <BackButton label={strings.softwareRegistry.back} />
     </Container>
   );
 };

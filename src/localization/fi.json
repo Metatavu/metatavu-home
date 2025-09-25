@@ -113,6 +113,7 @@
     "noRecommendations": "Ei suosituksia",
     "recommendationMessage": "Sinulla on {recommendationCount} uutta suositusta!",
     "allApplications": "Kaikki sovellukset",
+    "back": "Takaisin",
     "addApplication": "Lisää sovellus",
     "tags": "Tagit",
     "filter": "Rajaa",
@@ -142,13 +143,14 @@
     "showMore": "Näytä lisää",
     "showLess": "Näytä vähemmän",
     "noPending": "Ei uutta sovellusta",
-    "newSoftware": "Uusi sovelluksia",
+    "newSoftware": "Uusia sovelluksia", 
     "alreadyExists": "Nimi on jo olemassa",
     "delete": "Poista",
     "searchPlaceholder": "Etsi ja valitse käyttäjiä",
     "loading": "Lastaus...",
     "errorUnknownUser": "Tuntematon käyttäjä",
-    "errorCreatingSoftware": "Virhe ohjelmiston luomisessa"
+    "errorCreatingSoftware": "Virhe ohjelmiston luomisessa",
+    "errorFetchingSoftwareToList": "Virhe ohjelmistojen hakemisessa listattavaksi"
   },
   "softwareStatus": {
     "all": "Kaikki",
@@ -332,7 +334,10 @@
     "answerLabel": "Syötä vastaus",
     "insertAnswerLabel": "Syötä vastaus",
     "addAnswer": "+ Lisää uusi vastausvaihtoehto",
-    "saveAnswer": "Lisää kysymys"
+    "saveAnswer": "Lisää kysymys",
+    "tooltipBothEmpty": "Kysymys ja vastausvaihtoehdot eivät voi olla tyhjiä",
+    "tooltipEmptyQuestion": "Kysymys ei voi olla tyhjä",
+    "tooltipEmptyAnswers": "Vastausvaihtoehdot eivät voi olla tyhjiä"
   },
   "questionnaireTable": {
     "title": "Otsikko",
@@ -405,7 +410,7 @@
     "lastUpdated": "Viimeksi päivitetty",
     "created": "Luotu",
     "lastRead": "Viimeksi luettu",
-    "pendingArticles": "You have {0} articles pending review",
+    "pendingArticles": "Sinulla on {0} artikkelia odottamassa",
     "noPendingArticles": "Ei tarkistusta odottavia artikkeleita.",
     "noArticlesFound": "Artikkeleita ei löytynyt.",
     "create": "luoda",
@@ -460,8 +465,28 @@
     "actions": "Toiminnot",
     "noUsersFound": "Käyttäjiä ei löytynyt"
   },
-
   "pagination": {
     "ariaLabel": "Sivunavigointi"
-  }
+  },
+"onboarding": {
+  "prev": "Edellinen",
+  "next": "Seuraava",
+  "close": "Sulje",
+  "welcomeTitle": "Tervetuloa kotinäkymään",
+  "welcomeContent": "Tämä on hallintapaneeli, josta näet saldon, sprintit ja paljon muuta.",
+  "balanceTitle": "Saldo",
+  "balanceContent": "Näet kokonaisjoustotyöaikasi täältä.",
+  "sprintTitle": "Sprinttinäkymä",
+  "sprintContent": "Tarkastele allokaatiota ja aikamerkintöjä.",
+  "vacationsTitle": "Lomahakemukset",
+  "vacationsContent": "Seuraa tulevia lomia ja niiden tilaa.",
+  "questionnaireTitle": "Kyselyt",
+  "questionnaireContent": "Rakenna ja vastaa kyselyihin.",
+  "softwareTitle": "Ohjelmistorekisteri",
+  "softwareContent": "Löydä ja hallitse yrityksen sovelluksia.",
+  "wikiTitle": "Wiki Dokumentaatio",
+  "wikiContent": "Lue tai luo dokumentaatiota.",
+  "doneTitle": "Onboarding valmis",
+  "doneContent": "Valmista! Voit aloittaa alusta asetuksista."
+}
 }
