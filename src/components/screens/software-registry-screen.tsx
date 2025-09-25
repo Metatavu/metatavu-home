@@ -87,7 +87,7 @@ const SoftwareScreen = () => {
    * @returns The list of recommended applications.
    */
   const recommendedApplications = useMemo(
-    () => software.filter((app) => app.recommend?.includes(loggedUserId)),
+    () => software.filter((app) => app.recommend?.includes(loggedUserId) && app.status === SoftwareStatus.ACCEPTED),
     [software, loggedUserId]
   );
 

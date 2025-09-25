@@ -20,7 +20,7 @@ import {
   DialogActions,
   DialogContent,
   DialogContentText,
-  DialogTitle,
+  DialogTitle
 } from "@mui/material";
 import Content from "../software-registry/allContent";
 import { useLambdasApi } from "src/hooks/use-api";
@@ -38,8 +38,6 @@ import useCreateSoftware from "src/hooks/use-create-software";
 import AddSoftwareModal from "../software-registry/AddSoftwareModal";
 import BackButton from "../generics/back-button";
 
-
-
 /**
  * All software screen component
  */
@@ -51,7 +49,9 @@ const AllSoftwareScreen = () => {
   const loggedUserId = auth?.token?.sub ?? "";
   const adminMode = UserRoleUtils.adminMode();
   const allStatusValues = ["ALL", ...Object.values(SoftwareStatus)] as const;
-  const [selectedStatus, setSelectedStatus] = useState<SoftwareStatusFilterOptions>(allStatusValues[0]);
+  const [selectedStatus, setSelectedStatus] = useState<SoftwareStatusFilterOptions>(
+    allStatusValues[0]
+  );
   const [error, setError] = useState<string | null>(null);
   const [searchTerms, setSearchTerms] = useState<string[]>([]);
   const [inputValue, setInputValue] = useState("");
@@ -62,12 +62,12 @@ const AllSoftwareScreen = () => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedApplicationId, setSelectedApplicationId] = useState<string | null>(null);
 
-type SoftwareStatusFilterOptions = typeof allStatusValues[number];
+  type SoftwareStatusFilterOptions = (typeof allStatusValues)[number];
 
-const statusOptions = allStatusValues.map((value) => ({
-  value,
-  label: strings.softwareStatus[value.toLowerCase() as keyof typeof strings.softwareStatus]
-}));
+  const statusOptions = allStatusValues.map((value) => ({
+    value,
+    label: strings.softwareStatus[value.toLowerCase() as keyof typeof strings.softwareStatus]
+  }));
 
   /**
    * Fetches the list of all software applications from the API.
@@ -100,14 +100,15 @@ const statusOptions = allStatusValues.map((value) => ({
    */
   const filterBySearchTerms = (software: SoftwareRegistry): boolean => {
     const lowerCaseInput = inputValue.toLowerCase();
-    const matchesInput = software.name.toLowerCase().includes(lowerCaseInput) ||
-      (software.tags ?? []).some(tag => tag.toLowerCase().includes(lowerCaseInput));
+    const matchesInput =
+      software.name.toLowerCase().includes(lowerCaseInput) ||
+      (software.tags ?? []).some((tag) => tag.toLowerCase().includes(lowerCaseInput));
 
-    const matchesTerms = searchTerms.every(term => {
+    const matchesTerms = searchTerms.every((term) => {
       const lowerCaseTerm = term.toLowerCase();
       return (
         software.name.toLowerCase().includes(lowerCaseTerm) ||
-        (software.tags ?? []).some(tag => tag.toLowerCase().includes(lowerCaseTerm))
+        (software.tags ?? []).some((tag) => tag.toLowerCase().includes(lowerCaseTerm))
       );
     });
 
@@ -115,18 +116,18 @@ const statusOptions = allStatusValues.map((value) => ({
   };
 
   /**
- * Filters the application by its status.
- *
- * @param software - The software application to check.
- * @param status - The status filter value (e.g., "ALL", "PENDING", etc.).
- * @returns `true` if the application matches the given status or if the status is "ALL"; otherwise, `false`.
- */
+   * Filters the application by its status.
+   *
+   * @param software - The software application to check.
+   * @param status - The status filter value (e.g., "ALL", "PENDING", etc.).
+   * @returns `true` if the application matches the given status or if the status is "ALL"; otherwise, `false`.
+   */
   const filterByStatus = (software: SoftwareRegistry, status: string): boolean => {
     return status === allStatusValues[0] || software.status === status;
   };
 
   const filteredApplications = useMemo(() => {
-    return software.filter(app => {
+    return software.filter((app) => {
       const matchesSearch = filterBySearchTerms(app);
       const matchesStatus = filterByStatus(app, selectedStatus);
       return matchesSearch && matchesStatus;
@@ -154,20 +155,18 @@ const statusOptions = allStatusValues.map((value) => ({
    * @param chipToDelete - The search term (chip) to remove from the list.
    */
   const handleDeleteChip = (chipToDelete: string) => {
-    setSearchTerms((prevChips) =>
-      prevChips.filter((chip) => chip !== chipToDelete)
-    );
+    setSearchTerms((prevChips) => prevChips.filter((chip) => chip !== chipToDelete));
   };
 
   /**
    * Updates the status of application.
-   * 
+   *
    * @param {string} id - The id of the application to update.
    * @param {SoftwareStatus} newStatus - The new status to assign to the application.
    */
   const handleStatusChange = async (id: string, newStatus: SoftwareStatus) => {
     try {
-      const softwareToUpdate = software.find(software => software.id === id);
+      const softwareToUpdate = software.find((software) => software.id === id);
 
       if (softwareToUpdate) {
         const updatedApp: SoftwareRegistry = {
@@ -175,7 +174,7 @@ const statusOptions = allStatusValues.map((value) => ({
           status: newStatus
         };
 
-        const updatedSoftwares = software.map(software =>
+        const updatedSoftwares = software.map((software) =>
           software.id === id ? updatedApp : software
         );
         setApplications(updatedSoftwares);
@@ -192,20 +191,24 @@ const statusOptions = allStatusValues.map((value) => ({
 
   /**
    * Adds the current user to the list of users for the specified application.
-   * 
+   *
    * @param {string} id - The id of the application to save.
    */
   const handleSave = async (id: string) => {
     try {
-      const softwareToUpdate = software.find(software => software.id === id);
+      const softwareToUpdate = software.find((software) => software.id === id);
       if (!softwareToUpdate) {
         throw new Error(`Application with ID ${id} not found`);
       }
 
-      const updatedUsers = softwareToUpdate.users ? [...softwareToUpdate.users, loggedUserId] : [loggedUserId];
+      const updatedUsers = softwareToUpdate.users
+        ? [...softwareToUpdate.users, loggedUserId]
+        : [loggedUserId];
 
-      const updatedApplications = software.map(software =>
-        software.id === id ? { ...software, users: updatedUsers, isInMyApplications: true } : software
+      const updatedApplications = software.map((software) =>
+        software.id === id
+          ? { ...software, users: updatedUsers, isInMyApplications: true }
+          : software
       );
       setApplications(updatedApplications);
 
@@ -213,10 +216,9 @@ const statusOptions = allStatusValues.map((value) => ({
         id,
         softwareRegistry: {
           ...softwareToUpdate,
-          users: updatedUsers,
+          users: updatedUsers
         }
       });
-
     } catch (error) {
       setError(`Error saving the app: ${error}`);
     }
@@ -247,12 +249,12 @@ const statusOptions = allStatusValues.map((value) => ({
     if (!selectedApplicationId) return;
 
     try {
-      const applicationToDelete = software.find(app => app.id === selectedApplicationId);
+      const applicationToDelete = software.find((app) => app.id === selectedApplicationId);
       if (!applicationToDelete) {
         throw new Error(`Application with ID ${selectedApplicationId} not found`);
       }
 
-      const updatedApplications = software.filter(app => app.id !== selectedApplicationId);
+      const updatedApplications = software.filter((app) => app.id !== selectedApplicationId);
       setApplications(updatedApplications);
 
       await softwareApi.deleteSoftwareById({ id: selectedApplicationId });
@@ -269,7 +271,7 @@ const statusOptions = allStatusValues.map((value) => ({
         sx={{
           p: "25%",
           display: "flex",
-          justifyContent: "center",
+          justifyContent: "center"
         }}
       >
         <Box sx={{ textAlign: "center" }}>
@@ -278,7 +280,7 @@ const statusOptions = allStatusValues.map((value) => ({
             sx={{
               scale: "150%",
               mt: "5%",
-              mb: "5%",
+              mb: "5%"
             }}
           />
         </Box>
@@ -289,19 +291,8 @@ const statusOptions = allStatusValues.map((value) => ({
   return (
     <Container>
       <Grid container direction="column" alignItems="center" mt={4}>
-        <Grid
-          item
-          container
-          justifyContent="space-between"
-          alignItems="center"
-          mb={2}
-          mt={4}
-        >
-          <Typography
-            variant="h3"
-          >
-            {strings.softwareRegistry.allApplications}
-          </Typography>
+        <Grid item container justifyContent="space-between" alignItems="center" mb={2} mt={4}>
+          <Typography variant="h3">{strings.softwareRegistry.allApplications}</Typography>
           <Button
             variant="contained"
             color="secondary"
@@ -311,7 +302,7 @@ const statusOptions = allStatusValues.map((value) => ({
               color: "#fff",
               fontSize: "18px",
               borderRadius: "100px",
-              "&:hover": { background: "#000" },
+              "&:hover": { background: "#000" }
             }}
           >
             {strings.softwareRegistry.addApplication}
@@ -324,7 +315,7 @@ const statusOptions = allStatusValues.map((value) => ({
               display: "flex",
               flexDirection: "row",
               alignItems: "center",
-              width: "100%",
+              width: "100%"
             }}
           >
             <FormControl sx={{ minWidth: "120px" }}>
@@ -355,7 +346,7 @@ const statusOptions = allStatusValues.map((value) => ({
                   sx={{
                     marginRight: "5px",
                     backgroundColor: "#BDBDBD",
-                    color: "#fff",
+                    color: "#fff"
                   }}
                 />
               ))}
@@ -371,7 +362,7 @@ const statusOptions = allStatusValues.map((value) => ({
                 width: "50%",
                 padding: "10px",
                 backgroundColor: "#f1f1f1",
-                boxShadow: "inset 0px 4px 6px rgba(0, 0, 0, 0.1)",
+                boxShadow: "inset 0px 4px 6px rgba(0, 0, 0, 0.1)"
               }}
             />
             <Box sx={{ display: "flex", marginLeft: "auto" }}>
@@ -387,8 +378,8 @@ const statusOptions = allStatusValues.map((value) => ({
                   transition: "background-color 0.3s ease",
                   "&:hover": {
                     backgroundColor: "#000",
-                    color: "#fff",
-                  },
+                    color: "#fff"
+                  }
                 }}
               >
                 <GridViewIcon />
@@ -403,8 +394,8 @@ const statusOptions = allStatusValues.map((value) => ({
                   transition: "background-color 0.3s ease",
                   "&:hover": {
                     backgroundColor: "#000",
-                    color: "#fff",
-                  },
+                    color: "#fff"
+                  }
                 }}
               >
                 <ListViewIcon />
@@ -420,13 +411,8 @@ const statusOptions = allStatusValues.map((value) => ({
                 <Alert severity="error">{error}</Alert>
               </Box>
             )}
-
             <Content
-              applications={
-                showAll ?
-                  filteredApplications :
-                  filteredApplications.slice(0, 8)
-              }
+              applications={showAll ? filteredApplications : filteredApplications.slice(0, 8)}
               isGridView={isGridView}
               onStatusChange={handleStatusChange}
               adminMode={adminMode}
@@ -434,7 +420,6 @@ const statusOptions = allStatusValues.map((value) => ({
               onRemove={openDeleteDialog}
               loggedUserId={loggedUserId}
             />
-
             {filteredApplications.length > 4 && (
               <Box textAlign="center" mt={3}>
                 <Button
@@ -446,14 +431,10 @@ const statusOptions = allStatusValues.map((value) => ({
                     color: "#fff",
                     fontSize: "18px",
                     borderRadius: "100px",
-                    "&:hover": { background: "#000" },
+                    "&:hover": { background: "#000" }
                   }}
                 >
-                  {
-                    showAll
-                      ? strings.softwareRegistry.showLess
-                      : strings.softwareRegistry.showMore
-                  }
+                  {showAll ? strings.softwareRegistry.showLess : strings.softwareRegistry.showMore}
                 </Button>
               </Box>
             )}
@@ -482,7 +463,7 @@ const statusOptions = allStatusValues.map((value) => ({
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="delete-dialog-description">
-          {strings.softwareRegistry.deleteSoftwareDescription}
+            {strings.softwareRegistry.deleteSoftwareDescription}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
