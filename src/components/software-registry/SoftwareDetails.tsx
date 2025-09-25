@@ -1,17 +1,15 @@
-import { FunctionComponent, useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { type FunctionComponent, useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import {
   Container,
   Typography,
   Grid,
   Box,
   Link,
-  IconButton,
   Button,
   Card,
   CircularProgress
 } from "@mui/material";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import strings from "src/localization/strings";
 import { useLambdasApi } from "src/hooks/use-api";
 import { useAtom, useAtomValue } from "jotai";
@@ -20,6 +18,7 @@ import { softwareAtom } from "src/atoms/software";
 import { SoftwareRegistry } from "src/generated/homeLambdasClient";
 import AddSoftwareModal from "./AddSoftwareModal";
 import UserRoleUtils from "src/utils/user-role-utils";
+import BackButton from "../generics/back-button";
 
 /**
  * Component for displaying detailed information about a specific software entry.
@@ -36,7 +35,6 @@ const SoftwareDetails: FunctionComponent = () => {
   const [error, setError] = useState<string | null>(null);
   const [createdByUserName, setCreatedByUserName] = useState<string>("");
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const navigate = useNavigate();
   const { softwareApi, usersApi } = useLambdasApi();
   const auth = useAtomValue(authAtom);
   const loggedUserId = auth?.token?.sub ?? "";
@@ -219,13 +217,7 @@ const SoftwareDetails: FunctionComponent = () => {
   return (
     <Container sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       <Box my={4} display="flex" alignItems="center" position="relative">
-        <IconButton
-          aria-label="back"
-          onClick={() => navigate(-1)}
-          sx={{ position: "absolute", left: 0 }}
-        >
-          <ArrowBackIcon />
-        </IconButton>
+        <BackButton sx={{ width: "auto", position: "absolute", left: 0 }}/>
         <Box flexGrow={1} textAlign="center">
           <Typography variant="h2">{strings.softwareRegistry.application}</Typography>
         </Box>

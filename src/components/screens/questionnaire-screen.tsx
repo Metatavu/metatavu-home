@@ -34,9 +34,8 @@ const QuestionnaireScreen = () => {
       </Grid>
       <QuestionnaireTable />
     </Card>
-    <BackButton label={strings.questionnaireScreen.back}/>
-    </>
-    
+    <BackButton sx={{ mt: 3 }}/>
+    </>    
   );
 };
 
