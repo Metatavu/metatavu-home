@@ -341,7 +341,7 @@ const SoftwareScreen = () => {
         disabled={loading}
         existingSoftwareList={software}
       />
-      <BackButton label={strings.softwareRegistry.back} />
+      <BackButton sx={{ marginBottom: 2 }}/>
     </Container>
   );
 };

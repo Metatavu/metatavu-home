@@ -6,7 +6,8 @@
   "label": {
     "currentLocaleLabel": "Nykyinen kieli:",
     "cancel": "Peruuta",
-    "save": "Tallenna"
+    "save": "Tallenna",
+    "back": "Takaisin"
   },
   "header": {
     "hello": "Hei",
@@ -96,7 +97,6 @@
     "startDate": "Aloituspäivämäärä",
     "deadLine": "Määräaika",
     "actualWorkHours": "Todelliset työajat",
-    "back": "Takaisin",
     "filter": "Suodata",
     "filterType": "Suodattimen tyyppi",
     "project": "Projekti",
@@ -113,7 +113,6 @@
     "noRecommendations": "Ei suosituksia",
     "recommendationMessage": "Sinulla on {recommendationCount} uutta suositusta!",
     "allApplications": "Kaikki sovellukset",
-    "back": "Takaisin",
     "addApplication": "Lisää sovellus",
     "tags": "Tagit",
     "filter": "Rajaa",
@@ -288,7 +287,7 @@
     "noAccess": "Ei pääsyä"
   },
   "vacationsScreen": {
-    "back": "Takaisin"
+
   },
   "viewAll": {
     "startDate": "Aloituspäivä: ",
@@ -307,8 +306,8 @@
     "buildNewQuestionnaire": "Rakenna uusi kysely",
     "status": "Tila:",
     "edit": "Muokkaa",
-    "delete": "Poista",
-    "back": "Takaisin"
+    "delete": "Poista"
+
   },
   "newQuestionnaireBuilder": {
     "makeNewQuestionnaire": "Tee uusi kysely",
@@ -318,7 +317,6 @@
     "preview": "Kyselyiden esikatselu",
     "is": "on",
     "removeFromPreview": "Poista kysymys",
-    "back": "Takaisin",
     "description": "Kuvaus",
     "insertDescription": "Syötä kuvaus",
     "countedAnswers": "Oikeiden vastausten määrä tässä kyselyssä:",
@@ -414,7 +412,6 @@
     "noPendingArticles": "Ei tarkistusta odottavia artikkeleita.",
     "noArticlesFound": "Artikkeleita ei löytynyt.",
     "create": "luoda",
-    "back": "takaisin",
     "save": "tallentaa",
     "edit": "muokata",
     "confirm": "vahvistaa",
