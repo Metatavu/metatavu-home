@@ -18,6 +18,7 @@ import UserRoleUtils from "src/utils/user-role-utils";
 import { renderVacationDaysTextForScreen } from "src/utils/vacation-days-utils";
 import { usersAtom } from "src/atoms/user";
 import BackButton from "../generics/back-button";
+import { useLocation } from "react-router";
 
 /**
  * Vacation requests screen
@@ -31,6 +32,9 @@ const VacationRequestsScreen = () => {
     adminMode ? allVacationRequestsAtom : vacationRequestsAtom
   );
   const setDisplayedVacationRequests = useSetAtom(displayedVacationRequestsAtom);
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const selectedId = params.get("selectedId");
 
   const upcomingVacationRequests = useMemo(
     () => vacationRequests.filter((request) => request.endDate.getTime() > Date.now()),
@@ -50,10 +54,13 @@ const VacationRequestsScreen = () => {
    * Decide if we show upcoming or past vacations
    */
   useEffect(() => {
-    isUpcoming
-      ? setDisplayedVacationRequests(upcomingVacationRequests)
-      : setDisplayedVacationRequests(pastVacationRequests);
-  }, [isUpcoming, vacationRequests]);
+    let displayed = isUpcoming ? upcomingVacationRequests : pastVacationRequests;
+
+    if (selectedId) {
+      displayed = displayed.filter((vacationRequests) => vacationRequests.id === selectedId);
+    }
+    setDisplayedVacationRequests(displayed);
+  }, [isUpcoming, vacationRequests, selectedId]);
 
   /**
    * Handler for upcoming/ past vacations toggle click
@@ -83,7 +90,6 @@ const VacationRequestsScreen = () => {
     }
     setLoading(false);
   };
-
 
   useEffect(() => {
     fetchVacationsRequests();
@@ -223,21 +229,20 @@ const VacationRequestsScreen = () => {
           const newOrUpdatedStatus = {
             status,
             createdBy: loggedInUser.id,
-            updatedAt: new Date(),
+            updatedAt: new Date()
           };
-
 
           const updateExistingStatus = () => {
             return vacationRequest.status?.map((existingStatus) =>
-                existingStatus.createdBy === loggedInUser.id
-                    ? { ...existingStatus, ...newOrUpdatedStatus }
-                    : existingStatus
-            )
-          }
+              existingStatus.createdBy === loggedInUser.id
+                ? { ...existingStatus, ...newOrUpdatedStatus }
+                : existingStatus
+            );
+          };
 
           const updatedStatus = statusExists
             ? updateExistingStatus()
-            : [...vacationRequest.status || [], newOrUpdatedStatus];
+            : [...(vacationRequest.status || []), newOrUpdatedStatus];
 
           return vacationRequestsApi.updateVacationRequest({
             id: vacationRequestId.toString(),
@@ -250,8 +255,9 @@ const VacationRequestsScreen = () => {
       );
 
       setVacationRequests((prevRequests) =>
-        prevRequests.map((vacationRequest) =>
-          updatedVacationRequests.find((req) => req?.id === vacationRequest.id) || vacationRequest
+        prevRequests.map(
+          (vacationRequest) =>
+            updatedVacationRequests.find((req) => req?.id === vacationRequest.id) || vacationRequest
         )
       );
     } catch (error) {
@@ -274,9 +280,9 @@ const VacationRequestsScreen = () => {
           loading={loading}
         />
       </Card>
-      
+
       {/* Admin Tools Section has been removed */}
-      
+
       <BackButton label={strings.vacationsScreen.back} />
     </>
   );
