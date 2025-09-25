@@ -27,7 +27,7 @@ import { userProfileAtom } from "src/atoms/auth";
 import ClearIcon from '@mui/icons-material/Clear';
 
 interface Props {
-  setFormOpen: (value: boolean) => void;
+  handleClose: () => void;
   adminMode: boolean;
   action: "edit"|"create";
   article?: Article;
@@ -40,14 +40,13 @@ interface EditorRef {
 /**
  * Form for creating or editing an article.
  * 
- * @param setFormOpen - Controls form visibility.
  * @param action - "create" or "edit" mode (default: "create").
  * @param article - Article data for editing (optional).
  * @param setArticle - Updates article state externally.
  * @param adminMode - Enables admin-specific features (optional).
  */
 const CreateOrEditArticleForm = ({
-  setFormOpen, 
+  handleClose, 
   action="create", 
   article, 
   setArticle,
@@ -97,7 +96,7 @@ const CreateOrEditArticleForm = ({
         setTags((tags) => [...new Set<string>(tags.concat(selectedTags))])
       }
       else setArticlesAtom((articles) => [response, ...(articles || [])]);
-      setFormOpen(false);
+      handleClose();
     }
     catch (error: any) {
       const message = (await error.response.json()).message;
@@ -137,15 +136,13 @@ const CreateOrEditArticleForm = ({
         setTags((tags) => [...new Set<string>(tags.concat(selectedTags))]);
         if (setArticle) setArticle(updatedArticle);
       }
-      setFormOpen(false);
+      handleClose();
     }
     catch (error: any) {
       const message = (await error.response.json()).message;
       setError(message);
     }
-  }
-
-  const closeForm = () => setFormOpen(false);
+  };
 
   const handleTitleChange = (event: any) => {
     const newInput = event.target.value;
@@ -208,8 +205,7 @@ const CreateOrEditArticleForm = ({
       <Grid container spacing={1.5} sx={{ marginBottom: 3, marginTop: 0.5 }}>
         <Grid item xs={6}>
         <BackButton 
-                onClick={closeForm}
-                disableNavigation
+                onClick={handleClose}
                 sx={{ padding: "6px" }}
               />
         </Grid>

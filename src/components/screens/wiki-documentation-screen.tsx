@@ -483,7 +483,7 @@ return (
   <>
     {formOpen ? (
       <CreateOrEditArticleForm
-        setFormOpen={setFormOpen}
+        handleClose={() => setFormOpen(false)}
         action="create"
         adminMode={adminMode}
       />

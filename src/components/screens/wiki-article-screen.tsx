@@ -104,7 +104,7 @@ const ArticleScreen = () => {
           </Card>
         : <> {formOpen 
           ? <CreateOrEditArticleForm 
-              setFormOpen={setFormOpen} 
+              handleClose={() => setFormOpen(false)} 
               action="edit" 
               article={article}
               setArticle={setArticle}

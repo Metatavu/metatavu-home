@@ -7,16 +7,14 @@ import strings from "src/localization/strings";
 interface BackButtonProps {
   onClick?: () => void;
   sx?: SxProps<Theme>;
-  disableNavigation?: boolean;
 }
 
 /**
  * @param props.onClick allows onClick actions to be used where applicable
  * @param props.sx override styling for consistent placement / visualization
- * @param props.disableNavigation used for "back" in create-article-form
  */
 const BackButton = (props: BackButtonProps): JSX.Element => {
-  const { onClick, sx, disableNavigation} = props;
+  const { onClick, sx} = props;
   const navigate = useNavigate();
   const adminMode = UserRoleUtils.adminMode();
 
@@ -29,9 +27,8 @@ const BackButton = (props: BackButtonProps): JSX.Element => {
   const navBack = () => {
   if (onClick) {
     onClick();
+    return;
   }
-
-  if (disableNavigation) return;
 
   if (window.history.length > 1) {
     navigate(-1);
