@@ -103,7 +103,7 @@ const VacationRequestsTable = ({
       startDate: DateTime.fromJSDate(vacationRequest.startDate),
       endDate: DateTime.fromJSDate(vacationRequest.endDate),
       days: vacationRequest.days,
-      message: strings.vacationRequest.noMessage,
+      message: vacationRequest.message || strings.vacationRequest.noMessage,
       status: VacationRequestStatuses.PENDING,
     };
     return row;
