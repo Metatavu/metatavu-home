@@ -168,17 +168,17 @@ const ArticleScreen = () => {
           ) : (
             <>
               <Grid container spacing={1.5} sx={{ marginBottom: 3, marginTop: 0.5 }}>
-                <Grid item xs={adminMode ? 6 : 12}>
+                <Grid item xs={adminMode ? 4 : 12}>
                   <BackButton onClick={closeForm} sx={{ padding: "6px" }} />
                 </Grid>
                 {adminMode && (
                   <>
-                    <Grid item xs={3}>
+                    <Grid item xs={4}>
                       <ActionButton onClick={() => setFormOpen(true)}>
                         {strings.wikiDocumentation.edit}
                       </ActionButton>
                     </Grid>
-                    <Grid item xs={3}>
+                    <Grid item xs={4}>
                       <ActionButton onClick={handleApprove}>
                         {strings.wikiDocumentation.approve}
                       </ActionButton>
