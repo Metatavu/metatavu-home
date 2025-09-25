@@ -17,6 +17,7 @@ import { authAtom } from "src/atoms/auth";
 import { softwareAtom } from "src/atoms/software";
 import type { SoftwareRegistry } from "src/generated/homeLambdasClient";
 import AddSoftwareModal from "./AddSoftwareModal";
+import UserRoleUtils from "src/utils/user-role-utils";
 import BackButton from "../generics/back-button";
 
 /**
@@ -37,6 +38,7 @@ const SoftwareDetails = () => {
   const { softwareApi, usersApi } = useLambdasApi();
   const auth = useAtomValue(authAtom);
   const loggedUserId = auth?.token?.sub ?? "";
+  const adminMode = UserRoleUtils.adminMode();
 
   /**
    * Fetches software details.
@@ -117,6 +119,21 @@ const SoftwareDetails = () => {
     } catch (error) {
       setError((error as Error).message || "Error removing user from software");
     }
+  };
+
+  /**
+   * Disables the AddSoftware button if the software is not approved
+   */
+  const isDisabled = () => {
+    if (
+      software?.status === "DECLINED" ||
+      software?.status === "DEPRECATED" ||
+      software?.status === "UNDER_REVIEW" ||
+      software?.status === "PENDING"
+    ) {
+      return true;
+    }
+    return false;
   };
 
   /**
@@ -308,6 +325,7 @@ const SoftwareDetails = () => {
           <Button
             variant="contained"
             color="secondary"
+            disabled={isDisabled()}
             sx={{
               textTransform: "none",
               borderRadius: "25px",
@@ -323,22 +341,24 @@ const SoftwareDetails = () => {
             {strings.softwareRegistry.addToMyApps}
           </Button>
         )}
-        <Button
-          variant="contained"
-          color="secondary"
-          sx={{
-            textTransform: "none",
-            color: "#fff",
-            marginLeft: "20px",
-            fontSize: "18px",
-            background: "#000",
-            borderRadius: "25px",
-            "&:hover": { background: "grey" }
-          }}
-          onClick={() => setIsEditModalOpen(true)}
-        >
-          {strings.softwareRegistry.editApp}
-        </Button>
+        {adminMode && (
+          <Button
+            variant="contained"
+            color="secondary"
+            sx={{
+              textTransform: "none",
+              color: "#fff",
+              marginLeft: "20px",
+              fontSize: "18px",
+              background: "#000",
+              borderRadius: "25px",
+              "&:hover": { background: "grey" }
+            }}
+            onClick={() => setIsEditModalOpen(true)}
+          >
+            {strings.softwareRegistry.editApp}
+          </Button>
+        )}
       </Box>
       {software && (
         <AddSoftwareModal

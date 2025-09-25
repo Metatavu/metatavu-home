@@ -1,4 +1,4 @@
-import { Grid } from '@mui/material';
+import { Grid, Box } from '@mui/material';
 import type { SoftwareRegistry } from 'src/generated/homeLambdasClient';
 import AppCard from './cards/AppCard';
 
@@ -12,8 +12,8 @@ interface ContentProps {
 
 /**
  * Content component.
- * 
- * This component is responsible for rendering logged in user software entries. 
+ *
+ * This component is responsible for rendering logged in user software entries.
  * It uses the `AppCard` component for each software entry.
  *
  * @component
@@ -24,26 +24,39 @@ const Content = ({
   applications, 
   isGridView 
   }: ContentProps) => {
-  return (
+  return isGridView ? (
     <Grid container spacing={2}>
       {applications.map((app) => (
-        <Grid
-          item
-          key={app.id} 
-        >
+        <Grid item key={app.id}>
           <AppCard
             id={app.id || ""}
             image={app.image}
             name={app.name}
             description={app.description}
             tags={app.tags || []}
-            isGridView={isGridView} 
+            isGridView={true}
             url={""}
             createdBy={""}
-            />
+          />
         </Grid>
       ))}
     </Grid>
+  ) : (
+    <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+      {applications.map((app) => (
+        <AppCard
+          key={app.id}
+          id={app.id || ""}
+          image={app.image}
+          name={app.name}
+          description={app.description}
+          tags={app.tags || []}
+          isGridView={false}
+          url={""}
+          createdBy={""}
+        />
+      ))}
+    </Box>
   );
 };
 

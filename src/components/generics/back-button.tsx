@@ -35,13 +35,11 @@ const BackButton = (props: BackButtonProps): JSX.Element => {
     return;
   }
 
-  if (window.history.length > 1) {
-    navigate(-1);
-  } else if (adminMode) {
-    navigate("/admin");
-  } else {
-    navigate("/");
-  }
+if (window.history.length > 1) {
+  navigate(-1);
+} else {
+  navigate(adminMode ? "/admin" : "/");
+}
 };
 
   return (

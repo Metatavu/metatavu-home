@@ -28,7 +28,7 @@ import { QuestionnairePreviewMode } from "./types";
 import ArticleScreen from "./components/screens/wiki-article-screen";
 import WikiDocumentationScreen from "./components/screens/wiki-documentation-screen";
 import AdminVacationManagementScreen from "./components/screens/admin-vacation-management/admin-vacation-management-screen";
-import SettingsScreen from "./components/screens/settings-screen"
+import SettingsScreen from "./components/screens/settings-screen";
 
 /**
  * Application component
@@ -140,6 +140,14 @@ const App = () => {
         {
           path: "/admin/questionnaire/:id/edit",
           element: <QuestionnaireManager mode={QuestionnairePreviewMode.EDIT} />
+        },
+        {
+          path: "/admin/allsoftware",
+          element: <AllSoftwareScreen />
+        },
+        {
+          path: "/admin/allsoftware/:id",
+          element: <SoftwareDetails />
         },
         {
           path: "/admin/wiki-documentation",

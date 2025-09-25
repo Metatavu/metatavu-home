@@ -130,9 +130,9 @@ const RecommendCard = ({
                   borderRadius: "5px",
                   padding: "0 6px",
                   margin: "2px",
-                  backgroundColor: "#ff4d4f",
+                  backgroundColor: "#F9473B",
                   color: "#fff",
-                  fontSize: "12px",
+                  fontSize: "14px",
                   whiteSpace: "nowrap",
                   maxWidth: "80px",
                   minWidth:"80px"
