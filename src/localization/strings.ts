@@ -17,6 +17,7 @@ export interface Localized extends LocalizedStringsMethods {
     currentLocaleLabel: string;
     cancel: string;
     save: string;
+    back: string;
   };
   /**
    * Translations related to header
@@ -122,7 +123,6 @@ export interface Localized extends LocalizedStringsMethods {
     startDate: string;
     deadLine: string;
     actualWorkHours: string;
-    back: string;
     filter: string;
     filterType: string;
     project: string;
@@ -142,7 +142,6 @@ export interface Localized extends LocalizedStringsMethods {
     noRecommendations: string;
     recommendationMessage: string;
     allApplications: string;
-    back: string;
     addApplication: string;
     added: string;
     tags: string;
@@ -350,7 +349,7 @@ export interface Localized extends LocalizedStringsMethods {
    * Translation related to vacations screen
    */
   vacationsScreen: {
-    back: string;
+
   };
   /**
    * Translation related to view all screen
@@ -396,7 +395,6 @@ export interface Localized extends LocalizedStringsMethods {
   questionnaireScreen: {
     currentQuestionnaires: string;
     buildNewQuestionnaire: string;
-    back: string;
   };
   /**
    * Translations related to New Questionnaire Builder
@@ -409,7 +407,6 @@ export interface Localized extends LocalizedStringsMethods {
     preview: string;
     is: string;
     removeFromPreview: string;
-    back: string;
     description: string;
     insertDescription: string;
     countedAnswers: string;
@@ -529,7 +526,6 @@ export interface Localized extends LocalizedStringsMethods {
     noPendingArticles: string;
     noArticlesFound: string;
     create: string;
-    back: string;
     save: string;
     edit: string;
     confirm: string;

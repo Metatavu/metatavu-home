@@ -558,7 +558,7 @@ return (
             />
           </Grid>
         )}
-        <BackButton label={strings.wikiDocumentation.back} />
+        <BackButton sx={{ marginBottom: 2 }} />
       </>
     )}
   </>

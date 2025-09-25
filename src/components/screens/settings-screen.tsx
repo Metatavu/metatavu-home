@@ -3,7 +3,7 @@ import { Typography, Box, Switch } from "@mui/material";
 import strings from "src/localization/strings";
 import { errorAtom } from "src/atoms/error";
 import { useAtomValue, useSetAtom } from "jotai";
-import { authAtom, userProfileAtom } from "src/atoms/auth";
+import { userProfileAtom } from "src/atoms/auth";
 import { useLambdasApi } from "src/hooks/use-api";
 import { CircularProgress } from "@mui/material";
 

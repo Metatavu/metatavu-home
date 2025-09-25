@@ -268,8 +268,10 @@ const VacationRequestsScreen = () => {
           loading={loading}
         />
       </Card>
+      <BackButton sx={{ mt: 2, marginBottom: 2 }} />
       {/* Admin Tools Section has been removed */}
-      <BackButton label={strings.vacationsScreen.back} />
+      
+      
     </>
   );
 };
