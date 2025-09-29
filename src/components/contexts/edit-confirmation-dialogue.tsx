@@ -9,7 +9,7 @@ import strings from "src/localization/strings";
 interface Props {
   open: boolean;
   setOpen: (confirmation: boolean) => void;
-  onConfirm: () => void;
+  onConfirm: () => Promise<void>;
 }
 
 /**
