@@ -85,6 +85,7 @@ const ToolbarFormFields = ({
   const handleDaysChange = (value: string) => {
     const daysValue = Number.parseInt(value) || 0;
     if (!dateRange.start) return;
+
     const newEndDate = calculateEndDateFromDays(dateRange.start, daysValue, workWeek);
     setDateRange({
       start: dateRange.start,

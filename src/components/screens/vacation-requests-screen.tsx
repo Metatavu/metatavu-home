@@ -170,6 +170,7 @@ const VacationRequestsScreen = () => {
         (vacationRequest) => vacationRequest.id === vacationRequestId
       );
       if (!vacationRequest) return;
+
       let latestStatus = vacationRequest.status?.[0]?.status ?? "PENDING";
       if (!latestStatus) {
         setError(strings.vacationRequestError.noVacationRequestsStatusFound);
@@ -270,8 +271,6 @@ const VacationRequestsScreen = () => {
       </Card>
       <BackButton sx={{ mt: 2, marginBottom: 2 }} />
       {/* Admin Tools Section has been removed */}
-      
-      
     </>
   );
 };

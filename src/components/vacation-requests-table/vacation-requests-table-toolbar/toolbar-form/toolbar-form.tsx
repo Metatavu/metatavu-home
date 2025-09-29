@@ -156,10 +156,9 @@ const ToolbarForm = ({
       await createVacationRequest(vacationRequestData);
       setFormOpen(false);
     } else if (toolbarFormMode === ToolbarFormModes.EDIT) {
-      const currentStatus =
-        vacationRequestData.status?.[vacationRequestData.status.length - 1]?.status;
+      const currentStatus = vacationRequestData.status?.[0]?.status;
       if (onSaveClick && !adminMode && currentStatus !== VacationRequestStatuses.PENDING) {
-        onSaveClick?.({
+        onSaveClick({
           ...vacationRequestData,
           id: selectedVacationRequestId
         });

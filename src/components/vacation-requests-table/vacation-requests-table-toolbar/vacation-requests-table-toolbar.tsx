@@ -7,7 +7,6 @@ import { type VacationsDataGridRow, ToolbarFormModes } from "src/types";
 import ToolbarDeleteButton from "./toolbar-delete-button";
 import FormToggleButton from "./toolbar-form-toggle-button";
 import ConfirmationHandler from "../../contexts/confirmation-handler";
-import EditConfirmationHandler from "src/components/contexts/edit-confirmation-handler";
 import strings from "src/localization/strings";
 import { getToolbarTitle } from "src/utils/toolbar-utils";
 import { useAtomValue } from "jotai";
@@ -17,6 +16,7 @@ import { VacationRequestStatuses } from "src/generated/homeLambdasClient";
 import UpdateStatusButton from "./toolbar-update-status-button";
 import UserRoleUtils from "src/utils/user-role-utils";
 import type { VacationRequest } from "src/generated/homeLambdasClient";
+import EditConfirmationDialogue from "src/components/contexts/edit-confirmation-dialogue";
 
 /**
  * Component properties
@@ -123,9 +123,24 @@ const TableToolbar = ({
     alignItems: "center"
   });
 
+  /** Handler for saving updated vacation request data
+   *
+   * @param data vacation request data
+   */
   const handleSaveClick = (data: VacationRequest) => {
     setEditVacationsData(data);
     setEditConfirmationHandlerOpen(true);
+  };
+
+  /** Handler for confirming edit to vacation request
+   *
+   */
+  const handleEditConfirm = async () => {
+    if (!editVacationsData?.id) return;
+
+    await updateVacationRequest(editVacationsData, editVacationsData.id);
+    setSelectedRowIds([]);
+    setFormOpen(false);
   };
 
   return (
@@ -135,17 +150,10 @@ const TableToolbar = ({
         setOpen={setConfirmationHandlerOpen}
         deleteVacationsData={deleteVacationsData}
       />
-      <EditConfirmationHandler
+      <EditConfirmationDialogue
         open={editConfirmationHandlerOpen}
         setOpen={setEditConfirmationHandlerOpen}
-        onConfirm={async () => {
-          if (editVacationsData?.id) {
-            await updateVacationRequest(editVacationsData, editVacationsData.id);
-            setSelectedRowIds([]);
-            setEditConfirmationHandlerOpen(false);
-            setFormOpen(false);
-          }
-        }}
+        onConfirm={handleEditConfirm}
       />
       {isToolbarVisible ? (
         <ToolbarGridContainer container>
