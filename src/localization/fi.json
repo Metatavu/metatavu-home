@@ -142,7 +142,7 @@
     "showMore": "Näytä lisää",
     "showLess": "Näytä vähemmän",
     "noPending": "Ei uutta sovellusta",
-    "newSoftware": "Uusia sovelluksia", 
+    "newSoftware": "Uusia sovelluksia",
     "alreadyExists": "Nimi on jo olemassa",
     "delete": "Poista",
     "searchPlaceholder": "Etsi ja valitse käyttäjiä",
@@ -194,7 +194,8 @@
     "confirmButtonText": "Kyllä",
     "cancelButtonText": "En",
     "title": "Oletko varma?",
-    "message": "Poista valitut lomahakemukset?"
+    "message": "Poista valitut lomahakemukset?",
+    "editMessage": "Tämä tarkistettu lomapyyntö palautetaan käsittelyyn, jos tallennat muutokset. Haluatko jatkaa?"
   },
   "errorHandler": {
     "cancelButtonText": "Sulje",
@@ -233,7 +234,8 @@
     "updateRequestError": "Lomahakemuksen päivittäminen epäonnistui",
     "updateStatusError": "Lomahakemustilojen päivittäminen epäonnistui",
     "noVacationRequestsFound": "Lomahakemuksia ei löydetty",
-    "nameNotFound": "Nimeä ei löydetty"
+    "nameNotFound": "Nimeä ei löydetty",
+    "noVacationRequestsStatusFound": "Tiloja ei löytynyt"
   },
   "sprintRequestError": {
     "fetchResourceAllocationsError": "Sprintin tietopyyntöjen hakeminen epäonnistui",

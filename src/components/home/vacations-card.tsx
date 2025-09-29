@@ -45,27 +45,19 @@ const VacationsCard = () => {
    * Fetch vacation requests
    */
   const fetchVacationsRequests = async () => {
-    setLoading(true);
     if (!loggedInUser) return;
-
-    if (!vacationRequests.length) {
-      try {
-        let fetchedVacationRequests: VacationRequest[] = [];
-        if (adminMode) {
-          fetchedVacationRequests = await vacationRequestsApi.listVacationRequests({});
-        } else {
-          fetchedVacationRequests = await vacationRequestsApi.listVacationRequests({
-            userId: loggedInUser.id
-          });
-        }
-        setVacationRequests(fetchedVacationRequests);
-      } catch (error) {
-        setError(`${strings.vacationRequestError.fetchRequestError}, ${error}`);
-      }
+    setLoading(true);
+    try {
+      const fetchedVacationRequests: VacationRequest[] = adminMode
+        ? await vacationRequestsApi.listVacationRequests({})
+        : await vacationRequestsApi.listVacationRequests({ userId: loggedInUser.id });
+      setVacationRequests(fetchedVacationRequests);
+    } catch (error) {
+      setError(`${strings.vacationRequestError.fetchRequestError}, ${error}`);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
-
   useMemo(() => {
     fetchVacationsRequests();
   }, [loggedInUser]);

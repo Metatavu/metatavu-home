@@ -5,7 +5,7 @@ import { type DateRange, ToolbarFormModes } from "src/types";
 import type { DateTime } from "luxon";
 import { hasAllPropsDefined } from "src/utils/check-utils";
 import strings from "src/localization/strings";
-import { calculateTotalVacationDays } from "src/utils/time-utils";
+import { calculateTotalVacationDays, calculateEndDateFromDays } from "src/utils/time-utils";
 import type { VacationRequest } from "src/generated/homeLambdasClient";
 import UserRoleUtils from "src/utils/user-role-utils";
 
@@ -35,6 +35,7 @@ const ToolbarFormFields = ({
   setDateRange
 }: Props) => {
   const adminMode = UserRoleUtils.adminMode();
+  const workWeek = [true, true, true, true, true, false, false];
   // TODO: This will be used again when we have a solution for various work contracts in place
   // const userProfile = useAtomValue(userProfileAtom);
   // const [users] = useAtom(usersAtom);
@@ -51,7 +52,8 @@ const ToolbarFormFields = ({
           dateRange.end,
           // FIXME: implement a proper solution for various work contracts
           // getWorkingWeek(loggedInUser)
-          [true, true, true, true, true, false, false]
+          // [true, true, true, true, true, false, false]
+          workWeek
         )
       });
     } else {
@@ -82,9 +84,17 @@ const ToolbarFormFields = ({
    */
   const handleDaysChange = (value: string) => {
     const daysValue = Number.parseInt(value) || 0;
+    if (!dateRange.start) return;
+
+    const newEndDate = calculateEndDateFromDays(dateRange.start, daysValue, workWeek);
+    setDateRange({
+      start: dateRange.start,
+      end: newEndDate
+    });
     setVacationRequestData({
       ...vacationRequestData,
-      days: daysValue
+      days: daysValue,
+      endDate: newEndDate.toJSDate()
     });
   };
 

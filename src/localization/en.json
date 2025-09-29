@@ -194,7 +194,8 @@
     "confirmButtonText": "Yes",
     "cancelButtonText": "No",
     "title": "Are you sure?",
-    "message": "Delete selected vacation request(s)?"
+    "message": "Delete selected vacation request(s)?",
+    "editMessage": "This reviewed request will go back to pending if you save changes. Do you want to proceed?"
   },
   "errorHandler": {
     "cancelButtonText": "Close",
@@ -233,7 +234,8 @@
     "updateRequestError": "Updating vacation request has failed",
     "updateStatusError": "Updating vacation request status has failed",
     "noVacationRequestsFound": "No vacation requests found",
-    "nameNotFound": "Name not found"
+    "nameNotFound": "Name not found",
+    "noVacationRequestsStatusFound": "Statuses not found"
   },
   "sprintRequestError": {
     "fetchResourceAllocationsError": "Fetching sprint data for resourceAllocations has failed",
@@ -485,25 +487,24 @@
     "errorUpdatingPaidStatus": "Failed to update on-call shift paid status"
   },
   "onboarding": {
-  "prev": "Previous",
-  "next": "Next",
-  "close": "Close",
-  "welcomeTitle": "Welcome to the Home Screen",
-  "welcomeContent": "This is your dashboard where you can see your balance, sprints, and more.",
-  "balanceTitle": "Balance",
-  "balanceContent": "Check your total flextime balance here.",
-  "sprintTitle": "Sprint view",
-  "sprintContent": "See your allocation and time entries.",
-  "vacationsTitle": "Vacation requests",
-  "vacationsContent": "Track upcoming vacations and statuses.",
-  "questionnaireTitle": "Questionnaires",
-  "questionnaireContent": "Build and answer questionnaires.",
-  "softwareTitle": "Software registry",
-  "softwareContent": "Find and manage company software.",
-  "wikiTitle": "Wiki Documentation",
-  "wikiContent": "Read or create documentation.",
-  "doneTitle": "Complete the Onboarding",
-  "doneContent": "You're all set! You can restart from Settings."
-}
-
+    "prev": "Previous",
+    "next": "Next",
+    "close": "Close",
+    "welcomeTitle": "Welcome to the Home Screen",
+    "welcomeContent": "This is your dashboard where you can see your balance, sprints, and more.",
+    "balanceTitle": "Balance",
+    "balanceContent": "Check your total flextime balance here.",
+    "sprintTitle": "Sprint view",
+    "sprintContent": "See your allocation and time entries.",
+    "vacationsTitle": "Vacation requests",
+    "vacationsContent": "Track upcoming vacations and statuses.",
+    "questionnaireTitle": "Questionnaires",
+    "questionnaireContent": "Build and answer questionnaires.",
+    "softwareTitle": "Software registry",
+    "softwareContent": "Find and manage company software.",
+    "wikiTitle": "Wiki Documentation",
+    "wikiContent": "Read or create documentation.",
+    "doneTitle": "Complete the Onboarding",
+    "doneContent": "You're all set! You can restart from Settings."
+  }
 }
