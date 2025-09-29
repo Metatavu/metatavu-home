@@ -48,6 +48,7 @@ if (window.history.length > 1) {
       sx={{
         padding: "10px",
         width: "100%",
+        height: "100%",
         transition: "transform 0.2s ease, box-shadow 0.2s ease",
         "&:active": { transform: "translateX(-1px) scale(0.98)" },
         ...sx

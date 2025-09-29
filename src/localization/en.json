@@ -41,7 +41,8 @@
     "fetchFailedFlextime": "Error while fetching flextime data",
     "missingEmailOrId": "Missing email or ID",
     "noSeveraUserId": "One of your users is missing severaUserId, please contact a member of the metatavu home development team for more information.",
-    "noFlextimeData": "Something went wrong while fetching your flextime data"
+    "noFlextimeData": "Something went wrong while fetching your flextime data",
+    "noArticleId": "Article ID is missing"
   },
   "localization": {
     "en": "EN",
@@ -415,6 +416,7 @@
     "create": "create",
     "save": "save",
     "edit": "edit",
+    "approve": "approve",
     "confirm": "confirm",
     "searchArticle": "Search for an article...",
     "createArticle": "Create article",
@@ -428,7 +430,15 @@
     "labelLink": "Link",
     "draft": "draft",
     "allArticles": "all",
+    "approvedArticles": "approved",
     "connectedArticles": "Connected articles"
+  },
+  "snackbar": {
+    "articleSubmitted": "Article submitted for review successfully!",
+    "articleCreated": "Article created successfully!",
+    "articleUpdated": "Article updated successfully!",
+    "articleApproved": "Article approved successfully!",
+    "changesSaved": "Changes saved successfully!"
   },
   "settingsScreen": {
     "saveSettings": "Save settings",

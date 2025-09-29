@@ -41,7 +41,8 @@
     "fetchFailedFlextime": "Joustotyöaikatietojen hakeminen epäonnistui",
     "missingEmailOrId": "Sähköposti tai käyttäjätunnus puuttuu",
     "noSeveraUserId": "Käyttäjältä puuttuu Severa-käyttäjätunnus, ota yhteyttä Metatavun kehitystiimiin lisätietoja varten.",
-    "noFlextimeData": "Jotain meni pieleen joustotyöaikatietoja haettaessa"
+    "noFlextimeData": "Jotain meni pieleen joustotyöaikatietoja haettaessa",
+    "noArticleId": "Artikkelin ID puuttuu"
   },
   "localization": {
     "en": "EN",
@@ -416,6 +417,7 @@
     "create": "luoda",
     "save": "tallentaa",
     "edit": "muokata",
+    "approve": "hyväksy",
     "confirm": "vahvistaa",
     "searchArticle": "Etsi artikkeli...",
     "createArticle": "Luo uusi artikkeli",
@@ -429,7 +431,15 @@
     "labelLink": "Sinulla on {0} artikkelia odottamassa tarkistusta.",
     "draft": "luonnos",
     "allArticles": "kaikki",
+    "approvedArticles": "hyväksytyt",
     "connectedArticles": "Aiheeseen liittyvät artikkelit"
+  },
+  "snackbar": {
+    "articleSubmitted": "Artikkeli lähetetty arvioitavaksi onnistuneesti!",
+    "articleCreated": "Artikkeli luotu onnistuneesti!",
+    "articleUpdated": "Artikkeli päivitetty onnistuneesti!",
+    "articleApproved": "Artikkeli hyväksytty onnistuneesti!",
+    "changesSaved": "Muutokset tallennettu onnistuneesti!"
   },
   "settingsScreen": {
     "saveSettings": "Tallena Asetukset",
