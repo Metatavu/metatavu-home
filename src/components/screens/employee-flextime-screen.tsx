@@ -39,7 +39,7 @@ interface UserFlextimeData {
  * @param keywordId - The keyword to filter users (default: "isSeveraOptIn").
  * @returns A Promise resolving to a list of user flextime data.
  */
-const fetchUsersFlextime = async (keywordId: string = "isSeveraOptIn"): Promise<UserFlextimeData[]> => {
+const fetchUsersFlextime = async (keywordId = "isSeveraOptIn"): Promise<UserFlextimeData[]> => {
   try {
     const response = await fetch(`http://localhost:3000/severa/users/flextime?keywordId=${encodeURIComponent(keywordId)}`, {
       method: "GET",
