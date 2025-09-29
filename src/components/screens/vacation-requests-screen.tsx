@@ -45,6 +45,7 @@ const VacationRequestsScreen = () => {
   const [isUpcoming, setIsUpcoming] = useState(true);
   const [users] = useAtom(usersAtom);
   const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
+  const [isDraft, setIsDraft] = useState(false);
 
   /**
    * Decide if we show upcoming or past vacations
@@ -83,7 +84,6 @@ const VacationRequestsScreen = () => {
     }
     setLoading(false);
   };
-
 
   useEffect(() => {
     fetchVacationsRequests();
@@ -137,7 +137,7 @@ const VacationRequestsScreen = () => {
           updatedAt: new Date(),
           createdBy: loggedInUser?.id,
           days: vacationRequestData.days,
-          draft: false,
+          draft: isDraft,
           status: [
             {
               createdBy: loggedInUser.id,
@@ -145,6 +145,38 @@ const VacationRequestsScreen = () => {
               status: VacationRequestStatuses.PENDING
             }
           ]
+        }
+      });
+      setVacationRequests([createdRequest, ...vacationRequests]);
+    } catch (error) {
+      setError(`${strings.vacationRequestError.createRequestError}, ${error}`);
+    }
+    setLoading(false);
+  };
+
+  /**
+   * Create a draft vacation request
+   *
+   * @param vacationRequestData vacation data from the create form
+   */
+  const createDraftVacationRequest = async (vacationRequestData: VacationRequest) => {
+    if (!loggedInUser) return;
+    try {
+      setLoading(true);
+      setIsDraft(true);
+      const createdRequest = await vacationRequestsApi.createVacationRequest({
+        vacationRequest: {
+          userId: loggedInUser.id,
+          startDate: vacationRequestData.startDate,
+          endDate: vacationRequestData.endDate,
+          type: vacationRequestData.type,
+          message: vacationRequestData.message,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          createdBy: loggedInUser?.id,
+          days: vacationRequestData.days,
+          draft: true,
+          status: []
         }
       });
       setVacationRequests([createdRequest, ...vacationRequests]);
@@ -223,21 +255,20 @@ const VacationRequestsScreen = () => {
           const newOrUpdatedStatus = {
             status,
             createdBy: loggedInUser.id,
-            updatedAt: new Date(),
+            updatedAt: new Date()
           };
-
 
           const updateExistingStatus = () => {
             return vacationRequest.status?.map((existingStatus) =>
-                existingStatus.createdBy === loggedInUser.id
-                    ? { ...existingStatus, ...newOrUpdatedStatus }
-                    : existingStatus
-            )
-          }
+              existingStatus.createdBy === loggedInUser.id
+                ? { ...existingStatus, ...newOrUpdatedStatus }
+                : existingStatus
+            );
+          };
 
           const updatedStatus = statusExists
             ? updateExistingStatus()
-            : [...vacationRequest.status || [], newOrUpdatedStatus];
+            : [...(vacationRequest.status || []), newOrUpdatedStatus];
 
           return vacationRequestsApi.updateVacationRequest({
             id: vacationRequestId.toString(),
@@ -250,8 +281,9 @@ const VacationRequestsScreen = () => {
       );
 
       setVacationRequests((prevRequests) =>
-        prevRequests.map((vacationRequest) =>
-          updatedVacationRequests.find((req) => req?.id === vacationRequest.id) || vacationRequest
+        prevRequests.map(
+          (vacationRequest) =>
+            updatedVacationRequests.find((req) => req?.id === vacationRequest.id) || vacationRequest
         )
       );
     } catch (error) {
@@ -269,15 +301,15 @@ const VacationRequestsScreen = () => {
           toggleIsUpcoming={toggleIsUpcoming}
           deleteVacationRequests={deleteVacationRequests}
           createVacationRequest={createVacationRequest}
+          createDraftVacationRequest={createDraftVacationRequest}
           updateVacationRequest={updateVacationRequest}
           updateVacationRequestStatus={updateVacationRequestStatus}
           loading={loading}
+          isDraft={isDraft}
         />
       </Card>
       <BackButton sx={{ mt: 2, marginBottom: 2 }} />
       {/* Admin Tools Section has been removed */}
-      
-      
     </>
   );
 };

@@ -22,11 +22,13 @@ interface Props {
     vacationRequestId: string
   ) => Promise<void>;
   createVacationRequest: (vacationRequestData: VacationRequest) => Promise<void>;
+  createDraftVacationRequest: (vacationRequestData: VacationRequest) => Promise<void>;
   selectedRowIds: GridRowId[];
   rows: VacationsDataGridRow[];
   toolbarFormMode: ToolbarFormModes;
   setToolbarFormMode: (toolbarFormMode: ToolbarFormModes) => void;
   setSelectedRowIds: (selectedRowIds: GridRowId[]) => void;
+  isDraft: boolean;
 }
 
 /**
@@ -38,12 +40,14 @@ const ToolbarForm = ({
   formOpen,
   setFormOpen,
   createVacationRequest,
+  createDraftVacationRequest,
   updateVacationRequest,
   selectedRowIds,
   rows,
   toolbarFormMode,
   setToolbarFormMode,
-  setSelectedRowIds
+  setSelectedRowIds,
+  isDraft
 }: Props) => {
   const defaultDateRange = {
     start: DateTime.now().plus({ days: 1 }),
@@ -53,7 +57,7 @@ const ToolbarForm = ({
   const defaultVacationRequestData: VacationRequest = {
     createdAt: new Date(),
     createdBy: "",
-    draft: false,
+    draft: isDraft,
     id: "",
     updatedAt: new Date(),
     userId: "",
@@ -69,8 +73,10 @@ const ToolbarForm = ({
         updatedAt: new Date()
       }
     ]
-  }
-  const [vacationRequestData, setVacationRequestData] = useState<VacationRequest>(defaultVacationRequestData);
+  };
+  const [vacationRequestData, setVacationRequestData] = useState<VacationRequest>(
+    defaultVacationRequestData
+  );
   const [selectedVacationRequestId, setSelectedVacationRequestId] = useState("");
   const adminMode = UserRoleUtils.adminMode();
   const vacationRequests = useAtomValue(adminMode ? allVacationRequestsAtom : vacationRequestsAtom);
@@ -140,14 +146,30 @@ const ToolbarForm = ({
    * Handle form submit
    */
   const handleFormSubmit = async () => {
-    if (toolbarFormMode === ToolbarFormModes.CREATE) {
-      await createVacationRequest(vacationRequestData);
-    } else if (toolbarFormMode === ToolbarFormModes.EDIT) {
-      await updateVacationRequest(vacationRequestData, selectedVacationRequestId);
-      setSelectedRowIds([]);
+    try {
+      switch (toolbarFormMode) {
+        case ToolbarFormModes.CREATE:
+          await createVacationRequest(vacationRequestData);
+          break;
+
+        case ToolbarFormModes.EDIT:
+          await updateVacationRequest(vacationRequestData, selectedVacationRequestId);
+          setSelectedRowIds([]);
+          break;
+
+        case ToolbarFormModes.DRAFT:
+          await createDraftVacationRequest(vacationRequestData);
+          break;
+
+        default:
+          break;
+      }
+
+      setFormOpen(false);
+      resetVacationRequestData();
+    } catch (error) {
+      console.error("Failed to submit vacation request:", error);
     }
-    setFormOpen(false);
-    resetVacationRequestData()
   };
 
   return (

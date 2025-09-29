@@ -39,7 +39,10 @@ interface Props {
     rows: VacationsDataGridRow[]
   ) => Promise<void>;
   createVacationRequest: (
-    vacationRequestData: VacationRequest
+    vacationRequestData: VacationRequest,
+  ) => Promise<void>;
+  createDraftVacationRequest: (
+    vacationRequestData: VacationRequest,
   ) => Promise<void>;
   updateVacationRequest: (
     vacationRequestData: VacationRequest,
@@ -50,6 +53,7 @@ interface Props {
     selectedRowIds: GridRowId[]
   ) => Promise<void>;
   loading: boolean;
+  isDraft: boolean;
 }
 
 /**
@@ -62,9 +66,11 @@ const VacationRequestsTable = ({
   toggleIsUpcoming,
   deleteVacationRequests,
   createVacationRequest,
+  createDraftVacationRequest,
   updateVacationRequest,
   updateVacationRequestStatus,
   loading,
+  isDraft
 }: Props) => {
   const vacationRequests = useAtomValue(displayedVacationRequestsAtom) || [];
   const containerRef = useRef(null);
@@ -204,6 +210,7 @@ const VacationRequestsTable = ({
         toggleIsUpcoming={toggleIsUpcoming}
         deleteVacationRequests={deleteVacationRequests}
         createVacationRequest={createVacationRequest}
+        createDraftVacationRequest={createDraftVacationRequest}
         updateVacationRequest={updateVacationRequest}
         updateVacationRequestStatus={updateVacationRequestStatus}
         setFormOpen={setFormOpen}
@@ -211,6 +218,7 @@ const VacationRequestsTable = ({
         selectedRowIds={selectedRowIds}
         rows={rows}
         setSelectedRowIds={setSelectedRowIds}
+        isDraft={isDraft}
       />
       <DataGrid
         sx={{ height: dataGridHeight }}

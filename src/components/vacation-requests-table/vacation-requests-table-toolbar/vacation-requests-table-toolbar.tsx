@@ -28,6 +28,7 @@ interface Props {
     rows: VacationsDataGridRow[]
   ) => Promise<void>;
   createVacationRequest: (VacationRequest: VacationRequest) => Promise<void>;
+  createDraftVacationRequest: (vacationRequestData: VacationRequest) => Promise<void>;
   updateVacationRequest: (
     VacationRequest: VacationRequest,
     vacationRequestId: string
@@ -41,6 +42,7 @@ interface Props {
   selectedRowIds: GridRowId[];
   rows: VacationsDataGridRow[];
   setSelectedRowIds: (selectedRowIds: GridRowId[]) => void;
+  isDraft: boolean;
 }
 
 /**
@@ -53,13 +55,15 @@ const TableToolbar = ({
   toggleIsUpcoming,
   deleteVacationRequests,
   createVacationRequest,
+  createDraftVacationRequest,
   updateVacationRequest,
   updateVacationRequestStatus,
   setFormOpen,
   formOpen,
   selectedRowIds,
   rows,
-  setSelectedRowIds
+  setSelectedRowIds,
+  isDraft
 }: Props) => {
   const [toolbarOpen, setToolbarOpen] = useState(false);
   const [toolbarFormMode, setToolbarFormMode] = useState<ToolbarFormModes>(ToolbarFormModes.NONE);
@@ -133,19 +137,34 @@ const TableToolbar = ({
             <ToolbarDeleteButton setConfirmationHandlerOpen={setConfirmationHandlerOpen} />
           </ToolbarGridItem>
           {selectedRowIds?.length === 1 && (
-            <ToolbarGridItem item sm={adminMode ? 3 : 6} xs={6}>
-              <FormToggleButton
-                title={strings.tableToolbar.edit}
-                ButtonIcon={Edit}
-                value={formOpen}
-                setValue={(open) => {
-                  setToolbarFormMode(ToolbarFormModes.EDIT); // ensure edit mode
-                  setFormOpen(open);
-                }}
-                disabled={disableEditButton}
-
-              />
-            </ToolbarGridItem>
+            <>
+              <ToolbarGridItem item sm={isDraft ? 4 : 6} xs={6}>
+                <FormToggleButton
+                  title={strings.tableToolbar.edit}
+                  ButtonIcon={Edit}
+                  value={formOpen}
+                  setValue={(open) => {
+                    setToolbarFormMode(ToolbarFormModes.EDIT); // ensure edit mode
+                    setFormOpen(open);
+                  }}
+                  disabled={disableEditButton}
+                />
+              </ToolbarGridItem>
+              {isDraft && (
+                <ToolbarGridItem xs={4}>
+                  <FormToggleButton
+                    title={strings.tableToolbar.edit}
+                    ButtonIcon={Edit}
+                    value={formOpen}
+                    setValue={(open) => {
+                      setToolbarFormMode(ToolbarFormModes.EDIT);
+                      setFormOpen(open);
+                    }}
+                    disabled={disableEditButton}
+                  />
+                </ToolbarGridItem>
+              )}
+            </>
           )}
           {adminMode && (
             <>
@@ -207,12 +226,14 @@ const TableToolbar = ({
           formOpen={formOpen}
           setFormOpen={setFormOpen}
           createVacationRequest={createVacationRequest}
+          createDraftVacationRequest={createDraftVacationRequest}
           updateVacationRequest={updateVacationRequest}
           selectedRowIds={selectedRowIds}
           rows={rows}
           toolbarFormMode={toolbarFormMode}
           setToolbarFormMode={setToolbarFormMode}
           setSelectedRowIds={setSelectedRowIds}
+          isDraft={isDraft}
         />
       </Collapse>
     </Box>

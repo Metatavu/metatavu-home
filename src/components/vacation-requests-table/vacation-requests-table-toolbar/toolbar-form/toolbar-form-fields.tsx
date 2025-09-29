@@ -1,5 +1,5 @@
 import { Button, FormControl, FormLabel, TextField, Box } from "@mui/material";
-import { type ChangeEvent, useEffect } from "react";
+import { type ChangeEvent, useEffect, useState } from "react";
 import DateRangePicker from "../../../generics/date-range-picker";
 import { type DateRange, ToolbarFormModes } from "src/types";
 import type { DateTime } from "luxon";
@@ -17,6 +17,7 @@ interface Props {
   setVacationRequestData: (vacationRequestData: VacationRequest) => void;
   dateTimeTomorrow: DateTime;
   toolbarFormMode: ToolbarFormModes;
+  setToolbarFormMode: (mode: ToolbarFormModes) => void;
   dateRange: DateRange;
   setDateRange: (dateRange: DateRange) => void;
 }
@@ -31,10 +32,12 @@ const ToolbarFormFields = ({
   setVacationRequestData,
   dateTimeTomorrow,
   toolbarFormMode,
+  setToolbarFormMode,
   dateRange,
   setDateRange
 }: Props) => {
   const adminMode = UserRoleUtils.adminMode();
+
   // TODO: This will be used again when we have a solution for various work contracts in place
   // const userProfile = useAtomValue(userProfileAtom);
   // const [users] = useAtom(usersAtom);
@@ -165,6 +168,21 @@ const ToolbarFormFields = ({
         sx={{ marginTop: "10px" }}
       >
         {toolbarFormMode === ToolbarFormModes.CREATE ? strings.form.submit : strings.form.update}
+      </Button>
+      <Button
+        disabled={
+          !adminMode &&
+          (!hasAllPropsDefined(vacationRequestData) || !vacationRequestData.message?.length)
+        }
+        onClick={() => {
+          setToolbarFormMode(ToolbarFormModes.DRAFT);
+        }}
+        type="submit"
+        variant="contained"
+        size="large"
+        sx={{ marginTop: "10px" }}
+      >
+        {toolbarFormMode === ToolbarFormModes.DRAFT ? "Save as Draft" : "Save as Draft"}
       </Button>
     </FormControl>
   );
