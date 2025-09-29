@@ -103,10 +103,10 @@ const ArticleScreen = () => {
    * - Update the UI state with the updated article and show a success snackbar.
    * - Handle API errors and set the error message in state.
    *
-   * @async
    */
   const handleApprove = async () => {
     if (!article?.id) return;
+
     const updatedArticle: Article = {
       ...article,
       draft: false,
@@ -156,7 +156,6 @@ const ArticleScreen = () => {
         </Card>
       ) : (
         <>
-          {" "}
           {formOpen ? (
             <CreateOrEditArticleForm
               setFormOpen={setFormOpen}
