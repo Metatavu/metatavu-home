@@ -464,6 +464,26 @@
   "pagination": {
     "ariaLabel": "Page navigation"
   },
+  "oncall": {
+    "title": "On call calendar",
+    "previousYear": "Previous year",
+    "nextYear": "Next year",
+    "oncallShifts": "On call weeks",
+    "paid": "Paid",
+    "notPaid": "Not paid",
+    "calendar": "Calendar",
+    "list": "List",
+    "selectView": "Select calendar view",
+    "noOnCallPerson": "No on call person this week",
+    "onCallPersonExists": "Current on-call person:",
+    "fetchFailed": "Fetching on call data has failed",
+    "updatePaidStatusForWeek": "Update paid status for week",
+    "person": "Person",
+    "paidStatus": "Paid Status",
+    "date": "Date",
+    "noUsernameOnCall": "-",
+    "errorUpdatingPaidStatus": "Failed to update on-call shift paid status"
+  },
   "onboarding": {
   "prev": "Previous",
   "next": "Next",

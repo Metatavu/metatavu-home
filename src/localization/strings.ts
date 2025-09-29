@@ -622,7 +622,32 @@ export interface Localized extends LocalizedStringsMethods {
     doneTitle: string;
     doneContent: string;
   };
+
+  /**
+   * Translations related to On Call
+   */
+  oncall: {
+    title: string;
+    previousYear: string;
+    nextYear: string;
+    oncallShifts: string;
+    paid: string;
+    notPaid: string;
+    calendar: string;
+    list: string;
+    selectView: string;
+    noOnCallPerson: string;
+    onCallPersonExists: string;
+    fetchFailed: string;
+    updatePaidStatusForWeek: string;
+    person: string;
+    paidStatus: string;
+    date: string;
+    noUsernameOnCall: string;
+    errorUpdatingPaidStatus: string;
+  };
 }
+
 /**
  * Initialized localized strings
  */
