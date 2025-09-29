@@ -49,9 +49,15 @@ const MainCard: React.FC<CardProps> = ({
   // Move statusInfo here so it updates with language changes
   const statusInfo: { [key in SoftwareStatus]: { color: string; displayText: string } } = {
     [SoftwareStatus.PENDING]: { color: "#f7cb73", displayText: strings.softwareStatus.pending },
-    [SoftwareStatus.UNDER_REVIEW]: { color: "#077e8c", displayText: strings.softwareStatus.under_review },
+    [SoftwareStatus.UNDER_REVIEW]: {
+      color: "#077e8c",
+      displayText: strings.softwareStatus.under_review
+    },
     [SoftwareStatus.ACCEPTED]: { color: "#47b758", displayText: strings.softwareStatus.accepted },
-    [SoftwareStatus.DEPRECATED]: { color: "#9f9080", displayText: strings.softwareStatus.deprecated },
+    [SoftwareStatus.DEPRECATED]: {
+      color: "#9f9080",
+      displayText: strings.softwareStatus.deprecated
+    },
     [SoftwareStatus.DECLINED]: { color: "#c82922", displayText: strings.softwareStatus.declined }
   };
 
@@ -134,6 +140,7 @@ const MainCard: React.FC<CardProps> = ({
       {status === SoftwareStatus.ACCEPTED && !isInMyApplications && (
         <Button
           variant="contained"
+          color="secondary"
           size="small"
           disabled={false}
           onClick={(e) => {
@@ -144,7 +151,6 @@ const MainCard: React.FC<CardProps> = ({
             textTransform: "none",
             color: "#fff",
             marginRight: "6px",
-            background: "#f9473b",
             borderRadius: "25px",
             "&:hover": { background: "#000" }
           }}
@@ -186,6 +192,57 @@ const MainCard: React.FC<CardProps> = ({
           {statusInfo.PENDING?.displayText}
         </Button>
       )}
+      {status === SoftwareStatus.DEPRECATED && (
+        <Button
+          variant="contained"
+          size="small"
+          disabled={true}
+          sx={{
+            textTransform: "none",
+            color: "#fff",
+            marginRight: "6px",
+            background: "#f7cb73",
+            borderRadius: "25px",
+            "&:hover": { background: "#f7cb73" }
+          }}
+        >
+          {statusInfo.DEPRECATED?.displayText}
+        </Button>
+      )}
+      {status === SoftwareStatus.DECLINED && (
+        <Button
+          variant="contained"
+          size="small"
+          disabled={true}
+          sx={{
+            textTransform: "none",
+            color: "#fff",
+            marginRight: "6px",
+            background: "#f7cb73",
+            borderRadius: "25px",
+            "&:hover": { background: "#f7cb73" }
+          }}
+        >
+          {statusInfo.DECLINED?.displayText}
+        </Button>
+      )}
+      {status === SoftwareStatus.UNDER_REVIEW && (
+        <Button
+          variant="contained"
+          size="small"
+          disabled={true}
+          sx={{
+            textTransform: "none",
+            color: "#fff",
+            marginRight: "6px",
+            background: "#f7cb73",
+            borderRadius: "25px",
+            "&:hover": { background: "#f7cb73" }
+          }}
+        >
+          {statusInfo.UNDER_REVIEW?.displayText}
+        </Button>
+      )}
       {isAdmin && onRemove && (
         <Button
           variant="outlined"
@@ -217,7 +274,7 @@ const MainCard: React.FC<CardProps> = ({
    */
   const renderTags = () => (
     <Box>
-      {tags.map((tag) => (
+      {tags.slice(0, 3).map((tag) => (
         <Chip
           key={tag}
           label={tag}
@@ -226,13 +283,30 @@ const MainCard: React.FC<CardProps> = ({
             borderRadius: "5px",
             padding: "0px",
             margin: "2px",
-            backgroundColor: "#ff4d4f",
+            backgroundColor: "#F9473B",
+            color: "#fff",
+            fontSize: "12px",
+            whiteSpace: "nowrap",
+            maxWidth: "70px",
+            minWidth: "70px"
+          }}
+        />
+      ))}
+      {tags.length > 3 && (
+        <Chip
+          label={`+${tags.length - 3}`}
+          sx={{
+            height: "25px",
+            borderRadius: "5px",
+            padding: "0px",
+            margin: "2px",
+            backgroundColor: "#F9473B",
             color: "#fff",
             fontSize: "12px",
             whiteSpace: "nowrap"
           }}
         />
-      ))}
+      )}
     </Box>
   );
 
@@ -253,7 +327,11 @@ const MainCard: React.FC<CardProps> = ({
             }
           }}
         >
-          <CardActionArea sx={{ padding: "14px" }} component={Link} to={`${id}`}>
+          <CardActionArea
+            sx={{ padding: "14px", marginBottom: "-10px" }}
+            component={Link}
+            to={`${id}`}
+          >
             <CardMedia
               component="img"
               height="80"
@@ -266,14 +344,19 @@ const MainCard: React.FC<CardProps> = ({
               }}
             />
             <CardContent sx={{ padding: 0 }}>
-              <Typography gutterBottom variant="h6" sx={{ fontSize: "16px", fontWeight: "bold" }}>
+              <Typography
+                gutterBottom
+                variant="h6"
+                overflow={"hidden"}
+                textOverflow={"ellipsis"}
+                whiteSpace={"nowrap"}
+              >
                 {name}
               </Typography>
               <Box sx={{ minHeight: "70px" }}>
                 <Typography
+                  variant="body1"
                   sx={{
-                    fontSize: "14px",
-                    fontWeight: "bold",
                     display: "-webkit-box",
                     WebkitLineClamp: 3,
                     WebkitBoxOrient: "vertical",
@@ -290,7 +373,15 @@ const MainCard: React.FC<CardProps> = ({
             </CardContent>
           </CardActionArea>
           <Divider />
-          {renderActionButtons()}
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center"
+            }}
+          >
+            {renderActionButtons()}
+          </Box>
           {renderStatusBox()}
         </Card>
       ) : (
@@ -299,6 +390,7 @@ const MainCard: React.FC<CardProps> = ({
             height: "auto",
             width: "100%",
             display: "flex",
+            flexDirection: "column",
             position: "relative",
             backgroundColor: "#fff",
             borderRadius: "10px",
@@ -347,8 +439,6 @@ const MainCard: React.FC<CardProps> = ({
                   gutterBottom
                   variant="h6"
                   sx={{
-                    fontSize: "16px",
-                    fontWeight: "bold",
                     marginBottom: "4px"
                   }}
                 >
@@ -363,7 +453,8 @@ const MainCard: React.FC<CardProps> = ({
                       WebkitLineClamp: 2,
                       WebkitBoxOrient: "vertical",
                       overflow: "hidden",
-                      textOverflow: "ellipsis"
+                      textOverflow: "ellipsis",
+                      maxWidth: "40ch"
                     }}
                   >
                     {description}
@@ -379,7 +470,7 @@ const MainCard: React.FC<CardProps> = ({
               </CardContent>
             </CardActionArea>
           </Box>
-          <Divider orientation="vertical" flexItem />
+          <Divider flexItem />
           <Box
             sx={{
               display: "flex",
@@ -388,52 +479,7 @@ const MainCard: React.FC<CardProps> = ({
               padding: "8px"
             }}
           >
-            <Button
-              variant="contained"
-              size="small"
-              disabled={isInMyApplications}
-              onClick={(e) => {
-                e.stopPropagation();
-                onSave();
-              }}
-              sx={{
-                textTransform: "none",
-                color: "#fff",
-                background: "#f9473b",
-                borderRadius: "25px",
-                fontSize: "12px",
-                marginBottom: "8px",
-                "&:hover": { background: "#000" }
-              }}
-            >
-              {isInMyApplications
-                ? strings.softwareRegistry.added
-                : strings.softwareRegistry.addApplication}
-            </Button>
-            {isAdmin && (
-              <Button
-                variant="outlined"
-                size="small"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onRemove?.();
-                }}
-                sx={{
-                  textTransform: "none",
-                  borderRadius: "25px",
-                  fontWeight: "bold",
-                  color: "#000",
-                  borderColor: "#000",
-                  fontSize: "12px",
-                  "&:hover": {
-                    borderColor: "#000",
-                    backgroundColor: "#f0f0f0"
-                  }
-                }}
-              >
-                {strings.softwareRegistry.delete}
-              </Button>
-            )}
+            {renderActionButtons()}
           </Box>
           {renderStatusBox()}
         </Card>

@@ -9,13 +9,11 @@ import {
 import {
   FlexTimeApi,
   Configuration as LambdaConfiguration,
-  PhasesApi,
+  SeveraApi,
   QuestionnairesApi,
-  ResourceAllocationsApi,
   SlackAvatarsApi,
   SoftwareApi,
   UsersApi,
-  WorkHoursApi,
   VacationRequestsApi,
   ArticleApi,
   OnCallApi
@@ -60,14 +58,15 @@ export const getLambdasApiClient = (accessToken?: string) => {
     config.lambdas.baseUrl,
     accessToken
   );
+  const severaApi = new SeveraApi(getConfiguration());
   return {
-    resourceAllocationsApi: new ResourceAllocationsApi(getConfiguration()),
-    phaseApi: new PhasesApi(getConfiguration()),
+    resourceAllocationsApi: severaApi,
+    phaseApi: severaApi,
     slackAvatarsApi: new SlackAvatarsApi(getConfiguration()),
     softwareApi: new SoftwareApi(getConfiguration()),
     usersApi: new UsersApi(getConfiguration()),
     flexTimeApi: new FlexTimeApi(getConfiguration()),
-    workHoursApi: new WorkHoursApi(getConfiguration()),
+    workHoursApi: severaApi,
     questionnairesApi: new QuestionnairesApi(getConfiguration()),
     vacationRequestsApi: new VacationRequestsApi(getConfiguration()),
     articleApi: new ArticleApi(getConfiguration()),

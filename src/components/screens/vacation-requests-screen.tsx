@@ -1,4 +1,4 @@
-import { Button, Card, Typography, Box, Grid } from "@mui/material";
+import { Card } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import VacationRequestsTable from "../vacation-requests-table/vacation-requests-table";
 import type { User } from "src/generated/homeLambdasClient";
@@ -15,10 +15,9 @@ import {
   vacationRequestsAtom
 } from "src/atoms/vacation";
 import UserRoleUtils from "src/utils/user-role-utils";
-import { Link } from "react-router-dom";
-import { KeyboardReturn, PeopleAlt } from "@mui/icons-material";
 import { renderVacationDaysTextForScreen } from "src/utils/vacation-days-utils";
 import { usersAtom } from "src/atoms/user";
+import BackButton from "../generics/back-button";
 
 /**
  * Vacation requests screen
@@ -275,17 +274,10 @@ const VacationRequestsScreen = () => {
           loading={loading}
         />
       </Card>
-      
+      <BackButton sx={{ mt: 2, marginBottom: 2 }} />
       {/* Admin Tools Section has been removed */}
       
-      <Card sx={{ margin: 0, padding: "10px", width: "100%" }}>
-        <Link to={adminMode ? "/admin" : "/"} style={{ textDecoration: "none" }}>
-          <Button variant="contained" sx={{ padding: "10px", width: "100%" }}>
-            <KeyboardReturn sx={{ marginRight: "10px" }} />
-            <Typography>{strings.vacationsScreen.back}</Typography>
-          </Button>
-        </Link>
-      </Card>
+      
     </>
   );
 };

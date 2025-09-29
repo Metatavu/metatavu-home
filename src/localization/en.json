@@ -6,7 +6,8 @@
   "label": {
     "currentLocaleLabel": "Current Locale:",
     "cancel": "Cancel",
-    "save": "Save"
+    "save": "Save",
+    "back": "Back"
   },
   "header": {
     "hello": "Hi",
@@ -96,7 +97,6 @@
     "startDate": "Start Date",
     "deadLine": "Deadline",
     "actualWorkHours": "Actual Work Hours",
-    "back": "Back",
     "filter": "Filter by",
     "filterType": "Filter type",
     "project": "Project",
@@ -148,7 +148,8 @@
     "searchPlaceholder": "Search and select users",
     "loading": "Loading...",
     "errorUnknownUser": "Unknown user",
-    "errorCreatingSoftware": "Error creating software:"
+    "errorCreatingSoftware": "Error creating software:",
+    "errorFetchingSoftwareToList": "Error fetching software to list:"
   },
   "softwareStatus": {
     "all": "All",
@@ -286,7 +287,7 @@
     "noAccess": "Access denied"
   },
   "vacationsScreen": {
-    "back": "Back"
+
   },
   "viewAll": {
     "startDate": "Start Date: ",
@@ -305,8 +306,7 @@
     "buildNewQuestionnaire": "Build New Questionnaire",
     "status": "Status:",
     "edit": "Edit",
-    "delete": "Delete",
-    "back": "Back"
+    "delete": "Delete"
   },
   "newQuestionnaireBuilder": {
     "makeNewQuestionnaire": "Make a New Questionnaire",
@@ -316,7 +316,6 @@
     "preview": "Questionnaire preview",
     "is": "is",
     "removeFromPreview": "Delete Question",
-    "back": "Back",
     "description": "Description",
     "insertDescription": "Insert description",
     "countedAnswers": "Cumulative amount of true values in this Questionnaire:",
@@ -332,7 +331,10 @@
     "answerLabel": "Answer option",
     "insertAnswerLabel": "Insert answer option",
     "addAnswer": "+ Add new answer option",
-    "saveAnswer": "Add question"
+    "saveAnswer": "Add question",
+    "tooltipBothEmpty": "Question and answer options cannot be empty",
+    "tooltipEmptyQuestion": "Question cannot be empty",
+    "tooltipEmptyAnswers": "Answer options cannot be empty"
   },
   "questionnaireTable": {
     "title": "Title",
@@ -409,7 +411,6 @@
     "noPendingArticles": "No articles pending review.",
     "noArticlesFound": "No articles found.",
     "create": "create",
-    "back": "back",
     "save": "save",
     "edit": "edit",
     "confirm": "confirm",
@@ -482,5 +483,27 @@
     "date": "Date",
     "noUsernameOnCall": "-",
     "errorUpdatingPaidStatus": "Failed to update on-call shift paid status"
-  }
+  },
+  "onboarding": {
+  "prev": "Previous",
+  "next": "Next",
+  "close": "Close",
+  "welcomeTitle": "Welcome to the Home Screen",
+  "welcomeContent": "This is your dashboard where you can see your balance, sprints, and more.",
+  "balanceTitle": "Balance",
+  "balanceContent": "Check your total flextime balance here.",
+  "sprintTitle": "Sprint view",
+  "sprintContent": "See your allocation and time entries.",
+  "vacationsTitle": "Vacation requests",
+  "vacationsContent": "Track upcoming vacations and statuses.",
+  "questionnaireTitle": "Questionnaires",
+  "questionnaireContent": "Build and answer questionnaires.",
+  "softwareTitle": "Software registry",
+  "softwareContent": "Find and manage company software.",
+  "wikiTitle": "Wiki Documentation",
+  "wikiContent": "Read or create documentation.",
+  "doneTitle": "Complete the Onboarding",
+  "doneContent": "You're all set! You can restart from Settings."
+}
+
 }

@@ -1,8 +1,6 @@
 import en from "./en.json";
 import fi from "./fi.json";
-import LocalizedStrings, {
-  type LocalizedStringsMethods,
-} from "localized-strings";
+import LocalizedStrings, { type LocalizedStringsMethods } from "localized-strings";
 
 /**
  * Localized strings
@@ -19,6 +17,7 @@ export interface Localized extends LocalizedStringsMethods {
     currentLocaleLabel: string;
     cancel: string;
     save: string;
+    back: string;
   };
   /**
    * Translations related to header
@@ -124,7 +123,6 @@ export interface Localized extends LocalizedStringsMethods {
     startDate: string;
     deadLine: string;
     actualWorkHours: string;
-    back: string;
     filter: string;
     filterType: string;
     project: string;
@@ -180,6 +178,7 @@ export interface Localized extends LocalizedStringsMethods {
     loading: string;
     errorUnknownUser: string;
     errorCreatingSoftware: string;
+    errorFetchingSoftwareToList: string;
   };
 
   /**
@@ -348,7 +347,7 @@ export interface Localized extends LocalizedStringsMethods {
    * Translation related to vacations screen
    */
   vacationsScreen: {
-    back: string;
+
   };
   /**
    * Translation related to view all screen
@@ -394,7 +393,6 @@ export interface Localized extends LocalizedStringsMethods {
   questionnaireScreen: {
     currentQuestionnaires: string;
     buildNewQuestionnaire: string;
-    back: string;
   };
   /**
    * Translations related to New Questionnaire Builder
@@ -407,7 +405,6 @@ export interface Localized extends LocalizedStringsMethods {
     preview: string;
     is: string;
     removeFromPreview: string;
-    back: string;
     description: string;
     insertDescription: string;
     countedAnswers: string;
@@ -427,6 +424,9 @@ export interface Localized extends LocalizedStringsMethods {
     insertAnswerLabel: string;
     addAnswer: string;
     saveAnswer: string;
+    tooltipBothEmpty: string;
+    tooltipEmptyQuestion: string;
+    tooltipEmptyAnswers: string;
   };
   /**
    * Translations related to Questionnaire Table
@@ -524,7 +524,6 @@ export interface Localized extends LocalizedStringsMethods {
     noPendingArticles: string;
     noArticlesFound: string;
     create: string;
-    back: string;
     save: string;
     edit: string;
     confirm: string;
@@ -541,7 +540,7 @@ export interface Localized extends LocalizedStringsMethods {
     draft: string;
     allArticles: string;
     connectedArticles: string;
-  }
+  };
   /**
    * Translation related settings screen
    */
@@ -598,6 +597,30 @@ export interface Localized extends LocalizedStringsMethods {
    */
   pagination: {
     ariaLabel: string;
+  };
+  /**
+   * Translations related to Onboarding
+   */
+  onboarding: {
+    prev: string;
+    next: string;
+    close: string;
+    welcomeTitle: string;
+    welcomeContent: string;
+    balanceTitle: string;
+    balanceContent: string;
+    sprintTitle: string;
+    sprintContent: string;
+    vacationsTitle: string;
+    vacationsContent: string;
+    questionnaireTitle: string;
+    questionnaireContent: string;
+    softwareTitle: string;
+    softwareContent: string;
+    wikiTitle: string;
+    wikiContent: string;
+    doneTitle: string;
+    doneContent: string;
   };
 
   /**

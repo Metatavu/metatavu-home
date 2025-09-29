@@ -9,13 +9,12 @@ import { useLambdasApi } from "src/hooks/use-api";
 import ReactMarkdown from "react-markdown";
 import ActionButton from "../wiki-documentation/action-button";
 import CreateOrEditArticleForm from "../wiki-documentation/create-article-form";
-import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
-import { Link } from "react-router-dom";
 import UserRoleUtils from "src/utils/user-role-utils";
 import { usersAtom } from "src/atoms/user";
 import { userProfileAtom } from "src/atoms/auth";
 import "../wiki-documentation/rich-text-editor/editor.css"
 import ArticleListItem from "../wiki-documentation/article-list-item";
+import BackButton from "../generics/back-button";
 
 /**
  * Article screen component displaying the article content.
@@ -118,52 +117,96 @@ const ArticleScreen = () => {
               sx={{ marginBottom: 3, marginTop: 0.5 }}
             >
               <Grid item xs={6}>
-              <Link to={adminMode ? "/admin/wiki-documentation" : "/wiki-documentation"}>
-                <ActionButton onClick={closeForm}>
-                  <>
-                    <KeyboardReturnIcon sx={{marginRight: 1}}/>
-                    {strings.wikiDocumentation.back} 
-                  </>
-                </ActionButton>
-              </Link>
+              <BackButton 
+                onClick={closeForm}
+                sx={{ padding: "6px" }}
+              />
               </Grid>
               <Grid item xs={6}>
-              <ActionButton onClick={() => setFormOpen(true)}>
-                {strings.wikiDocumentation.edit}
-              </ActionButton>
+                <ActionButton onClick={() => setFormOpen(true)}>
+                  {strings.wikiDocumentation.edit}
+                </ActionButton>
               </Grid>
             </Grid>
-            <Card sx={{padding: 3, paddingTop: 0, marginBottom: 3}}>
-              <ReactMarkdown 
-                components={{
-                  img: ({node, ...props}) => (
-                    <img 
-                      {...props} 
-                      alt={props.alt} 
-                      style={{ 
-                        display: "block", 
-                        width: "100%",
-                        borderRadius: "15px"
-                      }}
-                    />
-                  ),
-                  code: ({node, inline, ...props}) => (
-                    <code 
-                      {...props}
-                      className={!inline ? "editor-code" : ""}
-                    />
-                  ),
-                  blockquote: ({node, ...props}) => (
-                    <blockquote  
-                      {...props}
-                      className={"editor-quote"}
-                    />
-                  )
-                }}
-              >
-                {article?.content || ""}
-              </ReactMarkdown>
-            </Card>
+            <Card sx={{ padding: 3, paddingTop: 0, marginBottom: 3 }}>
+  {/* Title */}
+  {article?.title && (
+    <Typography variant="h4" sx={{ marginBottom: 2 }}>
+      {article.title}
+    </Typography>
+  )}
+
+  {/* Main Image */}
+  {article?.coverImage && (
+    <Box
+      component="img"
+      src={article.coverImage}
+      alt={article.title || strings.wikiDocumentation.imagePreview}
+      sx={{
+        width: "100%",
+        maxHeight: 400,
+        objectFit: "cover",
+        borderRadius: 2,
+        mb: 2
+      }}
+    />
+  )}
+  {/* Created / Updated Dates */}
+  <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+    {article?.createdAt && `Created: ${new Date(article.createdAt).toLocaleDateString()}`}
+    {article?.lastUpdatedAt && ` | Updated: ${new Date(article.lastUpdatedAt).toLocaleDateString()}`}
+    
+  </Typography>
+
+  {/* Tags */}
+  {article?.tags && article.tags.length > 0 && (
+    <Box sx={{ mb: 2 }}>
+      {article.tags.map((tag: string) => (
+        <Box
+          component="span"
+          sx={{
+            display: "inline-block",
+            backgroundColor: "#e0e0e0",
+            borderRadius: "20px",
+            px: 2,
+            py: 0.5,
+            mr: 1,
+            mb: 1,
+            fontSize: "0.875rem"
+          }}
+        >
+          {tag}
+        </Box>
+      ))}
+    </Box>
+  )}
+
+  {/* Markdown Content */}
+  <ReactMarkdown
+    components={{
+      img: ({ node, ...props }) => (
+        <img
+          {...props}
+          alt={props.alt || ""}
+          style={{
+            display: "block",
+            width: "100%",
+            borderRadius: "15px",
+            marginBottom: "1rem"
+          }}
+        />
+      ),
+      code: ({ node, inline, ...props }) => (
+        <code {...props} className={!inline ? "editor-code" : ""} />
+      ),
+      blockquote: ({ node, ...props }) => (
+        <blockquote {...props} className="editor-quote" />
+      )
+    }}
+  >
+    {article?.content || ""}
+  </ReactMarkdown>
+</Card>
             {!adminMode &&
               <>
                 {connectedArticles.length !== 0 && 

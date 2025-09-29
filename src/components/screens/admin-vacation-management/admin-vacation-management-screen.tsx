@@ -15,6 +15,7 @@ import {
   formatVacationDaysPayload,
 } from "../../../utils/vacations-utils";
 import strings from "src/localization/strings";
+import BackButton from "src/components/generics/back-button";
 
 /**
  * Vacation days keyed by year.
@@ -179,6 +180,7 @@ const AdminVacationManagementScreen = () => {
           color="primary"
         />
       </Box>
+      <BackButton sx={{ mt: 3, marginBottom: 2 }} />
       <EditVacationDialog
         open={editDialogOpen}
         user={currentUser}

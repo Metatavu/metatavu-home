@@ -9,12 +9,12 @@ import {
   Popper, 
   type PopperProps, 
   styled, 
-  TextField 
+  TextField, 
 } from "@mui/material"
 import strings from "src/localization/strings";
 import { type ChangeEvent, type KeyboardEvent, type SyntheticEvent, useRef, useState } from "react";
 import RichTextEditorLexical from "./rich-text-editor/rich-text-editor";
-import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
+import BackButton from "../generics/back-button";
 import { uploadFile } from "src/utils/s3-file-utils";
 import { useLambdasApi } from "src/hooks/use-api";
 import ActionButton from "./action-button";
@@ -196,20 +196,26 @@ const CreateOrEditArticleForm = ({
     }
   });
 
+  const isFormValid = Boolean(
+  title.trim() &&
+  path.trim() &&
+  coverImage?.trim() &&
+  description?.trim() &&
+  editorRef.current?.getMarkdownContent()?.trim() 
+  );
   return (
     <>
       <Grid container spacing={1.5} sx={{ marginBottom: 3, marginTop: 0.5 }}>
         <Grid item xs={6}>
-        <ActionButton onClick={closeForm}>
-          <>
-            <KeyboardReturnIcon sx={{marginRight: 1}}/>
-            {strings.wikiDocumentation.back}
-          </>
-        </ActionButton>
+        <BackButton 
+                onClick={closeForm}
+                disableNavigation
+                sx={{ padding: "6px" }}
+              />
         </Grid>
         <Grid item xs={6}>
         {action === "create" ?
-          <ActionButton onClick={handleCreate}>
+          <ActionButton onClick={handleCreate} disabled={!isFormValid}>
             {strings.wikiDocumentation.create}
           </ActionButton>
           : 
@@ -229,6 +235,7 @@ const CreateOrEditArticleForm = ({
           value={title}
           onChange={handleTitleChange}
           label={strings.wikiDocumentation.labelTitle}
+          required
         />
         <Grid container spacing={1.5}>
           <Grid item md={6} xs={12}>
@@ -238,6 +245,7 @@ const CreateOrEditArticleForm = ({
               value={path}
               onChange={handlePathChange}
               label={strings.wikiDocumentation.labelPath}
+              required
             />
           </Grid>
           <Grid item md={6} xs={12}>
@@ -261,6 +269,7 @@ const CreateOrEditArticleForm = ({
                     size="small"
                     onKeyDown={handleEnter}
                     label={strings.wikiDocumentation.labelTags}
+                    required
                   />
                 )
               }}
@@ -299,6 +308,7 @@ const CreateOrEditArticleForm = ({
               value={coverImage}
               onInput={handleImageLinkChange}
               label={strings.wikiDocumentation.labelImage}
+              required
             />
             {imagePreview && coverImage?.length !== 0
               ? <Grid container>
@@ -365,10 +375,11 @@ const CreateOrEditArticleForm = ({
               value={description}
               onInput={handleDescriptionChange}
               label={strings.wikiDocumentation.labelDescription}
+              required
             />
           </Grid>
         </Grid>
-        <RichTextEditorLexical ref={editorRef} markdownContent={article?.content || ""}/>
+        <RichTextEditorLexical ref={editorRef} markdownContent={article?.content || "Article content is required"}/>
       </Card>
     </>
   )

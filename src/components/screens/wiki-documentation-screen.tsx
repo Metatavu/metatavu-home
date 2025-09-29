@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
+import BackButton from "../generics/back-button";
 import { 
   CircularProgress, 
   Card, 
   Box, 
-  TextField, 
+  TextField,
   Grid, 
   Typography,
   Button, 
@@ -557,6 +558,7 @@ return (
             />
           </Grid>
         )}
+        <BackButton sx={{ marginBottom: 2 }} />
       </>
     )}
   </>

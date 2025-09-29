@@ -46,8 +46,8 @@ const RecommendCard = ({
   return (
     <Card
       sx={{
-        width: 247,
-        height: 250,
+        width: 288,
+        height: 213,
         backgroundColor: "#fff",
         borderRadius: "10px",
         boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
@@ -60,23 +60,38 @@ const RecommendCard = ({
       }}
     >
       <CardActionArea component={Link} to={`${app.id}`} sx={{ padding: "16px" }}>
+        <Box
+          sx={{
+            height: 80,
+            width: 130,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            margin: "0 auto",     
+            overflow: "hidden", 
+          }}
+        >
         <CardMedia
           component="img"
-          height="80"
           image={app.image}
           alt={app.name}
           sx={{
+            maxHeight: "50px",
+            maxWidth: "130px",
             objectFit: "contain",
-            marginBottom: "16px",
+            marginBottom: "8px",
             borderRadius: "8px",
           }}
         />
-        <CardContent sx={{ padding: "0px", flex: "1" }}>
+        </Box>
+        <CardContent sx={{ padding: "0px", flex: "1", justifyContent: "space-between" }}>
           <Typography
             gutterBottom
             variant="h6"
-            mt={1}
-            sx={{ fontSize: "16px", fontWeight: "bold" }}
+            whiteSpace={"nowrap"}
+            overflow={"hidden"}
+            textOverflow={"ellipsis"}
+            mt={1}            
           >
             {app.name}
           </Typography>
@@ -84,9 +99,9 @@ const RecommendCard = ({
             <Typography
               mt={1}
               sx={{
-                fontSize: "14px",
+                fontSize: "16px",
                 color: "#f9473b",
-                fontWeight: "bold",
+                fontWeight: "600",
               }}
             >
               {loadingUsers[app.createdBy]
@@ -97,26 +112,30 @@ const RecommendCard = ({
           <Box
             display="flex"
             alignItems="center"
-            flexWrap="wrap"
+            justifyContent="flex-start"
+            flexWrap="nowrap"
+            width ="100%"
             sx={{
-              height: "60px",
+              height: "30px",
               gap: 0.5,
               marginTop: "8px",
             }}
           >
-            {app.tags?.map((tag) => (
+            {app.tags?.slice(0, 3).map((tag) => (
               <Chip
                 key={tag}
                 label={tag}
                 sx={{
                   height: "25px",
                   borderRadius: "5px",
-                  padding: "0px",
+                  padding: "0 6px",
                   margin: "2px",
-                  backgroundColor: "#ff4d4f",
+                  backgroundColor: "#F9473B",
                   color: "#fff",
-                  fontSize: "12px",
+                  fontSize: "14px",
                   whiteSpace: "nowrap",
+                  maxWidth: "80px",
+                  minWidth:"80px"
                 }}
               />
             ))}
