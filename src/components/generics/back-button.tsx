@@ -4,18 +4,15 @@ import KeyboardReturn from "@mui/icons-material/KeyboardReturn";
 import UserRoleUtils from "src/utils/user-role-utils";
 import strings from "src/localization/strings";
 
-/**
- * Props for {@link BackButton} component
- */
 interface BackButtonProps {
-  /** Optional click handler to override default navigation */
   onClick?: () => void;
-  /** Optional override for styling/positioning button */
   styles?: SxProps<Theme>;
 }
 
 /**
  * Generic back button component with optional click handling and navigation logic.
+ * @param props.onClick Optional handler to override default navigation from forms
+ * @param props.styles Optional override for styling/positioning button
  */
 const BackButton = (props: BackButtonProps): JSX.Element => {
   const { onClick, styles} = props;
