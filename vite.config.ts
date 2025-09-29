@@ -1,4 +1,4 @@
-import { defineConfig, loadEnv, UserConfig } from "vite";
+import { defineConfig, loadEnv, type UserConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import Vault from "node-vault";
 
