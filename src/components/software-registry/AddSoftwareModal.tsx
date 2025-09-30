@@ -38,14 +38,14 @@ interface AddSoftwareModalProps {
  * @param {AddSoftwareModalProps} props - The props for the AddSoftwareModal component.
  * @returns The rendered modal component.
  */
-const AddSoftwareModal = ({
+const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
   open,
   handleClose,
   handleSave,
   disabled,
   softwareData,
   existingSoftwareList
-}: AddSoftwareModalProps) => {
+}) => {
   const initialSoftwareState: SoftwareRegistry = {
     id: "",
     name: "",
@@ -65,7 +65,7 @@ const AddSoftwareModal = ({
   const [tags, setTags] = useState("");
   const [nameExists, setNameExists] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [, setError] = useState<string | null>(null);
 
   /**
    * Fetch the list of users when the modal opens.
@@ -103,7 +103,6 @@ const AddSoftwareModal = ({
     setSoftware(initialSoftwareState);
     setTags("");
     setNameExists(false);
-    setError(null);
   };
 
   /**
@@ -113,7 +112,6 @@ const AddSoftwareModal = ({
    */
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    if (name === "name" && value.length > 100) return;
     setSoftware({ ...software, [name]: value });
   };
 
@@ -140,44 +138,41 @@ const AddSoftwareModal = ({
     }));
   };
 
-  /**
-   * Frontend form validation ensures correct form of URL added
-   * Check done on name to ensure no duplication
-   */
-  const validateForm = (): boolean => {
-    const errs: string[] = [];
-
-    if (!software.url.trim()) errs.push("URL is required.");
-    else if (!/^https?:\/\/\S+$/.test(software.url)) errs.push("URL must be valid (http:// or https://).");
-
-    if (!software.image.trim()) errs.push("Image URL is required.");
-    else if (!/^https?:\/\/\S+$/.test(software.image)) errs.push("Image URL must be valid (http:// or https://).");
-
-    if (nameExists) errs.push("Software name already exists.");
-
-    if (errs.length > 0) {
-      setError(errs.join(" "));
+  const isValidUrl = (value: string) => {
+    try {
+      new URL(value);
+      return true;
+    } catch {
       return false;
     }
-
-    setError(null);
-    return true;
   };
-
   /**
-   * Handle submitting the software data. Minor data validation check on URL format.
+   * Handle submitting the software data. Minor URL validation performed.
    * If the name doesn't already exist, it saves the data.
    */
   const handleSubmit = () => {
-    if (validateForm()) {
-      handleSave(software);
-      setSnackbarOpen(true);
-      resetForm();
-      handleClose();
-    }
-  };
+  // 🔹 Validate URL and Image URL before saving
+  if (software.url && !isValidUrl(software.url)) {
+  return;
+  }
+  if (software.image && !isValidUrl(software.image)) {
+    return;
+  }
+  if (!nameExists) {
+    handleSave(software);
+    setSnackbarOpen(true);
+    resetForm();
+    handleClose();
+  }
+};
 
-  const isFormValid = Boolean(software.name.trim() && software.image.trim() && software.url.trim());
+  const isFormValid = Boolean(
+    software.name.trim() &&
+    software.image.trim() &&
+    software.url.trim() &&
+    isValidUrl(software.image) &&
+    isValidUrl(software.url)
+  );
 
   const hiddenTagsCount = Math.max(0, (software?.tags?.length ?? 0) - 3);
 
@@ -210,11 +205,6 @@ const AddSoftwareModal = ({
           <Typography variant="h6" marginBottom={4}>
             {strings.softwareRegistry.addSoftware}
           </Typography>
-          {error && (
-            <Alert severity="error" sx={{ mb:2 }}>
-              {error}
-            </Alert>
-          )}
           <Grid container spacing={2} sx={{ flexGrow: 1 }}>
             <Grid item xs={12} md={6}>
               <TextField
@@ -240,7 +230,12 @@ const AddSoftwareModal = ({
                 value={software.image}
                 onChange={handleChange}
                 required
-                helperText={strings.softwareRegistry.imageURLRequired}
+                error={Boolean(software.image && !isValidUrl(software.image))}
+                helperText={
+                  software.image && !isValidUrl(software.image)
+                    ? "Invalid image URL format"
+                    : strings.softwareRegistry.imageURLRequired
+                }
               />
             </Grid>
             <Grid item xs={12} md={6}>
@@ -251,7 +246,12 @@ const AddSoftwareModal = ({
                 value={software.url}
                 onChange={handleChange}
                 required
-                helperText={strings.softwareRegistry.URLExample}
+                error={Boolean(software.url && !isValidUrl(software.url))}
+                helperText={
+                  software.url && !isValidUrl(software.url)
+                    ? "Invalid URL format"
+                    : strings.softwareRegistry.URLExample
+                }
               />
             </Grid>
             <Grid item xs={6}>
