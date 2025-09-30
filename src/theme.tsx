@@ -12,42 +12,32 @@ export const theme: Theme = createTheme({
     h2: {
       fontWeight: 500,
       fontSize: 45,
-      fontStyle: "medium",
+      fontStyle: "medium"
     },
     h3: {
       fontWeight: 700,
       fontSize: 30,
-      fontStyle: "bold",
+      fontStyle: "bold"
     },
     h4: {
       fontWeight: 600,
-      fontSize: 20,
+      fontSize: 20
     },
-    h6:{
+    h6: {
       fontWeight: 700,
       fontSize: 20,
       fontStyle: "bold"
     },
-    subtitle1:{
-      fontWeight: 600,
-      fontSize: 18,
-      color: "#f9473b"
-    },
-    subtitle2:{
-      fontWeight: 400,
-      fontSize: 20,
-      fontStyle: "regular"
-    },
-    body1:{
+    body1: {
       fontWeight: 400,
       fontSize: 16,
       fontStyle: "regular"
     },
-    body2:{
+    body2: {
       fontWeight: 400,
       fontSize: 16,
-      fontStyle: "regular",
-    },
+      fontStyle: "regular"
+    }
   },
   palette: {
     primary: {
@@ -56,9 +46,9 @@ export const theme: Theme = createTheme({
     secondary: {
       main: "#F47D38"
     },
-    info:{
+    info: {
       main: "#F9473B"
-    }    
+    }
   },
   components: {
     MuiCssBaseline: {
@@ -141,7 +131,7 @@ export const theme: Theme = createTheme({
           backgroundColor: "#F9473B",
           color: "#ffffff",
           fontWeight: "600",
-          borderRadius: "5px",
+          borderRadius: "5px"
         }
       }
     },
@@ -151,28 +141,43 @@ export const theme: Theme = createTheme({
           fontWeight: "bold"
         }
       }
+    }
+  }
+});
+
+export const SoftwareDetailsTheme: Theme = createTheme(theme, {
+  typography: {
+    subtitle1: {
+      fontWeight: 600,
+      fontSize: 18,
+      color: "#f9473b"
     },
+    subtitle2: {
+      fontWeight: 400,
+      fontSize: 20,
+      fontStyle: "regular"
+    }
+  },
+  components: {
     MuiSelect: {
-    styleOverrides: {
-      root: {
-        backgroundColor: "#F47D38",
-        color: "#fff",
-        borderRadius: "10px",
-        height: "45px",
-        padding: "0 15px",
-        "& .MuiSvgIcon-root": {
-          color: "#fff",
-        },
-      },
-    },
-  },
-  },
+      styleOverrides: {
+        root: {
+          borderRadius: "10px",
+          height: "45px",
+          padding: "0 15px",
+          "& .MuiSvgIcon-root": {
+            color: "#121212"
+          }
+        }
+      }
+    }
+  }
 });
 
 export const wikiScreenColors = {
-  button : {
+  button: {
     main: "#E9E8E8",
     hover: "#DCD8D8",
     text: "#787272"
   }
-}
+};

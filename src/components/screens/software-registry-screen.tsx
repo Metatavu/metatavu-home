@@ -8,6 +8,7 @@ import {
   Container,
   IconButton,
   Card,
+  ThemeProvider
 } from "@mui/material";
 import { useState, useEffect, useMemo, useRef } from "react";
 import Content from "../software-registry/myContent";
@@ -26,6 +27,7 @@ import Recommendations from "../software-registry/Recommendations";
 import AddSoftwareModal from "../software-registry/AddSoftwareModal";
 import Sidebar from "../software-registry/Sidebar";
 import BackButton from "../generics/back-button";
+import { SoftwareDetailsTheme } from "src/theme";
 
 /**
  * Software registry screen component
@@ -60,9 +62,11 @@ const SoftwareScreen = () => {
    * @returns The list of filtered applications owned by the logged in user.
    */
   const mySoftware = useMemo(
-    () => software.filter((software) =>
-      software.users?.includes(loggedUserId) && software.status === SoftwareStatus.ACCEPTED
-    ),
+    () =>
+      software.filter(
+        (software) =>
+          software.users?.includes(loggedUserId) && software.status === SoftwareStatus.ACCEPTED
+      ),
     [software, loggedUserId]
   );
 
@@ -74,12 +78,15 @@ const SoftwareScreen = () => {
   const filteredSoftware = useMemo(() => {
     return mySoftware.filter((software) => {
       const matchesName = software.name.toLowerCase().includes(searchValue.toLowerCase());
-      const matchesTags = selectedTags.length === 0 || (software.tags && selectedTags.some(tag => software.tags?.includes(tag)));
-      const matchesTagSearch = software.tags?.some((tag) => tag.toLowerCase().includes(searchValue.toLowerCase()));
+      const matchesTags =
+        selectedTags.length === 0 ||
+        (software.tags && selectedTags.some((tag) => software.tags?.includes(tag)));
+      const matchesTagSearch = software.tags?.some((tag) =>
+        tag.toLowerCase().includes(searchValue.toLowerCase())
+      );
       return (matchesName || matchesTagSearch) && matchesTags;
     });
-  }, [mySoftware, selectedTags, searchValue]
-  );
+  }, [mySoftware, selectedTags, searchValue]);
 
   /**
    * Retrieves the applications recommended for the logged in user.
@@ -87,7 +94,10 @@ const SoftwareScreen = () => {
    * @returns The list of recommended applications.
    */
   const recommendedApplications = useMemo(
-    () => software.filter((app) => app.recommend?.includes(loggedUserId) && app.status === SoftwareStatus.ACCEPTED),
+    () =>
+      software.filter(
+        (app) => app.recommend?.includes(loggedUserId) && app.status === SoftwareStatus.ACCEPTED
+      ),
     [software, loggedUserId]
   );
 
@@ -128,7 +138,7 @@ const SoftwareScreen = () => {
     setLoading(true);
 
     try {
-      const app = software.find(app => app.id === appId);
+      const app = software.find((app) => app.id === appId);
 
       if (app) {
         const isUserInApp = app.users?.includes(loggedUserId);
@@ -136,14 +146,12 @@ const SoftwareScreen = () => {
         const updatedApp: SoftwareRegistry = {
           ...app,
           users: isUserInApp ? app.users : [...(app.users || []), loggedUserId],
-          recommend: app.recommend?.filter(id => id !== loggedUserId),
+          recommend: app.recommend?.filter((id) => id !== loggedUserId)
         };
 
         await softwareApi.updateSoftwareById({ id: appId, softwareRegistry: updatedApp });
 
-        setApplications(prevApps =>
-          prevApps.map(a => (a.id === appId ? updatedApp : a))
-        );
+        setApplications((prevApps) => prevApps.map((a) => (a.id === appId ? updatedApp : a)));
       }
     } catch (error) {
       setError(`Error updating software: ${error}`);
@@ -156,11 +164,10 @@ const SoftwareScreen = () => {
    * Fetches the software data if the user is logged in.
    */
   useEffect(() => {
-    if (loggedUserId){
+    if (loggedUserId) {
       fetchSoftwareData();
     }
   }, []);
-
 
   if (loading) {
     return (
@@ -168,7 +175,7 @@ const SoftwareScreen = () => {
         sx={{
           p: "25%",
           display: "flex",
-          justifyContent: "center",
+          justifyContent: "center"
         }}
       >
         <Box sx={{ textAlign: "center" }}>
@@ -177,7 +184,7 @@ const SoftwareScreen = () => {
             sx={{
               scale: "150%",
               mt: "5%",
-              mb: "5%",
+              mb: "5%"
             }}
           />
         </Box>
@@ -186,163 +193,148 @@ const SoftwareScreen = () => {
   }
 
   return (
-    <Container>
-      <Grid container direction="column" alignItems="center" mt={4}>
-        <Typography variant="h2" m={4}>
-          {strings.softwareRegistry.applications}
-        </Typography>
-        {recommendedApplications.length > 0 && (
-          <Grid item container justifyContent="center" alignItems="center" mb={4}>
-            <Typography variant="subtitle1">
-              {strings.softwareRegistry.recommendationMessage.replace(
-                "{recommendationCount}",
-                recommendedApplications.length.toString()
-              )}
-            </Typography>
-            <IconButton
-              onClick={scrollToRecommendations}
-              sx={{
-                color: "#F9473B",
-                backgroundColor: "transparent",
-                ":hover": {
-                  backgroundColor: "transparent",
-                  boxShadow: "none",
-                },
-              }}
-            >
-              <ArrowDownwardIcon />
-            </IconButton>
-          </Grid>
-        )}
-        <Grid item container justifyContent="space-between" alignItems="center">
-          <Typography variant="h3">
-            {strings.softwareRegistry.myApplications}
+    <ThemeProvider theme={SoftwareDetailsTheme}>
+      <Container>
+        <Grid container direction="column" alignItems="center" mt={4}>
+          <Typography variant="h2" m={4}>
+            {strings.softwareRegistry.applications}
           </Typography>
-          <Button
-            variant="contained"
-            color="secondary"
-            onClick={() => setIsModalOpen(true)}
-            sx={{
-              textTransform: "none",
-              color: "#fff",
-              fontSize: "18px",
-              borderRadius: "100px",
-              "&:hover": { background: "#000" },
-            }}
-          >
-            {strings.softwareRegistry.addApplication}
-          </Button>
-        </Grid>
-        <Grid item container justifyContent="right" mt={2}>
-          <Box>
-            <IconButton
-              onClick={() => setIsGridView(true)}
-              sx={{
-                backgroundColor: isGridView ? "#F9473B" : "#f2f2f2",
-                color: isGridView ? "#fff" : "#000",
-                borderRadius: "4px",
-                padding: "6px",
-                marginRight: "10px",
-                ":hover": {
-                  backgroundColor: "#000",
-                  color: "#fff",
-                },
-              }}
-            >
-              <GridViewIcon />
-            </IconButton>
-            <IconButton
-              onClick={() => setIsGridView(false)}
-              sx={{
-                backgroundColor: !isGridView ? "#F9473B" : "#f2f2f2",
-                color: !isGridView ? "#fff" : "#000",
-                borderRadius: "4px",
-                padding: "6px",
-                ":hover": {
-                  backgroundColor: "#000",
-                  color: "#fff",
-                },
-              }}
-            >
-              <ListViewIcon />
-            </IconButton>
-          </Box>
-        </Grid>
-        <Grid container justifyContent="flex-start" mt={2}>
-          <Grid item mr={2}>
-            <Sidebar
-              onTagSelection={setSelectedTags}
-              filteredApplicationsCount={filteredSoftware.length}
-              availableTags={filteredTags}
-              onSearch={setSearchValue}
-            />
-          </Grid>
-          <Grid item xs>
-            {error && (
-              <Box mb={2} width="100%">
-                <Alert severity="error">{error}</Alert>
-              </Box>
-            )}
-            {loading ? (
-              <Box textAlign="center">
-                <CircularProgress size={50} sx={{ mt: 2 }} />
-              </Box>
-            ) : (
-              <Content
-                applications={
-                  showAll ?
-                    filteredSoftware :
-                    filteredSoftware.slice(0, 4)
-                }
-                isGridView={isGridView}
-              />
-            )}
-            {filteredSoftware.length > 4 && (
-              <Box textAlign="center" mt={3}>
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  onClick={() => setShowAll(!showAll)}
-                  sx={{
-                    textTransform: "none",
-                    color: "#fff",
-                    fontSize: "18px",
-                    borderRadius: "100px",
-                    "&:hover": { background: "#000" },
-                  }}
-                >
-                  {
-                    showAll ?
-                      strings.softwareRegistry.showLess :
-                      strings.softwareRegistry.showMore
+          {recommendedApplications.length > 0 && (
+            <Grid item container justifyContent="center" alignItems="center" mb={4}>
+              <Typography variant="subtitle1">
+                {strings.softwareRegistry.recommendationMessage.replace(
+                  "{recommendationCount}",
+                  recommendedApplications.length.toString()
+                )}
+              </Typography>
+              <IconButton
+                onClick={scrollToRecommendations}
+                sx={{
+                  color: "#F9473B",
+                  backgroundColor: "transparent",
+                  ":hover": {
+                    backgroundColor: "transparent",
+                    boxShadow: "none"
                   }
-                </Button>
-              </Box>
-            )}
+                }}
+              >
+                <ArrowDownwardIcon />
+              </IconButton>
+            </Grid>
+          )}
+          <Grid item container justifyContent="space-between" alignItems="center">
+            <Typography variant="h3">{strings.softwareRegistry.myApplications}</Typography>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={() => setIsModalOpen(true)}
+              sx={{
+                textTransform: "none",
+                color: "#fff",
+                fontSize: "18px",
+                borderRadius: "100px",
+                "&:hover": { background: "#000" }
+              }}
+            >
+              {strings.softwareRegistry.addApplication}
+            </Button>
+          </Grid>
+          <Grid item container justifyContent="right" mt={2}>
+            <Box>
+              <IconButton
+                onClick={() => setIsGridView(true)}
+                sx={{
+                  backgroundColor: isGridView ? "#F9473B" : "#f2f2f2",
+                  color: isGridView ? "#fff" : "#000",
+                  borderRadius: "4px",
+                  padding: "6px",
+                  marginRight: "10px",
+                  ":hover": {
+                    backgroundColor: "#000",
+                    color: "#fff"
+                  }
+                }}
+              >
+                <GridViewIcon />
+              </IconButton>
+              <IconButton
+                onClick={() => setIsGridView(false)}
+                sx={{
+                  backgroundColor: !isGridView ? "#F9473B" : "#f2f2f2",
+                  color: !isGridView ? "#fff" : "#000",
+                  borderRadius: "4px",
+                  padding: "6px",
+                  ":hover": {
+                    backgroundColor: "#000",
+                    color: "#fff"
+                  }
+                }}
+              >
+                <ListViewIcon />
+              </IconButton>
+            </Box>
+          </Grid>
+          <Grid container justifyContent="flex-start" mt={2}>
+            <Grid item mr={2}>
+              <Sidebar
+                onTagSelection={setSelectedTags}
+                filteredApplicationsCount={filteredSoftware.length}
+                availableTags={filteredTags}
+                onSearch={setSearchValue}
+              />
+            </Grid>
+            <Grid item xs>
+              {error && (
+                <Box mb={2} width="100%">
+                  <Alert severity="error">{error}</Alert>
+                </Box>
+              )}
+              {loading ? (
+                <Box textAlign="center">
+                  <CircularProgress size={50} sx={{ mt: 2 }} />
+                </Box>
+              ) : (
+                <Content
+                  applications={showAll ? filteredSoftware : filteredSoftware.slice(0, 4)}
+                  isGridView={isGridView}
+                />
+              )}
+              {filteredSoftware.length > 4 && (
+                <Box textAlign="center" mt={3}>
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={() => setShowAll(!showAll)}
+                    sx={{
+                      textTransform: "none",
+                      color: "#fff",
+                      fontSize: "18px",
+                      borderRadius: "100px",
+                      "&:hover": { background: "#000" }
+                    }}
+                  >
+                    {showAll
+                      ? strings.softwareRegistry.showLess
+                      : strings.softwareRegistry.showMore}
+                  </Button>
+                </Box>
+              )}
+            </Grid>
           </Grid>
         </Grid>
-      </Grid>
-      <Grid
-        container
-        direction="column"
-        alignItems="center"
-        mt={4}
-        ref={recommendationRef}
-      >
-        <Recommendations
-          applications={recommendedApplications}
-          onAddUser={handleUserUpdate}
+        <Grid container direction="column" alignItems="center" mt={4} ref={recommendationRef}>
+          <Recommendations applications={recommendedApplications} onAddUser={handleUserUpdate} />
+        </Grid>
+        <AddSoftwareModal
+          open={isModalOpen}
+          handleClose={() => setIsModalOpen(false)}
+          handleSave={createSoftware}
+          disabled={loading}
+          existingSoftwareList={software}
         />
-      </Grid>
-      <AddSoftwareModal
-        open={isModalOpen}
-        handleClose={() => setIsModalOpen(false)}
-        handleSave={createSoftware}
-        disabled={loading}
-        existingSoftwareList={software}
-      />
-      <BackButton sx={{ marginBottom: 2 }}/>
-    </Container>
+        <BackButton sx={{ marginBottom: 2 }} />
+      </Container>
+    </ThemeProvider>
   );
 };
 

@@ -20,7 +20,8 @@ import {
   DialogActions,
   DialogContent,
   DialogContentText,
-  DialogTitle
+  DialogTitle,
+  ThemeProvider
 } from "@mui/material";
 import Content from "../software-registry/allContent";
 import { useLambdasApi } from "src/hooks/use-api";
@@ -37,6 +38,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import useCreateSoftware from "src/hooks/use-create-software";
 import AddSoftwareModal from "../software-registry/AddSoftwareModal";
 import BackButton from "../generics/back-button";
+import { SoftwareDetailsTheme } from "src/theme";
 
 /**
  * All software screen component
@@ -289,6 +291,7 @@ const AllSoftwareScreen = () => {
   }
 
   return (
+    <ThemeProvider theme={SoftwareDetailsTheme}>
     <Container>
       <Grid container direction="column" alignItems="center" mt={4}>
         <Grid item container justifyContent="space-between" alignItems="center" mb={2} mt={4}>
@@ -476,6 +479,7 @@ const AllSoftwareScreen = () => {
         </DialogActions>
       </Dialog>
     </Container>
+    </ThemeProvider>
   );
 };
 
