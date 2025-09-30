@@ -15,7 +15,7 @@ import { useLambdasApi } from "src/hooks/use-api";
 import { useAtom, useAtomValue } from "jotai";
 import { authAtom } from "src/atoms/auth";
 import { softwareAtom } from "src/atoms/software";
-import { SoftwareRegistry } from "src/generated/homeLambdasClient";
+import type { SoftwareRegistry } from "src/generated/homeLambdasClient";
 import AddSoftwareModal from "./AddSoftwareModal";
 import UserRoleUtils from "src/utils/user-role-utils";
 import BackButton from "../generics/back-button";

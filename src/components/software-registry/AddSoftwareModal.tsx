@@ -38,14 +38,14 @@ interface AddSoftwareModalProps {
  * @param {AddSoftwareModalProps} props - The props for the AddSoftwareModal component.
  * @returns The rendered modal component.
  */
-const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
+const AddSoftwareModal = ({
   open,
   handleClose,
   handleSave,
   disabled,
   softwareData,
   existingSoftwareList
-}) => {
+}: AddSoftwareModalProps) => {
   const initialSoftwareState: SoftwareRegistry = {
     id: "",
     name: "",
@@ -103,6 +103,7 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
     setSoftware(initialSoftwareState);
     setTags("");
     setNameExists(false);
+    setError(null);
   };
 
   /**
@@ -112,6 +113,7 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
    */
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+    if (name === "name" && value.length > 100) return;
     setSoftware({ ...software, [name]: value });
   };
 
@@ -139,10 +141,35 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
   };
 
   /**
-   * Handle submitting the software data. If the name doesn't already exist, it saves the data.
+   * Frontend form validation ensures correct form of URL added
+   * Check done on name to ensure no duplication
+   */
+  const validateForm = (): boolean => {
+    const errs: string[] = [];
+
+    if (!software.url.trim()) errs.push("URL is required.");
+    else if (!/^https?:\/\/\S+$/.test(software.url)) errs.push("URL must be valid (http:// or https://).");
+
+    if (!software.image.trim()) errs.push("Image URL is required.");
+    else if (!/^https?:\/\/\S+$/.test(software.image)) errs.push("Image URL must be valid (http:// or https://).");
+
+    if (nameExists) errs.push("Software name already exists.");
+
+    if (errs.length > 0) {
+      setError(errs.join(" "));
+      return false;
+    }
+
+    setError(null);
+    return true;
+  };
+
+  /**
+   * Handle submitting the software data. Minor data validation check on URL format.
+   * If the name doesn't already exist, it saves the data.
    */
   const handleSubmit = () => {
-    if (!nameExists) {
+    if (validateForm()) {
       handleSave(software);
       setSnackbarOpen(true);
       resetForm();
@@ -183,6 +210,11 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
           <Typography variant="h6" marginBottom={4}>
             {strings.softwareRegistry.addSoftware}
           </Typography>
+          {error && (
+            <Alert severity="error" sx={{ mb:2 }}>
+              {error}
+            </Alert>
+          )}
           <Grid container spacing={2} sx={{ flexGrow: 1 }}>
             <Grid item xs={12} md={6}>
               <TextField
