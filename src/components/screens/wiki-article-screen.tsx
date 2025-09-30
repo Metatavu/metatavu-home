@@ -167,18 +167,28 @@ const ArticleScreen = () => {
               spacing={1.5} 
               sx={{ marginBottom: 3, marginTop: 0.5 }}
             >
-              <Grid item xs={6}>
+            
+              <Grid item xs={adminMode?4 : 12}>
               <BackButton 
                 onClick={formOpen ? handleClose : undefined}
                 styles={{ padding: "6px" }}
               />
               </Grid>
-              <Grid item xs={6}>
-                <ActionButton onClick={() => setFormOpen(true)}>
-                  {strings.wikiDocumentation.edit}
-                </ActionButton>
-              </Grid>
-            </Grid>
+               {adminMode && (
+                  <>
+                    <Grid item xs={4}>
+                      <ActionButton onClick={() => setFormOpen(true)}>
+                        {strings.wikiDocumentation.edit}
+                      </ActionButton>
+                    </Grid>
+                    <Grid item xs={4}>
+                      <ActionButton onClick={handleApprove}>
+                        {strings.wikiDocumentation.approve}
+                      </ActionButton>
+                    </Grid>
+                  </>
+                )}
+                </Grid>
             <Card sx={{ padding: 3, paddingTop: 0, marginBottom: 3 }}>
   {/* Title */}
   {article?.title && (
