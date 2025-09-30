@@ -41,7 +41,8 @@
     "fetchFailedFlextime": "Error while fetching flextime data",
     "missingEmailOrId": "Missing email or ID",
     "noSeveraUserId": "One of your users is missing severaUserId, please contact a member of the metatavu home development team for more information.",
-    "noFlextimeData": "Something went wrong while fetching your flextime data"
+    "noFlextimeData": "Something went wrong while fetching your flextime data",
+    "noArticleId": "Article ID is missing"
   },
   "localization": {
     "en": "EN",
@@ -194,7 +195,8 @@
     "confirmButtonText": "Yes",
     "cancelButtonText": "No",
     "title": "Are you sure?",
-    "message": "Delete selected vacation request(s)?"
+    "message": "Delete selected vacation request(s)?",
+    "editMessage": "This reviewed request will go back to pending if you save changes. Do you want to proceed?"
   },
   "errorHandler": {
     "cancelButtonText": "Close",
@@ -233,7 +235,8 @@
     "updateRequestError": "Updating vacation request has failed",
     "updateStatusError": "Updating vacation request status has failed",
     "noVacationRequestsFound": "No vacation requests found",
-    "nameNotFound": "Name not found"
+    "nameNotFound": "Name not found",
+    "noVacationRequestsStatusFound": "Statuses not found"
   },
   "sprintRequestError": {
     "fetchResourceAllocationsError": "Fetching sprint data for resourceAllocations has failed",
@@ -413,6 +416,7 @@
     "create": "create",
     "save": "save",
     "edit": "edit",
+    "approve": "approve",
     "confirm": "confirm",
     "searchArticle": "Search for an article...",
     "createArticle": "Create article",
@@ -426,7 +430,15 @@
     "labelLink": "Link",
     "draft": "draft",
     "allArticles": "all",
+    "approvedArticles": "approved",
     "connectedArticles": "Connected articles"
+  },
+  "snackbar": {
+    "articleSubmitted": "Article submitted for review successfully!",
+    "articleCreated": "Article created successfully!",
+    "articleUpdated": "Article updated successfully!",
+    "articleApproved": "Article approved successfully!",
+    "changesSaved": "Changes saved successfully!"
   },
   "settingsScreen": {
     "saveSettings": "Save settings",
@@ -464,26 +476,45 @@
   "pagination": {
     "ariaLabel": "Page navigation"
   },
+  "oncall": {
+    "title": "On call calendar",
+    "previousYear": "Previous year",
+    "nextYear": "Next year",
+    "oncallShifts": "On call weeks",
+    "paid": "Paid",
+    "notPaid": "Not paid",
+    "calendar": "Calendar",
+    "list": "List",
+    "selectView": "Select calendar view",
+    "noOnCallPerson": "No on call person this week",
+    "onCallPersonExists": "Current on-call person:",
+    "fetchFailed": "Fetching on call data has failed",
+    "updatePaidStatusForWeek": "Update paid status for week",
+    "person": "Person",
+    "paidStatus": "Paid Status",
+    "date": "Date",
+    "noUsernameOnCall": "-",
+    "errorUpdatingPaidStatus": "Failed to update on-call shift paid status"
+  },
   "onboarding": {
-  "prev": "Previous",
-  "next": "Next",
-  "close": "Close",
-  "welcomeTitle": "Welcome to the Home Screen",
-  "welcomeContent": "This is your dashboard where you can see your balance, sprints, and more.",
-  "balanceTitle": "Balance",
-  "balanceContent": "Check your total flextime balance here.",
-  "sprintTitle": "Sprint view",
-  "sprintContent": "See your allocation and time entries.",
-  "vacationsTitle": "Vacation requests",
-  "vacationsContent": "Track upcoming vacations and statuses.",
-  "questionnaireTitle": "Questionnaires",
-  "questionnaireContent": "Build and answer questionnaires.",
-  "softwareTitle": "Software registry",
-  "softwareContent": "Find and manage company software.",
-  "wikiTitle": "Wiki Documentation",
-  "wikiContent": "Read or create documentation.",
-  "doneTitle": "Complete the Onboarding",
-  "doneContent": "You're all set! You can restart from Settings."
-}
-
+    "prev": "Previous",
+    "next": "Next",
+    "close": "Close",
+    "welcomeTitle": "Welcome to the Home Screen",
+    "welcomeContent": "This is your dashboard where you can see your balance, sprints, and more.",
+    "balanceTitle": "Balance",
+    "balanceContent": "Check your total flextime balance here.",
+    "sprintTitle": "Sprint view",
+    "sprintContent": "See your allocation and time entries.",
+    "vacationsTitle": "Vacation requests",
+    "vacationsContent": "Track upcoming vacations and statuses.",
+    "questionnaireTitle": "Questionnaires",
+    "questionnaireContent": "Build and answer questionnaires.",
+    "softwareTitle": "Software registry",
+    "softwareContent": "Find and manage company software.",
+    "wikiTitle": "Wiki Documentation",
+    "wikiContent": "Read or create documentation.",
+    "doneTitle": "Complete the Onboarding",
+    "doneContent": "You're all set! You can restart from Settings."
+  }
 }

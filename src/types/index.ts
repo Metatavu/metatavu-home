@@ -186,3 +186,13 @@ export const SprintViewFilterTypes = {
   project: "project",
   user: "user",
 };
+
+/**
+ * Type describing on call data for a week
+ */
+export interface OnCallWeek {
+  date: string | null;
+  username: string;
+  paid: boolean;
+  badgeColor: string;
+}

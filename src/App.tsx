@@ -29,7 +29,8 @@ import ArticleScreen from "./components/screens/wiki-article-screen";
 import WikiDocumentationScreen from "./components/screens/wiki-documentation-screen";
 import AdminVacationManagementScreen from "./components/screens/admin-vacation-management/admin-vacation-management-screen";
 import SettingsScreen from "./components/screens/settings-screen";
-import EmployeeFlextimeScreen from "src/components/screens/employee-flextime-screen";
+import EmployeeFlextimeScreen from "src/components/screens/employee-flextime-screen";import OnCallCalendarScreen from "./components/screens/on-call-calendar-screen";
+
 /**
  * Application component
  */
@@ -98,7 +99,11 @@ const App = () => {
           path: "/settings",
           element: <SettingsScreen />
         },
-      ],
+        {
+          path: "/oncall",
+          element: <OnCallCalendarScreen />
+        }
+      ]
     },
     {
       path: "/admin",

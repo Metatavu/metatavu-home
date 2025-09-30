@@ -16,6 +16,7 @@ import { VacationRequestStatuses } from "src/generated/homeLambdasClient";
 import UpdateStatusButton from "./toolbar-update-status-button";
 import UserRoleUtils from "src/utils/user-role-utils";
 import type { VacationRequest } from "src/generated/homeLambdasClient";
+import EditConfirmationDialogue from "src/components/contexts/edit-confirmation-dialogue";
 
 /**
  * Component properties
@@ -64,6 +65,8 @@ const TableToolbar = ({
   const [toolbarOpen, setToolbarOpen] = useState(false);
   const [toolbarFormMode, setToolbarFormMode] = useState<ToolbarFormModes>(ToolbarFormModes.NONE);
   const [confirmationHandlerOpen, setConfirmationHandlerOpen] = useState(false);
+  const [editConfirmationHandlerOpen, setEditConfirmationHandlerOpen] = useState(false);
+  const [editVacationsData, setEditVacationsData] = useState<VacationRequest | null>(null);
   const [title, setTitle] = useState(strings.tableToolbar.myRequests);
   const language = useAtomValue(languageAtom);
   const adminMode = UserRoleUtils.adminMode();
@@ -120,12 +123,37 @@ const TableToolbar = ({
     alignItems: "center"
   });
 
+  /** Handler for saving updated vacation request data
+   *
+   * @param data vacation request data
+   */
+  const handleSaveClick = (data: VacationRequest) => {
+    setEditVacationsData(data);
+    setEditConfirmationHandlerOpen(true);
+  };
+
+  /** Handler for confirming edit to vacation request
+   *
+   */
+  const handleEditConfirm = async () => {
+    if (!editVacationsData?.id) return;
+
+    await updateVacationRequest(editVacationsData, editVacationsData.id);
+    setSelectedRowIds([]);
+    setFormOpen(false);
+  };
+
   return (
     <Box>
       <ConfirmationHandler
         open={confirmationHandlerOpen}
         setOpen={setConfirmationHandlerOpen}
         deleteVacationsData={deleteVacationsData}
+      />
+      <EditConfirmationDialogue
+        open={editConfirmationHandlerOpen}
+        setOpen={setEditConfirmationHandlerOpen}
+        onConfirm={handleEditConfirm}
       />
       {isToolbarVisible ? (
         <ToolbarGridContainer container>
@@ -143,7 +171,6 @@ const TableToolbar = ({
                   setFormOpen(open);
                 }}
                 disabled={disableEditButton}
-
               />
             </ToolbarGridItem>
           )}
@@ -213,6 +240,7 @@ const TableToolbar = ({
           toolbarFormMode={toolbarFormMode}
           setToolbarFormMode={setToolbarFormMode}
           setSelectedRowIds={setSelectedRowIds}
+          onSaveClick={handleSaveClick}
         />
       </Collapse>
     </Box>

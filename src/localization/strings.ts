@@ -58,6 +58,7 @@ export interface Localized extends LocalizedStringsMethods {
     missingEmailOrId: string;
     noSeveraUserId: string;
     noFlextimeData: string;
+    noArticleId: string;
   };
   /**
    * Translations related to localization
@@ -220,6 +221,7 @@ export interface Localized extends LocalizedStringsMethods {
     cancelButtonText: string;
     title: string;
     message: string;
+    editMessage: string;
   };
   /**
    * Translations related to error handler
@@ -267,6 +269,7 @@ export interface Localized extends LocalizedStringsMethods {
     updateStatusError: string;
     noVacationRequestsFound: string;
     nameNotFound: string;
+    noVacationRequestsStatusFound: string;
   };
   /**
    * Translations related to sprint requests errors
@@ -526,6 +529,7 @@ export interface Localized extends LocalizedStringsMethods {
     create: string;
     save: string;
     edit: string;
+    approve: string;
     confirm: string;
     searchArticle: string;
     createArticle: string;
@@ -539,7 +543,15 @@ export interface Localized extends LocalizedStringsMethods {
     labelLink: string;
     draft: string;
     allArticles: string;
+    approvedArticles: string;
     connectedArticles: string;
+  };
+  snackbar: {
+    articleSubmitted: string;
+    articleCreated: string;
+    articleUpdated: string;
+    articleApproved: string;
+    changesSaved: string;
   };
   /**
    * Translation related settings screen
@@ -622,7 +634,32 @@ export interface Localized extends LocalizedStringsMethods {
     doneTitle: string;
     doneContent: string;
   };
+
+  /**
+   * Translations related to On Call
+   */
+  oncall: {
+    title: string;
+    previousYear: string;
+    nextYear: string;
+    oncallShifts: string;
+    paid: string;
+    notPaid: string;
+    calendar: string;
+    list: string;
+    selectView: string;
+    noOnCallPerson: string;
+    onCallPersonExists: string;
+    fetchFailed: string;
+    updatePaidStatusForWeek: string;
+    person: string;
+    paidStatus: string;
+    date: string;
+    noUsernameOnCall: string;
+    errorUpdatingPaidStatus: string;
+  };
 }
+
 /**
  * Initialized localized strings
  */

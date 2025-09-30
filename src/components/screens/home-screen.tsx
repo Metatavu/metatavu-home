@@ -13,6 +13,7 @@ import WikiDocumentationCard from "../home/wiki-documentation-card";
 import strings from "src/localization/strings";
 import type { ReactNode } from "react";
 import SoftwareRegistryCard from "../home/software-registry-card";
+import OnCallCard from "../home/oncall-card";
 import Onboarding from "../onboarding/Onboarding";
 
 /**
@@ -105,6 +106,11 @@ const HomeScreen = () => {
     isPrivilegedUser && (
       <Box key="wiki" id="wiki-documentation-card">
         <WikiDocumentationCard />
+      </Box>
+    ),
+    isPrivilegedUser && (
+      <Box key="oncall" id="oncall-card">
+        <OnCallCard />
       </Box>
     ),
   ].filter(Boolean);

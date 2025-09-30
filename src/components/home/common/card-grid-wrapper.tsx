@@ -24,7 +24,7 @@ interface CardGridWrapperProps {
 const CardGridWrapper = ({ children }: CardGridWrapperProps) => {
   return (
     <Box sx={{ marginRight: "-16px"}}>
-      <Masonry sx={{ minHeight: 3000}} columns={{ xs: 1, sm: 2 }} spacing={2}>
+      <Masonry columns={{ xs: 1, sm: 2 }} spacing={2}>
         {children}
       </Masonry>
     </Box>
