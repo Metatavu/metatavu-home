@@ -72,12 +72,30 @@ const CreateOrEditArticleForm = ({
   const userProfile = useAtomValue(userProfileAtom);
   const loggedInUser = users.find((users: User) => users.id === userProfile?.id);
   const setSnackbar = useSetAtom(snackbarAtom);
+
+  const isValidUrl = (url: string) => {
+    try {
+      new URL(url);
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
   /**
    * Handles creating a new article using the editor content and form state.
    * Sends the article data to the API and updates local state accordingly.
    * Closes the form on success or sets an error message on failure.
    */
   const handleCreate = async () => {
+    if (coverImage && !isValidUrl(coverImage)) {
+      setSnackbar({
+        open: true,
+        message: "Cover image URL is invalid.",
+        severity: "error"
+      });
+      return;
+    }
     if (!editorRef.current) return;
     const content = editorRef.current?.getMarkdownContent();
     const newArticle = {
@@ -120,6 +138,14 @@ const CreateOrEditArticleForm = ({
    * Closes the form on success or sets an error message on failure.
    */
   const handleEdit = async () => {
+    if (coverImage && !isValidUrl(coverImage)) {
+      setSnackbar({
+        open: true,
+        message: "Cover image URL is invalid.",
+        severity: "error"
+      });
+      return;
+    }
     if (!editorRef.current || !article?.id) return;
     const content = editorRef.current?.getMarkdownContent();
     const updatedArticle: Article = {
