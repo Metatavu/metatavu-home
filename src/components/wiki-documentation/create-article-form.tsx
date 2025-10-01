@@ -73,9 +73,12 @@ const CreateOrEditArticleForm = ({
   const loggedInUser = users.find((users: User) => users.id === userProfile?.id);
   const setSnackbar = useSetAtom(snackbarAtom);
 
-  const isValidUrl = (url: string) => {
+  /**
+   * Check that URL provided for image begins with http/s:// 
+   */
+  const isValidUrl = (value: string) => {
     try {
-      new URL(url);
+      new URL(value);
       return true;
     } catch {
       return false;
@@ -88,15 +91,13 @@ const CreateOrEditArticleForm = ({
    * Closes the form on success or sets an error message on failure.
    */
   const handleCreate = async () => {
+    if (!editorRef.current) return;
+
     if (coverImage && !isValidUrl(coverImage)) {
-      setSnackbar({
-        open: true,
-        message: "Cover image URL is invalid.",
-        severity: "error"
-      });
+      setError(strings.wikiDocumentation.URLFalse);
       return;
     }
-    if (!editorRef.current) return;
+
     const content = editorRef.current?.getMarkdownContent();
     const newArticle = {
       path: path,
@@ -138,15 +139,13 @@ const CreateOrEditArticleForm = ({
    * Closes the form on success or sets an error message on failure.
    */
   const handleEdit = async () => {
+    if (!editorRef.current || !article?.id) return;
+
     if (coverImage && !isValidUrl(coverImage)) {
-      setSnackbar({
-        open: true,
-        message: "Cover image URL is invalid.",
-        severity: "error"
-      });
+      setError(strings.wikiDocumentation.URLFalse);
       return;
     }
-    if (!editorRef.current || !article?.id) return;
+
     const content = editorRef.current?.getMarkdownContent();
     const updatedArticle: Article = {
       path: path,
@@ -256,7 +255,8 @@ const CreateOrEditArticleForm = ({
     path.trim() &&
     coverImage?.trim() &&
     description?.trim() &&
-    editorRef.current?.getMarkdownContent()?.trim()
+    editorRef.current?.getMarkdownContent()?.trim() &&
+    isValidUrl(coverImage)
 );
   return (
     <>
@@ -362,6 +362,12 @@ const CreateOrEditArticleForm = ({
               onInput={handleImageLinkChange}
               label={strings.wikiDocumentation.labelImage}
               required
+              error={Boolean(coverImage && !isValidUrl(coverImage))}
+              helperText={
+                coverImage && !isValidUrl(coverImage)
+                  ? strings.wikiDocumentation.URLFalse
+                  : ""
+              }
             />
             {imagePreview && coverImage?.length !== 0 ? (
               <Grid container>

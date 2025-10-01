@@ -233,7 +233,7 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
                 error={Boolean(software.image && !isValidUrl(software.image))}
                 helperText={
                   software.image && !isValidUrl(software.image)
-                    ? "Invalid image URL format"
+                    ? strings.softwareRegistry.URLFalse
                     : strings.softwareRegistry.imageURLRequired
                 }
               />
@@ -249,7 +249,7 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
                 error={Boolean(software.url && !isValidUrl(software.url))}
                 helperText={
                   software.url && !isValidUrl(software.url)
-                    ? "Invalid URL format"
+                    ? strings.softwareRegistry.URLFalse
                     : strings.softwareRegistry.URLExample
                 }
               />

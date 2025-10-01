@@ -164,6 +164,7 @@ export interface Localized extends LocalizedStringsMethods {
     imageURLRequired: string;
     URLAddress: string;
     URLExample: string;
+    URLFalse: string;
     ownReview: string;
     recommend: string;
     cancel: string;
@@ -541,6 +542,7 @@ export interface Localized extends LocalizedStringsMethods {
     labelImage: string;
     labelDescription: string;
     labelLink: string;
+    URLFalse: string;
     draft: string;
     allArticles: string;
     approvedArticles: string;
