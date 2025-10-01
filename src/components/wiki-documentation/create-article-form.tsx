@@ -1,16 +1,16 @@
-import { 
-  Autocomplete, 
-  Box, 
-  Button, 
-  Card, 
-  Checkbox, 
-  Grid, 
-  IconButton, 
-  Popper, 
-  type PopperProps, 
-  styled, 
-  TextField, 
-} from "@mui/material"
+import {
+  Autocomplete,
+  Box,
+  Button,
+  Card,
+  Checkbox,
+  Grid,
+  IconButton,
+  Popper,
+  type PopperProps,
+  styled,
+  TextField
+} from "@mui/material";
 import strings from "src/localization/strings";
 import { type ChangeEvent, type KeyboardEvent, type SyntheticEvent, useRef, useState } from "react";
 import RichTextEditorLexical from "./rich-text-editor/rich-text-editor";
@@ -24,14 +24,15 @@ import { errorAtom } from "src/atoms/error";
 import type { Article, User } from "src/generated/homeLambdasClient";
 import { usersAtom } from "src/atoms/user";
 import { userProfileAtom } from "src/atoms/auth";
-import ClearIcon from '@mui/icons-material/Clear';
+import ClearIcon from "@mui/icons-material/Clear";
+import { snackbarAtom } from "src/atoms/snackbar";
 
 interface Props {
   setFormOpen: (value: boolean) => void;
   adminMode: boolean;
-  action: "edit"|"create";
+  action: "edit" | "create";
   article?: Article;
-  setArticle?: (value: Article) => void
+  setArticle?: (value: Article) => void;
 }
 
 interface EditorRef {
@@ -39,7 +40,7 @@ interface EditorRef {
 }
 /**
  * Form for creating or editing an article.
- * 
+ *
  * @param setFormOpen - Controls form visibility.
  * @param action - "create" or "edit" mode (default: "create").
  * @param article - Article data for editing (optional).
@@ -47,13 +48,13 @@ interface EditorRef {
  * @param adminMode - Enables admin-specific features (optional).
  */
 const CreateOrEditArticleForm = ({
-  setFormOpen, 
-  action="create", 
-  article, 
+  setFormOpen,
+  action = "create",
+  article,
   setArticle,
   adminMode
-} : Props) => {
-  const {articleApi} = useLambdasApi();
+}: Props) => {
+  const { articleApi } = useLambdasApi();
   const setError = useSetAtom(errorAtom);
   const setArticlesAtom = useSetAtom(articleAtom);
   const setDraftArticlesAtom = useSetAtom(draftArticleAtom);
@@ -69,9 +70,8 @@ const CreateOrEditArticleForm = ({
   const [tag, setTag] = useState("");
   const users = useAtomValue(usersAtom);
   const userProfile = useAtomValue(userProfileAtom);
-  const loggedInUser = users.find(
-    (users: User) => users.id === userProfile?.id
-  );
+  const loggedInUser = users.find((users: User) => users.id === userProfile?.id);
+  const setSnackbar = useSetAtom(snackbarAtom);
   /**
    * Handles creating a new article using the editor content and form state.
    * Sends the article data to the API and updates local state accordingly.
@@ -89,21 +89,31 @@ const CreateOrEditArticleForm = ({
       coverImage: coverImage,
       description: description,
       draft: !adminMode
-    }
+    };
     try {
-      const response = await articleApi.createArticle({article: newArticle});
+      const response = await articleApi.createArticle({ article: newArticle });
       if (!adminMode) {
         setDraftArticlesAtom((articles) => [response, ...(articles || [])]);
-        setTags((tags) => [...new Set<string>(tags.concat(selectedTags))])
-      }
-      else setArticlesAtom((articles) => [response, ...(articles || [])]);
+        setTags((tags) => [...new Set<string>(tags.concat(selectedTags))]);
+      } else setArticlesAtom((articles) => [response, ...(articles || [])]);
+
+      const key = `create-${adminMode ? "admin" : "user"}`;
+      const messages: Record<string, string> = {
+        "create-user": strings.snackbar.articleSubmitted,
+        "create-admin": strings.snackbar.articleCreated
+      };
+      setSnackbar({
+        open: true,
+        message: messages[key],
+        severity: "success"
+      });
+
       setFormOpen(false);
-    }
-    catch (error: any) {
+    } catch (error: any) {
       const message = (await error.response.json()).message;
       setError(message);
     }
-  }
+  };
   /**
    * Handles updating an existing article with current form and editor content.
    * Sends updated data to the API, updates local state, and manages tag sets.
@@ -122,41 +132,62 @@ const CreateOrEditArticleForm = ({
       createdBy: article.createdBy,
       lastUpdatedBy: `${loggedInUser?.firstName} ${loggedInUser?.lastName}`,
       draft: !adminMode
-    }
+    };
 
     try {
-      const response = await articleApi.updateArticle({article: updatedArticle, id: article.id});
+      const response = await articleApi.updateArticle({ article: updatedArticle, id: article.id });
       if (!adminMode) {
-        setDraftArticlesAtom((articles) => [response, ...(articles || [])]);
-        setArticlesAtom((articles) => (articles || []).filter(article => article.id!==response.id));
-      }
-      else {
-        if (article.draft) setDraftArticlesAtom((articles) => (articles || []).filter(article => article.id!==response.id));
-        else setArticlesAtom((articles) => (articles || []).filter(article => article.id!==response.id))
+        if (!updatedArticle.draft) {
+          setArticlesAtom((articles) =>
+            (articles || []).map((a) => (a.id === updatedArticle.id ? updatedArticle : a))
+          );
+        } else {
+          setDraftArticlesAtom((articles) =>
+            (articles || []).map((a) => (a.id === updatedArticle.id ? updatedArticle : a))
+          );
+        }
+      } else {
+        if (article.draft)
+          setDraftArticlesAtom((articles) =>
+            (articles || []).filter((article) => article.id !== response.id)
+          );
+        else
+          setArticlesAtom((articles) =>
+            (articles || []).filter((article) => article.id !== response.id)
+          );
         setArticlesAtom((articles) => [response, ...(articles || [])]);
         setTags((tags) => [...new Set<string>(tags.concat(selectedTags))]);
         if (setArticle) setArticle(updatedArticle);
       }
+      const key = `edit-${adminMode ? "admin" : "user"}`;
+      const messages: Record<string, string> = {
+        "edit-admin": strings.snackbar.articleUpdated,
+        "edit-user": strings.snackbar.changesSaved
+      };
+      setSnackbar({
+        open: true,
+        message: messages[key],
+        severity: "success"
+      });
       setFormOpen(false);
-    }
-    catch (error: any) {
+    } catch (error: any) {
       const message = (await error.response.json()).message;
       setError(message);
     }
-  }
+  };
 
   const closeForm = () => setFormOpen(false);
 
   const handleTitleChange = (event: any) => {
     const newInput = event.target.value;
     setTitle(newInput);
-    setPath(`${(newInput.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9\-_]/g, ''))}`);
-  }
+    setPath(`${newInput.replace(/\s+/g, "_").replace(/[^a-zA-Z0-9\-_]/g, "")}`);
+  };
 
   const handlePathChange = (event: ChangeEvent<HTMLInputElement>) => {
     const newInput = event.target.value;
     setPath(newInput);
-  }
+  };
 
   const handleFileChange = async (event: any) => {
     const file = event.target.files[0];
@@ -170,12 +201,11 @@ const CreateOrEditArticleForm = ({
   const handleDescriptionChange = (event: ChangeEvent<HTMLInputElement>) => {
     const newInput = event.target.value;
     setDescription(newInput);
-  }
+  };
 
-  const handleTagChange = (_event: SyntheticEvent<Element, Event>, value: string) => 
-    setTag(value);
+  const handleTagChange = (_event: SyntheticEvent<Element, Event>, value: string) => setTag(value);
 
-  const handleSelectedTagChange = (_event: SyntheticEvent<Element, Event>, value: string[]) => 
+  const handleSelectedTagChange = (_event: SyntheticEvent<Element, Event>, value: string[]) =>
     setSelectedTags(value);
 
   const handleImageLinkChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -189,20 +219,19 @@ const CreateOrEditArticleForm = ({
     setTag("");
   };
 
-  const CustomPopper = styled((props: PopperProps) => 
-    <Popper {...props} placement="bottom" />) ({
+  const CustomPopper = styled((props: PopperProps) => <Popper {...props} placement="bottom" />)({
     "& .MuiAutocomplete-paper": {
       marginTop: "10px"
     }
   });
 
   const isFormValid = Boolean(
-  title.trim() &&
-  path.trim() &&
-  coverImage?.trim() &&
-  description?.trim() &&
-  editorRef.current?.getMarkdownContent()?.trim() 
-  );
+    title.trim() &&
+    path.trim() &&
+    coverImage?.trim() &&
+    description?.trim() &&
+    editorRef.current?.getMarkdownContent()?.trim()
+);
   return (
     <>
       <Grid container spacing={1.5} sx={{ marginBottom: 3, marginTop: 0.5 }}>
@@ -214,23 +243,22 @@ const CreateOrEditArticleForm = ({
               />
         </Grid>
         <Grid item xs={6}>
-        {action === "create" ?
-          <ActionButton onClick={handleCreate} disabled={!isFormValid}>
-            {strings.wikiDocumentation.create}
-          </ActionButton>
-          : 
-          <ActionButton onClick={handleEdit}>
-            {adminMode && article?.draft
-              ? strings.wikiDocumentation.confirm 
-              : strings.wikiDocumentation.save
-            }
-          </ActionButton>
-        }
+          {action === "create" ? (
+            <ActionButton onClick={handleCreate} disabled={!isFormValid}>
+              {strings.wikiDocumentation.create}
+            </ActionButton>
+          ) : (
+            <ActionButton onClick={handleEdit}>
+              {adminMode && article?.draft
+                ? strings.wikiDocumentation.confirm
+                : strings.wikiDocumentation.save}
+            </ActionButton>
+          )}
         </Grid>
       </Grid>
       <Card sx={{ padding: 2.5, overflow: "visible", marginBottom: 4 }}>
-        <TextField 
-          sx={{ width: "100%" }} 
+        <TextField
+          sx={{ width: "100%" }}
           size="small"
           value={title}
           onChange={handleTitleChange}
@@ -239,9 +267,9 @@ const CreateOrEditArticleForm = ({
         />
         <Grid container spacing={1.5}>
           <Grid item md={6} xs={12}>
-            <TextField 
-              sx={{ width: "100%", marginTop: 3 }} 
-              size="small" 
+            <TextField
+              sx={{ width: "100%", marginTop: 3 }}
+              size="small"
               value={path}
               onChange={handlePathChange}
               label={strings.wikiDocumentation.labelPath}
@@ -269,21 +297,20 @@ const CreateOrEditArticleForm = ({
                     size="small"
                     onKeyDown={handleEnter}
                     label={strings.wikiDocumentation.labelTags}
-                    required
                   />
-                )
+                );
               }}
-              renderOption={(props, option, {selected}) => (
+              renderOption={(props, option, { selected }) => (
                 <li
                   {...props}
                   style={{ display: "flex", alignItems: "center" }}
                   key={`tags-option-${option}`}
                 >
-                  <Checkbox 
+                  <Checkbox
                     sx={{
-                      marginRight: 2,
+                      marginRight: 2
                     }}
-                    checked={selected} 
+                    checked={selected}
                   />
                   <Box
                     minWidth="5px"
@@ -296,13 +323,13 @@ const CreateOrEditArticleForm = ({
                   />
                   {option}
                 </li>
-              )}  
+              )}
             />
           </Grid>
         </Grid>
         <Grid container spacing={1.5}>
           <Grid item md={6} xs={12}>
-            <TextField 
+            <TextField
               sx={{ width: "100%", marginTop: 3 }}
               size="small"
               value={coverImage}
@@ -310,65 +337,65 @@ const CreateOrEditArticleForm = ({
               label={strings.wikiDocumentation.labelImage}
               required
             />
-            {imagePreview && coverImage?.length !== 0
-              ? <Grid container>
-                  <img 
-                    style={{ 
-                      height: "150px", 
-                      borderRadius: "15px", 
-                      marginTop: "16px",
-                      marginLeft: 3
-                    }} 
-                    src={coverImage} 
-                    alt="cover-image"
-                  />
-                  <Grid item sx={{ position: "relative" }}>
-                    <IconButton 
-                      sx={{ 
-                        position: "absolute",
-                        top: "50%", 
-                        transform: "translateY(-50%)"
-                      }}
-                      onClick={() => {
-                        setCoverImage("")
-                        setImagPreview(false)
-                      }}
-                    >
-                      <ClearIcon/>
-                    </IconButton>
-                  </Grid>            
-                </Grid> : <></>
-            }
-            {!coverImage ?
+            {imagePreview && coverImage?.length !== 0 ? (
+              <Grid container>
+                <img
+                  style={{
+                    height: "150px",
+                    borderRadius: "15px",
+                    marginTop: "16px",
+                    marginLeft: 3
+                  }}
+                  src={coverImage}
+                  alt="cover-image"
+                />
+                <Grid item sx={{ position: "relative" }}>
+                  <IconButton
+                    sx={{
+                      position: "absolute",
+                      top: "50%",
+                      transform: "translateY(-50%)"
+                    }}
+                    onClick={() => {
+                      setCoverImage("");
+                      setImagPreview(false);
+                    }}
+                  >
+                    <ClearIcon />
+                  </IconButton>
+                </Grid>
+              </Grid>
+            ) : (
+              <></>
+            )}
+            {!coverImage ? (
               <Button
                 variant="outlined"
                 component="label"
                 sx={{ marginTop: 1.5, marginBottom: 1, width: "100%" }}
               >
                 {strings.wikiDocumentation.uploadImage}
-                <input
-                  style={{ width: "100%" }}
-                  type="file"
-                  hidden
-                  onChange={handleFileChange}
-                />
-              </Button> : 
+                <input style={{ width: "100%" }} type="file" hidden onChange={handleFileChange} />
+              </Button>
+            ) : (
               <>
-                {!imagePreview ?
-                  <Button 
+                {!imagePreview ? (
+                  <Button
                     variant="outlined"
                     sx={{ marginTop: 1, marginBottom: 1, width: "100%" }}
                     onClick={() => setImagPreview(true)}
                   >
                     {strings.wikiDocumentation.imagePreview}
-                  </Button> : <></>
-                }
+                  </Button>
+                ) : (
+                  <></>
+                )}
               </>
-            }
+            )}
           </Grid>
           <Grid item md={6} xs={12}>
-            <TextField 
-              sx={{width: "100%", marginTop: 3 }} 
+            <TextField
+              sx={{ width: "100%", marginTop: 3 }}
               size="small"
               multiline
               rows={3}
@@ -379,10 +406,13 @@ const CreateOrEditArticleForm = ({
             />
           </Grid>
         </Grid>
-        <RichTextEditorLexical ref={editorRef} markdownContent={article?.content || "Article content is required"}/>
+        <RichTextEditorLexical
+          ref={editorRef}
+          markdownContent={article?.content || "Article content is required"}
+        />
       </Card>
     </>
-  )
-}
+  );
+};
 
 export default CreateOrEditArticleForm;

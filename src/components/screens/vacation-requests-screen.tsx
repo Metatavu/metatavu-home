@@ -197,30 +197,44 @@ const VacationRequestsScreen = () => {
     vacationRequestId: string
   ) => {
     if (!loggedInUser) return;
-
     try {
       setLoading(true);
       const vacationRequest = vacationRequests.find(
         (vacationRequest) => vacationRequest.id === vacationRequestId
       );
-      if (vacationRequest) {
-        const updatedRequest = await vacationRequestsApi.updateVacationRequest({
-          id: vacationRequestId,
-          vacationRequest: {
-            ...vacationRequest,
-            startDate: vacationRequestData.startDate,
-            endDate: vacationRequestData.endDate,
-            type: vacationRequestData.type,
-            message: vacationRequestData.message,
-            updatedAt: new Date(),
-            days: vacationRequestData.days
-          }
-        });
-        const updatedVacationRequests = vacationRequests.map((vacationRequest) =>
-          vacationRequest.id === updatedRequest.id ? updatedRequest : vacationRequest
-        );
-        setVacationRequests(updatedVacationRequests);
+      if (!vacationRequest) return;
+
+      let latestStatus = vacationRequest.status?.[0]?.status ?? "PENDING";
+      if (!latestStatus) {
+        setError(strings.vacationRequestError.noVacationRequestsStatusFound);
       }
+      if ((!adminMode && latestStatus === "APPROVED") || latestStatus === "DECLINED") {
+        latestStatus = "PENDING";
+      }
+      const newOrUpdatedStatus = {
+        status: latestStatus,
+        createdBy: loggedInUser.id,
+        updatedAt: new Date()
+      };
+      const updatedStatus = [newOrUpdatedStatus];
+
+      const updatedRequest = await vacationRequestsApi.updateVacationRequest({
+        id: vacationRequestId,
+        vacationRequest: {
+          ...vacationRequest,
+          startDate: vacationRequestData.startDate,
+          endDate: vacationRequestData.endDate,
+          type: vacationRequestData.type,
+          message: vacationRequestData.message,
+          updatedAt: new Date(),
+          days: vacationRequestData.days,
+          status: updatedStatus
+        }
+      });
+      const updatedVacationRequests = vacationRequests.map((vacationRequest) =>
+        vacationRequest.id === updatedRequest.id ? updatedRequest : vacationRequest
+      );
+      setVacationRequests(updatedVacationRequests);
     } catch (error) {
       setError(`${strings.vacationRequestError.updateRequestError}, ${error}`);
     }
@@ -247,29 +261,13 @@ const VacationRequestsScreen = () => {
             (vacationRequest) => vacationRequest.id === vacationRequestId
           );
           if (!vacationRequest) return;
-
-          const statusExists = vacationRequest.status?.some(
-            (existingStatus) => existingStatus.createdBy === loggedInUser.id
-          );
-
+          
           const newOrUpdatedStatus = {
             status,
             createdBy: loggedInUser.id,
             updatedAt: new Date()
           };
-
-          const updateExistingStatus = () => {
-            return vacationRequest.status?.map((existingStatus) =>
-              existingStatus.createdBy === loggedInUser.id
-                ? { ...existingStatus, ...newOrUpdatedStatus }
-                : existingStatus
-            );
-          };
-
-          const updatedStatus = statusExists
-            ? updateExistingStatus()
-            : [...(vacationRequest.status || []), newOrUpdatedStatus];
-
+          const updatedStatus = [newOrUpdatedStatus];
           return vacationRequestsApi.updateVacationRequest({
             id: vacationRequestId.toString(),
             vacationRequest: {

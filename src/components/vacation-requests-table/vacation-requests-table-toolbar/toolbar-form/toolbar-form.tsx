@@ -28,6 +28,8 @@ interface Props {
   toolbarFormMode: ToolbarFormModes;
   setToolbarFormMode: (toolbarFormMode: ToolbarFormModes) => void;
   setSelectedRowIds: (selectedRowIds: GridRowId[]) => void;
+  setEditVacationsData?: (data: VacationRequest) => void;
+  onSaveClick?: (data: VacationRequest) => void;
   isDraft: boolean;
 }
 
@@ -47,6 +49,8 @@ const ToolbarForm = ({
   toolbarFormMode,
   setToolbarFormMode,
   setSelectedRowIds,
+  setEditVacationsData,
+  onSaveClick,
   isDraft
 }: Props) => {
   const defaultDateRange = {
@@ -146,30 +150,30 @@ const ToolbarForm = ({
    * Handle form submit
    */
   const handleFormSubmit = async () => {
-    try {
-      switch (toolbarFormMode) {
-        case ToolbarFormModes.CREATE:
-          await createVacationRequest(vacationRequestData);
-          break;
-
-        case ToolbarFormModes.EDIT:
-          await updateVacationRequest(vacationRequestData, selectedVacationRequestId);
-          setSelectedRowIds([]);
-          break;
-
-        case ToolbarFormModes.DRAFT:
-          await createDraftVacationRequest(vacationRequestData);
-          break;
-
-        default:
-          break;
+    if (setEditVacationsData) {
+      setEditVacationsData({
+        ...vacationRequestData,
+        id: selectedVacationRequestId
+      });
+    }
+    if (toolbarFormMode === ToolbarFormModes.CREATE) {
+      await createVacationRequest(vacationRequestData);
+      setFormOpen(false);
+    } else if (toolbarFormMode === ToolbarFormModes.EDIT) {
+      const currentStatus = vacationRequestData.status?.[0]?.status;
+      if (onSaveClick && !adminMode && currentStatus !== VacationRequestStatuses.PENDING) {
+        onSaveClick({
+          ...vacationRequestData,
+          id: selectedVacationRequestId
+        });
+      } else {
+        await updateVacationRequest(vacationRequestData, selectedVacationRequestId);
+        setFormOpen(false);
       }
 
-      setFormOpen(false);
-      resetVacationRequestData();
-    } catch (error) {
-      console.error("Failed to submit vacation request:", error);
+      setSelectedRowIds([]);
     }
+    resetVacationRequestData();
   };
 
   return (
