@@ -65,7 +65,7 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
   const [tags, setTags] = useState("");
   const [nameExists, setNameExists] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [, setError] = useState<string | null>(null);
+  const [_error, setError] = useState<string | null>(null);
 
   /**
    * Fetch the list of users when the modal opens.
