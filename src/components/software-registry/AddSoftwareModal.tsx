@@ -146,18 +146,20 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
       return false;
     }
   };
+  
   /**
    * Handle submitting the software data. Minor URL validation performed.
    * If the name doesn't already exist, it saves the data.
    */
   const handleSubmit = () => {
-  // 🔹 Validate URL and Image URL before saving
   if (software.url && !isValidUrl(software.url)) {
   return;
   }
+
   if (software.image && !isValidUrl(software.image)) {
     return;
   }
+  
   if (!nameExists) {
     handleSave(software);
     setSnackbarOpen(true);
