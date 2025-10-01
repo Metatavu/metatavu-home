@@ -145,7 +145,7 @@ export const theme: Theme = createTheme({
   }
 });
 
-export const SoftwareDetailsTheme: Theme = createTheme(theme, {
+export const SoftwareScreenTheme: Theme = createTheme(theme, {
   typography: {
     subtitle1: {
       fontWeight: 600,

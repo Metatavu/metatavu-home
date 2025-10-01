@@ -27,7 +27,7 @@ import Recommendations from "../software-registry/Recommendations";
 import AddSoftwareModal from "../software-registry/AddSoftwareModal";
 import Sidebar from "../software-registry/Sidebar";
 import BackButton from "../generics/back-button";
-import { SoftwareDetailsTheme } from "src/theme";
+import { SoftwareScreenTheme } from "src/theme";
 
 /**
  * Software registry screen component
@@ -193,7 +193,7 @@ const SoftwareScreen = () => {
   }
 
   return (
-    <ThemeProvider theme={SoftwareDetailsTheme}>
+    <ThemeProvider theme={SoftwareScreenTheme}>
       <Container>
         <Grid container direction="column" alignItems="center" mt={4}>
           <Typography variant="h2" m={4}>
