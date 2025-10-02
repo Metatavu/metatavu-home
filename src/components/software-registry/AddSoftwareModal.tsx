@@ -1,4 +1,4 @@
-import { useState, useEffect, } from "react";
+import { useState, useEffect, useCallback } from "react";
 import type React from "react";
 import {
   Modal,
@@ -46,6 +46,7 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
   softwareData,
   existingSoftwareList
 }) => {
+  // Initial empty software state
   const initialSoftwareState: SoftwareRegistry = {
     id: "",
     name: "",
@@ -59,18 +60,88 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
     tags: [],
     users: []
   };
+
   const { usersApi } = useLambdasApi();
-  const [userList, setUserList] = useState<User[]>([]);
+
   const [software, setSoftware] = useState<SoftwareRegistry>(softwareData || initialSoftwareState);
   const [tags, setTags] = useState("");
+  const [userList, setUserList] = useState<User[]>([]);
   const [nameExists, setNameExists] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [_error, setError] = useState<string | null>(null);
 
   /**
+   * Helper function to validate URLs.
+   */
+  const isValidUrl = useCallback((value: string) => {
+    try {
+      new URL(value);
+      return true;
+    } catch {
+      return false;
+    }
+  }, []);
+
+  /**
+   * Handle form field reset to initial values.
+   */
+  const resetForm = useCallback(() => {
+    setSoftware(initialSoftwareState);
+    setTags("");
+    setNameExists(false);
+  }, []);
+
+  /**
+   * Handle form field changes by updating the software state.
+   *
+   * @param e - The change event for form inputs.
+   */
+  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setSoftware((prev) => ({ ...prev, [name]: value }));
+  }, []);
+
+  /**
+   * Handle adding a tag to the software entry. Prevents duplicates.
+   */
+  const handleAddTag = useCallback(() => {
+    if (!tags.trim()) return;
+    setSoftware((prev) => ({
+      ...prev,
+      tags: [...new Set([...(prev.tags || []), tags.trim()])]
+    }));
+    setTags("");
+  }, [tags]);
+
+  /**
+   * Handle deleting a tag.
+   */
+  const handleDeleteTag = useCallback((tagToDelete: string) => {
+    setSoftware((prev) => ({
+      ...prev,
+      tags: (prev.tags || []).filter((tag) => tag !== tagToDelete)
+    }));
+  }, []);
+
+  /**
+   * Handle submitting the software data. Minor URL validation performed.
+   * If the name doesn't already exist, it saves the data.
+   */
+  const handleSubmit = useCallback(() => {
+    if ((software.url && !isValidUrl(software.url)) || (software.image && !isValidUrl(software.image))) return;
+    if (!nameExists) {
+      handleSave(software);
+      setSnackbarOpen(true);
+      resetForm();
+      handleClose();
+    }
+  }, [software, nameExists, handleSave, handleClose, isValidUrl, resetForm]);
+
+  /**
    * Fetch the list of users when the modal opens.
    */
   useEffect(() => {
+    if (!open) return;
     const fetchUsers = async () => {
       try {
         const users = await usersApi.listUsers();
@@ -79,95 +150,22 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
         setError(`${strings.error.fetchFailedGeneral}: ${error}`);
       }
     };
-
-    if (open) {
-      fetchUsers();
-    }
+    fetchUsers();
   }, [open, usersApi]);
 
   /**
    * Check if the software name already exists in the list of existing software but ignoring its own name when editing.
    */
   useEffect(() => {
-    const nameAlreadyExists = existingSoftwareList.some(
+    const exists = existingSoftwareList.some(
       (item) =>
-        item.id !== software.id && item.name.toLowerCase() === software.name.toLowerCase().trim()
+        item.id !== software.id &&
+        item.name.toLowerCase() === software.name.toLowerCase().trim()
     );
-    setNameExists(nameAlreadyExists);
-  }, [software.name, existingSoftwareList]);
+    setNameExists(exists);
+  }, [software.name, existingSoftwareList, software.id]);
 
-  /**
-   * Handle form field reset to initial values.
-   */
-  const resetForm = () => {
-    setSoftware(initialSoftwareState);
-    setTags("");
-    setNameExists(false);
-  };
-
-  /**
-   * Handle form field changes by updating the software state.
-   *
-   * @param e - The change event for form inputs.
-   */
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setSoftware({ ...software, [name]: value });
-  };
-
-  /**
-   * Handle adding a tag to the software entry. Prevents duplicates.
-   */
-  const handleAddTag = () => {
-    if (tags.trim() !== "") {
-      setSoftware((prev) => ({
-        ...prev,
-        tags: [...new Set([...(prev.tags || []), tags.trim()])]
-      }));
-      setTags("");
-    }
-  };
-
-  /**
-   * Handle deleting a tag.
-   */
-  const handleDeleteTag = (tagToDelete: string) => {
-    setSoftware((prev) => ({
-      ...prev,
-      tags: (prev.tags || []).filter((tag) => tag !== tagToDelete)
-    }));
-  };
-
-  const isValidUrl = (value: string) => {
-    try {
-      new URL(value);
-      return true;
-    } catch {
-      return false;
-    }
-  };
-  
-  /**
-   * Handle submitting the software data. Minor URL validation performed.
-   * If the name doesn't already exist, it saves the data.
-   */
-  const handleSubmit = () => {
-  if (software.url && !isValidUrl(software.url)) {
-  return;
-  }
-
-  if (software.image && !isValidUrl(software.image)) {
-    return;
-  }
-  
-  if (!nameExists) {
-    handleSave(software);
-    setSnackbarOpen(true);
-    resetForm();
-    handleClose();
-  }
-};
-
+  // Form validation
   const isFormValid = Boolean(
     software.name.trim() &&
     software.image.trim() &&
@@ -176,7 +174,7 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
     isValidUrl(software.url)
   );
 
-  const hiddenTagsCount = Math.max(0, (software?.tags?.length ?? 0) - 3);
+  const hiddenTagsCount = Math.max(0, (software.tags?.length ?? 0) - 3);
 
   return (
     <>
@@ -196,18 +194,16 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
             overflowY: "auto"
           }}
         >
-          <IconButton
-            onClick={() => {
-              handleClose();
-            }}
-            sx={{ position: "absolute", top: 16, right: 16 }}
-          >
+          <IconButton onClick={handleClose} sx={{ position: "absolute", top: 16, right: 16 }}>
             <CloseIcon />
           </IconButton>
+
           <Typography variant="h6" marginBottom={4}>
             {strings.softwareRegistry.addSoftware}
           </Typography>
+
           <Grid container spacing={2} sx={{ flexGrow: 1 }}>
+            {/* Software name field */}
             <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
@@ -224,6 +220,8 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
                 }
               />
             </Grid>
+
+            {/* Image URL field */}
             <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
@@ -240,6 +238,8 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
                 }
               />
             </Grid>
+
+            {/* Software URL field */}
             <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
@@ -256,6 +256,8 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
                 }
               />
             </Grid>
+
+            {/* Tags input and chips */}
             <Grid item xs={6}>
               <TextField
                 fullWidth
@@ -264,38 +266,16 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
                 onChange={(e) => setTags(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleAddTag()}
               />
-              <Box
-                mt={1}
-                display="flex"
-                justifyContent="space-between"
-                alignItems="flex-start"
-                flexWrap="wrap"
-                gap={1}
-              >
-                <Box
-                  display="flex"
-                  alignItems="center"
-                  flexWrap="wrap"
-                  gap={1}
-                  maxWidth="calc(100% - 100px)"
-                >
+              <Box mt={1} display="flex" justifyContent="space-between" flexWrap="wrap" gap={1}>
+                <Box display="flex" alignItems="center" flexWrap="wrap" gap={1} maxWidth="calc(100% - 100px)">
                   {(software.tags || []).slice(0, 3).map((tag) => (
                     <Chip key={tag} label={tag} onDelete={() => handleDeleteTag(tag)} />
                   ))}
                   {hiddenTagsCount > 0 && (
                     <Chip
                       size="small"
-                      label={strings.formatString(
-                        strings.questionnaireTags.moreCount,
-                        hiddenTagsCount
-                      )}
-                      sx={{
-                        flexShrink: 0,
-                        backgroundColor: "rgba(0, 0, 0, 0.08)",
-                        "&:hover": {
-                          backgroundColor: "rgba(0, 0, 0, 0.12)"
-                        }
-                      }}
+                      label={strings.formatString(strings.questionnaireTags.moreCount, hiddenTagsCount)}
+                      sx={{ flexShrink: 0, backgroundColor: "rgba(0,0,0,0.08)", "&:hover": { backgroundColor: "rgba(0,0,0,0.12)" } }}
                     />
                   )}
                 </Box>
@@ -304,23 +284,14 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
                   color="primary"
                   onClick={handleAddTag}
                   size="small"
-                  sx={{
-                    height: "40px",
-                    minWidth: "90px",
-                    flexShrink: 0,
-                    marginTop: "8px",
-                    display: "block",
-                    fontSize: "16px",
-                    backgroundColor: "#212121",
-                    "&:hover": {
-                      backgroundColor: "#000000"
-                    }
-                  }}
+                  sx={{ height: 40, minWidth: 90, flexShrink: 0, marginTop: "8px", fontSize: 16, backgroundColor: "#212121", "&:hover": { backgroundColor: "#000" } }}
                 >
                   {strings.questionnaireTags.addTag}
                 </Button>
               </Box>
             </Grid>
+
+            {/* Description field */}
             <Grid item xs={12}>
               <TextField
                 fullWidth
@@ -332,6 +303,8 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
                 rows={4}
               />
             </Grid>
+
+            {/* Own review field */}
             <Grid item xs={12}>
               <TextField
                 fullWidth
@@ -343,108 +316,44 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
                 rows={2}
               />
             </Grid>
+
+            {/* Recommend users autocomplete */}
             <Grid item xs={12}>
               <Autocomplete
                 multiple
-                options={userList.filter((user) => user.firstName && user.lastName)}
+                options={userList.filter((u) => u.firstName && u.lastName)}
                 getOptionLabel={(option) => `${option.firstName} ${option.lastName}`}
                 filterSelectedOptions
-                value={userList.filter((user) => software.recommend?.includes(user.id))}
-                onChange={(_, newValue) => {
-                  setSoftware((prev) => ({
-                    ...prev,
-                    recommend: newValue.map((user) => user.id)
-                  }));
-                }}
-                renderTags={(value, getTagProps) =>
-                  value.map((option, index) => (
-                    <Chip
-                      label={`${option.firstName} ${option.lastName}`}
-                      {...getTagProps({ index })}
-                    />
-                  ))
+                value={userList.filter((u) => software.recommend?.includes(u.id))}
+                onChange={(_, newValue) =>
+                  setSoftware((prev) => ({ ...prev, recommend: newValue.map((u) => u.id) }))
                 }
-                renderOption={(props, option) => (
-                  <li {...props} key={option.id}>
-                    {`${option.firstName} ${option.lastName}`}
-                  </li>
-                )}
+                renderTags={(value, getTagProps) =>
+                  value.map((option, index) => <Chip label={`${option.firstName} ${option.lastName}`} {...getTagProps({ index })} />)
+                }
+                renderOption={(props, option) => <li {...props} key={option.id}>{`${option.firstName} ${option.lastName}`}</li>}
                 renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label={strings.softwareRegistry.recommend}
-                    placeholder={strings.softwareRegistry.searchPlaceholder}
-                  />
+                  <TextField {...params} label={strings.softwareRegistry.recommend} placeholder={strings.softwareRegistry.searchPlaceholder} />
                 )}
               />
             </Grid>
+
+            {/* Action buttons */}
             <Grid item container justifyContent="right" xs={12} mt={4}>
-              <Button
-                onClick={() => {
-                  handleClose();
-                }}
-                variant="outlined"
-                sx={{
-                  marginRight: "4px",
-                  textTransform: "none",
-                  borderRadius: "25px",
-                  fontSize: "18px",
-                  fontWeight: "bold",
-                  color: "#000",
-                  borderColor: "#000",
-                  "&:hover": {
-                    borderColor: "#000",
-                    backgroundColor: "#f0f0f0"
-                  }
-                }}
-              >
+              <Button onClick={handleClose} variant="outlined" sx={{ marginRight: 1, borderRadius: 2, fontSize: 18 }}>
                 {strings.softwareRegistry.cancel}
               </Button>
-              <Button
-                variant="contained"
-                color="secondary"
-                onClick={handleSubmit}
-                sx={{
-                  marginLeft: "4px",
-                  textTransform: "none",
-                  color: "#fff",
-                  fontSize: "18px",
-                  borderRadius: "25px",
-                  "&:hover": { background: "#000" }
-                }}
-                disabled={disabled || nameExists || !isFormValid}
-              >
+              <Button onClick={handleSubmit} variant="contained" color="secondary" disabled={disabled || nameExists || !isFormValid} sx={{ marginLeft: 1, borderRadius: 2, fontSize: 18 }}>
                 {strings.softwareRegistry.submit}
               </Button>
             </Grid>
           </Grid>
         </Box>
       </Modal>
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={4000}
-        onClose={() => setSnackbarOpen(false)}
-        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-        sx={{
-          "& .MuiSnackbarContent-root": {
-            minWidth: 400,
-            minHeight: 100,
-            fontSize: "1.5rem",
-            borderRadius: "16px"
-          }
-        }}
-      >
-        <Alert
-          onClose={() => setSnackbarOpen(false)}
-          severity="success"
-          sx={{
-            width: "100%",
-            fontSize: "1.5rem",
-            py: 3,
-            px: 4,
-            borderRadius: "14px"
-          }}
-        >
+
+      {/* Success Snackbar */}
+      <Snackbar open={snackbarOpen} autoHideDuration={4000} onClose={() => setSnackbarOpen(false)} anchorOrigin={{ vertical: "bottom", horizontal: "right" }}>
+        <Alert onClose={() => setSnackbarOpen(false)} severity="success" sx={{ width: "100%", fontSize: "1.5rem", py: 3, px: 4, borderRadius: "14px" }}>
           {strings.softwareRegistry.addedSuccessfully}
         </Alert>
       </Snackbar>
