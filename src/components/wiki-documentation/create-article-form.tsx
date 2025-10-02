@@ -32,7 +32,7 @@ import { usersAtom } from "src/atoms/user";
 import { userProfileAtom } from "src/atoms/auth";
 import ClearIcon from "@mui/icons-material/Clear";
 import { snackbarAtom } from "src/atoms/snackbar";
-import type { Article, User } from "src/generated/homeLambdasClient";
+import type { Article } from "src/generated/homeLambdasClient";
 
 interface Props {
   setFormOpen: (value: boolean) => void;
@@ -189,28 +189,59 @@ const CreateOrEditArticleForm = ({
   }, [articleApi, buildNewArticle, adminMode, closeForm, selectedTags, setDraftArticlesAtom, setArticlesAtom, setTags, showSnackbar, setError, validateForm]);
 
   /** Edits an existing article */
-  const handleEdit = useCallback(async () => {
-    if (!editorRef.current || !article?.id || !validateForm()) return;
-    const updatedArticle = buildUpdatedArticle();
-    try {
-      const response = await articleApi.updateArticle({ article: updatedArticle, id: article.id });
-      if (!adminMode) {
-        if (!updatedArticle.draft) setArticlesAtom((a) => (a ?? []).map((art) => art.id === updatedArticle.id ? updatedArticle : art));
-        else setDraftArticlesAtom((a) => (a ?? []).map((art) => art.id === updatedArticle.id ? updatedArticle : art));
-      } else {
-        if (article.draft) setDraftArticlesAtom((a) => (a ?? []).filter((art) => art.id !== response.id));
-        else setArticlesAtom((a) => (a ?? []).filter((art) => art.id !== response.id));
-        setArticlesAtom((a) => [response, ...(a ?? [])]);
-        setTags((t) => [...new Set([...t, ...selectedTags])]);
-        setArticle?.(updatedArticle);
-      }
-      showSnackbar(`edit-${adminMode ? "admin" : "user"}`);
-      closeForm();
-    } catch (err: any) {
-      const message = (await err.response.json()).message;
-      setError(message);
+ const handleEdit = useCallback(async () => {
+  if (!editorRef.current || !article?.id || !validateForm()) return;
+
+  const updatedArticle = buildUpdatedArticle();
+  const isAdmin = adminMode === true;
+  const isPublished = updatedArticle.draft === false;
+  const wasDraft = article.draft === true;
+
+  try {
+    const response = await articleApi.updateArticle({ article: updatedArticle, id: article.id });
+
+    // Helper to update an article in an atom
+    const updateAtom = (atomSetter: typeof setArticlesAtom | typeof setDraftArticlesAtom) =>
+      atomSetter((a) => (a ?? []).map((art) => art.id === updatedArticle.id ? updatedArticle : art));
+
+    // Helper to remove an article from an atom
+    const removeFromAtom = (atomSetter: typeof setArticlesAtom | typeof setDraftArticlesAtom) =>
+      atomSetter((a) => (a ?? []).filter((art) => art.id !== response.id));
+
+    if (!isAdmin) {
+      if (isPublished) updateAtom(setArticlesAtom);
+      else updateAtom(setDraftArticlesAtom);
+    } else {
+      if (wasDraft) removeFromAtom(setDraftArticlesAtom);
+      else removeFromAtom(setArticlesAtom);
+
+      setArticlesAtom((a) => [response, ...(a ?? [])]);
+      setTags((t) => [...new Set([...t, ...selectedTags])]);
+      setArticle?.(updatedArticle);
     }
-  }, [articleApi, article, adminMode, buildUpdatedArticle, closeForm, selectedTags, setDraftArticlesAtom, setArticlesAtom, setTags, setArticle, showSnackbar, setError, validateForm]);
+
+    showSnackbar(`edit-${isAdmin ? "admin" : "user"}`);
+    closeForm();
+  } catch (err: any) {
+    const message = (await err.response.json()).message;
+    setError(message);
+  }
+}, [
+    articleApi,
+    article,
+    adminMode,
+    buildUpdatedArticle,
+    closeForm,
+    selectedTags,
+    setDraftArticlesAtom,
+    setArticlesAtom,
+    setTags,
+    setArticle,
+    showSnackbar,
+    setError,
+    validateForm
+  ]);
+
 
   const isFormValid = validateForm();
 
