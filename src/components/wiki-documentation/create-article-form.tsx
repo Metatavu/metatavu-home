@@ -174,24 +174,6 @@ const CreateOrEditArticleForm = ({
     }
   }, [articleApi]);
 
-  /** Updates an article in the given atom by ID */
-  const updateArticleInAtom = useCallback(
-    (atomSetter: typeof setArticlesAtom | typeof setDraftArticlesAtom, updatedArticle: Article) => {
-      atomSetter((articles) =>
-        (articles ?? []).map((art) => (art.id === updatedArticle.id ? updatedArticle : art))
-      );
-    },
-    []
-  );
-
-  /** Removes an article by ID from the given atom */
-  const removeArticleFromAtom = useCallback(
-    (atomSetter: typeof setArticlesAtom | typeof setDraftArticlesAtom, articleId: string) => {
-      atomSetter((articles) => (articles ?? []).filter((art) => art.id !== articleId));
-    },
-    []
-  );
-
   /** Creates a new article */
   const handleCreate = useCallback(async () => {
     if (!editorRef.current || !validateForm()) return;
@@ -206,8 +188,7 @@ const CreateOrEditArticleForm = ({
       showSnackbar(`create-${adminMode ? "admin" : "user"}`);
       closeForm();
     } catch (err: unknown) {
-      const message =
-        (await (err as any).response?.json())?.message ?? strings.error.generic;
+      const message = (await (err as any).response?.json())?.message ?? strings.error.generic;
       setError(message);
     }
   }, [articleApi, adminMode, buildNewArticle, closeForm, selectedTags, setArticlesAtom, setDraftArticlesAtom, setTags, showSnackbar, setError, validateForm]);
@@ -216,23 +197,40 @@ const CreateOrEditArticleForm = ({
   const handleEdit = useCallback(async () => {
     if (!editorRef.current || !article?.id || !validateForm()) return;
     const updatedArticle = buildUpdatedArticle();
+
+    const updateArticleInAtom = (atomSetter: typeof setArticlesAtom | typeof setDraftArticlesAtom, article: Article) => {
+      atomSetter((a) => (a ?? []).map((art) => art.id === article.id ? article : art));
+    };
+
+    const removeArticleFromAtom = (atomSetter: typeof setArticlesAtom | typeof setDraftArticlesAtom, id: string) => {
+      atomSetter((a) => (a ?? []).filter((art) => art.id !== id));
+    };
+
     try {
       const response = await articleApi.updateArticle({ article: updatedArticle, id: article.id });
-      if (adminMode) {
-        if (article.draft) removeArticleFromAtom(setDraftArticlesAtom, article.id);
-        else removeArticleFromAtom(setArticlesAtom, article.id);
+
+      if (!response.id) return;
+
+      if (!adminMode) {
+        if (!updatedArticle.draft) {
+          updateArticleInAtom(setArticlesAtom, updatedArticle);
+        } else {
+          updateArticleInAtom(setDraftArticlesAtom, updatedArticle);
+        }
+      } else {
+        article.draft
+          ? removeArticleFromAtom(setDraftArticlesAtom, response.id)
+          : removeArticleFromAtom(setArticlesAtom, response.id);
+
         setArticlesAtom((a) => [response, ...(a ?? [])]);
         setTags((t) => [...new Set([...t, ...selectedTags])]);
         setArticle?.(updatedArticle);
-      } else {
-        if (updatedArticle.draft) updateArticleInAtom(setDraftArticlesAtom, updatedArticle);
-        else updateArticleInAtom(setArticlesAtom, updatedArticle);
       }
+
       showSnackbar(`edit-${adminMode ? "admin" : "user"}`);
       closeForm();
     } catch (err: unknown) {
-      const message =
-        (await (err as any).response?.json())?.message ?? strings.error.generic;
+      const message = (await (err as any).response?.json())?.message ?? strings.error.generic;
       setError(message);
     }
   }, [
@@ -248,9 +246,7 @@ const CreateOrEditArticleForm = ({
     setArticle,
     showSnackbar,
     setError,
-    validateForm,
-    updateArticleInAtom,
-    removeArticleFromAtom
+    validateForm
   ]);
 
   return (
@@ -344,7 +340,7 @@ const CreateOrEditArticleForm = ({
               error={Boolean(coverImage && !isValidUrl(coverImage))}
               helperText={coverImage && !isValidUrl(coverImage) ? strings.wikiDocumentation.URLFalse : ""}
             />
-            {coverImage && imagePreview ? (
+            {coverImage && imagePreview && (
               <Grid container position="relative">
                 <img
                   src={coverImage}
@@ -361,14 +357,13 @@ const CreateOrEditArticleForm = ({
                   <ClearIcon />
                 </IconButton>
               </Grid>
-            ) : null}
+            )}
             {!coverImage ? (
               <Button variant="outlined" component="label" sx={{ mt: 1.5, mb: 1, width: "100%" }}>
                 {strings.wikiDocumentation.uploadImage}
                 <input type="file" hidden onChange={handleFileChange} />
               </Button>
-            ) : null}
-            {coverImage && !imagePreview ? (
+            ) : !imagePreview ? (
               <Button variant="outlined" sx={{ mt: 1, mb: 1, width: "100%" }} onClick={() => setImagePreview(true)}>
                 {strings.wikiDocumentation.imagePreview}
               </Button>
