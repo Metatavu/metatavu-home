@@ -34,14 +34,14 @@ interface AddSoftwareModalProps {
  * @param props - The AddSoftwareModal props.
  * @returns JSX.Element
  */
-function AddSoftwareModal({
+const AddSoftwareModal = ({
   open,
   handleClose,
   handleSave,
   disabled,
   softwareData,
   existingSoftwareList
-}: AddSoftwareModalProps) {
+}: AddSoftwareModalProps) => {
   const initialSoftwareState: SoftwareRegistry = {
     id: "",
     name: "",
@@ -76,7 +76,7 @@ function AddSoftwareModal({
   }, []);
 
   /**
-   * Handle form field reset to initial values.
+   * Reset form fields to initial state
    */
   const resetForm = useCallback(() => {
     setSoftware(initialSoftwareState);
@@ -85,9 +85,7 @@ function AddSoftwareModal({
   }, []);
 
   /**
-   * Handle form field changes by updating the software state.
-   *
-   * @param e - The change event for form inputs.
+   * Handle form field change
    */
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -95,7 +93,7 @@ function AddSoftwareModal({
   }, []);
 
   /**
-   * Handle adding a tag to the software entry. Prevents duplicates.
+   * Add a tag
    */
   const handleAddTag = useCallback(() => {
     const tag = tags.trim();
@@ -105,17 +103,14 @@ function AddSoftwareModal({
   }, [tags]);
 
   /**
-   * Handle deleting a tag from the software entry.
-   *
-   * @param tagToDelete - The tag string to remove
+   * Delete a tag
    */
   const handleDeleteTag = useCallback((tagToDelete: string) => {
     setSoftware(prev => ({ ...prev, tags: (prev.tags || []).filter(tag => tag !== tagToDelete) }));
   }, []);
 
   /**
-   * Handle submitting the software data. Minor URL validation performed.
-   * If the name doesn't already exist, it saves the data.
+   * Handle form submit
    */
   const handleSubmit = useCallback(() => {
     if ((software.url && !isValidUrl(software.url)) || (software.image && !isValidUrl(software.image))) return;
@@ -128,7 +123,7 @@ function AddSoftwareModal({
   }, [software, nameExists, handleSave, handleClose, isValidUrl, resetForm]);
 
   /**
-   * Fetch the list of users when the modal opens.
+   * Fetch users when modal opens
    */
   useEffect(() => {
     if (!open) return;
@@ -144,7 +139,7 @@ function AddSoftwareModal({
   }, [open, usersApi]);
 
   /**
-   * Check if the software name already exists in the list of existing software but ignoring its own name when editing.
+   * Check for duplicate software name
    */
   useEffect(() => {
     const exists = existingSoftwareList.some(
@@ -164,7 +159,7 @@ function AddSoftwareModal({
   const hiddenTagsCount = Math.max(0, (software.tags?.length ?? 0) - 3);
 
   /**
-   * Render the tags as chips
+   * Render tags as chips
    */
   const renderTags = useCallback(() => {
     const displayedTags = (software.tags || []).slice(0, 3);
@@ -337,6 +332,6 @@ function AddSoftwareModal({
       </Snackbar>
     </>
   );
-}
+};
 
 export default AddSoftwareModal;
