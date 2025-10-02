@@ -174,27 +174,14 @@ const CreateOrEditArticleForm = ({
     }
   }, [articleApi]);
 
-  /** Handles admin create */
-  const createAdminArticle = (response: Article) => {
-    setArticlesAtom((a) => [response, ...(a ?? [])]);
-  };
-
-  /** Handles user create */
-  const createUserArticle = (response: Article) => {
-    setDraftArticlesAtom((a) => [response, ...(a ?? [])]);
-    setTags((t) => [...new Set([...t, ...selectedTags])]);
-  };
-
-  /** Handles create errors */
-  const processCreateError = async (err: unknown) => {
-    if (err && typeof err === "object" && "response" in err) {
-      const response = (err as { response: Response }).response;
-      const message = (await response.json()).message as string;
-      setError(message);
-    } else {
-      setError("Unexpected error occurred");
-    }
-  };
+  /** Handles API errors in a consistent way */
+  const processApiError = useCallback(async (err: unknown) => {
+    const message =
+      err instanceof Error
+        ? err.message
+        : (await (err as any).response?.json())?.message ?? strings.error.generic;
+    setError(message);
+  }, [setError]);
 
   /** Creates a new article */
   const handleCreate = useCallback(async () => {
@@ -202,73 +189,64 @@ const CreateOrEditArticleForm = ({
     try {
       const newArticle = buildNewArticle();
       const response = await articleApi.createArticle({ article: newArticle });
-
-      if (adminMode) {
-        createAdminArticle(response);
-      } else {
-        createUserArticle(response);
+      if (adminMode) setArticlesAtom((a) => [response, ...(a ?? [])]);
+      else {
+        setDraftArticlesAtom((a) => [response, ...(a ?? [])]);
+        setTags((t) => [...new Set([...t, ...selectedTags])]);
       }
-
       showSnackbar(`create-${adminMode ? "admin" : "user"}`);
       closeForm();
-    } catch (err: unknown) {
-      await processCreateError(err);
+    } catch (err) {
+      await processApiError(err);
     }
-  }, [articleApi, adminMode, buildNewArticle, closeForm, selectedTags, setArticlesAtom, setDraftArticlesAtom, setTags, showSnackbar, setError, validateForm]);
-
-  /** Handles non-admin updates */
-  const updateUserArticle = (updatedArticle: Article) => {
-    if (updatedArticle.draft) {
-      setDraftArticlesAtom((a) => (a ?? []).map((art) => art.id === updatedArticle.id ? updatedArticle : art));
-      return;
-    }
-    setArticlesAtom((a) => (a ?? []).map((art) => art.id === updatedArticle.id ? updatedArticle : art));
-  };
-
-  /** Handles admin updates */
-  const updateAdminArticle = (response: Article, updatedArticle: Article) => {
-    if (article?.draft) {
-      setDraftArticlesAtom((a) => (a ?? []).filter((art) => art.id !== updatedArticle.id));
-    } else {
-      setArticlesAtom((a) => (a ?? []).filter((art) => art.id !== updatedArticle.id));
-    }
-
-    setArticlesAtom((a) => [response, ...(a ?? [])]);
-    setTags((t) => [...new Set([...t, ...selectedTags])]);
-    setArticle?.(updatedArticle);
-  };
-
-  /** Handles edit errors */
-  const processUpdateError = async (err: unknown) => {
-    if (err && typeof err === "object" && "response" in err) {
-      const response = (err as { response: Response }).response;
-      const message = (await response.json()).message as string;
-      setError(message);
-    } else {
-      setError("Unexpected error occurred");
-    }
-  };
+  }, [articleApi, adminMode, buildNewArticle, closeForm, selectedTags, setArticlesAtom, setDraftArticlesAtom, setTags, showSnackbar, processApiError, validateForm]);
 
   /** Edits an existing article */
   const handleEdit = useCallback(async () => {
     if (!editorRef.current || !article?.id || !validateForm()) return;
     const updatedArticle = buildUpdatedArticle();
 
+    const updateAtom = (atomSetter: typeof setArticlesAtom | typeof setDraftArticlesAtom) => {
+      atomSetter((a) => (a ?? []).map((art) => art.id === updatedArticle.id ? updatedArticle : art));
+    };
+    const removeFromAtom = (atomSetter: typeof setArticlesAtom | typeof setDraftArticlesAtom) => {
+      atomSetter((a) => (a ?? []).filter((art) => art.id !== updatedArticle.id));
+    };
+
     try {
       const response = await articleApi.updateArticle({ article: updatedArticle, id: article.id });
 
       if (adminMode) {
-        updateAdminArticle(response, updatedArticle);
+        if (article.draft) removeFromAtom(setDraftArticlesAtom);
+        else removeFromAtom(setArticlesAtom);
+        setArticlesAtom((a) => [response, ...(a ?? [])]);
+        setTags((t) => [...new Set([...t, ...selectedTags])]);
+        setArticle?.(updatedArticle);
       } else {
-        updateUserArticle(updatedArticle);
+        if (updatedArticle.draft) updateAtom(setDraftArticlesAtom);
+        else updateAtom(setArticlesAtom);
       }
 
       showSnackbar(`edit-${adminMode ? "admin" : "user"}`);
       closeForm();
-    } catch (err: unknown) {
-      await processUpdateError(err);
+    } catch (err) {
+      await processApiError(err);
     }
-  }, [articleApi, article, adminMode, buildUpdatedArticle, closeForm, selectedTags, setDraftArticlesAtom, setArticlesAtom, setTags, setArticle, showSnackbar, setError, validateForm]);
+  }, [
+    articleApi,
+    article,
+    adminMode,
+    buildUpdatedArticle,
+    closeForm,
+    selectedTags,
+    setDraftArticlesAtom,
+    setArticlesAtom,
+    setTags,
+    setArticle,
+    showSnackbar,
+    processApiError,
+    validateForm
+  ]);
 
   return (
     <>
@@ -379,14 +357,12 @@ const CreateOrEditArticleForm = ({
                 </IconButton>
               </Grid>
             )}
-
             {!coverImage && (
               <Button variant="outlined" component="label" sx={{ mt: 1.5, mb: 1, width: "100%" }}>
                 {strings.wikiDocumentation.uploadImage}
                 <input type="file" hidden onChange={handleFileChange} />
               </Button>
             )}
-
             {coverImage && !imagePreview && (
               <Button variant="outlined" sx={{ mt: 1, mb: 1, width: "100%" }} onClick={() => setImagePreview(true)}>
                 {strings.wikiDocumentation.imagePreview}
