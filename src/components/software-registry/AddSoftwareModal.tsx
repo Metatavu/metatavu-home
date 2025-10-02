@@ -34,7 +34,7 @@ interface AddSoftwareModalProps {
  * @param props - The AddSoftwareModal props.
  * @returns JSX.Element
  */
-export default function AddSoftwareModal({
+function AddSoftwareModal({
   open,
   handleClose,
   handleSave,
@@ -42,7 +42,6 @@ export default function AddSoftwareModal({
   softwareData,
   existingSoftwareList
 }: AddSoftwareModalProps) {
-  // Initial empty software state
   const initialSoftwareState: SoftwareRegistry = {
     id: "",
     name: "",
@@ -339,3 +338,5 @@ export default function AddSoftwareModal({
     </>
   );
 }
+
+export default AddSoftwareModal;
