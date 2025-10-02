@@ -18,9 +18,6 @@ import strings from "src/localization/strings";
 import type { SoftwareRegistry, User } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
 
-/**
- * AddSoftwareModal component props
- */
 interface AddSoftwareModalProps {
   open: boolean;
   handleClose: () => void;
@@ -30,14 +27,6 @@ interface AddSoftwareModalProps {
   existingSoftwareList: SoftwareRegistry[];
 }
 
-/**
- * AddSoftwareModal component.
- * This component renders a modal dialog for adding or editing a software entry.
- * It provides form fields for software entry.
- *
- * @param {AddSoftwareModalProps} props - The props for the AddSoftwareModal component.
- * @returns The rendered modal component.
- */
 const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
   open,
   handleClose,
@@ -176,6 +165,48 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
 
   const hiddenTagsCount = Math.max(0, (software.tags?.length ?? 0) - 3);
 
+  /**
+   * Render the tags as chips
+   */
+  const renderTags = useCallback(() => (
+    <>
+      {(software.tags || []).slice(0, 3).map((tag) => (
+        <Chip key={tag} label={tag} onDelete={() => handleDeleteTag(tag)} />
+      ))}
+      {hiddenTagsCount > 0 && (
+        <Chip
+          size="small"
+          label={strings.formatString(strings.questionnaireTags.moreCount, hiddenTagsCount)}
+          sx={{ flexShrink: 0, backgroundColor: "rgba(0,0,0,0.08)", "&:hover": { backgroundColor: "rgba(0,0,0,0.12)" } }}
+        />
+      )}
+    </>
+  ), [software.tags, hiddenTagsCount, handleDeleteTag]);
+
+  /**
+   * Render recommended users
+   */
+  const renderUserAutocomplete = useCallback(() => (
+    <Autocomplete
+      multiple
+      options={userList.filter((u) => u.firstName && u.lastName)}
+      getOptionLabel={(option) => `${option.firstName} ${option.lastName}`}
+      filterSelectedOptions
+      value={userList.filter((u) => software.recommend?.includes(u.id))}
+      onChange={(_, newValue) =>
+        setSoftware((prev) => ({ ...prev, recommend: newValue.map((u) => u.id) }))
+      }
+      renderTags={(value, getTagProps) =>
+        value.map((option, index) => <Chip label={`${option.firstName} ${option.lastName}`} {...getTagProps({ index })} />)
+      }
+      renderOption={(props, option) => <li {...props} key={option.id}>{`${option.firstName} ${option.lastName}`}</li>}
+      renderInput={(params) => (
+        <TextField {...params} label={strings.softwareRegistry.recommend} placeholder={strings.softwareRegistry.searchPlaceholder} />
+      )}
+    />
+  ), [userList, software.recommend]);
+
+  // --- JSX ---
   return (
     <>
       <Modal open={open} onClose={handleClose}>
@@ -257,7 +288,7 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
               />
             </Grid>
 
-            {/* Tags input and chips */}
+            {/* Tags input */}
             <Grid item xs={6}>
               <TextField
                 fullWidth
@@ -268,16 +299,7 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
               />
               <Box mt={1} display="flex" justifyContent="space-between" flexWrap="wrap" gap={1}>
                 <Box display="flex" alignItems="center" flexWrap="wrap" gap={1} maxWidth="calc(100% - 100px)">
-                  {(software.tags || []).slice(0, 3).map((tag) => (
-                    <Chip key={tag} label={tag} onDelete={() => handleDeleteTag(tag)} />
-                  ))}
-                  {hiddenTagsCount > 0 && (
-                    <Chip
-                      size="small"
-                      label={strings.formatString(strings.questionnaireTags.moreCount, hiddenTagsCount)}
-                      sx={{ flexShrink: 0, backgroundColor: "rgba(0,0,0,0.08)", "&:hover": { backgroundColor: "rgba(0,0,0,0.12)" } }}
-                    />
-                  )}
+                  {renderTags()}
                 </Box>
                 <Button
                   variant="contained"
@@ -291,7 +313,7 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
               </Box>
             </Grid>
 
-            {/* Description field */}
+            {/* Description */}
             <Grid item xs={12}>
               <TextField
                 fullWidth
@@ -304,7 +326,7 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
               />
             </Grid>
 
-            {/* Own review field */}
+            {/* Own review */}
             <Grid item xs={12}>
               <TextField
                 fullWidth
@@ -317,25 +339,9 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
               />
             </Grid>
 
-            {/* Recommend users autocomplete */}
+            {/* Recommend users */}
             <Grid item xs={12}>
-              <Autocomplete
-                multiple
-                options={userList.filter((u) => u.firstName && u.lastName)}
-                getOptionLabel={(option) => `${option.firstName} ${option.lastName}`}
-                filterSelectedOptions
-                value={userList.filter((u) => software.recommend?.includes(u.id))}
-                onChange={(_, newValue) =>
-                  setSoftware((prev) => ({ ...prev, recommend: newValue.map((u) => u.id) }))
-                }
-                renderTags={(value, getTagProps) =>
-                  value.map((option, index) => <Chip label={`${option.firstName} ${option.lastName}`} {...getTagProps({ index })} />)
-                }
-                renderOption={(props, option) => <li {...props} key={option.id}>{`${option.firstName} ${option.lastName}`}</li>}
-                renderInput={(params) => (
-                  <TextField {...params} label={strings.softwareRegistry.recommend} placeholder={strings.softwareRegistry.searchPlaceholder} />
-                )}
-              />
+              {renderUserAutocomplete()}
             </Grid>
 
             {/* Action buttons */}
