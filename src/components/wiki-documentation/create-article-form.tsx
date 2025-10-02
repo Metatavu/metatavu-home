@@ -151,7 +151,7 @@ const CreateOrEditArticleForm = ({
     path,
     title,
     createdBy: `${loggedInUser?.firstName} ${loggedInUser?.lastName}`,
-    content: editorRef.current?.getMarkdownContent(),
+    content: editorRef.current?.getMarkdownContent() ?? "",
     tags: selectedTags,
     coverImage,
     description,
