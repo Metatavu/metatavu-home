@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from "react";
-import type React from "react";
 import {
   Modal,
   Box,
@@ -27,14 +26,22 @@ interface AddSoftwareModalProps {
   existingSoftwareList: SoftwareRegistry[];
 }
 
-const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
+/**
+ * AddSoftwareModal component.
+ * Renders a modal dialog for adding or editing a software entry.
+ * Includes form fields, tags, recommended users, and submit/cancel actions.
+ *
+ * @param props - The AddSoftwareModal props.
+ * @returns JSX.Element
+ */
+export default function AddSoftwareModal({
   open,
   handleClose,
   handleSave,
   disabled,
   softwareData,
   existingSoftwareList
-}) => {
+}: AddSoftwareModalProps) {
   // Initial empty software state
   const initialSoftwareState: SoftwareRegistry = {
     id: "",
@@ -61,14 +68,12 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
 
   /**
    * Helper function to validate URLs.
+   *
+   * @param value - The URL string to validate
+   * @returns boolean indicating whether the URL is valid
    */
   const isValidUrl = useCallback((value: string) => {
-    try {
-      new URL(value);
-      return true;
-    } catch {
-      return false;
-    }
+    try { new URL(value); return true; } catch { return false; }
   }, []);
 
   /**
@@ -87,29 +92,26 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
    */
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setSoftware((prev) => ({ ...prev, [name]: value }));
+    setSoftware(prev => ({ ...prev, [name]: value }));
   }, []);
 
   /**
    * Handle adding a tag to the software entry. Prevents duplicates.
    */
   const handleAddTag = useCallback(() => {
-    if (!tags.trim()) return;
-    setSoftware((prev) => ({
-      ...prev,
-      tags: [...new Set([...(prev.tags || []), tags.trim()])]
-    }));
+    const tag = tags.trim();
+    if (!tag) return;
+    setSoftware(prev => ({ ...prev, tags: [...new Set([...(prev.tags || []), tag])] }));
     setTags("");
   }, [tags]);
 
   /**
-   * Handle deleting a tag.
+   * Handle deleting a tag from the software entry.
+   *
+   * @param tagToDelete - The tag string to remove
    */
   const handleDeleteTag = useCallback((tagToDelete: string) => {
-    setSoftware((prev) => ({
-      ...prev,
-      tags: (prev.tags || []).filter((tag) => tag !== tagToDelete)
-    }));
+    setSoftware(prev => ({ ...prev, tags: (prev.tags || []).filter(tag => tag !== tagToDelete) }));
   }, []);
 
   /**
@@ -147,9 +149,7 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
    */
   useEffect(() => {
     const exists = existingSoftwareList.some(
-      (item) =>
-        item.id !== software.id &&
-        item.name.toLowerCase() === software.name.toLowerCase().trim()
+      item => item.id !== software.id && item.name.toLowerCase() === software.name.toLowerCase().trim()
     );
     setNameExists(exists);
   }, [software.name, existingSoftwareList, software.id]);
@@ -167,41 +167,36 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
   /**
    * Render the tags as chips
    */
-  const renderTags = useCallback(() => (
-    <>
-      {(software.tags || []).slice(0, 3).map((tag) => (
-        <Chip key={tag} label={tag} onDelete={() => handleDeleteTag(tag)} />
-      ))}
-      {hiddenTagsCount > 0 && (
-        <Chip
-          size="small"
-          label={strings.formatString(strings.questionnaireTags.moreCount, hiddenTagsCount)}
-          sx={{ flexShrink: 0, backgroundColor: "rgba(0,0,0,0.08)", "&:hover": { backgroundColor: "rgba(0,0,0,0.12)" } }}
-        />
-      )}
-    </>
-  ), [software.tags, hiddenTagsCount, handleDeleteTag]);
+  const renderTags = useCallback(() => {
+    const displayedTags = (software.tags || []).slice(0, 3);
+    return (
+      <>
+        {displayedTags.map(tag => <Chip key={tag} label={tag} onDelete={() => handleDeleteTag(tag)} />)}
+        {hiddenTagsCount > 0 && (
+          <Chip
+            size="small"
+            label={strings.formatString(strings.questionnaireTags.moreCount, hiddenTagsCount)}
+            sx={{ flexShrink: 0, backgroundColor: "rgba(0,0,0,0.08)", "&:hover": { backgroundColor: "rgba(0,0,0,0.12)" } }}
+          />
+        )}
+      </>
+    );
+  }, [software.tags, hiddenTagsCount, handleDeleteTag]);
 
   /**
-   * Render recommended users
+   * Render recommended users autocomplete
    */
   const renderUserAutocomplete = useCallback(() => (
     <Autocomplete
       multiple
-      options={userList.filter((u) => u.firstName && u.lastName)}
-      getOptionLabel={(option) => `${option.firstName} ${option.lastName}`}
+      options={userList.filter(u => u.firstName && u.lastName)}
+      getOptionLabel={option => `${option.firstName} ${option.lastName}`}
       filterSelectedOptions
-      value={userList.filter((u) => software.recommend?.includes(u.id))}
-      onChange={(_, newValue) =>
-        setSoftware((prev) => ({ ...prev, recommend: newValue.map((u) => u.id) }))
-      }
-      renderTags={(value, getTagProps) =>
-        value.map((option, index) => <Chip label={`${option.firstName} ${option.lastName}`} {...getTagProps({ index })} />)
-      }
+      value={userList.filter(u => software.recommend?.includes(u.id))}
+      onChange={(_, newValue) => setSoftware(prev => ({ ...prev, recommend: newValue.map(u => u.id) }))}
+      renderTags={(value, getTagProps) => value.map((option, index) => <Chip label={`${option.firstName} ${option.lastName}`} {...getTagProps({ index })} />)}
       renderOption={(props, option) => <li {...props} key={option.id}>{`${option.firstName} ${option.lastName}`}</li>}
-      renderInput={(params) => (
-        <TextField {...params} label={strings.softwareRegistry.recommend} placeholder={strings.softwareRegistry.searchPlaceholder} />
-      )}
+      renderInput={params => <TextField {...params} label={strings.softwareRegistry.recommend} placeholder={strings.softwareRegistry.searchPlaceholder} />}
     />
   ), [userList, software.recommend]);
 
@@ -226,7 +221,7 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
           </IconButton>
           <Typography variant="h6" marginBottom={4}>{strings.softwareRegistry.addSoftware}</Typography>
           <Grid container spacing={2}>
-            {/* Software fields */}
+            {/* Name */}
             <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
@@ -235,10 +230,12 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
                 value={software.name}
                 onChange={handleChange}
                 required
-                error={nameExists}
+                error={Boolean(nameExists)}
                 helperText={nameExists ? strings.softwareRegistry.alreadyExists : strings.softwareRegistry.nameRequired}
               />
             </Grid>
+
+            {/* Image URL */}
             <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
@@ -251,6 +248,8 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
                 helperText={software.image && !isValidUrl(software.image) ? strings.softwareRegistry.URLFalse : strings.softwareRegistry.imageURLRequired}
               />
             </Grid>
+
+            {/* Software URL */}
             <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
@@ -270,8 +269,8 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
                 fullWidth
                 label={strings.softwareRegistry.tags}
                 value={tags}
-                onChange={(e) => setTags(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleAddTag()}
+                onChange={e => setTags(e.target.value)}
+                onKeyDown={e => e.key === "Enter" && handleAddTag()}
               />
               <Box mt={1} display="flex" justifyContent="space-between" flexWrap="wrap" gap={1}>
                 <Box display="flex" alignItems="center" flexWrap="wrap" gap={1} maxWidth="calc(100% - 100px)">
@@ -316,9 +315,7 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
             </Grid>
 
             {/* Recommend users */}
-            <Grid item xs={12}>
-              {renderUserAutocomplete()}
-            </Grid>
+            <Grid item xs={12}>{renderUserAutocomplete()}</Grid>
 
             {/* Buttons */}
             <Grid item container justifyContent="right" xs={12} mt={4}>
@@ -341,6 +338,4 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
       </Snackbar>
     </>
   );
-};
-
-export default AddSoftwareModal;
+}
