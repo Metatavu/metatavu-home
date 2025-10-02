@@ -154,7 +154,6 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
     setNameExists(exists);
   }, [software.name, existingSoftwareList, software.id]);
 
-  // Form validation
   const isFormValid = Boolean(
     software.name.trim() &&
     software.image.trim() &&
@@ -206,35 +205,28 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
     />
   ), [userList, software.recommend]);
 
-  // --- JSX ---
   return (
     <>
       <Modal open={open} onClose={handleClose}>
-        <Box
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: { xs: "90%", sm: "80%", md: "60%" },
-            maxWidth: 900,
-            bgcolor: "background.paper",
-            borderRadius: "10px",
-            boxShadow: 24,
-            p: 4,
-            overflowY: "auto"
-          }}
-        >
+        <Box sx={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          width: { xs: "90%", sm: "80%", md: "60%" },
+          maxWidth: 900,
+          bgcolor: "background.paper",
+          borderRadius: "10px",
+          boxShadow: 24,
+          p: 4,
+          overflowY: "auto"
+        }}>
           <IconButton onClick={handleClose} sx={{ position: "absolute", top: 16, right: 16 }}>
             <CloseIcon />
           </IconButton>
-
-          <Typography variant="h6" marginBottom={4}>
-            {strings.softwareRegistry.addSoftware}
-          </Typography>
-
-          <Grid container spacing={2} sx={{ flexGrow: 1 }}>
-            {/* Software name field */}
+          <Typography variant="h6" marginBottom={4}>{strings.softwareRegistry.addSoftware}</Typography>
+          <Grid container spacing={2}>
+            {/* Software fields */}
             <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
@@ -244,15 +236,9 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
                 onChange={handleChange}
                 required
                 error={nameExists}
-                helperText={
-                  nameExists
-                    ? strings.softwareRegistry.alreadyExists
-                    : strings.softwareRegistry.nameRequired
-                }
+                helperText={nameExists ? strings.softwareRegistry.alreadyExists : strings.softwareRegistry.nameRequired}
               />
             </Grid>
-
-            {/* Image URL field */}
             <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
@@ -262,15 +248,9 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
                 onChange={handleChange}
                 required
                 error={Boolean(software.image && !isValidUrl(software.image))}
-                helperText={
-                  software.image && !isValidUrl(software.image)
-                    ? strings.softwareRegistry.URLFalse
-                    : strings.softwareRegistry.imageURLRequired
-                }
+                helperText={software.image && !isValidUrl(software.image) ? strings.softwareRegistry.URLFalse : strings.softwareRegistry.imageURLRequired}
               />
             </Grid>
-
-            {/* Software URL field */}
             <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
@@ -280,15 +260,11 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
                 onChange={handleChange}
                 required
                 error={Boolean(software.url && !isValidUrl(software.url))}
-                helperText={
-                  software.url && !isValidUrl(software.url)
-                    ? strings.softwareRegistry.URLFalse
-                    : strings.softwareRegistry.URLExample
-                }
+                helperText={software.url && !isValidUrl(software.url) ? strings.softwareRegistry.URLFalse : strings.softwareRegistry.URLExample}
               />
             </Grid>
 
-            {/* Tags input */}
+            {/* Tags */}
             <Grid item xs={6}>
               <TextField
                 fullWidth
@@ -326,7 +302,7 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
               />
             </Grid>
 
-            {/* Own review */}
+            {/* Review */}
             <Grid item xs={12}>
               <TextField
                 fullWidth
@@ -344,7 +320,7 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
               {renderUserAutocomplete()}
             </Grid>
 
-            {/* Action buttons */}
+            {/* Buttons */}
             <Grid item container justifyContent="right" xs={12} mt={4}>
               <Button onClick={handleClose} variant="outlined" sx={{ marginRight: 1, borderRadius: 2, fontSize: 18 }}>
                 {strings.softwareRegistry.cancel}
@@ -357,7 +333,7 @@ const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
         </Box>
       </Modal>
 
-      {/* Success Snackbar */}
+      {/* Snackbar */}
       <Snackbar open={snackbarOpen} autoHideDuration={4000} onClose={() => setSnackbarOpen(false)} anchorOrigin={{ vertical: "bottom", horizontal: "right" }}>
         <Alert onClose={() => setSnackbarOpen(false)} severity="success" sx={{ width: "100%", fontSize: "1.5rem", py: 3, px: 4, borderRadius: "14px" }}>
           {strings.softwareRegistry.addedSuccessfully}
