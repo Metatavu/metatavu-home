@@ -123,6 +123,35 @@ const AddSoftwareModal = ({
   }, [software, nameExists, handleSave, handleClose, isValidUrl, resetForm]);
 
   /**
+   * Handle tags input change
+   */
+  const handleTagChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setTags(e.target.value);
+  }, []);
+
+  /**
+   * Handle Enter key for tags
+   */
+  const handleTagKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") handleAddTag();
+  }, [handleAddTag]);
+
+  /**
+   * Handle modal close
+   */
+  const handleCloseClick = useCallback(() => {
+    handleClose();
+  }, [handleClose]);
+
+  /**
+   * Handle recommended users change
+   */
+  const handleRecommendChange = useCallback((_: unknown, newValue: User[]) => {
+    const recommendIds = newValue.map(u => u.id);
+    setSoftware(prev => ({ ...prev, recommend: recommendIds }));
+  }, []);
+
+  /**
    * Fetch users when modal opens
    */
   useEffect(() => {
@@ -187,12 +216,12 @@ const AddSoftwareModal = ({
       getOptionLabel={option => `${option.firstName} ${option.lastName}`}
       filterSelectedOptions
       value={userList.filter(u => software.recommend?.includes(u.id))}
-      onChange={(_, newValue) => setSoftware(prev => ({ ...prev, recommend: newValue.map(u => u.id) }))}
+      onChange={handleRecommendChange}
       renderTags={(value, getTagProps) => value.map((option, index) => <Chip label={`${option.firstName} ${option.lastName}`} {...getTagProps({ index })} />)}
       renderOption={(props, option) => <li {...props} key={option.id}>{`${option.firstName} ${option.lastName}`}</li>}
       renderInput={params => <TextField {...params} label={strings.softwareRegistry.recommend} placeholder={strings.softwareRegistry.searchPlaceholder} />}
     />
-  ), [userList, software.recommend]);
+  ), [userList, software.recommend, handleRecommendChange]);
 
   return (
     <>
@@ -210,7 +239,7 @@ const AddSoftwareModal = ({
           p: 4,
           overflowY: "auto"
         }}>
-          <IconButton onClick={handleClose} sx={{ position: "absolute", top: 16, right: 16 }}>
+          <IconButton onClick={handleCloseClick} sx={{ position: "absolute", top: 16, right: 16 }}>
             <CloseIcon />
           </IconButton>
           <Typography variant="h6" marginBottom={4}>{strings.softwareRegistry.addSoftware}</Typography>
@@ -263,8 +292,8 @@ const AddSoftwareModal = ({
                 fullWidth
                 label={strings.softwareRegistry.tags}
                 value={tags}
-                onChange={e => setTags(e.target.value)}
-                onKeyDown={e => e.key === "Enter" && handleAddTag()}
+                onChange={handleTagChange}
+                onKeyDown={handleTagKeyDown}
               />
               <Box mt={1} display="flex" justifyContent="space-between" flexWrap="wrap" gap={1}>
                 <Box display="flex" alignItems="center" flexWrap="wrap" gap={1} maxWidth="calc(100% - 100px)">
@@ -313,7 +342,7 @@ const AddSoftwareModal = ({
 
             {/* Buttons */}
             <Grid item container justifyContent="right" xs={12} mt={4}>
-              <Button onClick={handleClose} variant="outlined" sx={{ marginRight: 1, borderRadius: 2, fontSize: 18 }}>
+              <Button onClick={handleCloseClick} variant="outlined" sx={{ marginRight: 1, borderRadius: 2, fontSize: 18 }}>
                 {strings.softwareRegistry.cancel}
               </Button>
               <Button onClick={handleSubmit} variant="contained" color="secondary" disabled={disabled || nameExists || !isFormValid} sx={{ marginLeft: 1, borderRadius: 2, fontSize: 18 }}>
