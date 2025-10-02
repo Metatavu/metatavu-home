@@ -21,7 +21,7 @@ import ActionButton from "./action-button";
 import { useAtomValue, useSetAtom } from "jotai";
 import { articleAtom, draftArticleAtom, tagsAtom } from "src/atoms/article";
 import { errorAtom } from "src/atoms/error";
-import type { Article, User } from "src/generated/homeLambdasClient";
+import type { Article } from "src/generated/homeLambdasClient";
 import { usersAtom } from "src/atoms/user";
 import { userProfileAtom } from "src/atoms/auth";
 import ClearIcon from "@mui/icons-material/Clear";
@@ -174,72 +174,101 @@ const CreateOrEditArticleForm = ({
     }
   }, [articleApi]);
 
+  /** Handles admin create */
+  const createAdminArticle = (response: Article) => {
+    setArticlesAtom((a) => [response, ...(a ?? [])]);
+  };
+
+  /** Handles user create */
+  const createUserArticle = (response: Article) => {
+    setDraftArticlesAtom((a) => [response, ...(a ?? [])]);
+    setTags((t) => [...new Set([...t, ...selectedTags])]);
+  };
+
+  /** Handles create errors */
+  const processCreateError = async (err: unknown) => {
+    if (err && typeof err === "object" && "response" in err) {
+      const response = (err as { response: Response }).response;
+      const message = (await response.json()).message as string;
+      setError(message);
+    } else {
+      setError("Unexpected error occurred");
+    }
+  };
+
   /** Creates a new article */
   const handleCreate = useCallback(async () => {
     if (!editorRef.current || !validateForm()) return;
     try {
       const newArticle = buildNewArticle();
       const response = await articleApi.createArticle({ article: newArticle });
-      if (adminMode) setArticlesAtom((a) => [response, ...(a ?? [])]);
-      else {
-        setDraftArticlesAtom((a) => [response, ...(a ?? [])]);
-        setTags((t) => [...new Set([...t, ...selectedTags])]);
+
+      if (adminMode) {
+        createAdminArticle(response);
+      } else {
+        createUserArticle(response);
       }
+
       showSnackbar(`create-${adminMode ? "admin" : "user"}`);
       closeForm();
-    } catch (err: any) {
-      const message = (await err.response.json()).message;
-      setError(message);
+    } catch (err: unknown) {
+      await processCreateError(err);
     }
   }, [articleApi, adminMode, buildNewArticle, closeForm, selectedTags, setArticlesAtom, setDraftArticlesAtom, setTags, showSnackbar, setError, validateForm]);
+
+  /** Handles non-admin updates */
+  const updateUserArticle = (updatedArticle: Article) => {
+    if (updatedArticle.draft) {
+      setDraftArticlesAtom((a) => (a ?? []).map((art) => art.id === updatedArticle.id ? updatedArticle : art));
+      return;
+    }
+    setArticlesAtom((a) => (a ?? []).map((art) => art.id === updatedArticle.id ? updatedArticle : art));
+  };
+
+  /** Handles admin updates */
+  const updateAdminArticle = (response: Article, updatedArticle: Article) => {
+    if (article?.draft) {
+      setDraftArticlesAtom((a) => (a ?? []).filter((art) => art.id !== updatedArticle.id));
+    } else {
+      setArticlesAtom((a) => (a ?? []).filter((art) => art.id !== updatedArticle.id));
+    }
+
+    setArticlesAtom((a) => [response, ...(a ?? [])]);
+    setTags((t) => [...new Set([...t, ...selectedTags])]);
+    setArticle?.(updatedArticle);
+  };
+
+  /** Handles edit errors */
+  const processUpdateError = async (err: unknown) => {
+    if (err && typeof err === "object" && "response" in err) {
+      const response = (err as { response: Response }).response;
+      const message = (await response.json()).message as string;
+      setError(message);
+    } else {
+      setError("Unexpected error occurred");
+    }
+  };
 
   /** Edits an existing article */
   const handleEdit = useCallback(async () => {
     if (!editorRef.current || !article?.id || !validateForm()) return;
     const updatedArticle = buildUpdatedArticle();
 
-    const updateAtom = (atomSetter: typeof setArticlesAtom | typeof setDraftArticlesAtom) => {
-      atomSetter((a) => (a ?? []).map((art) => art.id === updatedArticle.id ? updatedArticle : art));
-    };
-    const removeFromAtom = (atomSetter: typeof setArticlesAtom | typeof setDraftArticlesAtom) => {
-      atomSetter((a) => (a ?? []).filter((art) => art.id !== updatedArticle.id));
-    };
-
     try {
       const response = await articleApi.updateArticle({ article: updatedArticle, id: article.id });
 
-      if (!adminMode) {
-        if (!updatedArticle.draft) updateAtom(setArticlesAtom);
-        else updateAtom(setDraftArticlesAtom);
+      if (adminMode) {
+        updateAdminArticle(response, updatedArticle);
       } else {
-        if (article.draft) removeFromAtom(setDraftArticlesAtom);
-        else removeFromAtom(setArticlesAtom);
-        setArticlesAtom((a) => [response, ...(a ?? [])]);
-        setTags((t) => [...new Set([...t, ...selectedTags])]);
-        setArticle?.(updatedArticle);
+        updateUserArticle(updatedArticle);
       }
 
       showSnackbar(`edit-${adminMode ? "admin" : "user"}`);
       closeForm();
-    } catch (err: any) {
-      const message = (await err.response.json()).message;
-      setError(message);
+    } catch (err: unknown) {
+      await processUpdateError(err);
     }
-  }, [
-    articleApi,
-    article,
-    adminMode,
-    buildUpdatedArticle,
-    closeForm,
-    selectedTags,
-    setDraftArticlesAtom,
-    setArticlesAtom,
-    setTags,
-    setArticle,
-    showSnackbar,
-    setError,
-    validateForm
-  ]);
+  }, [articleApi, article, adminMode, buildUpdatedArticle, closeForm, selectedTags, setDraftArticlesAtom, setArticlesAtom, setTags, setArticle, showSnackbar, setError, validateForm]);
 
   return (
     <>
@@ -350,16 +379,19 @@ const CreateOrEditArticleForm = ({
                 </IconButton>
               </Grid>
             )}
-            {!coverImage ? (
+
+            {!coverImage && (
               <Button variant="outlined" component="label" sx={{ mt: 1.5, mb: 1, width: "100%" }}>
                 {strings.wikiDocumentation.uploadImage}
                 <input type="file" hidden onChange={handleFileChange} />
               </Button>
-            ) : !imagePreview ? (
+            )}
+
+            {coverImage && !imagePreview && (
               <Button variant="outlined" sx={{ mt: 1, mb: 1, width: "100%" }} onClick={() => setImagePreview(true)}>
                 {strings.wikiDocumentation.imagePreview}
               </Button>
-            ) : null}
+            )}
           </Grid>
 
           <Grid item md={6} xs={12}>
