@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   Container,
   Typography,
@@ -16,55 +16,17 @@ import {
   Chip
 } from "@mui/material";
 import { DateTime } from "luxon";
-
-interface UserFlextimeData {
-  user: {
-    id: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    attributes: {
-      severaUserId: string;
-      isActive: boolean;
-    };
-  };
-  flextime: {
-    totalFlextimeBalance: number;
-    monthFlextimeBalance: number;
-  };
-}
-
-/**
- * Fetches flextime data for all opted-in users.
- * @param keywordId - The keyword to filter users (default: "isSeveraOptIn").
- * @returns A Promise resolving to a list of user flextime data.
- */
-const fetchUsersFlextime = async (keywordId = "isSeveraOptIn"): Promise<UserFlextimeData[]> => {
-  try {
-    const response = await fetch(`http://localhost:3000/severa/users/flextime?keywordId=${encodeURIComponent(keywordId)}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json"
-      }
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const data: UserFlextimeData[] = await response.json();
-    return data;
-  } catch {
-    throw new Error("Failed to load employee time data");
-  }
-};
+import { useLambdasApi } from "src/hooks/use-api";
+import type { UserFlextime } from "src/generated/homeLambdasClient";
+import strings from "src/localization/en.json";
 
 /**
  * Full-screen view for displaying flextime data for all employees.
  * @returns A React functional component rendering the employee flextime screen.
  */
-const EmployeeFlextimeScreen: React.FC = () => {
-  const [usersFlextime, setUsersFlextime] = useState<UserFlextimeData[]>([]);
+const EmployeeFlextimeScreen: () => JSX.Element = () => {
+  const { resourceAllocationsApi } = useLambdasApi();
+  const [usersFlextime, setUsersFlextime] = useState<UserFlextime[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const currentDate = DateTime.now().toLocaleString(DateTime.DATE_FULL);
@@ -77,13 +39,21 @@ const EmployeeFlextimeScreen: React.FC = () => {
    * Loads flextime data from the backend and handles loading/error state.
    */
   const loadFlextimeData = async () => {
+    if (!resourceAllocationsApi) {
+      setError(strings.error.missingEmailOrId);
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
     try {
-      setLoading(true);
-      setError(null);
-      const data = await fetchUsersFlextime("isSeveraOptIn");
+      const data = await resourceAllocationsApi.listUsersFlextime();
       setUsersFlextime(data);
-    } catch {
-      setError("Failed to load employee time data");
+    } catch (err) {
+      console.error(err);
+      setError(strings.error.fetchFailedFlextime);
     } finally {
       setLoading(false);
     }
@@ -94,7 +64,7 @@ const EmployeeFlextimeScreen: React.FC = () => {
    * @param hours - The number of hours.
    * @returns A string representation of the formatted balance.
    */
-  const formatFlextimeHours = (hours: number | null): string => {
+  const formatFlextimeHours = (hours: number | null | undefined): string => {
     if (hours === null || hours === undefined) return "N/A";
     const sign = hours >= 0 ? "+" : "";
     return `${sign}${hours.toFixed(2)}h`;
@@ -105,7 +75,7 @@ const EmployeeFlextimeScreen: React.FC = () => {
    * @param hours - The flextime balance.
    * @returns A string hex color.
    */
-  const getFlextimeColor = (hours: number | null): string => {
+  const getFlextimeColor = (hours: number | null | undefined): string => {
     if (hours === null || hours === undefined) return "#666";
     return hours >= 0 ? "#4caf50" : "#f44336";
   };
@@ -115,19 +85,29 @@ const EmployeeFlextimeScreen: React.FC = () => {
    * @returns The numeric total balance.
    */
   const getTotalBalance = (): number => {
-    return usersFlextime.reduce((sum, user) => sum + (user.flextime.totalFlextimeBalance || 0), 0);
+    return usersFlextime.reduce((sum, user) => sum + (user.flextime?.totalFlextimeBalance || 0), 0);
   };
 
   if (loading) {
     return (
-      <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-        <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
-          <CircularProgress size={60} />
-          <Typography variant="h6" sx={{ ml: 2 }}>
-            Loading employee time data...
-          </Typography>
+      <Card
+        sx={{
+          p: "25%",
+          display: "flex",
+          justifyContent: "center"
+        }}
+      >
+        <Box sx={{ textAlign: "center" }}>
+          <Typography>{strings.employeeFlextime.loading}</Typography>
+          <CircularProgress
+            sx={{
+              scale: "150%",
+              mt: "5%",
+              mb: "5%"
+            }}
+          />
         </Box>
-      </Container>
+      </Card>
     );
   }
 
@@ -149,21 +129,20 @@ const EmployeeFlextimeScreen: React.FC = () => {
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
       <Box mb={4}>
         <Typography variant="h3" component="h1" gutterBottom fontWeight="bold">
-          Employee Time Totals and Balances
+          {strings.employeeFlextime.title}
         </Typography>
         <Typography variant="h6" color="textSecondary" gutterBottom>
-          Overview of flextime balances for all opted-in employees
+          {strings.employeeFlextime.subtitle}
         </Typography>
         <Typography variant="body2" color="textSecondary">
-          Last updated: {currentDate}
+          {strings.employeeFlextime.lastUpdated.replace("{0}", currentDate)}
         </Typography>
       </Box>
-
       <Box mb={4} display="flex" gap={2}>
         <Card sx={{ minWidth: 200 }}>
           <CardContent>
             <Typography variant="h6" color="primary">
-              Total Employees
+              {strings.employeeFlextime.totalEmployees}
             </Typography>
             <Typography variant="h4" fontWeight="bold">
               {usersFlextime.length}
@@ -173,7 +152,7 @@ const EmployeeFlextimeScreen: React.FC = () => {
         <Card sx={{ minWidth: 200 }}>
           <CardContent>
             <Typography variant="h6" color="primary">
-              Combined Balance
+              {strings.employeeFlextime.combinedBalance}
             </Typography>
             <Typography 
               variant="h4" 
@@ -185,12 +164,11 @@ const EmployeeFlextimeScreen: React.FC = () => {
           </CardContent>
         </Card>
       </Box>
-
       {usersFlextime.length === 0 ? (
         <Card>
           <CardContent>
             <Typography variant="h6" textAlign="center" color="textSecondary">
-              No employee time data found
+              {strings.employeeFlextime.noDataFound}
             </Typography>
           </CardContent>
         </Card>
@@ -200,19 +178,19 @@ const EmployeeFlextimeScreen: React.FC = () => {
             <TableHead>
               <TableRow sx={{ backgroundColor: "#f8f9fa" }}>
                 <TableCell>
-                  <Typography variant="h6" fontWeight="bold">Employee</Typography>
+                  <Typography variant="h6" fontWeight="bold">{strings.employeeFlextime.employee}</Typography>
                 </TableCell>
                 <TableCell>
-                  <Typography variant="h6" fontWeight="bold">Email</Typography>
+                  <Typography variant="h6" fontWeight="bold">{strings.employeeFlextime.email}</Typography>
                 </TableCell>
                 <TableCell align="right">
-                  <Typography variant="h6" fontWeight="bold">Total Flextime Balance</Typography>
+                  <Typography variant="h6" fontWeight="bold">{strings.employeeFlextime.totalFlextimeBalance}</Typography>
                 </TableCell>
                 <TableCell align="right">
-                  <Typography variant="h6" fontWeight="bold">Current Month Balance</Typography>
+                  <Typography variant="h6" fontWeight="bold">{strings.employeeFlextime.currentMonthBalance}</Typography>
                 </TableCell>
                 <TableCell align="center">
-                  <Typography variant="h6" fontWeight="bold">Status</Typography>
+                  <Typography variant="h6" fontWeight="bold">{strings.employeeFlextime.status}</Typography>
                 </TableCell>
               </TableRow>
             </TableHead>
@@ -231,7 +209,7 @@ const EmployeeFlextimeScreen: React.FC = () => {
                         {userData.user.firstName} {userData.user.lastName}
                       </Typography>
                       <Typography variant="caption" color="textSecondary">
-                        ID: {userData.user.attributes.severaUserId}
+                        ID: {userData.user.id}
                       </Typography>
                     </Box>
                   </TableCell>
@@ -244,27 +222,27 @@ const EmployeeFlextimeScreen: React.FC = () => {
                     <Typography 
                       variant="h6" 
                       sx={{ 
-                        color: getFlextimeColor(userData.flextime.totalFlextimeBalance),
+                        color: getFlextimeColor(userData.flextime?.totalFlextimeBalance),
                         fontWeight: "bold"
                       }}
                     >
-                      {formatFlextimeHours(userData.flextime.totalFlextimeBalance)}
+                      {formatFlextimeHours(userData.flextime?.totalFlextimeBalance)}
                     </Typography>
                   </TableCell>
                   <TableCell align="right">
                     <Typography 
                       variant="h6"
                       sx={{ 
-                        color: getFlextimeColor(userData.flextime.monthFlextimeBalance),
+                        color: getFlextimeColor(userData.flextime?.monthFlextimeBalance),
                         fontWeight: "bold"
                       }}
                     >
-                      {formatFlextimeHours(userData.flextime.monthFlextimeBalance)}
+                      {formatFlextimeHours(userData.flextime?.monthFlextimeBalance)}
                     </Typography>
                   </TableCell>
                   <TableCell align="center">
                     <Chip
-                      label={userData.user.attributes?.isActive ? "Active" : "Inactive"}
+                      label={userData.user.attributes?.isActive ? strings.employeeFlextime.active : strings.employeeFlextime.inactive}
                       color={userData.user.attributes?.isActive ? "success" : "warning"}
                       variant="filled"
                     />
