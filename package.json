@@ -46,7 +46,7 @@
     "swiper": "^11.2.6"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.6.3",
+    "@biomejs/biome": "^2.2.5",
     "@openapitools/openapi-generator-cli": "2.5.2",
     "@types/lodash": "^4.17.14",
     "@types/luxon": "^3.3.7",
