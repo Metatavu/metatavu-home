@@ -20,6 +20,7 @@ import LocalizationUtils from "src/utils/localization-utils";
 import { getVacationRequestPersonFullName } from "src/utils/vacation-request-utils";
 import { usersAtom } from "src/atoms/user";
 import { userProfileAtom } from "src/atoms/auth";
+import type {FilterType} from "src/utils/vacation-filter-type";
 
 /**
  * Component properties
@@ -44,8 +45,8 @@ interface Props {
   fetchVacationRequestById: (vacationRequestId: string) => Promise<VacationRequest | null>;
   loading: boolean;
   isDraft: boolean;
-  filter: "ALL" | "DRAFT" | VacationRequestStatuses;
-  setFilter: React.Dispatch<React.SetStateAction<"ALL" | "DRAFT" | VacationRequestStatuses>>;
+  filter: FilterType
+  setFilter: React.Dispatch<React.SetStateAction<FilterType>>;
 }
 
 /**
@@ -108,6 +109,21 @@ const VacationRequestsTable = ({
   };
 
   /**
+   * Get row status
+   * @param vacationRequest vacation request
+   * @returns status string
+   */
+  const getRowStatus = (vacationRequest: VacationRequest): string => {
+    const { status, draft } = vacationRequest;
+
+    if (Array.isArray(status) && status.length > 0) {
+      return getTotalVacationRequestStatus(status);
+    }
+
+    return draft ? strings.vacationRequest.draft : VacationRequestStatuses.PENDING;
+  };
+
+  /**
    * Create vacation requests data grid rows
    *
    * @param vacationRequests vacation requests
@@ -118,14 +134,7 @@ const VacationRequestsTable = ({
       vacationRequests.forEach((vacationRequest) => {
         if (!vacationRequest) return;
         const row = createDataGridRow(vacationRequest);
-        const status = vacationRequest.status;
-        row.status =
-          Array.isArray(status) && status.length > 0
-            ? getTotalVacationRequestStatus(status)
-            : vacationRequest.draft
-              ? strings.vacationRequest.draft
-              : VacationRequestStatuses.PENDING;
-
+        row.status = getRowStatus(vacationRequest);
         if (vacationRequest.message?.length) {
           row.message = vacationRequest.message;
         }

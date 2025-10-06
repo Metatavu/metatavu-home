@@ -18,6 +18,7 @@ import UserRoleUtils from "src/utils/user-role-utils";
 import type { VacationRequest } from "src/generated/homeLambdasClient";
 import EditConfirmationDialogue from "src/components/contexts/edit-confirmation-dialogue";
 import ToolbarSubmitButton from "./toolbar-submit-button";
+import { FilterType } from "src/utils/vacation-filter-type";
 /**
  * Component properties
  */
@@ -45,8 +46,8 @@ interface Props {
   rows: VacationsDataGridRow[];
   setSelectedRowIds: (selectedRowIds: GridRowId[]) => void;
   isDraft: boolean;
-  filter: "ALL" | "DRAFT" | VacationRequestStatuses;
-  setFilter: React.Dispatch<React.SetStateAction<"ALL" | "DRAFT" | VacationRequestStatuses>>;
+  filter: FilterType;
+  setFilter: React.Dispatch<React.SetStateAction<FilterType>>;
 }
 
 /**

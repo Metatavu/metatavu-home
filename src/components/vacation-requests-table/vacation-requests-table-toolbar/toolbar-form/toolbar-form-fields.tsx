@@ -170,7 +170,6 @@ const ToolbarFormFields = ({
         </>
       )}
       {toolbarFormMode === ToolbarFormModes.CREATE && (
-        <>
           <Grid container spacing={2}>
             <Grid item xs={6}>
               <Button
@@ -203,7 +202,6 @@ const ToolbarFormFields = ({
               </Button>
             </Grid>
           </Grid>
-        </>
       )}
 
       {toolbarFormMode === ToolbarFormModes.EDIT && (

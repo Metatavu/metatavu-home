@@ -18,6 +18,7 @@ import UserRoleUtils from "src/utils/user-role-utils";
 import { renderVacationDaysTextForScreen } from "src/utils/vacation-days-utils";
 import { usersAtom } from "src/atoms/user";
 import BackButton from "../generics/back-button";
+import { FilterType } from "src/utils/vacation-filter-type";
 
 /**
  * Vacation requests screen
@@ -58,10 +59,7 @@ const VacationRequestsScreen = () => {
    *   - A specific `VacationRequestStatuses` value: Returns requests matching that status.
    * @returns The filtered list of vacation requests.
    */
-  const filterVacationRequests = (
-    requests: VacationRequest[],
-    filter: "ALL" | "DRAFT" | VacationRequestStatuses
-  ) => {
+  const filterVacationRequests = (requests: VacationRequest[], filter: FilterType) => {
     return requests.filter((request) => {
       if (filter === "ALL") {
         return adminMode ? request.draft !== true : true;
