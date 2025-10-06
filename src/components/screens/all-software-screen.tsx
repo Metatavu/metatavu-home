@@ -21,7 +21,6 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  ThemeProvider
 } from "@mui/material";
 import Content from "../software-registry/allContent";
 import { useLambdasApi } from "src/hooks/use-api";
@@ -38,7 +37,6 @@ import SearchIcon from "@mui/icons-material/Search";
 import useCreateSoftware from "src/hooks/use-create-software";
 import AddSoftwareModal from "../software-registry/AddSoftwareModal";
 import BackButton from "../generics/back-button";
-import { SoftwareScreenTheme } from "src/theme";
 
 /**
  * All software screen component
@@ -291,7 +289,6 @@ const AllSoftwareScreen = () => {
   }
 
   return (
-    <ThemeProvider theme={SoftwareScreenTheme}>
     <Container>
       <Grid container direction="column" alignItems="center" mt={4}>
         <Grid item container justifyContent="space-between" alignItems="center" mb={2} mt={4}>
@@ -327,6 +324,12 @@ const AllSoftwareScreen = () => {
                 onChange={(e) => setSelectedStatus(e.target.value as SoftwareStatusFilterOptions)}
                 variant="outlined"
                 IconComponent={ExpandMoreIcon}
+                sx={ {borderRadius: "10px",
+                  height: "45px",
+                  padding: "0 15px",
+                  "& .MuiSvgIcon-root": {
+                    color: "#121212"
+                }}}
               >
                 {statusOptions.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
@@ -479,7 +482,6 @@ const AllSoftwareScreen = () => {
         </DialogActions>
       </Dialog>
     </Container>
-    </ThemeProvider>
   );
 };
 

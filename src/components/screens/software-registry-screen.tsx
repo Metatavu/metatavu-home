@@ -8,7 +8,6 @@ import {
   Container,
   IconButton,
   Card,
-  ThemeProvider
 } from "@mui/material";
 import { useState, useEffect, useMemo, useRef } from "react";
 import Content from "../software-registry/myContent";
@@ -27,7 +26,6 @@ import Recommendations from "../software-registry/Recommendations";
 import AddSoftwareModal from "../software-registry/AddSoftwareModal";
 import Sidebar from "../software-registry/Sidebar";
 import BackButton from "../generics/back-button";
-import { SoftwareScreenTheme } from "src/theme";
 
 /**
  * Software registry screen component
@@ -193,7 +191,6 @@ const SoftwareScreen = () => {
   }
 
   return (
-    <ThemeProvider theme={SoftwareScreenTheme}>
       <Container>
         <Grid container direction="column" alignItems="center" mt={4}>
           <Typography variant="h2" m={4}>
@@ -201,7 +198,10 @@ const SoftwareScreen = () => {
           </Typography>
           {recommendedApplications.length > 0 && (
             <Grid item container justifyContent="center" alignItems="center" mb={4}>
-              <Typography variant="subtitle1">
+              <Typography
+              sx={{fontWeight: 600,
+                  fontSize: 18,
+                  color: "#f9473b"}}>
                 {strings.softwareRegistry.recommendationMessage.replace(
                   "{recommendationCount}",
                   recommendedApplications.length.toString()
@@ -334,7 +334,6 @@ const SoftwareScreen = () => {
         />
         <BackButton sx={{ marginBottom: 2 }} />
       </Container>
-    </ThemeProvider>
   );
 };
 

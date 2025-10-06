@@ -145,34 +145,6 @@ export const theme: Theme = createTheme({
   }
 });
 
-export const SoftwareScreenTheme: Theme = createTheme(theme, {
-  typography: {
-    subtitle1: {
-      fontWeight: 600,
-      fontSize: 18,
-      color: "#f9473b"
-    },
-    subtitle2: {
-      fontWeight: 400,
-      fontSize: 20,
-      fontStyle: "regular"
-    }
-  },
-  components: {
-    MuiSelect: {
-      styleOverrides: {
-        root: {
-          borderRadius: "10px",
-          height: "45px",
-          padding: "0 15px",
-          "& .MuiSvgIcon-root": {
-            color: "#121212"
-          }
-        }
-      }
-    }
-  }
-});
 
 export const wikiScreenColors = {
   button: {
