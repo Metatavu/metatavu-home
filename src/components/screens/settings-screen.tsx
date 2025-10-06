@@ -56,7 +56,7 @@ const SettingsScreen = () => {
       setUserProfile(updatedUserProfile);
 
       /**
-       * Update usersAtom so HomeScreen rerenders without refresh
+       * Update usersAtom so homescreen re-renders without refresh
        */
       setUsers(prevUsers =>
         prevUsers.map(u =>
