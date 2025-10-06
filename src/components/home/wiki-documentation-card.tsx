@@ -16,7 +16,6 @@ import type {  ArticleMetadata } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
 import { articleAtom, draftArticleAtom } from "src/atoms/article";
 import { getLastActivityString } from "src/utils/wiki-utils";
-import { last } from "lodash";
 
 /**
  * Card component for displaying last read, created or updated article for Wiki Documentation.

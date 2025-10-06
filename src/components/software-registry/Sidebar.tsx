@@ -1,5 +1,4 @@
-import React, { 
-  FunctionComponent, 
+import { 
   useState, 
   useCallback, 
   useMemo 
@@ -29,12 +28,12 @@ interface SidebarProps {
  * @param SidebarProps The props for the Sidebar component.
  * @returns The rendered Sidebar component.
  */
-const Sidebar: FunctionComponent<SidebarProps> = ({
+const Sidebar = ({
   onTagSelection,
   filteredApplicationsCount,
   availableTags,
   onSearch,
-}) => {
+}: SidebarProps) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [searchValue, setSearchValue] = useState("");
