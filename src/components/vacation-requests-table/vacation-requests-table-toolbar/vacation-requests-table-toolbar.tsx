@@ -259,7 +259,7 @@ const TableToolbar = ({
             <Select
               value={filter}
               onChange={(e) =>
-                setFilter(e.target.value as "ALL" | "DRAFT" | VacationRequestStatuses)
+                setFilter(e.target.value as FilterType)
               }
               sx={{
                 maxWidth: 120,

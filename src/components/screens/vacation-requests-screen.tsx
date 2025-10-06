@@ -47,7 +47,7 @@ const VacationRequestsScreen = () => {
   const [users] = useAtom(usersAtom);
   const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
   const [isDraft, setIsDraft] = useState(false);
-  const [filter, setFilter] = useState<"ALL" | "DRAFT" | VacationRequestStatuses>("ALL");
+  const [filter, setFilter] = useState<FilterType>("ALL");
 
   /**
    * Filters a list of vacation requests based on the given filter.

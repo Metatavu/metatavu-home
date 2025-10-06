@@ -154,23 +154,3 @@ export const wikiScreenColors = {
   }
 };
 
-export const VacationRequestScreenTheme: Theme = createTheme(theme, {
-  components: {
-    MuiSelect: {
-      styleOverrides: {
-        root: {
-          maxWidth: 120,
-          backgroundColor: "#eeeeee",
-          height: 42,
-          color: "#222",
-          "& .MuiOutlinedInput-notchedOutline": {
-            border: "none"
-          },
-          "&:hover": { backgroundColor: "#e0e0e0" },
-          fontWeight: 700,
-          display: "flex"
-        }
-      }
-    }
-  }
-});
