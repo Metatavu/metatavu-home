@@ -41,8 +41,9 @@ const ArticleScreen = () => {
     fetchArticle();
   }, [path]);
 
-  const handleClose = () => {setFormOpen(false);
-};
+  const handleClose = () => {
+    setFormOpen(false);
+  };
   /**
    * Loads article and connected articles by path, updates state,
    * records article read, handles errors, and manages loading state.
@@ -144,37 +145,38 @@ const ArticleScreen = () => {
   };
 
   return (
-    <> 
-      {loading 
-        ? <Card sx={{ 
-            p: "25%", 
-            display: "flex", 
-            justifyContent: "center" 
-          }}>
-            <CircularProgress sx={{ scale: "150%" }} />
-          </Card>
-        : <> {formOpen 
-          ? <CreateOrEditArticleForm 
-              handleClose={handleClose} 
-              action="edit" 
+    <>
+      {loading ? (
+        <Card
+          sx={{
+            p: "25%",
+            display: "flex",
+            justifyContent: "center"
+          }}
+        >
+          <CircularProgress sx={{ scale: "150%" }} />
+        </Card>
+      ) : (
+        <>
+          {" "}
+          {formOpen ? (
+            <CreateOrEditArticleForm
+              handleClose={handleClose}
+              action="edit"
               article={article}
               setArticle={setArticle}
               adminMode={adminMode}
             />
-          : <>
-            <Grid
-              container 
-              spacing={1.5} 
-              sx={{ marginBottom: 3, marginTop: 0.5 }}
-            >
-            
-              <Grid item xs={adminMode?4 : 12}>
-              <BackButton 
-                onClick={formOpen ? handleClose : undefined}
-                styles={{ padding: "6px" }}
-              />
-              </Grid>
-               {adminMode && (
+          ) : (
+            <>
+              <Grid container spacing={1.5} sx={{ marginBottom: 3, marginTop: 0.5 }}>
+                <Grid item xs={adminMode ? 4 : 12}>
+                  <BackButton
+                    onClick={formOpen ? handleClose : undefined}
+                    styles={{ padding: "6px" }}
+                  />
+                </Grid>
+                {adminMode && (
                   <>
                     <Grid item xs={4}>
                       <ActionButton onClick={() => setFormOpen(true)}>
@@ -188,14 +190,14 @@ const ArticleScreen = () => {
                     </Grid>
                   </>
                 )}
-                </Grid>
-            <Card sx={{ padding: 3, paddingTop: 0, marginBottom: 3 }}>
-  {/* Title */}
-  {article?.title && (
-    <Typography variant="h4" sx={{ marginBottom: 2 }}>
-      {article.title}
-    </Typography>
-  )}
+              </Grid>
+              <Card sx={{ padding: 3, paddingTop: 0, marginBottom: 3 }}>
+                {/* Title */}
+                {article?.title && (
+                  <Typography variant="h4" sx={{ marginBottom: 2 }}>
+                    {article.title}
+                  </Typography>
+                )}
 
                 {/* Main Image */}
                 {article?.coverImage && (
@@ -289,9 +291,9 @@ const ArticleScreen = () => {
                 </>
               )}
             </>
-          }
+          )}
         </>
-      }
+      )}
       <Snackbar
         open={snackbar.open}
         autoHideDuration={4000}
