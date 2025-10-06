@@ -4,6 +4,7 @@ import strings from "src/localization/strings";
 import { errorAtom } from "src/atoms/error";
 import { useAtomValue, useSetAtom } from "jotai";
 import { userProfileAtom } from "src/atoms/auth";
+import { usersAtom } from "src/atoms/user";
 import { useLambdasApi } from "src/hooks/use-api";
 import { CircularProgress } from "@mui/material";
 
@@ -13,6 +14,8 @@ import { CircularProgress } from "@mui/material";
 const SettingsScreen = () => {
   const { usersApi } = useLambdasApi();
   const userProfile = useAtomValue(userProfileAtom);
+  const setUserProfile = useSetAtom(userProfileAtom);
+  const setUsers = useSetAtom(usersAtom);
   const setError = useSetAtom(errorAtom);
   
   const [isConsentGiven, setIsConsentGiven] = useState(
@@ -38,7 +41,38 @@ const SettingsScreen = () => {
         attributeName: "isSeveraOptIn"
       });
 
-      setIsConsentGiven(Boolean(response.updatedKeycloakAttributes?.severaUserId));
+      const updatedSeveraUserId = response.updatedKeycloakAttributes?.severaUserId; 
+
+      /**
+       * Update userProfileAtom
+       */ 
+      const updatedUserProfile = {
+        ...userProfile,
+        attributes: {
+          ...userProfile.attributes,
+          severaUserId: updatedSeveraUserId,
+        },
+      };
+      setUserProfile(updatedUserProfile);
+
+      /**
+       * Update usersAtom so HomeScreen rerenders without refresh
+       */
+      setUsers(prevUsers =>
+        prevUsers.map(u =>
+          u.id === userProfile.id
+            ? {
+                ...u,
+                attributes: {
+                  ...u.attributes,
+                  severaUserId: updatedSeveraUserId
+                },
+              }
+            : u
+        )
+      );
+
+      setIsConsentGiven(Boolean(updatedSeveraUserId));
     } catch (error) {
       console.error("Error fetching consent:", error);
       setError(`${strings.error.fetchFailedFlextime}, ${error}`);
@@ -46,7 +80,6 @@ const SettingsScreen = () => {
       setIsLoading(false);
     }
   };
-
 
   return (
     <Box p={2} bgcolor="grey.100" borderRadius={2}>
