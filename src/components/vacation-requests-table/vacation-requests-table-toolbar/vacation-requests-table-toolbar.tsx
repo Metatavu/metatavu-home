@@ -1,14 +1,5 @@
 import { Add, Cancel, Edit, FilterAlt } from "@mui/icons-material";
-import {
-  Box,
-  Button,
-  Collapse,
-  Grid,
-  Typography,
-  styled,
-  Select,
-  MenuItem
-} from "@mui/material";
+import { Box, Button, Collapse, Grid, Typography, styled, Select, MenuItem } from "@mui/material";
 import { useEffect, useState } from "react";
 import ToolbarForm from "./toolbar-form/toolbar-form";
 import type { GridRowId } from "@mui/x-data-grid";
@@ -98,7 +89,7 @@ const TableToolbar = ({
   const disableEditButton = false;
   const selectedRow = rows.find((row) => String(row.id) === String(selectedRowIds[0]));
   const isDraftSelected = selectedRow ? selectedRow.draft === true : false;
-  
+
   useEffect(() => {
     setTitle(getToolbarTitle(toolbarFormMode));
     if (adminMode && toolbarFormMode === ToolbarFormModes.NONE) {
@@ -269,6 +260,18 @@ const TableToolbar = ({
               onChange={(e) =>
                 setFilter(e.target.value as "ALL" | "DRAFT" | VacationRequestStatuses)
               }
+              sx={{
+                maxWidth: 120,
+                backgroundColor: "#eeeeee",
+                height: 42,
+                color: "#222",
+                "& .MuiOutlinedInput-notchedOutline": {
+                  border: "none"
+                },
+                "&:hover": { backgroundColor: "#e0e0e0" },
+                fontWeight: 700,
+                display: "flex"
+              }}
             >
               <MenuItem value="ALL">{strings.tableToolbar.all}</MenuItem>
               {!adminMode && <MenuItem value="DRAFT">{strings.tableToolbar.draft}</MenuItem>}

@@ -1,4 +1,4 @@
-import { Card, ThemeProvider } from "@mui/material";
+import { Card} from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import VacationRequestsTable from "../vacation-requests-table/vacation-requests-table";
 import type { User } from "src/generated/homeLambdasClient";
@@ -18,7 +18,6 @@ import UserRoleUtils from "src/utils/user-role-utils";
 import { renderVacationDaysTextForScreen } from "src/utils/vacation-days-utils";
 import { usersAtom } from "src/atoms/user";
 import BackButton from "../generics/back-button";
-import { VacationRequestScreenTheme } from "src/theme";
 
 /**
  * Vacation requests screen
@@ -360,7 +359,6 @@ const VacationRequestsScreen = () => {
   return (
     <>
       {loggedInUser && renderVacationDaysTextForScreen(loggedInUser)}
-      <ThemeProvider theme={VacationRequestScreenTheme}>
         <Card
           sx={{ margin: 0, padding: "10px", width: "100%", height: "100", marginBottom: "16px" }}
         >
@@ -380,7 +378,6 @@ const VacationRequestsScreen = () => {
           />
         </Card>
         <BackButton sx={{ mt: 2, marginBottom: 2 }} />
-      </ThemeProvider>
       {/* Admin Tools Section has been removed */}
     </>
   );
