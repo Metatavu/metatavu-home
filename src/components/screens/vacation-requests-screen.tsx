@@ -1,4 +1,4 @@
-import { Card} from "@mui/material";
+import { Card } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import VacationRequestsTable from "../vacation-requests-table/vacation-requests-table";
 import type { User } from "src/generated/homeLambdasClient";
@@ -359,25 +359,23 @@ const VacationRequestsScreen = () => {
   return (
     <>
       {loggedInUser && renderVacationDaysTextForScreen(loggedInUser)}
-        <Card
-          sx={{ margin: 0, padding: "10px", width: "100%", height: "100", marginBottom: "16px" }}
-        >
-          <VacationRequestsTable
-            isUpcoming={isUpcoming}
-            toggleIsUpcoming={toggleIsUpcoming}
-            deleteVacationRequests={deleteVacationRequests}
-            createVacationRequest={createVacationRequest}
-            createDraftVacationRequest={createDraftVacationRequest}
-            updateVacationRequest={updateVacationRequest}
-            updateVacationRequestStatus={updateVacationRequestStatus}
-            fetchVacationRequestById={fetchVacationRequestById}
-            loading={loading}
-            isDraft={isDraft}
-            filter={filter}
-            setFilter={setFilter}
-          />
-        </Card>
-        <BackButton sx={{ mt: 2, marginBottom: 2 }} />
+      <Card sx={{ margin: 0, padding: "10px", width: "100%", height: "100", marginBottom: "16px" }}>
+        <VacationRequestsTable
+          isUpcoming={isUpcoming}
+          toggleIsUpcoming={toggleIsUpcoming}
+          deleteVacationRequests={deleteVacationRequests}
+          createVacationRequest={createVacationRequest}
+          createDraftVacationRequest={createDraftVacationRequest}
+          updateVacationRequest={updateVacationRequest}
+          updateVacationRequestStatus={updateVacationRequestStatus}
+          fetchVacationRequestById={fetchVacationRequestById}
+          loading={loading}
+          isDraft={isDraft}
+          filter={filter}
+          setFilter={setFilter}
+        />
+      </Card>
+      <BackButton styles={{ mt: 2, marginBottom: 2 }} />
       {/* Admin Tools Section has been removed */}
     </>
   );
