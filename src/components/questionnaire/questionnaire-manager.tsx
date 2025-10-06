@@ -237,7 +237,9 @@ const QuestionnaireManager = ({ mode }: Props) => {
               justifyContent: "space-between"
             }}
           >
-            <BackButton sx={{ width: "auto" }} />
+            <BackButton 
+              styles={{ width: "auto" }} 
+            />
             <Button
               sx={{ alignItems: "center" }}
               size="large"

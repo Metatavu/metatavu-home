@@ -28,16 +28,6 @@ export const theme: Theme = createTheme({
       fontSize: 20,
       fontStyle: "bold"
     },
-    subtitle1: {
-      fontWeight: 600,
-      fontSize: 18,
-      color: "#f9473b"
-    },
-    subtitle2: {
-      fontWeight: 400,
-      fontSize: 20,
-      fontStyle: "regular"
-    },
     body1: {
       fontWeight: 400,
       fontSize: 16,
@@ -151,23 +141,10 @@ export const theme: Theme = createTheme({
           fontWeight: "bold"
         }
       }
-    },
-    MuiSelect: {
-    styleOverrides: {
-      root: {
-        backgroundColor: "#F47D38",
-        color: "#fff",
-        borderRadius: "10px",
-        height: "45px",
-        padding: "0 15px",
-        "& .MuiSvgIcon-root": {
-          color: "#fff",
-        },
-      },
-    },
-  },
-  },
+    }
+  }
 });
+
 
 export const wikiScreenColors = {
   button: {

@@ -20,7 +20,7 @@ import {
   DialogActions,
   DialogContent,
   DialogContentText,
-  DialogTitle
+  DialogTitle,
 } from "@mui/material";
 import Content from "../software-registry/allContent";
 import { useLambdasApi } from "src/hooks/use-api";
@@ -324,6 +324,12 @@ const AllSoftwareScreen = () => {
                 onChange={(e) => setSelectedStatus(e.target.value as SoftwareStatusFilterOptions)}
                 variant="outlined"
                 IconComponent={ExpandMoreIcon}
+                sx={ {borderRadius: "10px",
+                  height: "45px",
+                  padding: "0 15px",
+                  "& .MuiSvgIcon-root": {
+                    color: "#121212"
+                }}}
               >
                 {statusOptions.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
@@ -441,7 +447,9 @@ const AllSoftwareScreen = () => {
           </Grid>
         </Grid>
       </Grid>
-      <BackButton sx={{ marginBottom: 2 }} />
+      <BackButton 
+        styles={{ marginBottom: 2 }} 
+      />
 
       <AddSoftwareModal
         open={isModalOpen}

@@ -1,5 +1,4 @@
 import { useState, useEffect, } from "react";
-import type React from "react";
 import {
   Modal,
   Box,
@@ -38,14 +37,14 @@ interface AddSoftwareModalProps {
  * @param {AddSoftwareModalProps} props - The props for the AddSoftwareModal component.
  * @returns The rendered modal component.
  */
-const AddSoftwareModal: React.FC<AddSoftwareModalProps> = ({
+const AddSoftwareModal = ({
   open,
   handleClose,
   handleSave,
   disabled,
   softwareData,
   existingSoftwareList
-}) => {
+}: AddSoftwareModalProps) => {
   const initialSoftwareState: SoftwareRegistry = {
     id: "",
     name: "",
