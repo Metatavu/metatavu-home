@@ -379,7 +379,9 @@ const NewQuestionnaireBuilder = () => {
         removeQuestionFromPreview={removeQuestionFromPreview}
         editQuestionInPreview={editQuestionInPreview}
       />
-      <BackButton sx={{ mt: 3, marginBottom: 2 }}/>
+      <BackButton 
+        styles={{ mt: 3, marginBottom: 2 }}
+      />
     </>
   );
 };

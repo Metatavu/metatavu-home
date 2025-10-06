@@ -41,7 +41,9 @@ const ArticleScreen = () => {
     fetchArticle();
   }, [path]);
 
-  const closeForm = () => setFormOpen(false);
+  const handleClose = () => {
+    setFormOpen(false);
+  };
   /**
    * Loads article and connected articles by path, updates state,
    * records article read, handles errors, and manages loading state.
@@ -156,9 +158,10 @@ const ArticleScreen = () => {
         </Card>
       ) : (
         <>
+          {" "}
           {formOpen ? (
             <CreateOrEditArticleForm
-              setFormOpen={setFormOpen}
+              handleClose={handleClose}
               action="edit"
               article={article}
               setArticle={setArticle}
@@ -168,7 +171,10 @@ const ArticleScreen = () => {
             <>
               <Grid container spacing={1.5} sx={{ marginBottom: 3, marginTop: 0.5 }}>
                 <Grid item xs={adminMode ? 4 : 12}>
-                  <BackButton onClick={closeForm} sx={{ padding: "6px" }} />
+                  <BackButton
+                    onClick={formOpen ? handleClose : undefined}
+                    styles={{ padding: "6px" }}
+                  />
                 </Grid>
                 {adminMode && (
                   <>
@@ -185,7 +191,6 @@ const ArticleScreen = () => {
                   </>
                 )}
               </Grid>
-
               <Card sx={{ padding: 3, paddingTop: 0, marginBottom: 3 }}>
                 {/* Title */}
                 {article?.title && (

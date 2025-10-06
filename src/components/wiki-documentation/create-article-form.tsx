@@ -28,7 +28,7 @@ import ClearIcon from "@mui/icons-material/Clear";
 import { snackbarAtom } from "src/atoms/snackbar";
 
 interface Props {
-  setFormOpen: (value: boolean) => void;
+  handleClose: () => void;
   adminMode: boolean;
   action: "edit" | "create";
   article?: Article;
@@ -40,17 +40,16 @@ interface EditorRef {
 }
 /**
  * Form for creating or editing an article.
- *
- * @param setFormOpen - Controls form visibility.
+ * 
  * @param action - "create" or "edit" mode (default: "create").
  * @param article - Article data for editing (optional).
  * @param setArticle - Updates article state externally.
  * @param adminMode - Enables admin-specific features (optional).
  */
 const CreateOrEditArticleForm = ({
-  setFormOpen,
-  action = "create",
-  article,
+  handleClose, 
+  action="create", 
+  article, 
   setArticle,
   adminMode
 }: Props) => {
@@ -108,7 +107,7 @@ const CreateOrEditArticleForm = ({
         severity: "success"
       });
 
-      setFormOpen(false);
+      handleClose();
     } catch (error: any) {
       const message = (await error.response.json()).message;
       setError(message);
@@ -169,14 +168,12 @@ const CreateOrEditArticleForm = ({
         message: messages[key],
         severity: "success"
       });
-      setFormOpen(false);
+      handleClose();
     } catch (error: any) {
       const message = (await error.response.json()).message;
       setError(message);
     }
   };
-
-  const closeForm = () => setFormOpen(false);
 
   const handleTitleChange = (event: any) => {
     const newInput = event.target.value;
@@ -237,10 +234,9 @@ const CreateOrEditArticleForm = ({
       <Grid container spacing={1.5} sx={{ marginBottom: 3, marginTop: 0.5 }}>
         <Grid item xs={6}>
         <BackButton 
-                onClick={closeForm}
-                disableNavigation
-                sx={{ padding: "6px" }}
-              />
+          onClick={handleClose}
+          styles={{ padding: "6px" }}
+        />
         </Grid>
         <Grid item xs={6}>
           {action === "create" ? (
