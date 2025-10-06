@@ -1,5 +1,14 @@
 import { Add, Cancel, Edit, FilterAlt } from "@mui/icons-material";
-import { Box, Button, Collapse, Grid, Typography, styled } from "@mui/material";
+import {
+  Box,
+  Button,
+  Collapse,
+  Grid,
+  Typography,
+  styled,
+  Select,
+  MenuItem
+} from "@mui/material";
 import { useEffect, useState } from "react";
 import ToolbarForm from "./toolbar-form/toolbar-form";
 import type { GridRowId } from "@mui/x-data-grid";
@@ -17,7 +26,7 @@ import UpdateStatusButton from "./toolbar-update-status-button";
 import UserRoleUtils from "src/utils/user-role-utils";
 import type { VacationRequest } from "src/generated/homeLambdasClient";
 import EditConfirmationDialogue from "src/components/contexts/edit-confirmation-dialogue";
-
+import ToolbarSubmitButton from "./toolbar-submit-button";
 /**
  * Component properties
  */
@@ -38,12 +47,15 @@ interface Props {
     vacationRequestStatus: VacationRequestStatuses,
     selectedRowIds: GridRowId[]
   ) => Promise<void>;
+  fetchVacationRequestById: (vacationRequestId: string) => Promise<VacationRequest | null>;
   setFormOpen: (formOpen: boolean) => void;
   formOpen: boolean;
   selectedRowIds: GridRowId[];
   rows: VacationsDataGridRow[];
   setSelectedRowIds: (selectedRowIds: GridRowId[]) => void;
   isDraft: boolean;
+  filter: "ALL" | "DRAFT" | VacationRequestStatuses;
+  setFilter: React.Dispatch<React.SetStateAction<"ALL" | "DRAFT" | VacationRequestStatuses>>;
 }
 
 /**
@@ -59,12 +71,15 @@ const TableToolbar = ({
   createDraftVacationRequest,
   updateVacationRequest,
   updateVacationRequestStatus,
+  fetchVacationRequestById,
   setFormOpen,
   formOpen,
   selectedRowIds,
   rows,
   setSelectedRowIds,
-  isDraft
+  isDraft,
+  filter,
+  setFilter
 }: Props) => {
   const [toolbarOpen, setToolbarOpen] = useState(false);
   const [toolbarFormMode, setToolbarFormMode] = useState<ToolbarFormModes>(ToolbarFormModes.NONE);
@@ -77,10 +92,13 @@ const TableToolbar = ({
   const { pathname } = useLocation();
   const isToolbarVisible = toolbarOpen && !formOpen && selectedRowIds?.length;
   const buttonLabel = isUpcoming ? strings.tableToolbar.future : strings.tableToolbar.past;
-  const singleSelectionSize = 6;
+  const singleSelectionSize = adminMode ? 3 : 4;
   const multiSelectionSize = adminMode ? 6 : 12;
   const gridItemSize = selectedRowIds?.length === 1 ? singleSelectionSize : multiSelectionSize;
   const disableEditButton = false;
+  const selectedRow = rows.find((row) => String(row.id) === String(selectedRowIds[0]));
+  const isDraftSelected = selectedRow ? selectedRow.draft === true : false;
+  
   useEffect(() => {
     setTitle(getToolbarTitle(toolbarFormMode));
     if (adminMode && toolbarFormMode === ToolbarFormModes.NONE) {
@@ -147,6 +165,31 @@ const TableToolbar = ({
     setFormOpen(false);
   };
 
+  /**
+   * Submit a draft vacation request for approval
+   */
+  const handleSubmitForApproval = async (vacationRequestId: string) => {
+    if (!vacationRequestId) return;
+
+    const vacationRequest = await fetchVacationRequestById(vacationRequestId);
+    if (!vacationRequest) return;
+
+    const updatedRequest: VacationRequest = {
+      ...vacationRequest,
+      draft: false,
+      updatedAt: new Date(),
+      status: [
+        {
+          status: VacationRequestStatuses.PENDING,
+          createdBy: vacationRequest.userId,
+          updatedAt: new Date()
+        }
+      ]
+    };
+    await updateVacationRequest(updatedRequest, updatedRequest.id as string);
+    setSelectedRowIds([]);
+    setFormOpen(false);
+  };
   return (
     <Box>
       <ConfirmationHandler
@@ -161,34 +204,27 @@ const TableToolbar = ({
       />
       {isToolbarVisible ? (
         <ToolbarGridContainer container>
-          <ToolbarGridItem item sm={gridItemSize} xs={6}>
+          <ToolbarGridItem item sm={gridItemSize} xs={4}>
             <ToolbarDeleteButton setConfirmationHandlerOpen={setConfirmationHandlerOpen} />
           </ToolbarGridItem>
           {selectedRowIds?.length === 1 && (
             <>
-              <ToolbarGridItem item sm={isDraft ? 4 : 6} xs={6}>
+              <ToolbarGridItem item sm={adminMode ? 3 : 4}>
                 <FormToggleButton
                   title={strings.tableToolbar.edit}
                   ButtonIcon={Edit}
                   value={formOpen}
                   setValue={(open) => {
-                    setToolbarFormMode(ToolbarFormModes.EDIT); // ensure edit mode
+                    setToolbarFormMode(ToolbarFormModes.EDIT);
                     setFormOpen(open);
                   }}
                   disabled={disableEditButton}
                 />
               </ToolbarGridItem>
-              {isDraft && (
+              {isDraftSelected && !adminMode && (
                 <ToolbarGridItem xs={4}>
-                  <FormToggleButton
-                    title={strings.tableToolbar.edit}
-                    ButtonIcon={Edit}
-                    value={formOpen}
-                    setValue={(open) => {
-                      setToolbarFormMode(ToolbarFormModes.EDIT);
-                      setFormOpen(open);
-                    }}
-                    disabled={disableEditButton}
+                  <ToolbarSubmitButton
+                    onClick={() => handleSubmitForApproval(selectedRowIds[0] as string)}
                   />
                 </ToolbarGridItem>
               )}
@@ -227,7 +263,27 @@ const TableToolbar = ({
               {buttonLabel}
             </Button>
           </ToolbarGridItem>
-          <ToolbarGridItem item xs={6}>
+          <ToolbarGridItem item xs={3}>
+            <Select
+              value={filter}
+              onChange={(e) =>
+                setFilter(e.target.value as "ALL" | "DRAFT" | VacationRequestStatuses)
+              }
+            >
+              <MenuItem value="ALL">{strings.tableToolbar.all}</MenuItem>
+              {!adminMode && <MenuItem value="DRAFT">{strings.tableToolbar.draft}</MenuItem>}
+              <MenuItem value={VacationRequestStatuses.PENDING}>
+                {strings.vacationRequest.pending}
+              </MenuItem>
+              <MenuItem value={VacationRequestStatuses.APPROVED}>
+                {strings.vacationRequest.approved}
+              </MenuItem>
+              <MenuItem value={VacationRequestStatuses.DECLINED}>
+                {strings.vacationRequest.declined}
+              </MenuItem>
+            </Select>
+          </ToolbarGridItem>
+          <ToolbarGridItem item xs={3}>
             {formOpen ? (
               <FormToggleButton
                 title={strings.tableToolbar.cancel}

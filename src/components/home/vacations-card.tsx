@@ -63,24 +63,26 @@ const VacationsCard = () => {
   }, [loggedInUser]);
 
   /**
-   * Get pending vacation requests by checking whether any of its statuses are approved or declined
+   * Get pending vacation requests by checking whether any of its statuses are approved, declined or draft
    *
    * @returns pending vacation requests
    */
   const getPendingVacationRequests = () => {
     return vacationRequests
-      .filter((vacationRequest) =>
-        vacationRequest.status?.every(
-          (status) =>
-            status.status !== VacationRequestStatuses.APPROVED &&
-            status.status !== VacationRequestStatuses.DECLINED
-        )
+      .filter(
+        (vacationRequest) =>
+          vacationRequest.draft !== true &&
+          vacationRequest.status?.every(
+            (status) =>
+              status.status !== VacationRequestStatuses.APPROVED &&
+              status.status !== VacationRequestStatuses.DECLINED
+          )
       )
       .filter(validateValueIsNotUndefinedNorNull);
   };
 
   /**
-   * Get upcoming vacation requests and filter out declined vacation requests
+   * Get upcoming vacation requests and filter out declined/draft vacation requests
    *
    * @returns upcoming vacation requests
    */
@@ -88,7 +90,7 @@ const VacationsCard = () => {
     return vacationRequests
       .filter(
         (vacationRequest) =>
-          vacationRequest &&
+          vacationRequest.draft !== true &&
           DateTime.fromJSDate(vacationRequest.startDate) > DateTime.now() &&
           !vacationRequest.status?.some(
             (status) => status.status === VacationRequestStatuses.DECLINED

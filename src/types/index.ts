@@ -10,7 +10,6 @@ export enum ToolbarFormModes {
   CREATE = "CREATE",
   EDIT = "EDIT",
   NONE = "NONE",
-  DRAFT = "DRAFT"
 }
 
 /**
@@ -36,6 +35,7 @@ export interface VacationsDataGridRow {
   days: number;
   message: string;
   status: string;
+  draft: boolean;
 }
 
 /**

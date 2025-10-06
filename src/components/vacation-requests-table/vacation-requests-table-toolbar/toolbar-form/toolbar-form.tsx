@@ -28,7 +28,6 @@ interface Props {
   toolbarFormMode: ToolbarFormModes;
   setToolbarFormMode: (toolbarFormMode: ToolbarFormModes) => void;
   setSelectedRowIds: (selectedRowIds: GridRowId[]) => void;
-  setEditVacationsData?: (data: VacationRequest) => void;
   onSaveClick?: (data: VacationRequest) => void;
   isDraft: boolean;
 }
@@ -49,7 +48,6 @@ const ToolbarForm = ({
   toolbarFormMode,
   setToolbarFormMode,
   setSelectedRowIds,
-  setEditVacationsData,
   onSaveClick,
   isDraft
 }: Props) => {
@@ -146,55 +144,47 @@ const ToolbarForm = ({
 
   const dateTimeTomorrow = DateTime.now().plus({ days: 1 });
 
-  /**
-   * Handle form submit
-   */
-  const handleFormSubmit = async () => {
-    if (setEditVacationsData) {
-      setEditVacationsData({
+  const handleCreate = async () => {
+    await createVacationRequest(vacationRequestData);
+    setFormOpen(false);
+  };
+
+  const handleEdit = async () => {
+    const currentStatus = vacationRequestData.status?.[0]?.status;
+
+    if (onSaveClick && !adminMode && currentStatus !== VacationRequestStatuses.PENDING) {
+      onSaveClick({
         ...vacationRequestData,
         id: selectedVacationRequestId
       });
-    }
-    if (toolbarFormMode === ToolbarFormModes.CREATE) {
-      await createVacationRequest(vacationRequestData);
+    } else {
+      await updateVacationRequest(vacationRequestData, selectedVacationRequestId);
       setFormOpen(false);
-    } else if (toolbarFormMode === ToolbarFormModes.EDIT) {
-      const currentStatus = vacationRequestData.status?.[0]?.status;
-      if (onSaveClick && !adminMode && currentStatus !== VacationRequestStatuses.PENDING) {
-        onSaveClick({
-          ...vacationRequestData,
-          id: selectedVacationRequestId
-        });
-      } else {
-        await updateVacationRequest(vacationRequestData, selectedVacationRequestId);
-        setFormOpen(false);
-      }
-
-      setSelectedRowIds([]);
     }
-    resetVacationRequestData();
+
+    setSelectedRowIds([]);
+  };
+
+  const handleDraft = async () => {
+    await createDraftVacationRequest(vacationRequestData);
+    setFormOpen(false);
   };
 
   return (
     <Box sx={{ padding: "10px", width: "100%" }}>
       <Grid container>
         <Grid item xs={12}>
-          <form
-            onSubmit={(event) => {
-              event.preventDefault();
-              handleFormSubmit();
-            }}
-          >
-            <ToolbarFormFields
-              dateTimeTomorrow={dateTimeTomorrow}
-              setVacationRequestData={setVacationRequestData}
-              vacationRequestData={vacationRequestData}
-              toolbarFormMode={toolbarFormMode}
-              dateRange={dateRange}
-              setDateRange={setDateRange}
-            />
-          </form>
+          <ToolbarFormFields
+            dateTimeTomorrow={dateTimeTomorrow}
+            setVacationRequestData={setVacationRequestData}
+            vacationRequestData={vacationRequestData}
+            toolbarFormMode={toolbarFormMode}
+            dateRange={dateRange}
+            setDateRange={setDateRange}
+            handleCreate={handleCreate}
+            handleEdit={handleEdit}
+            handleDraft={handleDraft}
+          />
         </Grid>
       </Grid>
     </Box>

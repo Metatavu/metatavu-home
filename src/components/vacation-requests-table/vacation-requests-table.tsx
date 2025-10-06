@@ -1,8 +1,4 @@
-import {
-  DataGrid,
-  type GridRowId,
-  type GridRowSelectionModel,
-} from "@mui/x-data-grid";
+import { DataGrid, type GridRowId, type GridRowSelectionModel } from "@mui/x-data-grid";
 import { useMemo, useRef, useState } from "react";
 import { Box, styled } from "@mui/material";
 import TableToolbar from "./vacation-requests-table-toolbar/vacation-requests-table-toolbar";
@@ -14,13 +10,10 @@ import VacationRequestsTableColumns from "./vacation-requests-table-columns";
 import strings from "src/localization/strings";
 import { Inventory } from "@mui/icons-material";
 import { displayedVacationRequestsAtom } from "src/atoms/vacation";
-import {
-  type VacationRequest,
-  VacationRequestStatuses,
-} from "src/generated/homeLambdasClient";
+import { type VacationRequest, VacationRequestStatuses } from "src/generated/homeLambdasClient";
 import {
   getTotalVacationRequestStatus,
-  getVacationRequestStatusColor,
+  getVacationRequestStatusColor
 } from "src/utils/vacation-status-utils";
 import { DateTime } from "luxon";
 import LocalizationUtils from "src/utils/localization-utils";
@@ -38,12 +31,8 @@ interface Props {
     selectedRowIds: GridRowId[],
     rows: VacationsDataGridRow[]
   ) => Promise<void>;
-  createVacationRequest: (
-    vacationRequestData: VacationRequest,
-  ) => Promise<void>;
-  createDraftVacationRequest: (
-    vacationRequestData: VacationRequest,
-  ) => Promise<void>;
+  createVacationRequest: (vacationRequestData: VacationRequest) => Promise<void>;
+  createDraftVacationRequest: (vacationRequestData: VacationRequest) => Promise<void>;
   updateVacationRequest: (
     vacationRequestData: VacationRequest,
     vacationRequestId: string
@@ -52,8 +41,11 @@ interface Props {
     updatedVacationRequestStatus: VacationRequestStatuses,
     selectedRowIds: GridRowId[]
   ) => Promise<void>;
+  fetchVacationRequestById: (vacationRequestId: string) => Promise<VacationRequest | null>;
   loading: boolean;
   isDraft: boolean;
+  filter: "ALL" | "DRAFT" | VacationRequestStatuses;
+  setFilter: React.Dispatch<React.SetStateAction<"ALL" | "DRAFT" | VacationRequestStatuses>>;
 }
 
 /**
@@ -69,15 +61,16 @@ const VacationRequestsTable = ({
   createDraftVacationRequest,
   updateVacationRequest,
   updateVacationRequestStatus,
+  fetchVacationRequestById,
   loading,
-  isDraft
+  isDraft,
+  filter,
+  setFilter
 }: Props) => {
   const vacationRequests = useAtomValue(displayedVacationRequestsAtom) || [];
   const containerRef = useRef(null);
   const [formOpen, setFormOpen] = useState(false);
-  const [selectedRowIds, setSelectedRowIds] = useState<GridRowSelectionModel>(
-    []
-  );
+  const [selectedRowIds, setSelectedRowIds] = useState<GridRowSelectionModel>([]);
   const [rows, setRows] = useState<VacationsDataGridRow[]>([]);
   const language = useAtomValue(languageAtom);
   const columns = VacationRequestsTableColumns();
@@ -101,9 +94,7 @@ const VacationRequestsTable = ({
 
     const row: VacationsDataGridRow = {
       id: vacationRequest.id,
-      type: LocalizationUtils.getLocalizedVacationRequestType(
-        vacationRequest.type
-      ),
+      type: LocalizationUtils.getLocalizedVacationRequestType(vacationRequest.type),
       personFullName: usersFullName,
       updatedAt: DateTime.fromJSDate(vacationRequest.updatedAt),
       startDate: DateTime.fromJSDate(vacationRequest.startDate),
@@ -111,6 +102,7 @@ const VacationRequestsTable = ({
       days: vacationRequest.days,
       message: vacationRequest.message || strings.vacationRequest.noMessage,
       status: VacationRequestStatuses.PENDING,
+      draft: vacationRequest.draft || false
     };
     return row;
   };
@@ -130,7 +122,9 @@ const VacationRequestsTable = ({
         row.status =
           Array.isArray(status) && status.length > 0
             ? getTotalVacationRequestStatus(status)
-            : VacationRequestStatuses.PENDING;
+            : vacationRequest.draft
+              ? strings.vacationRequest.draft
+              : VacationRequestStatuses.PENDING;
 
         if (vacationRequest.message?.length) {
           row.message = vacationRequest.message;
@@ -166,7 +160,7 @@ const VacationRequestsTable = ({
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    height: "100%",
+    height: "100%"
   }));
 
   const CustomNoRowsOverlay = () => (
@@ -188,20 +182,14 @@ const VacationRequestsTable = ({
     <Box
       sx={{
         "& .APPROVED": {
-          color: `${getVacationRequestStatusColor(
-            VacationRequestStatuses.APPROVED
-          )}`,
+          color: `${getVacationRequestStatusColor(VacationRequestStatuses.APPROVED)}`
         },
         "& .DECLINED": {
-          color: `${getVacationRequestStatusColor(
-            VacationRequestStatuses.DECLINED
-          )}`,
+          color: `${getVacationRequestStatusColor(VacationRequestStatuses.DECLINED)}`
         },
         "& .PENDING": {
-          color: `${getVacationRequestStatusColor(
-            VacationRequestStatuses.PENDING
-          )}`,
-        },
+          color: `${getVacationRequestStatusColor(VacationRequestStatuses.PENDING)}`
+        }
       }}
       ref={containerRef}
     >
@@ -213,12 +201,15 @@ const VacationRequestsTable = ({
         createDraftVacationRequest={createDraftVacationRequest}
         updateVacationRequest={updateVacationRequest}
         updateVacationRequestStatus={updateVacationRequestStatus}
+        fetchVacationRequestById={fetchVacationRequestById}
         setFormOpen={setFormOpen}
         formOpen={formOpen}
         selectedRowIds={selectedRowIds}
         rows={rows}
         setSelectedRowIds={setSelectedRowIds}
         isDraft={isDraft}
+        filter={filter}
+        setFilter={setFilter}
       />
       <DataGrid
         sx={{ height: dataGridHeight }}
@@ -232,7 +223,7 @@ const VacationRequestsTable = ({
         loading={loading && !rows.length}
         slots={{
           loadingOverlay: CustomSkeletonTableRows,
-          noRowsOverlay: CustomNoRowsOverlay,
+          noRowsOverlay: CustomNoRowsOverlay
         }}
         columns={columns}
         checkboxSelection
@@ -240,8 +231,8 @@ const VacationRequestsTable = ({
         isRowSelectable={() => !formOpen}
         initialState={{
           sorting: {
-            sortModel: [{ field: "updatedAt", sort: "asc" }],
-          },
+            sortModel: [{ field: "updatedAt", sort: "asc" }]
+          }
         }}
       />
     </Box>

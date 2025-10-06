@@ -244,6 +244,7 @@ export interface Localized extends LocalizedStringsMethods {
     pending: string;
     approved: string;
     declined: string;
+    draft: string;
     vacation: string;
     maternityPaternityLeave: string;
     unpaidTimeOff: string;
@@ -295,11 +296,15 @@ export interface Localized extends LocalizedStringsMethods {
     createRequests: string;
     editRequests: string;
     edit: string;
+    submitforApproval: string;
     cancel: string;
     create: string;
     manageRequests: string;
     future: string;
     past: string;
+    saveAsDraft: string;
+    all: string;
+    draft: string;
   };
   /**
    * Translations related to data grid
