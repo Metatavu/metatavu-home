@@ -447,7 +447,9 @@ const AllSoftwareScreen = () => {
           </Grid>
         </Grid>
       </Grid>
-      <BackButton sx={{ marginBottom: 2 }} />
+      <BackButton 
+        styles={{ marginBottom: 2 }} 
+      />
 
       <AddSoftwareModal
         open={isModalOpen}

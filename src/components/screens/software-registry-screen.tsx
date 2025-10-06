@@ -332,7 +332,7 @@ const SoftwareScreen = () => {
           disabled={loading}
           existingSoftwareList={software}
         />
-        <BackButton sx={{ marginBottom: 2 }} />
+        <BackButton styles={{ marginBottom: 2 }} />
       </Container>
   );
 };

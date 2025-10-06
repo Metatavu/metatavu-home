@@ -6,32 +6,31 @@ import strings from "src/localization/strings";
 
 interface BackButtonProps {
   onClick?: () => void;
-  sx?: SxProps<Theme>;
-  disableNavigation?: boolean;
+  styles?: SxProps<Theme>;
 }
 
 /**
- * @param props.onClick allows onClick actions to be used where applicable
- * @param props.sx override styling for consistent placement / visualization
- * @param props.disableNavigation used for "back" in create-article-form
+ * Generic back button component with optional click handling and navigation logic.
+ * @param props.onClick Optional handler to override default navigation from forms
+ * @param props.styles Optional override for styling/positioning button
  */
 const BackButton = (props: BackButtonProps): JSX.Element => {
-  const { onClick, sx, disableNavigation} = props;
+  const { onClick, styles} = props;
   const navigate = useNavigate();
   const adminMode = UserRoleUtils.adminMode();
 
   /**
-  * Generic back button with optional pre-navigation onClick,
-  * explicit redirect, and user/admin fallback route.
-  *  
-  * @param navBack Handles action of onClick
-  */
+   * Handles back button behavior:
+   * - Executes onClick if provided.
+   * - Navigates back in history if possible.
+   * - Redirects to admin or home page if history is unavailable.
+   * 
+   */
   const navBack = () => {
   if (onClick) {
     onClick();
+    return;
   }
-
-  if (disableNavigation) return;
 
 if (window.history.length > 1) {
   navigate(-1);
@@ -51,7 +50,7 @@ if (window.history.length > 1) {
         height: "100%",
         transition: "transform 0.2s ease, box-shadow 0.2s ease",
         "&:active": { transform: "translateX(-1px) scale(0.98)" },
-        ...sx
+        ...styles
       }}
     >
       <Typography>

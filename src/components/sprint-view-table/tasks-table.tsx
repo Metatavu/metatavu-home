@@ -115,24 +115,21 @@ const TaskTable = ({ filter, project }: Props) => {
         },
       }}
     >
-      <button 
-        type="button"
-        onClick={() => setOpen(!open)} 
-        style={{ 
-          display: "flex", 
-          alignItems: "center", 
-          padding: "2px", 
-          width: "100%", 
-          background: "transparent", 
-          border: "none", 
-          cursor: "pointer" 
+      <Box
+        onClick={() => setOpen(!open)}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          padding: "2px",
+          width: "100%",
+          cursor: "pointer",
         }}
       >
         <IconButton>
           {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
         </IconButton>
         <Typography>{project.name}</Typography>
-      </button>
+      </Box>
       {open && (
         <>
           {loading ? (

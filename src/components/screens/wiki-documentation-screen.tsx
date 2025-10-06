@@ -520,60 +520,74 @@ const WikiDocumentationScreen = () => {
     );
   }
 
-  return (
-    <>
-      {formOpen ? (
-        <CreateOrEditArticleForm setFormOpen={setFormOpen} action="create" adminMode={adminMode} />
-      ) : (
-        <>
-          {!adminMode && (
-            <>
-              {renderTitle(strings.wikiDocumentation.cardTitle)}
-              <CarouselArticleCards articles={lastUpdatedArticles} />
-            </>
+return (
+  <>
+    {formOpen ? (
+      <CreateOrEditArticleForm
+        handleClose={() => setFormOpen(false)}
+        action="create"
+        adminMode={adminMode}
+      />
+    ) : (
+      <>
+        {!adminMode && (  
+      <>  
+        {renderTitle(strings.wikiDocumentation.cardTitle)}  
+        <CarouselArticleCards articles={lastUpdatedArticles} />  
+      </>  
+    )} 
+        <Box
+          sx={
+            adminMode
+              ? { marginTop: 4, marginBottom: 4 }
+              : { paddingLeft: 2, paddingRight: 2, marginBottom: 4 }
+          }
+        >
+          {renderToolBar()}
+          {displayedArticlesOnPage.length !== 0 ? (
+            <Grid
+              container
+              spacing={adminMode ? 4 : 3}
+              textAlign={"center"}
+            >
+              {displayedArticlesOnPage.map((article) => (
+                <Grid
+                  item
+                  lg={!listView ? 3 : 12}
+                  md={!listView ? 4 : 12}
+                  sm={!listView ? 6 : 12}
+                  xs={12}
+                  key={`article-grid-item-${article.id}`}
+                >
+                  {listView ? (
+                    <ArticleListItem
+                      article={article}
+                      adminMode={adminMode}
+                      handleDelete={handleDelete}
+                    />
+                  ) : (
+                    <ArticleCard
+                      article={article}
+                      adminMode={adminMode}
+                      handleDelete={handleDelete}
+                    />
+                  )}
+                </Grid>
+              ))}
+            </Grid>
+          ) : (
+            <Grid
+              container
+              justifyContent="center"
+              sx={{ color: colors.button.text }}
+            >
+              <SearchOffIcon />
+              <Typography variant="body1">
+                {strings.wikiDocumentation.noArticlesFound}
+              </Typography>
+            </Grid>
           )}
-          <Box
-            sx={
-              adminMode
-                ? { marginTop: 4, marginBottom: 4 }
-                : { paddingLeft: 2, paddingRight: 2, marginBottom: 4 }
-            }
-          >
-            {renderToolBar()}
-            {displayedArticlesOnPage.length !== 0 ? (
-              <Grid container spacing={adminMode ? 4 : 3} textAlign={"center"}>
-                {displayedArticlesOnPage.map((article) => (
-                  <Grid
-                    item
-                    lg={!listView ? 3 : 12}
-                    md={!listView ? 4 : 12}
-                    sm={!listView ? 6 : 12}
-                    xs={12}
-                    key={`article-grid-item-${article.id}`}
-                  >
-                    {listView ? (
-                      <ArticleListItem
-                        article={article}
-                        adminMode={adminMode}
-                        handleDelete={handleDelete}
-                      />
-                    ) : (
-                      <ArticleCard
-                        article={article}
-                        adminMode={adminMode}
-                        handleDelete={handleDelete}
-                      />
-                    )}
-                  </Grid>
-                ))}
-              </Grid>
-            ) : (
-              <Grid container justifyContent="center" sx={{ color: colors.button.text }}>
-                <SearchOffIcon />
-                <Typography variant="body1">{strings.wikiDocumentation.noArticlesFound}</Typography>
-              </Grid>
-            )}
-          </Box>
+        </Box>
 
         {displayedArticles.length > itemsPerPage && (
           <Grid container justifyContent="center" sx={{ marginBottom: 3 }}>
@@ -585,7 +599,9 @@ const WikiDocumentationScreen = () => {
             />
           </Grid>
         )}
-        <BackButton sx={{ marginBottom: 2 }} />
+        <BackButton 
+          styles={{ marginBottom: 2 }} 
+        />
       </>
       )}
       <Snackbar
