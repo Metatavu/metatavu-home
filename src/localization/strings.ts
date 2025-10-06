@@ -658,6 +658,25 @@ export interface Localized extends LocalizedStringsMethods {
     noUsernameOnCall: string;
     errorUpdatingPaidStatus: string;
   };
+
+  employeeFlextime: {
+  title: string;
+  subtitle: string;
+  lastUpdated: string;
+  totalEmployees: string;
+  combinedBalance: string;
+  loading: string;
+  noDataFound: string;
+  employee: string;
+  email: string;
+  totalFlextimeBalance: string;
+  currentMonthBalance: string;
+  status: string;
+  active: string;
+  inactive: string;
+  employeeId: string;
+  notAvailable: string; 
+};
 }
 
 /**

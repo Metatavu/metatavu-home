@@ -532,6 +532,7 @@
     "status": "Status",
     "active": "Active",
     "inactive": "Inactive",
-    "employeeId": "ID: {0}"
+    "employeeId": "ID: {0}",
+    "notAvailable": "N/A"
   }
 }

@@ -18,17 +18,18 @@ import {
 import { DateTime } from "luxon";
 import { useLambdasApi } from "src/hooks/use-api";
 import type { UserFlextime } from "src/generated/homeLambdasClient";
-import strings from "src/localization/en.json";
+import strings from "src/localization/strings";
+import { useSetAtom } from "jotai";
+import { errorAtom } from "src/atoms/error";
 
 /**
  * Full-screen view for displaying flextime data for all employees.
- * @returns A React functional component rendering the employee flextime screen.
  */
-const EmployeeFlextimeScreen: () => JSX.Element = () => {
+const EmployeeFlextimeScreen = () => {
   const { resourceAllocationsApi } = useLambdasApi();
   const [usersFlextime, setUsersFlextime] = useState<UserFlextime[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const setError = useSetAtom(errorAtom);
   const currentDate = DateTime.now().toLocaleString(DateTime.DATE_FULL);
 
   useEffect(() => {
@@ -40,20 +41,17 @@ const EmployeeFlextimeScreen: () => JSX.Element = () => {
    */
   const loadFlextimeData = async () => {
     if (!resourceAllocationsApi) {
-      setError(strings.error.missingEmailOrId);
-      setLoading(false);
+      setError(strings.error.fetchFailedFlextime);
       return;
     }
 
     setLoading(true);
-    setError(null);
 
     try {
       const data = await resourceAllocationsApi.listUsersFlextime();
       setUsersFlextime(data);
     } catch (err) {
-      console.error(err);
-      setError(strings.error.fetchFailedFlextime);
+      setError(`${strings.error.fetchFailedFlextime}, ${err}`);
     } finally {
       setLoading(false);
     }
@@ -65,7 +63,7 @@ const EmployeeFlextimeScreen: () => JSX.Element = () => {
    * @returns A string representation of the formatted balance.
    */
   const formatFlextimeHours = (hours: number | null | undefined): string => {
-    if (hours === null || hours === undefined) return "N/A";
+    if (hours === null || hours === undefined) return strings.employeeFlextime.notAvailable;
     const sign = hours >= 0 ? "+" : "";
     return `${sign}${hours.toFixed(2)}h`;
   };
@@ -108,20 +106,6 @@ const EmployeeFlextimeScreen: () => JSX.Element = () => {
           />
         </Box>
       </Card>
-    );
-  }
-
-  if (error) {
-    return (
-      <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-        <Card>
-          <CardContent>
-            <Typography color="error" variant="h6" textAlign="center">
-              {error}
-            </Typography>
-          </CardContent>
-        </Card>
-      </Container>
     );
   }
 
@@ -199,7 +183,7 @@ const EmployeeFlextimeScreen: () => JSX.Element = () => {
                 .sort((a, b) => `${a.user.lastName} ${a.user.firstName}`.localeCompare(`${b.user.lastName} ${b.user.firstName}`))
                 .map((userData, index) => (
                 <TableRow 
-                  key={userData.user.id} 
+                  key={userData.user.attributes?.severaUserId || index} 
                   hover
                   sx={{ backgroundColor: index % 2 === 0 ? "#fafafa" : "white" }}
                 >
@@ -208,14 +192,11 @@ const EmployeeFlextimeScreen: () => JSX.Element = () => {
                       <Typography variant="body1" fontWeight="medium">
                         {userData.user.firstName} {userData.user.lastName}
                       </Typography>
-                      <Typography variant="caption" color="textSecondary">
-                        ID: {userData.user.id}
-                      </Typography>
                     </Box>
                   </TableCell>
                   <TableCell>
                     <Typography variant="body2">
-                      {userData.user.email || "N/A"}
+                      {userData.user.email || strings.employeeFlextime.notAvailable}
                     </Typography>
                   </TableCell>
                   <TableCell align="right">

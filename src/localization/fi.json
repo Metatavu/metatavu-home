@@ -517,5 +517,24 @@
   "wikiContent": "Lue tai luo dokumentaatiota.",
   "doneTitle": "Onboarding valmis",
   "doneContent": "Valmista! Voit aloittaa alusta asetuksista."
+},
+"employeeFlextime": {
+  "title": "Työntekijöiden aikakokonaisuudet ja saldot",
+  "subtitle": "Yleiskatsaus kaikkien mukaan liittyneiden työntekijöiden liukumasaldoista",
+  "lastUpdated": "Viimeksi päivitetty: {0}",
+  "totalEmployees": "Työntekijöitä yhteensä",
+  "combinedBalance": "Yhteenlaskettu saldo",
+  "loading": "Ladataan työntekijöiden aikatietoja...",
+  "noDataFound": "Työntekijöiden aikatietoja ei löytynyt",
+  "employee": "Työntekijä",
+  "email": "Sähköposti",
+  "totalFlextimeBalance": "Liukumasaldo yhteensä",
+  "currentMonthBalance": "Kuluvan kuukauden saldo",
+  "status": "Tila",
+  "active": "Aktiivinen",
+  "inactive": "Ei-aktiivinen",
+  "employeeId": "ID: {0}",
+  "notAvailable": "N/A"
 }
+
 }
