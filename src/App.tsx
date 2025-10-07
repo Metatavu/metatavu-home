@@ -30,6 +30,7 @@ import WikiDocumentationScreen from "./components/screens/wiki-documentation-scr
 import SoftwareDetails from "./components/software-registry/SoftwareDetails";
 import { theme } from "./theme";
 import { QuestionnairePreviewMode } from "./types";
+import EmployeeFlextimeScreen from "./components/screens/employee-flextime-screen";
 
 /**
  * Application component
@@ -127,12 +128,20 @@ const App = () => {
         //    element: <TimebankViewAllScreen />
         //  },
         {
+          path: "/admin/severa/employee-flextime",
+          element: <EmployeeFlextimeScreen />
+        },
+        {
           path: "/admin/sprintview",
           element: <SprintViewScreen />
         },
         {
-          path: "/admin/vacation-management",
-          element: <AdminVacationManagementScreen />
+          path: "/admin/allsoftware",
+          element: <AllSoftwareScreen />
+        },
+        {
+          path: "/admin/allsoftware/:id",
+          element: <SoftwareDetails />
         },
         {
           path: "/admin/questionnaire",

@@ -521,5 +521,23 @@
     "wikiContent": "Read or create documentation.",
     "doneTitle": "Complete the Onboarding",
     "doneContent": "You're all set! You can restart from Settings."
+  },
+  "employeeFlextime": {
+    "title": "Employee Time Totals and Balances",
+    "subtitle": "Overview of flextime balances for all opted-in employees",
+    "lastUpdated": "Last updated: {0}",
+    "totalEmployees": "Total Employees",
+    "combinedBalance": "Combined Balance",
+    "loading": "Loading employee time data...",
+    "noDataFound": "No employee time data found",
+    "employee": "Employee",
+    "email": "Email",
+    "totalFlextimeBalance": "Total Flextime Balance",
+    "currentMonthBalance": "Current Month Balance",
+    "status": "Status",
+    "active": "Active",
+    "inactive": "Inactive",
+    "employeeId": "ID: {0}",
+    "notAvailable": "N/A"
   }
 }
