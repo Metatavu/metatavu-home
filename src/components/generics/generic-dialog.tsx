@@ -2,12 +2,12 @@ import CloseIcon from "@mui/icons-material/Close";
 import {
   Box,
   Button,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
-  IconButton,
-  CircularProgress
+  IconButton
 } from "@mui/material";
 import type { ReactNode } from "react";
 

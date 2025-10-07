@@ -1,13 +1,13 @@
-import { useState, useRef } from "react";
-import { Box, Typography, Grid, IconButton, Button } from "@mui/material";
-import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/swiper-bundle.css";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import { Box, Button, Grid, IconButton, Typography } from "@mui/material";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import type { SoftwareRegistry } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/swiper-bundle.css";
 import RecommendCard from "./cards/recommendCard";
 
 /**
@@ -70,7 +70,7 @@ const Recommendations = ({ applications, onAddUser }: RecommendationsProps) => {
 
     setLoadingStates((prev) => ({
       ...prev,
-      users: { ...prev.users, [userId]: true },
+      users: { ...prev.users, [userId]: true }
     }));
 
     try {
@@ -80,7 +80,7 @@ const Recommendations = ({ applications, onAddUser }: RecommendationsProps) => {
       if (user) {
         setUserNames((prev) => ({
           ...prev,
-          [userId]: `${user.firstName} ${user.lastName}`,
+          [userId]: `${user.firstName} ${user.lastName}`
         }));
       } else {
         console.warn(`User with ID ${userId} not found`);
@@ -90,7 +90,7 @@ const Recommendations = ({ applications, onAddUser }: RecommendationsProps) => {
     } finally {
       setLoadingStates((prev) => ({
         ...prev,
-        users: { ...prev.users, [userId]: false },
+        users: { ...prev.users, [userId]: false }
       }));
     }
   };
@@ -111,7 +111,7 @@ const Recommendations = ({ applications, onAddUser }: RecommendationsProps) => {
         fontSize: { xs: "18px", sm: "30px" },
         color: "#000",
         fontFamily: "Poppins",
-        marginBottom: "30px",
+        marginBottom: "30px"
       }}
     >
       <Typography variant="h3" sx={{ alignSelf: "flex-start", fontWeight: "bold", mb: 2 }}>
@@ -132,14 +132,14 @@ const Recommendations = ({ applications, onAddUser }: RecommendationsProps) => {
               top: "50%",
               transform: "translateY(-50%)",
               "&:hover": {
-                backgroundColor: "#d63b31",
-              },
+                backgroundColor: "#d63b31"
+              }
             }}
           >
             <ChevronLeftIcon />
           </IconButton>
 
-          <Swiper ref={swiperRef} spaceBetween={60} slidesPerView="auto" >
+          <Swiper ref={swiperRef} spaceBetween={60} slidesPerView="auto">
             {applications.map((app) => (
               <SwiperSlide key={app.id} style={{ width: "260px" }}>
                 <RecommendCard
@@ -167,8 +167,8 @@ const Recommendations = ({ applications, onAddUser }: RecommendationsProps) => {
               top: "50%",
               transform: "translateY(-50%)",
               "&:hover": {
-                backgroundColor: "#d63b31",
-              },
+                backgroundColor: "#d63b31"
+              }
             }}
           >
             <ChevronRightIcon />
@@ -189,7 +189,7 @@ const Recommendations = ({ applications, onAddUser }: RecommendationsProps) => {
             color: "#fff",
             fontSize: "18px",
             borderRadius: "25px",
-            "&:hover": { background: "#000" },
+            "&:hover": { background: "#000" }
           }}
         >
           {strings.softwareRegistry.allApplications}

@@ -1,8 +1,8 @@
+import KeyboardReturn from "@mui/icons-material/KeyboardReturn";
 import { Button, type SxProps, type Theme, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import KeyboardReturn from "@mui/icons-material/KeyboardReturn";
-import UserRoleUtils from "src/utils/user-role-utils";
 import strings from "src/localization/strings";
+import UserRoleUtils from "src/utils/user-role-utils";
 
 interface BackButtonProps {
   onClick?: () => void;
@@ -15,7 +15,7 @@ interface BackButtonProps {
  * @param props.styles Optional override for styling/positioning button
  */
 const BackButton = (props: BackButtonProps): JSX.Element => {
-  const { onClick, styles} = props;
+  const { onClick, styles } = props;
   const navigate = useNavigate();
   const adminMode = UserRoleUtils.adminMode();
 
@@ -24,20 +24,20 @@ const BackButton = (props: BackButtonProps): JSX.Element => {
    * - Executes onClick if provided.
    * - Navigates back in history if possible.
    * - Redirects to admin or home page if history is unavailable.
-   * 
+   *
    */
   const navBack = () => {
-  if (onClick) {
-    onClick();
-    return;
-  }
+    if (onClick) {
+      onClick();
+      return;
+    }
 
-if (window.history.length > 1) {
-  navigate(-1);
-} else {
-  navigate(adminMode ? "/admin" : "/");
-}
-};
+    if (window.history.length > 1) {
+      navigate(-1);
+    } else {
+      navigate(adminMode ? "/admin" : "/");
+    }
+  };
 
   return (
     <Button
@@ -53,9 +53,7 @@ if (window.history.length > 1) {
         ...styles
       }}
     >
-      <Typography>
-        {strings.label.back}
-      </Typography>
+      <Typography>{strings.label.back}</Typography>
     </Button>
   );
 };

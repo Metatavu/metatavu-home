@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
-import type { Person } from "src/generated/client";
-import { CircularProgress, Card } from "@mui/material";
-import { userProfileAtom } from "src/atoms/auth";
+import { Card, CircularProgress } from "@mui/material";
 import { useAtomValue } from "jotai";
-import { personsAtom } from "src/atoms/person";
-import TimebankContent from "../timebank/timebank-content";
+import { useEffect, useState } from "react";
 import config from "src/app/config";
+import { userProfileAtom } from "src/atoms/auth";
+import { personsAtom } from "src/atoms/person";
+import type { Person } from "src/generated/client";
+import TimebankContent from "../timebank/timebank-content";
 
 /**
  * Timebank screen component.
