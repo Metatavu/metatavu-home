@@ -17,9 +17,6 @@ import ToolbarDeleteButton from "./toolbar-delete-button";
 import ToolbarForm from "./toolbar-form/toolbar-form";
 import FormToggleButton from "./toolbar-form-toggle-button";
 import UpdateStatusButton from "./toolbar-update-status-button";
-import UserRoleUtils from "src/utils/user-role-utils";
-import type { VacationRequest } from "src/generated/homeLambdasClient";
-import EditConfirmationDialogue from "src/components/contexts/edit-confirmation-dialogue";
 import ToolbarSubmitButton from "./toolbar-submit-button";
 import { FilterType } from "src/utils/vacation-filter-type";
 /**
@@ -195,7 +192,7 @@ const TableToolbar = ({
     setFormOpen(true);
     setWasDraftBeforeEdit(isDraftSelected);
   };
-  
+
   return (
     <Box>
       <ConfirmationHandler
