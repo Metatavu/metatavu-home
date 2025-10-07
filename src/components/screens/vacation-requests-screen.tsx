@@ -1,23 +1,24 @@
 import { Card } from "@mui/material";
-import { useEffect, useMemo, useState } from "react";
-import VacationRequestsTable from "../vacation-requests-table/vacation-requests-table";
-import type { User } from "src/generated/homeLambdasClient";
-import { type VacationRequest, VacationRequestStatuses } from "src/generated/homeLambdasClient";
-import { useLambdasApi } from "src/hooks/use-api";
+import type { GridRowId } from "@mui/x-data-grid";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { useEffect, useMemo, useState } from "react";
 import { userProfileAtom } from "src/atoms/auth";
 import { errorAtom } from "src/atoms/error";
-import type { GridRowId } from "@mui/x-data-grid";
-import strings from "src/localization/strings";
+import { usersAtom } from "src/atoms/user";
 import {
   allVacationRequestsAtom,
   displayedVacationRequestsAtom,
   vacationRequestsAtom
 } from "src/atoms/vacation";
+import type { User } from "src/generated/homeLambdasClient";
+import { type VacationRequest, VacationRequestStatuses } from "src/generated/homeLambdasClient";
+import { useLambdasApi } from "src/hooks/use-api";
+import strings from "src/localization/strings";
 import UserRoleUtils from "src/utils/user-role-utils";
 import { renderVacationDaysTextForScreen } from "src/utils/vacation-days-utils";
-import { usersAtom } from "src/atoms/user";
 import BackButton from "../generics/back-button";
+import VacationRequestsTable from "../vacation-requests-table/vacation-requests-table";
+import type { FilterType } from "src/utils/vacation-filter-type";
 
 /**
  * Vacation requests screen
@@ -45,15 +46,35 @@ const VacationRequestsScreen = () => {
   const [isUpcoming, setIsUpcoming] = useState(true);
   const [users] = useAtom(usersAtom);
   const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
+  const [filter, setFilter] = useState<FilterType>("ALL");
 
   /**
-   * Decide if we show upcoming or past vacations
+   * Filters a list of vacation requests based on the given filter.
+   *
+   * @param requests - The list of vacation requests to filter.
+   * @param filter - The filter criteria.
+   *   - `"ALL"`: Returns all requests (excluding drafts in admin mode).
+   *   - `"DRAFT"`: Returns only draft requests.
+   *   - A specific `VacationRequestStatuses` value: Returns requests matching that status.
+   * @returns The filtered list of vacation requests.
+   */
+  const filterVacationRequests = (requests: VacationRequest[], filter: FilterType) => {
+    return requests.filter((request) => {
+      if (filter === "ALL") {
+        return adminMode ? request.draft !== true : true;
+      }
+      if (filter === "DRAFT") return request.draft === true;
+      return request.status?.[0]?.status === filter;
+    });
+  };
+  /**
+   * Decide if we show upcoming or past vacations and apply the selected filter
    */
   useEffect(() => {
-    isUpcoming
-      ? setDisplayedVacationRequests(upcomingVacationRequests)
-      : setDisplayedVacationRequests(pastVacationRequests);
-  }, [isUpcoming, vacationRequests]);
+    const baseRequests = isUpcoming ? upcomingVacationRequests : pastVacationRequests;
+    const filteredRequests = filterVacationRequests(baseRequests, filter);
+    setDisplayedVacationRequests(filteredRequests);
+  }, [isUpcoming, filter, vacationRequests]);
 
   /**
    * Handler for upcoming/ past vacations toggle click
@@ -87,6 +108,47 @@ const VacationRequestsScreen = () => {
   useEffect(() => {
     fetchVacationsRequests();
   }, [loggedInUser, isUpcoming]);
+
+  /**
+   * Fetch a single vacation request by ID for the logged-in user (or admin)
+   *
+   * @param vacationRequestId string ID of the vacation request
+   * @returns VacationRequest | null
+   */
+  const fetchVacationRequestById = async (
+    vacationRequestId: string
+  ): Promise<VacationRequest | null> => {
+    if (!loggedInUser) return null;
+    setLoading(true);
+    try {
+      // Fetch all requests (or admin/all)
+      let fetchedVacationRequests: VacationRequest[] = [];
+      if (adminMode) {
+        fetchedVacationRequests = await vacationRequestsApi.listVacationRequests({});
+      } else {
+        fetchedVacationRequests = await vacationRequestsApi.listVacationRequests({
+          userId: loggedInUser.id
+        });
+      }
+
+      // Find the request by ID
+      const vacationRequest = fetchedVacationRequests.find(
+        (request) => request.id === vacationRequestId
+      );
+
+      if (!vacationRequest) {
+        setError(strings.vacationRequestError.fetchRequestError);
+        return null;
+      }
+
+      return vacationRequest;
+    } catch (error) {
+      setError(`${strings.vacationRequestError.fetchRequestError}, ${error}`);
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  };
 
   /**
    * Delete vacation requests
@@ -154,6 +216,37 @@ const VacationRequestsScreen = () => {
   };
 
   /**
+   * Create a draft vacation request
+   *
+   * @param vacationRequestData vacation data from the create form
+   */
+  const createDraftVacationRequest = async (vacationRequestData: VacationRequest) => {
+    if (!loggedInUser) return;
+    try {
+      setLoading(true);
+      const createdRequest = await vacationRequestsApi.createVacationRequest({
+        vacationRequest: {
+          userId: loggedInUser.id,
+          startDate: vacationRequestData.startDate,
+          endDate: vacationRequestData.endDate,
+          type: vacationRequestData.type,
+          message: vacationRequestData.message,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          createdBy: loggedInUser?.id,
+          days: vacationRequestData.days,
+          draft: true,
+          status: []
+        }
+      });
+      setVacationRequests([createdRequest, ...vacationRequests]);
+    } catch (error) {
+      setError(`${strings.vacationRequestError.createRequestError}, ${error}`);
+    }
+    setLoading(false);
+  };
+
+  /**
    * Update a vacation request
    *
    * @param vacationRequestData vacation request data from the update form
@@ -195,7 +288,8 @@ const VacationRequestsScreen = () => {
           message: vacationRequestData.message,
           updatedAt: new Date(),
           days: vacationRequestData.days,
-          status: updatedStatus
+          status: updatedStatus,
+          draft: false
         }
       });
       const updatedVacationRequests = vacationRequests.map((vacationRequest) =>
@@ -219,6 +313,7 @@ const VacationRequestsScreen = () => {
     selectedRowIds: GridRowId[]
   ) => {
     if (!loggedInUser) return;
+
     try {
       setLoading(true);
       const updatedVacationRequests = await Promise.all(
@@ -227,6 +322,7 @@ const VacationRequestsScreen = () => {
             (vacationRequest) => vacationRequest.id === vacationRequestId
           );
           if (!vacationRequest) return;
+
           const newOrUpdatedStatus = {
             status,
             createdBy: loggedInUser.id,
@@ -264,14 +360,16 @@ const VacationRequestsScreen = () => {
           toggleIsUpcoming={toggleIsUpcoming}
           deleteVacationRequests={deleteVacationRequests}
           createVacationRequest={createVacationRequest}
+          createDraftVacationRequest={createDraftVacationRequest}
           updateVacationRequest={updateVacationRequest}
           updateVacationRequestStatus={updateVacationRequestStatus}
+          fetchVacationRequestById={fetchVacationRequestById}
           loading={loading}
+          filter={filter}
+          setFilter={setFilter}
         />
       </Card>
-      <BackButton 
-        styles={{ mt: 2, marginBottom: 2 }} 
-      />
+      <BackButton styles={{ mt: 2, marginBottom: 2 }} />
     </>
   );
 };

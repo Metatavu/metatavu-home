@@ -1,7 +1,7 @@
+import { styled, ToggleButton, ToggleButtonGroup, Tooltip } from "@mui/material";
 import { useAtom } from "jotai";
-import strings from "src/localization/strings";
-import { ToggleButton, ToggleButtonGroup, Tooltip, styled } from "@mui/material";
 import { languageAtom } from "src/atoms/language";
+import strings from "src/localization/strings";
 import type { Language } from "src/types";
 /**
  * Styled toggle button group component for language switching

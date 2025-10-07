@@ -196,7 +196,8 @@
     "cancelButtonText": "No",
     "title": "Are you sure?",
     "message": "Delete selected vacation request(s)?",
-    "editMessage": "This reviewed request will go back to pending if you save changes. Do you want to proceed?"
+    "editMessage": "This reviewed request will go back to pending if you save changes. Do you want to proceed?",
+    "editDraftMessage": "This draft request will be sent for approval if you save changes. Do you want to proceed?"
   },
   "errorHandler": {
     "cancelButtonText": "Close",
@@ -213,6 +214,7 @@
     "pending": "Pending",
     "approved": "Approved",
     "declined": "Declined",
+    "draft": "Draft",
     "vacation": "Vacation",
     "maternityPaternityLeave": "Parental leave",
     "unpaidTimeOff": "Unpaid time off",
@@ -253,11 +255,16 @@
     "createRequests": "New vacation request",
     "editRequests": "Edit a vacation request",
     "edit": "Edit",
+    "submitforApproval": "Submit for approval",
     "cancel": "Cancel",
     "create": "Request vacation",
     "manageRequests": "Manage vacation requests",
     "future": "Upcoming",
-    "past": "Past"
+    "past": "Past",
+    "saveAsDraft": "Save as Draft",
+    "all": "All",
+    "draft": "Draft",
+    "saveAsDraftTooltip": "Saving the vacation request as a draft will not submit it for approval"
   },
   "dataGrid": {
     "noRows": "No Rows"
@@ -289,9 +296,7 @@
     "notAdmin": "You don't have an admin role",
     "noAccess": "Access denied"
   },
-  "vacationsScreen": {
-
-  },
+  "vacationsScreen": {},
   "viewAll": {
     "startDate": "Start Date: ",
     "balance": "Balance: "

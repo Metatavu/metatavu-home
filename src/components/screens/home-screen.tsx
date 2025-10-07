@@ -1,19 +1,19 @@
-import { Skeleton, Box, Grid } from "@mui/material";
-import CardGridWrapper from "../home/common/card-grid-wrapper";
-import BalanceCard from "../home/balance-card";
-import QuestionnaireCard from "../home/questionnaire-card";
-import VacationsCard from "../home/vacations-card";
-import SprintViewCard from "../home/sprint-view-card";
-import UserRoleUtils from "src/utils/user-role-utils";
-import type { User } from "src/generated/homeLambdasClient";
-import { usersAtom } from "src/atoms/user";
-import { userProfileAtom } from "src/atoms/auth";
+import { Box, Grid, Skeleton } from "@mui/material";
 import { useAtomValue } from "jotai";
-import WikiDocumentationCard from "../home/wiki-documentation-card";
-import strings from "src/localization/strings";
 import type { ReactNode } from "react";
-import SoftwareRegistryCard from "../home/software-registry-card";
+import { userProfileAtom } from "src/atoms/auth";
+import { usersAtom } from "src/atoms/user";
+import type { User } from "src/generated/homeLambdasClient";
+import strings from "src/localization/strings";
+import UserRoleUtils from "src/utils/user-role-utils";
+import BalanceCard from "../home/balance-card";
+import CardGridWrapper from "../home/common/card-grid-wrapper";
 import OnCallCard from "../home/oncall-card";
+import QuestionnaireCard from "../home/questionnaire-card";
+import SoftwareRegistryCard from "../home/software-registry-card";
+import SprintViewCard from "../home/sprint-view-card";
+import VacationsCard from "../home/vacations-card";
+import WikiDocumentationCard from "../home/wiki-documentation-card";
 import Onboarding from "../onboarding/Onboarding";
 
 /**
@@ -46,7 +46,7 @@ const HomeScreen = () => {
         minHeight: title === strings.sprint.sprintview ? 270 : 120,
         display: "flex",
         flexDirection: "column",
-        justifyContent: "flex-start",
+        justifyContent: "flex-start"
       }}
     >
       <Grid sx={{ padding: 2 }}>
@@ -112,7 +112,7 @@ const HomeScreen = () => {
       <Box key="oncall" id="oncall-card">
         <OnCallCard />
       </Box>
-    ),
+    )
   ].filter(Boolean);
 
   return (

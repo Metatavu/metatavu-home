@@ -1,12 +1,12 @@
-import { 
-  Card, 
-  CardContent, 
-  CardMedia, 
-  Typography, 
-  Box, 
-  Chip, 
-  CardActionArea, 
-  Link as MuiLink 
+import {
+  Box,
+  Card,
+  CardActionArea,
+  CardContent,
+  CardMedia,
+  Chip,
+  Link as MuiLink,
+  Typography
 } from "@mui/material";
 import { Link } from "react-router-dom";
 import type { SoftwareRegistry } from "src/generated/homeLambdasClient";
@@ -15,15 +15,7 @@ interface AppCardProps extends SoftwareRegistry {
   isGridView: boolean;
 }
 
-const AppCard = ({ 
-  id, 
-  image, 
-  name, 
-  description, 
-  tags = [], 
-  isGridView 
-}: AppCardProps) => {
-
+const AppCard = ({ id, image, name, description, tags = [], isGridView }: AppCardProps) => {
   return (
     <MuiLink component={Link} to={`${id}`} underline="none" color="inherit">
       {isGridView ? (

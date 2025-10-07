@@ -1,15 +1,18 @@
 import { Box, Grid } from "@mui/material";
-import { type VacationRequest, VacationType } from "src/generated/homeLambdasClient";
-import { useEffect, useState } from "react";
-import { DateTime } from "luxon";
-import { type VacationsDataGridRow, ToolbarFormModes, type DateRange } from "src/types";
 import type { GridRowId } from "@mui/x-data-grid";
-import { determineToolbarFormMode } from "src/utils/toolbar-utils";
 import { useAtomValue } from "jotai";
-import ToolbarFormFields from "./toolbar-form-fields";
+import { DateTime } from "luxon";
+import { useEffect, useState } from "react";
 import { allVacationRequestsAtom, vacationRequestsAtom } from "src/atoms/vacation";
+import {
+  type VacationRequest,
+  VacationRequestStatuses,
+  VacationType
+} from "src/generated/homeLambdasClient";
+import { type DateRange, ToolbarFormModes, type VacationsDataGridRow } from "src/types";
+import { determineToolbarFormMode } from "src/utils/toolbar-utils";
 import UserRoleUtils from "src/utils/user-role-utils";
-import { VacationRequestStatuses } from "src/generated/homeLambdasClient";
+import ToolbarFormFields from "./toolbar-form-fields";
 
 /**
  * Component properties
@@ -22,12 +25,12 @@ interface Props {
     vacationRequestId: string
   ) => Promise<void>;
   createVacationRequest: (vacationRequestData: VacationRequest) => Promise<void>;
+  createDraftVacationRequest: (vacationRequestData: VacationRequest) => Promise<void>;
   selectedRowIds: GridRowId[];
   rows: VacationsDataGridRow[];
   toolbarFormMode: ToolbarFormModes;
   setToolbarFormMode: (toolbarFormMode: ToolbarFormModes) => void;
   setSelectedRowIds: (selectedRowIds: GridRowId[]) => void;
-  setEditVacationsData?: (data: VacationRequest) => void;
   onSaveClick?: (data: VacationRequest) => void;
 }
 
@@ -40,13 +43,13 @@ const ToolbarForm = ({
   formOpen,
   setFormOpen,
   createVacationRequest,
+  createDraftVacationRequest,
   updateVacationRequest,
   selectedRowIds,
   rows,
   toolbarFormMode,
   setToolbarFormMode,
   setSelectedRowIds,
-  setEditVacationsData,
   onSaveClick
 }: Props) => {
   const defaultDateRange = {
@@ -143,54 +146,58 @@ const ToolbarForm = ({
   const dateTimeTomorrow = DateTime.now().plus({ days: 1 });
 
   /**
-   * Handle form submit
+   * Handle create vacation request
    */
-  const handleFormSubmit = async () => {
-    if (setEditVacationsData) {
-      setEditVacationsData({
+  const handleCreate = async () => {
+    await createVacationRequest(vacationRequestData);
+    setFormOpen(false);
+  };
+
+  /**
+   * Handle edit vacation request
+   *
+   * if user is not admin and the request is not in pending status, call onSaveClick that opens the edit confirmation dialog
+   * otherwise just update the vacation request as usual
+   */
+  const handleEdit = async () => {
+    const currentStatus = vacationRequestData.status?.[0]?.status;
+
+    if (onSaveClick && !adminMode && currentStatus !== VacationRequestStatuses.PENDING) {
+      onSaveClick({
         ...vacationRequestData,
         id: selectedVacationRequestId
       });
-    }
-    if (toolbarFormMode === ToolbarFormModes.CREATE) {
-      await createVacationRequest(vacationRequestData);
+    } else {
+      await updateVacationRequest(vacationRequestData, selectedVacationRequestId);
       setFormOpen(false);
-    } else if (toolbarFormMode === ToolbarFormModes.EDIT) {
-      const currentStatus = vacationRequestData.status?.[0]?.status;
-      if (onSaveClick && !adminMode && currentStatus !== VacationRequestStatuses.PENDING) {
-        onSaveClick({
-          ...vacationRequestData,
-          id: selectedVacationRequestId
-        });
-      } else {
-        await updateVacationRequest(vacationRequestData, selectedVacationRequestId);
-        setFormOpen(false);
-      }
-
-      setSelectedRowIds([]);
     }
-    resetVacationRequestData();
+
+    setSelectedRowIds([]);
+  };
+
+  /**
+   *  Handle draft vacation request creation
+   */
+  const handleDraft = async () => {
+    await createDraftVacationRequest(vacationRequestData);
+    setFormOpen(false);
   };
 
   return (
     <Box sx={{ padding: "10px", width: "100%" }}>
       <Grid container>
         <Grid item xs={12}>
-          <form
-            onSubmit={(event) => {
-              event.preventDefault();
-              handleFormSubmit();
-            }}
-          >
-            <ToolbarFormFields
-              dateTimeTomorrow={dateTimeTomorrow}
-              setVacationRequestData={setVacationRequestData}
-              vacationRequestData={vacationRequestData}
-              toolbarFormMode={toolbarFormMode}
-              dateRange={dateRange}
-              setDateRange={setDateRange}
-            />
-          </form>
+          <ToolbarFormFields
+            dateTimeTomorrow={dateTimeTomorrow}
+            setVacationRequestData={setVacationRequestData}
+            vacationRequestData={vacationRequestData}
+            toolbarFormMode={toolbarFormMode}
+            dateRange={dateRange}
+            setDateRange={setDateRange}
+            handleCreate={handleCreate}
+            handleEdit={handleEdit}
+            handleDraft={handleDraft}
+          />
         </Grid>
       </Grid>
     </Box>

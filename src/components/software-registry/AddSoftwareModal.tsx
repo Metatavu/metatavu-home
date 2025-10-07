@@ -1,21 +1,21 @@
-import { useState, useEffect, } from "react";
-import {
-  Modal,
-  Box,
-  Typography,
-  TextField,
-  Button,
-  Grid,
-  Chip,
-  IconButton,
-  Autocomplete,
-  Snackbar,
-  Alert
-} from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import strings from "src/localization/strings";
+import {
+  Alert,
+  Autocomplete,
+  Box,
+  Button,
+  Chip,
+  Grid,
+  IconButton,
+  Modal,
+  Snackbar,
+  TextField,
+  Typography
+} from "@mui/material";
+import { useEffect, useState } from "react";
 import type { SoftwareRegistry, User } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
+import strings from "src/localization/strings";
 
 /**
  * AddSoftwareModal component props

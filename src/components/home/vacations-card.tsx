@@ -1,28 +1,29 @@
-import { Grid, Card, CardContent, Skeleton, Typography, Box } from "@mui/material";
-import strings from "src/localization/strings";
-import { Link } from "react-router-dom";
+import { Check, Pending } from "@mui/icons-material";
 import LuggageIcon from "@mui/icons-material/Luggage";
-import { useAtomValue, useSetAtom, useAtom } from "jotai";
-import { useState, useMemo } from "react";
+import { Box, Card, CardContent, Grid, Skeleton, Typography } from "@mui/material";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { DateTime } from "luxon";
+import { useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import { userProfileAtom } from "src/atoms/auth";
 import { errorAtom } from "src/atoms/error";
+import { usersAtom } from "src/atoms/user.ts";
+import { allVacationRequestsAtom, vacationRequestsAtom } from "src/atoms/vacation";
+import type { User } from "src/generated/homeLambdasClient";
 import { type VacationRequest, VacationRequestStatuses } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
-import { DateTime } from "luxon";
+import strings from "src/localization/strings";
+import type { VacationInfoListItem } from "src/types";
+import { validateValueIsNotUndefinedNorNull } from "src/utils/check-utils";
 import LocalizationUtils from "src/utils/localization-utils";
-import { allVacationRequestsAtom, vacationRequestsAtom } from "src/atoms/vacation";
+import { formatDate } from "src/utils/time-utils";
+import UserRoleUtils from "src/utils/user-role-utils";
+import { getVacationRequestPersonFullName } from "src/utils/vacation-request-utils";
 import {
   getTotalVacationRequestStatus,
   getVacationRequestStatusColor
 } from "src/utils/vacation-status-utils";
-import UserRoleUtils from "src/utils/user-role-utils";
-import { Check, Pending } from "@mui/icons-material";
-import { getVacationRequestPersonFullName } from "src/utils/vacation-request-utils";
-import { validateValueIsNotUndefinedNorNull } from "src/utils/check-utils";
-import type { VacationInfoListItem } from "src/types";
-import { formatDate } from "src/utils/time-utils";
-import type { User } from "src/generated/homeLambdasClient";
-import { usersAtom } from "src/atoms/user.ts";
+
 // TODO: Component is commented out due backend calculations about vacation days being incorrect. Once the error is fixed, introduce the text components back in the code.
 // import { renderVacationDaysTextForCard } from "../../utils/vacation-days-utils";
 
@@ -63,24 +64,26 @@ const VacationsCard = () => {
   }, [loggedInUser]);
 
   /**
-   * Get pending vacation requests by checking whether any of its statuses are approved or declined
+   * Get pending vacation requests by checking whether any of its statuses are approved, declined or draft
    *
    * @returns pending vacation requests
    */
   const getPendingVacationRequests = () => {
     return vacationRequests
-      .filter((vacationRequest) =>
-        vacationRequest.status?.every(
-          (status) =>
-            status.status !== VacationRequestStatuses.APPROVED &&
-            status.status !== VacationRequestStatuses.DECLINED
-        )
+      .filter(
+        (vacationRequest) =>
+          vacationRequest.draft !== true &&
+          vacationRequest.status?.every(
+            (status) =>
+              status.status !== VacationRequestStatuses.APPROVED &&
+              status.status !== VacationRequestStatuses.DECLINED
+          )
       )
       .filter(validateValueIsNotUndefinedNorNull);
   };
 
   /**
-   * Get upcoming vacation requests and filter out declined vacation requests
+   * Get upcoming vacation requests and filter out declined/draft vacation requests
    *
    * @returns upcoming vacation requests
    */
@@ -88,7 +91,7 @@ const VacationsCard = () => {
     return vacationRequests
       .filter(
         (vacationRequest) =>
-          vacationRequest &&
+          vacationRequest.draft !== true &&
           DateTime.fromJSDate(vacationRequest.startDate) > DateTime.now() &&
           !vacationRequest.status?.some(
             (status) => status.status === VacationRequestStatuses.DECLINED
