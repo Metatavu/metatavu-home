@@ -1,22 +1,22 @@
-import { Box, Card, CircularProgress, Grid, Typography, Snackbar, Alert } from "@mui/material";
+import { Alert, Box, Card, CircularProgress, Grid, Snackbar, Typography } from "@mui/material";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { useEffect, useState } from "react";
-import type { Article, ArticleMetadata, User } from "src/generated/homeLambdasClient";
-import strings from "src/localization/strings";
-import { useAtomValue, useSetAtom, useAtom } from "jotai";
-import { useParams } from "react-router";
-import { errorAtom } from "src/atoms/error";
-import { useLambdasApi } from "src/hooks/use-api";
 import ReactMarkdown from "react-markdown";
-import ActionButton from "../wiki-documentation/action-button";
-import CreateOrEditArticleForm from "../wiki-documentation/create-article-form";
-import UserRoleUtils from "src/utils/user-role-utils";
-import { usersAtom } from "src/atoms/user";
-import { userProfileAtom } from "src/atoms/auth";
-import "../wiki-documentation/rich-text-editor/editor.css";
-import ArticleListItem from "../wiki-documentation/article-list-item";
-import BackButton from "../generics/back-button";
-import { snackbarAtom } from "src/atoms/snackbar";
+import { useParams } from "react-router";
 import { articleAtom, draftArticleAtom } from "src/atoms/article";
+import { userProfileAtom } from "src/atoms/auth";
+import { errorAtom } from "src/atoms/error";
+import { snackbarAtom } from "src/atoms/snackbar";
+import { usersAtom } from "src/atoms/user";
+import type { Article, ArticleMetadata, User } from "src/generated/homeLambdasClient";
+import { useLambdasApi } from "src/hooks/use-api";
+import strings from "src/localization/strings";
+import UserRoleUtils from "src/utils/user-role-utils";
+import BackButton from "../generics/back-button";
+import ActionButton from "../wiki-documentation/action-button";
+import ArticleListItem from "../wiki-documentation/article-list-item";
+import CreateOrEditArticleForm from "../wiki-documentation/create-article-form";
+import "../wiki-documentation/rich-text-editor/editor.css";
 
 /**
  * Article screen component displaying the article content.

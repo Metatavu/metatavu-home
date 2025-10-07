@@ -1,31 +1,31 @@
-import { useEffect, useState, useMemo } from "react";
-import UserRoleUtils from "src/utils/user-role-utils";
-import { DateCalendar, PickersDay, type PickersDayProps } from "@mui/x-date-pickers";
 import {
   Badge,
   Box,
   CircularProgress,
   FormControl,
+  GlobalStyles,
   InputLabel,
   MenuItem,
   Select,
-  Typography,
   styled,
-  GlobalStyles
+  Typography
 } from "@mui/material";
-import { DateTime } from "luxon";
-import { useLambdasApi } from "../../hooks/use-api";
-import { onCallAtom } from "../../atoms/oncall";
+import { red } from "@mui/material/colors";
+import { DateCalendar, PickersDay, type PickersDayProps } from "@mui/x-date-pickers";
 import { useAtom, useSetAtom } from "jotai";
-import { errorAtom } from "../../atoms/error";
-import strings from "../../localization/strings";
-import { stringToColor } from "../../utils/oncall-utils";
-import type { OnCallWeek } from "../../types";
-import OnCallPaidStatusDialog from "../onCall/oncall-paid-status-dialog";
-import OnCallListView from "../onCall/oncall-list-view";
+import { DateTime } from "luxon";
+import { useEffect, useMemo, useState } from "react";
 import type { OnCallPaid } from "src/generated/homeLambdasClient";
 import type { OnCall } from "src/generated/homeLambdasClient/models/OnCall";
-import { red } from "@mui/material/colors";
+import UserRoleUtils from "src/utils/user-role-utils";
+import { errorAtom } from "../../atoms/error";
+import { onCallAtom } from "../../atoms/oncall";
+import { useLambdasApi } from "../../hooks/use-api";
+import strings from "../../localization/strings";
+import type { OnCallWeek } from "../../types";
+import { stringToColor } from "../../utils/oncall-utils";
+import OnCallListView from "../onCall/oncall-list-view";
+import OnCallPaidStatusDialog from "../onCall/oncall-paid-status-dialog";
 
 /**
  * On call calendar screen component
@@ -83,8 +83,7 @@ const OnCallCalendarScreen = () => {
     const currentOnCallPerson = onCallData.find((item) => item.week === currentWeek)?.username;
     if (currentOnCallPerson) {
       setOnCallPerson(currentOnCallPerson);
-    }
-    else {
+    } else {
       setOnCallPerson(null);
     }
   };
@@ -104,11 +103,9 @@ const OnCallCalendarScreen = () => {
     };
     try {
       await onCallApi.updatePaid({ onCallPaid: updateParameters });
-      setOnCallData(prev =>
-        prev.map(item =>
-          item.year === year && item.week === weekNumber
-            ? { ...item, paid: !paid }
-            : item
+      setOnCallData((prev) =>
+        prev.map((item) =>
+          item.year === year && item.week === weekNumber ? { ...item, paid: !paid } : item
         )
       );
     } catch (error) {
@@ -140,8 +137,6 @@ const OnCallCalendarScreen = () => {
       </Box>
     );
   };
-
-
 
   /**
    * Maps on-call data by week number
@@ -184,7 +179,6 @@ const OnCallCalendarScreen = () => {
             displayWeekNumber
             showDaysOutsideCurrentMonth
             slots={{ day: fillCalendarDays }}
-            
           />
         </CalendarContainer>
       );
@@ -214,12 +208,14 @@ const OnCallCalendarScreen = () => {
     // If there is no username, showing "!"
     const hasUsername = !!onCallDayData?.username;
     const initials = hasUsername
-      ? onCallDayData.username.split(" ").map(s => s[0]).join("").toUpperCase()
+      ? onCallDayData.username
+          .split(" ")
+          .map((s) => s[0])
+          .join("")
+          .toUpperCase()
       : "!";
 
-    const badgeColor = hasUsername
-      ? stringToColor(onCallDayData.username)
-      : "#d32f2f"; //Red color if there is no username
+    const badgeColor = hasUsername ? stringToColor(onCallDayData.username) : "#d32f2f"; //Red color if there is no username
 
     const handleDayClick = () => {
       if (onCallDayData && isAccountant) {
@@ -251,7 +247,7 @@ const OnCallCalendarScreen = () => {
                 border: "1px none #000",
                 zIndex: 1,
                 fontWeight: hasUsername ? "normal" : "bold"
-              },
+              }
             }}
           >
             <StyledPickersDay
@@ -263,7 +259,7 @@ const OnCallCalendarScreen = () => {
                   ? { color: "#000", fontWeight: "bold", border: "2px solid #7bd15c" }
                   : {}),
                 background: outsideCurrentMonth ? "#d1d0cf" : "#fff",
-                cursor: "pointer",
+                cursor: "pointer"
               }}
               onClick={handleDayClick}
             />
@@ -279,7 +275,7 @@ const OnCallCalendarScreen = () => {
                 ? { color: "#000", fontWeight: "bold", border: "2px solid #7bd15c" }
                 : {}),
               background: outsideCurrentMonth ? "#d1d0cf" : "#fff",
-              cursor: onCallDayData ? "pointer" : "default",
+              cursor: onCallDayData ? "pointer" : "default"
             }}
             onClick={handleDayClick}
           />
@@ -300,12 +296,12 @@ const OnCallCalendarScreen = () => {
     borderRadius: 8,
     margin: 2,
     "&.Mui-selected": {
-      border: `2px solid ${theme.palette.primary.main}`,
+      border: `2px solid ${theme.palette.primary.main}`
     },
     "&:hover": {
       border: `2px solid ${theme.palette.primary.light}`,
-      background: theme.palette.action.hover,
-    },
+      background: theme.palette.action.hover
+    }
   }));
 
   const CalendarContainer = styled(Box)(({ theme }) => ({
@@ -320,71 +316,73 @@ const OnCallCalendarScreen = () => {
     background: theme.palette.background.paper,
     boxShadow: theme.shadows[2],
     padding: theme.spacing(2),
-    overflow: "auto",
+    overflow: "auto"
   }));
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
       {/* Global styles for correct calendar layout */}
-      <GlobalStyles styles={{
-        // Container for the week
-        ".MuiDayCalendar-weekContainer": {
-          minHeight: DAY_WIDTH + 8,
-        },
-        // Root container for the day
-        ".MuiDayCalendar-root": {
-          minWidth: WEEK_NUMBER_WIDTH + DAY_WIDTH * 7 + 32,
-          maxWidth: "none",
-        },
-        // Container for the days (to prevent clipping)
-        ".MuiPickersSlideTransition-root": {
-          minHeight: (DAY_WIDTH + 8) * 6,
-          height: (DAY_WIDTH + 8) * 6,
-        },
-        // Container for the calendar
-        ".MuiDateCalendar-root": {
-          minWidth: WEEK_NUMBER_WIDTH + DAY_WIDTH * 7 + 32,
-          maxWidth: "none",
-          minHeight: (DAY_WIDTH + 8) * 6 + 120,
-          height: (DAY_WIDTH + 8) * 6 + 120,
-        },
-        // Header for days of the week (Mon, Tue, ...)
-        ".MuiDayCalendar-header": {
-          minWidth: WEEK_NUMBER_WIDTH + DAY_WIDTH * 7 + 32,
-          maxWidth: "none",
-          display: "grid",
-          gridTemplateColumns: `${WEEK_NUMBER_WIDTH}px repeat(7, ${DAY_WIDTH}px)`,
-          marginLeft: 0,
-          marginRight: 0,
-        },
-        // Cell with headers of days of the week
-        ".MuiDayCalendar-weekDayLabel": {
-          width: DAY_WIDTH,
-          minWidth: DAY_WIDTH,
-          maxWidth: DAY_WIDTH,
-          fontSize: 16,
-          textAlign: "center",
-          padding: 0,
-        },
-        // Cell with week number
-        ".MuiDayCalendar-weekNumberLabel": {
-          width: WEEK_NUMBER_WIDTH,
-          minWidth: WEEK_NUMBER_WIDTH,
-          maxWidth: WEEK_NUMBER_WIDTH,
-          fontSize: 14,
-          textAlign: "center",
-          padding: 0,
-        },
-        // Cell with week number
-        ".MuiDayCalendar-weekNumber": {
-          width: WEEK_NUMBER_WIDTH,
-          minWidth: WEEK_NUMBER_WIDTH,
-          maxWidth: WEEK_NUMBER_WIDTH,
-          fontSize: 14,
-          textAlign: "center",
-          padding: 0,
-        },
-      }} />
+      <GlobalStyles
+        styles={{
+          // Container for the week
+          ".MuiDayCalendar-weekContainer": {
+            minHeight: DAY_WIDTH + 8
+          },
+          // Root container for the day
+          ".MuiDayCalendar-root": {
+            minWidth: WEEK_NUMBER_WIDTH + DAY_WIDTH * 7 + 32,
+            maxWidth: "none"
+          },
+          // Container for the days (to prevent clipping)
+          ".MuiPickersSlideTransition-root": {
+            minHeight: (DAY_WIDTH + 8) * 6,
+            height: (DAY_WIDTH + 8) * 6
+          },
+          // Container for the calendar
+          ".MuiDateCalendar-root": {
+            minWidth: WEEK_NUMBER_WIDTH + DAY_WIDTH * 7 + 32,
+            maxWidth: "none",
+            minHeight: (DAY_WIDTH + 8) * 6 + 120,
+            height: (DAY_WIDTH + 8) * 6 + 120
+          },
+          // Header for days of the week (Mon, Tue, ...)
+          ".MuiDayCalendar-header": {
+            minWidth: WEEK_NUMBER_WIDTH + DAY_WIDTH * 7 + 32,
+            maxWidth: "none",
+            display: "grid",
+            gridTemplateColumns: `${WEEK_NUMBER_WIDTH}px repeat(7, ${DAY_WIDTH}px)`,
+            marginLeft: 0,
+            marginRight: 0
+          },
+          // Cell with headers of days of the week
+          ".MuiDayCalendar-weekDayLabel": {
+            width: DAY_WIDTH,
+            minWidth: DAY_WIDTH,
+            maxWidth: DAY_WIDTH,
+            fontSize: 16,
+            textAlign: "center",
+            padding: 0
+          },
+          // Cell with week number
+          ".MuiDayCalendar-weekNumberLabel": {
+            width: WEEK_NUMBER_WIDTH,
+            minWidth: WEEK_NUMBER_WIDTH,
+            maxWidth: WEEK_NUMBER_WIDTH,
+            fontSize: 14,
+            textAlign: "center",
+            padding: 0
+          },
+          // Cell with week number
+          ".MuiDayCalendar-weekNumber": {
+            width: WEEK_NUMBER_WIDTH,
+            minWidth: WEEK_NUMBER_WIDTH,
+            maxWidth: WEEK_NUMBER_WIDTH,
+            fontSize: 14,
+            textAlign: "center",
+            padding: 0
+          }
+        }}
+      />
       <FormControl sx={{ width: "50%", textAlign: "center", margin: "auto" }}>
         <InputLabel id="calendarSelect">{strings.oncall.selectView}</InputLabel>
         <Select

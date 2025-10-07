@@ -1,4 +1,4 @@
-import { Card, Grid, Box, Typography, Chip, Button } from "@mui/material";
+import { Box, Button, Card, Chip, Grid, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 import type { ArticleMetadata } from "src/generated/homeLambdasClient";
 import strings from "src/localization/strings";
@@ -29,7 +29,7 @@ const ArticleListItem = ({ article, adminMode = false, handleDelete }: Props) =>
           padding: "20px",
           position: "relative",
           borderRadius: "20px",
-          backgroundColor:"#fff",
+          backgroundColor: "#fff",
           width: "100%",
           ":hover": {
             boxShadow: "0px 6px 14px rgba(0, 0, 0, 0.3)",

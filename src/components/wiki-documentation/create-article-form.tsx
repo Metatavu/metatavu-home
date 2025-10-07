@@ -1,3 +1,4 @@
+import ClearIcon from "@mui/icons-material/Clear";
 import {
   Autocomplete,
   Box,
@@ -11,21 +12,20 @@ import {
   styled,
   TextField
 } from "@mui/material";
-import strings from "src/localization/strings";
-import { type ChangeEvent, type KeyboardEvent, type SyntheticEvent, useRef, useState } from "react";
-import RichTextEditorLexical from "./rich-text-editor/rich-text-editor";
-import BackButton from "../generics/back-button";
-import { uploadFile } from "src/utils/s3-file-utils";
-import { useLambdasApi } from "src/hooks/use-api";
-import ActionButton from "./action-button";
 import { useAtomValue, useSetAtom } from "jotai";
+import { type ChangeEvent, type KeyboardEvent, type SyntheticEvent, useRef, useState } from "react";
 import { articleAtom, draftArticleAtom, tagsAtom } from "src/atoms/article";
-import { errorAtom } from "src/atoms/error";
-import type { Article, User } from "src/generated/homeLambdasClient";
-import { usersAtom } from "src/atoms/user";
 import { userProfileAtom } from "src/atoms/auth";
-import ClearIcon from "@mui/icons-material/Clear";
+import { errorAtom } from "src/atoms/error";
 import { snackbarAtom } from "src/atoms/snackbar";
+import { usersAtom } from "src/atoms/user";
+import type { Article, User } from "src/generated/homeLambdasClient";
+import { useLambdasApi } from "src/hooks/use-api";
+import strings from "src/localization/strings";
+import { uploadFile } from "src/utils/s3-file-utils";
+import BackButton from "../generics/back-button";
+import ActionButton from "./action-button";
+import RichTextEditorLexical from "./rich-text-editor/rich-text-editor";
 
 interface Props {
   handleClose: () => void;
@@ -40,16 +40,16 @@ interface EditorRef {
 }
 /**
  * Form for creating or editing an article.
- * 
+ *
  * @param action - "create" or "edit" mode (default: "create").
  * @param article - Article data for editing (optional).
  * @param setArticle - Updates article state externally.
  * @param adminMode - Enables admin-specific features (optional).
  */
 const CreateOrEditArticleForm = ({
-  handleClose, 
-  action="create", 
-  article, 
+  handleClose,
+  action = "create",
+  article,
   setArticle,
   adminMode
 }: Props) => {
@@ -224,19 +224,16 @@ const CreateOrEditArticleForm = ({
 
   const isFormValid = Boolean(
     title.trim() &&
-    path.trim() &&
-    coverImage?.trim() &&
-    description?.trim() &&
-    editorRef.current?.getMarkdownContent()?.trim()
-);
+      path.trim() &&
+      coverImage?.trim() &&
+      description?.trim() &&
+      editorRef.current?.getMarkdownContent()?.trim()
+  );
   return (
     <>
       <Grid container spacing={1.5} sx={{ marginBottom: 3, marginTop: 0.5 }}>
         <Grid item xs={6}>
-        <BackButton 
-          onClick={handleClose}
-          styles={{ padding: "6px" }}
-        />
+          <BackButton onClick={handleClose} styles={{ padding: "6px" }} />
         </Grid>
         <Grid item xs={6}>
           {action === "create" ? (

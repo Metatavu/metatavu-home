@@ -1,18 +1,18 @@
-import type { User } from "src/generated/homeLambdasClient/models/User";
-import UserRow from "./UserRow";
 import {
+  Box,
+  CircularProgress,
+  Paper,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
-  CircularProgress,
-  Typography,
-  Box,
+  Typography
 } from "@mui/material";
+import type { User } from "src/generated/homeLambdasClient/models/User";
 import strings from "../../../localization/strings";
+import UserRow from "./UserRow";
 
 /** Props for the UserTable component */
 interface UserTableProps {
@@ -52,14 +52,9 @@ const UserTable = ({ users, loading, onEdit }: UserTableProps) => {
             <TableCell>{strings.userTable.name}</TableCell>
             <TableCell>{strings.userTable.email}</TableCell>
             <TableCell align="right">
-              {strings.userTable.currentYearTotal.replace(
-                "{year}",
-                String(currentYear)
-              )}
+              {strings.userTable.currentYearTotal.replace("{year}", String(currentYear))}
             </TableCell>
-            <TableCell align="right">
-              {strings.userTable.remainingDays}
-            </TableCell>
+            <TableCell align="right">{strings.userTable.remainingDays}</TableCell>
             <TableCell align="center">{strings.userTable.actions}</TableCell>
           </TableRow>
         </TableHead>

@@ -1,31 +1,31 @@
+import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
+import GridViewIcon from "@mui/icons-material/GridView";
+import ListViewIcon from "@mui/icons-material/List";
 import {
-  Button,
-  Typography,
-  Grid,
-  CircularProgress,
-  Box,
   Alert,
-  Container,
-  IconButton,
+  Box,
+  Button,
   Card,
+  CircularProgress,
+  Container,
+  Grid,
+  IconButton,
+  Typography
 } from "@mui/material";
-import { useState, useEffect, useMemo, useRef } from "react";
-import Content from "../software-registry/myContent";
-import strings from "src/localization/strings";
 import { useAtom, useAtomValue } from "jotai";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { authAtom } from "src/atoms/auth";
-import { useLambdasApi } from "src/hooks/use-api";
 import { softwareAtom } from "src/atoms/software";
 import type { SoftwareRegistry } from "src/generated/homeLambdasClient";
 import { SoftwareStatus } from "src/generated/homeLambdasClient";
-import GridViewIcon from "@mui/icons-material/GridView";
-import ListViewIcon from "@mui/icons-material/List";
-import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
+import { useLambdasApi } from "src/hooks/use-api";
 import useCreateSoftware from "src/hooks/use-create-software";
-import Recommendations from "../software-registry/Recommendations";
-import AddSoftwareModal from "../software-registry/AddSoftwareModal";
-import Sidebar from "../software-registry/Sidebar";
+import strings from "src/localization/strings";
 import BackButton from "../generics/back-button";
+import AddSoftwareModal from "../software-registry/AddSoftwareModal";
+import Content from "../software-registry/myContent";
+import Recommendations from "../software-registry/Recommendations";
+import Sidebar from "../software-registry/Sidebar";
 
 /**
  * Software registry screen component
@@ -60,9 +60,11 @@ const SoftwareScreen = () => {
    * @returns The list of filtered applications owned by the logged in user.
    */
   const mySoftware = useMemo(
-    () => software.filter((software) =>
-      software.users?.includes(loggedUserId) && software.status === SoftwareStatus.ACCEPTED
-    ),
+    () =>
+      software.filter(
+        (software) =>
+          software.users?.includes(loggedUserId) && software.status === SoftwareStatus.ACCEPTED
+      ),
     [software, loggedUserId]
   );
 
@@ -74,12 +76,15 @@ const SoftwareScreen = () => {
   const filteredSoftware = useMemo(() => {
     return mySoftware.filter((software) => {
       const matchesName = software.name.toLowerCase().includes(searchValue.toLowerCase());
-      const matchesTags = selectedTags.length === 0 || (software.tags && selectedTags.some(tag => software.tags?.includes(tag)));
-      const matchesTagSearch = software.tags?.some((tag) => tag.toLowerCase().includes(searchValue.toLowerCase()));
+      const matchesTags =
+        selectedTags.length === 0 ||
+        (software.tags && selectedTags.some((tag) => software.tags?.includes(tag)));
+      const matchesTagSearch = software.tags?.some((tag) =>
+        tag.toLowerCase().includes(searchValue.toLowerCase())
+      );
       return (matchesName || matchesTagSearch) && matchesTags;
     });
-  }, [mySoftware, selectedTags, searchValue]
-  );
+  }, [mySoftware, selectedTags, searchValue]);
 
   /**
    * Retrieves the applications recommended for the logged in user.
@@ -87,7 +92,10 @@ const SoftwareScreen = () => {
    * @returns The list of recommended applications.
    */
   const recommendedApplications = useMemo(
-    () => software.filter((app) => app.recommend?.includes(loggedUserId) && app.status === SoftwareStatus.ACCEPTED),
+    () =>
+      software.filter(
+        (app) => app.recommend?.includes(loggedUserId) && app.status === SoftwareStatus.ACCEPTED
+      ),
     [software, loggedUserId]
   );
 
@@ -128,7 +136,7 @@ const SoftwareScreen = () => {
     setLoading(true);
 
     try {
-      const app = software.find(app => app.id === appId);
+      const app = software.find((app) => app.id === appId);
 
       if (app) {
         const isUserInApp = app.users?.includes(loggedUserId);
@@ -136,14 +144,12 @@ const SoftwareScreen = () => {
         const updatedApp: SoftwareRegistry = {
           ...app,
           users: isUserInApp ? app.users : [...(app.users || []), loggedUserId],
-          recommend: app.recommend?.filter(id => id !== loggedUserId),
+          recommend: app.recommend?.filter((id) => id !== loggedUserId)
         };
 
         await softwareApi.updateSoftwareById({ id: appId, softwareRegistry: updatedApp });
 
-        setApplications(prevApps =>
-          prevApps.map(a => (a.id === appId ? updatedApp : a))
-        );
+        setApplications((prevApps) => prevApps.map((a) => (a.id === appId ? updatedApp : a)));
       }
     } catch (error) {
       setError(`Error updating software: ${error}`);
@@ -156,11 +162,10 @@ const SoftwareScreen = () => {
    * Fetches the software data if the user is logged in.
    */
   useEffect(() => {
-    if (loggedUserId){
+    if (loggedUserId) {
       fetchSoftwareData();
     }
   }, []);
-
 
   if (loading) {
     return (
@@ -168,7 +173,7 @@ const SoftwareScreen = () => {
         sx={{
           p: "25%",
           display: "flex",
-          justifyContent: "center",
+          justifyContent: "center"
         }}
       >
         <Box sx={{ textAlign: "center" }}>
@@ -177,7 +182,7 @@ const SoftwareScreen = () => {
             sx={{
               scale: "150%",
               mt: "5%",
-              mb: "5%",
+              mb: "5%"
             }}
           />
         </Box>
@@ -193,7 +198,7 @@ const SoftwareScreen = () => {
         </Typography>
         {recommendedApplications.length > 0 && (
           <Grid item container justifyContent="center" alignItems="center" mb={4}>
-            <Typography variant="subtitle1">
+            <Typography sx={{ fontWeight: 600, fontSize: 18, color: "#f9473b" }}>
               {strings.softwareRegistry.recommendationMessage.replace(
                 "{recommendationCount}",
                 recommendedApplications.length.toString()
@@ -206,8 +211,8 @@ const SoftwareScreen = () => {
                 backgroundColor: "transparent",
                 ":hover": {
                   backgroundColor: "transparent",
-                  boxShadow: "none",
-                },
+                  boxShadow: "none"
+                }
               }}
             >
               <ArrowDownwardIcon />
@@ -215,9 +220,7 @@ const SoftwareScreen = () => {
           </Grid>
         )}
         <Grid item container justifyContent="space-between" alignItems="center">
-          <Typography variant="h3">
-            {strings.softwareRegistry.myApplications}
-          </Typography>
+          <Typography variant="h3">{strings.softwareRegistry.myApplications}</Typography>
           <Button
             variant="contained"
             color="secondary"
@@ -227,7 +230,7 @@ const SoftwareScreen = () => {
               color: "#fff",
               fontSize: "18px",
               borderRadius: "100px",
-              "&:hover": { background: "#000" },
+              "&:hover": { background: "#000" }
             }}
           >
             {strings.softwareRegistry.addApplication}
@@ -245,8 +248,8 @@ const SoftwareScreen = () => {
                 marginRight: "10px",
                 ":hover": {
                   backgroundColor: "#000",
-                  color: "#fff",
-                },
+                  color: "#fff"
+                }
               }}
             >
               <GridViewIcon />
@@ -260,8 +263,8 @@ const SoftwareScreen = () => {
                 padding: "6px",
                 ":hover": {
                   backgroundColor: "#000",
-                  color: "#fff",
-                },
+                  color: "#fff"
+                }
               }}
             >
               <ListViewIcon />
@@ -289,11 +292,7 @@ const SoftwareScreen = () => {
               </Box>
             ) : (
               <Content
-                applications={
-                  showAll ?
-                    filteredSoftware :
-                    filteredSoftware.slice(0, 4)
-                }
+                applications={showAll ? filteredSoftware : filteredSoftware.slice(0, 4)}
                 isGridView={isGridView}
               />
             )}
@@ -308,31 +307,18 @@ const SoftwareScreen = () => {
                     color: "#fff",
                     fontSize: "18px",
                     borderRadius: "100px",
-                    "&:hover": { background: "#000" },
+                    "&:hover": { background: "#000" }
                   }}
                 >
-                  {
-                    showAll ?
-                      strings.softwareRegistry.showLess :
-                      strings.softwareRegistry.showMore
-                  }
+                  {showAll ? strings.softwareRegistry.showLess : strings.softwareRegistry.showMore}
                 </Button>
               </Box>
             )}
           </Grid>
         </Grid>
       </Grid>
-      <Grid
-        container
-        direction="column"
-        alignItems="center"
-        mt={4}
-        ref={recommendationRef}
-      >
-        <Recommendations
-          applications={recommendedApplications}
-          onAddUser={handleUserUpdate}
-        />
+      <Grid container direction="column" alignItems="center" mt={4} ref={recommendationRef}>
+        <Recommendations applications={recommendedApplications} onAddUser={handleUserUpdate} />
       </Grid>
       <AddSoftwareModal
         open={isModalOpen}
@@ -341,9 +327,7 @@ const SoftwareScreen = () => {
         disabled={loading}
         existingSoftwareList={software}
       />
-      <BackButton 
-        styles={{ marginBottom: 2 }}
-      />
+      <BackButton styles={{ marginBottom: 2 }} />
     </Container>
   );
 };

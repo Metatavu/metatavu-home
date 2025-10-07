@@ -1,15 +1,18 @@
 import { Box, Grid } from "@mui/material";
-import { type VacationRequest, VacationType } from "src/generated/homeLambdasClient";
-import { useEffect, useState } from "react";
-import { DateTime } from "luxon";
-import { type VacationsDataGridRow, ToolbarFormModes, type DateRange } from "src/types";
 import type { GridRowId } from "@mui/x-data-grid";
-import { determineToolbarFormMode } from "src/utils/toolbar-utils";
 import { useAtomValue } from "jotai";
-import ToolbarFormFields from "./toolbar-form-fields";
+import { DateTime } from "luxon";
+import { useEffect, useState } from "react";
 import { allVacationRequestsAtom, vacationRequestsAtom } from "src/atoms/vacation";
+import {
+  type VacationRequest,
+  VacationRequestStatuses,
+  VacationType
+} from "src/generated/homeLambdasClient";
+import { type DateRange, ToolbarFormModes, type VacationsDataGridRow } from "src/types";
+import { determineToolbarFormMode } from "src/utils/toolbar-utils";
 import UserRoleUtils from "src/utils/user-role-utils";
-import { VacationRequestStatuses } from "src/generated/homeLambdasClient";
+import ToolbarFormFields from "./toolbar-form-fields";
 
 /**
  * Component properties
