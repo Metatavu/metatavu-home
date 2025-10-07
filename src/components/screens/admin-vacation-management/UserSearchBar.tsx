@@ -1,5 +1,5 @@
-import { TextField, InputAdornment } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
+import { InputAdornment, TextField } from "@mui/material";
 import strings from "../../../localization/strings";
 
 /** Props for the user search bar component */
@@ -27,7 +27,7 @@ const UserSearchBar = ({ value, onChange }: UserSearchBarProps) => {
           <InputAdornment position="start">
             <SearchIcon />
           </InputAdornment>
-        ),
+        )
       }}
     />
   );

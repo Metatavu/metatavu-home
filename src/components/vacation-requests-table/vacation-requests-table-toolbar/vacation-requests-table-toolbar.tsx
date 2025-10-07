@@ -1,22 +1,22 @@
 import { Add, Cancel, Edit, FilterAlt } from "@mui/icons-material";
-import { Box, Button, Collapse, Grid, Typography, styled } from "@mui/material";
-import { useEffect, useState } from "react";
-import ToolbarForm from "./toolbar-form/toolbar-form";
+import { Box, Button, Collapse, Grid, styled, Typography } from "@mui/material";
 import type { GridRowId } from "@mui/x-data-grid";
-import { type VacationsDataGridRow, ToolbarFormModes } from "src/types";
-import ToolbarDeleteButton from "./toolbar-delete-button";
-import FormToggleButton from "./toolbar-form-toggle-button";
-import ConfirmationHandler from "../../contexts/confirmation-handler";
-import strings from "src/localization/strings";
-import { getToolbarTitle } from "src/utils/toolbar-utils";
 import { useAtomValue } from "jotai";
-import { languageAtom } from "src/atoms/language";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { VacationRequestStatuses } from "src/generated/homeLambdasClient";
-import UpdateStatusButton from "./toolbar-update-status-button";
-import UserRoleUtils from "src/utils/user-role-utils";
-import type { VacationRequest } from "src/generated/homeLambdasClient";
+import { languageAtom } from "src/atoms/language";
 import EditConfirmationDialogue from "src/components/contexts/edit-confirmation-dialogue";
+import type { VacationRequest } from "src/generated/homeLambdasClient";
+import { VacationRequestStatuses } from "src/generated/homeLambdasClient";
+import strings from "src/localization/strings";
+import { ToolbarFormModes, type VacationsDataGridRow } from "src/types";
+import { getToolbarTitle } from "src/utils/toolbar-utils";
+import UserRoleUtils from "src/utils/user-role-utils";
+import ConfirmationHandler from "../../contexts/confirmation-handler";
+import ToolbarDeleteButton from "./toolbar-delete-button";
+import ToolbarForm from "./toolbar-form/toolbar-form";
+import FormToggleButton from "./toolbar-form-toggle-button";
+import UpdateStatusButton from "./toolbar-update-status-button";
 
 /**
  * Component properties

@@ -1,9 +1,9 @@
 import { type Theme, createTheme } from "@mui/material";
-import PoppinsRegular from "../resources/fonts/poppins/Poppins-Regular.ttf";
 import PoppinsBlack from "../resources/fonts/poppins/Poppins-Black.ttf";
-import PoppinsMedium from "../resources/fonts/poppins/Poppins-Medium.ttf";
-import PoppinsSemiBold from "../resources/fonts/poppins/Poppins-SemiBold.ttf";
 import PoppinsBold from "../resources/fonts/poppins/Poppins-Bold.ttf";
+import PoppinsMedium from "../resources/fonts/poppins/Poppins-Medium.ttf";
+import PoppinsRegular from "../resources/fonts/poppins/Poppins-Regular.ttf";
+import PoppinsSemiBold from "../resources/fonts/poppins/Poppins-SemiBold.ttf";
 export const theme: Theme = createTheme({
   typography: {
     fontFamily: "Poppins",
@@ -144,7 +144,6 @@ export const theme: Theme = createTheme({
     }
   }
 });
-
 
 export const wikiScreenColors = {
   button: {

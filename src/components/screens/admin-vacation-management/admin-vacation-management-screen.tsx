@@ -1,21 +1,18 @@
+import { Box, Container, Pagination, Typography } from "@mui/material";
+import { useAtom, useSetAtom } from "jotai";
 import type React from "react";
-import { useState, useEffect, useMemo } from "react";
-import { Container, Typography, Box, Pagination } from "@mui/material";
-import UserSearchBar from "./UserSearchBar";
-import UserTable from "./UsersTable";
-import EditVacationDialog from "./EditVacationDialog";
-import { useLambdasApi } from "src/hooks/use-api";
-import { useSetAtom, useAtom } from "jotai";
-import { usersAtom } from "src/atoms/user";
+import { useEffect, useMemo, useState } from "react";
 import { errorAtom } from "src/atoms/error";
+import { usersAtom } from "src/atoms/user";
+import BackButton from "src/components/generics/back-button";
 import type { User } from "src/generated/homeLambdasClient/models/User";
 import type { YearlyVacationDays } from "src/generated/homeLambdasClient/models/YearlyVacationDays";
-import {
-  parseVacationDays,
-  formatVacationDaysPayload,
-} from "../../../utils/vacations-utils";
+import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
-import BackButton from "src/components/generics/back-button";
+import { formatVacationDaysPayload, parseVacationDays } from "../../../utils/vacations-utils";
+import EditVacationDialog from "./EditVacationDialog";
+import UserSearchBar from "./UserSearchBar";
+import UserTable from "./UsersTable";
 
 /**
  * Vacation days keyed by year.
@@ -88,17 +85,13 @@ const AdminVacationManagementScreen = () => {
    * @param field Either "total" or "remaining" vacation days.
    * @param value The new value as string input, converted to number.
    */
-  const handleVacationChange = (
-    year: string,
-    field: "total" | "remaining",
-    value: string
-  ) => {
+  const handleVacationChange = (year: string, field: "total" | "remaining", value: string) => {
     setVacationDays((prev) => ({
       ...prev,
       [year]: {
         ...prev[year],
-        [field]: Number(value),
-      },
+        [field]: Number(value)
+      }
     }));
   };
 
@@ -122,15 +115,13 @@ const AdminVacationManagementScreen = () => {
       await usersApi.updateUserVacation({
         userId: currentUser.id,
         updateUserVacationRequest: {
-          vacationDays: formattedPayload,
-        },
+          vacationDays: formattedPayload
+        }
       });
 
       const updatedUser = await usersApi.findUser({ userId: currentUser.id });
       setUsers((prevUsers) =>
-        prevUsers.map((user) =>
-          user.id === updatedUser.id ? updatedUser : user
-        )
+        prevUsers.map((user) => (user.id === updatedUser.id ? updatedUser : user))
       );
 
       handleCloseDialog();
@@ -147,17 +138,11 @@ const AdminVacationManagementScreen = () => {
    * @param _event The change event (ignored).
    * @param value The new page number selected.
    */
-  const handlePageChange = (
-    _event: React.ChangeEvent<unknown>,
-    value: number
-  ) => {
+  const handlePageChange = (_event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
   };
 
-  const paginatedUsers = filteredUsers.slice(
-    (page - 1) * rowsPerPage,
-    page * rowsPerPage
-  );
+  const paginatedUsers = filteredUsers.slice((page - 1) * rowsPerPage, page * rowsPerPage);
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4 }}>
@@ -167,11 +152,7 @@ const AdminVacationManagementScreen = () => {
       <Box sx={{ mb: 3 }}>
         <UserSearchBar value={searchKeyword} onChange={setSearchKeyword} />
       </Box>
-      <UserTable
-        users={paginatedUsers}
-        loading={false}
-        onEdit={handleEditUser}
-      />
+      <UserTable users={paginatedUsers} loading={false} onEdit={handleEditUser} />
       <Box display="flex" justifyContent="center" mt={2}>
         <Pagination
           count={Math.ceil(filteredUsers.length / rowsPerPage)}
@@ -180,9 +161,7 @@ const AdminVacationManagementScreen = () => {
           color="primary"
         />
       </Box>
-      <BackButton 
-        styles={{ mt: 3, marginBottom: 2 }} 
-      />
+      <BackButton styles={{ mt: 3, marginBottom: 2 }} />
       <EditVacationDialog
         open={editDialogOpen}
         user={currentUser}

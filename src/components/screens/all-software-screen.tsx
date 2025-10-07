@@ -1,42 +1,42 @@
-import { useState, useEffect, useMemo } from "react";
-import type React from "react";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import GridViewIcon from "@mui/icons-material/GridView";
+import ListViewIcon from "@mui/icons-material/List";
+import SearchIcon from "@mui/icons-material/Search";
 import {
-  Card,
-  CircularProgress,
-  Typography,
-  Box,
-  Grid,
   Alert,
-  Container,
+  Box,
   Button,
-  InputAdornment,
-  IconButton,
-  MenuItem,
-  Select,
-  FormControl,
+  Card,
   Chip,
-  OutlinedInput,
+  CircularProgress,
+  Container,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
+  FormControl,
+  Grid,
+  IconButton,
+  InputAdornment,
+  MenuItem,
+  OutlinedInput,
+  Select,
+  Typography
 } from "@mui/material";
-import Content from "../software-registry/allContent";
-import { useLambdasApi } from "src/hooks/use-api";
+import { useAtomValue } from "jotai";
+import type React from "react";
+import { useEffect, useMemo, useState } from "react";
+import { authAtom } from "src/atoms/auth";
 import type { SoftwareRegistry } from "src/generated/homeLambdasClient";
 import { SoftwareStatus } from "src/generated/homeLambdasClient";
-import strings from "src/localization/strings";
-import GridViewIcon from "@mui/icons-material/GridView";
-import ListViewIcon from "@mui/icons-material/List";
-import { useAtomValue } from "jotai";
-import { authAtom } from "src/atoms/auth";
-import UserRoleUtils from "src/utils/user-role-utils";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import SearchIcon from "@mui/icons-material/Search";
+import { useLambdasApi } from "src/hooks/use-api";
 import useCreateSoftware from "src/hooks/use-create-software";
-import AddSoftwareModal from "../software-registry/AddSoftwareModal";
+import strings from "src/localization/strings";
+import UserRoleUtils from "src/utils/user-role-utils";
 import BackButton from "../generics/back-button";
+import AddSoftwareModal from "../software-registry/AddSoftwareModal";
+import Content from "../software-registry/allContent";
 
 /**
  * All software screen component
@@ -324,12 +324,14 @@ const AllSoftwareScreen = () => {
                 onChange={(e) => setSelectedStatus(e.target.value as SoftwareStatusFilterOptions)}
                 variant="outlined"
                 IconComponent={ExpandMoreIcon}
-                sx={ {borderRadius: "10px",
+                sx={{
+                  borderRadius: "10px",
                   height: "45px",
                   padding: "0 15px",
                   "& .MuiSvgIcon-root": {
                     color: "#121212"
-                }}}
+                  }
+                }}
               >
                 {statusOptions.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
@@ -447,9 +449,7 @@ const AllSoftwareScreen = () => {
           </Grid>
         </Grid>
       </Grid>
-      <BackButton 
-        styles={{ marginBottom: 2 }} 
-      />
+      <BackButton styles={{ marginBottom: 2 }} />
 
       <AddSoftwareModal
         open={isModalOpen}

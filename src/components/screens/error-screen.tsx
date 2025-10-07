@@ -1,6 +1,6 @@
+import { Container } from "@mui/material";
 import { useRouteError } from "react-router-dom";
 import strings from "src/localization/strings";
-import { Container } from "@mui/material";
 
 /**
  * Component properties

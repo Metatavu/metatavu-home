@@ -1,6 +1,6 @@
-import { Grid, Box } from '@mui/material';
-import type { SoftwareRegistry } from 'src/generated/homeLambdasClient';
-import AppCard from './cards/AppCard';
+import { Box, Grid } from "@mui/material";
+import type { SoftwareRegistry } from "src/generated/homeLambdasClient";
+import AppCard from "./cards/AppCard";
 
 /**
  * Props for the Content component.
@@ -20,10 +20,7 @@ interface ContentProps {
  * @param ContentProps The props for the Content component.
  * @returns The rendered Content component.
  */
-const Content = ({ 
-  applications, 
-  isGridView 
-  }: ContentProps) => {
+const Content = ({ applications, isGridView }: ContentProps) => {
   return isGridView ? (
     <Grid container spacing={2}>
       {applications.map((app) => (

@@ -1,5 +1,5 @@
-import { Box } from "@mui/material";
 import Masonry from "@mui/lab/Masonry";
+import { Box } from "@mui/material";
 import type { ReactNode } from "react";
 
 /**
@@ -23,7 +23,7 @@ interface CardGridWrapperProps {
  */
 const CardGridWrapper = ({ children }: CardGridWrapperProps) => {
   return (
-    <Box sx={{ marginRight: "-16px"}}>
+    <Box sx={{ marginRight: "-16px" }}>
       <Masonry columns={{ xs: 1, sm: 2 }} spacing={2}>
         {children}
       </Masonry>

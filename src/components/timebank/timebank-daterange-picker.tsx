@@ -1,9 +1,9 @@
-import { DatePicker } from "@mui/x-date-pickers";
-import type { DateRange } from "src/types";
-import strings from "src/localization/strings";
-import { useState } from "react";
-import type { DateTime } from "luxon";
 import type { SxProps } from "@mui/material";
+import { DatePicker } from "@mui/x-date-pickers";
+import type { DateTime } from "luxon";
+import { useState } from "react";
+import strings from "src/localization/strings";
+import type { DateRange } from "src/types";
 
 /**
  * Date range picker component properties

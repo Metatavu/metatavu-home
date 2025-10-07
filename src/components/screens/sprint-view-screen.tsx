@@ -1,20 +1,20 @@
-import { Search, Close } from "@mui/icons-material";
+import { Close, Search } from "@mui/icons-material";
 import {
   Box,
   Card,
   CircularProgress,
-  Typography,
-  Paper,
-  Divider,
   Container,
+  Divider,
+  FormControl,
+  IconButton,
+  InputAdornment,
+  InputLabel,
+  MenuItem,
+  Paper,
+  Select,
   Stack,
   TextField,
-  InputAdornment,
-  Select,
-  MenuItem,
-  IconButton,
-  FormControl,
-  InputLabel
+  Typography
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { useAtomValue, useSetAtom } from "jotai";
@@ -23,39 +23,38 @@ import { userProfileAtom } from "src/atoms/auth";
 import { errorAtom } from "src/atoms/error";
 import { usersAtom } from "src/atoms/user";
 import TaskTable from "src/components/sprint-view-table/tasks-table";
-import BackButton from "../generics/back-button";
 import type {
   ResourceAllocations,
   ResourceAllocationsProject,
   User
 } from "src/generated/homeLambdasClient/models/";
+import useSprintViewHandlers from "src/hooks/sprint-custom-hooks";
 import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
 import { getSeveraUserId } from "src/utils/sprint-utils";
 import { getSprintEnd, getSprintStart } from "src/utils/time-utils";
 import UserRoleUtils from "src/utils/user-role-utils";
+import BackButton from "../generics/back-button";
 import createSprintViewProjectsColumns from "../sprint-view-table/sprint-projects-columns";
-import useSprintViewHandlers from "src/hooks/sprint-custom-hooks";
 
 /**
  * Sprint view screen component
  */
 const SprintViewScreen = () => {
   const { resourceAllocationsApi } = useLambdasApi();
-  const { 
+  const {
     filterType,
-    searchQuery, 
-    selectedProject, 
-    handleFilterChange, 
+    searchQuery,
+    selectedProject,
+    handleFilterChange,
     handleRowClick,
-    handleClearSearch, 
-    setSearchQuery, 
-    filterAllocations } = useSprintViewHandlers();
+    handleClearSearch,
+    setSearchQuery,
+    filterAllocations
+  } = useSprintViewHandlers();
   const users = useAtomValue(usersAtom);
   const userProfile = useAtomValue(userProfileAtom);
-  const loggedInUser = users.find(
-    (users: User) => users.id === userProfile?.id
-  );
+  const loggedInUser = users.find((users: User) => users.id === userProfile?.id);
   const [resourceAllocations, setResourceAllocations] = useState<ResourceAllocations[]>([]);
   const [loading, setLoading] = useState(false);
   const todaysDate = new Date().toISOString();
@@ -64,10 +63,10 @@ const SprintViewScreen = () => {
   const setError = useSetAtom(errorAtom);
   const adminMode = UserRoleUtils.adminMode();
   const columns = createSprintViewProjectsColumns({
-    resourceAllocations: resourceAllocations || [],
+    resourceAllocations: resourceAllocations || []
   });
   const filteredAllocations = filterAllocations(resourceAllocations, adminMode);
-  
+
   useEffect(() => {
     fetchProjectDetails();
   }, [loggedInUser]);
@@ -95,7 +94,7 @@ const SprintViewScreen = () => {
           sx={{
             p: "25%",
             display: "flex",
-            justifyContent: "center",
+            justifyContent: "center"
           }}
         >
           <Box sx={{ textAlign: "center" }}>
@@ -104,7 +103,7 @@ const SprintViewScreen = () => {
               sx={{
                 scale: "150%",
                 mt: "5%",
-                mb: "5%",
+                mb: "5%"
               }}
             />
           </Box>
@@ -112,7 +111,7 @@ const SprintViewScreen = () => {
       ) : (
         /* TODO: Need to fetch the status from home-lambdas first for phases, then recreate filter in metatavu-home */
         /* <TaskStatusFilter setFilter={setFilter} /> */
-        <Container maxWidth="lg" sx={{ mt: 4}}>
+        <Container maxWidth="lg" sx={{ mt: 4 }}>
           <Paper elevation={3} sx={{ padding: 4, borderRadius: 3 }}>
             <Stack spacing={3}>
               {adminMode && (
@@ -138,7 +137,10 @@ const SprintViewScreen = () => {
                     </FormControl>
                   </Box>
                   <TextField
-                    label={strings.formatString(strings.sprint.searchBy, filterType === "project" ? strings.sprint.project : strings.sprint.user)}
+                    label={strings.formatString(
+                      strings.sprint.searchBy,
+                      filterType === "project" ? strings.sprint.project : strings.sprint.user
+                    )}
                     variant="outlined"
                     fullWidth
                     value={searchQuery}
@@ -158,8 +160,8 @@ const SprintViewScreen = () => {
                       ),
                       sx: {
                         borderRadius: 2,
-                        backgroundColor: "background.paper",
-                      },
+                        backgroundColor: "background.paper"
+                      }
                     }}
                   />
                 </>
@@ -169,7 +171,7 @@ const SprintViewScreen = () => {
                   sx={{
                     "& .MuiDataGrid-columnHeaders": { backgroundColor: "#e9ecef" },
                     "& .MuiDataGrid-row:nth-of-type(even)": { backgroundColor: "#dee2e6" },
-                    "& .MuiDataGrid-row:hover": { cursor: "pointer", backgroundColor: "#ced4da" },
+                    "& .MuiDataGrid-row:hover": { cursor: "pointer", backgroundColor: "#ced4da" }
                   }}
                   autoHeight
                   localeText={{ noResultsOverlayLabel: strings.sprint.notFound }}
@@ -194,7 +196,7 @@ const SprintViewScreen = () => {
               {selectedProject ? (
                 <TaskTable key={selectedProject.severaProjectId} project={selectedProject} />
               ) : (
-                (filteredAllocations).map((resourceAllocations) => (
+                filteredAllocations.map((resourceAllocations) => (
                   <TaskTable
                     key={resourceAllocations.project?.severaProjectId}
                     project={resourceAllocations.project ?? ({} as ResourceAllocationsProject)}
@@ -203,9 +205,7 @@ const SprintViewScreen = () => {
               )}
             </Stack>
           </Paper>
-          <BackButton 
-            styles={{ mt: 3 }} 
-          />
+          <BackButton styles={{ mt: 3 }} />
         </Container>
       )}
     </>

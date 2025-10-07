@@ -1,8 +1,8 @@
-import config from "src/app/config";
-import { authAtom, userProfileAtom } from "src/atoms/auth";
 import { useAtom, useSetAtom } from "jotai";
 import Keycloak from "keycloak-js";
 import { type ReactNode, useCallback, useEffect } from "react";
+import config from "src/app/config";
+import { authAtom, userProfileAtom } from "src/atoms/auth";
 import { usersAtom } from "src/atoms/user";
 import { useLambdasApi } from "src/hooks/use-api";
 
