@@ -44,7 +44,6 @@ interface Props {
   ) => Promise<void>;
   fetchVacationRequestById: (vacationRequestId: string) => Promise<VacationRequest | null>;
   loading: boolean;
-  isDraft: boolean;
   filter: FilterType
   setFilter: React.Dispatch<React.SetStateAction<FilterType>>;
 }
@@ -64,7 +63,6 @@ const VacationRequestsTable = ({
   updateVacationRequestStatus,
   fetchVacationRequestById,
   loading,
-  isDraft,
   filter,
   setFilter
 }: Props) => {
@@ -216,7 +214,6 @@ const VacationRequestsTable = ({
         selectedRowIds={selectedRowIds}
         rows={rows}
         setSelectedRowIds={setSelectedRowIds}
-        isDraft={isDraft}
         filter={filter}
         setFilter={setFilter}
       />

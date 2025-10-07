@@ -29,7 +29,6 @@ interface Props {
   setToolbarFormMode: (toolbarFormMode: ToolbarFormModes) => void;
   setSelectedRowIds: (selectedRowIds: GridRowId[]) => void;
   onSaveClick?: (data: VacationRequest) => void;
-  isDraft: boolean;
 }
 
 /**
@@ -49,7 +48,6 @@ const ToolbarForm = ({
   setToolbarFormMode,
   setSelectedRowIds,
   onSaveClick,
-  isDraft
 }: Props) => {
   const defaultDateRange = {
     start: DateTime.now().plus({ days: 1 }),
@@ -59,7 +57,7 @@ const ToolbarForm = ({
   const defaultVacationRequestData: VacationRequest = {
     createdAt: new Date(),
     createdBy: "",
-    draft: isDraft,
+    draft: false,
     id: "",
     updatedAt: new Date(),
     userId: "",

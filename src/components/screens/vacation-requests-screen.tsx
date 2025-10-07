@@ -18,7 +18,7 @@ import UserRoleUtils from "src/utils/user-role-utils";
 import { renderVacationDaysTextForScreen } from "src/utils/vacation-days-utils";
 import { usersAtom } from "src/atoms/user";
 import BackButton from "../generics/back-button";
-import { FilterType } from "src/utils/vacation-filter-type";
+import type { FilterType } from "src/utils/vacation-filter-type";
 
 /**
  * Vacation requests screen
@@ -46,7 +46,6 @@ const VacationRequestsScreen = () => {
   const [isUpcoming, setIsUpcoming] = useState(true);
   const [users] = useAtom(usersAtom);
   const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
-  const [isDraft, setIsDraft] = useState(false);
   const [filter, setFilter] = useState<FilterType>("ALL");
 
   /**
@@ -188,7 +187,6 @@ const VacationRequestsScreen = () => {
     if (!loggedInUser) return;
     try {
       setLoading(true);
-      setIsDraft(false);
       const createdRequest = await vacationRequestsApi.createVacationRequest({
         vacationRequest: {
           userId: loggedInUser.id,
@@ -226,7 +224,6 @@ const VacationRequestsScreen = () => {
     if (!loggedInUser) return;
     try {
       setLoading(true);
-      setIsDraft(true);
       const createdRequest = await vacationRequestsApi.createVacationRequest({
         vacationRequest: {
           userId: loggedInUser.id,
@@ -292,7 +289,7 @@ const VacationRequestsScreen = () => {
           updatedAt: new Date(),
           days: vacationRequestData.days,
           status: updatedStatus,
-          draft: vacationRequestData.draft
+          draft: false
         }
       });
       const updatedVacationRequests = vacationRequests.map((vacationRequest) =>
@@ -368,7 +365,6 @@ const VacationRequestsScreen = () => {
           updateVacationRequestStatus={updateVacationRequestStatus}
           fetchVacationRequestById={fetchVacationRequestById}
           loading={loading}
-          isDraft={isDraft}
           filter={filter}
           setFilter={setFilter}
         />

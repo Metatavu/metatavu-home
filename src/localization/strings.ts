@@ -222,6 +222,7 @@ export interface Localized extends LocalizedStringsMethods {
     title: string;
     message: string;
     editMessage: string;
+    editDraftMessage: string;
   };
   /**
    * Translations related to error handler
@@ -354,9 +355,7 @@ export interface Localized extends LocalizedStringsMethods {
   /**
    * Translation related to vacations screen
    */
-  vacationsScreen: {
-
-  };
+  vacationsScreen: {};
   /**
    * Translation related to view all screen
    */

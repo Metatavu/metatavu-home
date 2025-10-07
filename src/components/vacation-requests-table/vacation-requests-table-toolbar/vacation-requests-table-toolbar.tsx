@@ -45,7 +45,6 @@ interface Props {
   selectedRowIds: GridRowId[];
   rows: VacationsDataGridRow[];
   setSelectedRowIds: (selectedRowIds: GridRowId[]) => void;
-  isDraft: boolean;
   filter: FilterType;
   setFilter: React.Dispatch<React.SetStateAction<FilterType>>;
 }
@@ -69,7 +68,6 @@ const TableToolbar = ({
   selectedRowIds,
   rows,
   setSelectedRowIds,
-  isDraft,
   filter,
   setFilter
 }: Props) => {
@@ -90,6 +88,7 @@ const TableToolbar = ({
   const disableEditButton = false;
   const selectedRow = rows.find((row) => String(row.id) === String(selectedRowIds[0]));
   const isDraftSelected = selectedRow ? selectedRow.draft === true : false;
+  const [wasDraftBeforeEdit, setWasDraftBeforeEdit] = useState(false);
 
   useEffect(() => {
     setTitle(getToolbarTitle(toolbarFormMode));
@@ -182,6 +181,14 @@ const TableToolbar = ({
     setSelectedRowIds([]);
     setFormOpen(false);
   };
+  /**
+   *  handler for edit button click
+   */
+  const handleEditButtonClick = () => {
+    setToolbarFormMode(ToolbarFormModes.EDIT);
+    setFormOpen(true);
+    setWasDraftBeforeEdit(isDraftSelected);
+  };
   return (
     <Box>
       <ConfirmationHandler
@@ -192,7 +199,9 @@ const TableToolbar = ({
       <EditConfirmationDialogue
         open={editConfirmationHandlerOpen}
         setOpen={setEditConfirmationHandlerOpen}
+        isDraft={wasDraftBeforeEdit}
         onConfirm={handleEditConfirm}
+        setFormOpen={setFormOpen}
       />
       {isToolbarVisible ? (
         <ToolbarGridContainer container>
@@ -206,10 +215,7 @@ const TableToolbar = ({
                   title={strings.tableToolbar.edit}
                   ButtonIcon={Edit}
                   value={formOpen}
-                  setValue={(open) => {
-                    setToolbarFormMode(ToolbarFormModes.EDIT);
-                    setFormOpen(open);
-                  }}
+                  setValue={handleEditButtonClick}
                   disabled={disableEditButton}
                 />
               </ToolbarGridItem>
@@ -258,9 +264,7 @@ const TableToolbar = ({
           <ToolbarGridItem item xs={3}>
             <Select
               value={filter}
-              onChange={(e) =>
-                setFilter(e.target.value as FilterType)
-              }
+              onChange={(e) => setFilter(e.target.value as FilterType)}
               sx={{
                 maxWidth: 120,
                 backgroundColor: "#eeeeee",
@@ -322,7 +326,6 @@ const TableToolbar = ({
           setToolbarFormMode={setToolbarFormMode}
           setSelectedRowIds={setSelectedRowIds}
           onSaveClick={handleSaveClick}
-          isDraft={isDraft}
         />
       </Collapse>
     </Box>
