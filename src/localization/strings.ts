@@ -222,6 +222,7 @@ export interface Localized extends LocalizedStringsMethods {
     title: string;
     message: string;
     editMessage: string;
+    editDraftMessage: string;
   };
   /**
    * Translations related to error handler
@@ -244,6 +245,7 @@ export interface Localized extends LocalizedStringsMethods {
     pending: string;
     approved: string;
     declined: string;
+    draft: string;
     vacation: string;
     maternityPaternityLeave: string;
     unpaidTimeOff: string;
@@ -295,11 +297,16 @@ export interface Localized extends LocalizedStringsMethods {
     createRequests: string;
     editRequests: string;
     edit: string;
+    submitforApproval: string;
     cancel: string;
     create: string;
     manageRequests: string;
     future: string;
     past: string;
+    saveAsDraft: string;
+    all: string;
+    draft: string;
+    saveAsDraftTooltip: string;
   };
   /**
    * Translations related to data grid
@@ -349,9 +356,7 @@ export interface Localized extends LocalizedStringsMethods {
   /**
    * Translation related to vacations screen
    */
-  vacationsScreen: {
-
-  };
+  vacationsScreen: {};
   /**
    * Translation related to view all screen
    */

@@ -35,6 +35,7 @@ export interface VacationsDataGridRow {
   days: number;
   message: string;
   status: string;
+  draft: boolean;
 }
 
 /**
@@ -72,7 +73,7 @@ export enum Worktime {
   Billable = "billableProject",
   NonBillable = "nonBillableProject",
   Internal = "internal",
-  Expected = "expected",
+  Expected = "expected"
 }
 
 /**
@@ -92,7 +93,7 @@ export enum WorkTimeCategory {
   INTERNAL = "Internal",
   EXPECTED = "Expected",
   BALANCE = "Balance",
-  LOGGED = "Logged",
+  LOGGED = "Logged"
 }
 
 /**
@@ -163,7 +164,7 @@ export interface QuestionOption {
 export enum QuestionnairePreviewMode {
   FILL = "FILL",
   EDIT = "EDIT",
-  PREVIEW = "PREVIEW",
+  PREVIEW = "PREVIEW"
 }
 
 /**
@@ -184,7 +185,7 @@ export interface PhaseRow {
  */
 export const SprintViewFilterTypes = {
   project: "project",
-  user: "user",
+  user: "user"
 };
 
 /**

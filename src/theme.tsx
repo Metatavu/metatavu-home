@@ -152,3 +152,4 @@ export const wikiScreenColors = {
     text: "#787272"
   }
 };
+

@@ -10,6 +10,8 @@ interface Props {
   open: boolean;
   setOpen: (confirmation: boolean) => void;
   onConfirm: () => Promise<void>;
+  isDraft: boolean;
+  setFormOpen: (formOpen: boolean) => void;
 }
 
 /**
@@ -17,7 +19,7 @@ interface Props {
  *
  * @param props component properties
  */
-const EditConfirmationDialogue = ({ open, setOpen, onConfirm }: Props) => {
+const EditConfirmationDialogue = ({ open, setOpen, onConfirm, isDraft, setFormOpen }: Props) => {
   const [loading, setLoading] = useState(false);
 
   /** Handler for confirm click
@@ -31,12 +33,21 @@ const EditConfirmationDialogue = ({ open, setOpen, onConfirm }: Props) => {
       setLoading(false);
     }
   };
+
+  /** 
+   * Handler for cancel/close click
+   */
+  const handleCancel = () => {
+    setOpen(false);
+    setFormOpen(false);
+  };
+
   return (
     <GenericDialog
       open={open}
       error={false}
-      onClose={() => setOpen(false)}
-      onCancel={() => setOpen(false)}
+      onClose={handleCancel}
+      onCancel={handleCancel}
       onConfirm={handleConfirm}
       confirmButtonText={strings.confirmationHandler.confirmButtonText}
       cancelButtonText={strings.confirmationHandler.cancelButtonText}
@@ -44,7 +55,9 @@ const EditConfirmationDialogue = ({ open, setOpen, onConfirm }: Props) => {
       loading={loading}
     >
       <Typography marginBottom={3} sx={{ fontSize: 16, fontWeight: "bold" }}>
-        {strings.confirmationHandler.editMessage}
+        {isDraft
+          ? strings.confirmationHandler.editDraftMessage
+          : strings.confirmationHandler.editMessage}
       </Typography>
       <Divider />
     </GenericDialog>
