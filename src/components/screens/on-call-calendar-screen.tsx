@@ -58,7 +58,7 @@ const OnCallCalendarScreen = () => {
 
   useEffect(() => {
     getCurrentOnCallPerson();
-  }, [onCallData]);
+  }, []);
 
   /**
    * Fetches on call data
@@ -70,7 +70,8 @@ const OnCallCalendarScreen = () => {
       const fetchedData = await onCallApi.listOnCallData({ year: year.toString() });
       setOnCallData(fetchedData);
     } catch (error) {
-      setError(`${strings.oncall.fetchFailed}, ${error}`);
+      setError(`${strings.oncall.fetchFailed}`);
+      setOnCallData([]);
     }
     setLoading(false);
   };
@@ -78,15 +79,12 @@ const OnCallCalendarScreen = () => {
   /**
    * Finds the current on call employee and sets them in a state
    */
-  const getCurrentOnCallPerson = () => {
+  const getCurrentOnCallPerson = async () => {
+    const currentYear = DateTime.now().year;
     const currentWeek = DateTime.now().weekNumber;
-    const currentOnCallPerson = onCallData.find((item) => item.week === currentWeek)?.username;
-    if (currentOnCallPerson) {
-      setOnCallPerson(currentOnCallPerson);
-    }
-    else {
-      setOnCallPerson(null);
-    }
+    const fetchedData = await onCallApi.listOnCallData({ year: currentYear.toString() });
+    const currentOnCallPerson = fetchedData.find((item) => item.week === currentWeek)?.username;
+    setOnCallPerson(currentOnCallPerson ?? null);
   };
 
   /**
@@ -140,8 +138,6 @@ const OnCallCalendarScreen = () => {
       </Box>
     );
   };
-
-
 
   /**
    * Maps on-call data by week number

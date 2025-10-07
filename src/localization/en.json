@@ -488,7 +488,7 @@
     "selectView": "Select calendar view",
     "noOnCallPerson": "No on call person this week",
     "onCallPersonExists": "Current on-call person:",
-    "fetchFailed": "Fetching on call data has failed",
+    "fetchFailed": "Fetching on call data has failed - no data available",
     "updatePaidStatusForWeek": "Update paid status for week",
     "person": "Person",
     "paidStatus": "Paid Status",
