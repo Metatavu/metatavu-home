@@ -20,6 +20,7 @@ import {
 import SkeletonTableRows from "./skeleton-table-rows/skeleton-table-rows";
 import VacationRequestsTableColumns from "./vacation-requests-table-columns";
 import TableToolbar from "./vacation-requests-table-toolbar/vacation-requests-table-toolbar";
+import type {FilterType} from "src/utils/vacation-filter-type";
 
 /**
  * Component properties
@@ -32,6 +33,7 @@ interface Props {
     rows: VacationsDataGridRow[]
   ) => Promise<void>;
   createVacationRequest: (vacationRequestData: VacationRequest) => Promise<void>;
+  createDraftVacationRequest: (vacationRequestData: VacationRequest) => Promise<void>;
   updateVacationRequest: (
     vacationRequestData: VacationRequest,
     vacationRequestId: string
@@ -40,7 +42,10 @@ interface Props {
     updatedVacationRequestStatus: VacationRequestStatuses,
     selectedRowIds: GridRowId[]
   ) => Promise<void>;
+  fetchVacationRequestById: (vacationRequestId: string) => Promise<VacationRequest | null>;
   loading: boolean;
+  filter: FilterType
+  setFilter: React.Dispatch<React.SetStateAction<FilterType>>;
 }
 
 /**
@@ -53,9 +58,13 @@ const VacationRequestsTable = ({
   toggleIsUpcoming,
   deleteVacationRequests,
   createVacationRequest,
+  createDraftVacationRequest,
   updateVacationRequest,
   updateVacationRequestStatus,
-  loading
+  fetchVacationRequestById,
+  loading,
+  filter,
+  setFilter
 }: Props) => {
   const vacationRequests = useAtomValue(displayedVacationRequestsAtom) || [];
   const containerRef = useRef(null);
@@ -91,9 +100,25 @@ const VacationRequestsTable = ({
       endDate: DateTime.fromJSDate(vacationRequest.endDate),
       days: vacationRequest.days,
       message: vacationRequest.message || strings.vacationRequest.noMessage,
-      status: VacationRequestStatuses.PENDING
+      status: VacationRequestStatuses.PENDING,
+      draft: vacationRequest.draft || false
     };
     return row;
+  };
+
+  /**
+   * Get row status
+   * @param vacationRequest vacation request
+   * @returns status string
+   */
+  const getRowStatus = (vacationRequest: VacationRequest): string => {
+    const { status, draft } = vacationRequest;
+
+    if (Array.isArray(status) && status.length > 0) {
+      return getTotalVacationRequestStatus(status);
+    }
+
+    return draft ? strings.vacationRequest.draft : VacationRequestStatuses.PENDING;
   };
 
   /**
@@ -107,12 +132,7 @@ const VacationRequestsTable = ({
       vacationRequests.forEach((vacationRequest) => {
         if (!vacationRequest) return;
         const row = createDataGridRow(vacationRequest);
-        const status = vacationRequest.status;
-        row.status =
-          Array.isArray(status) && status.length > 0
-            ? getTotalVacationRequestStatus(status)
-            : VacationRequestStatuses.PENDING;
-
+        row.status = getRowStatus(vacationRequest);
         if (vacationRequest.message?.length) {
           row.message = vacationRequest.message;
         }
@@ -185,13 +205,17 @@ const VacationRequestsTable = ({
         toggleIsUpcoming={toggleIsUpcoming}
         deleteVacationRequests={deleteVacationRequests}
         createVacationRequest={createVacationRequest}
+        createDraftVacationRequest={createDraftVacationRequest}
         updateVacationRequest={updateVacationRequest}
         updateVacationRequestStatus={updateVacationRequestStatus}
+        fetchVacationRequestById={fetchVacationRequestById}
         setFormOpen={setFormOpen}
         formOpen={formOpen}
         selectedRowIds={selectedRowIds}
         rows={rows}
         setSelectedRowIds={setSelectedRowIds}
+        filter={filter}
+        setFilter={setFilter}
       />
       <DataGrid
         sx={{ height: dataGridHeight }}

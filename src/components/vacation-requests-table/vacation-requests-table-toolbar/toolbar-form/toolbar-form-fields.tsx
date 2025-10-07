@@ -1,4 +1,4 @@
-import { Box, Button, FormControl, FormLabel, TextField } from "@mui/material";
+import { Box, Button, FormControl, FormLabel, TextField, Grid, Tooltip } from "@mui/material";
 import type { DateTime } from "luxon";
 import { type ChangeEvent, useEffect } from "react";
 import type { VacationRequest } from "src/generated/homeLambdasClient";
@@ -19,6 +19,9 @@ interface Props {
   toolbarFormMode: ToolbarFormModes;
   dateRange: DateRange;
   setDateRange: (dateRange: DateRange) => void;
+  handleCreate: () => void;
+  handleEdit: () => void;
+  handleDraft: () => void;
 }
 
 /**
@@ -32,7 +35,10 @@ const ToolbarFormFields = ({
   dateTimeTomorrow,
   toolbarFormMode,
   dateRange,
-  setDateRange
+  setDateRange,
+  handleCreate,
+  handleEdit,
+  handleDraft
 }: Props) => {
   const adminMode = UserRoleUtils.adminMode();
   const workWeek = [true, true, true, true, true, false, false];
@@ -163,19 +169,61 @@ const ToolbarFormFields = ({
           />
         </>
       )}
+      {toolbarFormMode === ToolbarFormModes.CREATE && (
+        <Grid container spacing={2}>
+          <Grid item xs={6}>
+            <Button
+              disabled={
+                !adminMode &&
+                (!hasAllPropsDefined(vacationRequestData) || !vacationRequestData.message?.length)
+              }
+              type="button"
+              variant="contained"
+              size="large"
+              sx={{ marginTop: "10px", width: "100%" }}
+              onClick={handleCreate}
+            >
+              {strings.form.submit}
+            </Button>
+          </Grid>
+          <Tooltip
+            title={strings.tableToolbar.saveAsDraftTooltip}
+            placement="bottom"
+          >
+            <Grid item xs={6}>
+              <Button
+                disabled={
+                  !adminMode &&
+                  (!hasAllPropsDefined(vacationRequestData) || !vacationRequestData.message?.length)
+                }
+                type="button"
+                variant="contained"
+                size="large"
+                sx={{ marginTop: "10px", width: "100%" }}
+                onClick={handleDraft}
+              >
+                {strings.tableToolbar.saveAsDraft}
+              </Button>
+            </Grid>
+          </Tooltip>
+        </Grid>
+      )}
 
-      <Button
-        disabled={
-          !adminMode &&
-          (!hasAllPropsDefined(vacationRequestData) || !vacationRequestData.message?.length)
-        }
-        type="submit"
-        variant="contained"
-        size="large"
-        sx={{ marginTop: "10px" }}
-      >
-        {toolbarFormMode === ToolbarFormModes.CREATE ? strings.form.submit : strings.form.update}
-      </Button>
+      {toolbarFormMode === ToolbarFormModes.EDIT && (
+        <Button
+          disabled={
+            !adminMode &&
+            (!hasAllPropsDefined(vacationRequestData) || !vacationRequestData.message?.length)
+          }
+          type="button"
+          variant="contained"
+          size="large"
+          sx={{ marginTop: "10px" }}
+          onClick={handleEdit}
+        >
+          {strings.form.update}
+        </Button>
+      )}
     </FormControl>
   );
 };
