@@ -30,6 +30,7 @@ import WikiDocumentationScreen from "./components/screens/wiki-documentation-scr
 import SoftwareDetails from "./components/software-registry/SoftwareDetails";
 import { theme } from "./theme";
 import { QuestionnairePreviewMode } from "./types";
+import EmployeeFlextimeScreen from "./components/screens/employee-flextime-screen";
 
 /**
  * Application component
