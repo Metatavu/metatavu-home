@@ -1,25 +1,25 @@
-import { DataGrid, type GridRowId, type GridRowSelectionModel } from "@mui/x-data-grid";
-import { useMemo, useRef, useState } from "react";
-import { Box, styled } from "@mui/material";
-import TableToolbar from "./vacation-requests-table-toolbar/vacation-requests-table-toolbar";
-import type { VacationsDataGridRow } from "src/types";
-import SkeletonTableRows from "./skeleton-table-rows/skeleton-table-rows";
-import { languageAtom } from "src/atoms/language";
-import { useAtomValue } from "jotai";
-import VacationRequestsTableColumns from "./vacation-requests-table-columns";
-import strings from "src/localization/strings";
 import { Inventory } from "@mui/icons-material";
+import { Box, styled } from "@mui/material";
+import { DataGrid, type GridRowId, type GridRowSelectionModel } from "@mui/x-data-grid";
+import { useAtomValue } from "jotai";
+import { DateTime } from "luxon";
+import { useMemo, useRef, useState } from "react";
+import { userProfileAtom } from "src/atoms/auth";
+import { languageAtom } from "src/atoms/language";
+import { usersAtom } from "src/atoms/user";
 import { displayedVacationRequestsAtom } from "src/atoms/vacation";
 import { type VacationRequest, VacationRequestStatuses } from "src/generated/homeLambdasClient";
+import strings from "src/localization/strings";
+import type { VacationsDataGridRow } from "src/types";
+import LocalizationUtils from "src/utils/localization-utils";
+import { getVacationRequestPersonFullName } from "src/utils/vacation-request-utils";
 import {
   getTotalVacationRequestStatus,
   getVacationRequestStatusColor
 } from "src/utils/vacation-status-utils";
-import { DateTime } from "luxon";
-import LocalizationUtils from "src/utils/localization-utils";
-import { getVacationRequestPersonFullName } from "src/utils/vacation-request-utils";
-import { usersAtom } from "src/atoms/user";
-import { userProfileAtom } from "src/atoms/auth";
+import SkeletonTableRows from "./skeleton-table-rows/skeleton-table-rows";
+import VacationRequestsTableColumns from "./vacation-requests-table-columns";
+import TableToolbar from "./vacation-requests-table-toolbar/vacation-requests-table-toolbar";
 import type {FilterType} from "src/utils/vacation-filter-type";
 
 /**

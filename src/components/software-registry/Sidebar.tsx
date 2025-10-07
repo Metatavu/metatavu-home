@@ -1,12 +1,16 @@
-import { 
-  useState, 
-  useCallback, 
-  useMemo 
-} from "react";
-import { TextField, IconButton, Typography, Box, Chip, Button, InputAdornment } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import SortIcon from '@mui/icons-material/Sort';
-import SearchIcon from '@mui/icons-material/Search';
+import SearchIcon from "@mui/icons-material/Search";
+import SortIcon from "@mui/icons-material/Sort";
+import {
+  Box,
+  Button,
+  Chip,
+  IconButton,
+  InputAdornment,
+  TextField,
+  Typography
+} from "@mui/material";
+import { useCallback, useMemo, useState } from "react";
 import strings from "src/localization/strings";
 
 /**
@@ -32,7 +36,7 @@ const Sidebar = ({
   onTagSelection,
   filteredApplicationsCount,
   availableTags,
-  onSearch,
+  onSearch
 }: SidebarProps) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
@@ -43,7 +47,7 @@ const Sidebar = ({
    * Only tags that match the search term or are already selected are shown.
    */
   const filteredTags = useMemo(() => {
-    return availableTags.filter(tag => {
+    return availableTags.filter((tag) => {
       const matchesSearch = tag.toLowerCase().includes(searchValue.toLowerCase());
       const isSelected = selectedTags.includes(tag);
       return matchesSearch || isSelected;
@@ -54,7 +58,7 @@ const Sidebar = ({
    * Toggles the visibility of the sidebar.
    */
   const toggleSidebar = useCallback(() => {
-    setIsSidebarOpen(prev => !prev);
+    setIsSidebarOpen((prev) => !prev);
   }, []);
 
   /**
@@ -63,24 +67,30 @@ const Sidebar = ({
    *
    * @param tag The selected tag.
    */
-  const handleTagClick = useCallback((tag: string) => {
-    const updatedTags = selectedTags.includes(tag)
-      ? selectedTags.filter(t => t !== tag)
-      : [...selectedTags, tag];
-    setSelectedTags(updatedTags);
-    onTagSelection(updatedTags);
-  }, [selectedTags, onTagSelection]);
+  const handleTagClick = useCallback(
+    (tag: string) => {
+      const updatedTags = selectedTags.includes(tag)
+        ? selectedTags.filter((t) => t !== tag)
+        : [...selectedTags, tag];
+      setSelectedTags(updatedTags);
+      onTagSelection(updatedTags);
+    },
+    [selectedTags, onTagSelection]
+  );
 
   /**
    * Updates the search value and triggers the search callback when the search input changes.
    *
    * @param event The change event from the search input.
    */
-  const handleSearchChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target;
-    setSearchValue(value);
-    onSearch(value);
-  }, [onSearch]);
+  const handleSearchChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const { value } = event.target;
+      setSearchValue(value);
+      onSearch(value);
+    },
+    [onSearch]
+  );
 
   /**
    * Clears the search input and resets the tag selection.
@@ -107,7 +117,7 @@ const Sidebar = ({
             backgroundColor: "#fff",
             height: "100%",
             borderRadius: 0.5,
-            boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.25)",
+            boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.25)"
           }}
         >
           <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
@@ -116,7 +126,11 @@ const Sidebar = ({
               <CloseIcon />
             </IconButton>
           </Box>
-          <Typography variant="body1" sx={{color: theme => theme.palette.info.main}} gutterBottom>
+          <Typography
+            variant="body1"
+            sx={{ color: (theme) => theme.palette.info.main }}
+            gutterBottom
+          >
             {filteredApplicationsCount} {strings.softwareRegistry.results}
           </Typography>
           <TextField
@@ -130,24 +144,24 @@ const Sidebar = ({
                 <InputAdornment position="end">
                   <SearchIcon sx={{ color: "#747474" }} />
                 </InputAdornment>
-              ),
+              )
             }}
             sx={{
               "& fieldset": { borderColor: "#121212" },
               "& .MuiInputBase-root": {
                 height: "40px",
                 backgroundColor: "#fff",
-                borderRadius: "7px",
+                borderRadius: "7px"
               },
               "& .MuiInputBase-input": { color: "#747474" },
-              mb: 2,
+              mb: 2
             }}
           />
           <Typography variant="subtitle2" gutterBottom>
             {strings.softwareRegistry.tags}
           </Typography>
           <Box display="flex" flexWrap="wrap" gap={1} mb={2}>
-            {filteredTags.map(tag => (
+            {filteredTags.map((tag) => (
               <Chip
                 key={tag}
                 label={tag}
@@ -159,15 +173,15 @@ const Sidebar = ({
                   color: selectedTags.includes(tag) ? "#fff" : "#000",
                   border: `1px solid ${selectedTags.includes(tag) ? "transparent" : "#f9473b"}`,
                   "& .MuiChip-deleteIcon": {
-                    color: selectedTags.includes(tag) ? "#fff" : "#f9473b",
+                    color: selectedTags.includes(tag) ? "#fff" : "#f9473b"
                   },
                   "&:hover": {
                     backgroundColor: selectedTags.includes(tag) ? "#000" : "#f9473b",
                     color: "#fff",
                     "& .MuiChip-deleteIcon": {
-                      color: "#fff",
-                    },
-                  },
+                      color: "#fff"
+                    }
+                  }
                 }}
               />
             ))}

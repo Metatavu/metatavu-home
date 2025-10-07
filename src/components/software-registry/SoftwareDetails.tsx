@@ -1,24 +1,24 @@
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
 import {
-  Container,
-  Typography,
-  Grid,
   Box,
-  Link,
   Button,
   Card,
-  CircularProgress
+  CircularProgress,
+  Container,
+  Grid,
+  Link,
+  Typography
 } from "@mui/material";
-import strings from "src/localization/strings";
-import { useLambdasApi } from "src/hooks/use-api";
 import { useAtom, useAtomValue } from "jotai";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { authAtom } from "src/atoms/auth";
 import { softwareAtom } from "src/atoms/software";
 import type { SoftwareRegistry } from "src/generated/homeLambdasClient";
-import AddSoftwareModal from "./AddSoftwareModal";
+import { useLambdasApi } from "src/hooks/use-api";
+import strings from "src/localization/strings";
 import UserRoleUtils from "src/utils/user-role-utils";
 import BackButton from "../generics/back-button";
+import AddSoftwareModal from "./AddSoftwareModal";
 
 /**
  * Component for displaying detailed information about a specific software entry.
@@ -217,11 +217,11 @@ const SoftwareDetails = () => {
   return (
     <Container sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       <Box my={4} display="flex" alignItems="center" position="relative">
-        <BackButton 
-          styles={{ 
-            width: "auto", 
-            position: "absolute", 
-            left: 0 
+        <BackButton
+          styles={{
+            width: "auto",
+            position: "absolute",
+            left: 0
           }}
         />
         <Box flexGrow={1} textAlign="center">

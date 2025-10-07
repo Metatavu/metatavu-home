@@ -1,8 +1,9 @@
-import { MenuItem, Card, Grow, FormControl, InputLabel, Select } from "@mui/material";
-import strings from "src/localization/strings";
+import { Card, FormControl, Grow, InputLabel, MenuItem, Select } from "@mui/material";
 import { useAtomValue } from "jotai";
 import { personsAtom } from "src/atoms/person";
+import strings from "src/localization/strings";
 import UserRoleUtils from "src/utils/user-role-utils";
+
 // import SummaryTimEntriesCard from "./summary-time-entries-card";
 // import SpecificTimeEntriesCard from "./specific-time-entries-card";
 
@@ -19,10 +20,7 @@ interface Props {
  *
  * @param props Component properties
  */
-const TimebankContent = ({
-  selectedEmployeeId,
-  setSelectedEmployeeId
-}: Props) => {
+const TimebankContent = ({ selectedEmployeeId, setSelectedEmployeeId }: Props) => {
   const persons = useAtomValue(personsAtom);
   const isAdmin = UserRoleUtils.isAdmin();
 
@@ -32,7 +30,9 @@ const TimebankContent = ({
         <Grow in>
           <Card sx={{ p: "1%", display: "flex", justifyContent: "center", marginBottom: "24px" }}>
             <FormControl fullWidth>
-              <InputLabel id="employee-select-label">{strings.employeeSelect.employeeSelectlabel}</InputLabel>
+              <InputLabel id="employee-select-label">
+                {strings.employeeSelect.employeeSelectlabel}
+              </InputLabel>
               <Select
                 labelId="employee-select-label"
                 id="employee-select"

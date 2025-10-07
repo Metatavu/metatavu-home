@@ -1,16 +1,16 @@
 import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
-  TextField,
-  Typography,
   Box,
+  Button,
   CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  TextField,
+  Typography
 } from "@mui/material";
-import type { YearlyVacationDays } from "../../../generated/homeLambdasClient/models/YearlyVacationDays";
 import type { User } from "src/generated/homeLambdasClient/models/User";
+import type { YearlyVacationDays } from "../../../generated/homeLambdasClient/models/YearlyVacationDays";
 import strings from "../../../localization/strings";
 
 type VacationDaysMap = Record<string, YearlyVacationDays>;
@@ -20,11 +20,7 @@ interface EditVacationDialogProps {
   vacationDays: Record<string, any>;
   loading: boolean;
   onClose: () => void;
-  onChange: (
-    year: string,
-    field: keyof YearlyVacationDays,
-    value: string
-  ) => void;
+  onChange: (year: string, field: keyof YearlyVacationDays, value: string) => void;
   onSave: () => void;
   disableSave: boolean;
 }
@@ -40,7 +36,7 @@ const normalizeVacationDays = (input: Record<string, any>): VacationDaysMap => {
   for (const [year, data] of Object.entries(input)) {
     result[year] = {
       total: Number(data.total) || 0,
-      remaining: Number(data.remaining) || 0,
+      remaining: Number(data.remaining) || 0
     };
   }
   return result;
@@ -69,7 +65,7 @@ const EditVacationDialog = ({
   onClose,
   onChange,
   onSave,
-  disableSave,
+  disableSave
 }: EditVacationDialogProps) => {
   if (!user) return null;
 
@@ -81,8 +77,7 @@ const EditVacationDialog = ({
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
       <DialogTitle>
-        {strings.adminVacationManagement.editTitle}: {user.firstName}{" "}
-        {user.lastName}
+        {strings.adminVacationManagement.editTitle}: {user.firstName} {user.lastName}
       </DialogTitle>
       <DialogContent dividers>
         {years.map((year) => (
@@ -113,11 +108,7 @@ const EditVacationDialog = ({
         <Button onClick={onClose} color="inherit">
           {strings.label.cancel}
         </Button>
-        <Button
-          variant="contained"
-          onClick={onSave}
-          disabled={loading || disableSave}
-        >
+        <Button variant="contained" onClick={onSave} disabled={loading || disableSave}>
           {loading ? <CircularProgress size={24} /> : strings.label.save}
         </Button>
       </DialogActions>

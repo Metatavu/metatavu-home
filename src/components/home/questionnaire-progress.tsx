@@ -1,10 +1,10 @@
-import { Box, Typography, CircularProgress } from "@mui/material";
-import { useEffect, useState } from "react";
-import { useLambdasApi } from "src/hooks/use-api";
+import { Box, CircularProgress, Typography } from "@mui/material";
 import { useAtomValue } from "jotai";
+import { useEffect, useState } from "react";
 import { userProfileAtom } from "src/atoms/auth";
 import { usersAtom } from "src/atoms/user";
 import type { Questionnaire, User } from "src/generated/homeLambdasClient";
+import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
 
 /**
@@ -17,7 +17,7 @@ const QuestionnaireProgress = () => {
   const users = useAtomValue(usersAtom);
   const [questionnaires, setQuestionnaires] = useState<Questionnaire[]>([]);
   const [loading, setLoading] = useState(false);
-  
+
   const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
 
   useEffect(() => {
@@ -31,15 +31,15 @@ const QuestionnaireProgress = () => {
         setLoading(false);
       }
     };
-    
+
     fetchQuestionnaires();
   }, [questionnairesApi]);
 
   // Calculate passed questionnaires
-  const passedCount = questionnaires.filter(
-    q => q.passedUsers?.includes(loggedInUser?.id || "")
+  const passedCount = questionnaires.filter((q) =>
+    q.passedUsers?.includes(loggedInUser?.id || "")
   ).length;
-  
+
   const totalCount = questionnaires.length;
 
   if (loading) {
@@ -53,7 +53,8 @@ const QuestionnaireProgress = () => {
   return (
     <Typography>
       {strings.formatString(
-        strings.questionnaireProgress?.progressText || "You have passed {0} out of {1} questionnaires",
+        strings.questionnaireProgress?.progressText ||
+          "You have passed {0} out of {1} questionnaires",
         passedCount,
         totalCount
       )}
