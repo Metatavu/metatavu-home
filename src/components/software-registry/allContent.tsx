@@ -1,5 +1,4 @@
-import type { FunctionComponent } from "react";
-import { Grid, Box } from "@mui/material";
+import { Box, Grid } from "@mui/material";
 import type { SoftwareRegistry, SoftwareStatus } from "src/generated/homeLambdasClient";
 import MainCard from "./cards/mainCard";
 

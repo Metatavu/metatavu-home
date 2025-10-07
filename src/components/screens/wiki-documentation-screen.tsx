@@ -1,44 +1,44 @@
-import { useEffect, useState } from "react";
-import BackButton from "../generics/back-button";
-import { 
-  CircularProgress, 
-  Card, 
-  Box, 
-  TextField,
-  Grid, 
-  Typography,
-  Button,
-  FormControl,
-  Select,
-  MenuItem,
-  Autocomplete,
-  IconButton,
-  Checkbox,
-  styled,
-  Snackbar,
-  Alert,
-  type PopperProps,
-  Popper,
-  type SelectChangeEvent,
-  Pagination
-} from "@mui/material";
-import { useAtomValue, useSetAtom, useAtom } from "jotai";
-import { useLambdasApi } from "src/hooks/use-api";
-import { errorAtom } from "src/atoms/error";
-import type { ArticleMetadata } from "src/generated/homeLambdasClient";
-import { articleAtom, draftArticleAtom, tagsAtom } from "src/atoms/article";
 import { Search } from "@mui/icons-material";
-import GridViewIcon from "@mui/icons-material/GridView";
 import FormatListBulletedOutlinedIcon from "@mui/icons-material/FormatListBulletedOutlined";
+import GridViewIcon from "@mui/icons-material/GridView";
 import SearchOffIcon from "@mui/icons-material/SearchOff";
-import CarouselArticleCards from "../wiki-documentation/carousel-article-cards";
+import {
+  Alert,
+  Autocomplete,
+  Box,
+  Button,
+  Card,
+  Checkbox,
+  CircularProgress,
+  FormControl,
+  Grid,
+  IconButton,
+  MenuItem,
+  Pagination,
+  Popper,
+  type PopperProps,
+  Select,
+  type SelectChangeEvent,
+  Snackbar,
+  styled,
+  TextField,
+  Typography
+} from "@mui/material";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { useEffect, useState } from "react";
+import { articleAtom, draftArticleAtom, tagsAtom } from "src/atoms/article";
+import { errorAtom } from "src/atoms/error";
+import { snackbarAtom } from "src/atoms/snackbar";
+import type { ArticleMetadata } from "src/generated/homeLambdasClient";
+import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
 import { wikiScreenColors } from "src/theme";
-import CreateOrEditArticleForm from "../wiki-documentation/create-article-form";
 import UserRoleUtils from "src/utils/user-role-utils";
+import BackButton from "../generics/back-button";
 import ArticleCard from "../wiki-documentation/article-card";
 import ArticleListItem from "../wiki-documentation/article-list-item";
-import { snackbarAtom } from "src/atoms/snackbar";
+import CarouselArticleCards from "../wiki-documentation/carousel-article-cards";
+import CreateOrEditArticleForm from "../wiki-documentation/create-article-form";
 
 const colors = wikiScreenColors;
 const itemsPerPage = 12;
@@ -183,13 +183,13 @@ const WikiDocumentationScreen = () => {
 
     if (!newSearchInput || newSearchInput === "") {
       setDisplayedArticles(
-        adminMode && displayOption === "draft" ? draftArticles ?? [] : articles ?? []
+        adminMode && displayOption === "draft" ? (draftArticles ?? []) : (articles ?? [])
       );
       return;
     }
 
     const filteredArticles = (
-      adminMode && displayOption === "draft" ? draftArticles ?? [] : articles ?? []
+      adminMode && displayOption === "draft" ? (draftArticles ?? []) : (articles ?? [])
     ).filter(
       (article) =>
         article.title.toLowerCase().includes(newSearchInput.toLowerCase()) &&
@@ -206,7 +206,7 @@ const WikiDocumentationScreen = () => {
   const handleSelectedTagChange = (values: string[]) => {
     setSelectedTags(values);
     const filteredArticles = (
-      adminMode && displayOption === "draft" ? draftArticles ?? [] : articles ?? []
+      adminMode && displayOption === "draft" ? (draftArticles ?? []) : (articles ?? [])
     ).filter(
       (article) =>
         article.title.toLowerCase().includes(searchInput.toLowerCase()) &&
@@ -520,89 +520,77 @@ const WikiDocumentationScreen = () => {
     );
   }
 
-return (
-  <>
-    {formOpen ? (
-      <CreateOrEditArticleForm
-        handleClose={() => setFormOpen(false)}
-        action="create"
-        adminMode={adminMode}
-      />
-    ) : (
-      <>
-        {!adminMode && (  
-      <>  
-        {renderTitle(strings.wikiDocumentation.cardTitle)}  
-        <CarouselArticleCards articles={lastUpdatedArticles} />  
-      </>  
-    )} 
-        <Box
-          sx={
-            adminMode
-              ? { marginTop: 4, marginBottom: 4 }
-              : { paddingLeft: 2, paddingRight: 2, marginBottom: 4 }
-          }
-        >
-          {renderToolBar()}
-          {displayedArticlesOnPage.length !== 0 ? (
-            <Grid
-              container
-              spacing={adminMode ? 4 : 3}
-              textAlign={"center"}
-            >
-              {displayedArticlesOnPage.map((article) => (
-                <Grid
-                  item
-                  lg={!listView ? 3 : 12}
-                  md={!listView ? 4 : 12}
-                  sm={!listView ? 6 : 12}
-                  xs={12}
-                  key={`article-grid-item-${article.id}`}
-                >
-                  {listView ? (
-                    <ArticleListItem
-                      article={article}
-                      adminMode={adminMode}
-                      handleDelete={handleDelete}
-                    />
-                  ) : (
-                    <ArticleCard
-                      article={article}
-                      adminMode={adminMode}
-                      handleDelete={handleDelete}
-                    />
-                  )}
-                </Grid>
-              ))}
-            </Grid>
-          ) : (
-            <Grid
-              container
-              justifyContent="center"
-              sx={{ color: colors.button.text }}
-            >
-              <SearchOffIcon />
-              <Typography variant="body1">
-                {strings.wikiDocumentation.noArticlesFound}
-              </Typography>
+  return (
+    <>
+      {formOpen ? (
+        <CreateOrEditArticleForm
+          handleClose={() => setFormOpen(false)}
+          action="create"
+          adminMode={adminMode}
+        />
+      ) : (
+        <>
+          {!adminMode && (
+            <>
+              {renderTitle(strings.wikiDocumentation.cardTitle)}
+              <CarouselArticleCards articles={lastUpdatedArticles} />
+            </>
+          )}
+          <Box
+            sx={
+              adminMode
+                ? { marginTop: 4, marginBottom: 4 }
+                : { paddingLeft: 2, paddingRight: 2, marginBottom: 4 }
+            }
+          >
+            {renderToolBar()}
+            {displayedArticlesOnPage.length !== 0 ? (
+              <Grid container spacing={adminMode ? 4 : 3} textAlign={"center"}>
+                {displayedArticlesOnPage.map((article) => (
+                  <Grid
+                    item
+                    lg={!listView ? 3 : 12}
+                    md={!listView ? 4 : 12}
+                    sm={!listView ? 6 : 12}
+                    xs={12}
+                    key={`article-grid-item-${article.id}`}
+                  >
+                    {listView ? (
+                      <ArticleListItem
+                        article={article}
+                        adminMode={adminMode}
+                        handleDelete={handleDelete}
+                      />
+                    ) : (
+                      <ArticleCard
+                        article={article}
+                        adminMode={adminMode}
+                        handleDelete={handleDelete}
+                      />
+                    )}
+                  </Grid>
+                ))}
+              </Grid>
+            ) : (
+              <Grid container justifyContent="center" sx={{ color: colors.button.text }}>
+                <SearchOffIcon />
+                <Typography variant="body1">{strings.wikiDocumentation.noArticlesFound}</Typography>
+              </Grid>
+            )}
+          </Box>
+
+          {displayedArticles.length > itemsPerPage && (
+            <Grid container justifyContent="center" sx={{ marginBottom: 3 }}>
+              <Pagination
+                size="large"
+                count={Math.floor(displayedArticles?.length / itemsPerPage) + 1}
+                onChange={(_event, page) => setPageNumber(page)}
+                page={pageNumber}
+              />
             </Grid>
           )}
-        </Box>
-
-        {displayedArticles.length > itemsPerPage && (
-          <Grid container justifyContent="center" sx={{ marginBottom: 3 }}>
-            <Pagination
-              size="large"
-              count={Math.floor(displayedArticles?.length / itemsPerPage) + 1}
-              onChange={(_event, page) => setPageNumber(page)}
-              page={pageNumber}
-            />
-          </Grid>
-        )}
-        <BackButton 
-          styles={{ marginBottom: 2 }} 
-        />
-      </>
+          <BackButton styles={{ marginBottom: 2 }} />
+        </>
       )}
       <Snackbar
         open={snackbar.open}

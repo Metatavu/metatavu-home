@@ -1,20 +1,20 @@
-import { useState } from "react";
 import {
+  Box,
+  Button,
   Card,
+  CardActionArea,
   CardContent,
   CardMedia,
-  Typography,
-  Box,
   Chip,
-  CardActionArea,
   Divider,
-  Button,
   IconButton,
+  ListItemIcon,
+  ListItemText,
   Menu,
   MenuItem,
-  ListItemIcon,
-  ListItemText
+  Typography
 } from "@mui/material";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import type { SoftwareRegistry } from "src/generated/homeLambdasClient";
 import { SoftwareStatus } from "src/generated/homeLambdasClient";
