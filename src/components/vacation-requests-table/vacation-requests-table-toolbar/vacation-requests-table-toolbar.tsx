@@ -87,7 +87,7 @@ const TableToolbar = ({
   const gridItemSize = selectedRowIds?.length === 1 ? singleSelectionSize : multiSelectionSize;
   const disableEditButton = false;
   const selectedRow = rows.find((row) => String(row.id) === String(selectedRowIds[0]));
-  const isDraftSelected = selectedRow ? selectedRow.draft === true : false;
+  const isDraftSelected = selectedRow ? selectedRow.draft : false;
   const [wasDraftBeforeEdit, setWasDraftBeforeEdit] = useState(false);
 
   useEffect(() => {
@@ -158,6 +158,8 @@ const TableToolbar = ({
 
   /**
    * Submit a draft vacation request for approval
+   *
+   * @param {string} vacationRequestId - The ID of the vacation request to submit for approval.
    */
   const handleSubmitForApproval = async (vacationRequestId: string) => {
     if (!vacationRequestId) return;
@@ -181,6 +183,7 @@ const TableToolbar = ({
     setSelectedRowIds([]);
     setFormOpen(false);
   };
+
   /**
    *  handler for edit button click
    */
@@ -189,6 +192,7 @@ const TableToolbar = ({
     setFormOpen(true);
     setWasDraftBeforeEdit(isDraftSelected);
   };
+  
   return (
     <Box>
       <ConfirmationHandler

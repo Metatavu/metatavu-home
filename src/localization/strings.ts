@@ -306,6 +306,7 @@ export interface Localized extends LocalizedStringsMethods {
     saveAsDraft: string;
     all: string;
     draft: string;
+    saveAsDraftTooltip: string;
   };
   /**
    * Translations related to data grid

@@ -263,7 +263,8 @@
     "past": "Past",
     "saveAsDraft": "Save as Draft",
     "all": "All",
-    "draft": "Draft"
+    "draft": "Draft",
+    "saveAsDraftTooltip": "Saving the vacation request as a draft will not submit it for approval"
   },
   "dataGrid": {
     "noRows": "No Rows"

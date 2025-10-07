@@ -263,7 +263,9 @@
     "past": "Menneet",
     "saveAsDraft": "Tallenna luonnoksena",
     "all": "Kaikki",
-    "draft": "Luonnos"
+    "draft": "Luonnos",
+    "saveAsDraftTooltip": "Lomahakemuksen tallentaminen luonnoksena ei lähetä sitä hyväksyttäväksi"
+
   },
   "dataGrid": {
     "noRows": "Ei rivejä"

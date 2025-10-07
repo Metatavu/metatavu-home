@@ -47,7 +47,7 @@ const ToolbarForm = ({
   toolbarFormMode,
   setToolbarFormMode,
   setSelectedRowIds,
-  onSaveClick,
+  onSaveClick
 }: Props) => {
   const defaultDateRange = {
     start: DateTime.now().plus({ days: 1 }),
@@ -142,11 +142,20 @@ const ToolbarForm = ({
 
   const dateTimeTomorrow = DateTime.now().plus({ days: 1 });
 
+  /**
+   * Handle create vacation request
+   */
   const handleCreate = async () => {
     await createVacationRequest(vacationRequestData);
     setFormOpen(false);
   };
 
+  /**
+   * Handle edit vacation request
+   *
+   * if user is not admin and the request is not in pending status, call onSaveClick that opens the edit confirmation dialog
+   * otherwise just update the vacation request as usual
+   */
   const handleEdit = async () => {
     const currentStatus = vacationRequestData.status?.[0]?.status;
 
@@ -163,6 +172,9 @@ const ToolbarForm = ({
     setSelectedRowIds([]);
   };
 
+  /**
+   *  Handle draft vacation request creation
+   */
   const handleDraft = async () => {
     await createDraftVacationRequest(vacationRequestData);
     setFormOpen(false);

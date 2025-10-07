@@ -1,4 +1,4 @@
-import { Button, FormControl, FormLabel, TextField, Box, Grid } from "@mui/material";
+import { Button, FormControl, FormLabel, TextField, Box, Grid, Tooltip } from "@mui/material";
 import { type ChangeEvent, useEffect } from "react";
 import DateRangePicker from "../../../generics/date-range-picker";
 import { type DateRange, ToolbarFormModes } from "src/types";
@@ -170,22 +170,26 @@ const ToolbarFormFields = ({
         </>
       )}
       {toolbarFormMode === ToolbarFormModes.CREATE && (
-          <Grid container spacing={2}>
-            <Grid item xs={6}>
-              <Button
-                disabled={
-                  !adminMode &&
-                  (!hasAllPropsDefined(vacationRequestData) || !vacationRequestData.message?.length)
-                }
-                type="button"
-                variant="contained"
-                size="large"
-                sx={{ marginTop: "10px", width: "100%" }}
-                onClick={handleCreate}
-              >
-                {strings.form.submit}
-              </Button>
-            </Grid>
+        <Grid container spacing={2}>
+          <Grid item xs={6}>
+            <Button
+              disabled={
+                !adminMode &&
+                (!hasAllPropsDefined(vacationRequestData) || !vacationRequestData.message?.length)
+              }
+              type="button"
+              variant="contained"
+              size="large"
+              sx={{ marginTop: "10px", width: "100%" }}
+              onClick={handleCreate}
+            >
+              {strings.form.submit}
+            </Button>
+          </Grid>
+          <Tooltip
+            title={strings.tableToolbar.saveAsDraftTooltip}
+            placement="bottom"
+          >
             <Grid item xs={6}>
               <Button
                 disabled={
@@ -201,7 +205,8 @@ const ToolbarFormFields = ({
                 {strings.tableToolbar.saveAsDraft}
               </Button>
             </Grid>
-          </Grid>
+          </Tooltip>
+        </Grid>
       )}
 
       {toolbarFormMode === ToolbarFormModes.EDIT && (

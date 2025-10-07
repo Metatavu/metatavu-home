@@ -34,8 +34,8 @@ const EditConfirmationDialogue = ({ open, setOpen, onConfirm, isDraft, setFormOp
     }
   };
 
-  /** Handler for cancel/close click
-   *
+  /** 
+   * Handler for cancel/close click
    */
   const handleCancel = () => {
     setOpen(false);
