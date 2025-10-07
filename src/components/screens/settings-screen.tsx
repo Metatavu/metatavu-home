@@ -53,11 +53,14 @@ const SettingsScreen = () => {
             severaUserId
           }
         };
-
-        // Update the global profile atom
+        /**
+         * Update the global profile atom
+         */
         setUserProfile(updatedProfile);
 
-        // Update the global users list atom
+        /**
+         * Update the global users list atom
+         */
         setUsers((prev) =>
           prev.map((u) =>
             u.id === userProfile.id ? { ...u, attributes: { ...u.attributes, severaUserId } } : u
