@@ -1,13 +1,13 @@
-import { Card, CardContent, Typography, Skeleton, Grid, CardMedia } from "@mui/material";
-import { Link } from "react-router-dom";
-import strings from "../../localization/strings";
-import UserRoleUtils from "../../utils/user-role-utils";
-import { useEffect, useMemo, useState } from "react";
-import { useLambdasApi } from "src/hooks/use-api";
+import { Card, CardContent, CardMedia, Grid, Skeleton, Typography } from "@mui/material";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
+import { authAtom } from "src/atoms/auth";
 import { errorAtom } from "src/atoms/error";
 import { softwareAtom } from "src/atoms/software";
-import { authAtom } from "src/atoms/auth";
+import { useLambdasApi } from "src/hooks/use-api";
+import strings from "../../localization/strings";
+import UserRoleUtils from "../../utils/user-role-utils";
 
 /**
  * SoftwareRegistry card component
@@ -56,9 +56,7 @@ const SoftwareRegistryCard = () => {
     if (loading) {
       return (
         <Grid item container xs={12}>
-          <Skeleton
-            width="100%"
-          />
+          <Skeleton width="100%" />
         </Grid>
       );
     }
@@ -82,7 +80,7 @@ const SoftwareRegistryCard = () => {
                       width: "60px",
                       objectFit: "contain",
                       margin: "6px",
-                      borderRadius: "8px",
+                      borderRadius: "8px"
                     }}
                   />
                 </Grid>
@@ -108,7 +106,7 @@ const SoftwareRegistryCard = () => {
                       width: "60px",
                       objectFit: "contain",
                       margin: "6px",
-                      borderRadius: "8px",
+                      borderRadius: "8px"
                     }}
                   />
                 </Grid>
@@ -128,8 +126,8 @@ const SoftwareRegistryCard = () => {
       <Card
         sx={{
           "&:hover": {
-            background: "#efefef",
-          },
+            background: "#efefef"
+          }
         }}
       >
         <CardContent>
@@ -138,9 +136,7 @@ const SoftwareRegistryCard = () => {
               ? strings.softwareRegistry.softwareRegistryAdmin
               : strings.softwareRegistry.softwareRegistry}
           </Typography>
-          <Grid container>
-            {renderSoftwareDetails()}
-          </Grid>
+          <Grid container>{renderSoftwareDetails()}</Grid>
         </CardContent>
       </Card>
     </Link>

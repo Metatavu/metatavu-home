@@ -1,17 +1,16 @@
-import { Grid, Typography, Card, CardContent, Skeleton } from "@mui/material";
-import strings from "src/localization/strings";
 import ScheduleIcon from "@mui/icons-material/Schedule";
-import { errorAtom } from "src/atoms/error";
+import { Card, CardContent, Grid, Skeleton, Typography } from "@mui/material";
 import { useAtomValue, useSetAtom } from "jotai";
+import { DateTime } from "luxon";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { userProfileAtom } from "src/atoms/auth";
-import UserRoleUtils from "src/utils/user-role-utils";
-import { DateTime } from "luxon";
+import { errorAtom } from "src/atoms/error";
 import { usersAtom } from "src/atoms/user";
-import type { Flextime } from "src/generated/homeLambdasClient";
-import type { User } from "src/generated/homeLambdasClient";
+import type { Flextime, User } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
+import strings from "src/localization/strings";
+import UserRoleUtils from "src/utils/user-role-utils";
 import { getSeveraUserId } from "src/utils/user-utils";
 
 /**
@@ -45,7 +44,7 @@ const BalanceCard = () => {
    */
   const getUsersFlextimes = async () => {
     if (!loggedInUser || !severaUserId) return;
-    
+
     setLoading(true);
     try {
       const fetchedUsersFlextime = await flexTimeApi.getFlextimeBySeveraUserId({
