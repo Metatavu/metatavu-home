@@ -1,23 +1,21 @@
+import { Box, CircularProgress, Switch, Typography } from "@mui/material";
+import { useAtom, useSetAtom } from "jotai";
 import { useState } from "react";
-import { Typography, Box, Switch } from "@mui/material";
-import strings from "src/localization/strings";
-import { errorAtom } from "src/atoms/error";
-import { useAtomValue, useSetAtom } from "jotai";
 import { userProfileAtom } from "src/atoms/auth";
+import { errorAtom } from "src/atoms/error";
 import { usersAtom } from "src/atoms/user";
 import { useLambdasApi } from "src/hooks/use-api";
-import { CircularProgress } from "@mui/material";
+import strings from "src/localization/strings";
 
 /**
  * Settings screen component
  */
 const SettingsScreen = () => {
   const { usersApi } = useLambdasApi();
-  const userProfile = useAtomValue(userProfileAtom);
-  const setUserProfile = useSetAtom(userProfileAtom);
+  const [userProfile, setUserProfile] = useAtom(userProfileAtom);
   const setUsers = useSetAtom(usersAtom);
   const setError = useSetAtom(errorAtom);
-  
+
   const [isConsentGiven, setIsConsentGiven] = useState(
     Boolean(userProfile?.attributes?.severaUserId)
   );
@@ -41,38 +39,31 @@ const SettingsScreen = () => {
         attributeName: "isSeveraOptIn"
       });
 
-      const updatedSeveraUserId = response.updatedKeycloakAttributes?.severaUserId; 
+      const severaUserId = response.updatedKeycloakAttributes
+        ? response.updatedKeycloakAttributes.severaUserId
+        : undefined;
 
-      /**
-       * Update userProfileAtom
-       */ 
-      const updatedUserProfile = {
-        ...userProfile,
-        attributes: {
-          ...userProfile.attributes,
-          severaUserId: updatedSeveraUserId,
-        },
-      };
-      setUserProfile(updatedUserProfile);
+      setIsConsentGiven(Boolean(severaUserId));
 
-      /**
-       * Update usersAtom so homescreen re-renders without refresh
-       */
-      setUsers(prevUsers =>
-        prevUsers.map(u =>
-          u.id === userProfile.id
-            ? {
-                ...u,
-                attributes: {
-                  ...u.attributes,
-                  severaUserId: updatedSeveraUserId
-                },
-              }
-            : u
-        )
-      );
+      if (severaUserId !== undefined) {
+        const updatedProfile = {
+          ...userProfile,
+          attributes: {
+            ...userProfile.attributes,
+            severaUserId
+          }
+        };
 
-      setIsConsentGiven(Boolean(updatedSeveraUserId));
+        // Update the global profile atom
+        setUserProfile(updatedProfile);
+
+        // Update the global users list atom
+        setUsers((prev) =>
+          prev.map((u) =>
+            u.id === userProfile.id ? { ...u, attributes: { ...u.attributes, severaUserId } } : u
+          )
+        );
+      }
     } catch (error) {
       console.error("Error fetching consent:", error);
       setError(`${strings.error.fetchFailedFlextime}, ${error}`);
