@@ -1,23 +1,23 @@
 import { Card } from "@mui/material";
-import { useEffect, useMemo, useState } from "react";
-import VacationRequestsTable from "../vacation-requests-table/vacation-requests-table";
-import type { User } from "src/generated/homeLambdasClient";
-import { type VacationRequest, VacationRequestStatuses } from "src/generated/homeLambdasClient";
-import { useLambdasApi } from "src/hooks/use-api";
+import type { GridRowId } from "@mui/x-data-grid";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { useEffect, useMemo, useState } from "react";
 import { userProfileAtom } from "src/atoms/auth";
 import { errorAtom } from "src/atoms/error";
-import type { GridRowId } from "@mui/x-data-grid";
-import strings from "src/localization/strings";
+import { usersAtom } from "src/atoms/user";
 import {
   allVacationRequestsAtom,
   displayedVacationRequestsAtom,
   vacationRequestsAtom
 } from "src/atoms/vacation";
+import type { User } from "src/generated/homeLambdasClient";
+import { type VacationRequest, VacationRequestStatuses } from "src/generated/homeLambdasClient";
+import { useLambdasApi } from "src/hooks/use-api";
+import strings from "src/localization/strings";
 import UserRoleUtils from "src/utils/user-role-utils";
 import { renderVacationDaysTextForScreen } from "src/utils/vacation-days-utils";
-import { usersAtom } from "src/atoms/user";
 import BackButton from "../generics/back-button";
+import VacationRequestsTable from "../vacation-requests-table/vacation-requests-table";
 
 /**
  * Vacation requests screen
@@ -269,9 +269,7 @@ const VacationRequestsScreen = () => {
           loading={loading}
         />
       </Card>
-      <BackButton 
-        styles={{ mt: 2, marginBottom: 2 }} 
-      />
+      <BackButton styles={{ mt: 2, marginBottom: 2 }} />
     </>
   );
 };

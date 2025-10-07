@@ -1,5 +1,5 @@
-import { TableRow, TableCell, IconButton } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
+import { IconButton, TableCell, TableRow } from "@mui/material";
 import type { User } from "src/generated/homeLambdasClient/models/User";
 import strings from "src/localization/strings";
 
@@ -30,10 +30,7 @@ const UserRow = ({ user, onEdit }: UserRowProps) => {
   };
 
   const totalDays = getDays(user.attributes?.vacationDaysByYear, currentYear);
-  const remainingDays = getDays(
-    user.attributes?.unspentVacationDaysByYear,
-    currentYear
-  );
+  const remainingDays = getDays(user.attributes?.unspentVacationDaysByYear, currentYear);
   return (
     <TableRow key={user.id}>
       <TableCell>{`${user.firstName || ""} ${user.lastName || ""}`}</TableCell>
@@ -45,11 +42,7 @@ const UserRow = ({ user, onEdit }: UserRowProps) => {
         {Number.parseInt(remainingDays, 10)} {strings.userRow.day}
       </TableCell>
       <TableCell align="center">
-        <IconButton
-          color="primary"
-          onClick={() => onEdit(user)}
-          aria-label="Edit vacation days"
-        >
+        <IconButton color="primary" onClick={() => onEdit(user)} aria-label="Edit vacation days">
           <EditIcon />
         </IconButton>
       </TableCell>

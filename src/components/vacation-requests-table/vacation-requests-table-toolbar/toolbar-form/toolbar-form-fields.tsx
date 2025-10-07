@@ -1,13 +1,13 @@
-import { Button, FormControl, FormLabel, TextField, Box } from "@mui/material";
-import { type ChangeEvent, useEffect } from "react";
-import DateRangePicker from "../../../generics/date-range-picker";
-import { type DateRange, ToolbarFormModes } from "src/types";
+import { Box, Button, FormControl, FormLabel, TextField } from "@mui/material";
 import type { DateTime } from "luxon";
-import { hasAllPropsDefined } from "src/utils/check-utils";
-import strings from "src/localization/strings";
-import { calculateTotalVacationDays, calculateEndDateFromDays } from "src/utils/time-utils";
+import { type ChangeEvent, useEffect } from "react";
 import type { VacationRequest } from "src/generated/homeLambdasClient";
+import strings from "src/localization/strings";
+import { type DateRange, ToolbarFormModes } from "src/types";
+import { hasAllPropsDefined } from "src/utils/check-utils";
+import { calculateEndDateFromDays, calculateTotalVacationDays } from "src/utils/time-utils";
 import UserRoleUtils from "src/utils/user-role-utils";
+import DateRangePicker from "../../../generics/date-range-picker";
 
 /**
  * Component properties
