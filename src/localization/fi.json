@@ -522,5 +522,23 @@
     "wikiContent": "Lue tai luo dokumentaatiota.",
     "doneTitle": "Onboarding valmis",
     "doneContent": "Valmista! Voit aloittaa alusta asetuksista."
+  },
+  "employeeFlextime": {
+    "title": "Työntekijöiden joustotunnit",
+    "subtitle": "Yleiskatsaus kaikkien työntekijöiden joustotuntisaldoihin",
+    "lastUpdated": "Viimeksi päivitetty",
+    "totalEmployees": "Työntekijöitä yhteensä",
+    "combinedBalance": "Yhteenlaskettu saldo",
+    "loading": "Ladataan...",
+    "noDataFound": "Ei tietoja saatavilla",
+    "employee": "Työntekijä",
+    "email": "Sähköposti",
+    "totalFlextimeBalance": "Joustotuntisaldo yhteensä",
+    "currentMonthBalance": "Kuluvan kuun saldo",
+    "status": "Tila",
+    "active": "Aktiivinen",
+    "inactive": "Ei aktiivinen",
+    "employeeId": "Työntekijä ID",
+    "notAvailable": "Ei saatavilla"
   }
 }
