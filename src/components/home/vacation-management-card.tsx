@@ -1,4 +1,4 @@
-import { Card, CardContent, Typography, Box } from "@mui/material";
+import { Box, Card, CardContent, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 import strings from "../../localization/strings";
 
@@ -15,8 +15,8 @@ const VacationManagementCard = () => {
           height: "100%",
           "&:hover": {
             background: "#efefef",
-            cursor: "pointer",
-          },
+            cursor: "pointer"
+          }
         }}
       >
         <CardContent>
@@ -32,7 +32,7 @@ const VacationManagementCard = () => {
               justifyContent: "center",
               alignItems: "center",
               mt: 2,
-              color: "rgba(0, 0, 0, 0.54)",
+              color: "rgba(0, 0, 0, 0.54)"
             }}
           />
         </CardContent>

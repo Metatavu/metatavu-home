@@ -1,4 +1,4 @@
-import { KeyboardReturn } from "@mui/icons-material";
+import BackButton from "../generics/back-button";
 import { Box, Button, CircularProgress, Dialog, DialogActions, DialogTitle, Chip } from "@mui/material";
 import { useEffect, useState } from "react";
 import type { Questionnaire } from "src/generated/homeLambdasClient";
@@ -237,14 +237,9 @@ const QuestionnaireManager = ({ mode }: Props) => {
               justifyContent: "space-between"
             }}
           >
-            <Button
-              sx={{ alignItems: "center" }}
-              size="large"
-              onClick={() => navigate(-1)}
-              startIcon={<KeyboardReturn />}
-            >
-              {strings.questionnaireManager.goBack}
-            </Button>
+            <BackButton 
+              styles={{ width: "auto" }} 
+            />
             <Button
               sx={{ alignItems: "center" }}
               size="large"

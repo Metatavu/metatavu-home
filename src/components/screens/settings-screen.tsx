@@ -1,11 +1,10 @@
-import { useState } from "react";
-import { Typography, Box, Switch } from "@mui/material";
-import strings from "src/localization/strings";
-import { errorAtom } from "src/atoms/error";
+import { Box, CircularProgress, Switch, Typography } from "@mui/material";
 import { useAtomValue, useSetAtom } from "jotai";
-import { authAtom, userProfileAtom } from "src/atoms/auth";
+import { useState } from "react";
+import { userProfileAtom } from "src/atoms/auth";
+import { errorAtom } from "src/atoms/error";
 import { useLambdasApi } from "src/hooks/use-api";
-import { CircularProgress } from "@mui/material";
+import strings from "src/localization/strings";
 
 /**
  * Settings screen component
@@ -14,7 +13,7 @@ const SettingsScreen = () => {
   const { usersApi } = useLambdasApi();
   const userProfile = useAtomValue(userProfileAtom);
   const setError = useSetAtom(errorAtom);
-  
+
   const [isConsentGiven, setIsConsentGiven] = useState(
     Boolean(userProfile?.attributes?.severaUserId)
   );
@@ -46,7 +45,6 @@ const SettingsScreen = () => {
       setIsLoading(false);
     }
   };
-
 
   return (
     <Box p={2} bgcolor="grey.100" borderRadius={2}>

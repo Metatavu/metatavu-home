@@ -6,7 +6,8 @@
   "label": {
     "currentLocaleLabel": "Nykyinen kieli:",
     "cancel": "Peruuta",
-    "save": "Tallenna"
+    "save": "Tallenna",
+    "back": "Takaisin"
   },
   "header": {
     "hello": "Hei",
@@ -40,7 +41,8 @@
     "fetchFailedFlextime": "Joustotyöaikatietojen hakeminen epäonnistui",
     "missingEmailOrId": "Sähköposti tai käyttäjätunnus puuttuu",
     "noSeveraUserId": "Käyttäjältä puuttuu Severa-käyttäjätunnus, ota yhteyttä Metatavun kehitystiimiin lisätietoja varten.",
-    "noFlextimeData": "Jotain meni pieleen joustotyöaikatietoja haettaessa"
+    "noFlextimeData": "Jotain meni pieleen joustotyöaikatietoja haettaessa",
+    "noArticleId": "Artikkelin ID puuttuu"
   },
   "localization": {
     "en": "EN",
@@ -96,7 +98,6 @@
     "startDate": "Aloituspäivämäärä",
     "deadLine": "Määräaika",
     "actualWorkHours": "Todelliset työajat",
-    "back": "Takaisin",
     "filter": "Suodata",
     "filterType": "Suodattimen tyyppi",
     "project": "Projekti",
@@ -113,7 +114,6 @@
     "noRecommendations": "Ei suosituksia",
     "recommendationMessage": "Sinulla on {recommendationCount} uutta suositusta!",
     "allApplications": "Kaikki sovellukset",
-    "back": "Takaisin",
     "addApplication": "Lisää sovellus",
     "tags": "Tagit",
     "filter": "Rajaa",
@@ -143,7 +143,7 @@
     "showMore": "Näytä lisää",
     "showLess": "Näytä vähemmän",
     "noPending": "Ei uutta sovellusta",
-    "newSoftware": "Uusia sovelluksia", 
+    "newSoftware": "Uusia sovelluksia",
     "alreadyExists": "Nimi on jo olemassa",
     "delete": "Poista",
     "searchPlaceholder": "Etsi ja valitse käyttäjiä",
@@ -195,7 +195,9 @@
     "confirmButtonText": "Kyllä",
     "cancelButtonText": "En",
     "title": "Oletko varma?",
-    "message": "Poista valitut lomahakemukset?"
+    "message": "Poista valitut lomahakemukset?",
+    "editMessage": "Tämä tarkistettu lomapyyntö palautetaan käsittelyyn, jos tallennat muutokset. Haluatko jatkaa?",
+    "editDraftMessage": "Tämä luonnos lomapyyntö lähetetään käsittelyyn, jos tallennat muutokset. Haluatko jatkaa?"
   },
   "errorHandler": {
     "cancelButtonText": "Sulje",
@@ -212,6 +214,7 @@
     "pending": "Odottaa",
     "approved": "Hyväksytty",
     "declined": "Hylätty",
+    "draft": "Luonnos",
     "vacation": "Loma",
     "maternityPaternityLeave": "Vanhempainvapaa",
     "unpaidTimeOff": "Palkaton vapaa",
@@ -234,7 +237,8 @@
     "updateRequestError": "Lomahakemuksen päivittäminen epäonnistui",
     "updateStatusError": "Lomahakemustilojen päivittäminen epäonnistui",
     "noVacationRequestsFound": "Lomahakemuksia ei löydetty",
-    "nameNotFound": "Nimeä ei löydetty"
+    "nameNotFound": "Nimeä ei löydetty",
+    "noVacationRequestsStatusFound": "Tiloja ei löytynyt"
   },
   "sprintRequestError": {
     "fetchResourceAllocationsError": "Sprintin tietopyyntöjen hakeminen epäonnistui",
@@ -251,11 +255,17 @@
     "createRequests": "Uusi lomahakemus",
     "editRequests": "Muokkaa lomahakemusta",
     "edit": "Muokkaa",
+    "submitforApproval": "Lähetä hyväksyttäväksi",
     "cancel": "Peruuta",
     "create": "Hae lomaa",
     "manageRequests": "Hallinnoi lomahakemuksia",
     "future": "Tulevat",
-    "past": "Menneet"
+    "past": "Menneet",
+    "saveAsDraft": "Tallenna luonnoksena",
+    "all": "Kaikki",
+    "draft": "Luonnos",
+    "saveAsDraftTooltip": "Lomahakemuksen tallentaminen luonnoksena ei lähetä sitä hyväksyttäväksi"
+
   },
   "dataGrid": {
     "noRows": "Ei rivejä"
@@ -287,9 +297,7 @@
     "notAdmin": "Sinulla ei ole hallintaoikeuksia",
     "noAccess": "Ei pääsyä"
   },
-  "vacationsScreen": {
-    "back": "Takaisin"
-  },
+  "vacationsScreen": {},
   "viewAll": {
     "startDate": "Aloituspäivä: ",
     "balance": "Saldo: "
@@ -307,8 +315,7 @@
     "buildNewQuestionnaire": "Rakenna uusi kysely",
     "status": "Tila:",
     "edit": "Muokkaa",
-    "delete": "Poista",
-    "back": "Takaisin"
+    "delete": "Poista"
   },
   "newQuestionnaireBuilder": {
     "makeNewQuestionnaire": "Tee uusi kysely",
@@ -318,7 +325,6 @@
     "preview": "Kyselyiden esikatselu",
     "is": "on",
     "removeFromPreview": "Poista kysymys",
-    "back": "Takaisin",
     "description": "Kuvaus",
     "insertDescription": "Syötä kuvaus",
     "countedAnswers": "Oikeiden vastausten määrä tässä kyselyssä:",
@@ -414,9 +420,9 @@
     "noPendingArticles": "Ei tarkistusta odottavia artikkeleita.",
     "noArticlesFound": "Artikkeleita ei löytynyt.",
     "create": "luoda",
-    "back": "takaisin",
     "save": "tallentaa",
     "edit": "muokata",
+    "approve": "hyväksy",
     "confirm": "vahvistaa",
     "searchArticle": "Etsi artikkeli...",
     "createArticle": "Luo uusi artikkeli",
@@ -430,7 +436,15 @@
     "labelLink": "Sinulla on {0} artikkelia odottamassa tarkistusta.",
     "draft": "luonnos",
     "allArticles": "kaikki",
+    "approvedArticles": "hyväksytyt",
     "connectedArticles": "Aiheeseen liittyvät artikkelit"
+  },
+  "snackbar": {
+    "articleSubmitted": "Artikkeli lähetetty arvioitavaksi onnistuneesti!",
+    "articleCreated": "Artikkeli luotu onnistuneesti!",
+    "articleUpdated": "Artikkeli päivitetty onnistuneesti!",
+    "articleApproved": "Artikkeli hyväksytty onnistuneesti!",
+    "changesSaved": "Muutokset tallennettu onnistuneesti!"
   },
   "settingsScreen": {
     "saveSettings": "Tallena Asetukset",
@@ -468,25 +482,63 @@
   "pagination": {
     "ariaLabel": "Sivunavigointi"
   },
-"onboarding": {
-  "prev": "Edellinen",
-  "next": "Seuraava",
-  "close": "Sulje",
-  "welcomeTitle": "Tervetuloa kotinäkymään",
-  "welcomeContent": "Tämä on hallintapaneeli, josta näet saldon, sprintit ja paljon muuta.",
-  "balanceTitle": "Saldo",
-  "balanceContent": "Näet kokonaisjoustotyöaikasi täältä.",
-  "sprintTitle": "Sprinttinäkymä",
-  "sprintContent": "Tarkastele allokaatiota ja aikamerkintöjä.",
-  "vacationsTitle": "Lomahakemukset",
-  "vacationsContent": "Seuraa tulevia lomia ja niiden tilaa.",
-  "questionnaireTitle": "Kyselyt",
-  "questionnaireContent": "Rakenna ja vastaa kyselyihin.",
-  "softwareTitle": "Ohjelmistorekisteri",
-  "softwareContent": "Löydä ja hallitse yrityksen sovelluksia.",
-  "wikiTitle": "Wiki Dokumentaatio",
-  "wikiContent": "Lue tai luo dokumentaatiota.",
-  "doneTitle": "Onboarding valmis",
-  "doneContent": "Valmista! Voit aloittaa alusta asetuksista."
-}
+  "oncall": {
+    "title": "Päivystyskalenteri",
+    "previousYear": "Edellinen vuosi",
+    "nextYear": "Seuraava vuosi",
+    "oncallShifts": "Päivystysvuorot",
+    "paid": "Maksettu",
+    "notPaid": "Ei maksettu",
+    "calendar": "Kalenteri",
+    "list": "Lista",
+    "selectView": "Valitse kalenterinäkymä",
+    "noOnCallPerson": "Päivystäjää ei ole tälle viikolle",
+    "onCallPersonExists": "Tämän viikon päivystäjä:",
+    "fetchFailed": "Päivystystietojen haku epäonnistui",
+    "updatePaidStatusForWeek": "Päivitä viikon maksutila",
+    "person": "Henkilö",
+    "paidStatus": "Maksatus",
+    "date": "Päivämäärä",
+    "noUsernameOnCall": "-",
+    "errorUpdatingPaidStatus": "Päivystysvuoron maksutilan päivittäminen epäonnistui"
+  },
+  "onboarding": {
+    "prev": "Edellinen",
+    "next": "Seuraava",
+    "close": "Sulje",
+    "welcomeTitle": "Tervetuloa kotinäkymään",
+    "welcomeContent": "Tämä on hallintapaneeli, josta näet saldon, sprintit ja paljon muuta.",
+    "balanceTitle": "Saldo",
+    "balanceContent": "Näet kokonaisjoustotyöaikasi täältä.",
+    "sprintTitle": "Sprinttinäkymä",
+    "sprintContent": "Tarkastele allokaatiota ja aikamerkintöjä.",
+    "vacationsTitle": "Lomahakemukset",
+    "vacationsContent": "Seuraa tulevia lomia ja niiden tilaa.",
+    "questionnaireTitle": "Kyselyt",
+    "questionnaireContent": "Rakenna ja vastaa kyselyihin.",
+    "softwareTitle": "Ohjelmistorekisteri",
+    "softwareContent": "Löydä ja hallitse yrityksen sovelluksia.",
+    "wikiTitle": "Wiki Dokumentaatio",
+    "wikiContent": "Lue tai luo dokumentaatiota.",
+    "doneTitle": "Onboarding valmis",
+    "doneContent": "Valmista! Voit aloittaa alusta asetuksista."
+  },
+  "employeeFlextime": {
+    "title": "Työntekijöiden joustotunnit",
+    "subtitle": "Yleiskatsaus kaikkien työntekijöiden joustotuntisaldoihin",
+    "lastUpdated": "Viimeksi päivitetty",
+    "totalEmployees": "Työntekijöitä yhteensä",
+    "combinedBalance": "Yhteenlaskettu saldo",
+    "loading": "Ladataan...",
+    "noDataFound": "Ei tietoja saatavilla",
+    "employee": "Työntekijä",
+    "email": "Sähköposti",
+    "totalFlextimeBalance": "Joustotuntisaldo yhteensä",
+    "currentMonthBalance": "Kuluvan kuun saldo",
+    "status": "Tila",
+    "active": "Aktiivinen",
+    "inactive": "Ei aktiivinen",
+    "employeeId": "Työntekijä ID",
+    "notAvailable": "Ei saatavilla"
+  }
 }

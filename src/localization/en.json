@@ -6,7 +6,8 @@
   "label": {
     "currentLocaleLabel": "Current Locale:",
     "cancel": "Cancel",
-    "save": "Save"
+    "save": "Save",
+    "back": "Back"
   },
   "header": {
     "hello": "Hi",
@@ -40,7 +41,8 @@
     "fetchFailedFlextime": "Error while fetching flextime data",
     "missingEmailOrId": "Missing email or ID",
     "noSeveraUserId": "One of your users is missing severaUserId, please contact a member of the metatavu home development team for more information.",
-    "noFlextimeData": "Something went wrong while fetching your flextime data"
+    "noFlextimeData": "Something went wrong while fetching your flextime data",
+    "noArticleId": "Article ID is missing"
   },
   "localization": {
     "en": "EN",
@@ -96,7 +98,6 @@
     "startDate": "Start Date",
     "deadLine": "Deadline",
     "actualWorkHours": "Actual Work Hours",
-    "back": "Back",
     "filter": "Filter by",
     "filterType": "Filter type",
     "project": "Project",
@@ -113,7 +114,6 @@
     "noRecommendations": "No recommendations",
     "recommendationMessage": "There are {recommendationCount} new recommendations for you!",
     "allApplications": "All applications",
-    "back": "Back",
     "addApplication": "Add application",
     "tags": "Tags",
     "filter": "Filter",
@@ -195,7 +195,9 @@
     "confirmButtonText": "Yes",
     "cancelButtonText": "No",
     "title": "Are you sure?",
-    "message": "Delete selected vacation request(s)?"
+    "message": "Delete selected vacation request(s)?",
+    "editMessage": "This reviewed request will go back to pending if you save changes. Do you want to proceed?",
+    "editDraftMessage": "This draft request will be sent for approval if you save changes. Do you want to proceed?"
   },
   "errorHandler": {
     "cancelButtonText": "Close",
@@ -212,6 +214,7 @@
     "pending": "Pending",
     "approved": "Approved",
     "declined": "Declined",
+    "draft": "Draft",
     "vacation": "Vacation",
     "maternityPaternityLeave": "Parental leave",
     "unpaidTimeOff": "Unpaid time off",
@@ -234,7 +237,8 @@
     "updateRequestError": "Updating vacation request has failed",
     "updateStatusError": "Updating vacation request status has failed",
     "noVacationRequestsFound": "No vacation requests found",
-    "nameNotFound": "Name not found"
+    "nameNotFound": "Name not found",
+    "noVacationRequestsStatusFound": "Statuses not found"
   },
   "sprintRequestError": {
     "fetchResourceAllocationsError": "Fetching sprint data for resourceAllocations has failed",
@@ -251,11 +255,16 @@
     "createRequests": "New vacation request",
     "editRequests": "Edit a vacation request",
     "edit": "Edit",
+    "submitforApproval": "Submit for approval",
     "cancel": "Cancel",
     "create": "Request vacation",
     "manageRequests": "Manage vacation requests",
     "future": "Upcoming",
-    "past": "Past"
+    "past": "Past",
+    "saveAsDraft": "Save as Draft",
+    "all": "All",
+    "draft": "Draft",
+    "saveAsDraftTooltip": "Saving the vacation request as a draft will not submit it for approval"
   },
   "dataGrid": {
     "noRows": "No Rows"
@@ -287,9 +296,7 @@
     "notAdmin": "You don't have an admin role",
     "noAccess": "Access denied"
   },
-  "vacationsScreen": {
-    "back": "Back"
-  },
+  "vacationsScreen": {},
   "viewAll": {
     "startDate": "Start Date: ",
     "balance": "Balance: "
@@ -307,8 +314,7 @@
     "buildNewQuestionnaire": "Build New Questionnaire",
     "status": "Status:",
     "edit": "Edit",
-    "delete": "Delete",
-    "back": "Back"
+    "delete": "Delete"
   },
   "newQuestionnaireBuilder": {
     "makeNewQuestionnaire": "Make a New Questionnaire",
@@ -318,7 +324,6 @@
     "preview": "Questionnaire preview",
     "is": "is",
     "removeFromPreview": "Delete Question",
-    "back": "Back",
     "description": "Description",
     "insertDescription": "Insert description",
     "countedAnswers": "Cumulative amount of true values in this Questionnaire:",
@@ -414,9 +419,9 @@
     "noPendingArticles": "No articles pending review.",
     "noArticlesFound": "No articles found.",
     "create": "create",
-    "back": "back",
     "save": "save",
     "edit": "edit",
+    "approve": "approve",
     "confirm": "confirm",
     "searchArticle": "Search for an article...",
     "createArticle": "Create article",
@@ -430,7 +435,15 @@
     "labelLink": "Link",
     "draft": "draft",
     "allArticles": "all",
+    "approvedArticles": "approved",
     "connectedArticles": "Connected articles"
+  },
+  "snackbar": {
+    "articleSubmitted": "Article submitted for review successfully!",
+    "articleCreated": "Article created successfully!",
+    "articleUpdated": "Article updated successfully!",
+    "articleApproved": "Article approved successfully!",
+    "changesSaved": "Changes saved successfully!"
   },
   "settingsScreen": {
     "saveSettings": "Save settings",
@@ -468,26 +481,63 @@
   "pagination": {
     "ariaLabel": "Page navigation"
   },
+  "oncall": {
+    "title": "On call calendar",
+    "previousYear": "Previous year",
+    "nextYear": "Next year",
+    "oncallShifts": "On call weeks",
+    "paid": "Paid",
+    "notPaid": "Not paid",
+    "calendar": "Calendar",
+    "list": "List",
+    "selectView": "Select calendar view",
+    "noOnCallPerson": "No on call person this week",
+    "onCallPersonExists": "Current on-call person:",
+    "fetchFailed": "Fetching on call data has failed",
+    "updatePaidStatusForWeek": "Update paid status for week",
+    "person": "Person",
+    "paidStatus": "Paid Status",
+    "date": "Date",
+    "noUsernameOnCall": "-",
+    "errorUpdatingPaidStatus": "Failed to update on-call shift paid status"
+  },
   "onboarding": {
-  "prev": "Previous",
-  "next": "Next",
-  "close": "Close",
-  "welcomeTitle": "Welcome to the Home Screen",
-  "welcomeContent": "This is your dashboard where you can see your balance, sprints, and more.",
-  "balanceTitle": "Balance",
-  "balanceContent": "Check your total flextime balance here.",
-  "sprintTitle": "Sprint view",
-  "sprintContent": "See your allocation and time entries.",
-  "vacationsTitle": "Vacation requests",
-  "vacationsContent": "Track upcoming vacations and statuses.",
-  "questionnaireTitle": "Questionnaires",
-  "questionnaireContent": "Build and answer questionnaires.",
-  "softwareTitle": "Software registry",
-  "softwareContent": "Find and manage company software.",
-  "wikiTitle": "Wiki Documentation",
-  "wikiContent": "Read or create documentation.",
-  "doneTitle": "Complete the Onboarding",
-  "doneContent": "You're all set! You can restart from Settings."
-}
-
+    "prev": "Previous",
+    "next": "Next",
+    "close": "Close",
+    "welcomeTitle": "Welcome to the Home Screen",
+    "welcomeContent": "This is your dashboard where you can see your balance, sprints, and more.",
+    "balanceTitle": "Balance",
+    "balanceContent": "Check your total flextime balance here.",
+    "sprintTitle": "Sprint view",
+    "sprintContent": "See your allocation and time entries.",
+    "vacationsTitle": "Vacation requests",
+    "vacationsContent": "Track upcoming vacations and statuses.",
+    "questionnaireTitle": "Questionnaires",
+    "questionnaireContent": "Build and answer questionnaires.",
+    "softwareTitle": "Software registry",
+    "softwareContent": "Find and manage company software.",
+    "wikiTitle": "Wiki Documentation",
+    "wikiContent": "Read or create documentation.",
+    "doneTitle": "Complete the Onboarding",
+    "doneContent": "You're all set! You can restart from Settings."
+  },
+  "employeeFlextime": {
+    "title": "Employee Time Totals and Balances",
+    "subtitle": "Overview of flextime balances for all opted-in employees",
+    "lastUpdated": "Last updated: {0}",
+    "totalEmployees": "Total Employees",
+    "combinedBalance": "Combined Balance",
+    "loading": "Loading employee time data...",
+    "noDataFound": "No employee time data found",
+    "employee": "Employee",
+    "email": "Email",
+    "totalFlextimeBalance": "Total Flextime Balance",
+    "currentMonthBalance": "Current Month Balance",
+    "status": "Status",
+    "active": "Active",
+    "inactive": "Inactive",
+    "employeeId": "ID: {0}",
+    "notAvailable": "N/A"
+  }
 }

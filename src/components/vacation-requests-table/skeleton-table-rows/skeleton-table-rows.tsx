@@ -1,7 +1,7 @@
 import { Box, Grid } from "@mui/material";
 import VacationRequestsTableColumns from "../vacation-requests-table-columns";
-import SkeletonTableRowCheckbox from "./skeleton-table-row-checkbox";
 import SkeletonTableItem from "./skeleton-table-row";
+import SkeletonTableRowCheckbox from "./skeleton-table-row-checkbox";
 
 /**
  * Component props

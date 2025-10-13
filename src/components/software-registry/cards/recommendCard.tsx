@@ -1,17 +1,17 @@
-import React, { useEffect } from "react";
+import AddIcon from "@mui/icons-material/Add";
 import {
+  Box,
   Card,
   CardActionArea,
   CardContent,
   CardMedia,
-  Typography,
-  Box,
   Chip,
-  IconButton,
   CircularProgress,
+  IconButton,
+  Typography
 } from "@mui/material";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import AddIcon from "@mui/icons-material/Add";
 import type { SoftwareRegistry } from "src/generated/homeLambdasClient";
 import strings from "src/localization/strings";
 
@@ -22,10 +22,12 @@ interface RecommendCardProps {
   userNames: { [key: string]: string };
   loadingUsers: { [key: string]: boolean };
   loadingAppId: string | null;
-  setLoadingAppId: React.Dispatch<React.SetStateAction<{
-    appId: string | null;
-    users: { [key: string]: boolean };
-  }>>;
+  setLoadingAppId: React.Dispatch<
+    React.SetStateAction<{
+      appId: string | null;
+      users: { [key: string]: boolean };
+    }>
+  >;
 }
 
 const RecommendCard = ({
@@ -35,7 +37,7 @@ const RecommendCard = ({
   userNames,
   loadingUsers,
   loadingAppId,
-  setLoadingAppId,
+  setLoadingAppId
 }: RecommendCardProps) => {
   useEffect(() => {
     if (app.createdBy) {
@@ -54,9 +56,9 @@ const RecommendCard = ({
         overflow: "hidden",
         margin: "10px",
         ":hover": {
-          boxShadow: "0px 6px 14px rgba(0, 0, 0, 0.3)",
+          boxShadow: "0px 6px 14px rgba(0, 0, 0, 0.3)"
         },
-        position: "relative",
+        position: "relative"
       }}
     >
       <CardActionArea component={Link} to={`${app.id}`} sx={{ padding: "16px" }}>
@@ -67,22 +69,22 @@ const RecommendCard = ({
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            margin: "0 auto",     
-            overflow: "hidden", 
+            margin: "0 auto",
+            overflow: "hidden"
           }}
         >
-        <CardMedia
-          component="img"
-          image={app.image}
-          alt={app.name}
-          sx={{
-            maxHeight: "50px",
-            maxWidth: "130px",
-            objectFit: "contain",
-            marginBottom: "8px",
-            borderRadius: "8px",
-          }}
-        />
+          <CardMedia
+            component="img"
+            image={app.image}
+            alt={app.name}
+            sx={{
+              maxHeight: "50px",
+              maxWidth: "130px",
+              objectFit: "contain",
+              marginBottom: "8px",
+              borderRadius: "8px"
+            }}
+          />
         </Box>
         <CardContent sx={{ padding: "0px", flex: "1", justifyContent: "space-between" }}>
           <Typography
@@ -91,7 +93,7 @@ const RecommendCard = ({
             whiteSpace={"nowrap"}
             overflow={"hidden"}
             textOverflow={"ellipsis"}
-            mt={1}            
+            mt={1}
           >
             {app.name}
           </Typography>
@@ -101,7 +103,7 @@ const RecommendCard = ({
               sx={{
                 fontSize: "16px",
                 color: "#f9473b",
-                fontWeight: "600",
+                fontWeight: "600"
               }}
             >
               {loadingUsers[app.createdBy]
@@ -114,11 +116,11 @@ const RecommendCard = ({
             alignItems="center"
             justifyContent="flex-start"
             flexWrap="nowrap"
-            width ="100%"
+            width="100%"
             sx={{
               height: "30px",
               gap: 0.5,
-              marginTop: "8px",
+              marginTop: "8px"
             }}
           >
             {app.tags?.slice(0, 3).map((tag) => (
@@ -130,12 +132,12 @@ const RecommendCard = ({
                   borderRadius: "5px",
                   padding: "0 6px",
                   margin: "2px",
-                  backgroundColor: "#ff4d4f",
+                  backgroundColor: "#F9473B",
                   color: "#fff",
-                  fontSize: "12px",
+                  fontSize: "14px",
                   whiteSpace: "nowrap",
                   maxWidth: "80px",
-                  minWidth:"80px"
+                  minWidth: "80px"
                 }}
               />
             ))}
@@ -149,14 +151,12 @@ const RecommendCard = ({
           position: "absolute",
           top: "10px",
           right: "10px",
-          color: "#000",
+          color: "#000"
         }}
         onClick={() => {
           if (app.id) {
             setLoadingAppId((prev) => ({ ...prev, appId: app.id ?? null }));
-            onAddUser(app.id).finally(() =>
-              setLoadingAppId((prev) => ({ ...prev, appId: null }))
-            );
+            onAddUser(app.id).finally(() => setLoadingAppId((prev) => ({ ...prev, appId: null })));
           }
         }}
       >

@@ -1,23 +1,23 @@
-import { FunctionComponent, useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
 import {
-  Container,
-  Typography,
-  Grid,
   Box,
-  Link,
-  IconButton,
   Button,
   Card,
-  CircularProgress
+  CircularProgress,
+  Container,
+  Grid,
+  Link,
+  Typography
 } from "@mui/material";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import strings from "src/localization/strings";
-import { useLambdasApi } from "src/hooks/use-api";
 import { useAtom, useAtomValue } from "jotai";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { authAtom } from "src/atoms/auth";
 import { softwareAtom } from "src/atoms/software";
-import { SoftwareRegistry } from "src/generated/homeLambdasClient";
+import type { SoftwareRegistry } from "src/generated/homeLambdasClient";
+import { useLambdasApi } from "src/hooks/use-api";
+import strings from "src/localization/strings";
+import UserRoleUtils from "src/utils/user-role-utils";
+import BackButton from "../generics/back-button";
 import AddSoftwareModal from "./AddSoftwareModal";
 
 /**
@@ -27,7 +27,7 @@ import AddSoftwareModal from "./AddSoftwareModal";
  *
  * @component
  */
-const SoftwareDetails: FunctionComponent = () => {
+const SoftwareDetails = () => {
   const { id } = useParams<{ id: string }>();
   const [loading, setLoading] = useState(false);
   const [software, setSoftware] = useState<SoftwareRegistry | null>(null);
@@ -35,10 +35,10 @@ const SoftwareDetails: FunctionComponent = () => {
   const [error, setError] = useState<string | null>(null);
   const [createdByUserName, setCreatedByUserName] = useState<string>("");
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const navigate = useNavigate();
   const { softwareApi, usersApi } = useLambdasApi();
   const auth = useAtomValue(authAtom);
   const loggedUserId = auth?.token?.sub ?? "";
+  const adminMode = UserRoleUtils.adminMode();
 
   /**
    * Fetches software details.
@@ -122,6 +122,21 @@ const SoftwareDetails: FunctionComponent = () => {
   };
 
   /**
+   * Disables the AddSoftware button if the software is not approved
+   */
+  const isDisabled = () => {
+    if (
+      software?.status === "DECLINED" ||
+      software?.status === "DEPRECATED" ||
+      software?.status === "UNDER_REVIEW" ||
+      software?.status === "PENDING"
+    ) {
+      return true;
+    }
+    return false;
+  };
+
+  /**
    * Adds the logged in user to the software's users list.
    */
   const handleAddSoftware = async () => {
@@ -202,13 +217,13 @@ const SoftwareDetails: FunctionComponent = () => {
   return (
     <Container sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       <Box my={4} display="flex" alignItems="center" position="relative">
-        <IconButton
-          aria-label="back"
-          onClick={() => navigate(-1)}
-          sx={{ position: "absolute", left: 0 }}
-        >
-          <ArrowBackIcon />
-        </IconButton>
+        <BackButton
+          styles={{
+            width: "auto",
+            position: "absolute",
+            left: 0
+          }}
+        />
         <Box flexGrow={1} textAlign="center">
           <Typography variant="h2">{strings.softwareRegistry.application}</Typography>
         </Box>
@@ -310,6 +325,7 @@ const SoftwareDetails: FunctionComponent = () => {
           <Button
             variant="contained"
             color="secondary"
+            disabled={isDisabled()}
             sx={{
               textTransform: "none",
               borderRadius: "25px",
@@ -325,22 +341,24 @@ const SoftwareDetails: FunctionComponent = () => {
             {strings.softwareRegistry.addToMyApps}
           </Button>
         )}
-        <Button
-          variant="contained"
-          color="secondary"
-          sx={{
-            textTransform: "none",
-            color: "#fff",
-            marginLeft: "20px",
-            fontSize: "18px",
-            background: "#000",
-            borderRadius: "25px",
-            "&:hover": { background: "grey" }
-          }}
-          onClick={() => setIsEditModalOpen(true)}
-        >
-          {strings.softwareRegistry.editApp}
-        </Button>
+        {adminMode && (
+          <Button
+            variant="contained"
+            color="secondary"
+            sx={{
+              textTransform: "none",
+              color: "#fff",
+              marginLeft: "20px",
+              fontSize: "18px",
+              background: "#000",
+              borderRadius: "25px",
+              "&:hover": { background: "grey" }
+            }}
+            onClick={() => setIsEditModalOpen(true)}
+          >
+            {strings.softwareRegistry.editApp}
+          </Button>
+        )}
       </Box>
       {software && (
         <AddSoftwareModal

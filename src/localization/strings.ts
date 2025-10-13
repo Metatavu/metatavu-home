@@ -17,6 +17,7 @@ export interface Localized extends LocalizedStringsMethods {
     currentLocaleLabel: string;
     cancel: string;
     save: string;
+    back: string;
   };
   /**
    * Translations related to header
@@ -57,6 +58,7 @@ export interface Localized extends LocalizedStringsMethods {
     missingEmailOrId: string;
     noSeveraUserId: string;
     noFlextimeData: string;
+    noArticleId: string;
   };
   /**
    * Translations related to localization
@@ -122,7 +124,6 @@ export interface Localized extends LocalizedStringsMethods {
     startDate: string;
     deadLine: string;
     actualWorkHours: string;
-    back: string;
     filter: string;
     filterType: string;
     project: string;
@@ -142,7 +143,6 @@ export interface Localized extends LocalizedStringsMethods {
     noRecommendations: string;
     recommendationMessage: string;
     allApplications: string;
-    back: string;
     addApplication: string;
     added: string;
     tags: string;
@@ -221,6 +221,8 @@ export interface Localized extends LocalizedStringsMethods {
     cancelButtonText: string;
     title: string;
     message: string;
+    editMessage: string;
+    editDraftMessage: string;
   };
   /**
    * Translations related to error handler
@@ -243,6 +245,7 @@ export interface Localized extends LocalizedStringsMethods {
     pending: string;
     approved: string;
     declined: string;
+    draft: string;
     vacation: string;
     maternityPaternityLeave: string;
     unpaidTimeOff: string;
@@ -268,6 +271,7 @@ export interface Localized extends LocalizedStringsMethods {
     updateStatusError: string;
     noVacationRequestsFound: string;
     nameNotFound: string;
+    noVacationRequestsStatusFound: string;
   };
   /**
    * Translations related to sprint requests errors
@@ -293,11 +297,16 @@ export interface Localized extends LocalizedStringsMethods {
     createRequests: string;
     editRequests: string;
     edit: string;
+    submitforApproval: string;
     cancel: string;
     create: string;
     manageRequests: string;
     future: string;
     past: string;
+    saveAsDraft: string;
+    all: string;
+    draft: string;
+    saveAsDraftTooltip: string;
   };
   /**
    * Translations related to data grid
@@ -347,9 +356,7 @@ export interface Localized extends LocalizedStringsMethods {
   /**
    * Translation related to vacations screen
    */
-  vacationsScreen: {
-    back: string;
-  };
+  vacationsScreen: {};
   /**
    * Translation related to view all screen
    */
@@ -394,7 +401,6 @@ export interface Localized extends LocalizedStringsMethods {
   questionnaireScreen: {
     currentQuestionnaires: string;
     buildNewQuestionnaire: string;
-    back: string;
   };
   /**
    * Translations related to New Questionnaire Builder
@@ -407,7 +413,6 @@ export interface Localized extends LocalizedStringsMethods {
     preview: string;
     is: string;
     removeFromPreview: string;
-    back: string;
     description: string;
     insertDescription: string;
     countedAnswers: string;
@@ -527,9 +532,9 @@ export interface Localized extends LocalizedStringsMethods {
     noPendingArticles: string;
     noArticlesFound: string;
     create: string;
-    back: string;
     save: string;
     edit: string;
+    approve: string;
     confirm: string;
     searchArticle: string;
     createArticle: string;
@@ -543,7 +548,15 @@ export interface Localized extends LocalizedStringsMethods {
     labelLink: string;
     draft: string;
     allArticles: string;
+    approvedArticles: string;
     connectedArticles: string;
+  };
+  snackbar: {
+    articleSubmitted: string;
+    articleCreated: string;
+    articleUpdated: string;
+    articleApproved: string;
+    changesSaved: string;
   };
   /**
    * Translation related settings screen
@@ -626,7 +639,51 @@ export interface Localized extends LocalizedStringsMethods {
     doneTitle: string;
     doneContent: string;
   };
+
+  /**
+   * Translations related to On Call
+   */
+  oncall: {
+    title: string;
+    previousYear: string;
+    nextYear: string;
+    oncallShifts: string;
+    paid: string;
+    notPaid: string;
+    calendar: string;
+    list: string;
+    selectView: string;
+    noOnCallPerson: string;
+    onCallPersonExists: string;
+    fetchFailed: string;
+    updatePaidStatusForWeek: string;
+    person: string;
+    paidStatus: string;
+    date: string;
+    noUsernameOnCall: string;
+    errorUpdatingPaidStatus: string;
+  };
+
+  employeeFlextime: {
+  title: string;
+  subtitle: string;
+  lastUpdated: string;
+  totalEmployees: string;
+  combinedBalance: string;
+  loading: string;
+  noDataFound: string;
+  employee: string;
+  email: string;
+  totalFlextimeBalance: string;
+  currentMonthBalance: string;
+  status: string;
+  active: string;
+  inactive: string;
+  employeeId: string;
+  notAvailable: string; 
+};
 }
+
 /**
  * Initialized localized strings
  */

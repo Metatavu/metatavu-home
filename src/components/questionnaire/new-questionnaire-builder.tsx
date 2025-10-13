@@ -13,11 +13,9 @@ import {
   InputAdornment,
 } from "@mui/material";
 import { useState, type ChangeEvent } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import NewQuestionCard from "./new-question-card";
-import { KeyboardReturn } from "@mui/icons-material";
 import LabelIcon from "@mui/icons-material/Label";
-import UserRoleUtils from "src/utils/user-role-utils";
 import type {
   Questionnaire,
   AnswerOption,
@@ -41,12 +39,12 @@ import {
   createEmptyQuestionnaire,
   isFormValid
 } from "src/utils/questionnaireBuilderUtils";
+import BackButton from "../generics/back-button";
 
 /**
  * New Questionnaire Builder component
  */
 const NewQuestionnaireBuilder = () => {
-  const adminMode = UserRoleUtils.adminMode();
   const navigate = useNavigate();
   const { questionnairesApi } = useLambdasApi();
   const [loading, setLoading] = useState(false);
@@ -381,17 +379,9 @@ const NewQuestionnaireBuilder = () => {
         removeQuestionFromPreview={removeQuestionFromPreview}
         editQuestionInPreview={editQuestionInPreview}
       />
-      <Card sx={{ mt: 2, mb: 2, width: "100%" }}>
-        <Link
-          to={adminMode ? "/admin/questionnaire" : "/questionnaire"}
-          style={{ textDecoration: "none" }}
-        >
-          <Button variant="contained" sx={{ p: 2, width: "100%" }}>
-            <KeyboardReturn sx={{ marginRight: "10px" }} />
-            <Typography>{strings.newQuestionnaireBuilder.back}</Typography>
-          </Button>
-        </Link>
-      </Card>
+      <BackButton 
+        styles={{ mt: 3, marginBottom: 2 }}
+      />
     </>
   );
 };

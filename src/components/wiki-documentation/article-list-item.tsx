@@ -1,13 +1,13 @@
-import { Card, Grid, Box, Typography, Chip, Button } from "@mui/material";
+import { Box, Button, Card, Chip, Grid, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 import type { ArticleMetadata } from "src/generated/homeLambdasClient";
 import strings from "src/localization/strings";
 import { getLastActivityString } from "src/utils/wiki-utils";
 
 interface Props {
-  article: ArticleMetadata,
-  adminMode?: boolean,
-  handleDelete?: (articleId?: string) => void 
+  article: ArticleMetadata;
+  adminMode?: boolean;
+  handleDelete?: (articleId?: string) => void;
 }
 /**
  * Renders a responsive article list item with image, title, description, tags, and activity info.
@@ -17,19 +17,24 @@ interface Props {
  * @param adminMode - Optional flag to enable admin features like delete button (default: false).
  * @param handleDelete - Optional callback to delete the article by its ID.
  */
-const ArticleListItem = ({article, adminMode=false, handleDelete} : Props) => {
+const ArticleListItem = ({ article, adminMode = false, handleDelete }: Props) => {
   if (!article || !article.lastUpdatedAt) return;
   const lastActivityData = getLastActivityString(article);
 
   return (
-    <Link to={article.path} style={{ textDecoration: "none"}}>
-      <Card 
+    <Link to={article.path} style={{ textDecoration: "none" }}>
+      <Card
         key={`article-card-${article.id}`}
         sx={{
-          padding: "20px", 
-          position: "relative", 
+          padding: "20px",
+          position: "relative",
           borderRadius: "20px",
-          width: "100%"
+          backgroundColor: "#fff",
+          width: "100%",
+          ":hover": {
+            boxShadow: "0px 6px 14px rgba(0, 0, 0, 0.3)",
+            backgroundColor: "rgba(0, 0, 0, 0.04)"
+          }
         }}
       >
         <Grid container spacing={3}>
@@ -49,11 +54,11 @@ const ArticleListItem = ({article, adminMode=false, handleDelete} : Props) => {
             />
           </Grid>
           <Grid item lg={8.6} md={8} sm={6} xs={12}>
-            <Typography 
-              variant="h6" 
+            <Typography
+              variant="h6"
               sx={{
                 paddingLeft: "5px",
-                textAlign: "left", 
+                textAlign: "left",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
                 whiteSpace: "normal",
@@ -66,64 +71,77 @@ const ArticleListItem = ({article, adminMode=false, handleDelete} : Props) => {
             >
               {article.title}
             </Typography>
-            <Typography 
+            <Typography
               sx={{
                 paddingLeft: "5px",
-                textAlign: "left", 
+                textAlign: "left",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
                 whiteSpace: "normal",
                 wordBreak: "break-word",
                 display: "-webkit-box",
                 WebkitBoxOrient: "vertical",
-                WebkitLineClamp: {xs: 2, sm: adminMode ? 2 : 3}
+                WebkitLineClamp: { xs: 2, sm: adminMode ? 2 : 3 }
               }}
             >
               {article.description}
             </Typography>
-            <Grid container justifyContent={"space-between"} sx={{ marginTop: {lg: 1.5, md: 2, sm: 1.5}}}  direction={{ xs: "column", md: "row" }}>
-              <Grid item sx={{order: {xs: 2, md: 1}}}>
-                <Box sx={{
-                  textAlign: "left", 
-                  maxHeight: "38px", 
-                  overflow: "hidden",
+            <Grid
+              container
+              justifyContent={"space-between"}
+              sx={{ marginTop: { lg: 1.5, md: 2, sm: 1.5 } }}
+              direction={{ xs: "column", md: "row" }}
+            >
+              <Grid item sx={{ order: { xs: 2, md: 1 } }}>
+                <Box
+                  sx={{
+                    textAlign: "left",
+                    maxHeight: "38px",
+                    overflow: "hidden"
                   }}
                 >
-                  {article.tags?.map((tag) => 
-                    <Chip label={tag} sx={{ marginRight: 1, marginTop: 0.5}} key={`${article.id}-${tag}`}/>
-                  )}
+                  {article.tags?.map((tag) => (
+                    <Chip
+                      label={tag}
+                      sx={{ marginRight: 1, marginTop: 0.5 }}
+                      key={`${article.id}-${tag}`}
+                    />
+                  ))}
                 </Box>
               </Grid>
-              <Grid item sx={{order: {xs: 1, md: 2}}}>
-                <Typography variant="body1" sx={{ paddingLeft: "5px", textAlign: "left", paddingTop: 0.5 }}>
+              <Grid item sx={{ order: { xs: 1, md: 2 } }}>
+                <Typography
+                  variant="body1"
+                  sx={{ paddingLeft: "5px", textAlign: "left", paddingTop: 0.5 }}
+                >
                   {strings.formatString(
                     "{0} {1} by {2}",
-                    lastActivityData.action, 
+                    lastActivityData.action,
                     article.lastUpdatedAt.toLocaleDateString(),
-                    lastActivityData.user || "")
-                  }
+                    lastActivityData.user || ""
+                  )}
                 </Typography>
               </Grid>
             </Grid>
-            {adminMode && handleDelete && 
-              <Button 
-                variant="outlined" 
-                size="small" 
-                sx={{marginTop: 1, zIndex: 10}} 
+            {adminMode && handleDelete && (
+              <Button
+                variant="outlined"
+                size="small"
+                sx={{ marginTop: 1, zIndex: 10 }}
                 fullWidth
                 onClick={(event) => {
-                  event.preventDefault(); 
-                  handleDelete(article.id)
+                  event.preventDefault();
+                  handleDelete(article.id);
                 }}
               >
                 {strings.questionnaireTable.delete}
               </Button>
-            }
+            )}
           </Grid>
         </Grid>
       </Card>
     </Link>
-  )
-}
+  );
+};
 
 export default ArticleListItem;

@@ -2,6 +2,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import {
   Box,
   Button,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -29,6 +30,7 @@ interface Props {
   ignoreOutsideClicks?: boolean;
   children: ReactNode;
   maxWidth?: "xs" | "sm" | "md" | "lg" | "xl";
+  loading?: boolean;
 }
 
 /**
@@ -51,7 +53,8 @@ const GenericDialog = ({
   disableEnforceFocus,
   disabled,
   ignoreOutsideClicks,
-  children
+  children,
+  loading
 }: Props) => {
   /**
    * Event handler for on close click
@@ -77,21 +80,32 @@ const GenericDialog = ({
       maxWidth={maxWidth}
       disableEnforceFocus={disableEnforceFocus}
     >
-      <DialogTitle>
-        {title}
-        <IconButton aria-label="close" size="small" onClick={onCancel}>
-          <CloseIcon />
-        </IconButton>
-      </DialogTitle>
-      <DialogContent>
-        <Box p={3}>{children}</Box>
-      </DialogContent>
+      {loading ? (
+        <DialogContent>
+          <Box display="flex" justifyContent="center" alignItems="center" p={4}>
+            <CircularProgress size={36} />
+          </Box>
+        </DialogContent>
+      ) : (
+        <>
+          <DialogTitle>
+            {title}
+            <IconButton aria-label="close" size="small" onClick={onCancel}>
+              <CloseIcon />
+            </IconButton>
+          </DialogTitle>
+
+          <DialogContent>
+            <Box p={3}>{children}</Box>
+          </DialogContent>
+        </>
+      )}
       <DialogActions>
         {cancelButtonText && <Button onClick={onClose}>{cancelButtonText}</Button>}
         {confirmButtonText && (
           <Button
             variant="contained"
-            disabled={error || disabled}
+            disabled={error || disabled || loading}
             onClick={onConfirm}
             color="primary"
             autoFocus
