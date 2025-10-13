@@ -23,7 +23,7 @@ import QuestionnaireScreen from "./components/screens/questionnaire-screen";
 import SettingsScreen from "./components/screens/settings-screen";
 import SoftwareRegistryScreen from "./components/screens/software-registry-screen";
 import SprintViewScreen from "./components/screens/sprint-view-screen";
-import TimebankScreen from "./components/screens/timebank-screen";
+//import TimebankScreen from "./components/screens/timebank-screen";
 import VacationRequestsScreen from "./components/screens/vacation-requests-screen";
 import ArticleScreen from "./components/screens/wiki-article-screen";
 import WikiDocumentationScreen from "./components/screens/wiki-documentation-screen";
@@ -56,14 +56,10 @@ const App = () => {
           path: "/vacations",
           element: <VacationRequestsScreen />
         },
-        {
-          path: "/timebank",
-          element: <TimebankScreen />
-        },
-        {
-          path: "/sprintview",
-          element: <SprintViewScreen />
-        },
+        // {
+        //   path: "/sprintview",
+        //   element: <SprintViewScreen />
+        // },
         {
           path: "/softwareregistry",
           element: <SoftwareRegistryScreen />
