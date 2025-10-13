@@ -76,16 +76,14 @@ const VacationRequestsScreen = () => {
    */
   useEffect(() => {
     const baseRequests = isUpcoming ? upcomingVacationRequests : pastVacationRequests;
-    const filteredRequests = filterVacationRequests(baseRequests, filter);
-    setDisplayedVacationRequests(filteredRequests);
-  }, [isUpcoming, filter, vacationRequests]);
-    let displayed = isUpcoming ? upcomingVacationRequests : pastVacationRequests;
+    let filteredRequests = filterVacationRequests(baseRequests, filter);
 
     if (selectedId) {
-      displayed = displayed.filter((vacationRequests) => vacationRequests.id === selectedId);
-      setDisplayedVacationRequests(displayed);
+      filteredRequests = filteredRequests.filter((req) => req.id === selectedId);
     }
-  }, [isUpcoming, vacationRequests, selectedId]);
+
+    setDisplayedVacationRequests(filteredRequests);
+  }, [isUpcoming, filter, vacationRequests, selectedId]);
 
   /**
    * Handler for upcoming/ past vacations toggle click
@@ -352,9 +350,8 @@ const VacationRequestsScreen = () => {
 
       setVacationRequests((prevRequests) =>
         prevRequests.map(
-          
           (vacationRequest) =>
-              updatedVacationRequests.find((req) => req?.id === vacationRequest.id) || vacationRequest
+            updatedVacationRequests.find((req) => req?.id === vacationRequest.id) || vacationRequest
         )
       );
     } catch (error) {
