@@ -45,7 +45,7 @@ const SettingsScreen = () => {
 
       setIsConsentGiven(Boolean(severaUserId));
 
-      if (severaUserId !== undefined) {
+      if (severaUserId) {
         const updatedProfile = {
           ...userProfile,
           attributes: {
@@ -53,14 +53,8 @@ const SettingsScreen = () => {
             severaUserId
           }
         };
-        /**
-         * Update the global profile atom
-         */
-        setUserProfile(updatedProfile);
 
-        /**
-         * Update the global users list atom
-         */
+        setUserProfile(updatedProfile);
         setUsers((prev) =>
           prev.map((u) =>
             u.id === userProfile.id ? { ...u, attributes: { ...u.attributes, severaUserId } } : u
