@@ -16,6 +16,7 @@ import QuestionnaireManager from "./components/questionnaire/questionnaire-manag
 import AdminScreen from "./components/screens/admin-screen";
 import AdminVacationManagementScreen from "./components/screens/admin-vacation-management/admin-vacation-management-screen";
 import AllSoftwareScreen from "./components/screens/all-software-screen";
+import EmployeeFlextimeScreen from "./components/screens/employee-flextime-screen";
 import ErrorScreen from "./components/screens/error-screen";
 import HomeScreen from "./components/screens/home-screen";
 import OnCallCalendarScreen from "./components/screens/on-call-calendar-screen";
@@ -30,7 +31,6 @@ import WikiDocumentationScreen from "./components/screens/wiki-documentation-scr
 import SoftwareDetails from "./components/software-registry/SoftwareDetails";
 import { theme } from "./theme";
 import { QuestionnairePreviewMode } from "./types";
-import EmployeeFlextimeScreen from "./components/screens/employee-flextime-screen";
 
 /**
  * Application component
@@ -118,6 +118,10 @@ const App = () => {
         {
           path: "/admin/vacations",
           element: <VacationRequestsScreen />
+        },
+        {
+          path: "/admin/vacation-management",
+          element: <AdminVacationManagementScreen />
         },
         // {
         //    path: "/admin/timebank/viewall",

@@ -1,8 +1,9 @@
 import { Box, CircularProgress, Switch, Typography } from "@mui/material";
-import { useAtomValue, useSetAtom } from "jotai";
+import { useAtom, useSetAtom } from "jotai";
 import { useState } from "react";
 import { userProfileAtom } from "src/atoms/auth";
 import { errorAtom } from "src/atoms/error";
+import { usersAtom } from "src/atoms/user";
 import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
 
@@ -11,7 +12,8 @@ import strings from "src/localization/strings";
  */
 const SettingsScreen = () => {
   const { usersApi } = useLambdasApi();
-  const userProfile = useAtomValue(userProfileAtom);
+  const [userProfile, setUserProfile] = useAtom(userProfileAtom);
+  const setUsers = useSetAtom(usersAtom);
   const setError = useSetAtom(errorAtom);
 
   const [isConsentGiven, setIsConsentGiven] = useState(
@@ -37,7 +39,28 @@ const SettingsScreen = () => {
         attributeName: "isSeveraOptIn"
       });
 
-      setIsConsentGiven(Boolean(response.updatedKeycloakAttributes?.severaUserId));
+      const severaUserId = response.updatedKeycloakAttributes
+        ? response.updatedKeycloakAttributes.severaUserId
+        : undefined;
+
+      setIsConsentGiven(Boolean(severaUserId));
+
+      if (severaUserId) {
+        const updatedProfile = {
+          ...userProfile,
+          attributes: {
+            ...userProfile.attributes,
+            severaUserId
+          }
+        };
+
+        setUserProfile(updatedProfile);
+        setUsers((prev) =>
+          prev.map((u) =>
+            u.id === userProfile.id ? { ...u, attributes: { ...u.attributes, severaUserId } } : u
+          )
+        );
+      }
     } catch (error) {
       console.error("Error fetching consent:", error);
       setError(`${strings.error.fetchFailedFlextime}, ${error}`);
