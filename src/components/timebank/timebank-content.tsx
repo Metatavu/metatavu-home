@@ -1,9 +1,10 @@
 import { Card, FormControl, Grow, InputLabel, MenuItem, Select } from "@mui/material";
 import { useAtomValue } from "jotai";
-import { personsAtom } from "src/atoms/person";
+
+//import { personsAtom } from "src/atoms/person";
 import strings from "src/localization/strings";
 import UserRoleUtils from "src/utils/user-role-utils";
-
+// NOTE: Timebank-related code below is commented out due to the removal of the timebank client and submodule.
 // import SummaryTimEntriesCard from "./summary-time-entries-card";
 // import SpecificTimeEntriesCard from "./specific-time-entries-card";
 
@@ -21,7 +22,7 @@ interface Props {
  * @param props Component properties
  */
 const TimebankContent = ({ selectedEmployeeId, setSelectedEmployeeId }: Props) => {
-  const persons = useAtomValue(personsAtom);
+  //const persons = useAtomValue(personsAtom);
   const isAdmin = UserRoleUtils.isAdmin();
 
   return (
@@ -39,12 +40,13 @@ const TimebankContent = ({ selectedEmployeeId, setSelectedEmployeeId }: Props) =
                 value={selectedEmployeeId}
                 onChange={(event) => setSelectedEmployeeId(Number(event.target.value))}
                 label={strings.employeeSelect.employeeSelectlabel}
+                // NOTE: Timebank-related code below is commented out due to the removal of the timebank client and submodule.
               >
-                {persons.map((person) => (
+                {/* {persons.map((person) => (
                   <MenuItem key={person.id} value={person.id}>
                     {`${person.firstName} ${person.lastName}`}
                   </MenuItem>
-                ))}
+                ))} */}
               </Select>
             </FormControl>
           </Card>

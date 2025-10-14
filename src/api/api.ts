@@ -1,11 +1,12 @@
 import config from "../app/config";
-import {
-  Configuration,
-  type ConfigurationParameters,
-  DailyEntriesApi,
-  PersonsApi,
-  SynchronizeApi,
-} from "../generated/client";
+// NOTE: Timebank-client imports have been removed due to the removal of the timebank submodule.
+// import {
+//   Configuration,
+//   type ConfigurationParameters,
+//   DailyEntriesApi,
+//   PersonsApi,
+//   SynchronizeApi,
+// } from "../generated/client";
 import {
   FlexTimeApi,
   Configuration as LambdaConfiguration,
@@ -21,7 +22,7 @@ import {
 /**
  * Generic type that accepts parameters within the @ConfigurationParameters interface
  */
-type ConfigConstructor<T> = new (_params: ConfigurationParameters) => T;
+//type ConfigConstructor<T> = new (_params: ConfigurationParameters) => T;
 
 /**
  * Creates a new ConfigConstructor instance with params required to access the API
@@ -34,7 +35,7 @@ type ConfigConstructor<T> = new (_params: ConfigurationParameters) => T;
  */
 const getConfigurationFactory =
   <T>(
-    ConfigConstructor: ConfigConstructor<T>,
+    //ConfigConstructor: ConfigConstructor<T>,
     basePath: string,
     accessToken?: string
   ) =>

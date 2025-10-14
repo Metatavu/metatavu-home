@@ -93,7 +93,8 @@ const VacationRequestsTable = ({
 
     const row: VacationsDataGridRow = {
       id: vacationRequest.id,
-      type: LocalizationUtils.getLocalizedVacationRequestType(vacationRequest.type),
+      type: "",
+      //type: LocalizationUtils.getLocalizedVacationRequestType(vacationRequest.type),
       personFullName: usersFullName,
       updatedAt: DateTime.fromJSDate(vacationRequest.updatedAt),
       startDate: DateTime.fromJSDate(vacationRequest.startDate),

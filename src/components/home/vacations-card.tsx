@@ -136,9 +136,10 @@ const VacationsCard = () => {
       const vacationInfoListItems: VacationInfoListItem[] = [
         {
           name: strings.vacationsCard.vacationType,
-          value: LocalizationUtils.getLocalizedVacationRequestType(
-            earliestUpcomingVacationRequest.type
-          )
+          value: ""
+          // value: LocalizationUtils.getLocalizedVacationRequestType(
+          //   earliestUpcomingVacationRequest.type
+          // )
         },
         {
           name: strings.vacationsCard.applicant,
@@ -163,10 +164,11 @@ const VacationsCard = () => {
                   getTotalVacationRequestStatus(earliestUpcomingVacationRequest?.status)
                 )
               }}
+              //NOTE: This localization is commented out due to the removal of timebank-client.
             >
-              {LocalizationUtils.getLocalizedVacationRequestStatus(
+              {/* {LocalizationUtils.getLocalizedVacationRequestStatus(
                 getTotalVacationRequestStatus(earliestUpcomingVacationRequest?.status)
-              )}
+              )} */}
             </span>
           ) : (
             <span
