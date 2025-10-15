@@ -2,16 +2,16 @@ import  { useAtomValue } from "jotai";
 import { authAtom } from "../atoms/auth";
 import { useLocation } from "react-router-dom";
 
-/**
- * Custom hook to check the user roles
- */
+
  export const useUserRole = () => {
   const accessToken = useAtomValue(authAtom)?.token;
 
+  //Utility function to check if user has specific role
   const isRole = (role: string) => {
     return accessToken?.realm_access?.roles.includes(role) ?? false;
   };
 
+  //Role checks
   const isAdmin = isRole("admin");
   const isDeveloper = isRole("developer");
   const isTester = isRole("tester");
