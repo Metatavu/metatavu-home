@@ -18,7 +18,7 @@ import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
 import type { PhaseRow } from "src/types/index";
 import { getSeveraUserId, mapPhasesToRows } from "src/utils/sprint-utils";
-import UserRoleUtils from "src/hooks/use-user-role";
+import useUserRole from "src/hooks/use-user-role";
 import sprintViewTasksColumns from "./sprint-tasks-columns";
 
 /**
@@ -36,7 +36,7 @@ interface Props {
  */
 const TaskTable = ({ filter, project }: Props) => {
   const users = useAtomValue(usersAtom);
-  const {adminMode} = UserRoleUtils();
+  const {adminMode} = useUserRole();
   const userProfile = useAtomValue(userProfileAtom);
   const loggedInUser = users.find((users: User) => users.id === userProfile?.id);
   const { phaseApi, workHoursApi, resourceAllocationsApi } = useLambdasApi();

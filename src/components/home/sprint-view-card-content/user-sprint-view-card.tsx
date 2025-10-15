@@ -14,14 +14,14 @@ import {
   getSeveraUserId,
   getTotalEstimatedHours
 } from "src/utils/sprint-utils";
-import UserRoleUtils from "src/hooks/use-user-role";
+import { useUserRole } from "src/hooks/use-user-role";
 
 /**
  * Sprint card component for users
  */
 const SprintViewCardContent = () => {
   const { filterAllocations } = useSprintViewHandlers();
-  const {adminMode} = UserRoleUtils();
+  const {adminMode} = useUserRole();
   const [loading, setLoading] = useState(false);
   const users = useAtomValue(usersAtom);
   const userProfile = useAtomValue(userProfileAtom);

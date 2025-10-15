@@ -1,5 +1,5 @@
 import { Box } from "@mui/material";
-import UserRoleUtils from "src/hooks/use-user-role";
+import useUserRole from "src/hooks/use-user-role";
 import BalanceCard from "../home/balance-card";
 import CardGridWrapper from "../home/common/card-grid-wrapper";
 import QuestionnaireCard from "../home/questionnaire-card";
@@ -13,7 +13,7 @@ import WikiDocumentationCard from "../home/wiki-documentation-card";
  * Admin screen component
  */
 const AdminScreen = () => {
-  const {isDeveloper, isTester} = UserRoleUtils();
+  const {isDeveloper, isTester} = useUserRole();
 
   const isPrivilegedUser = isDeveloper || isTester;
 

@@ -1,7 +1,7 @@
 import { Card, CardContent, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 import strings from "src/localization/strings";
-import UserRoleUtils from "src/hooks/use-user-role";
+import useUserRole from "src/hooks/use-user-role";
 import SprintViewCardContent from "./sprint-view-card-content/user-sprint-view-card";
 
 /**
@@ -9,7 +9,7 @@ import SprintViewCardContent from "./sprint-view-card-content/user-sprint-view-c
  */
 const SprintViewCard = () => {
 
-  const {adminMode} = UserRoleUtils();
+  const {adminMode} = useUserRole();
 
   return (
     <Link to={adminMode ? "/admin/sprintview" : "/sprintview"} style={{ textDecoration: "none" }}>

@@ -33,7 +33,7 @@ import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
 import { getSeveraUserId } from "src/utils/sprint-utils";
 import { getSprintEnd, getSprintStart } from "src/utils/time-utils";
-import UserRoleUtils from "src/hooks/use-user-role";
+import useUserRole from "src/hooks/use-user-role";
 import BackButton from "../generics/back-button";
 import createSprintViewProjectsColumns from "../sprint-view-table/sprint-projects-columns";
 
@@ -61,7 +61,7 @@ const SprintViewScreen = () => {
   const sprintStartDate = getSprintStart(todaysDate);
   const sprintEndDate = getSprintEnd(todaysDate);
   const setError = useSetAtom(errorAtom);
-  const {adminMode} = UserRoleUtils();
+  const {adminMode} = useUserRole();
   const columns = createSprintViewProjectsColumns({
     resourceAllocations: resourceAllocations || []
   });

@@ -6,7 +6,7 @@ import strings from "src/localization/strings";
 import { type DateRange, ToolbarFormModes } from "src/types";
 import { hasAllPropsDefined } from "src/utils/check-utils";
 import { calculateEndDateFromDays, calculateTotalVacationDays } from "src/utils/time-utils";
-import UserRoleUtils from "src/hooks/use-user-role";
+import { useUserRole } from "src/hooks/use-user-role";
 import DateRangePicker from "../../../generics/date-range-picker";
 
 /**
@@ -40,7 +40,7 @@ const ToolbarFormFields = ({
   handleEdit,
   handleDraft
 }: Props) => {
-  const adminMode = UserRoleUtils.adminMode();
+  const {adminMode} = useUserRole();
   const workWeek = [true, true, true, true, true, false, false];
   // TODO: This will be used again when we have a solution for various work contracts in place
   // const userProfile = useAtomValue(userProfileAtom);

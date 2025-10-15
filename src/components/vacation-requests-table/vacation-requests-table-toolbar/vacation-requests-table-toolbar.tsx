@@ -11,7 +11,7 @@ import { VacationRequestStatuses } from "src/generated/homeLambdasClient";
 import strings from "src/localization/strings";
 import { ToolbarFormModes, type VacationsDataGridRow } from "src/types";
 import { getToolbarTitle } from "src/utils/toolbar-utils";
-import UserRoleUtils from "src/hooks/use-user-role";
+import { useUserRole } from "src/hooks/use-user-role";
 import ConfirmationHandler from "../../contexts/confirmation-handler";
 import ToolbarDeleteButton from "./toolbar-delete-button";
 import ToolbarForm from "./toolbar-form/toolbar-form";
@@ -78,7 +78,7 @@ const TableToolbar = ({
   const [editVacationsData, setEditVacationsData] = useState<VacationRequest | null>(null);
   const [title, setTitle] = useState(strings.tableToolbar.myRequests);
   const language = useAtomValue(languageAtom);
-  const adminMode = UserRoleUtils.adminMode();
+  const {adminMode} = useUserRole();
   const { pathname } = useLocation();
   const isToolbarVisible = toolbarOpen && !formOpen && selectedRowIds?.length;
   const buttonLabel = isUpcoming ? strings.tableToolbar.future : strings.tableToolbar.past;

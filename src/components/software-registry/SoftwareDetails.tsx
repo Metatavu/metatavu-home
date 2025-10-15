@@ -16,7 +16,7 @@ import { softwareAtom } from "src/atoms/software";
 import type { SoftwareRegistry } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
-import UserRoleUtils from "src/hooks/use-user-role";
+import useUserRole from "src/hooks/use-user-role";
 import BackButton from "../generics/back-button";
 import AddSoftwareModal from "./AddSoftwareModal";
 
@@ -38,7 +38,7 @@ const SoftwareDetails = () => {
   const { softwareApi, usersApi } = useLambdasApi();
   const auth = useAtomValue(authAtom);
   const loggedUserId = auth?.token?.sub ?? "";
-  const adminMode = UserRoleUtils.adminMode();
+  const {adminMode} = useUserRole();
 
   /**
    * Fetches software details.

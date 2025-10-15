@@ -23,7 +23,7 @@ import ClearIcon from "@mui/icons-material/Clear";
 import { useState, useEffect, useRef } from "react";
 import type { Questionnaire } from "src/generated/homeLambdasClient";
 import strings from "src/localization/strings";
-import UserRoleUtils from "src/hooks/use-user-role";
+import useUserRole from "src/hooks/use-user-role";
 import { DataGrid, type GridRowParams, type GridRenderCellParams } from "@mui/x-data-grid";
 import { useLambdasApi } from "src/hooks/use-api";
 import { useAtomValue, useSetAtom } from "jotai";
@@ -40,7 +40,7 @@ import type { User } from "src/generated/homeLambdasClient";
  * @returns Questionnaires from DynamoDB rendered in a x-data-grid table
  */
 const QuestionnaireTable = () => {
-  const {adminMode} = UserRoleUtils();
+  const {adminMode} = useUserRole();
   const navigate = useNavigate();
   const [_, setMode] = useState<QuestionnairePreviewMode>();
   const { questionnairesApi } = useLambdasApi();

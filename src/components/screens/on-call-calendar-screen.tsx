@@ -17,7 +17,7 @@ import { DateTime } from "luxon";
 import { useEffect, useMemo, useState } from "react";
 import type { OnCallPaid } from "src/generated/homeLambdasClient";
 import type { OnCall } from "src/generated/homeLambdasClient/models/OnCall";
-import UserRoleUtils from "src/hooks/use-user-role";
+import useUserRole from "src/hooks/use-user-role";
 import { errorAtom } from "../../atoms/error";
 import { onCallAtom } from "../../atoms/oncall";
 import { useLambdasApi } from "../../hooks/use-api";
@@ -48,7 +48,7 @@ const OnCallCalendarScreen = () => {
   const [selectedDate, setSelectedDate] = useState<DateTime>(DateTime.now());
   const [onCallPerson, setOnCallPerson] = useState<string | null>(null);
   const [selectedOnCallWeek, setSelectedOnCallWeek] = useState<OnCallWeek>();
-  const isAccountant = UserRoleUtils.isAccountant();
+  const {isAccountant} = useUserRole();
   const setError = useSetAtom(errorAtom);
   const [loading, setLoading] = useState(false);
 

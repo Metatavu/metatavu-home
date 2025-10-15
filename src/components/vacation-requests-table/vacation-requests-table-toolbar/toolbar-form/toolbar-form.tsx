@@ -11,7 +11,7 @@ import {
 } from "src/generated/homeLambdasClient";
 import { type DateRange, ToolbarFormModes, type VacationsDataGridRow } from "src/types";
 import { determineToolbarFormMode } from "src/utils/toolbar-utils";
-import UserRoleUtils from "src/hooks/use-user-role";
+import { useUserRole } from "src/hooks/use-user-role";
 import ToolbarFormFields from "./toolbar-form-fields";
 
 /**
@@ -81,7 +81,7 @@ const ToolbarForm = ({
     defaultVacationRequestData
   );
   const [selectedVacationRequestId, setSelectedVacationRequestId] = useState("");
-  const adminMode = UserRoleUtils.adminMode();
+  const {adminMode} = useUserRole();
   const vacationRequests = useAtomValue(adminMode ? allVacationRequestsAtom : vacationRequestsAtom);
 
   /**
