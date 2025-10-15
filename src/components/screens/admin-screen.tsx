@@ -1,5 +1,5 @@
 import { Box } from "@mui/material";
-import UserRoleUtils from "src/utils/user-role-utils";
+import UserRoleUtils from "src/hooks/use-user-role";
 import BalanceCard from "../home/balance-card";
 import CardGridWrapper from "../home/common/card-grid-wrapper";
 import QuestionnaireCard from "../home/questionnaire-card";
@@ -13,10 +13,9 @@ import WikiDocumentationCard from "../home/wiki-documentation-card";
  * Admin screen component
  */
 const AdminScreen = () => {
-  const isDeveloperMode = UserRoleUtils.isDeveloper();
-  const isTesterMode = UserRoleUtils.isTester();
+  const {isDeveloper, isTester} = UserRoleUtils();
 
-  const isPrivilegedUser = isDeveloperMode || isTesterMode;
+  const isPrivilegedUser = isDeveloper || isTester;
 
   /**
    * Сard collection, new component cards should be added here

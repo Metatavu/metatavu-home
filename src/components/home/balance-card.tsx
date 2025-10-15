@@ -10,7 +10,7 @@ import { usersAtom } from "src/atoms/user";
 import type { Flextime, User } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
-import UserRoleUtils from "src/utils/user-role-utils";
+import UserRoleUtils from "src/hooks/use-user-role";
 import { getSeveraUserId } from "src/utils/user-utils";
 
 /**
@@ -30,7 +30,7 @@ const BalanceCard = () => {
   const userProfile = useAtomValue(userProfileAtom);
   const setError = useSetAtom(errorAtom);
   const [loading, setLoading] = useState(false);
-  const adminMode = UserRoleUtils.adminMode();
+  const {adminMode} = UserRoleUtils();
   const [usersFlextime, setUsersFlextime] = useState<Flextime>();
   const yesterday = DateTime.now().minus({ days: 1 });
   const { flexTimeApi } = useLambdasApi();

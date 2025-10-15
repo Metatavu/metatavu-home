@@ -17,7 +17,7 @@ import { DateTime } from "luxon";
 import { useEffect, useMemo, useState } from "react";
 import type { OnCallPaid } from "src/generated/homeLambdasClient";
 import type { OnCall } from "src/generated/homeLambdasClient/models/OnCall";
-import UserRoleUtils from "src/utils/user-role-utils";
+import UserRoleUtils from "src/hooks/use-user-role";
 import { errorAtom } from "../../atoms/error";
 import { onCallAtom } from "../../atoms/oncall";
 import { useLambdasApi } from "../../hooks/use-api";

@@ -6,7 +6,7 @@ import Button from "@mui/material/Button";
 import { type MouseEvent, useState } from "react";
 import { Box, IconButton, Menu, MenuItem } from "@mui/material";
 import strings from "src/localization/strings";
-import UserRoleUtils from "src/utils/user-role-utils";
+import UserRoleUtils from "src/hooks/use-user-role";
 
 
 /**
@@ -15,7 +15,7 @@ import UserRoleUtils from "src/utils/user-role-utils";
 const NavItems = () => {
   const [currentPage, setCurrentPage] = useState("");
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
-  const admin = UserRoleUtils.isAdmin();
+  const {isAdmin} = UserRoleUtils();
 
 
 
@@ -90,7 +90,7 @@ const NavItems = () => {
           >
             {strings.header.home}
           </MenuItem>
-          {admin && (
+          {isAdmin && (
             <MenuItem
               component={Link}
               to={"/admin"}
@@ -115,7 +115,7 @@ const NavItems = () => {
         >
           <Button>{strings.header.home}</Button>
         </Link>
-        {admin && (
+        {isAdmin && (
           <Link to={"/admin"} style={{ margin: 2, display: "block" }}>
             <Button>{strings.header.admin}</Button>
           </Link>         

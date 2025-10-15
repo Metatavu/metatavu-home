@@ -2,7 +2,7 @@ import { Card, FormControl, Grow, InputLabel, MenuItem, Select } from "@mui/mate
 import { useAtomValue } from "jotai";
 import { personsAtom } from "src/atoms/person";
 import strings from "src/localization/strings";
-import UserRoleUtils from "src/utils/user-role-utils";
+import UserRoleUtils from "src/hooks/use-user-role";
 
 // import SummaryTimEntriesCard from "./summary-time-entries-card";
 // import SpecificTimeEntriesCard from "./specific-time-entries-card";

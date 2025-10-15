@@ -17,7 +17,7 @@ import type { VacationInfoListItem } from "src/types";
 import { validateValueIsNotUndefinedNorNull } from "src/utils/check-utils";
 import LocalizationUtils from "src/utils/localization-utils";
 import { formatDate } from "src/utils/time-utils";
-import UserRoleUtils from "src/utils/user-role-utils";
+import UserRoleUtils from "src/hooks/use-user-role";
 import { getVacationRequestPersonFullName } from "src/utils/vacation-request-utils";
 import {
   getTotalVacationRequestStatus,
@@ -31,7 +31,7 @@ import {
  * Vacations card component
  */
 const VacationsCard = () => {
-  const adminMode = UserRoleUtils.adminMode();
+  const {adminMode} = UserRoleUtils()
   const { vacationRequestsApi } = useLambdasApi();
   const userProfile = useAtomValue(userProfileAtom);
   const setError = useSetAtom(errorAtom);

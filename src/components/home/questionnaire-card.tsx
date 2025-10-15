@@ -1,14 +1,14 @@
 import { Box, Card, CardContent, Grid, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 import strings from "src/localization/strings";
-import UserRoleUtils from "src/utils/user-role-utils";
+import UserRoleUtils from "src/hooks/use-user-role";
 import QuestionnaireProgress from "./questionnaire-progress";
 
 /**
  * Component for displaying questionnaire card
  */
 const QuestionnaireCard = () => {
-  const adminMode = UserRoleUtils.adminMode();
+  const {adminMode} = UserRoleUtils();
   const linkTarget = adminMode ? "/admin/questionnaire" : "/questionnaire";
 
   /**

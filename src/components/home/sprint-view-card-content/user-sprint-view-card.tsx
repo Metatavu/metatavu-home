@@ -14,14 +14,14 @@ import {
   getSeveraUserId,
   getTotalEstimatedHours
 } from "src/utils/sprint-utils";
-import UserRoleUtils from "src/utils/user-role-utils";
+import UserRoleUtils from "src/hooks/use-user-role";
 
 /**
  * Sprint card component for users
  */
 const SprintViewCardContent = () => {
   const { filterAllocations } = useSprintViewHandlers();
-  const adminMode = UserRoleUtils.adminMode();
+  const {adminMode} = UserRoleUtils();
   const [loading, setLoading] = useState(false);
   const users = useAtomValue(usersAtom);
   const userProfile = useAtomValue(userProfileAtom);
@@ -80,7 +80,7 @@ const SprintViewCardContent = () => {
   const renderBarChart = () => (
     <>
       {resourceAllocations.length ? (
-        <CardContent sx={{ display: "flex", justifyContent: "left" }}>
+        <CardContent sx={{ display: "flex", justifyContent: "left"}}>
           <SprintViewBarChart chartData={createChartData()} /> 
         </CardContent>
       ) : (

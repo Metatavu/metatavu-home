@@ -1,5 +1,5 @@
 import { type ReactNode, useEffect, useState } from "react";
-import UserRoleUtils from "src/utils/user-role-utils";
+import UserRoleUtils from "src/hooks/use-user-role";
 import AdminRouteErrorScreen from "../screens/admin-route-error-screen";
 
 /**
@@ -16,16 +16,16 @@ interface Props {
  * @returns admin route screen if restricted, child components otherwise
  */
 const RestrictedContentProvider = ({ children }: Props) => {
-  const admin = UserRoleUtils.isAdmin();
-  const [restricted, setRestricted] = useState(!admin);
+  const {isAdmin} = UserRoleUtils();
+  const [restricted, setRestricted] = useState(!isAdmin);
 
   useEffect(() => {
-    if (admin) {
+    if (isAdmin) {
       setRestricted(false);
     } else {
       setRestricted(true);
     }
-  }, [admin]);
+  }, [isAdmin]);
 
   if (restricted) {
     return <AdminRouteErrorScreen />;

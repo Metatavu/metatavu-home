@@ -7,13 +7,13 @@ import { errorAtom } from "src/atoms/error";
 import { softwareAtom } from "src/atoms/software";
 import { useLambdasApi } from "src/hooks/use-api";
 import strings from "../../localization/strings";
-import UserRoleUtils from "../../utils/user-role-utils";
+import UserRoleUtils from "../../hooks/use-user-role";
 
 /**
  * SoftwareRegistry card component
  */
 const SoftwareRegistryCard = () => {
-  const adminMode = UserRoleUtils.adminMode();
+  const {adminMode}=UserRoleUtils()
   const { softwareApi } = useLambdasApi();
   const auth = useAtomValue(authAtom);
   const loggedUserId = auth?.token?.sub ?? "";
