@@ -136,10 +136,9 @@ const VacationsCard = () => {
       const vacationInfoListItems: VacationInfoListItem[] = [
         {
           name: strings.vacationsCard.vacationType,
-          value: ""
-          // value: LocalizationUtils.getLocalizedVacationRequestType(
-          //   earliestUpcomingVacationRequest.type
-          // )
+          value: LocalizationUtils.getLocalizedVacationRequestType(
+            earliestUpcomingVacationRequest.type
+          )
         },
         {
           name: strings.vacationsCard.applicant,

@@ -17,12 +17,13 @@ import {
   UsersApi,
   VacationRequestsApi,
   ArticleApi,
-  OnCallApi
+  OnCallApi,
+  type ConfigurationParameters
 } from "../generated/homeLambdasClient";
 /**
  * Generic type that accepts parameters within the @ConfigurationParameters interface
  */
-//type ConfigConstructor<T> = new (_params: ConfigurationParameters) => T;
+type ConfigConstructor<T> = new (_params: ConfigurationParameters) => T;
 
 /**
  * Creates a new ConfigConstructor instance with params required to access the API
@@ -35,7 +36,7 @@ import {
  */
 const getConfigurationFactory =
   <T>(
-    //ConfigConstructor: ConfigConstructor<T>,
+    ConfigConstructor: ConfigConstructor<T>,
     basePath: string,
     accessToken?: string
   ) =>
