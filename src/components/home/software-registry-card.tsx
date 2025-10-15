@@ -80,7 +80,8 @@ const SoftwareRegistryCard = () => {
                       width: "60px",
                       objectFit: "contain",
                       margin: "6px",
-                      borderRadius: "8px"
+                      borderRadius: "8px",
+                      overflow:"hidden"
                     }}
                   />
                 </Grid>
@@ -106,7 +107,8 @@ const SoftwareRegistryCard = () => {
                       width: "60px",
                       objectFit: "contain",
                       margin: "6px",
-                      borderRadius: "8px"
+                      borderRadius: "8px",
+                      overflow:"hidden"
                     }}
                   />
                 </Grid>
