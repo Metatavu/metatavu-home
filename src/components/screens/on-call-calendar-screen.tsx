@@ -70,7 +70,9 @@ const OnCallCalendarScreen = () => {
       const fetchedData = await onCallApi.listOnCallData({ year: year.toString() });
       setOnCallData(fetchedData);
     } catch (error) {
-      setError(`${strings.oncall.fetchFailed}`);
+      if (!(error instanceof SyntaxError)) {
+        setError(`${strings.oncall.fetchFailed} ${error}`);
+      }
       setOnCallData([]);
     }
     setLoading(false);
@@ -82,9 +84,13 @@ const OnCallCalendarScreen = () => {
   const getCurrentOnCallPerson = async () => {
     const currentYear = DateTime.now().year;
     const currentWeek = DateTime.now().weekNumber;
-    const fetchedData = await onCallApi.listOnCallData({ year: currentYear.toString() });
-    const currentOnCallPerson = fetchedData.find((item) => item.week === currentWeek)?.username;
-    setOnCallPerson(currentOnCallPerson ?? null);
+    try {
+      const fetchedData = await onCallApi.listOnCallData({ year: currentYear.toString() });
+      const currentOnCallPerson = fetchedData.find((item) => item.week === currentWeek)?.username;
+      setOnCallPerson(currentOnCallPerson ?? null);
+    } catch (error) {
+      setError(`${strings.oncall.fetchFailed} ${error}`);
+    }
   };
 
   /**

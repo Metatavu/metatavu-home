@@ -494,7 +494,7 @@
     "selectView": "Valitse kalenterinäkymä",
     "noOnCallPerson": "Päivystäjää ei ole tälle viikolle",
     "onCallPersonExists": "Tämän viikon päivystäjä:",
-    "fetchFailed": "Päivystystietojen haku epäonnistui - ei dataa saatavilla",
+    "fetchFailed": "Päivystystietojen haku epäonnistui",
     "updatePaidStatusForWeek": "Päivitä viikon maksutila",
     "person": "Henkilö",
     "paidStatus": "Maksatus",
