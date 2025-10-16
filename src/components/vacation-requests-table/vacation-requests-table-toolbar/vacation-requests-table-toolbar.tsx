@@ -11,7 +11,7 @@ import { VacationRequestStatuses } from "src/generated/homeLambdasClient";
 import strings from "src/localization/strings";
 import { ToolbarFormModes, type VacationsDataGridRow } from "src/types";
 import { getToolbarTitle } from "src/utils/toolbar-utils";
-import { useUserRole } from "src/hooks/use-user-role";
+import useUserRole from "src/hooks/use-user-role";
 import ConfirmationHandler from "../../contexts/confirmation-handler";
 import ToolbarDeleteButton from "./toolbar-delete-button";
 import ToolbarForm from "./toolbar-form/toolbar-form";

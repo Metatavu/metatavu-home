@@ -13,7 +13,7 @@ import WikiDocumentationCard from "../home/wiki-documentation-card";
  * Admin screen component
  */
 const AdminScreen = () => {
-  const {isDeveloper, isTester} = useUserRole();
+  const { isDeveloper, isTester } = useUserRole();
 
   const isPrivilegedUser = isDeveloper || isTester;
 

@@ -16,7 +16,7 @@ interface Props {
  * @returns admin route screen if restricted, child components otherwise
  */
 const RestrictedContentProvider = ({ children }: Props) => {
-  const {isAdmin} = useUserRole();
+  const { isAdmin } = useUserRole();
   const [restricted, setRestricted] = useState(!isAdmin);
 
   useEffect(() => {

@@ -1,6 +1,6 @@
 import { useAtomValue } from "jotai";
-import { authAtom } from "../atoms/auth";
 import { useLocation } from "react-router-dom";
+import { authAtom } from "../atoms/auth";
 
 /**
  * Custom hook to derive user role-based access flags from authentication state.
@@ -26,7 +26,7 @@ const useUserRole = () => {
   const isAccountant = isRole("accountant");
 
   const { pathname } = useLocation();
-  
+
   const adminMode = isAdmin && pathname.startsWith("/admin");
 
   const developerMode = isDeveloper;

@@ -11,7 +11,7 @@ import {
 } from "src/generated/homeLambdasClient";
 import { type DateRange, ToolbarFormModes, type VacationsDataGridRow } from "src/types";
 import { determineToolbarFormMode } from "src/utils/toolbar-utils";
-import { useUserRole } from "src/hooks/use-user-role";
+import useUserRole from "src/hooks/use-user-role";
 import ToolbarFormFields from "./toolbar-form-fields";
 
 /**

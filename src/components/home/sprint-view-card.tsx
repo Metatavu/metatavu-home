@@ -9,7 +9,7 @@ import SprintViewCardContent from "./sprint-view-card-content/user-sprint-view-c
  */
 const SprintViewCard = () => {
 
-  const {adminMode} = useUserRole();
+  const { adminMode } = useUserRole();
 
   return (
     <Link to={adminMode ? "/admin/sprintview" : "/sprintview"} style={{ textDecoration: "none" }}>

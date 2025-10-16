@@ -6,7 +6,7 @@ import strings from "src/localization/strings";
 import { type DateRange, ToolbarFormModes } from "src/types";
 import { hasAllPropsDefined } from "src/utils/check-utils";
 import { calculateEndDateFromDays, calculateTotalVacationDays } from "src/utils/time-utils";
-import { useUserRole } from "src/hooks/use-user-role";
+import useUserRole from "src/hooks/use-user-role";
 import DateRangePicker from "../../../generics/date-range-picker";
 
 /**

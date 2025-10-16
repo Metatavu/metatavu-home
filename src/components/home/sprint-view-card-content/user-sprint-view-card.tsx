@@ -14,7 +14,7 @@ import {
   getSeveraUserId,
   getTotalEstimatedHours
 } from "src/utils/sprint-utils";
-import { useUserRole } from "src/hooks/use-user-role";
+import useUserRole from "src/hooks/use-user-role";
 
 /**
  * Sprint card component for users
@@ -63,7 +63,7 @@ const SprintViewCardContent = () => {
     const mapping = filteredAllocations.map((allocation) => {
       const project = allocation.project;
       const estimateHours = project ? getTotalEstimatedHours(resourceAllocations, project) : 0;
-      
+
       return {
         severaResourceAllocationId: allocation.severaResourceAllocationId || "",
         projectName: allocation.project?.name || "",
@@ -81,7 +81,7 @@ const SprintViewCardContent = () => {
     <>
       {resourceAllocations.length ? (
         <CardContent sx={{ display: "flex", justifyContent: "left"}}>
-          <SprintViewBarChart chartData={createChartData()} /> 
+          <SprintViewBarChart chartData={createChartData()} />
         </CardContent>
       ) : (
         <Typography style={{ paddingLeft: "0" }}>
