@@ -1,6 +1,6 @@
+import LocalizedStrings, { type LocalizedStringsMethods } from "localized-strings";
 import en from "./en.json";
 import fi from "./fi.json";
-import LocalizedStrings, { type LocalizedStringsMethods } from "localized-strings";
 
 /**
  * Localized strings
@@ -552,11 +552,13 @@ export interface Localized extends LocalizedStringsMethods {
     connectedArticles: string;
   };
   snackbar: {
-    articleSubmitted: string;
-    articleCreated: string;
-    articleUpdated: string;
     articleApproved: string;
+    articleCreated: string;
+    articleSubmitted: string;
+    articleUpdated: string;
     changesSaved: string;
+    correctImageUrl: string;
+    correctUrl: string;
   };
   /**
    * Translation related settings screen
@@ -665,23 +667,23 @@ export interface Localized extends LocalizedStringsMethods {
   };
 
   employeeFlextime: {
-  title: string;
-  subtitle: string;
-  lastUpdated: string;
-  totalEmployees: string;
-  combinedBalance: string;
-  loading: string;
-  noDataFound: string;
-  employee: string;
-  email: string;
-  totalFlextimeBalance: string;
-  currentMonthBalance: string;
-  status: string;
-  active: string;
-  inactive: string;
-  employeeId: string;
-  notAvailable: string; 
-};
+    title: string;
+    subtitle: string;
+    lastUpdated: string;
+    totalEmployees: string;
+    combinedBalance: string;
+    loading: string;
+    noDataFound: string;
+    employee: string;
+    email: string;
+    totalFlextimeBalance: string;
+    currentMonthBalance: string;
+    status: string;
+    active: string;
+    inactive: string;
+    employeeId: string;
+    notAvailable: string;
+  };
 }
 
 /**

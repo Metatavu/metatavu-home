@@ -81,13 +81,13 @@ const CreateOrEditArticleForm = ({
     if (!editorRef.current) return;
     const content = editorRef.current?.getMarkdownContent();
     if (!isValidHttpUrl(coverImage)) {
-      setError("Please provide a valid image URL (must start with http:// or https://)");
+      setError(strings.snackbar.correctUrl);
       return;
     }
 
     const isImage = await isValidImageUrl(coverImage);
     if (!isImage) {
-      setError("The provided URL does not point to a valid image.");
+      setError(strings.snackbar.correctImageUrl);
       return;
     }
     const newArticle = {
@@ -133,13 +133,13 @@ const CreateOrEditArticleForm = ({
     if (!editorRef.current || !article?.id) return;
     const content = editorRef.current?.getMarkdownContent();
     if (!isValidHttpUrl(coverImage)) {
-      setError("Please provide a valid image URL (must start with http:// or https://)");
+      setError(strings.snackbar.correctUrl);
       return;
     }
 
     const isImage = await isValidImageUrl(coverImage);
     if (!isImage) {
-      setError("The provided URL does not point to a valid image.");
+      setError(strings.snackbar.correctImageUrl);
       return;
     }
     const updatedArticle: Article = {
