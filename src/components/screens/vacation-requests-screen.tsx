@@ -17,6 +17,7 @@ import strings from "src/localization/strings";
 import UserRoleUtils from "src/utils/user-role-utils";
 import { renderVacationDaysTextForScreen } from "src/utils/vacation-days-utils";
 import BackButton from "../generics/back-button";
+import { useLocation } from "react-router";
 import VacationRequestsTable from "../vacation-requests-table/vacation-requests-table";
 import type { FilterType } from "src/utils/vacation-filter-type";
 
@@ -32,6 +33,9 @@ const VacationRequestsScreen = () => {
     adminMode ? allVacationRequestsAtom : vacationRequestsAtom
   );
   const setDisplayedVacationRequests = useSetAtom(displayedVacationRequestsAtom);
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const selectedId = params.get("selectedId");
 
   const upcomingVacationRequests = useMemo(
     () => vacationRequests.filter((request) => request.endDate.getTime() > Date.now()),
@@ -72,9 +76,14 @@ const VacationRequestsScreen = () => {
    */
   useEffect(() => {
     const baseRequests = isUpcoming ? upcomingVacationRequests : pastVacationRequests;
-    const filteredRequests = filterVacationRequests(baseRequests, filter);
+    let filteredRequests = filterVacationRequests(baseRequests, filter);
+
+    if (selectedId) {
+      filteredRequests = filteredRequests.filter((req) => req.id === selectedId);
+    }
+
     setDisplayedVacationRequests(filteredRequests);
-  }, [isUpcoming, filter, vacationRequests]);
+  }, [isUpcoming, filter, vacationRequests, selectedId]);
 
   /**
    * Handler for upcoming/ past vacations toggle click
