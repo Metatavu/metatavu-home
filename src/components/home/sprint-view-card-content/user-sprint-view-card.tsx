@@ -8,30 +8,25 @@ import SprintViewBarChart from "src/components/charts/sprint-view-bar-chart";
 import type { ResourceAllocations, User } from "src/generated/homeLambdasClient";
 import useSprintViewHandlers from "src/hooks/sprint-custom-hooks";
 import { useLambdasApi } from "src/hooks/use-api";
+import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import type { SprintViewChartData } from "src/types";
-import {
-  getSeveraUserId,
-  getTotalEstimatedHours
-} from "src/utils/sprint-utils";
-import useUserRole from "src/hooks/use-user-role";
+import { getSeveraUserId, getTotalEstimatedHours } from "src/utils/sprint-utils";
 
 /**
  * Sprint card component for users
  */
 const SprintViewCardContent = () => {
   const { filterAllocations } = useSprintViewHandlers();
-  const {adminMode} = useUserRole();
+  const { adminMode } = useUserRole();
   const [loading, setLoading] = useState(false);
   const users = useAtomValue(usersAtom);
   const userProfile = useAtomValue(userProfileAtom);
-  const loggedInUser = users.find(
-    (users: User) => users.id === userProfile?.id
-  );
+  const loggedInUser = users.find((users: User) => users.id === userProfile?.id);
   const [resourceAllocations, setResourceAllocations] = useState<ResourceAllocations[]>([]);
   const { resourceAllocationsApi } = useLambdasApi();
   const setError = useSetAtom(errorAtom);
-  const filteredAllocations = filterAllocations(resourceAllocations, adminMode)
+  const filteredAllocations = filterAllocations(resourceAllocations, adminMode);
 
   useEffect(() => {
     getAllocationsAndProjects();
@@ -68,7 +63,7 @@ const SprintViewCardContent = () => {
         severaResourceAllocationId: allocation.severaResourceAllocationId || "",
         projectName: allocation.project?.name || "",
         actualWorkHours: allocation.calculatedAllocationHours || "",
-        estimatedWorkHour: estimateHours || "",
+        estimatedWorkHour: estimateHours || ""
       };
     });
     return mapping;
@@ -80,13 +75,11 @@ const SprintViewCardContent = () => {
   const renderBarChart = () => (
     <>
       {resourceAllocations.length ? (
-        <CardContent sx={{ display: "flex", justifyContent: "left"}}>
+        <CardContent sx={{ display: "flex", justifyContent: "left" }}>
           <SprintViewBarChart chartData={createChartData()} />
         </CardContent>
       ) : (
-        <Typography style={{ paddingLeft: "0" }}>
-          {strings.sprint.noAllocation}
-        </Typography>
+        <Typography style={{ paddingLeft: "0" }}>{strings.sprint.noAllocation}</Typography>
       )}
     </>
   );
