@@ -22,7 +22,7 @@ interface Props {
  */
 const TimebankContent = ({ selectedEmployeeId, setSelectedEmployeeId }: Props) => {
   const persons = useAtomValue(personsAtom);
-  const {isAdmin} = useUserRole();
+  const { isAdmin } = useUserRole();
 
   return (
     <>

@@ -47,7 +47,7 @@ const AllSoftwareScreen = () => {
   const [loading, setLoading] = useState(false);
   const auth = useAtomValue(authAtom);
   const loggedUserId = auth?.token?.sub ?? "";
-  const {adminMode} = useUserRole();
+  const { adminMode } = useUserRole();
   const allStatusValues = ["ALL", ...Object.values(SoftwareStatus)] as const;
   const [selectedStatus, setSelectedStatus] = useState<SoftwareStatusFilterOptions>(
     allStatusValues[0]

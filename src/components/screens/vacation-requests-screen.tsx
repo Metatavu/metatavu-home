@@ -25,7 +25,7 @@ import type { FilterType } from "src/utils/vacation-filter-type";
  * Vacation requests screen
  */
 const VacationRequestsScreen = () => {
-  const {adminMode} = useUserRole();
+  const { adminMode } = useUserRole();
   const { vacationRequestsApi } = useLambdasApi();
   const userProfile = useAtomValue(userProfileAtom);
   const setError = useSetAtom(errorAtom);

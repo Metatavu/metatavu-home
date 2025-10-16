@@ -47,7 +47,7 @@ const itemsPerPage = 12;
  * Wiki documentation screen component displaying a list of articles.
  */
 const WikiDocumentationScreen = () => {
-  const {adminMode} = useUserRole();
+  const { adminMode } = useUserRole();
   const setError = useSetAtom(errorAtom);
   const setArticlesAtom = useSetAtom(articleAtom);
   const setDraftArticlesAtom = useSetAtom(draftArticleAtom);

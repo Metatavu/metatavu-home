@@ -22,7 +22,7 @@ import "../wiki-documentation/rich-text-editor/editor.css";
  * Article screen component displaying the article content.
  */
 const ArticleScreen = () => {
-  const {adminMode} = useUserRole();
+  const { adminMode } = useUserRole();
   const setError = useSetAtom(errorAtom);
   const { "*": path } = useParams();
   const { articleApi } = useLambdasApi();

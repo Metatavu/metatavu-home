@@ -40,7 +40,7 @@ import type { User } from "src/generated/homeLambdasClient";
  * @returns Questionnaires from DynamoDB rendered in a x-data-grid table
  */
 const QuestionnaireTable = () => {
-  const {adminMode} = useUserRole();
+  const { adminMode } = useUserRole();
   const navigate = useNavigate();
   const [_, setMode] = useState<QuestionnairePreviewMode>();
   const { questionnairesApi } = useLambdasApi();

@@ -38,7 +38,7 @@ const SoftwareDetails = () => {
   const { softwareApi, usersApi } = useLambdasApi();
   const auth = useAtomValue(authAtom);
   const loggedUserId = auth?.token?.sub ?? "";
-  const {adminMode} = useUserRole();
+  const { adminMode } = useUserRole();
 
   /**
    * Fetches software details.

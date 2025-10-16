@@ -9,7 +9,7 @@ import QuestionnaireTable from "../questionnaire/questionnaire-table";
  * Questionnaire Screen Component
  */
 const QuestionnaireScreen = () => {
-  const {adminMode} = useUserRole();
+  const { adminMode } = useUserRole();
 
   return (
     <>
