@@ -17,12 +17,12 @@ interface Props {
 
 /**
  * On call list view component
- * 
+ *
  * @param props component properties
  */
 const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Props) => {
   const onCallData = useAtomValue(onCallAtom);
-  const {isAccountant} = useUserRole();
+  const { isAccountant } = useUserRole();
 
   const columns: GridColDef[] = [
     {

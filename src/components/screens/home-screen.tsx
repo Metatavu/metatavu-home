@@ -20,7 +20,7 @@ import Onboarding from "../onboarding/Onboarding";
  * Home screen component
  */
 const HomeScreen = () => {
-  const {isDeveloper,isTester} = useUserRole();
+  const { isDeveloper, isTester } = useUserRole();
   const users = useAtomValue(usersAtom);
   const userProfile = useAtomValue(userProfileAtom);
   const loggedInUser = users.find((user: User) => user.id === userProfile?.id);

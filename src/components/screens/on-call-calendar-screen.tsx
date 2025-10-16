@@ -48,7 +48,7 @@ const OnCallCalendarScreen = () => {
   const [selectedDate, setSelectedDate] = useState<DateTime>(DateTime.now());
   const [onCallPerson, setOnCallPerson] = useState<string | null>(null);
   const [selectedOnCallWeek, setSelectedOnCallWeek] = useState<OnCallWeek>();
-  const {isAccountant} = useUserRole();
+  const { isAccountant } = useUserRole();
   const setError = useSetAtom(errorAtom);
   const [loading, setLoading] = useState(false);
 
