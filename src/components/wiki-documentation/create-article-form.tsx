@@ -390,7 +390,6 @@ const CreateOrEditArticleForm = ({
                 <input style={{ width: "100%" }} type="file" hidden onChange={handleFileChange} />
               </Button>
             )}
-            (
             {!imagePreview ? (
               <Button
                 variant="outlined"
@@ -400,7 +399,6 @@ const CreateOrEditArticleForm = ({
                 {strings.wikiDocumentation.imagePreview}
               </Button>
             ) : null}
-            )
           </Grid>
           <Grid item md={6} xs={12}>
             <TextField
