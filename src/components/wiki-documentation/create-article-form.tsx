@@ -23,6 +23,7 @@ import type { Article, User } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
 import { uploadFile } from "src/utils/s3-file-utils";
+import { isValidHttpUrl, isValidImageUrl } from "src/utils/url-validators";
 import BackButton from "../generics/back-button";
 import ActionButton from "./action-button";
 import RichTextEditorLexical from "./rich-text-editor/rich-text-editor";
@@ -62,7 +63,7 @@ const CreateOrEditArticleForm = ({
   const editorRef = useRef<EditorRef>(null);
   const [title, setTitle] = useState(article ? article.title : "");
   const [path, setPath] = useState(article ? article.path : "");
-  const [coverImage, setCoverImage] = useState(article ? article.coverImage : "");
+  const [coverImage, setCoverImage] = useState<string>(article?.coverImage || "");
   const [description, setDescription] = useState(article ? article.description : "");
   const [imagePreview, setImagPreview] = useState(false);
   const [selectedTags, setSelectedTags] = useState<string[]>(article ? article.tags || [] : []);
@@ -73,12 +74,22 @@ const CreateOrEditArticleForm = ({
   const setSnackbar = useSetAtom(snackbarAtom);
   /**
    * Handles creating a new article using the editor content and form state.
-   * Sends the article data to the API and updates local state accordingly.
+   * Validates URLs, sends the article data to the API and updates local state accordingly.
    * Closes the form on success or sets an error message on failure.
    */
   const handleCreate = async () => {
     if (!editorRef.current) return;
     const content = editorRef.current?.getMarkdownContent();
+    if (!isValidHttpUrl(coverImage)) {
+      setError("Please provide a valid image URL (must start with http:// or https://)");
+      return;
+    }
+
+    const isImage = await isValidImageUrl(coverImage);
+    if (!isImage) {
+      setError("The provided URL does not point to a valid image.");
+      return;
+    }
     const newArticle = {
       path: path,
       title: title,
@@ -115,12 +126,22 @@ const CreateOrEditArticleForm = ({
   };
   /**
    * Handles updating an existing article with current form and editor content.
-   * Sends updated data to the API, updates local state, and manages tag sets.
+   * Validates URLs, sends updated data to the API, updates local state, and manages tag sets.
    * Closes the form on success or sets an error message on failure.
    */
   const handleEdit = async () => {
     if (!editorRef.current || !article?.id) return;
     const content = editorRef.current?.getMarkdownContent();
+    if (!isValidHttpUrl(coverImage)) {
+      setError("Please provide a valid image URL (must start with http:// or https://)");
+      return;
+    }
+
+    const isImage = await isValidImageUrl(coverImage);
+    if (!isImage) {
+      setError("The provided URL does not point to a valid image.");
+      return;
+    }
     const updatedArticle: Article = {
       path: path,
       title: title,
@@ -358,10 +379,8 @@ const CreateOrEditArticleForm = ({
                   </IconButton>
                 </Grid>
               </Grid>
-            ) : (
-              <></>
-            )}
-            {!coverImage ? (
+            ) : null}
+            {!coverImage && (
               <Button
                 variant="outlined"
                 component="label"
@@ -370,21 +389,18 @@ const CreateOrEditArticleForm = ({
                 {strings.wikiDocumentation.uploadImage}
                 <input style={{ width: "100%" }} type="file" hidden onChange={handleFileChange} />
               </Button>
-            ) : (
-              <>
-                {!imagePreview ? (
-                  <Button
-                    variant="outlined"
-                    sx={{ marginTop: 1, marginBottom: 1, width: "100%" }}
-                    onClick={() => setImagPreview(true)}
-                  >
-                    {strings.wikiDocumentation.imagePreview}
-                  </Button>
-                ) : (
-                  <></>
-                )}
-              </>
             )}
+            (
+            {!imagePreview ? (
+              <Button
+                variant="outlined"
+                sx={{ marginTop: 1, marginBottom: 1, width: "100%" }}
+                onClick={() => setImagPreview(true)}
+              >
+                {strings.wikiDocumentation.imagePreview}
+              </Button>
+            ) : null}
+            )
           </Grid>
           <Grid item md={6} xs={12}>
             <TextField
