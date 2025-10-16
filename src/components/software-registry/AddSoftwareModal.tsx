@@ -64,7 +64,7 @@ const AddSoftwareModal = ({
   const [tags, setTags] = useState("");
   const [nameExists, setNameExists] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [, setError] = useState<string | null>(null);
 
   /**
    * Fetch the list of users when the modal opens.
@@ -324,6 +324,7 @@ const AddSoftwareModal = ({
                 renderTags={(value, getTagProps) =>
                   value.map((option, index) => (
                     <Chip
+                      key={option.id}
                       label={`${option.firstName} ${option.lastName}`}
                       {...getTagProps({ index })}
                     />
