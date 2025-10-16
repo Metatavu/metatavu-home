@@ -4,7 +4,7 @@ import { Box, Button, Checkbox, Typography } from "@mui/material";
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
 import { DateTime } from "luxon";
 import strings from "src/localization/strings";
-import UserRoleUtils from "src/utils/user-role-utils";
+import useUserRole from "src/hooks/use-user-role";
 
 /**
  * Component properties
@@ -17,12 +17,12 @@ interface Props {
 
 /**
  * On call list view component
- * 
+ *
  * @param props component properties
  */
 const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Props) => {
   const onCallData = useAtomValue(onCallAtom);
-  const isAccountant = UserRoleUtils.isAccountant();
+  const { isAccountant } = useUserRole();
 
   const columns: GridColDef[] = [
     {

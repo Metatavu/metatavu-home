@@ -6,14 +6,14 @@ import { authAtom } from "src/atoms/auth";
 import { errorAtom } from "src/atoms/error";
 import { softwareAtom } from "src/atoms/software";
 import { useLambdasApi } from "src/hooks/use-api";
+import useUserRole from "../../hooks/use-user-role";
 import strings from "../../localization/strings";
-import UserRoleUtils from "../../utils/user-role-utils";
 
 /**
  * SoftwareRegistry card component
  */
 const SoftwareRegistryCard = () => {
-  const adminMode = UserRoleUtils.adminMode();
+  const { adminMode } = useUserRole();
   const { softwareApi } = useLambdasApi();
   const auth = useAtomValue(authAtom);
   const loggedUserId = auth?.token?.sub ?? "";
@@ -81,7 +81,7 @@ const SoftwareRegistryCard = () => {
                       objectFit: "contain",
                       margin: "6px",
                       borderRadius: "8px",
-                      overflow:"hidden"
+                      overflow: "hidden"
                     }}
                   />
                 </Grid>
@@ -108,7 +108,7 @@ const SoftwareRegistryCard = () => {
                       objectFit: "contain",
                       margin: "6px",
                       borderRadius: "8px",
-                      overflow:"hidden"
+                      overflow: "hidden"
                     }}
                   />
                 </Grid>

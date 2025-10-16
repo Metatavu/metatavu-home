@@ -1,13 +1,12 @@
-import Typography from "@mui/material/Typography";
 import MenuIcon from "@mui/icons-material/Menu";
-import { Link } from "react-router-dom";
-import Logo from "../../../resources/img/Metatavu-icon.svg";
-import Button from "@mui/material/Button";
-import { type MouseEvent, useState } from "react";
 import { Box, IconButton, Menu, MenuItem } from "@mui/material";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
+import { type MouseEvent, useState } from "react";
+import { Link } from "react-router-dom";
+import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
-import UserRoleUtils from "src/utils/user-role-utils";
-
+import Logo from "../../../resources/img/Metatavu-icon.svg";
 
 /**
  * Navigation Items component
@@ -15,9 +14,7 @@ import UserRoleUtils from "src/utils/user-role-utils";
 const NavItems = () => {
   const [currentPage, setCurrentPage] = useState("");
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
-  const admin = UserRoleUtils.isAdmin();
-
-
+  const { isAdmin } = useUserRole();
 
   /**
    * Handles opening navigation menu
@@ -90,7 +87,7 @@ const NavItems = () => {
           >
             {strings.header.home}
           </MenuItem>
-          {admin && (
+          {isAdmin && (
             <MenuItem
               component={Link}
               to={"/admin"}
@@ -98,8 +95,8 @@ const NavItems = () => {
               onClick={handleNavItemClick}
             >
               {strings.header.admin}
-              </MenuItem>
-            )}
+            </MenuItem>
+          )}
         </Menu>
         <Typography variant="button" marginTop={1.5}>
           {currentPage}
@@ -115,10 +112,10 @@ const NavItems = () => {
         >
           <Button>{strings.header.home}</Button>
         </Link>
-        {admin && (
+        {isAdmin && (
           <Link to={"/admin"} style={{ margin: 2, display: "block" }}>
             <Button>{strings.header.admin}</Button>
-          </Link>         
+          </Link>
         )}
       </Box>
     </>

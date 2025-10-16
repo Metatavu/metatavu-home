@@ -30,10 +30,10 @@ import type {
 } from "src/generated/homeLambdasClient/models/";
 import useSprintViewHandlers from "src/hooks/sprint-custom-hooks";
 import { useLambdasApi } from "src/hooks/use-api";
+import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import { getSeveraUserId } from "src/utils/sprint-utils";
 import { getSprintEnd, getSprintStart } from "src/utils/time-utils";
-import UserRoleUtils from "src/utils/user-role-utils";
 import BackButton from "../generics/back-button";
 import createSprintViewProjectsColumns from "../sprint-view-table/sprint-projects-columns";
 
@@ -61,7 +61,7 @@ const SprintViewScreen = () => {
   const sprintStartDate = getSprintStart(todaysDate);
   const sprintEndDate = getSprintEnd(todaysDate);
   const setError = useSetAtom(errorAtom);
-  const adminMode = UserRoleUtils.adminMode();
+  const { adminMode } = useUserRole();
   const columns = createSprintViewProjectsColumns({
     resourceAllocations: resourceAllocations || []
   });

@@ -2,7 +2,7 @@ import { Card, FormControl, Grow, InputLabel, MenuItem, Select } from "@mui/mate
 import { useAtomValue } from "jotai";
 import { personsAtom } from "src/atoms/person";
 import strings from "src/localization/strings";
-import UserRoleUtils from "src/utils/user-role-utils";
+import useUserRole from "src/hooks/use-user-role";
 
 // import SummaryTimEntriesCard from "./summary-time-entries-card";
 // import SpecificTimeEntriesCard from "./specific-time-entries-card";
@@ -22,7 +22,7 @@ interface Props {
  */
 const TimebankContent = ({ selectedEmployeeId, setSelectedEmployeeId }: Props) => {
   const persons = useAtomValue(personsAtom);
-  const isAdmin = UserRoleUtils.isAdmin();
+  const { isAdmin } = useUserRole();
 
   return (
     <>

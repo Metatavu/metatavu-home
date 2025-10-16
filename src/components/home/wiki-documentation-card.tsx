@@ -7,16 +7,16 @@ import { articleAtom, draftArticleAtom } from "src/atoms/article";
 import { errorAtom } from "src/atoms/error";
 import type { ArticleMetadata } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
+import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
-import UserRoleUtils from "src/utils/user-role-utils";
 import { getLastActivityString } from "src/utils/wiki-utils";
 
 /**
  * Card component for displaying last read, created or updated article for Wiki Documentation.
  */
 const WikiDocumentationCard = () => {
+  const { adminMode } = useUserRole();
   const setError = useSetAtom(errorAtom);
-  const adminMode = UserRoleUtils.adminMode();
   const draftArticles = useAtomValue(draftArticleAtom);
   const normalArticles = useAtomValue(articleAtom);
   const setDraftArticles = useSetAtom(draftArticleAtom);
