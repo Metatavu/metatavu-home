@@ -3,6 +3,7 @@ import { Box, Paper, Typography, Button, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { getOnboardingSteps } from "./onboardingSteps";
 import strings from "src/localization/strings";
+import useUserRole from "src/hooks/use-user-role";
 
 const POPUP_WIDTH = 320;
 const POPUP_HEIGHT = 140;
@@ -17,17 +18,35 @@ const Onboarding: React.FC = () => {
   const ONBOARDING_KEY = "onboardingComplete";
   const [targetRect, setTargetRect] = useState<DOMRect | null>(null);
   const rafRef = useRef<number | null>(null);
+  const { isAdmin, isDeveloper, isTester, isAccountant } = useUserRole();
 
-  // Always get the latest steps for the current language
+  /**
+   * Whether the current user has permission to view onboarding.
+   */
+  const isAllowed = isAdmin || isDeveloper || isTester || isAccountant;
+
+  /**
+   * The current set of onboarding steps, localized.
+   */
   const onboardingSteps = getOnboardingSteps();
 
-  // Safely query a DOM element by selector.
+  /**
+   * Safely queries a DOM element by selector.
+   *
+   * @param selector - The CSS selector of the element to query.
+   * @returns The matched DOM element or null.
+   */
   const query = (selector?: string | null): Element | null => {
     if (!selector) return null;
     return document.querySelector(selector);
   };
 
-  // Find the next valid onboarding step starting from a given index.
+  /**
+   * Finds the next valid onboarding step starting from the given index.
+   *
+   * @param from - The index to start searching from.
+   * @returns The index of the next valid step, or null if none found.
+   */
   const findNextValid = (from = 0): number | null => {
     for (let i = from; i < onboardingSteps.length; i++) {
       if (query(onboardingSteps[i].selector)) return i;
@@ -35,8 +54,12 @@ const Onboarding: React.FC = () => {
     return null;
   };
 
-  // Find the previous valid onboarding step starting from a given index.
-
+  /**
+   * Finds the previous valid onboarding step starting from the given index.
+   *
+   * @param from - The index to start searching backward from.
+   * @returns The index of the previous valid step, or null if none found.
+   */
   const findPrevValid = (from: number): number | null => {
     for (let i = from; i >= 0; i--) {
       if (query(onboardingSteps[i].selector)) return i;
@@ -44,8 +67,11 @@ const Onboarding: React.FC = () => {
     return null;
   };
 
-  // On mount, check if onboarding has already been completed (via localStorage).
+  /**
+   * On mount, checks if onboarding has already been completed and starts onboarding if allowed.
+   */
   useEffect(() => {
+    if (!isAllowed) return;
     const completed = localStorage.getItem(ONBOARDING_KEY);
     if (!completed) {
       const first = findNextValid(0);
@@ -53,24 +79,40 @@ const Onboarding: React.FC = () => {
     }
   }, []);
 
-  // Update the targetRect whenever the current step changes
+  /**
+   * Updates the target element’s bounding rectangle when the step changes.
+   */
   useEffect(() => {
     if (stepIndex === null) {
       setTargetRect(null);
       return;
     }
+
     const step = onboardingSteps[stepIndex];
     const el = query(step.selector);
     if (!el) {
-      // If element disappeared, skip forward to next available step
       const next = findNextValid(stepIndex + 1);
       setStepIndex(next);
       return;
     }
-    setTargetRect(el.getBoundingClientRect());
+
+    const updateRect = () => {
+      setTargetRect(el.getBoundingClientRect());
+    };
+
+    const resizeObserver = new ResizeObserver(updateRect);
+    resizeObserver.observe(el);
+
+    updateRect();
+
+    return () => {
+      resizeObserver.disconnect();
+    };
   }, [stepIndex]);
 
-  // Keep the popup aligned to targetRect on scroll/resize
+  /**
+   * Keeps the popup aligned to the targetRect on window scroll or resize.
+   */
   useEffect(() => {
     const update = () => {
       if (stepIndex === null) return;
@@ -81,7 +123,6 @@ const Onboarding: React.FC = () => {
     };
 
     const onResize = () => {
-      // Throttle updates with requestAnimationFrame
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
       rafRef.current = requestAnimationFrame(update);
     };
@@ -96,19 +137,27 @@ const Onboarding: React.FC = () => {
     };
   }, [stepIndex]);
 
+  /**
+   * Advances to the next valid onboarding step.
+   */
   const handleNext = () => {
     if (stepIndex === null) return setStepIndex(null);
     const next = findNextValid(stepIndex + 1);
     setStepIndex(next);
   };
 
+  /**
+   * Goes back to the previous valid onboarding step.
+   */
   const handlePrev = () => {
     if (stepIndex === null) return;
     const prev = findPrevValid(stepIndex - 1);
     setStepIndex(prev);
   };
 
-  // Close the onboarding popup and persist completion in localStorage.
+  /**
+   * Closes the onboarding popup and marks onboarding as completed in localStorage.
+   */
   const handleClose = () => {
     setStepIndex(null);
     localStorage.setItem(ONBOARDING_KEY, "true");
@@ -119,16 +168,15 @@ const Onboarding: React.FC = () => {
   const step = onboardingSteps[stepIndex];
 
   /**
-   * Compute popup position relative to targetRect.
+   * Computes the popup position relative to the current targetRect.
    *
-   * @returns CSS coordinates { left, top }
+   * @returns An object containing `left` and `top` CSS pixel values.
    */
   const computePosition = () => {
     if (!targetRect) {
-      // Fallback: center of screen
       return {
         left: Math.max((window.innerWidth - POPUP_WIDTH) / 2, 12),
-        top: Math.max((window.innerHeight - POPUP_HEIGHT) / 2, 12),
+        top: Math.max((window.innerHeight - POPUP_HEIGHT) / 2, 12)
       };
     }
 
@@ -140,7 +188,7 @@ const Onboarding: React.FC = () => {
     if (stepIndex === onboardingSteps.length - 1) {
       return {
         left: (window.innerWidth - POPUP_WIDTH) / 2,
-        top: (window.innerHeight - POPUP_HEIGHT) / 2 + window.scrollY,
+        top: (window.innerHeight - POPUP_HEIGHT) / 2 + window.scrollY
       };
     }
 
@@ -150,24 +198,24 @@ const Onboarding: React.FC = () => {
       case "top-center":
         return {
           left: pageLeft + width / 2 - POPUP_WIDTH / 2,
-          top: pageTop + 50 - POPUP_HEIGHT + 120,
+          top: pageTop + 50 - POPUP_HEIGHT + 120
         };
       case "top-right":
         return {
           left: pageLeft + width - POPUP_WIDTH,
-          top: pageTop - POPUP_HEIGHT - 12,
+          top: pageTop - POPUP_HEIGHT - 12
         };
       case "bottom-left":
         return { left: pageLeft, top: pageTop + height + 12 };
       case "bottom-right":
         return {
           left: pageLeft + width - POPUP_WIDTH,
-          top: pageTop + height + 12,
+          top: pageTop + height + 12
         };
       default:
         return {
           left: pageLeft + width / 2 - POPUP_WIDTH / 2,
-          top: pageTop + height + 12,
+          top: pageTop + height + 12
         };
     }
   };
@@ -190,7 +238,7 @@ const Onboarding: React.FC = () => {
             borderColor: "primary.main",
             boxShadow: (theme) => `0 6px 18px ${theme.palette.primary.main}33`,
             zIndex: 1300,
-            pointerEvents: "none",
+            pointerEvents: "none"
           }}
         />
       )}
@@ -202,16 +250,19 @@ const Onboarding: React.FC = () => {
           left,
           top,
           width: POPUP_WIDTH,
-          zIndex: 1400,
+          zIndex: 1400
         }}
       >
-        <Paper elevation={8} sx={{
-          p: 2,
-          backgroundColor: "background.paper",
-          border: "2px solid",
-          borderColor: "primary.main",
-          boxShadow: (theme) => `0 8px 32px ${theme.palette.primary.main}66`,
-        }}>
+        <Paper
+          elevation={8}
+          sx={{
+            p: 2,
+            backgroundColor: "background.paper",
+            border: "2px solid",
+            borderColor: "primary.main",
+            boxShadow: (theme) => `0 8px 32px ${theme.palette.primary.main}66`
+          }}
+        >
           <Box display="flex" justifyContent="space-between" alignItems="center">
             <Typography variant="subtitle1">{step.title}</Typography>
             <IconButton size="small" onClick={handleClose}>
@@ -224,7 +275,11 @@ const Onboarding: React.FC = () => {
           </Typography>
 
           <Box display="flex" justifyContent="space-between" alignItems="center" mt={2}>
-            <Button size="small" onClick={handlePrev} disabled={findPrevValid(stepIndex - 1) === null}>
+            <Button
+              size="small"
+              onClick={handlePrev}
+              disabled={findPrevValid(stepIndex - 1) === null}
+            >
               {strings.onboarding.prev}
             </Button>
 
@@ -237,7 +292,11 @@ const Onboarding: React.FC = () => {
                 {strings.onboarding.close}
               </Button>
             ) : (
-              <Button size="small" onClick={handleNext} disabled={findNextValid(stepIndex + 1) === null}>
+              <Button
+                size="small"
+                onClick={handleNext}
+                disabled={findNextValid(stepIndex + 1) === null}
+              >
                 {strings.onboarding.next}
               </Button>
             )}
