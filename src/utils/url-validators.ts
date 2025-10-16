@@ -27,8 +27,8 @@ export const isValidImageUrl = async (url: string): Promise<boolean> => {
       const type = headRes.headers.get("Content-Type");
       if (type?.startsWith("image/")) return true;
     }
-  } catch (error) {
-    console.log("HEAD request failed for image URL:", url, error);
+  } catch {
+    // Intentionally ignored — fallback below handles validation
   }
 
   return new Promise((resolve) => {
