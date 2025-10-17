@@ -17,7 +17,7 @@ import { DateTime } from "luxon";
 import { useEffect, useMemo, useState } from "react";
 import type { OnCallPaid } from "src/generated/homeLambdasClient";
 import type { OnCall } from "src/generated/homeLambdasClient/models/OnCall";
-import UserRoleUtils from "src/utils/user-role-utils";
+import useUserRole from "src/hooks/use-user-role";
 import { errorAtom } from "../../atoms/error";
 import { onCallAtom } from "../../atoms/oncall";
 import { useLambdasApi } from "../../hooks/use-api";
@@ -48,7 +48,7 @@ const OnCallCalendarScreen = () => {
   const [selectedDate, setSelectedDate] = useState<DateTime>(DateTime.now());
   const [onCallPerson, setOnCallPerson] = useState<string | null>(null);
   const [selectedOnCallWeek, setSelectedOnCallWeek] = useState<OnCallWeek>();
-  const isAccountant = UserRoleUtils.isAccountant();
+  const { isAccountant } = useUserRole();
   const setError = useSetAtom(errorAtom);
   const [loading, setLoading] = useState(false);
 
@@ -58,7 +58,7 @@ const OnCallCalendarScreen = () => {
 
   useEffect(() => {
     getCurrentOnCallPerson();
-  }, [onCallData]);
+  }, []);
 
   /**
    * Fetches on call data
@@ -70,7 +70,10 @@ const OnCallCalendarScreen = () => {
       const fetchedData = await onCallApi.listOnCallData({ year: year.toString() });
       setOnCallData(fetchedData);
     } catch (error) {
-      setError(`${strings.oncall.fetchFailed}, ${error}`);
+      if (!(error instanceof SyntaxError)) {
+        setError(`${strings.oncall.fetchFailed} ${error}`);
+      }
+      setOnCallData([]);
     }
     setLoading(false);
   };
@@ -78,13 +81,15 @@ const OnCallCalendarScreen = () => {
   /**
    * Finds the current on call employee and sets them in a state
    */
-  const getCurrentOnCallPerson = () => {
+  const getCurrentOnCallPerson = async () => {
+    const currentYear = DateTime.now().year;
     const currentWeek = DateTime.now().weekNumber;
-    const currentOnCallPerson = onCallData.find((item) => item.week === currentWeek)?.username;
-    if (currentOnCallPerson) {
-      setOnCallPerson(currentOnCallPerson);
-    } else {
-      setOnCallPerson(null);
+    try {
+      const fetchedData = await onCallApi.listOnCallData({ year: currentYear.toString() });
+      const currentOnCallPerson = fetchedData.find((item) => item.week === currentWeek)?.username;
+      setOnCallPerson(currentOnCallPerson ?? null);
+    } catch (error) {
+      setError(`${strings.oncall.fetchFailed} ${error}`);
     }
   };
 

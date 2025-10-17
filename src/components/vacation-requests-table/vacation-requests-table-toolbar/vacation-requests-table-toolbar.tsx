@@ -1,5 +1,5 @@
 import { Add, Cancel, Edit, FilterAlt } from "@mui/icons-material";
-import { Box, Button, Collapse, Grid, styled, Typography, Select, MenuItem } from "@mui/material";
+import { Box, Button, Collapse, Grid, MenuItem, Select, styled, Typography } from "@mui/material";
 import type { GridRowId } from "@mui/x-data-grid";
 import { useAtomValue } from "jotai";
 import { useEffect, useState } from "react";
@@ -8,17 +8,18 @@ import { languageAtom } from "src/atoms/language";
 import EditConfirmationDialogue from "src/components/contexts/edit-confirmation-dialogue";
 import type { VacationRequest } from "src/generated/homeLambdasClient";
 import { VacationRequestStatuses } from "src/generated/homeLambdasClient";
+import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import { ToolbarFormModes, type VacationsDataGridRow } from "src/types";
 import { getToolbarTitle } from "src/utils/toolbar-utils";
-import UserRoleUtils from "src/utils/user-role-utils";
+import type { FilterType } from "src/utils/vacation-filter-type";
 import ConfirmationHandler from "../../contexts/confirmation-handler";
 import ToolbarDeleteButton from "./toolbar-delete-button";
 import ToolbarForm from "./toolbar-form/toolbar-form";
 import FormToggleButton from "./toolbar-form-toggle-button";
-import UpdateStatusButton from "./toolbar-update-status-button";
 import ToolbarSubmitButton from "./toolbar-submit-button";
-import { FilterType } from "src/utils/vacation-filter-type";
+import UpdateStatusButton from "./toolbar-update-status-button";
+
 /**
  * Component properties
  */
@@ -78,7 +79,7 @@ const TableToolbar = ({
   const [editVacationsData, setEditVacationsData] = useState<VacationRequest | null>(null);
   const [title, setTitle] = useState(strings.tableToolbar.myRequests);
   const language = useAtomValue(languageAtom);
-  const adminMode = UserRoleUtils.adminMode();
+  const { adminMode } = useUserRole();
   const { pathname } = useLocation();
   const isToolbarVisible = toolbarOpen && !formOpen && selectedRowIds?.length;
   const buttonLabel = isUpcoming ? strings.tableToolbar.future : strings.tableToolbar.past;
