@@ -141,7 +141,8 @@ const AddSoftwareModal = ({
   };
 
   /**
-   * Handle submitting the software data. If the name doesn't already exist, it saves the data.
+   * Handle submitting the software data. If the name doesn't already exist, it validates URLs.
+   * After URLs are validated then it saves data and closes form.
    */
   const handleSubmit = async () => {
     if (nameExists) {
