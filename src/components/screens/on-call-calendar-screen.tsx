@@ -8,11 +8,12 @@ import {
   MenuItem,
   Select,
   styled,
+  Tooltip,
   Typography
 } from "@mui/material";
 import { red } from "@mui/material/colors";
 import { DateCalendar, PickersDay, type PickersDayProps } from "@mui/x-date-pickers";
-import { useAtom, useSetAtom } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { DateTime } from "luxon";
 import { useEffect, useMemo, useState } from "react";
 import type { OnCallPaid } from "src/generated/homeLambdasClient";
@@ -26,6 +27,7 @@ import type { OnCallWeek } from "../../types";
 import { stringToColor } from "../../utils/oncall-utils";
 import OnCallListView from "../onCall/oncall-list-view";
 import OnCallPaidStatusDialog from "../onCall/oncall-paid-status-dialog";
+import { userProfileAtom } from "src/atoms/auth";
 
 /**
  * On call calendar screen component
@@ -51,6 +53,7 @@ const OnCallCalendarScreen = () => {
   const { isAccountant } = useUserRole();
   const setError = useSetAtom(errorAtom);
   const [loading, setLoading] = useState(false);
+  const userProfile = useAtomValue(userProfileAtom);
 
   useEffect(() => {
     getOnCallData(selectedDate.year);
@@ -122,10 +125,9 @@ const OnCallCalendarScreen = () => {
    * Renders the current week's on call person if they exist
    */
   const renderCurrentOnCall = () => {
-    const isValidPerson = onCallPerson !== null;
     return (
       <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", margin: 2 }}>
-        {isValidPerson ? (
+        {onCallPerson ? (
           <>
             <Typography sx={{ color: "#5acc31", fontWeight: "bold", textAlign: "center" }}>
               {strings.oncall.onCallPersonExists}
@@ -237,38 +239,39 @@ const OnCallCalendarScreen = () => {
     return (
       <Box sx={{ position: "relative" }}>
         {showBadge && (
-          <Badge
-            overlap="circular"
-            badgeContent={initials}
-            sx={{
-              ".MuiBadge-badge": {
-                backgroundColor: badgeColor,
-                color: "#fff",
-                right: 60,
-                top: 10,
-                minWidth: 24,
-                minHeight: 24,
-                fontSize: 12,
-                border: "1px none #000",
-                zIndex: 1,
-                fontWeight: hasUsername ? "normal" : "bold"
-              }
-            }}
-          >
-            <StyledPickersDay
-              {...other}
-              day={day}
-              outsideCurrentMonth={outsideCurrentMonth}
+          <Tooltip title={onCallDayData?.username}>
+            <Badge
+              overlap="circular"
+              badgeContent={initials}
               sx={{
-                ...(onCallDayData?.paid
-                  ? { color: "#000", fontWeight: "bold", border: "2px solid #7bd15c" }
-                  : {}),
-                background: outsideCurrentMonth ? "#d1d0cf" : "#fff",
-                cursor: "pointer"
+                ".MuiBadge-badge": {
+                  backgroundColor: badgeColor,
+                  color: "#fff",
+                  right: 60,
+                  top: 10,
+                  minWidth: 24,
+                  minHeight: 24,
+                  fontSize: 12,
+                  zIndex: 1,
+                  fontWeight: userProfile?.username === onCallDayData?.username ? "900" : "normal"
+                }
               }}
-              onClick={handleDayClick}
-            />
-          </Badge>
+            >
+              <StyledPickersDay
+                {...other}
+                day={day}
+                outsideCurrentMonth={outsideCurrentMonth}
+                sx={{
+                  ...(onCallDayData?.paid
+                    ? { color: "#000", fontWeight: "bold", border: "2px solid #7bd15c" }
+                    : {}),
+                  background: outsideCurrentMonth ? "#d1d0cf" : "#fff",
+                  cursor: "pointer"
+                }}
+                onClick={handleDayClick}
+              />
+            </Badge>
+          </Tooltip>
         )}
         {!showBadge && (
           <StyledPickersDay

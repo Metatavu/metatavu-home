@@ -5,6 +5,9 @@ import { DataGrid, type GridColDef } from "@mui/x-data-grid";
 import { DateTime } from "luxon";
 import strings from "src/localization/strings";
 import useUserRole from "src/hooks/use-user-role";
+import { usersAtom } from "src/atoms/user";
+import { userProfileAtom } from "src/atoms/auth";
+import type { User } from "src/generated/homeLambdasClient";
 
 /**
  * Component properties
@@ -23,6 +26,9 @@ interface Props {
 const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Props) => {
   const onCallData = useAtomValue(onCallAtom);
   const { isAccountant } = useUserRole();
+  const users = useAtomValue(usersAtom);
+  const userProfile = useAtomValue(userProfileAtom);
+  const loggedInUser = users.find((users: User) => users.id === userProfile?.id);
 
   const columns: GridColDef[] = [
     {
@@ -64,7 +70,12 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
       flex: 1,
       headerAlign: "center",
       align: "center",
-      sortable: true
+      sortable: true,
+      renderCell: (params) => (
+        <Typography style={{ fontWeight: loggedInUser === params.value ? "bold" : "normal" }}>
+          {params.value}
+        </Typography>
+      )
     }
   ];
 
@@ -102,18 +113,20 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
         </Box>
       </Box>
       {rows.length === 0 ? (
-        <Box sx={{
-          width: "100%",
-          textAlign: "center",
-          py: 6,
-          fontSize: 24,
-          fontWeight: "bold",
-          color: "#bdbdbd",
-          border: "1px solid #eee",
-          borderRadius: 4,
-          background: "#fafafa",
-          mt: 2
-        }}>
+        <Box
+          sx={{
+            width: "100%",
+            textAlign: "center",
+            py: 6,
+            fontSize: 24,
+            fontWeight: "bold",
+            color: "#bdbdbd",
+            border: "1px solid #eee",
+            borderRadius: 4,
+            background: "#fafafa",
+            mt: 2
+          }}
+        >
           No Data for this year
         </Box>
       ) : (
@@ -122,9 +135,7 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
           columns={columns}
           disableRowSelectionOnClick
           hideFooter
-          getRowClassName={(params) =>
-            params.row.paid ? "paid-row" : "unpaid-row"
-          }
+          getRowClassName={(params) => (params.row.paid ? "paid-row" : "unpaid-row")}
           sx={{
             marginBottom: "60px",
             "& .paid-row": {
