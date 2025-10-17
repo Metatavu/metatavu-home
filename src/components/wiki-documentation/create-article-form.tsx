@@ -65,7 +65,7 @@ const CreateOrEditArticleForm = ({
   const [path, setPath] = useState(article ? article.path : "");
   const [coverImage, setCoverImage] = useState<string>(article?.coverImage || "");
   const [description, setDescription] = useState(article ? article.description : "");
-  const [imagePreview, setImagPreview] = useState(false);
+  const [imagePreview, setImagePreview] = useState(false);
   const [selectedTags, setSelectedTags] = useState<string[]>(article ? article.tags || [] : []);
   const [tag, setTag] = useState("");
   const users = useAtomValue(usersAtom);
@@ -212,7 +212,7 @@ const CreateOrEditArticleForm = ({
     if (file.type?.includes("image/")) {
       const imageUrl = await uploadFile(file, articleApi);
       setCoverImage(imageUrl || "");
-      setImagPreview(true);
+      setImagePreview(true);
     }
   };
 
@@ -372,7 +372,7 @@ const CreateOrEditArticleForm = ({
                     }}
                     onClick={() => {
                       setCoverImage("");
-                      setImagPreview(false);
+                      setImagePreview(false);
                     }}
                   >
                     <ClearIcon />
@@ -390,15 +390,15 @@ const CreateOrEditArticleForm = ({
                 <input style={{ width: "100%" }} type="file" hidden onChange={handleFileChange} />
               </Button>
             )}
-            {!imagePreview ? (
+            {!imagePreview && (
               <Button
                 variant="outlined"
                 sx={{ marginTop: 1, marginBottom: 1, width: "100%" }}
-                onClick={() => setImagPreview(true)}
+                onClick={() => setImagePreview(true)}
               >
                 {strings.wikiDocumentation.imagePreview}
               </Button>
-            ) : null}
+            )}
           </Grid>
           <Grid item md={6} xs={12}>
             <TextField
