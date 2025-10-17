@@ -43,6 +43,9 @@ const NavBar = () => {
   // );
   // const loggedInPersonAvatar =
   //   avatars.find((avatar) => loggedInPerson?.id === avatar.personId)?.imageOriginal || "";
+  const loggedInUserId = userProfile?.id;
+  const loggedInPersonAvatar =
+    avatars.find((avatar) => avatar.personId === loggedInUserId)?.imageOriginal || "";
 
   /**
    * Handles opening user menu
@@ -109,7 +112,7 @@ const NavBar = () => {
             <Box>
               <Tooltip title={strings.header.openUserMenu}>
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  {/* <Avatar src={loggedInPersonAvatar} /> */}
+                  { <Avatar src={loggedInPersonAvatar} /> }
                 </IconButton>
               </Tooltip>
               <Menu
