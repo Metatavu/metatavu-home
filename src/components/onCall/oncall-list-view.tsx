@@ -4,7 +4,7 @@ import { Box, Button, Checkbox, Typography } from "@mui/material";
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
 import { DateTime } from "luxon";
 import strings from "src/localization/strings";
-import UserRoleUtils from "src/utils/user-role-utils";
+import useUserRole from "src/hooks/use-user-role";
 
 /**
  * Component properties
@@ -17,12 +17,12 @@ interface Props {
 
 /**
  * On call list view component
- * 
+ *
  * @param props component properties
  */
 const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Props) => {
   const onCallData = useAtomValue(onCallAtom);
-  const isAccountant = UserRoleUtils.isAccountant();
+  const { isAccountant } = useUserRole();
 
   const columns: GridColDef[] = [
     {
@@ -101,36 +101,53 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
           </Button>
         </Box>
       </Box>
-      <DataGrid
-        rows={rows}
-        columns={columns}
-        disableRowSelectionOnClick
-        hideFooter
-        getRowClassName={(params) =>
-          params.row.paid ? "paid-row" : "unpaid-row"
-        }
-        sx={{
-          marginBottom: "60px",
-          "& .paid-row": {
-            backgroundColor: "#eafbe5"
-          },
-          "& .unpaid-row": {
-            backgroundColor: "#ffeaea"
-          },
-          "& .MuiDataGrid-cell": {
-            fontSize: 16
-          },
-          "& .MuiDataGrid-columnHeaders": {
-            backgroundColor: "#f5f5f5",
-            fontWeight: "bold"
+      {rows.length === 0 ? (
+        <Box sx={{
+          width: "100%",
+          textAlign: "center",
+          py: 6,
+          fontSize: 24,
+          fontWeight: "bold",
+          color: "#bdbdbd",
+          border: "1px solid #eee",
+          borderRadius: 4,
+          background: "#fafafa",
+          mt: 2
+        }}>
+          No Data for this year
+        </Box>
+      ) : (
+        <DataGrid
+          rows={rows}
+          columns={columns}
+          disableRowSelectionOnClick
+          hideFooter
+          getRowClassName={(params) =>
+            params.row.paid ? "paid-row" : "unpaid-row"
           }
-        }}
-        initialState={{
-          sorting: {
-            sortModel: [{ field: "week", sort: "asc" }]
-          }
-        }}
-      />
+          sx={{
+            marginBottom: "60px",
+            "& .paid-row": {
+              backgroundColor: "#eafbe5"
+            },
+            "& .unpaid-row": {
+              backgroundColor: "#ffeaea"
+            },
+            "& .MuiDataGrid-cell": {
+              fontSize: 16
+            },
+            "& .MuiDataGrid-columnHeaders": {
+              backgroundColor: "#f5f5f5",
+              fontWeight: "bold"
+            }
+          }}
+          initialState={{
+            sorting: {
+              sortModel: [{ field: "week", sort: "asc" }]
+            }
+          }}
+        />
+      )}
     </>
   );
 };

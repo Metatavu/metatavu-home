@@ -33,7 +33,7 @@ import { SoftwareStatus } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
 import useCreateSoftware from "src/hooks/use-create-software";
 import strings from "src/localization/strings";
-import UserRoleUtils from "src/utils/user-role-utils";
+import useUserRole from "src/hooks/use-user-role";
 import BackButton from "../generics/back-button";
 import AddSoftwareModal from "../software-registry/AddSoftwareModal";
 import Content from "../software-registry/allContent";
@@ -47,7 +47,7 @@ const AllSoftwareScreen = () => {
   const [loading, setLoading] = useState(false);
   const auth = useAtomValue(authAtom);
   const loggedUserId = auth?.token?.sub ?? "";
-  const adminMode = UserRoleUtils.adminMode();
+  const { adminMode } = useUserRole();
   const allStatusValues = ["ALL", ...Object.values(SoftwareStatus)] as const;
   const [selectedStatus, setSelectedStatus] = useState<SoftwareStatusFilterOptions>(
     allStatusValues[0]

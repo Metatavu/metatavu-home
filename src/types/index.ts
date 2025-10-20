@@ -1,5 +1,5 @@
 import type { DateTime } from "luxon";
-import type { Person, PersonTotalTime, DailyEntry } from "../generated/client";
+//import type { Person, PersonTotalTime, DailyEntry } from "../generated/client";
 import type { VacationType } from "../generated/homeLambdasClient";
 import type { ReactNode } from "react";
 
@@ -79,10 +79,11 @@ export enum Worktime {
 /**
  * Interface for person with total time
  */
-export interface PersonWithTotalTime {
-  person: Person;
-  personTotalTime?: PersonTotalTime;
-}
+// NOTE: This interface was only used in timebank screens and is now commented out due to the removal of the timebank client.
+// export interface PersonWithTotalTime {
+//   person: Person;
+//   personTotalTime?: PersonTotalTime;
+// }
 
 /**
  * Enum for work time category
@@ -117,9 +118,10 @@ export interface VacationInfoListItem {
 /**
  * Type describing daily entry with index signature
  */
-export interface DailyEntryWithIndexSignature extends DailyEntry {
-  [key: string]: any;
-}
+// NOTE: This interface was only used in timebank screens and is now commented out due to the removal of the timebank client.
+// export interface DailyEntryWithIndexSignature extends DailyEntry {
+//   [key: string]: any;
+// }
 
 /**
  * Type describing chart data

@@ -9,17 +9,17 @@ import { errorAtom } from "src/atoms/error";
 import { usersAtom } from "src/atoms/user";
 import type { Flextime, User } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
+import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
-import UserRoleUtils from "src/utils/user-role-utils";
 import { getSeveraUserId } from "src/utils/user-utils";
 
 /**
  * Card component that displays either personal flextime balance for regular users
  * or provides admin access to view all employees' flextime data in the same tab.
- * 
+ *
  * @component
  * @returns React functional component that renders a balance card
- * 
+ *
  * @description
  * - For regular users: Shows personal flextime balance with link to timebank
  * - For admin users: Shows clickable card that navigates to employee flextime page
@@ -30,7 +30,7 @@ const BalanceCard = () => {
   const userProfile = useAtomValue(userProfileAtom);
   const setError = useSetAtom(errorAtom);
   const [loading, setLoading] = useState(false);
-  const adminMode = UserRoleUtils.adminMode();
+  const { adminMode } = useUserRole();
   const [usersFlextime, setUsersFlextime] = useState<Flextime>();
   const yesterday = DateTime.now().minus({ days: 1 });
   const { flexTimeApi } = useLambdasApi();
@@ -50,7 +50,7 @@ const BalanceCard = () => {
 
   /**
    * Asynchronously retrieves flextime balance data for the currently logged-in user.
-   * 
+   *
    * @async
    * @returns Promise<void> Resolves when flextime data is fetched and state is updated
    */
@@ -80,7 +80,7 @@ const BalanceCard = () => {
 
   /**
    * Renders the user's personal flextime balance with appropriate styling.
-   * 
+   *
    * @returns JSX.Element Typography component displaying balance or error message
    */
   const renderUserFlextime = () => {

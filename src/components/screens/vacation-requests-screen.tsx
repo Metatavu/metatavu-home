@@ -14,11 +14,12 @@ import type { User } from "src/generated/homeLambdasClient";
 import { type VacationRequest, VacationRequestStatuses } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
-import UserRoleUtils from "src/utils/user-role-utils";
+import useUserRole from "src/hooks/use-user-role";
 import { renderVacationDaysTextForScreen } from "src/utils/vacation-days-utils";
 import type { FilterType } from "src/utils/vacation-filter-type";
 import { validateVacationRequestDays } from "src/utils/vacations-utils";
 import BackButton from "../generics/back-button";
+import { useLocation } from "react-router";
 import VacationRequestsTable from "../vacation-requests-table/vacation-requests-table";
 import { getDays } from "./admin-vacation-management/UserRow";
 
@@ -26,7 +27,7 @@ import { getDays } from "./admin-vacation-management/UserRow";
  * Vacation requests screen
  */
 const VacationRequestsScreen = () => {
-  const adminMode = UserRoleUtils.adminMode();
+  const { adminMode } = useUserRole();
   const { vacationRequestsApi } = useLambdasApi();
   const { usersApi } = useLambdasApi();
   const userProfile = useAtomValue(userProfileAtom);
@@ -35,6 +36,9 @@ const VacationRequestsScreen = () => {
     adminMode ? allVacationRequestsAtom : vacationRequestsAtom
   );
   const setDisplayedVacationRequests = useSetAtom(displayedVacationRequestsAtom);
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const selectedId = params.get("selectedId");
 
   const upcomingVacationRequests = useMemo(
     () => vacationRequests.filter((request) => request.endDate.getTime() > Date.now()),
@@ -76,9 +80,14 @@ const VacationRequestsScreen = () => {
    */
   useEffect(() => {
     const baseRequests = isUpcoming ? upcomingVacationRequests : pastVacationRequests;
-    const filteredRequests = filterVacationRequests(baseRequests, filter);
+    let filteredRequests = filterVacationRequests(baseRequests, filter);
+
+    if (selectedId) {
+      filteredRequests = filteredRequests.filter((req) => req.id === selectedId);
+    }
+
     setDisplayedVacationRequests(filteredRequests);
-  }, [isUpcoming, filter, vacationRequests]);
+  }, [isUpcoming, filter, vacationRequests, selectedId]);
 
   /**
    * Handler for upcoming/ past vacations toggle click
