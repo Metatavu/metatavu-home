@@ -16,9 +16,11 @@ import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
 import UserRoleUtils from "src/utils/user-role-utils";
 import { renderVacationDaysTextForScreen } from "src/utils/vacation-days-utils";
+import type { FilterType } from "src/utils/vacation-filter-type";
+import { validateVacationRequestDays } from "src/utils/vacations-utils";
 import BackButton from "../generics/back-button";
 import VacationRequestsTable from "../vacation-requests-table/vacation-requests-table";
-import type { FilterType } from "src/utils/vacation-filter-type";
+import { getDays } from "./admin-vacation-management/UserRow";
 
 /**
  * Vacation requests screen
@@ -26,6 +28,7 @@ import type { FilterType } from "src/utils/vacation-filter-type";
 const VacationRequestsScreen = () => {
   const adminMode = UserRoleUtils.adminMode();
   const { vacationRequestsApi } = useLambdasApi();
+  const { usersApi } = useLambdasApi();
   const userProfile = useAtomValue(userProfileAtom);
   const setError = useSetAtom(errorAtom);
   const [vacationRequests, setVacationRequests] = useAtom(
@@ -47,6 +50,7 @@ const VacationRequestsScreen = () => {
   const [users] = useAtom(usersAtom);
   const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
   const [filter, setFilter] = useState<FilterType>("ALL");
+  const currentYear = new Date().getFullYear().toString();
 
   /**
    * Filters a list of vacation requests based on the given filter.
@@ -187,6 +191,16 @@ const VacationRequestsScreen = () => {
     if (!loggedInUser) return;
     try {
       setLoading(true);
+      const unspentDays = Number(
+        getDays(loggedInUser.attributes?.unspentVacationDaysByYear, currentYear)
+      );
+      const requestedDays = Number(vacationRequestData.days ?? 0);
+      const { valid, errorMessage } = validateVacationRequestDays(requestedDays, unspentDays);
+      if (!valid) {
+        setError(errorMessage);
+        setLoading(false);
+        return;
+      }
       const createdRequest = await vacationRequestsApi.createVacationRequest({
         vacationRequest: {
           userId: loggedInUser.id,
@@ -224,6 +238,16 @@ const VacationRequestsScreen = () => {
     if (!loggedInUser) return;
     try {
       setLoading(true);
+      const unspentDays = Number(
+        getDays(loggedInUser.attributes?.unspentVacationDaysByYear, currentYear)
+      );
+      const requestedDays = Number(vacationRequestData.days ?? 0);
+      const { valid, errorMessage } = validateVacationRequestDays(requestedDays, unspentDays);
+      if (!valid) {
+        setError(errorMessage);
+        setLoading(false);
+        return;
+      }
       const createdRequest = await vacationRequestsApi.createVacationRequest({
         vacationRequest: {
           userId: loggedInUser.id,
@@ -277,6 +301,17 @@ const VacationRequestsScreen = () => {
         updatedAt: new Date()
       };
       const updatedStatus = [newOrUpdatedStatus];
+      const selectedUser = await usersApi.findUser({ userId: vacationRequest.userId });
+      const unspentDays = Number(
+        getDays(selectedUser.attributes?.unspentVacationDaysByYear, currentYear)
+      );
+      const requestedDays = Number(vacationRequestData.days ?? 0);
+      const { valid, errorMessage } = validateVacationRequestDays(requestedDays, unspentDays);
+      if (!valid) {
+        setError(errorMessage);
+        setLoading(false);
+        return;
+      }
 
       const updatedRequest = await vacationRequestsApi.updateVacationRequest({
         id: vacationRequestId,

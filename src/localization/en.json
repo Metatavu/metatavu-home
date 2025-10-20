@@ -238,7 +238,8 @@
     "updateStatusError": "Updating vacation request status has failed",
     "noVacationRequestsFound": "No vacation requests found",
     "nameNotFound": "Name not found",
-    "noVacationRequestsStatusFound": "Statuses not found"
+    "noVacationRequestsStatusFound": "Statuses not found",
+    "tooManyDaysRequested": "You cannot request {requestedDays} days. You only have {unspentDays} unspent vacation days."
   },
   "sprintRequestError": {
     "fetchResourceAllocationsError": "Fetching sprint data for resourceAllocations has failed",

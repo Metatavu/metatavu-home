@@ -1,6 +1,6 @@
+import LocalizedStrings, { type LocalizedStringsMethods } from "localized-strings";
 import en from "./en.json";
 import fi from "./fi.json";
-import LocalizedStrings, { type LocalizedStringsMethods } from "localized-strings";
 
 /**
  * Localized strings
@@ -272,6 +272,7 @@ export interface Localized extends LocalizedStringsMethods {
     noVacationRequestsFound: string;
     nameNotFound: string;
     noVacationRequestsStatusFound: string;
+    tooManyDaysRequested: string;
   };
   /**
    * Translations related to sprint requests errors
@@ -665,23 +666,23 @@ export interface Localized extends LocalizedStringsMethods {
   };
 
   employeeFlextime: {
-  title: string;
-  subtitle: string;
-  lastUpdated: string;
-  totalEmployees: string;
-  combinedBalance: string;
-  loading: string;
-  noDataFound: string;
-  employee: string;
-  email: string;
-  totalFlextimeBalance: string;
-  currentMonthBalance: string;
-  status: string;
-  active: string;
-  inactive: string;
-  employeeId: string;
-  notAvailable: string; 
-};
+    title: string;
+    subtitle: string;
+    lastUpdated: string;
+    totalEmployees: string;
+    combinedBalance: string;
+    loading: string;
+    noDataFound: string;
+    employee: string;
+    email: string;
+    totalFlextimeBalance: string;
+    currentMonthBalance: string;
+    status: string;
+    active: string;
+    inactive: string;
+    employeeId: string;
+    notAvailable: string;
+  };
 }
 
 /**
