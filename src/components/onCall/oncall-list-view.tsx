@@ -68,7 +68,10 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
       align: "center",
       sortable: true,
       renderCell: (params) => (
-        <Typography style={{ fontWeight: userProfile?.username === params.value ? "bold" : "normal" }}>
+        //TODO: Check if the properties are correct and work properly
+        <Typography
+          style={{ fontWeight: userProfile?.username === params.value ? "bold" : "normal" }}
+        >
           {params.value}
         </Typography>
       )

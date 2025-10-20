@@ -254,6 +254,7 @@ const OnCallCalendarScreen = () => {
                   minHeight: 24,
                   fontSize: 12,
                   zIndex: 1,
+                  //TODO: Check if the properties are correct and work properly
                   fontWeight: userProfile?.username === onCallDayData?.username ? "900" : "normal"
                 }
               }}
