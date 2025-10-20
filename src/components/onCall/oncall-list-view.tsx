@@ -26,9 +26,7 @@ interface Props {
 const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Props) => {
   const onCallData = useAtomValue(onCallAtom);
   const { isAccountant } = useUserRole();
-  const users = useAtomValue(usersAtom);
   const userProfile = useAtomValue(userProfileAtom);
-  const loggedInUser = users.find((users: User) => users.id === userProfile?.id);
 
   const columns: GridColDef[] = [
     {
@@ -72,7 +70,7 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
       align: "center",
       sortable: true,
       renderCell: (params) => (
-        <Typography style={{ fontWeight: loggedInUser === params.value ? "bold" : "normal" }}>
+        <Typography style={{ fontWeight: userProfile?.username === params.value ? "bold" : "normal" }}>
           {params.value}
         </Typography>
       )
