@@ -1,11 +1,12 @@
 import config from "../app/config";
-import {
-  Configuration,
-  type ConfigurationParameters,
-  DailyEntriesApi,
-  PersonsApi,
-  SynchronizeApi,
-} from "../generated/client";
+// NOTE: Timebank-client imports have been removed due to the removal of the timebank submodule.
+// import {
+//   Configuration,
+//   type ConfigurationParameters,
+//   DailyEntriesApi,
+//   PersonsApi,
+//   SynchronizeApi,
+// } from "../generated/client";
 import {
   FlexTimeApi,
   Configuration as LambdaConfiguration,
@@ -16,7 +17,8 @@ import {
   UsersApi,
   VacationRequestsApi,
   ArticleApi,
-  OnCallApi
+  OnCallApi,
+  type ConfigurationParameters
 } from "../generated/homeLambdasClient";
 /**
  * Generic type that accepts parameters within the @ConfigurationParameters interface

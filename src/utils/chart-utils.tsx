@@ -1,7 +1,7 @@
 import { Box, Typography } from "@mui/material";
 import type { TooltipProps } from "recharts";
 import type { ValueType, NameType } from "recharts/types/component/DefaultTooltipContent";
-import type { DailyEntry, PersonTotalTime } from "../generated/client";
+//import type { DailyEntry, PersonTotalTime } from "../generated/client";
 import strings from "../localization/strings";
 import { theme } from "../theme";
 import { getHoursAndMinutes } from "./time-utils";
@@ -13,11 +13,12 @@ import type { CustomLabel } from "../types";
  * @param dailyEntry
  * @returns an array of elements each representing a section in the pie chart
  */
-export const dailyEntryToChart = (dailyEntry: DailyEntry) => [
-  { name: strings.timebank.billableProjectTime, dataKey: dailyEntry.billableProjectTime },
-  { name: strings.timebank.nonBillableProjectTime, dataKey: dailyEntry.nonBillableProjectTime },
-  { name: strings.timebank.internalTime, dataKey: dailyEntry.internalTime }
-];
+// NOTE: The method below is commented out because it uses timebank client which is removed for restoring.
+// export const dailyEntryToChart = (dailyEntry: DailyEntry) => [
+//   { name: strings.timebank.billableProjectTime, dataKey: dailyEntry.billableProjectTime },
+//   { name: strings.timebank.nonBillableProjectTime, dataKey: dailyEntry.nonBillableProjectTime },
+//   { name: strings.timebank.internalTime, dataKey: dailyEntry.internalTime }
+// ];
 
 /**
  * Reformats inputted person total time object to be presented in the bar chart
@@ -25,15 +26,16 @@ export const dailyEntryToChart = (dailyEntry: DailyEntry) => [
  * @param personTotalTime
  * @returns an array of objects, each object representing a bar in the bar chart
  */
-export const totalTimeToChart = (personTotalTime: PersonTotalTime) => [
-  {
-    name: strings.timebank.logged,
-    internal: personTotalTime.internalTime,
-    billableProject: personTotalTime.billableProjectTime,
-    nonBillableProject: personTotalTime.nonBillableProjectTime
-  },
-  { name: strings.timebank.expected, expected: personTotalTime.expected }
-];
+// NOTE: The method below is commented out because it uses timebank client which is removed for restoring.
+// export const totalTimeToChart = (personTotalTime: PersonTotalTime) => [
+//   {
+//     name: strings.timebank.logged,
+//     internal: personTotalTime.internalTime,
+//     billableProject: personTotalTime.billableProjectTime,
+//     nonBillableProject: personTotalTime.nonBillableProjectTime
+//   },
+//   { name: strings.timebank.expected, expected: personTotalTime.expected }
+// ];
 
 /**
  * Renders custom labels in the pie chart
