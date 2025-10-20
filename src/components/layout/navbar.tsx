@@ -36,13 +36,9 @@ const NavBar = () => {
   const setError = useSetAtom(errorAtom);
   const { slackAvatarsApi } = useLambdasApi();
   const navigate = useNavigate();
-  // NOTE: The Person type cannot be used here because it was previously imported from the removed timebank client.
-  // const loggedInPerson = persons.find(
-  //   (person: Person) =>
-  //     person.id === config.person.forecastUserIdOverride || person.keycloakId === userProfile?.id
-  // );
-  // const loggedInPersonAvatar =
-  //   avatars.find((avatar) => loggedInPerson?.id === avatar.personId)?.imageOriginal || "";
+  const loggedInUserId = userProfile?.id;
+  const loggedInPersonAvatar =
+    avatars.find((avatar) => avatar.personId === loggedInUserId)?.imageOriginal || "";
 
   /**
    * Handles opening user menu
@@ -109,7 +105,7 @@ const NavBar = () => {
             <Box>
               <Tooltip title={strings.header.openUserMenu}>
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  {/* <Avatar src={loggedInPersonAvatar} /> */}
+                  { <Avatar src={loggedInPersonAvatar} /> }
                 </IconButton>
               </Tooltip>
               <Menu
