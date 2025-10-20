@@ -5,9 +5,7 @@ import { DataGrid, type GridColDef } from "@mui/x-data-grid";
 import { DateTime } from "luxon";
 import strings from "src/localization/strings";
 import useUserRole from "src/hooks/use-user-role";
-import { usersAtom } from "src/atoms/user";
 import { userProfileAtom } from "src/atoms/auth";
-import type { User } from "src/generated/homeLambdasClient";
 
 /**
  * Component properties
