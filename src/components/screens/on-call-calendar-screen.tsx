@@ -77,8 +77,9 @@ const OnCallCalendarScreen = () => {
         setError(`${strings.oncall.fetchFailed} ${error}`);
       }
       setOnCallData([]);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   /**
