@@ -1,3 +1,4 @@
+import { getDays } from "src/components/screens/admin-vacation-management/UserRow";
 import type { User } from "src/generated/homeLambdasClient/models/User";
 import type { YearlyVacationDays } from "src/generated/homeLambdasClient/models/YearlyVacationDays";
 import strings from "src/localization/strings";
@@ -78,12 +79,48 @@ export const validateVacationRequestDays = (
   unspentDays: number
 ): { valid: boolean; errorMessage?: string } => {
   if (requestedDays > unspentDays) {
+    const formatString = (template: string, values: Record<string, string | number>) =>
+      template.replace(/\{(\w+)\}/g, (_, key) => String(values[key] ?? ""));
     return {
       valid: false,
-      errorMessage: strings.vacationRequestError.tooManyDaysRequested
-        .replace("{requestedDays}", String(requestedDays))
-        .replace("{unspentDays}", String(unspentDays))
+      errorMessage: formatString(strings.vacationRequestError.tooManyDaysRequested, {
+        requestedDays,
+        unspentDays
+      })
     };
   }
   return { valid: true };
+};
+
+/**
+ * Validates a user's vacation request based on available unspent vacation days.
+ *
+ * @param userToValidate - The user whose vacation request is being validated.
+ * @param vacationRequestData - Object containing the number of requested vacation days.
+ * @param currentYear - The current year as a string, used to check unspent vacation days.
+ * @param setError - Function to set an error message if the request is invalid.
+ * @param setLoading - Function to set the loading state.
+ * @returns `true` if the vacation request is valid; `false` otherwise.
+ */
+export const validateUserVacationRequest = (
+  userToValidate: User | undefined,
+  vacationRequestData: { days?: number | string | null },
+  currentYear: string,
+  setError: (msg: string) => void,
+  setLoading: (loading: boolean) => void
+): boolean => {
+  const unspentDays = Number(
+    getDays(userToValidate?.attributes?.unspentVacationDaysByYear, currentYear)
+  );
+  const requestedDays = Number(vacationRequestData.days ?? 0);
+
+  const { valid, errorMessage } = validateVacationRequestDays(requestedDays, unspentDays);
+
+  if (!valid) {
+    setError(errorMessage || "");
+    setLoading(false);
+    return false;
+  }
+
+  return true;
 };
