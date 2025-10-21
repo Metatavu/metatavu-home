@@ -21,7 +21,6 @@ import type { FilterType } from "src/utils/vacation-filter-type";
 import { validateUserVacationRequest } from "src/utils/vacations-utils";
 import BackButton from "../generics/back-button";
 import VacationRequestsTable from "../vacation-requests-table/vacation-requests-table";
-import { getDays } from "./admin-vacation-management/UserRow";
 
 /**
  * Vacation requests screen
