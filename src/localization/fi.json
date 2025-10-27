@@ -238,7 +238,8 @@
     "updateStatusError": "Lomahakemustilojen päivittäminen epäonnistui",
     "noVacationRequestsFound": "Lomahakemuksia ei löydetty",
     "nameNotFound": "Nimeä ei löydetty",
-    "noVacationRequestsStatusFound": "Tiloja ei löytynyt"
+    "noVacationRequestsStatusFound": "Tiloja ei löytynyt",
+    "tooManyDaysRequested": "Et voi pyytää {requestedDays} päivää. Sinulla on vain {unspentDays} käyttämätöntä lomapäivää"
   },
   "sprintRequestError": {
     "fetchResourceAllocationsError": "Sprintin tietopyyntöjen hakeminen epäonnistui",
@@ -265,7 +266,6 @@
     "all": "Kaikki",
     "draft": "Luonnos",
     "saveAsDraftTooltip": "Lomahakemuksen tallentaminen luonnoksena ei lähetä sitä hyväksyttäväksi"
-
   },
   "dataGrid": {
     "noRows": "Ei rivejä"
