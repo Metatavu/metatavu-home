@@ -73,7 +73,7 @@ const AdminVacationManagementScreen = () => {
         const fetchedUsers = await usersApi.listUsers();
         setUsers(fetchedUsers);
       } catch (error) {
-        setError("Failed to load users.");
+        setError(`Failed to load users: ${error instanceof Error ? error.message : String(error)}`);
       } finally {
         setLoadingUsers(false);
       }
@@ -215,7 +215,7 @@ const AdminVacationManagementScreen = () => {
 
       handleCloseDialog();
     } catch (_error) {
-      setError("Failed to save vacation days.");
+      setError(`Failed to save vacation days: ${_error instanceof Error ? _error.message : String(_error)}`);
     } finally {
       setSaving(false);
     }
@@ -243,7 +243,7 @@ const AdminVacationManagementScreen = () => {
   const handleChangeRowsPerPage = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ): void => {
-    setRowsPerPage(parseInt(event.target.value, 10));
+    setRowsPerPage(Number.parseInt(event.target.value, 10));
     setPage(0);
   };
 

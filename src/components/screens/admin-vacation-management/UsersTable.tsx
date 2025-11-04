@@ -25,9 +25,8 @@ interface UserTableProps {
  * Extracts a user's first and last name from an email address.
  *
  * Only processes emails in the format: `firstname.lastname@`.
- * If the email does not match this format or is from another domain,
- * both names are returned as empty strings.
- *
+ * And if has ext-firstname.lastname@ returns
+ * Ext-firstname and Lastname as username
  * @param email - The user's email address.
  * @returns An object containing `firstName` and `lastName`
  */
