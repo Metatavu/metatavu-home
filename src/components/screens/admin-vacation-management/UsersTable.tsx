@@ -22,6 +22,54 @@ interface UserTableProps {
 }
 
 /**
+ * Extracts a user's first and last name from an email address.
+ *
+ * Only processes emails in the format: `firstname.lastname@`.
+ * If the email does not match this format or is from another domain,
+ * both names are returned as empty strings.
+ *
+ * @param email - The user's email address.
+ * @returns An object containing `firstName` and `lastName`
+ */
+const parseNameFromEmail = (email?: string): {
+  firstName: string;
+  lastName: string
+  } => {
+  if (!email){ 
+    return {
+      firstName: "", lastName: "" 
+    }};
+
+  const [usernamePart] = email.split("@"); 
+  if (!usernamePart){ 
+    return {
+      firstName: "", lastName: "" 
+    }};
+  // split "firstname.lastname"
+  const nameSegments = usernamePart.split(".").filter(Boolean); 
+  if (nameSegments.length < 2) {
+    return { firstName: "", lastName: "" };
+  }
+
+  const [firstName, lastName] = nameSegments;
+
+  const capitalize = (text: string) =>
+    text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
+
+  return {
+    firstName: capitalize(firstName),
+    lastName: capitalize(lastName)
+  };
+};
+
+const getDisplayUser = (user: User): User => {
+  if (user.firstName && user.lastName) {
+    return user;
+  }
+  const { firstName, lastName } = parseNameFromEmail(user.email);
+  return { ...user,firstName, lastName};
+};
+/**
  * Displays a table of users with vacation information.
  * @param users - Array of users to display.
  * @param loading - Whether data is loading.
@@ -60,7 +108,7 @@ const UserTable = ({ users, loading, onEdit }: UserTableProps) => {
         </TableHead>
         <TableBody>
           {users.map((user) => (
-            <UserRow key={user.id} user={user} onEdit={onEdit} />
+            <UserRow key={user.id} user={getDisplayUser(user)} onEdit={onEdit} />
           ))}
         </TableBody>
       </Table>
