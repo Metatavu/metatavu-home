@@ -190,7 +190,10 @@
     "year": "Vuosi",
     "allTime": "Koko ajalta",
     "startDate": "Alkupäivämäärä",
-    "endDate": "Loppupäivämäärä"
+    "endDate": "Loppupäivämäärä",
+    "hour":"tunti",
+    "hours":"tuntia",
+    "period":"jakso"
   },
   "confirmationHandler": {
     "confirmButtonText": "Kyllä",

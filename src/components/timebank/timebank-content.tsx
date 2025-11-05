@@ -38,49 +38,72 @@ import type { Flextime, User } from "src/generated/homeLambdasClient";
 import { getSeveraUserId } from "src/utils/user-utils";
 import { useLambdasApi } from "src/hooks/use-api";
 
+/**
+ * Represents a single timebank entry for a specific date.
+ */
 export interface TimebankEntry {
+  /** ISO date string for the entry */
   date: string;
+  /** Number of hours entered for this day */
   enteredHours: number;
+  /** Expected hours for this day */
   expectedHours: number;
+  /** Whether the day is a holiday */
   isHoliday?: boolean;
+  /** Name of the holiday if applicable */
   holidayName?: string | null;
 }
 
+/**
+ * Represents aggregated chart data for rendering timebank bars.
+ */
 export interface ChartDataPoint {
+  /** Label for the period (day, week, or month) */
   period: string;
+  /** Actual hours worked */
   hours: number;
+  /** Expected hours */
   expected: number;
+  /** Whether the period contains a holiday */
   isHoliday?: boolean;
+  /** Name of the holiday if applicable */
   holidayName?: string | null;
+  /** Week label if applicable */
   week?: string;
+  /** Month label if applicable */
   month?: string;
 }
 
-// Stable keys for ranges
+/** Keys for different range views */
 type RangeKey = "week" | "month" | "year";
+
+/** Available range keys */
 const RANGE_KEYS: RangeKey[] = ["week", "month", "year"];
 
-// Localized labels for display only
+/** Localized labels for range buttons */
 const RANGE_LABELS: Record<RangeKey, string> = {
   week: strings.timeExpressions.week,
   month: strings.timeExpressions.month,
   year: strings.timeExpressions.year
 };
 
-// Expected hours constants
+/** Default expected hours per range */
 const EXPECTED_HOURS: Record<RangeKey, number> = {
   week: 7.25,
   month: 36.25,
   year: 145
 };
 
-// Y-axis domain constants
+/** Y-axis domain configuration per range */
 const YAXIS_DOMAIN: Record<RangeKey, [number, number]> = {
   week: [0, 12],
   month: [0, 60],
   year: [0, 240]
 };
 
+/**
+ * Main component displaying the user's timebank information and chart.
+ */
 const TimebankContent: React.FC = () => {
   const [selectedRange, setSelectedRange] = useState<RangeKey>("month");
   const [amountWeeks, setAmountWeeks] = useState<number>(4);
@@ -100,6 +123,9 @@ const TimebankContent: React.FC = () => {
     }
   }, [users, userProfile, usersFlextime]);
 
+  /**
+   * Fetches the current user's flextime from the API.
+   */
   const getUsersFlextimes = async () => {
     if (!loggedInUser || !severaUserId) return;
     try {
@@ -114,6 +140,9 @@ const TimebankContent: React.FC = () => {
     }
   };
 
+  /**
+   * Renders the user's total flextime balance with proper color coding.
+   */
   const renderUserFlextime = () => {
     if (
       !usersFlextime ||
@@ -136,6 +165,11 @@ const TimebankContent: React.FC = () => {
     );
   };
 
+  /**
+   * Aggregates timebank entries by week.
+   * @param entries Array of TimebankEntry
+   * @returns ChartDataPoint array for the selected week
+   */
   const getWeekData = (entries: TimebankEntry[]): ChartDataPoint[] => {
     const today = new Date();
     const currentWeekStart = getWeekStart(today);
@@ -163,6 +197,11 @@ const TimebankContent: React.FC = () => {
     });
   };
 
+  /**
+   * Aggregates timebank entries by month for charting.
+   * @param entries Array of TimebankEntry
+   * @returns ChartDataPoint array grouped by weeks in the month
+   */
   const getMonthData = (entries: TimebankEntry[]): ChartDataPoint[] => {
     const referenceDate = entries.length
       ? new Date(Math.max(...entries.map((e) => new Date(e.date).getTime())))
@@ -199,6 +238,11 @@ const TimebankContent: React.FC = () => {
       .sort((a, b) => new Date(a.period).getTime() - new Date(b.period).getTime());
   };
 
+  /**
+   * Aggregates timebank entries by month for the current year.
+   * @param entries Array of TimebankEntry
+   * @returns ChartDataPoint array grouped by month
+   */
   const getYearData = (entries: TimebankEntry[]): ChartDataPoint[] => {
     const year = new Date().getFullYear();
     const grouped: Record<number, { hours: number; expected: number }> = {};
