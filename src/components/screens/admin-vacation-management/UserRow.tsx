@@ -31,13 +31,19 @@ const UserRow = ({ user, onEdit }: UserRowProps) => {
   const totalDays = getDays(user.attributes?.vacationDaysByYear, currentYear);
   const remainingDays = getDays(user.attributes?.unspentVacationDaysByYear, currentYear);
   return (
-    <TableRow key={user.id}>
-      <TableCell>{`${user.firstName || ""} ${user.lastName || ""}`}</TableCell>
+    <TableRow
+    hover 
+      sx={{ 
+        '&:hover': { backgroundColor: '#fafafa' },
+        '& td': { py: 2.5 }
+      }}
+    key={user.id}>
+      <TableCell>{`${user.firstName || ""} ${user.lastName || ""}`.trim() || "-" }</TableCell>
       <TableCell>{user.email ?? "-"}</TableCell>
-      <TableCell align="right">
+      <TableCell align="center">
         {Number.parseInt(totalDays, 10)} {strings.userRow.day}
       </TableCell>
-      <TableCell align="right">
+      <TableCell align="center">
         {Number.parseInt(remainingDays, 10)} {strings.userRow.day}
       </TableCell>
       <TableCell align="center">

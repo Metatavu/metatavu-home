@@ -98,10 +98,10 @@ const UserTable = ({ users, loading, onEdit }: UserTableProps) => {
           <TableRow>
             <TableCell>{strings.userTable.name}</TableCell>
             <TableCell>{strings.userTable.email}</TableCell>
-            <TableCell align="right">
+            <TableCell align="center">
               {strings.userTable.currentYearTotal.replace("{year}", String(currentYear))}
             </TableCell>
-            <TableCell align="right">{strings.userTable.remainingDays}</TableCell>
+            <TableCell align="center">{strings.userTable.remainingDays}</TableCell>
             <TableCell align="center">{strings.userTable.actions}</TableCell>
           </TableRow>
         </TableHead>
