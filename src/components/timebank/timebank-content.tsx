@@ -104,7 +104,7 @@ const YAXIS_DOMAIN: Record<RangeKey, [number, number]> = {
 /**
  * Main component displaying the user's timebank information and chart.
  */
-const TimebankContent: React.FC = () => {
+const TimebankContent = (): JSX.Element => {
   const [selectedRange, setSelectedRange] = useState<RangeKey>("month");
   const [amountWeeks, setAmountWeeks] = useState<number>(4);
   const [weekOffset, setWeekOffset] = useState<number>(0);
