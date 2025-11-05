@@ -69,7 +69,8 @@
     "viewAllTimeEntries": "Kaikki henkilöstön aikakirjaukset ja saldot",
     "selectTimespan": "Valitse aikaväli",
     "searchPlaceholder": "Hae henkilöä...",
-    "employeeBalances": "Henkilöstön aikakirjaukset ja saldot"
+    "employeeBalances": "Henkilöstön aikakirjaukset ja saldot",
+    "numberOfWeeks": "Viikkojen määrä:"
   },
   "sprint": {
     "sprintview": "Sprintinäkymä",

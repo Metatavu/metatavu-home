@@ -72,6 +72,7 @@ export const getLambdasApiClient = (accessToken?: string) => {
     questionnairesApi: new QuestionnairesApi(getConfiguration()),
     vacationRequestsApi: new VacationRequestsApi(getConfiguration()),
     articleApi: new ArticleApi(getConfiguration()),
-    onCallApi: new OnCallApi(getConfiguration())
+    onCallApi: new OnCallApi(getConfiguration()),
+    timeBankApi: severaApi
   };
 };

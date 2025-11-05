@@ -69,7 +69,8 @@
     "viewAllTimeEntries": "View all employees time totals and balances",
     "selectTimespan": "Select time span",
     "searchPlaceholder": "Search for a person...",
-    "employeeBalances": "Employee time totals and balances"
+    "employeeBalances": "Employee time totals and balances",
+    "numberOfWeeks": "Number of weeks:"
   },
   "sprint": {
     "sprintview": "Sprint view",
@@ -189,7 +190,10 @@
     "year": "Year",
     "allTime": "All time",
     "startDate": "Start date",
-    "endDate": "End date"
+    "endDate": "End date",
+    "hour": "hour",
+    "hours": "hours",
+    "period": "period"
   },
   "confirmationHandler": {
     "confirmButtonText": "Yes",

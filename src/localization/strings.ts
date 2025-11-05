@@ -93,6 +93,7 @@ export interface Localized extends LocalizedStringsMethods {
     atTheEndOf: string;
     searchPlaceholder: string;
     employeeBalances: string;
+    numberOfWeeks: string;
   };
   /**
    * Translations related to sprint view
@@ -212,6 +213,9 @@ export interface Localized extends LocalizedStringsMethods {
     allTime: string;
     startDate: string;
     endDate: string;
+    hour: string;
+    hours: string;
+    period: string;
   };
   /**
    * Translations related to confirmation handler
