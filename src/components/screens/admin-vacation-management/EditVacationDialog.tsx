@@ -6,12 +6,17 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
   TextField,
-  Typography
+  Typography,
 } from "@mui/material";
 import type { User } from "src/generated/homeLambdasClient/models/User";
 import type { YearlyVacationDays } from "../../../generated/homeLambdasClient/models/YearlyVacationDays";
 import strings from "../../../localization/strings";
+import { useState } from "react";
 
 type VacationDaysMap = Record<string, YearlyVacationDays>;
 interface EditVacationDialogProps {
@@ -24,6 +29,19 @@ interface EditVacationDialogProps {
   onSave: () => void;
   disableSave: boolean;
 }
+
+/** 
+ * Generates a list of years: last year, current year and next year.
+ * @return An array of year strings.
+*/
+const generateYearOptions = (): string[] =>{
+  const currentYear = new Date().getFullYear();
+  return[
+    (currentYear - 1).toString(),
+    currentYear.toString(),
+    (currentYear + 1).toString()
+  ]
+};
 
 /**
  * Normalizes the input vacation days object by converting values to numbers.
@@ -67,42 +85,84 @@ const EditVacationDialog = ({
   onSave,
   disableSave
 }: EditVacationDialogProps) => {
+  const currentYear = new Date().getFullYear().toString();
+  const[selectedYear,setSelectedYear] = useState<string>(currentYear);
+  const availableYears = generateYearOptions();
+
   if (!user) return null;
 
   const normalizedVacationDays = normalizeVacationDays(vacationDays);
-  const years = Object.keys(normalizedVacationDays).filter(
-    (year) => Number.parseInt(year) <= new Date().getFullYear()
-  );
+
+  // Get the data for the selected year, or initialize with zero
+  const selectedYearData = normalizedVacationDays[selectedYear] || { total: 0, remaining: 0 };
+
+  const handleYearChange = (year: string) => {
+    setSelectedYear(year);
+  };
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
+    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle>
         {strings.adminVacationManagement.editTitle}: {user.firstName} {user.lastName}
       </DialogTitle>
       <DialogContent dividers>
-        {years.map((year) => (
-          <Box key={year} sx={{ mb: 3 }}>
-            <Typography variant="h6">{year}</Typography>
-            <Box sx={{ display: "flex", gap: 2, mt: 1 }}>
+        <Box sx={{ mb: 3 }}>
+          <FormControl fullWidth sx={{mb: 3}}>
+            <InputLabel id="year-select-label">{strings.adminVacationManagement.selectYear}</InputLabel>
+            <Select
+              labelId="year-select-label"
+              id="year-select"
+              value={selectedYear}
+              label="Select Year"
+              onChange={(e) => handleYearChange(e.target.value)}
+              >
+                {availableYears.map((year) => (
+                <MenuItem key={year} value={year}>
+                  {year}
+                  {year === currentYear && " (" + strings.adminVacationManagement.currentYear + ")"}
+                </MenuItem>
+              ))}
+              </Select>
+          </FormControl>
+        
+            <Typography variant="h6" sx={{mb:2}}>
+              {strings.adminVacationManagement.vacationFor} {selectedYear}
+            </Typography> 
+            
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
               <TextField
                 label={strings.adminVacationManagement.totalDays}
                 type="number"
-                value={normalizedVacationDays[year]?.total ?? 0}
-                onChange={(e) => onChange(year, "total", e.target.value)}
-                InputProps={{ inputProps: { min: 0 } }}
-                fullWidth
+                value={selectedYearData.total === 0 ? "" : selectedYearData.total}
+              onChange={(e) => {
+                const value = e.target.value;
+                if (value === "" || Number(value) >= 0) {
+                  onChange(selectedYear, "total", value);
+                }
+              }}
+              placeholder="0"
+              InputProps={{ inputProps: { min: 0 } }}
+              InputLabelProps={{ shrink: true }}
+              fullWidth
+
               />
               <TextField
                 label={strings.adminVacationManagement.remainingDays}
                 type="number"
-                value={normalizedVacationDays[year]?.remaining ?? 0}
-                onChange={(e) => onChange(year, "remaining", e.target.value)}
-                InputProps={{ inputProps: { min: 0 } }}
-                fullWidth
+                value={selectedYearData.remaining === 0 ? "" : selectedYearData.remaining}
+              onChange={(e) => {
+                const value = e.target.value;
+                if (value === "" || Number(value) >= 0) {
+                  onChange(selectedYear, "remaining", value);
+                }
+              }}
+              placeholder="0"
+              InputProps={{ inputProps: { min: 0 } }}
+              InputLabelProps={{ shrink: true }}
+              fullWidth
               />
             </Box>
           </Box>
-        ))}
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} color="inherit">

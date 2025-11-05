@@ -462,7 +462,10 @@
     "buttonLabel": "Manage User Vacation Days",
     "editTitle": "Edit Vacation Days",
     "totalDays": "Total Days",
-    "remainingDays": "Remaining Days"
+    "remainingDays": "Remaining Days",
+    "selectYear": "Select Year",
+    "currentYear": "Current Year",
+    "vacationFor": "Vacation Days for"
   },
   "userSearch": {
     "placeholder": "Search users by name or email"
