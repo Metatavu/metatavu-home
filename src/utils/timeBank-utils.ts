@@ -1,3 +1,4 @@
+import { DateTime } from "luxon";
 import strings from "src/localization/strings";
 
 /**
@@ -66,6 +67,22 @@ export const getMonthLabel = (date: Date): string =>
  * getWeekLabel(new Date("2025-10-06")); // → "Week 2025-10-06"
  */
 export const getWeekLabel = (date: Date): string => `${strings.timeExpressions.week} ${formatDate(date)}`;
+
+/**
+ * Returns a label representing the ISO week number of a given date.
+ *
+ * @param date - The reference date.
+ * @returns A string in the format `Week <number> (<year>)`.
+ *
+ * @example
+ * getNumberWeekLabel(new Date("2025-10-06")); // → "Week 41 (2025)"
+ */
+export const getNumberWeekLabel = (date: Date): string => {
+  const dt = DateTime.fromJSDate(date);
+  const weekNumber = dt.weekNumber;
+  const weekYear = dt.weekYear;
+  return `${strings.timeExpressions.week} ${weekNumber} (${weekYear})`;
+};
 
 /**
  * Returns a human-readable day label (e.g., "Mon, Oct 6").

@@ -5,7 +5,8 @@ import {
   IconButton,
   Input,
   CircularProgress,
-  Typography
+  Typography,
+  Tooltip as MuiTooltip
 } from "@mui/material";
 import { ArrowBack, ArrowForward, CalendarToday } from "@mui/icons-material";
 import {
@@ -27,6 +28,7 @@ import {
   formatDate,
   getDayLabel,
   getMonthLabel,
+  getNumberWeekLabel,
   getWeekEnd,
   getWeekLabel,
   getWeekStart
@@ -72,6 +74,8 @@ export interface ChartDataPoint {
   week?: string;
   /** Month label if applicable */
   month?: string;
+  /** Week start date (for tooltips or references) */
+  targetWeek?: Date;
 }
 
 /** Keys for different range views */
@@ -79,13 +83,6 @@ type RangeKey = "week" | "month" | "year";
 
 /** Available range keys */
 const RANGE_KEYS: RangeKey[] = ["week", "month", "year"];
-
-/** Localized labels for range buttons */
-const RANGE_LABELS: Record<RangeKey, string> = {
-  week: strings.timeExpressions.week,
-  month: strings.timeExpressions.month,
-  year: strings.timeExpressions.year
-};
 
 /** Default expected hours per range */
 const EXPECTED_HOURS: Record<RangeKey, number> = {
@@ -192,7 +189,8 @@ const TimebankContent = (): JSX.Element => {
         expected: entry?.expectedHours || 0,
         isHoliday: entry?.isHoliday || false,
         holidayName: entry?.holidayName || null,
-        week: getWeekLabel(targetWeekStart)
+        week: getWeekLabel(targetWeekStart),
+        targetWeek: targetWeekStart
       };
     });
   };
@@ -317,7 +315,20 @@ const TimebankContent = (): JSX.Element => {
               width: "250px"
             }}
           >
-            <Typography variant="h4">{chartData[0]?.week || RANGE_LABELS.week}</Typography>
+            <MuiTooltip
+              placement="top"
+              title={
+                chartData[0]?.targetWeek
+                  ? `${getNumberWeekLabel(chartData[0].targetWeek)}: ${formatDate(
+                      getWeekStart(chartData[0].targetWeek)
+                    )} → ${formatDate(getWeekEnd(chartData[0].targetWeek))}`
+                  : strings.timeExpressions.week
+              }
+            >
+              <Typography variant="h4">
+                {chartData[0]?.week || strings.timeExpressions.week}
+              </Typography>
+            </MuiTooltip>
             <ButtonGroup sx={{ mt: 1 }}>
               <IconButton onClick={() => handleWeekOffsetChange(-1)}>
                 <ArrowBack />
@@ -369,7 +380,7 @@ const TimebankContent = (): JSX.Element => {
               </Typography>
               <ButtonGroup sx={{ mt: 1 }}>
                 <IconButton
-                  disabled={monthOffset === -12}
+                  disabled={monthOffset === -12 || Object.entries(chartData).length === 0}
                   onClick={() => handleMonthOffsetChange(-1)}
                 >
                   <ArrowBack />
