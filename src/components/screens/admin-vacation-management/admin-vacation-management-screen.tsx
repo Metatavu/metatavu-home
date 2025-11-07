@@ -111,16 +111,6 @@ const AdminVacationManagementScreen = () => {
 
   /**
    * Computes the subset of users to display on the current page.
-   * 
-   * Logic:
-   * - If total users ≤ PAGINATION_THRESHOLD: show all users (no pagination)
-   * - If rowsPerPage === -1 (All option selected): show all users
-   * - Otherwise: show users for the current page based on rowsPerPage
-   * Example:
-   *startIndex = 0 * 20 = 0
-    endIndex = 0 + 20 = 20
-    slice(0, 20) → Users 0-19 
-   * 
    * @returns Array of users for the current page view
    */
   const paginatedUsers = useMemo(() => {
