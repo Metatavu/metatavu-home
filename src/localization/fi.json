@@ -239,7 +239,8 @@
     "noVacationRequestsFound": "Lomahakemuksia ei löydetty",
     "nameNotFound": "Nimeä ei löydetty",
     "noVacationRequestsStatusFound": "Tiloja ei löytynyt",
-    "tooManyDaysRequested": "Et voi pyytää {requestedDays} päivää. Sinulla on vain {unspentDays} käyttämätöntä lomapäivää"
+    "tooManyDaysRequested": "Et voi pyytää {requestedDays} päivää. Sinulla on vain {unspentDays} käyttämätöntä lomapäivää",
+    "failedToLoad": "Käyttäjien lataaminen epäonnistui"
   },
   "sprintRequestError": {
     "fetchResourceAllocationsError": "Sprintin tietopyyntöjen hakeminen epäonnistui",
@@ -462,7 +463,10 @@
     "buttonLabel": "Hallitse käyttäjän lomapäiviä",
     "editTitle": "Muokkaa lomapäiviä",
     "totalDays": "Kokonaispäivät",
-    "remainingDays": "Jäljellä olevat päivät"
+    "remainingDays": "Jäljellä olevat päivät",
+    "selectYear": "Valitse vuosi",
+    "currentYear": "Kuluvan vuoden",
+    "vacationFor": "Lomapäivät vuodelle"
   },
   "userSearch": {
     "placeholder": "Hae käyttäjiä nimen tai sähköpostin perusteella"
