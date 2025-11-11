@@ -34,10 +34,11 @@ const UserRow = ({ user, onEdit }: UserRowProps) => {
     <TableRow
       hover
       sx={{
-        '&:hover': { backgroundColor: '#fafafa' },
-        '& td': { py: 2.5 }
+        "&:hover": { backgroundColor: "#fafafa" },
+        "& td": { py: 2.5 }
       }}
-      key={user.id}>
+      key={user.id}
+    >
       <TableCell>{`${user.firstName || ""} ${user.lastName || ""}`.trim() || "-"}</TableCell>
       <TableCell>{user.email ?? "-"}</TableCell>
       <TableCell align="center">

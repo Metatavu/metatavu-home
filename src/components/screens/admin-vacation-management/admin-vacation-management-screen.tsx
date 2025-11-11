@@ -13,11 +13,10 @@ import { formatVacationDaysPayload, parseVacationDays } from "../../../utils/vac
 import EditVacationDialog from "./EditVacationDialog";
 import UserSearchBar from "./UserSearchBar";
 import UserTable from "./UsersTable";
-import { str } from "envalid";
 
 /**
  * Vacation days allocation for each year.
- * 
+ *
  * Represents a record mapping year strings to their total
  * and remaining vacation days.
  */
@@ -28,15 +27,15 @@ const DEFAULT_ROWS_PER_PAGE = 20;
 
 /**
  * AdminVacationManagementScreen Component
- * 
+ *
  * Administrative UI for managing employee vacation day allocations.
- * 
+ *
  * Features:
  * - Search users by name or email
  * - Paginated user table with dynamic threshold
  * - Edit vacation days (total and remaining)
  * - Conditional pagination visibility
- * 
+ *
  * @returns React component for admin vacation management
  */
 const AdminVacationManagementScreen = () => {
@@ -71,8 +70,7 @@ const AdminVacationManagementScreen = () => {
         const fetchedUsers = await usersApi.listUsers();
         setUsers(fetchedUsers);
       } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : String(error);
-        setError(strings.vacationRequestError.failedToLoad.replace("{errorMessage}", errorMessage));
+        setError(`${strings.vacationRequestError.failedToLoad}, ${error}`);
       } finally {
         setLoadingUsers(false);
       }
@@ -85,7 +83,7 @@ const AdminVacationManagementScreen = () => {
    * Filters users based on search keyword.
    * Matches against user's full name (first + last) or email address.
    * Case-insensitive search and trims unnecessary whitespace.
-   * 
+   *
    * @returns Array of users matching the search criteria
    */
   const filteredUsers = useMemo(() => {
@@ -114,7 +112,6 @@ const AdminVacationManagementScreen = () => {
     const endIndex = startIndex + rowsPerPage;
     return filteredUsers.slice(startIndex, endIndex);
   }, [filteredUsers, page, rowsPerPage, shouldPaginate]);
-
 
   /**
    * Resets pagination to first page when search results change.
@@ -157,7 +154,8 @@ const AdminVacationManagementScreen = () => {
   const handleVacationChange = (
     year: string,
     field: "total" | "remaining",
-    value: string): void => {
+    value: string
+  ): void => {
     setVacationDays((prev) => ({
       ...prev,
       [year]: {
@@ -192,14 +190,12 @@ const AdminVacationManagementScreen = () => {
 
       const updatedUser = await usersApi.findUser({ userId: currentUser.id });
       setUsers((prevUsers) =>
-        prevUsers.map((user) =>
-          user.id === updatedUser.id ? updatedUser : user
-        ));
+        prevUsers.map((user) => (user.id === updatedUser.id ? updatedUser : user))
+      );
 
       handleCloseDialog();
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
-      setError(strings.vacationRequestError.failedToLoad.replace("{errorMessage}", errorMessage));
+      setError(`${strings.vacationRequestError.failedToLoad}, ${error}`);
     } finally {
       setSaving(false);
     }
@@ -207,7 +203,7 @@ const AdminVacationManagementScreen = () => {
 
   /**
    * Handles pagination page change.
-   * 
+   *
    * @param _event - Mouse event from pagination button
    * @param newPage - The new page index
    */
@@ -221,7 +217,7 @@ const AdminVacationManagementScreen = () => {
   /**
    * Handles change in rows per page selection.
    * Resets to first page when rows per page changes.
-   * 
+   *
    * @param event - Change event from the select dropdown
    */
   const handleChangeRowsPerPage = (
@@ -250,7 +246,7 @@ const AdminVacationManagementScreen = () => {
             onPageChange={handleChangePage}
             rowsPerPage={rowsPerPage}
             onRowsPerPageChange={handleChangeRowsPerPage}
-            rowsPerPageOptions={[20, 50, { label: 'All', value: -1 }]}
+            rowsPerPageOptions={[20, 50, { label: "All", value: -1 }]}
             labelRowsPerPage="Rows per page:"
           />
         </Box>

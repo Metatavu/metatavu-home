@@ -26,22 +26,26 @@ interface UserTableProps {
  * @param email - The user's email address.
  * @returns An object containing `firstName` and `lastName`
  */
-const parseNameFromEmail = (email?: string): {
+const parseNameFromEmail = (
+  email?: string
+): {
   firstName: string;
-  lastName: string
+  lastName: string;
 } => {
   if (!email) {
     return {
-      firstName: "", lastName: ""
-    }
-  };
+      firstName: "",
+      lastName: ""
+    };
+  }
 
   const [usernamePart] = email.split("@");
   if (!usernamePart) {
     return {
-      firstName: "", lastName: ""
-    }
-  };
+      firstName: "",
+      lastName: ""
+    };
+  }
   // split "firstname.lastname"
   const nameSegments = usernamePart.split(".").filter(Boolean);
   if (nameSegments.length < 2) {
@@ -50,8 +54,7 @@ const parseNameFromEmail = (email?: string): {
 
   const [firstName, lastName] = nameSegments;
 
-  const capitalize = (text: string) =>
-    text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
+  const capitalize = (text: string) => text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
 
   return {
     firstName: capitalize(firstName),

@@ -11,12 +11,12 @@ import {
   MenuItem,
   Select,
   TextField,
-  Typography,
+  Typography
 } from "@mui/material";
+import { useId, useState } from "react";
 import type { User } from "src/generated/homeLambdasClient/models/User";
 import type { YearlyVacationDays } from "../../../generated/homeLambdasClient/models/YearlyVacationDays";
 import strings from "../../../localization/strings";
-import { useState } from "react";
 
 type VacationDaysMap = Record<string, YearlyVacationDays>;
 interface EditVacationDialogProps {
@@ -30,16 +30,12 @@ interface EditVacationDialogProps {
   disableSave: boolean;
 }
 
-/** 
+/**
  * Generates a list of years: last year, current year and next year.
-*/
+ */
 const generateYearOptions = (): string[] => {
   const currentYear = new Date().getFullYear();
-  return [
-    (currentYear - 1).toString(),
-    currentYear.toString(),
-    (currentYear + 1).toString()
-  ]
+  return [(currentYear - 1).toString(), currentYear.toString(), (currentYear + 1).toString()];
 };
 
 /**
@@ -87,6 +83,8 @@ const EditVacationDialog = ({
   const currentYear = new Date().getFullYear().toString();
   const [selectedYear, setSelectedYear] = useState(currentYear);
   const availableYears = generateYearOptions();
+  const yearSelectedYear = useId();
+  const yearSelectedLabel = useId();
 
   if (!user) return null;
 
@@ -95,9 +93,7 @@ const EditVacationDialog = ({
   const selectedYearData = normalizedVacationDays[selectedYear] || { total: 0, remaining: 0 };
 
   /**
-   * Updates the selected year in state when the user changes the selection.
-   *
-   * @param year - The year value selected from the dropdown.
+   * Updates the selected year in state when the user changes the selection.@param year - The year value selected from the dropdown.
    */
 
   const handleYearChange = (year: string) => {
@@ -112,18 +108,20 @@ const EditVacationDialog = ({
       <DialogContent dividers>
         <Box sx={{ mb: 3 }}>
           <FormControl fullWidth sx={{ mb: 3 }}>
-            <InputLabel id="year-select-label">{strings.adminVacationManagement.selectYear}</InputLabel>
+            <InputLabel id={yearSelectedLabel}>
+              {strings.adminVacationManagement.selectYear}
+            </InputLabel>
             <Select
               labelId="year-select-label"
-              id="year-select"
+              id={yearSelectedYear}
               value={selectedYear}
-              label="Select Year"
+              label={strings.adminVacationManagement.selectYear}
               onChange={(e) => handleYearChange(e.target.value)}
             >
               {availableYears.map((year) => (
                 <MenuItem key={year} value={year}>
                   {year}
-                  {year === currentYear && " (" + strings.adminVacationManagement.currentYear + ")"}
+                  {year === currentYear && ` (${strings.adminVacationManagement.currentYear})`}
                 </MenuItem>
               ))}
             </Select>
@@ -144,10 +142,6 @@ const EditVacationDialog = ({
                   onVacationDaysChange(selectedYear, "total", value);
                 }
               }}
-              placeholder="0"
-              InputProps={{ inputProps: { min: 0 } }}
-              InputLabelProps={{ shrink: true }}
-              fullWidth
             />
             <TextField
               label={strings.adminVacationManagement.remainingDays}
@@ -159,10 +153,6 @@ const EditVacationDialog = ({
                   onVacationDaysChange(selectedYear, "remaining", value);
                 }
               }}
-              placeholder="0"
-              InputProps={{ inputProps: { min: 0 } }}
-              InputLabelProps={{ shrink: true }}
-              fullWidth
             />
           </Box>
         </Box>
