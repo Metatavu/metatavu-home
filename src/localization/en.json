@@ -239,7 +239,8 @@
     "noVacationRequestsFound": "No vacation requests found",
     "nameNotFound": "Name not found",
     "noVacationRequestsStatusFound": "Statuses not found",
-    "tooManyDaysRequested": "You cannot request {requestedDays} days. You only have {unspentDays} unspent vacation days."
+    "tooManyDaysRequested": "You cannot request {requestedDays} days. You only have {unspentDays} unspent vacation days.",
+    "failedToLoad": "Failed to load users" 
   },
   "sprintRequestError": {
     "fetchResourceAllocationsError": "Fetching sprint data for resourceAllocations has failed",

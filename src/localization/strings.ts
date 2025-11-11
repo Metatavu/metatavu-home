@@ -273,7 +273,9 @@ export interface Localized extends LocalizedStringsMethods {
     nameNotFound: string;
     noVacationRequestsStatusFound: string;
     tooManyDaysRequested: string;
+    failedToLoad: string;
   };
+
   /**
    * Translations related to sprint requests errors
    */

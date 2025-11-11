@@ -13,6 +13,7 @@ import { formatVacationDaysPayload, parseVacationDays } from "../../../utils/vac
 import EditVacationDialog from "./EditVacationDialog";
 import UserSearchBar from "./UserSearchBar";
 import UserTable from "./UsersTable";
+import { str } from "envalid";
 
 /**
  * Vacation days allocation for each year.
@@ -22,10 +23,7 @@ import UserTable from "./UsersTable";
  */
 type VacationDays = Record<string, YearlyVacationDays>;
 
-/** Threshold for enabling pagination. */
 const PAGINATION_THRESHOLD = 20;
-
-/** Default number of rows to display per page. */
 const DEFAULT_ROWS_PER_PAGE = 20;
 
 /**
@@ -73,7 +71,8 @@ const AdminVacationManagementScreen = () => {
         const fetchedUsers = await usersApi.listUsers();
         setUsers(fetchedUsers);
       } catch (error) {
-        setError(`Failed to load users: ${error instanceof Error ? error.message : String(error)}`);
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        setError(strings.vacationRequestError.failedToLoad.replace("{errorMessage}", errorMessage));
       } finally {
         setLoadingUsers(false);
       }
@@ -91,7 +90,7 @@ const AdminVacationManagementScreen = () => {
    */
   const filteredUsers = useMemo(() => {
     const keyword = searchKeyword.toLowerCase().trim();
-    
+
     if (!keyword) return users;
 
     return users.filter((user) => {
@@ -101,12 +100,6 @@ const AdminVacationManagementScreen = () => {
     });
   }, [users, searchKeyword]);
 
-  /**
-   * Determines whether pagination should be displayed.
-   * Pagination is only shown when filtered users exceed the threshold.
-   * 
-   * @returns True if pagination should be visible
-   */
   const shouldPaginate = filteredUsers.length > PAGINATION_THRESHOLD;
 
   /**
@@ -116,12 +109,12 @@ const AdminVacationManagementScreen = () => {
   const paginatedUsers = useMemo(() => {
     if (!shouldPaginate) return filteredUsers;
     if (rowsPerPage === -1) return filteredUsers;
-    
+
     const startIndex = page * rowsPerPage;
     const endIndex = startIndex + rowsPerPage;
     return filteredUsers.slice(startIndex, endIndex);
   }, [filteredUsers, page, rowsPerPage, shouldPaginate]);
-  
+
 
   /**
    * Resets pagination to first page when search results change.
@@ -164,7 +157,7 @@ const AdminVacationManagementScreen = () => {
   const handleVacationChange = (
     year: string,
     field: "total" | "remaining",
-    value: string):void => {
+    value: string): void => {
     setVacationDays((prev) => ({
       ...prev,
       [year]: {
@@ -199,13 +192,14 @@ const AdminVacationManagementScreen = () => {
 
       const updatedUser = await usersApi.findUser({ userId: currentUser.id });
       setUsers((prevUsers) =>
-        prevUsers.map((user) => 
+        prevUsers.map((user) =>
           user.id === updatedUser.id ? updatedUser : user
-    ));
+        ));
 
       handleCloseDialog();
-    } catch (_error) {
-      setError(`Failed to save vacation days: ${_error instanceof Error ? _error.message : String(_error)}`);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      setError(strings.vacationRequestError.failedToLoad.replace("{errorMessage}", errorMessage));
     } finally {
       setSaving(false);
     }
@@ -268,7 +262,7 @@ const AdminVacationManagementScreen = () => {
         vacationDays={vacationDays}
         loading={saving}
         onClose={handleCloseDialog}
-        onChange={handleVacationChange}
+        onVacationDaysChange={handleVacationChange}
         onSave={handleSaveVacationDays}
         disableSave={!isValid || saving}
       />
@@ -288,10 +282,10 @@ const isVacationDaysValid = (vacDays: VacationDays): boolean => {
   for (const year in vacDays) {
     const total = Number(vacDays[year].total);
     const remaining = Number(vacDays[year].remaining);
-    if (total === 0 && remaining > 0){
-        return false;
-      }
-    if (remaining > total){
+    if (total === 0 && remaining > 0) {
+      return false;
+    }
+    if (remaining > total) {
       return false;
     }
   }

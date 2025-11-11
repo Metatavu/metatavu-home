@@ -22,30 +22,28 @@ interface UserTableProps {
 }
 
 /**
- * Extracts a user's first and last name from an email address.
- *
- * Only processes emails in the format: `firstname.lastname@`.
- * And if has ext-firstname.lastname@ returns
- * Ext-firstname and Lastname as username
+ * Extracts a user's first and last name from an email address.Only processes emails in the format: `firstname.lastname@`.And if has ext-firstname.lastname@ returns Ext-firstname and Lastname as username
  * @param email - The user's email address.
  * @returns An object containing `firstName` and `lastName`
  */
 const parseNameFromEmail = (email?: string): {
   firstName: string;
   lastName: string
-  } => {
-  if (!email){ 
+} => {
+  if (!email) {
     return {
-      firstName: "", lastName: "" 
-    }};
+      firstName: "", lastName: ""
+    }
+  };
 
-  const [usernamePart] = email.split("@"); 
-  if (!usernamePart){ 
+  const [usernamePart] = email.split("@");
+  if (!usernamePart) {
     return {
-      firstName: "", lastName: "" 
-    }};
+      firstName: "", lastName: ""
+    }
+  };
   // split "firstname.lastname"
-  const nameSegments = usernamePart.split(".").filter(Boolean); 
+  const nameSegments = usernamePart.split(".").filter(Boolean);
   if (nameSegments.length < 2) {
     return { firstName: "", lastName: "" };
   }
@@ -60,13 +58,17 @@ const parseNameFromEmail = (email?: string): {
     lastName: capitalize(lastName)
   };
 };
-
+/**
+ * Ensures a user object has `firstName` and `lastName` values.If the user's first or last name is missing, it attempts to parse them from the user's email address using {parseNameFromEmail}.
+ * @param user - The user object to process.
+ * @returns A user object guaranteed to include `firstName` and `lastName` values.
+ */
 const getDisplayUser = (user: User): User => {
   if (user.firstName && user.lastName) {
     return user;
   }
   const { firstName, lastName } = parseNameFromEmail(user.email);
-  return { ...user,firstName, lastName};
+  return { ...user, firstName, lastName };
 };
 /**
  * Displays a table of users with vacation information.

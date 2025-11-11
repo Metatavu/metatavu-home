@@ -25,18 +25,17 @@ interface EditVacationDialogProps {
   vacationDays: Record<string, any>;
   loading: boolean;
   onClose: () => void;
-  onChange: (year: string, field: keyof YearlyVacationDays, value: string) => void;
+  onVacationDaysChange: (year: string, field: keyof YearlyVacationDays, value: string) => void;
   onSave: () => void;
   disableSave: boolean;
 }
 
 /** 
  * Generates a list of years: last year, current year and next year.
- * @return An array of year strings.
 */
-const generateYearOptions = (): string[] =>{
+const generateYearOptions = (): string[] => {
   const currentYear = new Date().getFullYear();
-  return[
+  return [
     (currentYear - 1).toString(),
     currentYear.toString(),
     (currentYear + 1).toString()
@@ -81,20 +80,25 @@ const EditVacationDialog = ({
   vacationDays,
   loading,
   onClose,
-  onChange,
+  onVacationDaysChange,
   onSave,
   disableSave
 }: EditVacationDialogProps) => {
   const currentYear = new Date().getFullYear().toString();
-  const[selectedYear,setSelectedYear] = useState<string>(currentYear);
+  const [selectedYear, setSelectedYear] = useState(currentYear);
   const availableYears = generateYearOptions();
 
   if (!user) return null;
 
   const normalizedVacationDays = normalizeVacationDays(vacationDays);
 
-  // Get the data for the selected year, or initialize with zero
   const selectedYearData = normalizedVacationDays[selectedYear] || { total: 0, remaining: 0 };
+
+  /**
+   * Updates the selected year in state when the user changes the selection.
+   *
+   * @param year - The year value selected from the dropdown.
+   */
 
   const handleYearChange = (year: string) => {
     setSelectedYear(year);
@@ -107,7 +111,7 @@ const EditVacationDialog = ({
       </DialogTitle>
       <DialogContent dividers>
         <Box sx={{ mb: 3 }}>
-          <FormControl fullWidth sx={{mb: 3}}>
+          <FormControl fullWidth sx={{ mb: 3 }}>
             <InputLabel id="year-select-label">{strings.adminVacationManagement.selectYear}</InputLabel>
             <Select
               labelId="year-select-label"
@@ -115,54 +119,53 @@ const EditVacationDialog = ({
               value={selectedYear}
               label="Select Year"
               onChange={(e) => handleYearChange(e.target.value)}
-              >
-                {availableYears.map((year) => (
+            >
+              {availableYears.map((year) => (
                 <MenuItem key={year} value={year}>
                   {year}
                   {year === currentYear && " (" + strings.adminVacationManagement.currentYear + ")"}
                 </MenuItem>
               ))}
-              </Select>
+            </Select>
           </FormControl>
-        
-            <Typography variant="h6" sx={{mb:2}}>
-              {strings.adminVacationManagement.vacationFor} {selectedYear}
-            </Typography> 
-            
-            <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-              <TextField
-                label={strings.adminVacationManagement.totalDays}
-                type="number"
-                value={selectedYearData.total === 0 ? "" : selectedYearData.total}
-              onChange={(e) => {
-                const value = e.target.value;
-                if (value === "" || Number(value) >= 0) {
-                  onChange(selectedYear, "total", value);
-                }
-              }}
-              placeholder="0"
-              InputProps={{ inputProps: { min: 0 } }}
-              InputLabelProps={{ shrink: true }}
-              fullWidth
 
-              />
-              <TextField
-                label={strings.adminVacationManagement.remainingDays}
-                type="number"
-                value={selectedYearData.remaining === 0 ? "" : selectedYearData.remaining}
+          <Typography variant="h6" sx={{ mb: 2 }}>
+            {strings.adminVacationManagement.vacationFor} {selectedYear}
+          </Typography>
+
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+            <TextField
+              label={strings.adminVacationManagement.totalDays}
+              type="number"
+              value={selectedYearData.total === 0 ? "" : selectedYearData.total}
               onChange={(e) => {
                 const value = e.target.value;
                 if (value === "" || Number(value) >= 0) {
-                  onChange(selectedYear, "remaining", value);
+                  onVacationDaysChange(selectedYear, "total", value);
                 }
               }}
               placeholder="0"
               InputProps={{ inputProps: { min: 0 } }}
               InputLabelProps={{ shrink: true }}
               fullWidth
-              />
-            </Box>
+            />
+            <TextField
+              label={strings.adminVacationManagement.remainingDays}
+              type="number"
+              value={selectedYearData.remaining === 0 ? "" : selectedYearData.remaining}
+              onChange={(e) => {
+                const value = e.target.value;
+                if (value === "" || Number(value) >= 0) {
+                  onVacationDaysChange(selectedYear, "remaining", value);
+                }
+              }}
+              placeholder="0"
+              InputProps={{ inputProps: { min: 0 } }}
+              InputLabelProps={{ shrink: true }}
+              fullWidth
+            />
           </Box>
+        </Box>
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} color="inherit">
