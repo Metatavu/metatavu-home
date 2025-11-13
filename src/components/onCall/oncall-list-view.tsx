@@ -1,11 +1,11 @@
-import { useAtomValue } from "jotai";
-import { onCallAtom } from "../../atoms/oncall";
 import { Box, Button, Checkbox, Typography } from "@mui/material";
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
+import { useAtomValue } from "jotai";
 import { DateTime } from "luxon";
-import strings from "src/localization/strings";
-import useUserRole from "src/hooks/use-user-role";
 import { userProfileAtom } from "src/atoms/auth";
+import useUserRole from "src/hooks/use-user-role";
+import strings from "src/localization/strings";
+import { onCallAtom } from "../../atoms/oncall";
 
 /**
  * Component properties

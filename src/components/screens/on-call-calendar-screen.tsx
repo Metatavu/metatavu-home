@@ -130,10 +130,13 @@ const OnCallCalendarScreen = () => {
       <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", margin: 2 }}>
         {onCallPerson ? (
           <>
-            <Typography sx={{ color: "#5acc31", fontWeight: "bold", textAlign: "center" }}>
+            <Typography
+              variant="h3"
+              sx={{ color: "#5acc31", fontWeight: "bold", textAlign: "center" }}
+            >
               {strings.oncall.onCallPersonExists}
             </Typography>
-            <Typography sx={{ color: "black", fontWeight: "bold", ml: 1 }}>
+            <Typography variant="h3" sx={{ color: "black", fontWeight: "bold", ml: 1 }}>
               {onCallPerson}
             </Typography>
           </>
