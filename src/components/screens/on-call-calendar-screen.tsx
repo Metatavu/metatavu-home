@@ -15,7 +15,8 @@ import { red } from "@mui/material/colors";
 import { DateCalendar, PickersDay, type PickersDayProps } from "@mui/x-date-pickers";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { DateTime } from "luxon";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useState } from "react";
+import { userProfileAtom } from "src/atoms/auth";
 import type { OnCallPaid } from "src/generated/homeLambdasClient";
 import type { OnCall } from "src/generated/homeLambdasClient/models/OnCall";
 import useUserRole from "src/hooks/use-user-role";
@@ -27,7 +28,6 @@ import type { OnCallWeek } from "../../types";
 import { stringToColor } from "../../utils/oncall-utils";
 import OnCallListView from "../onCall/oncall-list-view";
 import OnCallPaidStatusDialog from "../onCall/oncall-paid-status-dialog";
-import { userProfileAtom } from "src/atoms/auth";
 
 /**
  * On call calendar screen component
@@ -329,6 +329,8 @@ const OnCallCalendarScreen = () => {
     overflow: "auto"
   }));
 
+  const calendarSelectId = useId();
+
   return (
     <Box sx={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
       {/* Global styles for correct calendar layout */}
@@ -394,10 +396,10 @@ const OnCallCalendarScreen = () => {
         }}
       />
       <FormControl sx={{ width: "50%", textAlign: "center", margin: "auto" }}>
-        <InputLabel id="calendarSelect">{strings.oncall.selectView}</InputLabel>
+        <InputLabel id={calendarSelectId}>{strings.oncall.selectView}</InputLabel>
         <Select
-          labelId="calendarSelect"
-          id="calendarSelect"
+          labelId={calendarSelectId}
+          id={`${calendarSelectId}-select`}
           label={strings.oncall.selectView}
           value={isCalendarView ? "Calendar" : "List"}
         >
