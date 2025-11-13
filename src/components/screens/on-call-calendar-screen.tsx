@@ -1,3 +1,4 @@
+import { Star } from "@mui/icons-material";
 import {
   Badge,
   Box,
@@ -240,16 +241,23 @@ const OnCallCalendarScreen = () => {
       }
     };
 
+    /**
+     * TODO:
+     * Temporary logic which should be refactored once a solution has been made to ensure
+     * that on-call user can be matched to logged in user.
+     */
+    const isCurrentUserOnCall = onCallDayData?.username === userProfile?.username;
+
     return (
       <Box sx={{ position: "relative" }}>
         {showBadge && (
           <Tooltip title={onCallDayData?.username}>
             <Badge
               overlap="circular"
-              badgeContent={initials}
+              badgeContent={isCurrentUserOnCall ? <Star sx={{ fontSize: 14 }} /> : initials}
               sx={{
                 ".MuiBadge-badge": {
-                  backgroundColor: badgeColor,
+                  backgroundColor: isCurrentUserOnCall ? "#ff9800" : badgeColor,
                   color: "#fff",
                   right: 60,
                   top: 10,
@@ -257,8 +265,11 @@ const OnCallCalendarScreen = () => {
                   minHeight: 24,
                   fontSize: 12,
                   zIndex: 1,
-                  //TODO: Check if the properties are correct and work properly
-                  fontWeight: userProfile?.username === onCallDayData?.username ? "900" : "normal"
+                  fontWeight: isCurrentUserOnCall ? "900" : "normal",
+                  borderRadius: "50%",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center"
                 }
               }}
             >
