@@ -141,7 +141,6 @@ const OnCallCalendarScreen = () => {
     const boxStyles = {
       display: "inline-block",
       backgroundColor: "#f5f5f5",
-      color: "#191970",
       borderRadius: 4,
       px: 3,
       py: 2,
