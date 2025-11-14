@@ -26,6 +26,12 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
   const { isAccountant } = useUserRole();
   const userProfile = useAtomValue(userProfileAtom);
 
+  // Identify the current on-call person for the current week
+  const currentWeekUsername = onCallData.find((item) => {
+    const now = DateTime.now();
+    return item.week === now.weekNumber && item.year === now.year;
+  })?.username;
+
   const columns: GridColDef[] = [
     {
       field: "paid",
@@ -45,9 +51,7 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
           disabled={!isAccountant}
           sx={{
             color: params.value ? "#7bd15c" : "#f44336",
-            "&.Mui-checked": {
-              color: "#7bd15c"
-            }
+            "&.Mui-checked": { color: "#7bd15c" }
           }}
         />
       )
@@ -68,9 +72,13 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
       align: "center",
       sortable: true,
       renderCell: (params) => (
-        //TODO: Check if the properties are correct and work properly
         <Typography
-          style={{ fontWeight: userProfile?.username === params.value ? "bold" : "normal" }}
+          sx={{
+            fontWeight:
+              params.value === currentWeekUsername || userProfile?.username === params.value
+                ? "bold"
+                : "normal"
+          }}
         >
           {params.value}
         </Typography>
@@ -85,9 +93,6 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
     person: item.username ? item.username : strings.oncall.noUsernameOnCall
   }));
 
-  /**
-   * Component render
-   */
   return (
     <>
       <Box sx={{ display: "flex", my: "3%" }}>
@@ -111,6 +116,7 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
           </Button>
         </Box>
       </Box>
+
       {rows.length === 0 ? (
         <Box
           sx={{
@@ -134,27 +140,32 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
           columns={columns}
           disableRowSelectionOnClick
           hideFooter
-          getRowClassName={(params) => (params.row.paid ? "paid-row" : "unpaid-row")}
+          getRowClassName={(params) =>
+            params.row.person === currentWeekUsername ? "current-oncall-row" : "default-row"
+          }
           sx={{
             marginBottom: "60px",
-            "& .paid-row": {
-              backgroundColor: "#eafbe5"
+            "& .MuiDataGrid-row:hover": {
+              backgroundColor: "#eeeeee"
             },
-            "& .unpaid-row": {
-              backgroundColor: "#ffeaea"
-            },
-            "& .MuiDataGrid-cell": {
-              fontSize: 16
-            },
+            "& .MuiDataGrid-cell": { fontSize: 16, color: "black" },
             "& .MuiDataGrid-columnHeaders": {
+              backgroundColor: "#cfc7c7ff"
+            },
+            "& .MuiDataGrid-columnHeaderTitle": {
+              fontWeight: "bold"
+            },
+            "& .default-row": {
+              backgroundColor: "#f5f5f5" // all rows grey
+            },
+            "& .current-oncall-row": {
               backgroundColor: "#f5f5f5",
+              boxShadow: "inset 0 0 0 4px rgba(123, 209, 92, 0.3)",
               fontWeight: "bold"
             }
           }}
           initialState={{
-            sorting: {
-              sortModel: [{ field: "week", sort: "asc" }]
-            }
+            sorting: { sortModel: [{ field: "week", sort: "asc" }] }
           }}
         />
       )}

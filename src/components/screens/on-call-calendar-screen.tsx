@@ -1,4 +1,3 @@
-import { Star } from "@mui/icons-material";
 import {
   Badge,
   Box,
@@ -124,28 +123,46 @@ const OnCallCalendarScreen = () => {
   };
 
   /**
+   * Formats the returned string for oncall person and capitalizes
+   * first letter of the names.
+   */
+  const formatOnCallPerson = (username: string | null) => {
+    if (!username) return "";
+    return username
+      .replace(/\./g, " ")
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  };
+
+  /**
    * Renders the current week's on call person if they exist
    */
   const renderCurrentOnCall = () => {
     return (
-      <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", margin: 2 }}>
-        {onCallPerson ? (
-          <>
-            <Typography
-              variant="h3"
-              sx={{ color: "#5acc31", fontWeight: "bold", textAlign: "center" }}
-            >
-              {strings.oncall.onCallPersonExists}
-            </Typography>
-            <Typography variant="h3" sx={{ color: "black", fontWeight: "bold", ml: 1 }}>
-              {onCallPerson}
-            </Typography>
-          </>
-        ) : (
-          <Typography sx={{ color: red[700], fontWeight: "bold", textAlign: "center" }}>
-            {strings.oncall.noOnCallPerson}
-          </Typography>
-        )}
+      <Box
+        sx={{
+          display: "inline-block",
+          backgroundColor: "#f5f5f5", // black background
+          color: "black", // white text
+          borderRadius: 4, // rounded corners
+          px: 3, // horizontal padding
+          py: 2, // vertical padding
+          textAlign: "center",
+          mx: "auto",
+          mb: 3,
+          maxWidth: 600
+        }}
+      >
+        <Typography
+          variant="h5"
+          sx={{ display: "block", mb: 1, fontWeight: "bold", textDecoration: "underline" }}
+        >
+          {strings.oncall.onCallPersonExists}
+        </Typography>
+        <Typography variant="h5" sx={{ display: "block", color: "black", fontWeight: "bold" }}>
+          {formatOnCallPerson(onCallPerson)}
+        </Typography>
       </Box>
     );
   };
@@ -213,6 +230,7 @@ const OnCallCalendarScreen = () => {
     const { day, outsideCurrentMonth, ...other } = props;
     const weekNumber = day.weekNumber;
     const onCallDayData = onCallByWeek.get(weekNumber);
+    const isCurrentOnCallPerson = onCallDayData?.username === onCallPerson;
 
     // Show badge only on the first day of the week
     const showBadge = day.weekday === 1 && onCallDayData;
@@ -254,7 +272,7 @@ const OnCallCalendarScreen = () => {
           <Tooltip title={onCallDayData?.username}>
             <Badge
               overlap="circular"
-              badgeContent={isCurrentUserOnCall ? <Star sx={{ fontSize: 14 }} /> : initials}
+              badgeContent={initials}
               sx={{
                 ".MuiBadge-badge": {
                   backgroundColor: isCurrentUserOnCall ? "#ff9800" : badgeColor,
@@ -269,7 +287,15 @@ const OnCallCalendarScreen = () => {
                   borderRadius: "50%",
                   display: "flex",
                   justifyContent: "center",
-                  alignItems: "center"
+                  alignItems: "center",
+                  ...(isCurrentOnCallPerson && {
+                    animation: "pulse 1.5s ease-in-out 2"
+                  })
+                },
+                "@keyframes pulse": {
+                  "0%": { transform: "scale(1)", opacity: 1 },
+                  "50%": { transform: "scale(1.1)", opacity: 0.7 },
+                  "100%": { transform: "scale(1)", opacity: 1 }
                 }
               }}
             >
