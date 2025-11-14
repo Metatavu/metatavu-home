@@ -123,8 +123,7 @@ const OnCallCalendarScreen = () => {
   };
 
   /**
-   * Formats the returned string for oncall person and capitalizes
-   * first letter of the names.
+   * Formats the returned string for oncall person
    */
   const formatOnCallPerson = (username: string | null) => {
     if (!username) return "";
@@ -280,8 +279,7 @@ const OnCallCalendarScreen = () => {
 
     /**
      * TODO:
-     * Temporary logic which should be refactored once a solution has been made to ensure
-     * that on-call user can be matched to logged in user.
+     * Change so that highlighting is available to logged in user matching on-call user.
      */
     const isCurrentUserOnCall = onCallDayData?.username === userProfile?.username;
 
