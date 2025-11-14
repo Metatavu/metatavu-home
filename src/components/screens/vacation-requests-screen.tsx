@@ -2,6 +2,7 @@ import { Card } from "@mui/material";
 import type { GridRowId } from "@mui/x-data-grid";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { useEffect, useMemo, useState } from "react";
+import { useLocation } from "react-router";
 import { userProfileAtom } from "src/atoms/auth";
 import { errorAtom } from "src/atoms/error";
 import { usersAtom } from "src/atoms/user";
@@ -13,13 +14,13 @@ import {
 import type { User } from "src/generated/homeLambdasClient";
 import { type VacationRequest, VacationRequestStatuses } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
-import strings from "src/localization/strings";
 import useUserRole from "src/hooks/use-user-role";
+import strings from "src/localization/strings";
 import { renderVacationDaysTextForScreen } from "src/utils/vacation-days-utils";
-import BackButton from "../generics/back-button";
-import { useLocation } from "react-router";
-import VacationRequestsTable from "../vacation-requests-table/vacation-requests-table";
 import type { FilterType } from "src/utils/vacation-filter-type";
+import { validateUserVacationRequest } from "src/utils/vacations-utils";
+import BackButton from "../generics/back-button";
+import VacationRequestsTable from "../vacation-requests-table/vacation-requests-table";
 
 /**
  * Vacation requests screen
@@ -27,6 +28,7 @@ import type { FilterType } from "src/utils/vacation-filter-type";
 const VacationRequestsScreen = () => {
   const { adminMode } = useUserRole();
   const { vacationRequestsApi } = useLambdasApi();
+  const { usersApi } = useLambdasApi();
   const userProfile = useAtomValue(userProfileAtom);
   const setError = useSetAtom(errorAtom);
   const [vacationRequests, setVacationRequests] = useAtom(
@@ -51,6 +53,7 @@ const VacationRequestsScreen = () => {
   const [users] = useAtom(usersAtom);
   const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
   const [filter, setFilter] = useState<FilterType>("ALL");
+  const currentYear = new Date().getFullYear().toString();
 
   /**
    * Filters a list of vacation requests based on the given filter.
@@ -196,6 +199,17 @@ const VacationRequestsScreen = () => {
     if (!loggedInUser) return;
     try {
       setLoading(true);
+      if (
+        !validateUserVacationRequest(
+          loggedInUser,
+          vacationRequestData,
+          currentYear,
+          setError,
+          setLoading
+        )
+      ) {
+        return;
+      }
       const createdRequest = await vacationRequestsApi.createVacationRequest({
         vacationRequest: {
           userId: loggedInUser.id,
@@ -233,6 +247,17 @@ const VacationRequestsScreen = () => {
     if (!loggedInUser) return;
     try {
       setLoading(true);
+      if (
+        !validateUserVacationRequest(
+          loggedInUser,
+          vacationRequestData,
+          currentYear,
+          setError,
+          setLoading
+        )
+      ) {
+        return;
+      }
       const createdRequest = await vacationRequestsApi.createVacationRequest({
         vacationRequest: {
           userId: loggedInUser.id,
@@ -286,6 +311,19 @@ const VacationRequestsScreen = () => {
         updatedAt: new Date()
       };
       const updatedStatus = [newOrUpdatedStatus];
+      const selectedUser = await usersApi.findUser({ userId: vacationRequest.userId });
+
+      if (
+        !validateUserVacationRequest(
+          selectedUser,
+          vacationRequestData,
+          currentYear,
+          setError,
+          setLoading
+        )
+      ) {
+        return;
+      }
 
       const updatedRequest = await vacationRequestsApi.updateVacationRequest({
         id: vacationRequestId,

@@ -238,7 +238,9 @@
     "updateStatusError": "Updating vacation request status has failed",
     "noVacationRequestsFound": "No vacation requests found",
     "nameNotFound": "Name not found",
-    "noVacationRequestsStatusFound": "Statuses not found"
+    "noVacationRequestsStatusFound": "Statuses not found",
+    "tooManyDaysRequested": "You cannot request {requestedDays} days. You only have {unspentDays} unspent vacation days.",
+    "failedToLoad": "Failed to load users" 
   },
   "sprintRequestError": {
     "fetchResourceAllocationsError": "Fetching sprint data for resourceAllocations has failed",
@@ -461,7 +463,10 @@
     "buttonLabel": "Manage User Vacation Days",
     "editTitle": "Edit Vacation Days",
     "totalDays": "Total Days",
-    "remainingDays": "Remaining Days"
+    "remainingDays": "Remaining Days",
+    "selectYear": "Select Year",
+    "currentYear": "Current Year",
+    "vacationFor": "Vacation Days for"
   },
   "userSearch": {
     "placeholder": "Search users by name or email"
