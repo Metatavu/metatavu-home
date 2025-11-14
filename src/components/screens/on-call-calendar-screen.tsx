@@ -48,7 +48,7 @@ const OnCallCalendarScreen = () => {
   const [open, setOpen] = useState(false);
   const [isCalendarView, setIsCalendarView] = useState(validateJSONString());
   const [selectedDate, setSelectedDate] = useState<DateTime>(DateTime.now());
-  const [onCallPerson, setOnCallPerson] = useState<string | null>(null);
+  const [onCallPerson, setOnCallPerson] = useState<string | undefined>(undefined);
   const [selectedOnCallWeek, setSelectedOnCallWeek] = useState<OnCallWeek>();
   const { isAccountant } = useUserRole();
   const setError = useSetAtom(errorAtom);
@@ -91,7 +91,7 @@ const OnCallCalendarScreen = () => {
     try {
       const fetchedData = await onCallApi.listOnCallData({ year: currentYear.toString() });
       const currentOnCallPerson = fetchedData.find((item) => item.week === currentWeek)?.username;
-      setOnCallPerson(currentOnCallPerson ?? null);
+      setOnCallPerson(currentOnCallPerson ?? undefined);
     } catch (error) {
       setError(`${strings.oncall.fetchFailed} ${error}`);
     }
@@ -143,11 +143,11 @@ const OnCallCalendarScreen = () => {
       <Box
         sx={{
           display: "inline-block",
-          backgroundColor: "#f5f5f5", // black background
-          color: "black", // white text
-          borderRadius: 4, // rounded corners
-          px: 3, // horizontal padding
-          py: 2, // vertical padding
+          backgroundColor: "#f5f5f5",
+          color: "#191970",
+          borderRadius: 4,
+          px: 3,
+          py: 2,
           textAlign: "center",
           mx: "auto",
           mb: 3,
@@ -155,15 +155,33 @@ const OnCallCalendarScreen = () => {
           maxWidth: 600
         }}
       >
-        <Typography
-          variant="h5"
-          sx={{ display: "block", mb: 1, fontWeight: "bold", textDecoration: "underline" }}
-        >
-          {strings.oncall.onCallPersonExists}
-        </Typography>
-        <Typography variant="h5" sx={{ display: "block", color: "black", fontWeight: "bold" }}>
-          {formatOnCallPerson(onCallPerson)}
-        </Typography>
+        {onCallPerson === undefined ? (
+          <CircularProgress sx={{ color: "black" }} />
+        ) : onCallPerson ? (
+          <>
+            <Typography
+              variant="h5"
+              sx={{
+                display: "block",
+                mb: 1,
+                fontWeight: "bold",
+                color: "#191970"
+              }}
+            >
+              {strings.oncall.onCallPersonExists}
+            </Typography>
+            <Typography
+              variant="h5"
+              sx={{ display: "block", color: "#191970", fontWeight: "bold" }}
+            >
+              {formatOnCallPerson(onCallPerson)}
+            </Typography>
+          </>
+        ) : (
+          <Typography variant="h5" sx={{ display: "block", color: red[700], fontWeight: "bold" }}>
+            {strings.oncall.noOnCallPerson}
+          </Typography>
+        )}
       </Box>
     );
   };
