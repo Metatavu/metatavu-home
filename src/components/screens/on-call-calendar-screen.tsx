@@ -165,11 +165,11 @@ const OnCallCalendarScreen = () => {
         <Box sx={boxStyles}>
           <Typography
             variant="h5"
-            sx={{ display: "block", mb: 1, fontWeight: "bold", color: "#191970" }}
+            sx={{ display: "block", mb: 1, fontWeight: "bold", color: "black" }}
           >
             {strings.oncall.onCallPersonExists}
           </Typography>
-          <Typography variant="h5" sx={{ display: "block", color: "#191970", fontWeight: "bold" }}>
+          <Typography variant="h5" sx={{ display: "block", color: "black", fontWeight: "bold" }}>
             {formatOnCallPerson(onCallPerson)}
           </Typography>
         </Box>
@@ -324,7 +324,7 @@ const OnCallCalendarScreen = () => {
                   ...(onCallDayData?.paid
                     ? { color: "#000", fontWeight: "bold", border: "2px solid #7bd15c" }
                     : {}),
-                  background: outsideCurrentMonth ? "#d1d0cf" : "#fff",
+                  background: outsideCurrentMonth ? "#cfc7c7" : "#fff",
                   cursor: "pointer"
                 }}
                 onClick={handleDayClick}
@@ -341,7 +341,7 @@ const OnCallCalendarScreen = () => {
               ...(onCallDayData?.paid
                 ? { color: "#000", fontWeight: "bold", border: "2px solid #7bd15c" }
                 : {}),
-              background: outsideCurrentMonth ? "#d1d0cf" : "#fff",
+              background: outsideCurrentMonth ? "#cfc7c7" : "#fff",
               cursor: onCallDayData ? "pointer" : "default"
             }}
             onClick={handleDayClick}

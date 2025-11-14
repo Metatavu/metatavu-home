@@ -150,7 +150,7 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
             },
             "& .MuiDataGrid-cell": { fontSize: 16, color: "black" },
             "& .MuiDataGrid-columnHeaders": {
-              backgroundColor: "#cfc7c7ff"
+              backgroundColor: "#cfc7c7"
             },
             "& .MuiDataGrid-columnHeaderTitle": {
               fontWeight: "bold"
