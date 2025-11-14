@@ -138,49 +138,49 @@ const OnCallCalendarScreen = () => {
    * Renders the current week's on call person if they exist
    */
   const renderCurrentOnCall = () => {
-    return (
-      <Box
-        sx={{
-          display: "inline-block",
-          backgroundColor: "#f5f5f5",
-          color: "#191970",
-          borderRadius: 4,
-          px: 3,
-          py: 2,
-          textAlign: "center",
-          mx: "auto",
-          mb: 3,
-          mt: 3,
-          maxWidth: 600
-        }}
-      >
-        {onCallPerson === undefined ? (
+    const boxStyles = {
+      display: "inline-block",
+      backgroundColor: "#f5f5f5",
+      color: "#191970",
+      borderRadius: 4,
+      px: 3,
+      py: 2,
+      textAlign: "center",
+      mx: "auto",
+      mb: 3,
+      mt: 3,
+      maxWidth: 600
+    };
+
+    if (onCallPerson === undefined) {
+      return (
+        <Box sx={boxStyles}>
           <CircularProgress sx={{ color: "black" }} />
-        ) : onCallPerson ? (
-          <>
-            <Typography
-              variant="h5"
-              sx={{
-                display: "block",
-                mb: 1,
-                fontWeight: "bold",
-                color: "#191970"
-              }}
-            >
-              {strings.oncall.onCallPersonExists}
-            </Typography>
-            <Typography
-              variant="h5"
-              sx={{ display: "block", color: "#191970", fontWeight: "bold" }}
-            >
-              {formatOnCallPerson(onCallPerson)}
-            </Typography>
-          </>
-        ) : (
-          <Typography variant="h5" sx={{ display: "block", color: red[700], fontWeight: "bold" }}>
-            {strings.oncall.noOnCallPerson}
+        </Box>
+      );
+    }
+
+    if (onCallPerson) {
+      return (
+        <Box sx={boxStyles}>
+          <Typography
+            variant="h5"
+            sx={{ display: "block", mb: 1, fontWeight: "bold", color: "#191970" }}
+          >
+            {strings.oncall.onCallPersonExists}
           </Typography>
-        )}
+          <Typography variant="h5" sx={{ display: "block", color: "#191970", fontWeight: "bold" }}>
+            {formatOnCallPerson(onCallPerson)}
+          </Typography>
+        </Box>
+      );
+    }
+
+    return (
+      <Box sx={boxStyles}>
+        <Typography variant="h5" sx={{ display: "block", color: red[700], fontWeight: "bold" }}>
+          {strings.oncall.noOnCallPerson}
+        </Typography>
       </Box>
     );
   };
