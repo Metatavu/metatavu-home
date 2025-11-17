@@ -6,8 +6,6 @@ import { Settings } from "luxon";
 import { useMemo } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { languageAtom } from "./atoms/language";
-import TimebankContent from "./components/balance/workDays-chart";
-import WorkDaysChart from "./components/balance/workDays-chart";
 import ErrorHandler from "./components/contexts/error-handler";
 import Layout from "./components/layout/layout";
 import AuthenticationProvider from "./components/providers/authentication-provider";

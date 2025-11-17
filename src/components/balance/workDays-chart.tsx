@@ -41,17 +41,6 @@ import {
 import BackButton from "../generics/back-button";
 
 /**
- * Represents a single workDay entry for a specific date.
- */
-export interface WorkDayEntry {
-  date: Date;
-  enteredHours: number;
-  expectedHours: number;
-  isHoliday?: boolean;
-  holidayName?: string | null;
-}
-
-/**
  * Represents aggregated chart data for rendering workday bars.
  */
 export interface ChartDataPoint {
@@ -91,7 +80,7 @@ const WorkDaysChart = ({
   const [weekOffset, setWeekOffset] = useState<number>(0);
   const [monthOffset, setMonthOffset] = useState<number>(0);
   const [usersFlextime, setUsersFlextime] = useState<Flextime>();
-  const [loading, setLoading] = useState<Boolean>(false);
+  const [loading, setLoading] = useState(false);
   const severaUserId = getSeveraUserId(selectedEmployee);
   const { flexTimeApi } = useLambdasApi();
   const { resourceAllocationsApi } = useLambdasApi();
@@ -127,6 +116,11 @@ const WorkDaysChart = ({
     }
   };
 
+  /**
+   * Fetches workdays for the current user from the API.
+   *
+   * @returns Returns Array of workday entries for current year's worth of data.
+   */
   const fetchWorkdays = async () => {
     if (!severaUserId) return;
     setLoading(true);
@@ -260,7 +254,7 @@ const WorkDaysChart = ({
    * @param entries Array of WorkDayEntry
    * @returns ChartDataPoint array grouped by month
    */
-  const getYearData = (entries: WorkDayEntry[]): ChartDataPoint[] => {
+  const getYearData = (entries: ListWorkdaysForUser[]): ChartDataPoint[] => {
     const year = new Date().getFullYear();
     const grouped: Record<number, { hours: number; expected: number }> = {};
     entries.forEach((e) => {
