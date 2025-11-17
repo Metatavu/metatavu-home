@@ -1,5 +1,6 @@
 import { Box, Tooltip } from "@mui/material";
 import { VacationRequestStatuses } from "src/generated/homeLambdasClient";
+import strings from "src/localization/strings";
 import { getVacationRequestStatusColor } from "src/utils/vacation-status-utils";
 
 /**
@@ -9,7 +10,7 @@ import { getVacationRequestStatusColor } from "src/utils/vacation-status-utils";
 
 const UnreviewedIndicator = () => {
 return (
-    <Tooltip title="Not reviewed yet" arrow placement="top">
+    <Tooltip title={strings.vacationRequest.noReview} arrow placement="top">
     <Box
         sx={{
         width: 8,

@@ -94,7 +94,7 @@ const VacationRequestsTableColumns = (): GridColDef[] => {
               arrow
               placement="top"
             >
-              <span
+              <Box
                 style={{
                   color: getVacationRequestStatusColor(currentStatus),
                   fontWeight: 600,
@@ -102,7 +102,7 @@ const VacationRequestsTableColumns = (): GridColDef[] => {
                 }}
               >
                 {LocalizationUtils.getLocalizedVacationRequestStatus(currentStatus)}
-              </span>
+              </Box>
             </Tooltip>
           
           </Box>
