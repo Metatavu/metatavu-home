@@ -70,7 +70,10 @@
     "selectTimespan": "Valitse aikaväli",
     "searchPlaceholder": "Hae henkilöä...",
     "employeeBalances": "Henkilöstön aikakirjaukset ja saldot",
-    "numberOfWeeks": "Viikkojen määrä:"
+    "numberOfWeeks": "Viikkojen määrä:",
+    "enteredHours": "Kirjatut tunnit",
+    "expectedHours": "Odotetut tunnit",
+    "holidayName": "Lomapäivä:"
   },
   "sprint": {
     "sprintview": "Sprintinäkymä",
@@ -191,9 +194,9 @@
     "allTime": "Koko ajalta",
     "startDate": "Alkupäivämäärä",
     "endDate": "Loppupäivämäärä",
-    "hour":"tunti",
-    "hours":"tuntia",
-    "period":"jakso"
+    "hour": "tunti",
+    "hours": "tuntia",
+    "period": "jakso"
   },
   "confirmationHandler": {
     "confirmButtonText": "Kyllä",

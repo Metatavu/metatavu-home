@@ -125,7 +125,7 @@ const BalanceCard = () => {
   }
 
   return (
-    <Link to="/timebank" style={{ textDecoration: "none" }}>
+    <Link to="/balance" style={{ textDecoration: "none" }}>
       <Card
         sx={{
           "&:hover": {

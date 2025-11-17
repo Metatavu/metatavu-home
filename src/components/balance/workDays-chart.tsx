@@ -1,80 +1,67 @@
+import { ArrowBack, ArrowForward, CalendarToday } from "@mui/icons-material";
 import {
   Box,
   Button,
   ButtonGroup,
+  CircularProgress,
   IconButton,
   Input,
-  CircularProgress,
-  Typography,
-  Tooltip as MuiTooltip
+  Tooltip as MuiTooltip,
+  Typography
 } from "@mui/material";
-import { ArrowBack, ArrowForward, CalendarToday } from "@mui/icons-material";
+import { useAtom } from "jotai";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Bar,
-  BarChart,
   CartesianGrid,
+  ComposedChart,
   Legend,
-  ReferenceLine,
+  Line,
   ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis
 } from "recharts";
-import { useMemo, useState, useCallback, useEffect } from "react";
+import { languageAtom } from "src/atoms/language";
+import { workDayAtom } from "src/atoms/workDay";
+import type { Flextime, ListWorkdaysForUser, User } from "src/generated/homeLambdasClient";
+import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
-import { employeeMockData } from "./mockdata";
-import BackButton from "../generics/back-button";
+import { getSeveraUserId } from "src/utils/user-utils";
 import {
   formatDate,
+  getCurrentYearRange,
   getDayLabel,
   getMonthLabel,
   getNumberWeekLabel,
   getWeekEnd,
-  getWeekLabel,
-  getWeekStart
-} from "src/utils/timeBank-utils";
-import { useAtomValue } from "jotai";
-import { usersAtom } from "src/atoms/user";
-import { userProfileAtom } from "src/atoms/auth";
-import type { Flextime, User } from "src/generated/homeLambdasClient";
-import { getSeveraUserId } from "src/utils/user-utils";
-import { useLambdasApi } from "src/hooks/use-api";
+  getWeekStart,
+  normalizeDate
+} from "src/utils/workDay-utils";
+import BackButton from "../generics/back-button";
 
 /**
- * Represents a single timebank entry for a specific date.
+ * Represents a single workDay entry for a specific date.
  */
-export interface TimebankEntry {
-  /** ISO date string for the entry */
-  date: string;
-  /** Number of hours entered for this day */
+export interface WorkDayEntry {
+  date: Date;
   enteredHours: number;
-  /** Expected hours for this day */
   expectedHours: number;
-  /** Whether the day is a holiday */
   isHoliday?: boolean;
-  /** Name of the holiday if applicable */
   holidayName?: string | null;
 }
 
 /**
- * Represents aggregated chart data for rendering timebank bars.
+ * Represents aggregated chart data for rendering workday bars.
  */
 export interface ChartDataPoint {
-  /** Label for the period (day, week, or month) */
   period: string;
-  /** Actual hours worked */
   hours: number;
-  /** Expected hours */
   expected: number;
-  /** Whether the period contains a holiday */
   isHoliday?: boolean;
-  /** Name of the holiday if applicable */
   holidayName?: string | null;
-  /** Week label if applicable */
   week?: string;
-  /** Month label if applicable */
   month?: string;
-  /** Week start date (for tooltips or references) */
   targetWeek?: Date;
 }
 
@@ -84,13 +71,6 @@ type RangeKey = "week" | "month" | "year";
 /** Available range keys */
 const RANGE_KEYS: RangeKey[] = ["week", "month", "year"];
 
-/** Default expected hours per range */
-const EXPECTED_HOURS: Record<RangeKey, number> = {
-  week: 7.25,
-  month: 36.25,
-  year: 145
-};
-
 /** Y-axis domain configuration per range */
 const YAXIS_DOMAIN: Record<RangeKey, [number, number]> = {
   week: [0, 12],
@@ -99,32 +79,42 @@ const YAXIS_DOMAIN: Record<RangeKey, [number, number]> = {
 };
 
 /**
- * Main component displaying the user's timebank information and chart.
+ * Main component displaying the user's workday information and chart.
  */
-const TimebankContent = (): JSX.Element => {
+const WorkDaysChart = ({
+  selectedEmployee
+}: {
+  selectedEmployee: User | undefined;
+}): JSX.Element => {
   const [selectedRange, setSelectedRange] = useState<RangeKey>("month");
   const [amountWeeks, setAmountWeeks] = useState<number>(4);
   const [weekOffset, setWeekOffset] = useState<number>(0);
   const [monthOffset, setMonthOffset] = useState<number>(0);
   const [usersFlextime, setUsersFlextime] = useState<Flextime>();
-  const [loading, setLoading] = useState<Boolean>(true);
-  const users = useAtomValue(usersAtom);
-  const userProfile = useAtomValue(userProfileAtom);
-  const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
-  const severaUserId = getSeveraUserId(loggedInUser);
+  const [loading, setLoading] = useState<Boolean>(false);
+  const severaUserId = getSeveraUserId(selectedEmployee);
   const { flexTimeApi } = useLambdasApi();
+  const { resourceAllocationsApi } = useLambdasApi();
+  const [language] = useAtom(languageAtom);
+  const locale = language === "fi" ? "fi-FI" : "en-US";
+  const [workdays, setWorkdays] = useAtom(workDayAtom);
 
   useEffect(() => {
     if (!usersFlextime) {
       getUsersFlextimes();
     }
-  }, [users, userProfile, usersFlextime]);
+  }, [usersFlextime]);
+
+  useEffect(() => {
+    if (!severaUserId) return;
+    fetchWorkdays();
+  }, [severaUserId]);
 
   /**
    * Fetches the current user's flextime from the API.
    */
   const getUsersFlextimes = async () => {
-    if (!loggedInUser || !severaUserId) return;
+    if (!severaUserId) return;
     try {
       const fetchedUsersFlextime = await flexTimeApi.getFlextimeBySeveraUserId({
         userId: severaUserId
@@ -132,6 +122,35 @@ const TimebankContent = (): JSX.Element => {
       setUsersFlextime(fetchedUsersFlextime);
     } catch (error) {
       console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchWorkdays = async () => {
+    if (!severaUserId) return;
+    setLoading(true);
+
+    const { startDate, endDate } = getCurrentYearRange();
+
+    try {
+      const result = await resourceAllocationsApi.listWorkdaysForUser({
+        severaUserId: severaUserId,
+        startDate,
+        endDate
+      });
+      const mapped: ListWorkdaysForUser[] = result.map((w) => ({
+        date: w.date,
+        userGuid: w.userGuid,
+        enteredHours: w.enteredHours ?? 0,
+        expectedHours: w.expectedHours ?? 0,
+        isHoliday: w.isHoliday ?? false,
+        holidayName: w.holidayName ?? null
+      }));
+
+      setWorkdays(mapped);
+    } catch (err) {
+      console.error("Failed to load work days:", err);
     } finally {
       setLoading(false);
     }
@@ -164,17 +183,17 @@ const TimebankContent = (): JSX.Element => {
 
   /**
    * Aggregates timebank entries by week.
-   * @param entries Array of TimebankEntry
+   * @param entries Array of WorkDayEntry
    * @returns ChartDataPoint array for the selected week
    */
-  const getWeekData = (entries: TimebankEntry[]): ChartDataPoint[] => {
+  const getWeekData = (entries: ListWorkdaysForUser[]): ChartDataPoint[] => {
     const today = new Date();
     const currentWeekStart = getWeekStart(today);
     const targetWeekStart = new Date(currentWeekStart);
     targetWeekStart.setDate(currentWeekStart.getDate() + weekOffset * 7);
     const targetWeekEnd = getWeekEnd(targetWeekStart);
 
-    const entryMap = new Map(entries.map((e) => [e.date, e]));
+    const entryMap = new Map(entries.map((e) => [normalizeDate(e.date), e]));
     const weekDays: Date[] = [];
 
     for (let d = new Date(targetWeekStart); d <= targetWeekEnd; d.setDate(d.getDate() + 1)) {
@@ -182,14 +201,14 @@ const TimebankContent = (): JSX.Element => {
     }
 
     return weekDays.map((d) => {
-      const entry = entryMap.get(formatDate(d));
+      const entry = entryMap.get(normalizeDate(d));
       return {
-        period: getDayLabel(d),
+        period: getDayLabel(d, locale),
         hours: entry?.enteredHours || 0,
         expected: entry?.expectedHours || 0,
         isHoliday: entry?.isHoliday || false,
         holidayName: entry?.holidayName || null,
-        week: getWeekLabel(targetWeekStart),
+        week: getNumberWeekLabel(targetWeekStart),
         targetWeek: targetWeekStart
       };
     });
@@ -197,10 +216,10 @@ const TimebankContent = (): JSX.Element => {
 
   /**
    * Aggregates timebank entries by month for charting.
-   * @param entries Array of TimebankEntry
+   * @param entries Array of WorkDayEntry
    * @returns ChartDataPoint array grouped by weeks in the month
    */
-  const getMonthData = (entries: TimebankEntry[]): ChartDataPoint[] => {
+  const getMonthData = (entries: ListWorkdaysForUser[]): ChartDataPoint[] => {
     const referenceDate = entries.length
       ? new Date(Math.max(...entries.map((e) => new Date(e.date).getTime())))
       : new Date();
@@ -227,10 +246,10 @@ const TimebankContent = (): JSX.Element => {
       .map(([period, values]) => {
         const weekDate = new Date(period);
         return {
-          period: getWeekLabel(weekDate),
+          period: getNumberWeekLabel(weekDate),
           hours: values.hours,
           expected: values.expected,
-          month: weekDate.toLocaleString("default", { month: "long" })
+          month: weekDate.toLocaleString(locale, { month: "long" })
         };
       })
       .sort((a, b) => new Date(a.period).getTime() - new Date(b.period).getTime());
@@ -238,10 +257,10 @@ const TimebankContent = (): JSX.Element => {
 
   /**
    * Aggregates timebank entries by month for the current year.
-   * @param entries Array of TimebankEntry
+   * @param entries Array of WorkDayEntry
    * @returns ChartDataPoint array grouped by month
    */
-  const getYearData = (entries: TimebankEntry[]): ChartDataPoint[] => {
+  const getYearData = (entries: WorkDayEntry[]): ChartDataPoint[] => {
     const year = new Date().getFullYear();
     const grouped: Record<number, { hours: number; expected: number }> = {};
     entries.forEach((e) => {
@@ -257,7 +276,7 @@ const TimebankContent = (): JSX.Element => {
     return Object.entries(grouped)
       .sort(([a], [b]) => Number(a) - Number(b))
       .map(([month, values]) => ({
-        period: getMonthLabel(new Date(year, Number(month))),
+        period: getMonthLabel(new Date(year, Number(month)), locale),
         hours: values.hours,
         expected: values.expected
       }));
@@ -266,11 +285,11 @@ const TimebankContent = (): JSX.Element => {
   const chartData = useMemo<ChartDataPoint[]>(() => {
     switch (selectedRange) {
       case "week":
-        return getWeekData(employeeMockData);
+        return getWeekData(workdays);
       case "month":
-        return getMonthData(employeeMockData);
+        return getMonthData(workdays);
       case "year":
-        return getYearData(employeeMockData);
+        return getYearData(workdays);
       default:
         return [];
     }
@@ -284,13 +303,15 @@ const TimebankContent = (): JSX.Element => {
     setMonthOffset((prev) => prev + delta);
   }, []);
 
+  const getBarColor = (hours: number, expected: number) => {
+    return hours >= expected ? "#4caf50" : "#f44336";
+  };
+
   return (
     <>
       {/* BALANCE HEADER */}
       <Box sx={{ display: "flex", justifyContent: "center", mb: -3, mt: 7, height: "75px" }}>
-        <Typography variant="h4">
-          {loading ? <CircularProgress /> : renderUserFlextime()}
-        </Typography>
+        {loading ? <CircularProgress /> : renderUserFlextime()}
       </Box>
 
       {/* RANGE CONTROLS */}
@@ -333,7 +354,7 @@ const TimebankContent = (): JSX.Element => {
               <IconButton onClick={() => handleWeekOffsetChange(-1)}>
                 <ArrowBack />
               </IconButton>
-              <IconButton disabled={weekOffset === 0} onClick={() => handleWeekOffsetChange(1)}>
+              <IconButton onClick={() => handleWeekOffsetChange(1)}>
                 <ArrowForward />
               </IconButton>
               <IconButton onClick={() => setWeekOffset(0)}>
@@ -413,7 +434,7 @@ const TimebankContent = (): JSX.Element => {
       {/* CHART */}
       <Box sx={{ width: "100%", height: 500 }}>
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={chartData}>
+          <ComposedChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis
               dataKey="period"
@@ -423,27 +444,69 @@ const TimebankContent = (): JSX.Element => {
                 return (
                   <text x={x} y={y + 10} textAnchor="middle" fill={color} fontSize={14}>
                     {payload.value}
-                    {dataPoint?.isHoliday && <title>{dataPoint.holidayName}</title>}
+                    <title>{dataPoint.holidayName}</title>
                   </text>
                 );
               }}
             />
             <YAxis domain={YAXIS_DOMAIN[selectedRange]} />
-            <Tooltip />
-            <Legend />
-            <Bar dataKey="hours" fill="#515151" isAnimationActive />
-            <ReferenceLine
-              y={EXPECTED_HOURS[selectedRange]}
-              stroke="red"
-              strokeDasharray="3 3"
-              label={{
-                value: strings.timebank.expected,
-                fill: "#ff0000",
-                fontSize: 16,
-                position: "top"
+            <Tooltip
+              content={({ active, payload, label }) => {
+                if (active && payload && payload.length) {
+                  const data = payload[0].payload as ChartDataPoint;
+
+                  return (
+                    <Box
+                      sx={{
+                        backgroundColor: "#fff",
+                        border: "1px solid #ccc",
+                        padding: "8px",
+                        borderRadius: 1
+                      }}
+                    >
+                      <Typography variant="body2" fontWeight="bold">
+                        {label}
+                      </Typography>
+                      {data.holidayName && (
+                        <Typography variant="body2">
+                          {strings.timebank.holidayName} {data.holidayName}
+                        </Typography>
+                      )}
+
+                      {/* Actual and expected hours */}
+                      <Typography variant="body2">
+                        {strings.timebank.enteredHours}: {data.hours}
+                      </Typography>
+                      <Typography variant="body2">
+                        {strings.timebank.expectedHours}: {data.expected}
+                      </Typography>
+                    </Box>
+                  );
+                }
+
+                return null;
               }}
             />
-          </BarChart>
+            <Legend />
+            <Bar
+              dataKey="hours"
+              name={strings.timebank.logged}
+              isAnimationActive
+              shape={(props: any) => {
+                const { x, y, width, height, payload } = props;
+                const color = getBarColor(payload.hours, payload.expected);
+                return <rect x={x} y={y} width={width} height={height} fill={color} />;
+              }}
+            />
+            <Line
+              type="monotone"
+              dataKey="expected"
+              name={strings.timebank.expected}
+              stroke="#000"
+              strokeWidth={2}
+              dot={{ r: 6 }}
+            />
+          </ComposedChart>
         </ResponsiveContainer>
       </Box>
 
@@ -452,4 +515,4 @@ const TimebankContent = (): JSX.Element => {
   );
 };
 
-export default TimebankContent;
+export default WorkDaysChart;

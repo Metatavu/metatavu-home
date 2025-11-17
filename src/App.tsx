@@ -6,6 +6,8 @@ import { Settings } from "luxon";
 import { useMemo } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { languageAtom } from "./atoms/language";
+import TimebankContent from "./components/balance/workDays-chart";
+import WorkDaysChart from "./components/balance/workDays-chart";
 import ErrorHandler from "./components/contexts/error-handler";
 import Layout from "./components/layout/layout";
 import AuthenticationProvider from "./components/providers/authentication-provider";
@@ -15,6 +17,7 @@ import QuestionnaireManager from "./components/questionnaire/questionnaire-manag
 import AdminScreen from "./components/screens/admin-screen";
 import AdminVacationManagementScreen from "./components/screens/admin-vacation-management/admin-vacation-management-screen";
 import AllSoftwareScreen from "./components/screens/all-software-screen";
+import BalanceScreen from "./components/screens/balance-screen";
 import EmployeeFlextimeScreen from "./components/screens/employee-flextime-screen";
 import ErrorScreen from "./components/screens/error-screen";
 import HomeScreen from "./components/screens/home-screen";
@@ -29,7 +32,6 @@ import WikiDocumentationScreen from "./components/screens/wiki-documentation-scr
 import SoftwareDetails from "./components/software-registry/SoftwareDetails";
 import { theme } from "./theme";
 import { QuestionnairePreviewMode } from "./types";
-import TimebankContent from "./components/timebank/timebank-content";
 
 /**
  * Application component
@@ -56,8 +58,8 @@ const App = () => {
           element: <VacationRequestsScreen />
         },
         {
-          path: "/timebank",
-          element: <TimebankContent />
+          path: "/balance",
+          element: <BalanceScreen />
         },
         // {
         //   path: "/sprintview",

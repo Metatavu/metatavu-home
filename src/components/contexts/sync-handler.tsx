@@ -1,8 +1,8 @@
 import { Divider } from "@mui/material";
-import GenericDialog from "../generics/generic-dialog";
 import { DateTime } from "luxon";
 import strings from "src/localization/strings";
-import { CustomDatePicker } from "../timebank/timebank-daterange-picker";
+import { CustomDatePicker } from "../balance/timebank-daterange-picker";
+import GenericDialog from "../generics/generic-dialog";
 
 /**
  * Component properties

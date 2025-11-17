@@ -70,7 +70,10 @@
     "selectTimespan": "Select time span",
     "searchPlaceholder": "Search for a person...",
     "employeeBalances": "Employee time totals and balances",
-    "numberOfWeeks": "Number of weeks:"
+    "numberOfWeeks": "Number of weeks:",
+    "enteredHours": "Logged hours",
+    "expectedHours": "Expected hours",
+    "holidayName": "Holiday:"
   },
   "sprint": {
     "sprintview": "Sprint view",

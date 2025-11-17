@@ -54,8 +54,8 @@ export const formatDate = (date: Date): string => date.toISOString().substring(0
  * @example
  * getMonthLabel(new Date("2025-10-06")); // → "Oct"
  */
-export const getMonthLabel = (date: Date): string =>
-  date.toLocaleString("default", { month: "short" });
+export const getMonthLabel = (date: Date, locale: string): string =>
+  date.toLocaleString(locale, { month: "short" });
 
 /**
  * Returns a label representing the week of a given date.
@@ -66,7 +66,8 @@ export const getMonthLabel = (date: Date): string =>
  * @example
  * getWeekLabel(new Date("2025-10-06")); // → "Week 2025-10-06"
  */
-export const getWeekLabel = (date: Date): string => `${strings.timeExpressions.week} ${formatDate(date)}`;
+export const getWeekLabel = (date: Date): string =>
+  `${strings.timeExpressions.week} ${formatDate(date)}`;
 
 /**
  * Returns a label representing the ISO week number of a given date.
@@ -93,9 +94,36 @@ export const getNumberWeekLabel = (date: Date): string => {
  * @example
  * getDayLabel(new Date("2025-10-06")); // → "Mon, Oct 6"
  */
-export const getDayLabel = (date: Date): string =>
-  date.toLocaleDateString("en-US", {
+export const getDayLabel = (date: Date, locale: string = "en-US"): string =>
+  date.toLocaleDateString(locale, {
     weekday: "short",
     month: "short",
     day: "numeric"
   });
+
+/**
+ * Returns the date range for the current year up to today for the fetch to severa.
+ *
+ * @returns An object containing `startDate` (January 1st of the current year)
+ *          and `endDate` (today's date) in `YYYY-MM-DD` format.
+ */
+export const getCurrentYearRange = () => {
+  const year = new Date().getFullYear();
+
+  const startDate = new Date(year, 0, 1);
+
+  const endDate = new Date();
+
+  return { startDate, endDate };
+};
+
+/**
+ * Normalizes a date to a string in `YYYY-MM-DD` format after the API fetch.
+ *
+ * @param date - The date to normalize, either as a `Date` object or a string.
+ * @returns A string representing the date in `YYYY-MM-DD` format.
+ *
+ */
+export const normalizeDate = (date: Date | string) => {
+  return typeof date === "string" ? date : date.toISOString().split("T")[0];
+};

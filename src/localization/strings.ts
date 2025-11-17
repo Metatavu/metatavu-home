@@ -94,6 +94,9 @@ export interface Localized extends LocalizedStringsMethods {
     searchPlaceholder: string;
     employeeBalances: string;
     numberOfWeeks: string;
+    enteredHours: string;
+    expectedHours: string;
+    holidayName: string;
   };
   /**
    * Translations related to sprint view
