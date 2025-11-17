@@ -11,7 +11,7 @@ export const getVacationRequestStatusColor = (vacationRequestStatus: VacationReq
   ({
     [VacationRequestStatuses.APPROVED]: theme.palette.success.main,
     [VacationRequestStatuses.DECLINED]: theme.palette.error.main,
-    [VacationRequestStatuses.PENDING]: theme.palette.info.main
+    [VacationRequestStatuses.PENDING]: theme.palette.warning.light
   })[vacationRequestStatus];
 
 /**

@@ -95,13 +95,15 @@ const VacationRequestsTable = ({
       id: vacationRequest.id,
       type: LocalizationUtils.getLocalizedVacationRequestType(vacationRequest.type),
       personFullName: usersFullName,
+      userId: vacationRequest.userId,
       updatedAt: DateTime.fromJSDate(vacationRequest.updatedAt),
       startDate: DateTime.fromJSDate(vacationRequest.startDate),
       endDate: DateTime.fromJSDate(vacationRequest.endDate),
       days: vacationRequest.days,
       message: vacationRequest.message || strings.vacationRequest.noMessage,
       status: VacationRequestStatuses.PENDING,
-      draft: vacationRequest.draft || false
+      draft: vacationRequest.draft || false,
+      vacationRequest: vacationRequest
     };
     return row;
   };
@@ -160,7 +162,7 @@ const VacationRequestsTable = ({
       console.error("Error creating data grid rows:", error);
       setRows([]);
     }
-  }, [vacationRequests, formOpen, language]);
+  }, [vacationRequests, formOpen]);
 
   const StyledGridOverlay = styled("div")(() => ({
     display: "flex",

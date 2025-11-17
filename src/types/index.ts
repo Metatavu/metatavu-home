@@ -1,6 +1,6 @@
 import type { DateTime } from "luxon";
 //import type { Person, PersonTotalTime, DailyEntry } from "../generated/client";
-import type { VacationType } from "../generated/homeLambdasClient";
+import type { VacationRequest, VacationType } from "../generated/homeLambdasClient";
 import type { ReactNode } from "react";
 
 /**
@@ -29,6 +29,7 @@ export interface VacationsDataGridRow {
   id: string | undefined;
   type: VacationType | string;
   personFullName: string;
+  userId?: string | undefined;
   updatedAt: string | DateTime;
   startDate: string | DateTime;
   endDate: string | DateTime;
@@ -36,6 +37,7 @@ export interface VacationsDataGridRow {
   message: string;
   status: string;
   draft: boolean;
+  vacationRequest?: VacationRequest;
 }
 
 /**
