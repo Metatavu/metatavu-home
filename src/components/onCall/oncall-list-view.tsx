@@ -42,6 +42,7 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
       sortable: false,
       renderCell: (params) => (
         <Checkbox
+          onClick={(e) => e.stopPropagation()}
           onChange={async () => {
             if (isAccountant) {
               await updatePaidStatus(selectedDate.year, params.row.week, params.value);
@@ -50,8 +51,7 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
           checked={params.value}
           disabled={!isAccountant}
           sx={{
-            color: params.value ? "#7bd15c" : "#f44336",
-            "&.Mui-checked": { color: "#7bd15c" }
+            "&.Mui-checked": { color: "rgba(123, 209, 92, 0.3)" }
           }}
         />
       )
@@ -100,6 +100,7 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
     paid: item.paid,
     week: item.week,
     person: item.username ? item.username : strings.oncall.noUsernameOnCall,
+    email: item.email ? item.email : "-"
   }));
 
   const listViewTypographyStyles = {
@@ -138,10 +139,10 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
     },
 
     "&.Mui-disabled": {
-      boxShadow: "0 0 0 2px #9e9e9e", // dimmed border
+      boxShadow: "0 0 0 2px #9e9e9e",
       "& .MuiTypography-root": {
-        backgroundColor: "#f0f0f0", // lighter grey background
-        color: "#9e9e9e" // dimmed text
+        backgroundColor: "#f0f0f0",
+        color: "#9e9e9e"
       }
     }
   };
@@ -216,7 +217,7 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
               fontWeight: "bold"
             },
             "& .default-row": {
-              backgroundColor: "#f5f5f5" // all rows grey
+              backgroundColor: "#f5f5f5"
             },
             "& .current-oncall-row": {
               backgroundColor: "#f5f5f5",
