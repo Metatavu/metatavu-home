@@ -83,6 +83,15 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
           {params.value}
         </Typography>
       )
+    },
+    {
+      field: "email",
+      headerName: strings.userTable.email,
+      flex: 1,
+      headerAlign: "center",
+      align: "center",
+      sortable: true,
+      renderCell: (params) => <Typography>{params.value}</Typography>
     }
   ];
 
