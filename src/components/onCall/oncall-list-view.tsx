@@ -2,7 +2,8 @@ import { Box, Button, Checkbox, Typography } from "@mui/material";
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
 import { useAtomValue } from "jotai";
 import { DateTime } from "luxon";
-import { userProfileAtom } from "src/atoms/auth";
+// Will be required for matching logged in user to oncall user
+//import { userProfileAtom } from "src/atoms/auth";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import { onCallAtom } from "../../atoms/oncall";
@@ -24,7 +25,8 @@ interface Props {
 const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Props) => {
   const onCallData = useAtomValue(onCallAtom);
   const { isAccountant } = useUserRole();
-  const userProfile = useAtomValue(userProfileAtom);
+  // TODO: Will be required for matching onCall to logged in user
+  //const userProfile = useAtomValue(userProfileAtom);
 
   // Identify the current on-call person for the current week
   const currentWeekUsername = onCallData.find((item) => {
