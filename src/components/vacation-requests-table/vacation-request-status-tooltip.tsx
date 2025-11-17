@@ -2,6 +2,7 @@ import { Box } from "@mui/material";
 import { useAtomValue } from "jotai";
 import { usersAtom } from "src/atoms/user";
 import type { VacationRequestStatus } from "src/generated/homeLambdasClient";
+import strings from "src/localization/strings";
 import LocalizationUtils from "src/utils/localization-utils";
 
 /**
@@ -21,7 +22,7 @@ const StatusToolTipContent = ({ statuses }: Props) => {
 const users = useAtomValue(usersAtom) || [];
 
 if (statuses.length === 0) {
-    return <Box sx={{ p: 1, fontSize: '0.875rem' }}>No status history</Box>;
+    return <Box sx={{ p: 1, fontSize: '0.875rem' }}>{strings.vacationRequest.noStatus}</Box>;
 }
 
 return (
@@ -35,7 +36,7 @@ return (
         fontSize: '0.875rem'
         }}
     >
-        Status History
+        {strings.vacationRequest.status}
     </Box>
 
     {statuses.map((statusItem, index) => {
@@ -67,7 +68,7 @@ return (
             {LocalizationUtils.getLocalizedVacationRequestStatus(statusItem.status)}
             </Box>
             <Box sx={{ color: "#90cafd", fontSize: '0.8rem', mt: 0.25 }}>
-            by {adminName}
+            {strings.vacationRequest.reviewedBy} {adminName}
             </Box>
             <Box sx={{ color: '#bbb', fontSize: '0.75rem', mt: 0.25 }}>
             {date}

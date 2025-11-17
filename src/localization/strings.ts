@@ -257,6 +257,7 @@ export interface Localized extends LocalizedStringsMethods {
     person: string;
     noPersonFullName: string;
     noReview: string;
+    reviewedBy: string;
   };
   /**
    * Translations related to vacation requests errors
