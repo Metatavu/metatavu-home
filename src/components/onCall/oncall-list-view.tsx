@@ -74,10 +74,10 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
       renderCell: (params) => (
         <Typography
           sx={{
-            fontWeight:
-              params.value === currentWeekUsername || userProfile?.username === params.value
-                ? "bold"
-                : "normal"
+            fontWeight: params.value === currentWeekUsername ? "bold" : "normal",
+            border: params.value === currentWeekUsername ? "2px solid black" : "none",
+            borderRadius: 2,
+            px: 1
           }}
         >
           {params.value}
@@ -91,7 +91,15 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
       headerAlign: "center",
       align: "center",
       sortable: true,
-      renderCell: (params) => <Typography>{params.value}</Typography>
+      renderCell: (params) => (
+        <Typography
+          sx={{
+            fontWeight: params.row.person === currentWeekUsername ? "bold" : "normal"
+          }}
+        >
+          {params.value}
+        </Typography>
+      )
     }
   ];
 
@@ -201,9 +209,6 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
           columns={columns}
           disableRowSelectionOnClick
           hideFooter
-          getRowClassName={(params) =>
-            params.row.person === currentWeekUsername ? "current-oncall-row" : "default-row"
-          }
           sx={{
             marginBottom: "60px",
             "& .MuiDataGrid-row:hover": {
@@ -218,11 +223,6 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
             },
             "& .default-row": {
               backgroundColor: "#f5f5f5"
-            },
-            "& .current-oncall-row": {
-              backgroundColor: "#f5f5f5",
-              boxShadow: "inset 0 0 0 4px rgba(123, 209, 92, 0.3)",
-              fontWeight: "bold"
             }
           }}
           initialState={{
