@@ -83,7 +83,7 @@ const WorkDaysChart = ({
   const [loading, setLoading] = useState(false);
   const severaUserId = getSeveraUserId(selectedEmployee);
   const { flexTimeApi } = useLambdasApi();
-  const { resourceAllocationsApi } = useLambdasApi();
+  const { workDaysApi } = useLambdasApi();
   const [language] = useAtom(languageAtom);
   const locale = language === "fi" ? "fi-FI" : "en-US";
   const [workdays, setWorkdays] = useAtom(workDayAtom);
@@ -128,7 +128,7 @@ const WorkDaysChart = ({
     const { startDate, endDate } = getCurrentYearRange();
 
     try {
-      const result = await resourceAllocationsApi.listWorkdaysForUser({
+      const result = await workDaysApi.listWorkdaysForUser({
         severaUserId: severaUserId,
         startDate,
         endDate
