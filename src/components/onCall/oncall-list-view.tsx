@@ -99,7 +99,7 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
     id: idx,
     paid: item.paid,
     week: item.week,
-    person: item.username ? item.username : strings.oncall.noUsernameOnCall
+    person: item.username ? item.username : strings.oncall.noUsernameOnCall,
   }));
 
   const listViewTypographyStyles = {
