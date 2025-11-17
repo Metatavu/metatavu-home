@@ -5,7 +5,6 @@ import { useAtomValue } from "jotai";
 import { DateTime } from "luxon";
 import { useMemo, useRef, useState } from "react";
 import { userProfileAtom } from "src/atoms/auth";
-import { languageAtom } from "src/atoms/language";
 import { usersAtom } from "src/atoms/user";
 import { displayedVacationRequestsAtom } from "src/atoms/vacation";
 import { type VacationRequest, VacationRequestStatuses } from "src/generated/homeLambdasClient";
@@ -71,7 +70,6 @@ const VacationRequestsTable = ({
   const [formOpen, setFormOpen] = useState(false);
   const [selectedRowIds, setSelectedRowIds] = useState<GridRowSelectionModel>([]);
   const [rows, setRows] = useState<VacationsDataGridRow[]>([]);
-  const language = useAtomValue(languageAtom);
   const columns = VacationRequestsTableColumns();
   const users = useAtomValue(usersAtom) || [];
   const userProfile = useAtomValue(userProfileAtom);

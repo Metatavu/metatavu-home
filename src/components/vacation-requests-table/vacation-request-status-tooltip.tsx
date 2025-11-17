@@ -45,29 +45,33 @@ return (
         const adminName = `${firstName} ${lastName}`.trim() || admin?.email || 'Unknown';
         
         const date = statusItem.updatedAt ? new Date(statusItem.updatedAt).toLocaleString() : 'Unknown';
+        
+        const uniqueKey = `${statusItem.status}-${statusItem.createdBy}-${statusItem.updatedAt?.toString() || index}`;
 
         return (
         <Box
-            key={index}
+            key={uniqueKey}
             sx={{
-                py:0.5,
-                borderBottom:
-                index < statuses.length -1
-                ? '1px solid rgba(255,255,255,0.2)' : 'none'
+            py: 0.5,
+            borderBottom:
+                index < statuses.length - 1
+                ? '1px solid rgba(255,255,255,0.2)'
+                : 'none'
             }}      
         >
-        <Box sx={{
-            fontWeight:600,
-            color:"#ffd700",fontSize:'0.875rem'
-        }}>
+            <Box sx={{
+            fontWeight: 600,
+            color: "#ffd700",
+            fontSize: '0.875rem'
+            }}>
             {LocalizationUtils.getLocalizedVacationRequestStatus(statusItem.status)}
             </Box>
-        <Box sx={{color: "#90cafd",fontSize:'0.8rem',mt:0.25}}>
+            <Box sx={{ color: "#90cafd", fontSize: '0.8rem', mt: 0.25 }}>
             by {adminName}
-        </Box>
-        <Box sx={{ color: '#bbb', fontSize: '0.75rem', mt: 0.25 }}>
+            </Box>
+            <Box sx={{ color: '#bbb', fontSize: '0.75rem', mt: 0.25 }}>
             {date}
-        </Box>
+            </Box>
         </Box>
         );
     })}

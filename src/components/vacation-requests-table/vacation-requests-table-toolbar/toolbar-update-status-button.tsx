@@ -39,9 +39,6 @@ const UpdateStatusButton = ({
     return { base: baseColor, hover: hoverColor };
   };
 
-  const colors = getButtonColor();
-
-
   return (
     <Button 
     variant="contained"

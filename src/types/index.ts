@@ -29,7 +29,7 @@ export interface VacationsDataGridRow {
   id: string | undefined;
   type: VacationType | string;
   personFullName: string;
-  userId?: string | undefined;
+  userId?: string ;
   updatedAt: string | DateTime;
   startDate: string | DateTime;
   endDate: string | DateTime;
