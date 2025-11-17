@@ -280,7 +280,9 @@ export interface Localized extends LocalizedStringsMethods {
     nameNotFound: string;
     noVacationRequestsStatusFound: string;
     tooManyDaysRequested: string;
+    failedToLoad: string;
   };
+
   /**
    * Translations related to sprint requests errors
    */
@@ -592,6 +594,9 @@ export interface Localized extends LocalizedStringsMethods {
     editTitle: string;
     totalDays: string;
     remainingDays: string;
+    selectYear: string;
+    currentYear: string;
+    vacationFor: string;
   };
   /**
    * Translations for User Search Bar component
