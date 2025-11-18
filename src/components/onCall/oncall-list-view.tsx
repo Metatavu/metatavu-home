@@ -2,10 +2,10 @@ import { Box, Button, Checkbox, Typography } from "@mui/material";
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
 import { useAtomValue } from "jotai";
 import { DateTime } from "luxon";
-// Will be required for matching logged in user to oncall user
-//import { userProfileAtom } from "src/atoms/auth";
+import { userProfileAtom } from "src/atoms/auth";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
+import { formatUsername } from "src/utils/oncall-utils";
 import { onCallAtom } from "../../atoms/oncall";
 
 /**
@@ -25,14 +25,13 @@ interface Props {
 const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Props) => {
   const onCallData = useAtomValue(onCallAtom);
   const { isAccountant } = useUserRole();
-  // TODO: Will be required for matching onCall to logged in user
-  //const userProfile = useAtomValue(userProfileAtom);
+  const userProfile = useAtomValue(userProfileAtom);
+  const loggedInEmail = userProfile?.email;
 
-  // Identify the current on-call person for the current week
-  const currentWeekUsername = onCallData.find((item) => {
-    const now = DateTime.now();
-    return item.week === now.weekNumber && item.year === now.year;
-  })?.username;
+  // Identify rows where row matches logged in user
+  const isLoggedIn = (email: string) => {
+    return loggedInEmail && email && loggedInEmail.toLowerCase() === email.toLowerCase();
+  };
 
   const columns: GridColDef[] = [
     {
@@ -76,13 +75,13 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
       renderCell: (params) => (
         <Typography
           sx={{
-            fontWeight: params.value === currentWeekUsername ? "bold" : "normal",
-            border: params.value === currentWeekUsername ? "2px solid black" : "none",
+            fontWeight: isLoggedIn(params.row.email) ? "bold" : "normal",
+            border: isLoggedIn(params.row.email) ? "2px solid black" : "none",
             borderRadius: 2,
             px: 1
           }}
         >
-          {params.value}
+          {formatUsername(params.value)}
         </Typography>
       )
     },
@@ -96,7 +95,7 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
       renderCell: (params) => (
         <Typography
           sx={{
-            fontWeight: params.row.person === currentWeekUsername ? "bold" : "normal"
+            fontWeight: isLoggedIn(params.value) ? "bold" : "normal"
           }}
         >
           {params.value}

@@ -25,7 +25,7 @@ import { onCallAtom } from "../../atoms/oncall";
 import { useLambdasApi } from "../../hooks/use-api";
 import strings from "../../localization/strings";
 import type { OnCallWeek } from "../../types";
-import { stringToColor } from "../../utils/oncall-utils";
+import { formatUsername, stringToColor } from "../../utils/oncall-utils";
 import OnCallListView from "../onCall/oncall-list-view";
 import OnCallPaidStatusDialog from "../onCall/oncall-paid-status-dialog";
 
@@ -123,18 +123,6 @@ const OnCallCalendarScreen = () => {
   };
 
   /**
-   * Formats the returned string for oncall person
-   */
-  const formatOnCallPerson = (username: string | null) => {
-    if (!username) return "";
-    return username
-      .replace(/\./g, " ")
-      .split(" ")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ");
-  };
-
-  /**
    * Renders the current week's on call person if they exist
    */
   const renderCurrentOnCall = () => {
@@ -169,7 +157,7 @@ const OnCallCalendarScreen = () => {
             {strings.oncall.onCallPersonExists}
           </Typography>
           <Typography variant="h5" sx={{ display: "block", color: "black", fontWeight: "bold" }}>
-            {formatOnCallPerson(onCallPerson)}
+            {formatUsername(onCallPerson)}
           </Typography>
         </Box>
       );
@@ -247,7 +235,8 @@ const OnCallCalendarScreen = () => {
     const { day, outsideCurrentMonth, ...other } = props;
     const weekNumber = day.weekNumber;
     const onCallDayData = onCallByWeek.get(weekNumber);
-    const isCurrentOnCallPerson = onCallDayData?.username === onCallPerson;
+    // match logged in user email to on call email
+    const whenUserIsOnCall = onCallDayData?.email === userProfile?.email;
 
     // Show badge only on the first day of the week
     const showBadge = day.weekday === 1 && onCallDayData;
@@ -276,22 +265,16 @@ const OnCallCalendarScreen = () => {
       }
     };
 
-    /**
-     * TODO:
-     * Change so that highlighting is available to logged in user matching on-call user.
-     */
-    const isCurrentUserOnCall = onCallDayData?.username === userProfile?.username;
-
     return (
       <Box sx={{ position: "relative" }}>
         {showBadge && (
-          <Tooltip title={onCallDayData?.username}>
+          <Tooltip title={formatUsername(onCallDayData?.username)}>
             <Badge
               overlap="circular"
               badgeContent={initials}
               sx={{
                 ".MuiBadge-badge": {
-                  backgroundColor: isCurrentUserOnCall ? "#ff9800" : badgeColor,
+                  backgroundColor: whenUserIsOnCall ? "#ff9800" : badgeColor,
                   color: "#fff",
                   right: 60,
                   top: 10,
@@ -299,19 +282,27 @@ const OnCallCalendarScreen = () => {
                   minHeight: 24,
                   fontSize: 12,
                   zIndex: 1,
-                  fontWeight: isCurrentUserOnCall ? "900" : "normal",
+                  fontWeight: whenUserIsOnCall ? "900" : "normal",
                   borderRadius: "50%",
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
-                  ...(isCurrentOnCallPerson && {
-                    animation: "pulse 1.5s ease-in-out 2"
+                  position: "absolute",
+                  overflow: "visible",
+                  ...(whenUserIsOnCall && {
+                    animation: "pulseGlow 1.5s ease-in-out 4"
                   })
                 },
-                "@keyframes pulse": {
-                  "0%": { transform: "scale(1)", opacity: 1 },
-                  "50%": { transform: "scale(1.1)", opacity: 0.7 },
-                  "100%": { transform: "scale(1)", opacity: 1 }
+                "@keyframes pulseGlow": {
+                  "0%": {
+                    boxShadow: "0 0 0 0 rgba(150, 96, 15, 0.7)"
+                  },
+                  "70%": {
+                    boxShadow: "0 0 0 8px rgba(255, 152, 0, 0)"
+                  },
+                  "100%": {
+                    boxShadow: "0 0 0 0 rgba(255, 152, 0, 0)"
+                  }
                 }
               }}
             >

@@ -20,3 +20,18 @@ export const stringToColor = (str?: string, week?: number, seed?: number): strin
 
   return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
 };
+
+/**
+ * Formats a name string for display
+ *
+ * @param username string | null | undefined
+ * @returns formatted display string
+ */
+export const formatUsername = (username?: string | null): string => {
+  if (!username) return "";
+  return username
+    .replace(/\./g, " ")
+    .split(" ")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+};
