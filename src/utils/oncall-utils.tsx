@@ -8,7 +8,7 @@ export const stringToColor = (str?: string, week?: number, seed = 1): string => 
   const combined = week ? `${str}-${week}-${seed}` : `${str}-${seed}`;
   let hash = 0;
   for (let i = 0; i < combined.length; i++) {
-    hash = combined.charCodeAt(i) + ((hash << 5) - hash);
+    hash = (combined.codePointAt(i) ?? 0) + ((hash << 5) - hash);
     hash = hash & hash; // 32-bit integer
   }
 
