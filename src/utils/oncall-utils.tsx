@@ -2,11 +2,10 @@
  * Generate deterministic, visually distinct color from string
  * Uses HSL for better color separation
  */
-export const stringToColor = (str?: string, week?: number, seed?: number): string => {
+export const stringToColor = (str?: string, week?: number, seed = 1): string => {
   if (!str) return "#cccccc";
 
-  const actualSeed = seed || 1;
-  const combined = week !== undefined ? `${str}-${week}-${actualSeed}` : `${str}-${actualSeed}`;
+  const combined = week !== undefined ? `${str}-${week}-${seed}` : `${str}-${seed}`;
 
   let hash = 0;
   for (let i = 0; i < combined.length; i++) {
