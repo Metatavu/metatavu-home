@@ -5,8 +5,7 @@
 export const stringToColor = (str?: string, week?: number, seed = 1): string => {
   if (!str) return "#cccccc";
 
-  const combined = week !== undefined ? `${str}-${week}-${seed}` : `${str}-${seed}`;
-
+  const combined = week ? `${str}-${week}-${seed}` : `${str}-${seed}`;
   let hash = 0;
   for (let i = 0; i < combined.length; i++) {
     hash = combined.charCodeAt(i) + ((hash << 5) - hash);
