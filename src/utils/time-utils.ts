@@ -313,8 +313,7 @@ export const parseVacationDays = (vacationDaysByYear: string[]): { [year: string
 };
 
 /**
- * Convert numeric contracted week (1-7 = Mon-Sun)
- * into a boolean[7] array.
+ * Convert numeric contracted week (1-7 = Mon-Sun) into a boolean[7] array.
  */
 export const contractedWeekToBoolean = (week: number[]): boolean[] => {
   const result = Array(7).fill(false);
