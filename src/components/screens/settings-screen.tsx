@@ -6,7 +6,6 @@ import { errorAtom } from "src/atoms/error";
 import { usersAtom } from "src/atoms/user";
 import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
-import type { UsersApi } from "src/generated/homeLambdasClient";
 
 /**
  * Settings screen component
