@@ -227,7 +227,7 @@
     "person": "Person",
     "noPersonFullName": "No name",
     "noReview": "Not reviewed yet",
-    "reviewedBy": "by"
+    "reviewedBy": "by:"
   },
   "vacationRequestError": {
     "fetchRequestError": "Fetching vacation requests has failed",

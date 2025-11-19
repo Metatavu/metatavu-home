@@ -7,7 +7,7 @@ import strings from "src/localization/strings";
 import LocalizationUtils from "src/utils/localization-utils";
 import { formatDate } from "src/utils/time-utils";
 import { getVacationRequestStatusColor } from "src/utils/vacation-status-utils";
-import UnreviewedIndicator from "./unreviewed-vacation-indicator";
+import UnreviewedIndicator from "./pending-vacation-indicator";
 import StatusToolTipContent from "./vacation-request-status-tooltip";
 
 /**

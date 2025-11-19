@@ -3,12 +3,8 @@ import { VacationRequestStatuses } from "src/generated/homeLambdasClient";
 import strings from "src/localization/strings";
 import { getVacationRequestStatusColor } from "src/utils/vacation-status-utils";
 
-/**
- * Unreviewed Indicator Component
- * Shows a pulsing orange dot for vacation requests that haven't been reviewed by admin
- */
-
-const UnreviewedIndicator = () => {
+const PendingVacationStatusIndicator = () => {
+  
   return (
     <Tooltip title={strings.vacationRequest.noReview} arrow placement="top">
       <Box
@@ -32,4 +28,4 @@ const UnreviewedIndicator = () => {
   );
 };
 
-export default UnreviewedIndicator;
+export default PendingVacationStatusIndicator;

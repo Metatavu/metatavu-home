@@ -14,7 +14,7 @@ interface Props {
 
 /**
  * Status Tooltip Content Component
- * Displays status history with admin names and timestamps
+ * Displays statuses, created by and timestamps
  *
  * @param props component properties
  */
