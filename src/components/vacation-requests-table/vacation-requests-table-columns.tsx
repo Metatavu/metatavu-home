@@ -95,7 +95,7 @@ const VacationRequestsTableColumns = (): GridColDef[] => {
               placement="top"
             >
               <Box
-                style={{
+                sx={{
                   color: getVacationRequestStatusColor(currentStatus),
                   fontWeight: 600,
                   cursor: 'help'
@@ -109,10 +109,7 @@ const VacationRequestsTableColumns = (): GridColDef[] => {
         );
       },
       cellClassName: (params) => {
-        if (params.value === null) {
-          return "";
-        }
-        return params.value;
+        return params.value == null ? "" : String(params.value);
       },
       
     }
