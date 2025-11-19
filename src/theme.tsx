@@ -190,4 +190,4 @@ export const customTheme = {
       }
     }
   }
-} as any;
+};
