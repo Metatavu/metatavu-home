@@ -90,7 +90,7 @@ const VacationRequestsTableColumns = (): GridColDef[] => {
             {adminMode && isUnreviewed && <UnreviewedIndicator />}
             <Tooltip title={<StatusToolTipContent statuses={statuses} />} arrow placement="top">
               <Box
-                style={{
+                sx={{
                   color: getVacationRequestStatusColor(currentStatus),
                   fontWeight: 600,
                   cursor: "help"
