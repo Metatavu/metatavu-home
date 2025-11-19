@@ -76,7 +76,6 @@ const WorkDaysChart = ({
   selectedEmployee: User | undefined;
 }): JSX.Element => {
   const [selectedRange, setSelectedRange] = useState<RangeKey>("month");
-  const [amountWeeks, setAmountWeeks] = useState<number>(4);
   const [weekOffset, setWeekOffset] = useState<number>(0);
   const [monthOffset, setMonthOffset] = useState<number>(0);
   const [usersFlextime, setUsersFlextime] = useState<Flextime>();
@@ -213,37 +212,43 @@ const WorkDaysChart = ({
    * @param entries Array of WorkDayEntry
    * @returns ChartDataPoint array grouped by weeks in the month
    */
-  const getMonthData = (entries: ListWorkdaysForUser[]): ChartDataPoint[] => {
-    const referenceDate = entries.length
-      ? new Date(Math.max(...entries.map((e) => new Date(e.date).getTime())))
-      : new Date();
+  const getMonthData = (
+    entries: ListWorkdaysForUser[],
+    targetMonth: number,
+    targetYear: number
+  ): ChartDataPoint[] => {
+    const start = new Date(targetYear, targetMonth, 1);
+    const end = new Date(targetYear, targetMonth + 1, 0);
 
-    const targetReference = new Date(referenceDate);
-    targetReference.setMonth(referenceDate.getMonth() + monthOffset);
+    const grouped: Record<string, { hours: number; expected: number; entryDates: Date[] }> = {};
 
-    const end = new Date(targetReference);
-    const start = getWeekStart(end);
-    start.setDate(start.getDate() - (amountWeeks - 1) * 7);
-
-    const grouped: Record<string, { hours: number; expected: number }> = {};
     entries.forEach((e) => {
       const d = new Date(e.date);
       if (d >= start && d <= end) {
-        const weekStart = formatDate(getWeekStart(d));
-        if (!grouped[weekStart]) grouped[weekStart] = { hours: 0, expected: 0 };
-        grouped[weekStart].hours += e.enteredHours;
-        grouped[weekStart].expected += e.expectedHours;
+        const weekStart = getWeekStart(d);
+        if (!grouped[weekStart.toISOString()]) {
+          grouped[weekStart.toISOString()] = { hours: 0, expected: 0, entryDates: [] };
+        }
+        grouped[weekStart.toISOString()].hours += e.enteredHours;
+        grouped[weekStart.toISOString()].expected += e.expectedHours;
+        grouped[weekStart.toISOString()].entryDates.push(d);
       }
     });
 
     return Object.entries(grouped)
-      .map(([period, values]) => {
-        const weekDate = new Date(period);
+      .map(([weekKey, values]) => {
+        const monthsCount: Record<number, number> = {};
+        values.entryDates.forEach((d) => {
+          const m = d.getMonth();
+          monthsCount[m] = (monthsCount[m] || 0) + 1;
+        });
+        const majorityMonth = Number(Object.entries(monthsCount).sort((a, b) => b[1] - a[1])[0][0]);
+
         return {
-          period: getNumberWeekLabel(weekDate),
+          period: getNumberWeekLabel(new Date(weekKey)),
           hours: values.hours,
           expected: values.expected,
-          month: weekDate.toLocaleString(locale, { month: "long" })
+          month: new Date(targetYear, majorityMonth).toLocaleString(locale, { month: "long" })
         };
       })
       .sort((a, b) => new Date(a.period).getTime() - new Date(b.period).getTime());
@@ -277,17 +282,21 @@ const WorkDaysChart = ({
   };
 
   const chartData = useMemo<ChartDataPoint[]>(() => {
+    const today = new Date();
+    const selectedDate = new Date(today.getFullYear(), today.getMonth() + monthOffset, 1);
+    const targetMonth = selectedDate.getMonth();
+    const targetYear = selectedDate.getFullYear();
     switch (selectedRange) {
       case "week":
         return getWeekData(workdays);
       case "month":
-        return getMonthData(workdays);
+        return getMonthData(workdays, targetMonth, targetYear);
       case "year":
         return getYearData(workdays);
       default:
         return [];
     }
-  }, [selectedRange, weekOffset, monthOffset, amountWeeks, strings.timeExpressions.week]);
+  }, [selectedRange, weekOffset, monthOffset, strings.timeExpressions.week]);
 
   const handleWeekOffsetChange = useCallback((delta: number) => {
     setWeekOffset((prev) => prev + delta);
@@ -360,55 +369,34 @@ const WorkDaysChart = ({
 
         {/* MONTH CONTROLS */}
         {selectedRange === "month" && (
-          <>
-            <Box
-              sx={{
-                position: "absolute",
-                right: 40,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                width: "200px"
-              }}
-            >
-              <Typography variant="h4">{strings.timebank.numberOfWeeks}</Typography>
-              <Input
-                value={amountWeeks}
-                onChange={(e) => setAmountWeeks(Number(e.target.value))}
-                sx={{ width: 60, mt: 1 }}
-                inputProps={{ step: 1, min: 1, max: 10, type: "number" }}
-              />
-            </Box>
-
-            <Box
-              sx={{
-                position: "absolute",
-                left: 40,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                width: "250px"
-              }}
-            >
-              <Typography variant="h4">
-                {`${strings.timeExpressions.month}: ${chartData[0]?.month || "-"}`}
-              </Typography>
-              <ButtonGroup sx={{ mt: 1 }}>
-                <IconButton
-                  disabled={monthOffset === -12 || Object.entries(chartData).length === 0}
-                  onClick={() => handleMonthOffsetChange(-1)}
-                >
-                  <ArrowBack />
-                </IconButton>
-                <IconButton disabled={monthOffset === 0} onClick={() => handleMonthOffsetChange(1)}>
-                  <ArrowForward />
-                </IconButton>
-                <IconButton onClick={() => setMonthOffset(0)}>
-                  <CalendarToday />
-                </IconButton>
-              </ButtonGroup>
-            </Box>
-          </>
+          <Box
+            sx={{
+              position: "absolute",
+              left: 40,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              width: "250px"
+            }}
+          >
+            <Typography variant="h4">
+              {`${strings.timeExpressions.month}: ${chartData[0]?.month || "-"}`}
+            </Typography>
+            <ButtonGroup sx={{ mt: 1 }}>
+              <IconButton
+                disabled={monthOffset === -12 || Object.entries(chartData).length === 0}
+                onClick={() => handleMonthOffsetChange(-1)}
+              >
+                <ArrowBack />
+              </IconButton>
+              <IconButton disabled={monthOffset === 0} onClick={() => handleMonthOffsetChange(1)}>
+                <ArrowForward />
+              </IconButton>
+              <IconButton onClick={() => setMonthOffset(0)}>
+                <CalendarToday />
+              </IconButton>
+            </ButtonGroup>
+          </Box>
         )}
 
         {/* RANGE BUTTONS */}
