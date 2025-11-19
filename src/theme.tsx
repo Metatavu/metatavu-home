@@ -1,4 +1,4 @@
-import { type Theme, createTheme } from "@mui/material";
+import { createTheme, type Theme } from "@mui/material";
 import PoppinsBlack from "../resources/fonts/poppins/Poppins-Black.ttf";
 import PoppinsBold from "../resources/fonts/poppins/Poppins-Bold.ttf";
 import PoppinsMedium from "../resources/fonts/poppins/Poppins-Medium.ttf";
@@ -153,3 +153,41 @@ export const wikiScreenColors = {
   }
 };
 
+export const customTheme = {
+  ...theme,
+  customStyles: {
+    listViewTypography: {
+      backgroundColor: "#f5f5f5",
+      borderRadius: 4,
+      px: 3,
+      py: 2,
+      fontWeight: "bold",
+      color: "black",
+      display: "inline-block",
+      textAlign: "center",
+      pointerEvents: "none"
+    },
+    listViewButton: {
+      textTransform: "none",
+      padding: 0,
+      minWidth: "unset",
+      borderRadius: 4,
+      boxShadow: "0 0 0 2px black",
+      lineHeight: 0,
+      backgroundColor: "transparent",
+      mx: 1.5,
+      display: "inline-flex",
+      alignItems: "center",
+      justifyContent: "center",
+      transition: "box-shadow 0.2s ease",
+      "&:hover": {
+        boxShadow: "0 0 0 3px black",
+        "& .MuiTypography-root": { backgroundColor: "#c7c7c7" }
+      },
+      "&.Mui-disabled": {
+        boxShadow: "0 0 0 2px #9e9e9e",
+        "& .MuiTypography-root": { backgroundColor: "#f0f0f0", color: "#9e9e9e" }
+      }
+    }
+  }
+} as any;
