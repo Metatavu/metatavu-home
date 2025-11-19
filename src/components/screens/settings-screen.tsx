@@ -88,7 +88,7 @@ const SettingsScreen = () => {
         return;
       }
 
-      await (usersApi as UsersApi).removeSeveraOptIn({ userId: userProfile.id });
+      await usersApi.removeSeveraOptIn({ userId: userProfile.id });
 
       const updatedAttributes = { ...(userProfile.attributes || {}) } as Record<
         string,
