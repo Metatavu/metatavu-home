@@ -1,15 +1,14 @@
-import React from "react";
+import { Box, Tooltip } from "@mui/material";
 import type { GridColDef } from "@mui/x-data-grid";
-import strings from "src/localization/strings";
 import { useAtomValue } from "jotai";
 import { usersAtom } from "src/atoms/user";
+import useUserRole from "src/hooks/use-user-role";
+import strings from "src/localization/strings";
 import LocalizationUtils from "src/utils/localization-utils";
 import { formatDate } from "src/utils/time-utils";
-import {Box,Tooltip} from "@mui/material";
-import useUserRole from "src/hooks/use-user-role";
-import StatusToolTipContent from "./vacation-request-status-tooltip";
-import UnreviewedIndicator from "./unreviewed-vacation-indicator";
 import { getVacationRequestStatusColor } from "src/utils/vacation-status-utils";
+import UnreviewedIndicator from "./unreviewed-vacation-indicator";
+import StatusToolTipContent from "./vacation-request-status-tooltip";
 
 /**
  * Vacation requests table columns component
@@ -31,15 +30,15 @@ const VacationRequestsTableColumns = (): GridColDef[] => {
       width: 160,
       editable: false,
       renderCell: (params) => {
-        const user = users.find(u => u.id === params.row.userId);
+        const user = users.find((u) => u.id === params.row.userId);
         if (!user) {
-          return params.value || 'Unknown User';
+          return params.value || "Unknown User";
         }
-        const firstName = user.firstName || '';
-        const lastName = user.lastName || '';
+        const firstName = user.firstName || "";
+        const lastName = user.lastName || "";
         const fullName = `${firstName} ${lastName}`.trim();
 
-        return fullName || user.email || 'Unknown User';
+        return fullName || user.email || "Unknown User";
       }
     },
     {
@@ -87,24 +86,19 @@ const VacationRequestsTableColumns = (): GridColDef[] => {
         const currentStatus = params.value;
         const isUnreviewed = statuses.length === 1 && currentStatus === "PENDING";
         return (
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             {adminMode && isUnreviewed && <UnreviewedIndicator />}
-            <Tooltip
-              title={<StatusToolTipContent statuses={statuses} />}
-              arrow
-              placement="top"
-            >
+            <Tooltip title={<StatusToolTipContent statuses={statuses} />} arrow placement="top">
               <Box
                 style={{
                   color: getVacationRequestStatusColor(currentStatus),
                   fontWeight: 600,
-                  cursor: 'help'
+                  cursor: "help"
                 }}
               >
                 {LocalizationUtils.getLocalizedVacationRequestStatus(currentStatus)}
               </Box>
             </Tooltip>
-          
           </Box>
         );
       },
@@ -113,8 +107,7 @@ const VacationRequestsTableColumns = (): GridColDef[] => {
           return "";
         }
         return params.value;
-      },
-      
+      }
     }
   ];
   return columns;
