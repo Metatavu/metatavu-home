@@ -4,7 +4,7 @@ import type { DateTime } from "luxon";
 import { type ChangeEvent, useEffect, useState } from "react";
 import { userProfileAtom } from "src/atoms/auth";
 import type { VacationRequest } from "src/generated/homeLambdasClient";
-import { SeveraApi } from "src/generated/homeLambdasClient";
+import { useLambdasApi } from "src/hooks/use-api";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import { type DateRange, ToolbarFormModes } from "src/types";
@@ -46,7 +46,7 @@ const ToolbarFormFields = ({
   const userProfile = useAtomValue(userProfileAtom);
   const [workWeek, setWorkWeek] = useState<boolean[]>(Array(7).fill(false));
 
-  const severaApi = new SeveraApi();
+  const { workHoursApi } = useLambdasApi();
 
   /**
    * Fetch contracted work week, defaults to 5 day if it fails
@@ -56,7 +56,7 @@ const ToolbarFormFields = ({
       if (!userProfile?.attributes?.severaUserId) return;
 
       try {
-        const data = await severaApi.calculateUserContractedWeek({
+        const data = await workHoursApi.calculateUserContractedWeek({
           severaUserId: userProfile.attributes.severaUserId as string
         });
         setWorkWeek(contractedWeekToBoolean(data.contractedWeek));
@@ -67,7 +67,7 @@ const ToolbarFormFields = ({
     };
 
     fetchWorkWeek();
-  }, [userProfile]);
+  }, [userProfile?.attributes?.severaUserId]);
 
   // Update vacation request whenever date range changes
   useEffect(() => {
