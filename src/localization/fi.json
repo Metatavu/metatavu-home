@@ -42,7 +42,8 @@
     "missingEmailOrId": "Sähköposti tai käyttäjätunnus puuttuu",
     "noSeveraUserId": "Käyttäjältä puuttuu Severa-käyttäjätunnus, ota yhteyttä Metatavun kehitystiimiin lisätietoja varten.",
     "noFlextimeData": "Jotain meni pieleen joustotyöaikatietoja haettaessa",
-    "noArticleId": "Artikkelin ID puuttuu"
+    "noArticleId": "Artikkelin ID puuttuu",
+    "fetchFailedSevera": "Severa-opt-in päivitys epäonnistui."
   },
   "localization": {
     "en": "EN",
