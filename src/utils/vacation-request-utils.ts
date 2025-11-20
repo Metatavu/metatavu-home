@@ -1,6 +1,5 @@
 import type { VacationRequest } from "../generated/homeLambdasClient";
 import type { KeycloakProfile } from "keycloak-js";
-import strings from "../localization/strings";
 import {User} from "src/generated/homeLambdasClient";
 import { getFullUserName } from "./user-name-utils";
 
