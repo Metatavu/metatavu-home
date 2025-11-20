@@ -18,7 +18,6 @@ export const getVacationRequestPersonFullName = (
   users: User[],
   userProfile?: KeycloakProfile | undefined
 ) => {
-  let userFullName = strings.vacationRequestError.nameNotFound;
   const user = users.find((user) => user.id === vacationRequest?.userId);
 
   return(getFullUserName(user));
