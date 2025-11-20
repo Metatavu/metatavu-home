@@ -2,6 +2,7 @@ import type { VacationRequest } from "../generated/homeLambdasClient";
 import type { KeycloakProfile } from "keycloak-js";
 import strings from "../localization/strings";
 import {User} from "src/generated/homeLambdasClient";
+import { getFullUserName } from "./user-name-utils";
 
 /**
  * Get vacation request person full name
@@ -18,13 +19,7 @@ export const getVacationRequestPersonFullName = (
   userProfile?: KeycloakProfile | undefined
 ) => {
   let userFullName = strings.vacationRequestError.nameNotFound;
-  const foundUser = users.find((user) => user.id === vacationRequest?.userId);
+  const user = users.find((user) => user.id === vacationRequest?.userId);
 
-  if (foundUser) {
-    userFullName = `${foundUser.firstName} ${foundUser.lastName}`;
-  } else if (userProfile && userProfile.id === vacationRequest.userId) {
-    userFullName = `${userProfile.firstName} ${userProfile.lastName}`;
-  }
-
-  return userFullName;
+  return(getFullUserName(user));
 };

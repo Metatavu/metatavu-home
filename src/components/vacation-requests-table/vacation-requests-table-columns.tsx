@@ -9,6 +9,8 @@ import { formatDate } from "src/utils/time-utils";
 import { getVacationRequestStatusColor } from "src/utils/vacation-status-utils";
 import UnreviewedIndicator from "./pending-vacation-indicator";
 import StatusToolTipContent from "./vacation-request-status-tooltip";
+import { getFullUserName } from "src/utils/user-name-utils";
+
 
 /**
  * Vacation requests table columns component
@@ -31,14 +33,7 @@ const VacationRequestsTableColumns = (): GridColDef[] => {
       editable: false,
       renderCell: (params) => {
         const user = users.find((u) => u.id === params.row.userId);
-        if (!user) {
-          return params.value || "Unknown User";
-        }
-        const firstName = user.firstName || "";
-        const lastName = user.lastName || "";
-        const fullName = `${firstName} ${lastName}`.trim();
-
-        return fullName || user.email || "Unknown User";
+        return getFullUserName(user);
       }
     },
     {

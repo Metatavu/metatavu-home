@@ -4,6 +4,7 @@ import { usersAtom } from "src/atoms/user";
 import type { VacationRequestStatus } from "src/generated/homeLambdasClient";
 import strings from "src/localization/strings";
 import LocalizationUtils from "src/utils/localization-utils";
+import { getFullUserName } from "src/utils/user-name-utils";
 
 /**
  * Component properties
@@ -41,13 +42,10 @@ const StatusToolTipContent = ({ statuses }: Props) => {
 
       {statuses.map((statusItem, index) => {
         const admin = users.find((u) => u.id === statusItem.createdBy);
-        const firstName = admin?.firstName || "";
-        const lastName = admin?.lastName || "";
-        const adminName = `${firstName} ${lastName}`.trim() || admin?.email || "Unknown";
-
+        const adminName = getFullUserName(admin);
         const date = statusItem.updatedAt
           ? new Date(statusItem.updatedAt).toLocaleString()
-          : "Unknown";
+          : strings.softwareRegistry.errorUnknownUser;
 
         const uniqueKey = `${statusItem.status}-${statusItem.createdBy}-${statusItem.updatedAt?.toString() || index}`;
 
