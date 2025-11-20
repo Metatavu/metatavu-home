@@ -11,7 +11,6 @@ import UnreviewedIndicator from "./pending-vacation-indicator";
 import StatusToolTipContent from "./vacation-request-status-tooltip";
 import { getFullUserName } from "src/utils/user-name-utils";
 
-
 /**
  * Vacation requests table columns component
  */

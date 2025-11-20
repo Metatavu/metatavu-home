@@ -2,7 +2,7 @@ import type {User} from "src/generated/homeLambdasClient";
 import strings from "src/localization/strings";
 
 /**
- * Extracts a user's first and last name from an email address.Only processes emails in the format: `firstname.lastname@`.And if has ext-firstname.lastname@ returns Ext-firstname and Lastname as username
+ * Extracts a user's first and last name from an email address. Only processes emails in the format: `firstname.lastname@`. If has ext-firstname.lastname@ returns Ext-firstname and Lastname as username
  * @param email - The user's email address.
  * @returns An object containing `firstName` and `lastName`
  */
@@ -48,7 +48,6 @@ const capitalize = (text:string) => {
   if(!text) return "";
   return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
 }
-
 
 /**
  * Gets the full name from a user object, with fallback to email parsing

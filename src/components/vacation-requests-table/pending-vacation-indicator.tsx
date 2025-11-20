@@ -3,6 +3,11 @@ import { VacationRequestStatuses } from "src/generated/homeLambdasClient";
 import strings from "src/localization/strings";
 import { getVacationRequestStatusColor } from "src/utils/vacation-status-utils";
 
+/**
+ * PendingVacationStatusIndicator
+ * A small pulsing circular indicator representing a vacation request has not yet been reviewed.
+ */
+
 const PendingVacationStatusIndicator = () => {
   
   return (

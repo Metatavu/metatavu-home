@@ -21,13 +21,12 @@ interface UpdateStatusButtonProps {
  *
  * @param props component properties
  */
-
 const UpdateStatusButton = ({
   buttonType,
   selectedRowIds,
   updateVacationRequestStatus
 }: UpdateStatusButtonProps) => {
-  const isApprove = buttonType === VacationRequestStatuses.APPROVED;
+  const isApproved = buttonType === VacationRequestStatuses.APPROVED;
   const handleUpdateVacationRequestStatus = async () => {
     await updateVacationRequestStatus(buttonType, selectedRowIds);
   };
@@ -38,9 +37,9 @@ const UpdateStatusButton = ({
       fullWidth
       onClick={handleUpdateVacationRequestStatus}
       sx={{
-        backgroundColor: isApprove ? "#4caf50" : "#f44336",
+        backgroundColor: isApproved ? "#4caf50" : "#f44336",
         "&:hover": {
-          backgroundColor: isApprove ? "#45a049" : "#da190b"
+          backgroundColor: isApproved ? "#45a049" : "#da190b"
         }
       }}
     >
