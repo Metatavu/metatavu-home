@@ -225,7 +225,9 @@
     "noMessage": "No message",
     "noStatus": "No status",
     "person": "Person",
-    "noPersonFullName": "No name"
+    "noPersonFullName": "No name",
+    "noReview": "Not reviewed yet",
+    "reviewedBy": "by:"
   },
   "vacationRequestError": {
     "fetchRequestError": "Fetching vacation requests has failed",

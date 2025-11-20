@@ -225,7 +225,9 @@
     "noMessage": "Ei viestiä",
     "noStatus": "Ei tilaa",
     "person": "Henkilö",
-    "noPersonFullName": "Ei nimeä"
+    "noPersonFullName": "Ei nimeä",
+    "noReview": "ei ole vielä tarkistettu",
+    "reviewedBy":"Tarkastanut:"
   },
   "vacationRequestError": {
     "fetchRequestError": "Lomahakemusten hakeminen epäonnistui",
