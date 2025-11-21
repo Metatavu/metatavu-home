@@ -89,7 +89,7 @@ const ToolbarFormFields = ({
         endDate: dateRange.end.toJSDate()
       });
     }
-  }, [dateRange, workWeek]);
+  }, [dateRange, workWeek, adminMode]);
 
   // Handle vacation message change
   const handleVacationRequestDataChange = (value: string) => {
