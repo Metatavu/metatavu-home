@@ -43,7 +43,7 @@ interface Props {
 /**
  * Toolbar form fields component
  *
- * @param props - Component properties including data, callbacks, and config for toolbar form.
+ * @param props - component properties
  *
  */
 const ToolbarFormFields = ({
