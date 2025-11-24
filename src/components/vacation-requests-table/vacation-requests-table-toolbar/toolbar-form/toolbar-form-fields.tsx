@@ -31,6 +31,9 @@ interface Props {
   handleDraft: () => void;
 }
 
+/**
+ * Toolbar form fields component
+ */
 const ToolbarFormFields = ({
   vacationRequestData,
   setVacationRequestData,
@@ -50,6 +53,7 @@ const ToolbarFormFields = ({
 
   /**
    * Fetch contracted work week, defaults to 5 day if it fails
+   * Re-runs when severaUserId changes
    */
   useEffect(() => {
     const fetchWorkWeek = async () => {
@@ -91,7 +95,11 @@ const ToolbarFormFields = ({
     }
   }, [dateRange, workWeek, adminMode]);
 
-  // Handle vacation message change
+  /**
+   * Handle vacation request data change
+   *
+   * @param value component value
+   */
   const handleVacationRequestDataChange = (value: string) => {
     setVacationRequestData({
       ...vacationRequestData,
@@ -99,7 +107,12 @@ const ToolbarFormFields = ({
     });
   };
 
-  // Handle days change (admin)
+  /**
+   *
+   * Handle days change (admin)
+   *
+   * @param value days string
+   */
   const handleDaysChange = (value: string) => {
     const daysValue = Number.parseInt(value, 10) || 0;
     if (!dateRange.start) return;
@@ -116,7 +129,9 @@ const ToolbarFormFields = ({
     });
   };
 
-  // Restore default days (admin)
+  /**
+   * restore default days (admin)
+   */
   const handleRestoreDefaultDays = () => {
     if (!dateRange.start || !dateRange.end) return;
     const defaultDays = calculateTotalVacationDays(dateRange.start, dateRange.end, workWeek);
