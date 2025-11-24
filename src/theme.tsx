@@ -155,7 +155,24 @@ export const wikiScreenColors = {
 
 export const customTheme = {
   ...theme,
+  colors: {
+    paidGreen: "#7bd15c",
+    unpaidRed: "#ff6384",
+    onCallHighlight: "#ff9800"
+  },
   customStyles: {
+    onCallBox: {
+      display: "inline-block",
+      backgroundColor: "#f5f5f5",
+      borderRadius: 4,
+      px: 3,
+      py: 2,
+      textAlign: "center",
+      mx: "auto",
+      mb: 3,
+      mt: 3,
+      maxWidth: 600
+    },
     listViewTypography: {
       backgroundColor: "#f5f5f5",
       borderRadius: 4,

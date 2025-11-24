@@ -505,7 +505,7 @@
     "date": "Date",
     "noUsernameOnCall": "-",
     "errorUpdatingPaidStatus": "Failed to update on-call shift paid status",
-    "noDataForYear": "No Data available for this year"
+    "noDataForYear": "No data available for this year"
   },
   "onboarding": {
     "prev": "Previous",

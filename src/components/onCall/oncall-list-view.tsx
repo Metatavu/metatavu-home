@@ -1,4 +1,4 @@
-import { Box, Button, Checkbox, Typography } from "@mui/material";
+import { alpha, Box, Button, Checkbox, Typography } from "@mui/material";
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
 import { useAtomValue } from "jotai";
 import { DateTime } from "luxon";
@@ -29,8 +29,12 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
   const userProfile = useAtomValue(userProfileAtom);
   const loggedInEmail = userProfile?.email;
 
-  // Identify rows where row matches logged in user
-  const isLoggedIn = (email: string) => {
+  /**
+   * Identify rows that belong to the logged in user
+   * @param email - On call user's email
+   * @returns 'true' if email matches logged in users email.
+   */
+  const isLoggedInUser = (email: string) => {
     return loggedInEmail && email && loggedInEmail.toLowerCase() === email.toLowerCase();
   };
 
@@ -53,7 +57,12 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
           checked={params.value}
           disabled={!isAccountant}
           sx={{
-            "&.Mui-checked": { color: "rgba(123, 209, 92, 0.3)" }
+            "&.Mui-checked": {
+              color: alpha(customTheme.colors.paidGreen, 0.3)
+            },
+            "&:not(.Mui-checked)": {
+              color: alpha("#ff6384", 0.3)
+            }
           }}
         />
       )
@@ -76,8 +85,8 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
       renderCell: (params) => (
         <Typography
           sx={{
-            fontWeight: isLoggedIn(params.row.email) ? "bold" : "normal",
-            border: isLoggedIn(params.row.email) ? "2px solid black" : "none",
+            fontWeight: isLoggedInUser(params.row.email) ? "bold" : "normal",
+            border: isLoggedInUser(params.row.email) ? "2px solid black" : "none",
             borderRadius: 2,
             px: 1
           }}
@@ -96,7 +105,7 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
       renderCell: (params) => (
         <Typography
           sx={{
-            fontWeight: isLoggedIn(params.value) ? "bold" : "normal"
+            fontWeight: isLoggedInUser(params.value) ? "bold" : "normal"
           }}
         >
           {params.value}
@@ -109,14 +118,13 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
     id: idx,
     paid: item.paid,
     week: item.week,
-    person: item.username ? item.username : strings.oncall.noUsernameOnCall,
-    email: item.email ? item.email : "-"
+    person: item.username ?? strings.oncall.noUsernameOnCall,
+    email: item.email ?? "-"
   }));
 
   return (
     <>
       <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", my: 3 }}>
-        {/* Title */}
         <Typography
           variant="h4"
           className="button-text"
@@ -125,7 +133,6 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
           {strings.oncall.oncallShifts} {selectedDate.year}
         </Typography>
 
-        {/* Buttons */}
         <Box sx={{ display: "flex" }}>
           <Button
             onClick={() => setSelectedDate(selectedDate.minus({ year: 1 }))}

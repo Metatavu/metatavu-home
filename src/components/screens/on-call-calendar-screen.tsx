@@ -20,6 +20,7 @@ import { userProfileAtom } from "src/atoms/auth";
 import type { OnCallPaid } from "src/generated/homeLambdasClient";
 import type { OnCall } from "src/generated/homeLambdasClient/models/OnCall";
 import useUserRole from "src/hooks/use-user-role";
+import { customTheme } from "src/theme";
 import { errorAtom } from "../../atoms/error";
 import { onCallAtom } from "../../atoms/oncall";
 import { useLambdasApi } from "../../hooks/use-api";
@@ -54,6 +55,7 @@ const OnCallCalendarScreen = () => {
   const setError = useSetAtom(errorAtom);
   const [loading, setLoading] = useState(false);
   const userProfile = useAtomValue(userProfileAtom);
+  const calendarSelectId = useId();
 
   useEffect(() => {
     getOnCallData(selectedDate.year);
@@ -126,22 +128,9 @@ const OnCallCalendarScreen = () => {
    * Renders the current week's on call person if they exist
    */
   const renderCurrentOnCall = () => {
-    const boxStyles = {
-      display: "inline-block",
-      backgroundColor: "#f5f5f5",
-      borderRadius: 4,
-      px: 3,
-      py: 2,
-      textAlign: "center",
-      mx: "auto",
-      mb: 3,
-      mt: 3,
-      maxWidth: 600
-    };
-
     if (onCallPerson === undefined) {
       return (
-        <Box sx={boxStyles}>
+        <Box sx={customTheme.customStyles.onCallBox}>
           <CircularProgress sx={{ color: "black" }} />
         </Box>
       );
@@ -149,7 +138,7 @@ const OnCallCalendarScreen = () => {
 
     if (onCallPerson) {
       return (
-        <Box sx={boxStyles}>
+        <Box sx={customTheme.customStyles.onCallBox}>
           <Typography
             variant="h5"
             sx={{ display: "block", mb: 1, fontWeight: "bold", color: "black" }}
@@ -164,7 +153,7 @@ const OnCallCalendarScreen = () => {
     }
 
     return (
-      <Box sx={boxStyles}>
+      <Box sx={customTheme.customStyles.onCallBox}>
         <Typography variant="h5" sx={{ display: "block", color: red[700], fontWeight: "bold" }}>
           {strings.oncall.noOnCallPerson}
         </Typography>
@@ -235,7 +224,6 @@ const OnCallCalendarScreen = () => {
     const { day, outsideCurrentMonth, ...other } = props;
     const weekNumber = day.weekNumber;
     const onCallDayData = onCallByWeek.get(weekNumber);
-    // match logged in user email to on call email
     const whenUserIsOnCall = onCallDayData?.email === userProfile?.email;
 
     // Show badge only on the first day of the week
@@ -274,7 +262,9 @@ const OnCallCalendarScreen = () => {
               badgeContent={initials}
               sx={{
                 ".MuiBadge-badge": {
-                  backgroundColor: whenUserIsOnCall ? "#ff9800" : badgeColor,
+                  backgroundColor: whenUserIsOnCall
+                    ? customTheme.colors.onCallHighlight
+                    : badgeColor,
                   color: "#fff",
                   right: 60,
                   top: 10,
@@ -375,8 +365,6 @@ const OnCallCalendarScreen = () => {
     padding: theme.spacing(2),
     overflow: "auto"
   }));
-
-  const calendarSelectId = useId();
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>

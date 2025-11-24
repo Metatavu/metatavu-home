@@ -9,7 +9,7 @@ export const stringToColor = (str?: string, week?: number, seed = 1): string => 
   let hash = 0;
   for (let i = 0; i < combined.length; i++) {
     hash = (combined.codePointAt(i) ?? 0) + ((hash << 5) - hash);
-    hash = hash & hash; // 32-bit integer
+    hash = hash | 0;
   }
 
   const hue = Math.abs(hash) % 360;
