@@ -42,7 +42,8 @@
     "missingEmailOrId": "Missing email or ID",
     "noSeveraUserId": "One of your users is missing severaUserId, please contact a member of the metatavu home development team for more information.",
     "noFlextimeData": "Something went wrong while fetching your flextime data",
-    "noArticleId": "Article ID is missing"
+    "noArticleId": "Article ID is missing",
+    "fetchWorkWeekFailed": "Error while fetching work week data, five day week will be used."
   },
   "localization": {
     "en": "EN",
@@ -240,7 +241,7 @@
     "nameNotFound": "Name not found",
     "noVacationRequestsStatusFound": "Statuses not found",
     "tooManyDaysRequested": "You cannot request {requestedDays} days. You only have {unspentDays} unspent vacation days.",
-    "failedToLoad": "Failed to load users" 
+    "failedToLoad": "Failed to load users"
   },
   "sprintRequestError": {
     "fetchResourceAllocationsError": "Fetching sprint data for resourceAllocations has failed",

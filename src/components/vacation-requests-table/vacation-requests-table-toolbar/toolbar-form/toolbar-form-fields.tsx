@@ -1,4 +1,13 @@
-import { Box, Button, FormControl, FormLabel, Grid, TextField, Tooltip } from "@mui/material";
+import {
+  Alert,
+  Box,
+  Button,
+  FormControl,
+  FormLabel,
+  Grid,
+  TextField,
+  Tooltip
+} from "@mui/material";
 import { useAtomValue } from "jotai";
 import type { DateTime } from "luxon";
 import { type ChangeEvent, useEffect, useState } from "react";
@@ -47,9 +56,9 @@ const ToolbarFormFields = ({
 }: Props) => {
   const { adminMode } = useUserRole();
   const userProfile = useAtomValue(userProfileAtom);
-  const [workWeek, setWorkWeek] = useState<boolean[]>(Array(7).fill(false));
-
+  const [workWeek, setWorkWeek] = useState<boolean[]>(new Array(7).fill(false));
   const { workHoursApi } = useLambdasApi();
+  const [error, setError] = useState<string | null>(null);
 
   /**
    * Fetch contracted work week, defaults to 5 day if it fails
@@ -64,8 +73,9 @@ const ToolbarFormFields = ({
           severaUserId: userProfile.attributes.severaUserId as string
         });
         setWorkWeek(contractedWeekToBoolean(data.contractedWeek));
-      } catch (error) {
-        console.error("Error fetching contracted work week:", error);
+        setError(null);
+      } catch {
+        setError(strings.error.fetchWorkWeekFailed);
         setWorkWeek([true, true, true, true, true, false, false]);
       }
     };
@@ -143,6 +153,11 @@ const ToolbarFormFields = ({
 
   return (
     <FormControl sx={{ width: "100%" }}>
+      {error && (
+        <Alert severity="warning" sx={{ mb: 2 }}>
+          {error}
+        </Alert>
+      )}
       {!adminMode && (
         <>
           <FormLabel>{strings.vacationRequest.message}</FormLabel>

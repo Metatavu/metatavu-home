@@ -317,7 +317,7 @@ export const parseVacationDays = (vacationDaysByYear: string[]): { [year: string
  * into a boolean[7] array.
  */
 export const contractedWeekToBoolean = (week: number[]): boolean[] => {
-  const result = Array(7).fill(false);
+  const result = new Array(7).fill(false);
 
   week.forEach((dayNumber) => {
     if (dayNumber >= 1 && dayNumber <= 7) {
