@@ -3,6 +3,7 @@ import { useAtom, useSetAtom } from "jotai";
 import { useEffect, useState } from "react";
 import { userProfileAtom } from "src/atoms/auth";
 import { errorAtom } from "src/atoms/error";
+import { usersAtom } from "src/atoms/user";
 import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
 
@@ -10,8 +11,9 @@ import strings from "src/localization/strings";
  * Settings screen component
  */
 const SettingsScreen = () => {
+  const [userProfile, setUserProfile] = useAtom(userProfileAtom);
   const { usersApi } = useLambdasApi();
-  const [userProfile] = useAtom(userProfileAtom);
+  const setUsers = useSetAtom(usersAtom);
   const setError = useSetAtom(errorAtom);
 
   const [isConsentGiven, setIsConsentGiven] = useState<boolean>(
@@ -22,7 +24,7 @@ const SettingsScreen = () => {
   useEffect(() => {
     setIsConsentGiven(Boolean(userProfile?.attributes?.severaUserId));
   }, [userProfile?.attributes?.severaUserId]);
-  
+
   /**
    * Handles toggle change event
    */
@@ -51,8 +53,22 @@ const SettingsScreen = () => {
         attributeName: "isSeveraOptIn"
       });
 
-      const severaUserId = response?.updatedKeycloakAttributes?.severaUserId;
+      const severaUserIdRaw = response?.updatedKeycloakAttributes?.severaUserId;
+      const severaUserId = Array.isArray(severaUserIdRaw) ? severaUserIdRaw[0] : severaUserIdRaw;
+
       setIsConsentGiven(Boolean(severaUserId));
+      if (severaUserId) {
+        const updatedAttributes = {
+          ...(userProfile.attributes || {}),
+          severaUserId
+        } as Record<string, string[] | string | undefined>;
+
+        const updatedProfile = { ...userProfile, attributes: updatedAttributes };
+        setUserProfile(updatedProfile);
+        setUsers((prev) =>
+          prev.map((u) => (u.id === userProfile.id ? { ...u, attributes: updatedAttributes } : u))
+        );
+      }
     } catch (error) {
       setError(`${strings.error.fetchFailedSevera}, ${String(error)}`);
     } finally {
@@ -72,6 +88,18 @@ const SettingsScreen = () => {
       }
 
       await usersApi.removeSeveraOptIn({ userId: userProfile.id });
+      const updatedAttributes = { ...(userProfile.attributes || {}) } as Record<
+        string,
+        string[] | string | undefined
+      >;
+      delete updatedAttributes.severaUserId;
+      delete updatedAttributes.isSeveraOptIn;
+
+      const updatedProfile = { ...userProfile, attributes: updatedAttributes };
+      setUserProfile(updatedProfile);
+      setUsers((prev) =>
+        prev.map((u) => (u.id === userProfile.id ? { ...u, attributes: updatedAttributes } : u))
+      );
       setIsConsentGiven(false);
     } catch (error) {
       setError(`${strings.error.fetchFailedSevera}, ${String(error)}`);
