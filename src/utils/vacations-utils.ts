@@ -126,7 +126,6 @@ export const validateUserVacationRequest = (
   const { valid, errorMessage } = validateVacationRequestDays(requestedDays, unspentDays,options);
 
   if (!valid) {
-    console.log(errorMessage)
     setError(errorMessage || "");
     setLoading(false);
     return false;
