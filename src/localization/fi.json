@@ -43,7 +43,8 @@
     "noSeveraUserId": "Käyttäjältä puuttuu Severa-käyttäjätunnus, ota yhteyttä Metatavun kehitystiimiin lisätietoja varten.",
     "noFlextimeData": "Jotain meni pieleen joustotyöaikatietoja haettaessa",
     "noArticleId": "Artikkelin ID puuttuu",
-    "fetchFailedSevera": "Severa-opt-in päivitys epäonnistui."
+    "fetchFailedSevera": "Severa-opt-in päivitys epäonnistui.",
+    "fetchWorkWeekFailed": "Virhe työviikon tietoja haettaessa, käytetään oletuksena viiden päivän viikkoa"
   },
   "localization": {
     "en": "EN",
@@ -228,7 +229,7 @@
     "person": "Henkilö",
     "noPersonFullName": "Ei nimeä",
     "noReview": "ei ole vielä tarkistettu",
-    "reviewedBy":"Tarkastanut:"
+    "reviewedBy": "Tarkastanut:"
   },
   "vacationRequestError": {
     "fetchRequestError": "Lomahakemusten hakeminen epäonnistui",

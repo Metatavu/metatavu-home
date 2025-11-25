@@ -1,12 +1,28 @@
-import { Box, Button, FormControl, FormLabel, Grid, TextField, Tooltip } from "@mui/material";
+import {
+  Alert,
+  Box,
+  Button,
+  FormControl,
+  FormLabel,
+  Grid,
+  TextField,
+  Tooltip
+} from "@mui/material";
+import { useAtomValue } from "jotai";
 import type { DateTime } from "luxon";
-import { type ChangeEvent, useEffect } from "react";
+import { type ChangeEvent, useEffect, useState } from "react";
+import { userProfileAtom } from "src/atoms/auth";
 import type { VacationRequest } from "src/generated/homeLambdasClient";
+import { useLambdasApi } from "src/hooks/use-api";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import { type DateRange, ToolbarFormModes } from "src/types";
 import { hasAllPropsDefined } from "src/utils/check-utils";
-import { calculateEndDateFromDays, calculateTotalVacationDays } from "src/utils/time-utils";
+import {
+  calculateEndDateFromDays,
+  calculateTotalVacationDays,
+  contractedWeekToBoolean
+} from "src/utils/time-utils";
 import DateRangePicker from "../../../generics/date-range-picker";
 
 /**
@@ -27,7 +43,8 @@ interface Props {
 /**
  * Toolbar form fields component
  *
- * @param props component properties
+ * @param props - component properties
+ *
  */
 const ToolbarFormFields = ({
   vacationRequestData,
@@ -41,26 +58,46 @@ const ToolbarFormFields = ({
   handleDraft
 }: Props) => {
   const { adminMode } = useUserRole();
-  const workWeek = [true, true, true, true, true, false, false];
-  // TODO: This will be used again when we have a solution for various work contracts in place
-  // const userProfile = useAtomValue(userProfileAtom);
-  // const [users] = useAtom(usersAtom);
-  // const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
+  const userProfile = useAtomValue(userProfileAtom);
+  const [workWeek, setWorkWeek] = useState<boolean[]>(new Array(7).fill(false));
+  const { workHoursApi } = useLambdasApi();
+  const [error, setError] = useState<string | null>(null);
 
+  /**
+   * Fetch contracted work week, defaults to 5 day if it fails
+   * Re-runs when severaUserId changes
+   */
   useEffect(() => {
+    const fetchWorkWeek = async () => {
+      if (!userProfile?.attributes?.severaUserId) return;
+
+      try {
+        const data = await workHoursApi.calculateUserContractedWeek({
+          severaUserId: userProfile.attributes.severaUserId as string
+        });
+        setWorkWeek(contractedWeekToBoolean(data.contractedWeek));
+        setError(null);
+      } catch {
+        setError(strings.error.fetchWorkWeekFailed);
+        setWorkWeek([true, true, true, true, true, false, false]);
+      }
+    };
+
+    fetchWorkWeek();
+  }, [userProfile?.attributes?.severaUserId]);
+
+  // Update vacation request whenever date range changes
+  useEffect(() => {
+    if (!dateRange.start || !dateRange.end) return;
+
+    const days = calculateTotalVacationDays(dateRange.start, dateRange.end, workWeek);
+
     if (!adminMode) {
       setVacationRequestData({
         ...vacationRequestData,
         startDate: dateRange.start.toJSDate(),
         endDate: dateRange.end.toJSDate(),
-        days: calculateTotalVacationDays(
-          dateRange.start,
-          dateRange.end,
-          // FIXME: implement a proper solution for various work contracts
-          // getWorkingWeek(loggedInUser)
-          // [true, true, true, true, true, false, false]
-          workWeek
-        )
+        days
       });
     } else {
       setVacationRequestData({
@@ -69,12 +106,12 @@ const ToolbarFormFields = ({
         endDate: dateRange.end.toJSDate()
       });
     }
-  }, [dateRange]);
+  }, [dateRange, workWeek, adminMode]);
 
   /**
-   * Handle vacation data change
+   * Handle vacation request data change
    *
-   * @param value message string
+   * @param value component value
    */
   const handleVacationRequestDataChange = (value: string) => {
     setVacationRequestData({
@@ -84,12 +121,13 @@ const ToolbarFormFields = ({
   };
 
   /**
-   * Handle days change
+   *
+   * Handle days change (admin)
    *
    * @param value days string
    */
   const handleDaysChange = (value: string) => {
-    const daysValue = Number.parseInt(value) || 0;
+    const daysValue = Number.parseInt(value, 10) || 0;
     if (!dateRange.start) return;
 
     const newEndDate = calculateEndDateFromDays(dateRange.start, daysValue, workWeek);
@@ -105,19 +143,11 @@ const ToolbarFormFields = ({
   };
 
   /**
-   * Handle restore default days
+   * restore default days (admin)
    */
   const handleRestoreDefaultDays = () => {
-    const defaultDays = calculateTotalVacationDays(dateRange.start, dateRange.end, [
-      true,
-      true,
-      true,
-      true,
-      true,
-      false,
-      false
-    ]);
-
+    if (!dateRange.start || !dateRange.end) return;
+    const defaultDays = calculateTotalVacationDays(dateRange.start, dateRange.end, workWeek);
     setVacationRequestData({
       ...vacationRequestData,
       days: defaultDays
@@ -126,6 +156,11 @@ const ToolbarFormFields = ({
 
   return (
     <FormControl sx={{ width: "100%" }}>
+      {error && (
+        <Alert severity="warning" sx={{ mb: 2 }}>
+          {error}
+        </Alert>
+      )}
       {!adminMode && (
         <>
           <FormLabel>{strings.vacationRequest.message}</FormLabel>
@@ -148,9 +183,9 @@ const ToolbarFormFields = ({
             <TextField
               type="number"
               value={vacationRequestData.days ?? ""}
-              onChange={(event: ChangeEvent<HTMLInputElement>) => {
-                handleDaysChange(event.target.value);
-              }}
+              onChange={(event: ChangeEvent<HTMLInputElement>) =>
+                handleDaysChange(event.target.value)
+              }
               inputProps={{ min: 0 }}
               sx={{ flexGrow: 1 }}
             />
@@ -169,6 +204,7 @@ const ToolbarFormFields = ({
           />
         </>
       )}
+
       {toolbarFormMode === ToolbarFormModes.CREATE && (
         <Grid container spacing={2}>
           <Grid item xs={6}>

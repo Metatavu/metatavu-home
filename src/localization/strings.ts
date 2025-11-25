@@ -59,6 +59,7 @@ export interface Localized extends LocalizedStringsMethods {
     noSeveraUserId: string;
     noFlextimeData: string;
     noArticleId: string;
+    fetchWorkWeekFailed: string;
     fetchFailedSevera: string;
   };
   /**
