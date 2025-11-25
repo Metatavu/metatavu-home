@@ -43,7 +43,8 @@
     "noSeveraUserId": "One of your users is missing severaUserId, please contact a member of the metatavu home development team for more information.",
     "noFlextimeData": "Something went wrong while fetching your flextime data",
     "noArticleId": "Article ID is missing",
-    "fetchWorkWeekFailed": "Error while fetching work week data, five day week will be used."
+    "fetchWorkWeekFailed": "Error while fetching work week data, five day week will be used.",
+    "fetchFailedSevera": "Failed to update Severa opt-in."
   },
   "localization": {
     "en": "EN",
@@ -226,7 +227,9 @@
     "noMessage": "No message",
     "noStatus": "No status",
     "person": "Person",
-    "noPersonFullName": "No name"
+    "noPersonFullName": "No name",
+    "noReview": "Not reviewed yet",
+    "reviewedBy": "by:"
   },
   "vacationRequestError": {
     "fetchRequestError": "Fetching vacation requests has failed",
@@ -505,7 +508,8 @@
     "paidStatus": "Paid Status",
     "date": "Date",
     "noUsernameOnCall": "-",
-    "errorUpdatingPaidStatus": "Failed to update on-call shift paid status"
+    "errorUpdatingPaidStatus": "Failed to update on-call shift paid status",
+    "noDataForYear": "No data available for this year"
   },
   "onboarding": {
     "prev": "Previous",

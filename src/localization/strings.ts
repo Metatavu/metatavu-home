@@ -60,6 +60,7 @@ export interface Localized extends LocalizedStringsMethods {
     noFlextimeData: string;
     noArticleId: string;
     fetchWorkWeekFailed: string;
+    fetchFailedSevera: string;
   };
   /**
    * Translations related to localization
@@ -257,6 +258,8 @@ export interface Localized extends LocalizedStringsMethods {
     noStatus: string;
     person: string;
     noPersonFullName: string;
+    noReview: string;
+    reviewedBy: string;
   };
   /**
    * Translations related to vacation requests errors
@@ -669,6 +672,7 @@ export interface Localized extends LocalizedStringsMethods {
     date: string;
     noUsernameOnCall: string;
     errorUpdatingPaidStatus: string;
+    noDataForYear: string;
   };
 
   employeeFlextime: {

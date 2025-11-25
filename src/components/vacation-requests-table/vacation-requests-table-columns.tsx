@@ -1,15 +1,23 @@
+import { Box, Tooltip } from "@mui/material";
 import type { GridColDef } from "@mui/x-data-grid";
+import { useAtomValue } from "jotai";
+import { usersAtom } from "src/atoms/user";
+import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import LocalizationUtils from "src/utils/localization-utils";
 import { formatDate } from "src/utils/time-utils";
+import { getVacationRequestStatusColor } from "src/utils/vacation-status-utils";
+import UnreviewedIndicator from "./pending-vacation-indicator";
+import StatusToolTipContent from "./vacation-request-status-tooltip";
+import { getFullUserName } from "src/utils/user-name-utils";
 
 /**
  * Vacation requests table columns component
  */
 const VacationRequestsTableColumns = (): GridColDef[] => {
-  /**
-   * Define columns for data grid
-   */
+  const users = useAtomValue(usersAtom) || [];
+  const { adminMode } = useUserRole();
+
   const columns: GridColDef[] = [
     {
       field: "type",
@@ -21,7 +29,11 @@ const VacationRequestsTableColumns = (): GridColDef[] => {
       field: "personFullName",
       headerName: strings.vacationRequest.person,
       width: 160,
-      editable: false
+      editable: false,
+      renderCell: (params) => {
+        const user = users.find((u) => u.id === params.row.userId);
+        return getFullUserName(user);
+      }
     },
     {
       field: "updatedAt",
@@ -59,18 +71,37 @@ const VacationRequestsTableColumns = (): GridColDef[] => {
     {
       field: "status",
       headerName: strings.vacationRequest.status,
+      width: 120,
+      editable: false,
       renderCell: (params) => {
         if (!params.value) return "";
-        return LocalizationUtils.getLocalizedVacationRequestStatus(params.value);
+        const vacationRequest = params.row.vacationRequest;
+        const statuses = vacationRequest?.status || [];
+        const currentStatus = params.value;
+        const isUnreviewed = statuses.length === 1 && currentStatus === "PENDING";
+        return (
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            {adminMode && isUnreviewed && <UnreviewedIndicator />}
+            <Tooltip title={<StatusToolTipContent statuses={statuses} />} arrow placement="top">
+              <Box
+                sx={{
+                  color: getVacationRequestStatusColor(currentStatus),
+                  fontWeight: 600,
+                  cursor: "help"
+                }}
+              >
+                {LocalizationUtils.getLocalizedVacationRequestStatus(currentStatus)}
+              </Box>
+            </Tooltip>
+          </Box>
+        );
       },
       cellClassName: (params) => {
         if (params.value === null) {
           return "";
         }
         return params.value;
-      },
-      width: 120,
-      editable: false
+      }
     }
   ];
   return columns;

@@ -1,6 +1,6 @@
 import { Box, CircularProgress, Switch, Typography } from "@mui/material";
 import { useAtom, useSetAtom } from "jotai";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { userProfileAtom } from "src/atoms/auth";
 import { errorAtom } from "src/atoms/error";
 import { usersAtom } from "src/atoms/user";
@@ -11,22 +11,36 @@ import strings from "src/localization/strings";
  * Settings screen component
  */
 const SettingsScreen = () => {
-  const { usersApi } = useLambdasApi();
   const [userProfile, setUserProfile] = useAtom(userProfileAtom);
+  const { usersApi } = useLambdasApi();
   const setUsers = useSetAtom(usersAtom);
   const setError = useSetAtom(errorAtom);
 
-  const [isConsentGiven, setIsConsentGiven] = useState(
+  const [isConsentGiven, setIsConsentGiven] = useState<boolean>(
     Boolean(userProfile?.attributes?.severaUserId)
   );
-  const [isLoading, setIsLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    setIsConsentGiven(Boolean(userProfile?.attributes?.severaUserId));
+  }, [userProfile?.attributes?.severaUserId]);
+
+  /**
+   * Handles toggle change event
+   */
   const handleToggleChange = () => {
-    grantSeveraOptInConsent();
+    if (isConsentGiven) {
+      revokeSeveraOptIn();
+    } else {
+      grantSeveraOptInConsent();
+    }
   };
-
+  
+  /**
+   * Grants severa opt-in consent
+   */
   const grantSeveraOptInConsent = async () => {
-    setIsLoading(true);
+    setLoading(true);
     try {
       if (!userProfile?.email || !userProfile?.id) {
         setError(strings.error.missingEmailOrId);
@@ -34,38 +48,63 @@ const SettingsScreen = () => {
       }
 
       const response = await usersApi.updateUserAttribute({
-        updateUserAttributeRequest: { email: userProfile?.email },
-        id: userProfile?.id,
+        updateUserAttributeRequest: { email: userProfile.email },
+        id: userProfile.id,
         attributeName: "isSeveraOptIn"
       });
 
-      const severaUserId = response.updatedKeycloakAttributes
-        ? response.updatedKeycloakAttributes.severaUserId
-        : undefined;
+      const severaUserIdRaw = response?.updatedKeycloakAttributes?.severaUserId;
+      const severaUserId = Array.isArray(severaUserIdRaw) ? severaUserIdRaw[0] : severaUserIdRaw;
 
       setIsConsentGiven(Boolean(severaUserId));
-
       if (severaUserId) {
-        const updatedProfile = {
-          ...userProfile,
-          attributes: {
-            ...userProfile.attributes,
-            severaUserId
-          }
-        };
+        const updatedAttributes = {
+          ...(userProfile.attributes || {}),
+          severaUserId
+        } as Record<string, string[] | string | undefined>;
 
+        const updatedProfile = { ...userProfile, attributes: updatedAttributes };
         setUserProfile(updatedProfile);
         setUsers((prev) =>
-          prev.map((u) =>
-            u.id === userProfile.id ? { ...u, attributes: { ...u.attributes, severaUserId } } : u
-          )
+          prev.map((u) => (u.id === userProfile.id ? { ...u, attributes: updatedAttributes } : u))
         );
       }
     } catch (error) {
-      console.error("Error fetching consent:", error);
-      setError(`${strings.error.fetchFailedFlextime}, ${error}`);
+      setError(`${strings.error.fetchFailedSevera}, ${String(error)}`);
     } finally {
-      setIsLoading(false);
+      setLoading(false);
+    }
+  };
+
+  /**
+   * Revokes severa opt-in consent
+   */
+  const revokeSeveraOptIn = async () => {
+    setLoading(true);
+    try {
+      if (!userProfile?.id) {
+        setError(strings.error.missingEmailOrId);
+        return;
+      }
+
+      await usersApi.removeSeveraOptIn({ userId: userProfile.id });
+      const updatedAttributes = { ...(userProfile.attributes || {}) } as Record<
+        string,
+        string[] | string | undefined
+      >;
+      delete updatedAttributes.severaUserId;
+      delete updatedAttributes.isSeveraOptIn;
+
+      const updatedProfile = { ...userProfile, attributes: updatedAttributes };
+      setUserProfile(updatedProfile);
+      setUsers((prev) =>
+        prev.map((u) => (u.id === userProfile.id ? { ...u, attributes: updatedAttributes } : u))
+      );
+      setIsConsentGiven(false);
+    } catch (error) {
+      setError(`${strings.error.fetchFailedSevera}, ${String(error)}`);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -82,10 +121,10 @@ const SettingsScreen = () => {
           <Switch
             checked={isConsentGiven}
             onChange={handleToggleChange}
-            inputProps={{ "aria-label": "information" }}
-            disabled={isConsentGiven || isLoading}
+            inputProps={{ "aria-label": "severa-opt-in" }}
+            disabled={loading}
           />
-          {isLoading && (
+          {loading && (
             <Box ml={1}>
               <CircularProgress size={20} />
             </Box>

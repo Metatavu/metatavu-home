@@ -43,6 +43,7 @@
     "noSeveraUserId": "Käyttäjältä puuttuu Severa-käyttäjätunnus, ota yhteyttä Metatavun kehitystiimiin lisätietoja varten.",
     "noFlextimeData": "Jotain meni pieleen joustotyöaikatietoja haettaessa",
     "noArticleId": "Artikkelin ID puuttuu",
+    "fetchFailedSevera": "Severa-opt-in päivitys epäonnistui.",
     "fetchWorkWeekFailed": "Virhe työviikon tietoja haettaessa, käytetään oletuksena viiden päivän viikkoa"
   },
   "localization": {
@@ -226,7 +227,9 @@
     "noMessage": "Ei viestiä",
     "noStatus": "Ei tilaa",
     "person": "Henkilö",
-    "noPersonFullName": "Ei nimeä"
+    "noPersonFullName": "Ei nimeä",
+    "noReview": "ei ole vielä tarkistettu",
+    "reviewedBy": "Tarkastanut:"
   },
   "vacationRequestError": {
     "fetchRequestError": "Lomahakemusten hakeminen epäonnistui",
@@ -505,7 +508,8 @@
     "paidStatus": "Maksatus",
     "date": "Päivämäärä",
     "noUsernameOnCall": "-",
-    "errorUpdatingPaidStatus": "Päivystysvuoron maksutilan päivittäminen epäonnistui"
+    "errorUpdatingPaidStatus": "Päivystysvuoron maksutilan päivittäminen epäonnistui",
+    "noDataForYear": "Ei tietoja saatavilla tältä vuodelta"
   },
   "onboarding": {
     "prev": "Edellinen",
