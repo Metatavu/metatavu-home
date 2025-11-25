@@ -243,7 +243,8 @@
     "noVacationRequestsFound": "Lomahakemuksia ei löydetty",
     "nameNotFound": "Nimeä ei löydetty",
     "noVacationRequestsStatusFound": "Tiloja ei löytynyt",
-    "tooManyDaysRequested": "Et voi pyytää {requestedDays} päivää. Sinulla on vain {unspentDays} käyttämätöntä lomapäivää",
+    "tooManyDaysRequestedUser": "Et voi pyytää {requestedDays} päivää. Sinulla on käytettävissä vain {unspentDays} lomapäivää.",
+    "notEnoughVacationDays": "Ei tarpeeksi lomapäiviä. Pyydetty: {requestedDays} päivää, Käytettävissä: {unspentDays} päivää.",
     "failedToLoad": "Käyttäjien lataaminen epäonnistui"
   },
   "sprintRequestError": {
