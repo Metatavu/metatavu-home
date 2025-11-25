@@ -385,7 +385,6 @@ const VacationRequestsScreen = () => {
           );
 
           if (!isValid) {
-            console.log(isValid.valueOf())
             return;
           }
         }
