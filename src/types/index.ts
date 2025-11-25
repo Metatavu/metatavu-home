@@ -1,7 +1,7 @@
 import type { DateTime } from "luxon";
+import type { ReactNode } from "react";
 //import type { Person, PersonTotalTime, DailyEntry } from "../generated/client";
 import type { VacationRequest, VacationType } from "../generated/homeLambdasClient";
-import type { ReactNode } from "react";
 
 /**
  * Enum describing table form modes
@@ -9,7 +9,7 @@ import type { ReactNode } from "react";
 export enum ToolbarFormModes {
   CREATE = "CREATE",
   EDIT = "EDIT",
-  NONE = "NONE",
+  NONE = "NONE"
 }
 
 /**
@@ -29,7 +29,7 @@ export interface VacationsDataGridRow {
   id: string | undefined;
   type: VacationType | string;
   personFullName: string;
-  userId?: string ;
+  userId?: string;
   updatedAt: string | DateTime;
   startDate: string | DateTime;
   endDate: string | DateTime;

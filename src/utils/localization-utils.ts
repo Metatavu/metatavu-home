@@ -1,10 +1,11 @@
 //import { Timespan, VacationRequestStatuses, VacationType } from "../generated/client";
-import strings from "../localization/strings";
+
 import { VacationRequestStatuses, VacationType } from "../generated/homeLambdasClient";
+import strings from "../localization/strings";
 /**
  * Localization Utils class
  */
- export default class LocalizationUtils {
+export default class LocalizationUtils {
   /**
    * Get localized vacation request status
    *
@@ -16,7 +17,7 @@ import { VacationRequestStatuses, VacationType } from "../generated/homeLambdasC
     ({
       [VacationRequestStatuses.PENDING]: strings.vacationRequest.pending,
       [VacationRequestStatuses.APPROVED]: strings.vacationRequest.approved,
-      [VacationRequestStatuses.DECLINED]: strings.vacationRequest.declined,
+      [VacationRequestStatuses.DECLINED]: strings.vacationRequest.declined
     })[vacationRequestStatus];
 
   /**
@@ -26,7 +27,7 @@ import { VacationRequestStatuses, VacationType } from "../generated/homeLambdasC
    */
   public static getLocalizedVacationRequestType = (vacationType: VacationType) =>
     ({
-      [VacationType.VACATION]: strings.vacationRequest.vacation,
+      [VacationType.VACATION]: strings.vacationRequest.vacation
       // NOTE: The following types are not generated in homeLambdasClient, so they are uncommented out for now.
       // [VacationType.PERSONAL_DAYS]: strings.vacationRequest.personalDays,
       // [VacationType.UNPAID_TIME_OFF]: strings.vacationRequest.unpaidTimeOff,
@@ -40,11 +41,11 @@ import { VacationRequestStatuses, VacationType } from "../generated/homeLambdasC
    *
    * @param timespanType timespan type
    */
-//   public static getLocalizedTimespan = (timespanType: Timespan) =>
-//     ({
-//       [Timespan.ALL_TIME]: strings.timeExpressions.allTime,
-//       [Timespan.MONTH]: strings.timeExpressions.month,
-//       [Timespan.WEEK]: strings.timeExpressions.week,
-//       [Timespan.YEAR]: strings.timeExpressions.year
-//     })[timespanType];
+  //   public static getLocalizedTimespan = (timespanType: Timespan) =>
+  //     ({
+  //       [Timespan.ALL_TIME]: strings.timeExpressions.allTime,
+  //       [Timespan.MONTH]: strings.timeExpressions.month,
+  //       [Timespan.WEEK]: strings.timeExpressions.week,
+  //       [Timespan.YEAR]: strings.timeExpressions.year
+  //     })[timespanType];
 }

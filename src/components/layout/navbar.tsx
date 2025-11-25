@@ -1,28 +1,29 @@
-import { type MouseEvent, useEffect, useState } from "react";
+import SettingsIcon from "@mui/icons-material/Settings";
 import {
-  MenuItem,
   AppBar,
+  Avatar,
   Box,
-  Toolbar,
+  Container,
   IconButton,
   Menu,
-  Container,
-  Tooltip,
-  Avatar,
+  MenuItem,
+  Toolbar,
+  Tooltip
 } from "@mui/material";
-import LocalizationButtons from "../layout-components/localization-buttons";
-import strings from "src/localization/strings";
-import { authAtom, userProfileAtom } from "src/atoms/auth";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
-import NavItems from "./navitems";
-import { avatarsAtom } from "src/atoms/person";
+import { type MouseEvent, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 //import { avatarsAtom, personsAtom } from "src/atoms/person";
 //import type { Person } from "src/generated/client";
 import config from "src/app/config";
-import { useLambdasApi } from "src/hooks/use-api";
+import { authAtom, userProfileAtom } from "src/atoms/auth";
 import { errorAtom } from "src/atoms/error";
-import SettingsIcon from '@mui/icons-material/Settings';
-import { useNavigate } from "react-router-dom";
+import { avatarsAtom } from "src/atoms/person";
+import { useLambdasApi } from "src/hooks/use-api";
+import strings from "src/localization/strings";
+import LocalizationButtons from "../layout-components/localization-buttons";
+import NavItems from "./navitems";
+
 /**
  * NavBar component
  */
@@ -70,7 +71,6 @@ const NavBar = () => {
     navigate("/settings");
   };
 
-
   /**
    * Fetch Slack avatars
    */
@@ -79,8 +79,7 @@ const NavBar = () => {
     try {
       const fetchedAvatars = await slackAvatarsApi.slackAvatar();
       setAvatars(fetchedAvatars);
-    }
-    catch (error) {
+    } catch (error) {
       setError(`${strings.error.fetchSlackAvatarsFailed}: ${error}`);
     }
   };
@@ -101,11 +100,11 @@ const NavBar = () => {
               </IconButton>
             </Tooltip>
             <LocalizationButtons />
-            
+
             <Box>
               <Tooltip title={strings.header.openUserMenu}>
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  { <Avatar src={loggedInPersonAvatar} /> }
+                  {<Avatar src={loggedInPersonAvatar} />}
                 </IconButton>
               </Tooltip>
               <Menu

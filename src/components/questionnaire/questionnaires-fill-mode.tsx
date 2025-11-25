@@ -1,12 +1,12 @@
 import {
+  Box,
   Card,
   CardContent,
-  Typography,
-  Box,
-  FormControlLabel,
   Checkbox,
   Divider,
-  Radio
+  FormControlLabel,
+  Radio,
+  Typography
 } from "@mui/material";
 import type { AnswerOption, Question, Questionnaire } from "src/generated/homeLambdasClient";
 

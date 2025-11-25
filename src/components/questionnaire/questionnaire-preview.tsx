@@ -1,17 +1,17 @@
-import type React from "react";
-import { useState } from "react";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import {
   Box,
+  Button,
   Card,
   CardContent,
-  Typography,
+  Checkbox,
   Divider,
   FormControlLabel,
-  Checkbox,
-  Button,
-  TextField
+  TextField,
+  Typography
 } from "@mui/material";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import type React from "react";
+import { useState } from "react";
 import type { Question } from "src/generated/homeLambdasClient";
 import strings from "src/localization/strings";
 
@@ -115,9 +115,9 @@ const QuestionnairePreview = ({
    * Function to handle saving changes in the preview edit
    */
   const handleSave = () => {
-      validateEditedQuestion();
-      setEditingIndex(null);
-      setEditedQuestion(null);
+    validateEditedQuestion();
+    setEditingIndex(null);
+    setEditedQuestion(null);
   };
 
   return (
@@ -192,7 +192,15 @@ const QuestionnairePreview = ({
                   </>
                 )}
               </Box>
-              <Box sx={{ display: "flex", flexDirection: "row", alignItems: "flex-end", mr: 2, gap: 2 }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "flex-end",
+                  mr: 2,
+                  gap: 2
+                }}
+              >
                 <Button
                   variant="contained"
                   color="secondary"

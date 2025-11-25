@@ -15,8 +15,8 @@ import { authAtom } from "src/atoms/auth";
 import { softwareAtom } from "src/atoms/software";
 import type { SoftwareRegistry } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
-import strings from "src/localization/strings";
 import useUserRole from "src/hooks/use-user-role";
+import strings from "src/localization/strings";
 import BackButton from "../generics/back-button";
 import AddSoftwareModal from "./AddSoftwareModal";
 

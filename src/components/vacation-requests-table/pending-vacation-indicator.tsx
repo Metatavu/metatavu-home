@@ -9,7 +9,6 @@ import { getVacationRequestStatusColor } from "src/utils/vacation-status-utils";
  */
 
 const PendingVacationStatusIndicator = () => {
-  
   return (
     <Tooltip title={strings.vacationRequest.noReview} arrow placement="top">
       <Box

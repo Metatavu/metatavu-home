@@ -1,7 +1,7 @@
 import { Grid, Typography } from "@mui/material";
-import strings from "../localization/strings";
 import type { User } from "src/generated/homeLambdasClient";
 import { getVacationColors, parseVacationDays } from "src/utils/time-utils.ts";
+import strings from "../localization/strings";
 
 /**
  * Display persons vacation days in card

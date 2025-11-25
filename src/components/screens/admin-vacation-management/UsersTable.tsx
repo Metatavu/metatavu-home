@@ -11,9 +11,9 @@ import {
   Typography
 } from "@mui/material";
 import type { User } from "src/generated/homeLambdasClient/models/User";
+import { userWithParsedName } from "src/utils/user-name-utils";
 import strings from "../../../localization/strings";
 import UserRow from "./UserRow";
-import { userWithParsedName } from "src/utils/user-name-utils";
 
 /** Props for the UserTable component */
 interface UserTableProps {

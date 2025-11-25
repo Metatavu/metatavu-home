@@ -6,10 +6,10 @@ import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import LocalizationUtils from "src/utils/localization-utils";
 import { formatDate } from "src/utils/time-utils";
+import { getFullUserName } from "src/utils/user-name-utils";
 import { getVacationRequestStatusColor } from "src/utils/vacation-status-utils";
 import UnreviewedIndicator from "./pending-vacation-indicator";
 import StatusToolTipContent from "./vacation-request-status-tooltip";
-import { getFullUserName } from "src/utils/user-name-utils";
 
 /**
  * Vacation requests table columns component

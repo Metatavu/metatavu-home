@@ -1,4 +1,4 @@
-import type {User} from "src/generated/homeLambdasClient";
+import type { User } from "src/generated/homeLambdasClient";
 import strings from "src/localization/strings";
 
 /**
@@ -44,31 +44,31 @@ const parseNameFromEmail = (
  * @param text- Text to capitalize
  * @returns Capitalized firstName
  */
-const capitalize = (text:string) => {
-  if(!text) return "";
+const capitalize = (text: string) => {
+  if (!text) return "";
   return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
-}
+};
 
 /**
  * Gets the full name from a user object, with fallback to email parsing
  * Prioritizes firstName/lastName if they exist, otherwise parses from email
- * 
+ *
  * @param user - The user object
  * @returns Full name as a string
  */
 export const getFullUserName = (user: User | undefined): string => {
-  if(!user){
+  if (!user) {
     return strings.softwareRegistry.errorUnknownUser;
   }
-  if(user.firstName && user.lastName){
-     return `${user.firstName} ${user.lastName}`.trim();
+  if (user.firstName && user.lastName) {
+    return `${user.firstName} ${user.lastName}`.trim();
   }
-  const {firstName, lastName} = parseNameFromEmail(user.email);
-  if(firstName && lastName){
+  const { firstName, lastName } = parseNameFromEmail(user.email);
+  if (firstName && lastName) {
     return `${firstName} ${lastName}`.trim();
   }
   return user.email || strings.softwareRegistry.errorUnknownUser;
-}
+};
 
 /**
  * Ensures a user object has 'firstName' and 'lastName' values.
@@ -76,13 +76,13 @@ export const getFullUserName = (user: User | undefined): string => {
  * @param user- The user object to process
  * @returns User Object with firstName and lastName
  */
-export const userWithParsedName = (user: User) =>{
-  if(user.firstName && user.lastName){
+export const userWithParsedName = (user: User) => {
+  if (user.firstName && user.lastName) {
     return user;
   }
-  const {firstName, lastName} = parseNameFromEmail(user.email);
-  
-  return{
+  const { firstName, lastName } = parseNameFromEmail(user.email);
+
+  return {
     ...user,
     firstName: user.firstName || firstName,
     lastName: user.lastName || lastName

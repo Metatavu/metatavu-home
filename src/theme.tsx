@@ -1,4 +1,4 @@
-import { type Theme, createTheme } from "@mui/material";
+import { createTheme, type Theme } from "@mui/material";
 import PoppinsBlack from "../resources/fonts/poppins/Poppins-Black.ttf";
 import PoppinsBold from "../resources/fonts/poppins/Poppins-Bold.ttf";
 import PoppinsMedium from "../resources/fonts/poppins/Poppins-Medium.ttf";
@@ -152,4 +152,3 @@ export const wikiScreenColors = {
     text: "#787272"
   }
 };
-

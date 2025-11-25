@@ -1,9 +1,12 @@
 import { useState } from "react";
+import type { SoftwareRegistry } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
-import { SoftwareRegistry } from "src/generated/homeLambdasClient";
 import strings from "src/localization/strings";
 
-const useCreateSoftware = (loggedUserId: string, setApplications: React.Dispatch<React.SetStateAction<SoftwareRegistry[]>>) => {
+const useCreateSoftware = (
+  loggedUserId: string,
+  setApplications: React.Dispatch<React.SetStateAction<SoftwareRegistry[]>>
+) => {
   const { softwareApi } = useLambdasApi();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -15,10 +18,10 @@ const useCreateSoftware = (loggedUserId: string, setApplications: React.Dispatch
       const newSoftware = {
         ...software,
         createdBy: loggedUserId,
-        users: [loggedUserId],
+        users: [loggedUserId]
       };
       const createdSoftware = await softwareApi.createSoftware({
-        softwareRegistry: newSoftware,
+        softwareRegistry: newSoftware
       });
       setApplications((prev) => [createdSoftware, ...prev]);
     } catch (error) {

@@ -1,10 +1,10 @@
-import { useAtomValue } from "jotai";
-import { onCallAtom } from "../../atoms/oncall";
 import { Box, Button, Checkbox, Typography } from "@mui/material";
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
+import { useAtomValue } from "jotai";
 import { DateTime } from "luxon";
-import strings from "src/localization/strings";
 import useUserRole from "src/hooks/use-user-role";
+import strings from "src/localization/strings";
+import { onCallAtom } from "../../atoms/oncall";
 
 /**
  * Component properties
@@ -102,18 +102,20 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
         </Box>
       </Box>
       {rows.length === 0 ? (
-        <Box sx={{
-          width: "100%",
-          textAlign: "center",
-          py: 6,
-          fontSize: 24,
-          fontWeight: "bold",
-          color: "#bdbdbd",
-          border: "1px solid #eee",
-          borderRadius: 4,
-          background: "#fafafa",
-          mt: 2
-        }}>
+        <Box
+          sx={{
+            width: "100%",
+            textAlign: "center",
+            py: 6,
+            fontSize: 24,
+            fontWeight: "bold",
+            color: "#bdbdbd",
+            border: "1px solid #eee",
+            borderRadius: 4,
+            background: "#fafafa",
+            mt: 2
+          }}
+        >
           No Data for this year
         </Box>
       ) : (
@@ -122,9 +124,7 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
           columns={columns}
           disableRowSelectionOnClick
           hideFooter
-          getRowClassName={(params) =>
-            params.row.paid ? "paid-row" : "unpaid-row"
-          }
+          getRowClassName={(params) => (params.row.paid ? "paid-row" : "unpaid-row")}
           sx={{
             marginBottom: "60px",
             "& .paid-row": {

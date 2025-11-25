@@ -1,11 +1,11 @@
 import { Box, Typography } from "@mui/material";
 import type { TooltipProps } from "recharts";
-import type { ValueType, NameType } from "recharts/types/component/DefaultTooltipContent";
+import type { NameType, ValueType } from "recharts/types/component/DefaultTooltipContent";
 //import type { DailyEntry, PersonTotalTime } from "../generated/client";
 import strings from "../localization/strings";
 import { theme } from "../theme";
-import { getHoursAndMinutes } from "./time-utils";
 import type { CustomLabel } from "../types";
+import { getHoursAndMinutes } from "./time-utils";
 
 /**
  * Reformats inputted daily entry to be presented in the pie chart

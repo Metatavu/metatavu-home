@@ -6,16 +6,16 @@ import {
   CardContent,
   Checkbox,
   TextField,
-  Typography,
-  Tooltip
+  Tooltip,
+  Typography
 } from "@mui/material";
 import type React from "react";
 import { useState } from "react";
 import type { AnswerOption } from "src/generated/homeLambdasClient";
 import strings from "src/localization/strings";
 import {
-  isQuestionValid,
-  getQuestionValidationTooltipMessage
+  getQuestionValidationTooltipMessage,
+  isQuestionValid
 } from "src/utils/questionnaireBuilderUtils";
 
 /**
@@ -25,7 +25,10 @@ interface Props {
   handleAddQuestion: ({
     questionText,
     answerOptions
-  }: { questionText: string; answerOptions: AnswerOption[] }) => void;
+  }: {
+    questionText: string;
+    answerOptions: AnswerOption[];
+  }) => void;
 }
 
 /**
