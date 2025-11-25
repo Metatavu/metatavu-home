@@ -507,7 +507,8 @@
     "paidStatus": "Maksatus",
     "date": "Päivämäärä",
     "noUsernameOnCall": "-",
-    "errorUpdatingPaidStatus": "Päivystysvuoron maksutilan päivittäminen epäonnistui"
+    "errorUpdatingPaidStatus": "Päivystysvuoron maksutilan päivittäminen epäonnistui",
+    "noDataForYear": "Ei tietoja saatavilla tältä vuodelta"
   },
   "onboarding": {
     "prev": "Edellinen",

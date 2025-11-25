@@ -671,6 +671,7 @@ export interface Localized extends LocalizedStringsMethods {
     date: string;
     noUsernameOnCall: string;
     errorUpdatingPaidStatus: string;
+    noDataForYear: string;
   };
 
   employeeFlextime: {
