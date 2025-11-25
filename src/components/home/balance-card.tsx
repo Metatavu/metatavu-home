@@ -90,7 +90,7 @@ const BalanceCard = () => {
     const totalFlextimeBalance = usersFlextime.totalFlextimeBalance;
     const textColor = totalFlextimeBalance >= 0 ? "green" : "red";
     const hourLabel =
-      totalFlextimeBalance === 1 ? strings.balanceCard.hour : strings.balanceCard.hours;
+      totalFlextimeBalance === 1 ? strings.timeExpressions.hour : strings.timeExpressions.hours;
     return (
       <Typography variant="body1">
         {strings.balanceCard.totalFlextimeBalance}{" "}

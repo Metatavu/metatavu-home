@@ -414,9 +414,7 @@
     "employeeBalances": "Henkilöstön aikakirjaukset ja saldot",
     "viewAllTimeEntries": "Kaikki henkilöstön aikakirjaukset ja saldot",
     "balance": "Saldo",
-    "atTheEndOf": "{0} lopussa",
-    "hour": "tunti",
-    "hours": "Tuntia"
+    "atTheEndOf": "{0} lopussa"
   },
   "wikiDocumentation": {
     "cardTitle": "Wiki Dokumentaatio",

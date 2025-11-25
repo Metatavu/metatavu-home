@@ -247,7 +247,7 @@
     "nameNotFound": "Name not found",
     "noVacationRequestsStatusFound": "Statuses not found",
     "tooManyDaysRequested": "You cannot request {requestedDays} days. You only have {unspentDays} unspent vacation days.",
-    "failedToLoad": "Failed to load users" 
+    "failedToLoad": "Failed to load users"
   },
   "sprintRequestError": {
     "fetchResourceAllocationsError": "Fetching sprint data for resourceAllocations has failed",
@@ -414,9 +414,7 @@
     "employeeBalances": "Employee time totals and balances",
     "viewAllTimeEntries": "View all employees time totals and balances",
     "balance": "Balance",
-    "atTheEndOf": "At the end of {0}",
-    "hour": "hour",
-    "hours": "hours"
+    "atTheEndOf": "At the end of {0}"
   },
   "wikiDocumentation": {
     "cardTitle": "Wiki Documentation",

@@ -5,7 +5,6 @@ import {
   ButtonGroup,
   CircularProgress,
   IconButton,
-  Input,
   Tooltip as MuiTooltip,
   Typography
 } from "@mui/material";
@@ -88,10 +87,10 @@ const WorkDaysChart = ({
   const [workdays, setWorkdays] = useAtom(workDayAtom);
 
   useEffect(() => {
-    if (!usersFlextime) {
+    if (severaUserId) {
       getUsersFlextimes();
     }
-  }, [usersFlextime]);
+  }, [severaUserId]);
 
   useEffect(() => {
     if (!severaUserId) return;
@@ -104,6 +103,7 @@ const WorkDaysChart = ({
   const getUsersFlextimes = async () => {
     if (!severaUserId) return;
     try {
+      setLoading(true);
       const fetchedUsersFlextime = await flexTimeApi.getFlextimeBySeveraUserId({
         userId: severaUserId
       });
@@ -122,8 +122,6 @@ const WorkDaysChart = ({
    */
   const fetchWorkdays = async () => {
     if (!severaUserId) return;
-    setLoading(true);
-
     const { startDate, endDate } = getCurrentYearRange();
 
     try {
@@ -144,8 +142,6 @@ const WorkDaysChart = ({
       setWorkdays(mapped);
     } catch (err) {
       console.error("Failed to load work days:", err);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -164,7 +160,7 @@ const WorkDaysChart = ({
     const totalFlextimeBalance = usersFlextime.totalFlextimeBalance;
     const textColor = totalFlextimeBalance >= 0 ? "green" : "red";
     const hourLabel =
-      totalFlextimeBalance === 1 ? strings.balanceCard.hour : strings.balanceCard.hours;
+      totalFlextimeBalance === 1 ? strings.timeExpressions.hour : strings.timeExpressions.hours;
 
     return (
       <Typography variant="h4">
@@ -226,32 +222,40 @@ const WorkDaysChart = ({
       const d = new Date(e.date);
       if (d >= start && d <= end) {
         const weekStart = getWeekStart(d);
-        if (!grouped[weekStart.toISOString()]) {
-          grouped[weekStart.toISOString()] = { hours: 0, expected: 0, entryDates: [] };
+        const key = weekStart.toISOString();
+
+        if (!grouped[key]) {
+          grouped[key] = { hours: 0, expected: 0, entryDates: [] };
         }
-        grouped[weekStart.toISOString()].hours += e.enteredHours;
-        grouped[weekStart.toISOString()].expected += e.expectedHours;
-        grouped[weekStart.toISOString()].entryDates.push(d);
+
+        grouped[key].hours += e.enteredHours;
+        grouped[key].expected += e.expectedHours;
+        grouped[key].entryDates.push(d);
       }
     });
 
-    return Object.entries(grouped)
-      .map(([weekKey, values]) => {
-        const monthsCount: Record<number, number> = {};
-        values.entryDates.forEach((d) => {
-          const m = d.getMonth();
-          monthsCount[m] = (monthsCount[m] || 0) + 1;
-        });
-        const majorityMonth = Number(Object.entries(monthsCount).sort((a, b) => b[1] - a[1])[0][0]);
+    const mapped = Object.entries(grouped).map(([weekKey, values]) => {
+      const weekStart = new Date(weekKey);
+      const monthsCount: Record<number, number> = {};
+      values.entryDates.forEach((d) => {
+        const m = d.getMonth();
+        monthsCount[m] = (monthsCount[m] || 0) + 1;
+      });
 
-        return {
-          period: getNumberWeekLabel(new Date(weekKey)),
-          hours: values.hours,
-          expected: values.expected,
-          month: new Date(targetYear, majorityMonth).toLocaleString(locale, { month: "long" })
-        };
-      })
-      .sort((a, b) => new Date(a.period).getTime() - new Date(b.period).getTime());
+      const majorityMonth = Number(Object.entries(monthsCount).sort((a, b) => b[1] - a[1])[0][0]);
+
+      return {
+        period: getNumberWeekLabel(weekStart),
+        hours: values.hours,
+        expected: values.expected,
+        month: new Date(targetYear, majorityMonth).toLocaleString(locale, {
+          month: "long"
+        }),
+        weekStart
+      };
+    });
+    mapped.sort((a, b) => a.weekStart.getTime() - b.weekStart.getTime());
+    return mapped.map(({ weekStart, ...rest }) => rest);
   };
 
   /**
@@ -296,7 +300,7 @@ const WorkDaysChart = ({
       default:
         return [];
     }
-  }, [selectedRange, weekOffset, monthOffset, strings.timeExpressions.week]);
+  }, [selectedRange, weekOffset, monthOffset, workdays, locale]);
 
   const handleWeekOffsetChange = useCallback((delta: number) => {
     setWeekOffset((prev) => prev + delta);
@@ -357,7 +361,7 @@ const WorkDaysChart = ({
               <IconButton onClick={() => handleWeekOffsetChange(-1)}>
                 <ArrowBack />
               </IconButton>
-              <IconButton onClick={() => handleWeekOffsetChange(1)}>
+              <IconButton disabled={weekOffset === 0} onClick={() => handleWeekOffsetChange(1)}>
                 <ArrowForward />
               </IconButton>
               <IconButton onClick={() => setWeekOffset(0)}>
@@ -389,7 +393,10 @@ const WorkDaysChart = ({
               >
                 <ArrowBack />
               </IconButton>
-              <IconButton disabled={monthOffset === 0} onClick={() => handleMonthOffsetChange(1)}>
+              <IconButton
+                disabled={monthOffset === 0 || Object.entries(chartData).length === 0}
+                onClick={() => handleMonthOffsetChange(1)}
+              >
                 <ArrowForward />
               </IconButton>
               <IconButton onClick={() => setMonthOffset(0)}>
@@ -426,7 +433,6 @@ const WorkDaysChart = ({
                 return (
                   <text x={x} y={y + 10} textAnchor="middle" fill={color} fontSize={14}>
                     {payload.value}
-                    <title>{dataPoint.holidayName}</title>
                   </text>
                 );
               }}

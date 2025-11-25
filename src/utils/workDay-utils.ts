@@ -35,7 +35,7 @@ export const getWeekEnd = (date: Date): Date => {
 };
 
 /**
- * Formats a date into an ISO-like string (YYYY-MM-DD).
+ * Formats a date into a local date string (YYYY-MM-DD).
  *
  * @param date - The date to format.
  * @returns A string in the format `YYYY-MM-DD`.
@@ -43,7 +43,12 @@ export const getWeekEnd = (date: Date): Date => {
  * @example
  * formatDate(new Date("2025-10-06")); // → "2025-10-06"
  */
-export const formatDate = (date: Date): string => date.toISOString().substring(0, 10);
+export const formatDate = (date: Date): string => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
 
 /**
  * Returns the abbreviated month label for a given date (e.g., "Jan", "Feb").
@@ -105,7 +110,7 @@ export const getDayLabel = (date: Date, locale: string = "en-US"): string =>
  * Returns the date range for the current year up to today for the fetch to severa.
  *
  * @returns An object containing `startDate` (January 1st of the current year)
- *          and `endDate` (today's date) in `YYYY-MM-DD` format.
+ *          and `endDate` (today's date) as Date objects.
  */
 export const getCurrentYearRange = () => {
   const year = new Date().getFullYear();
@@ -125,5 +130,5 @@ export const getCurrentYearRange = () => {
  *
  */
 export const normalizeDate = (date: Date | string) => {
-  return typeof date === "string" ? date : date.toISOString().split("T")[0];
+  return typeof date === "string" ? date : formatDate(date);
 };

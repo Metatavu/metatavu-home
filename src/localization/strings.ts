@@ -526,8 +526,6 @@ export interface Localized extends LocalizedStringsMethods {
     viewAllTimeEntries: string;
     balance: string;
     atTheEndOf: string;
-    hour: string;
-    hours: string;
   };
   /**
    * Translations related to Wiki Documentation service
