@@ -1,8 +1,9 @@
+import { Box } from "@mui/material";
 import { useAtom, useAtomValue } from "jotai";
 import { userProfileAtom } from "src/atoms/auth";
 import { usersAtom } from "src/atoms/user";
 import type { User } from "src/generated/homeLambdasClient";
-import WorkDaysChart from "../balance/workDays-chart";
+import WorkDaysChart from "../work-hours/workDays-chart";
 
 /**
  * Balance screen component.
@@ -13,10 +14,9 @@ const BalanceScreen = () => {
   const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
 
   return (
-    <div>
-      <div style={{ marginTop: "16px" }} />
+    <Box style={{ marginTop: "16px" }}>
       <WorkDaysChart selectedEmployee={loggedInUser} />
-    </div>
+    </Box>
   );
 };
 

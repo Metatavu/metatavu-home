@@ -1,4 +1,6 @@
 import { DateTime } from "luxon";
+import type { ChartDataPoint } from "src/components/work-hours/workDays-chart";
+import type { ListWorkdaysForUser } from "src/generated/homeLambdasClient";
 import strings from "src/localization/strings";
 
 /**
@@ -131,4 +133,109 @@ export const getCurrentYearRange = () => {
  */
 export const normalizeDate = (date: Date | string) => {
   return typeof date === "string" ? date : formatDate(date);
+};
+
+/**
+ * Aggregates workdays by week for charting.
+ */
+export const getWeekData = (
+  entries: ListWorkdaysForUser[],
+  weekOffset: number,
+  locale: string
+): ChartDataPoint[] => {
+  const today = new Date();
+  const currentWeekStart = getWeekStart(today);
+  const targetWeekStart = new Date(currentWeekStart);
+  targetWeekStart.setDate(currentWeekStart.getDate() + weekOffset * 7);
+  const targetWeekEnd = getWeekEnd(targetWeekStart);
+
+  const entryMap = new Map(entries.map((e) => [normalizeDate(e.date), e]));
+  const weekDays: Date[] = [];
+
+  for (let d = new Date(targetWeekStart); d <= targetWeekEnd; d.setDate(d.getDate() + 1)) {
+    if (d.getDay() >= 1 && d.getDay() <= 5) weekDays.push(new Date(d));
+  }
+
+  return weekDays.map((d) => {
+    const entry = entryMap.get(normalizeDate(d));
+    return {
+      period: getDayLabel(d, locale),
+      hours: entry?.enteredHours || 0,
+      expected: entry?.expectedHours || 0,
+      isHoliday: entry?.isHoliday || false,
+      holidayName: entry?.holidayName ?? null,
+      week: getNumberWeekLabel(targetWeekStart),
+      targetWeek: targetWeekStart
+    };
+  });
+};
+
+/**
+ * Aggregates workdays by month for charting.
+ */
+export const getMonthData = (
+  entries: ListWorkdaysForUser[],
+  targetMonth: number,
+  targetYear: number,
+  locale: string
+): ChartDataPoint[] => {
+  const start = new Date(targetYear, targetMonth, 1);
+  const end = new Date(targetYear, targetMonth + 1, 0);
+
+  const grouped: Record<string, { hours: number; expected: number; entryDates: Date[] }> = {};
+
+  entries.forEach((e) => {
+    const d = new Date(e.date);
+    if (d >= start && d <= end) {
+      const weekStart = getWeekStart(d);
+      const key = weekStart.toISOString();
+      if (!grouped[key]) grouped[key] = { hours: 0, expected: 0, entryDates: [] };
+      grouped[key].hours += e.enteredHours;
+      grouped[key].expected += e.expectedHours;
+      grouped[key].entryDates.push(d);
+    }
+  });
+
+  return Object.entries(grouped)
+    .map(([weekKey, values]) => {
+      const weekStart = new Date(weekKey);
+      const monthsCount: Record<number, number> = {};
+      values.entryDates.forEach((d) => {
+        monthsCount[d.getMonth()] = (monthsCount[d.getMonth()] || 0) + 1;
+      });
+      const majorityMonth = Number(Object.entries(monthsCount).sort((a, b) => b[1] - a[1])[0][0]);
+      return {
+        period: getNumberWeekLabel(weekStart),
+        hours: values.hours,
+        expected: values.expected,
+        month: new Date(targetYear, majorityMonth).toLocaleString(locale, { month: "long" })
+      };
+    })
+    .sort((a, b) => a.period.localeCompare(b.period));
+};
+
+/**
+ * Aggregates workdays by year for charting.
+ */
+export const getYearData = (entries: ListWorkdaysForUser[], locale: string): ChartDataPoint[] => {
+  const year = new Date().getFullYear();
+  const grouped: Record<number, { hours: number; expected: number }> = {};
+
+  entries.forEach((e) => {
+    const d = new Date(e.date);
+    if (d.getFullYear() === year) {
+      const month = d.getMonth();
+      if (!grouped[month]) grouped[month] = { hours: 0, expected: 0 };
+      grouped[month].hours += e.enteredHours;
+      grouped[month].expected += e.expectedHours;
+    }
+  });
+
+  return Object.entries(grouped)
+    .sort(([a], [b]) => Number(a) - Number(b))
+    .map(([month, values]) => ({
+      period: getMonthLabel(new Date(year, Number(month)), locale),
+      hours: values.hours,
+      expected: values.expected
+    }));
 };

@@ -42,7 +42,8 @@
     "missingEmailOrId": "Missing email or ID",
     "noSeveraUserId": "One of your users is missing severaUserId, please contact a member of the metatavu home development team for more information.",
     "noFlextimeData": "Something went wrong while fetching your flextime data",
-    "noArticleId": "Article ID is missing"
+    "noArticleId": "Article ID is missing",
+    "fetchWorkDaysFailed": "Fetching work days data has failed"
   },
   "localization": {
     "en": "EN",

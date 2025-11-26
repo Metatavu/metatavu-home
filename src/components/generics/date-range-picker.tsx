@@ -2,7 +2,7 @@ import { Box } from "@mui/material";
 import type { DateTime } from "luxon";
 import strings from "src/localization/strings";
 import type { DateRange } from "src/types";
-import { CustomDatePicker } from "../balance/timebank-daterange-picker";
+import { CustomDatePicker } from "../work-hours/timebank-daterange-picker";
 
 /**
  * Component properties

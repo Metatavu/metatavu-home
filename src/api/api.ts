@@ -1,12 +1,4 @@
 import config from "../app/config";
-// NOTE: Timebank-client imports have been removed due to the removal of the timebank submodule.
-// import {
-//   Configuration,
-//   type ConfigurationParameters,
-//   DailyEntriesApi,
-//   PersonsApi,
-//   SynchronizeApi,
-// } from "../generated/client";
 import {
   ArticleApi,
   type ConfigurationParameters,
