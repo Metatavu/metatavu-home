@@ -1,4 +1,3 @@
-// WorkDaysChart.tsx
 import { Box, CircularProgress, Typography } from "@mui/material";
 import { useAtom, useSetAtom } from "jotai";
 import { useCallback, useEffect, useMemo, useState } from "react";
