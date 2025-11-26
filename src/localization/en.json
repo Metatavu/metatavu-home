@@ -244,7 +244,7 @@
     "nameNotFound": "Name not found",
     "noVacationRequestsStatusFound": "Statuses not found",
     "tooManyDaysRequestedUser": "You cannot request {requestedDays} days. You only have {unspentDays} unspent vacation days.",
-    "tooManyDaysRequestedAdmin":"Not enough vacation days. Requested: {requestedDays} days, Available: {unspentDays} days.",
+    "tooManyDaysRequestedAdmin": "Not enough vacation days. Requested: {requestedDays} days, Available: {unspentDays} days.",
     "failedToLoad": "Failed to load users" 
   },
   "sprintRequestError": {
