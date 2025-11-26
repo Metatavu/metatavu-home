@@ -18,7 +18,11 @@ const ToolbarSubmitButton = ({ onClick }: Props) => (
   <Button
     variant="contained"
     sx={{
-      width: "100%"
+      width: "100%",
+      backgroundColor: "#2196f3",
+      "&:hover": {
+        backgroundColor: "#1976d2"
+      }
     }}
     onClick={onClick}
   >

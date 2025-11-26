@@ -311,3 +311,21 @@ export const parseVacationDays = (vacationDaysByYear: string[]): { [year: string
     {} as { [year: string]: number }
   );
 };
+
+/**
+ * Convert numeric contracted week (1-7 = Mon-Sun) to a boolean[7] array.
+ *
+ * @param week numeric array of working days
+ * @returns boolean array of full week
+ */
+export const contractedWeekToBoolean = (week: number[]): boolean[] => {
+  const result = new Array(7).fill(false);
+
+  week.forEach((dayNumber) => {
+    if (dayNumber >= 1 && dayNumber <= 7) {
+      result[dayNumber - 1] = true;
+    }
+  });
+
+  return result;
+};
