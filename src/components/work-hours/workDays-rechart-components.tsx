@@ -25,13 +25,6 @@ interface WorkDaysRechartProps {
 
 /**
  * XAxis Tick component
- *
- * @param x - The x position of the tick.
- * @param y - The y position of the tick.
- * @param payload - The payload containing the tick value.
- * @param isHoliday - Indicates if the tick represents a holiday.
- *
- * @returns A custom SVG text element for the XAxis tick.
  */
 const XAxisTick = ({
   x,
@@ -54,13 +47,6 @@ const XAxisTick = ({
 
 /**
  * Custom Tooltip component
- *
- * @param active - Indicates if the tooltip is active.
- * @param payload - The data payload for the tooltip.
- * @param label - The label for the tooltip.
- * @param strings - Localization strings.
- *
- * @returns A custom tooltip box displaying work day information.
  */
 const ChartTooltip = ({ active, payload, label, strings }: any) => {
   if (!active || !payload || !payload.length) return null;
@@ -96,19 +82,31 @@ const ChartTooltip = ({ active, payload, label, strings }: any) => {
 
 /**
  * Custom Bar Shape component
- *
- * @param x - The x position of the bar.
- * @param y - The y position of the bar.
- * @param width - The width of the bar.
- * @param height - The height of the bar.
- * @param payload - The data payload for the bar.
- * @param getBarColor - Function to determine the color of the bar.
- *
- * @returns A custom SVG rectangle element for the bar with dynamic color.
  */
 const CustomBarShape = ({ x, y, width, height, payload, getBarColor }: any) => {
   const color = getBarColor(payload.hours, payload.expected);
   return <rect x={x} y={y} width={width} height={height} fill={color} />;
+};
+
+/**
+ * Renders XAxis tick with holiday coloring
+ */
+const renderXAxisTick = (chartData: ChartDataPoint[]) => {
+  return (props: any) => <XAxisTick {...props} isHoliday={chartData[props.index]?.isHoliday} />;
+};
+
+/**
+ * Renders Tooltip component
+ */
+const renderTooltip = (strings: any) => {
+  return (props: any) => <ChartTooltip {...props} strings={strings} />;
+};
+
+/**
+ * Renders Bar Shape component
+ */
+const renderBarShape = (getBarColor: (hours: number, expected: number) => string) => {
+  return (props: any) => <CustomBarShape {...props} getBarColor={getBarColor} />;
 };
 
 /**
@@ -125,18 +123,15 @@ const WorkDaysRechart = ({
     <ResponsiveContainer width="100%" height="100%">
       <ComposedChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis
-          dataKey="period"
-          tick={(props) => <XAxisTick {...props} isHoliday={chartData[props.index]?.isHoliday} />}
-        />
+        <XAxis dataKey="period" tick={renderXAxisTick(chartData)} />
         <YAxis domain={YAXIS_DOMAIN[selectedRange]} />
-        <Tooltip content={(props) => <ChartTooltip {...props} strings={strings} />} />
+        <Tooltip content={renderTooltip(strings)} />
         <Legend />
         <Bar
           dataKey="hours"
           name={strings.timebank.logged}
           isAnimationActive
-          shape={(props: any) => <CustomBarShape {...props} getBarColor={getBarColor} />}
+          shape={renderBarShape(getBarColor)}
         />
         <Line
           type="monotone"
