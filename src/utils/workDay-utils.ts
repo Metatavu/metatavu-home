@@ -137,6 +137,12 @@ export const normalizeDate = (date: Date | string) => {
 
 /**
  * Aggregates workdays by week for charting.
+ *
+ * @param entries - Array of workday entries to aggregate.
+ * @param weekOffset - The week offset from the current week.
+ * @param locale - The locale string for day name formatting.
+ *
+ * @returns An array of ChartDataPoint objects representing daily workdays for the target week.
  */
 export const getWeekData = (
   entries: ListWorkdaysForUser[],
@@ -172,6 +178,13 @@ export const getWeekData = (
 
 /**
  * Aggregates workdays by month for charting.
+ *
+ * @param entries - Array of workday entries to aggregate.
+ * @param targetMonth - The target month (0-11) for aggregation.
+ * @param targetYear - The target year for aggregation.
+ * @param locale - The locale string for month name formatting.
+ *
+ * @returns An array of ChartDataPoint objects representing weekly aggregated workdays for the target month.
  */
 export const getMonthData = (
   entries: ListWorkdaysForUser[],
@@ -216,6 +229,9 @@ export const getMonthData = (
 
 /**
  * Aggregates workdays by year for charting.
+ *
+ * @param entries - Array of workday entries to aggregate.
+ * @returns An array of ChartDataPoint objects representing monthly aggregated workdays for the current year.
  */
 export const getYearData = (entries: ListWorkdaysForUser[], locale: string): ChartDataPoint[] => {
   const year = new Date().getFullYear();

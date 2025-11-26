@@ -69,11 +69,15 @@ const WorkDaysChart = ({ selectedEmployee }: { selectedEmployee?: User }) => {
   useEffect(() => {
     if (!severaUserId) return;
     fetchFlextime();
+    // biome(suppressions/react-hooks/exhaustive-deps)
+    // fetchFlextime is intentionally omitted from dependencies to avoid redefining on every render
   }, [severaUserId]);
 
   useEffect(() => {
     if (!severaUserId) return;
     fetchWorkdays();
+    // biome(suppressions/react-hooks/exhaustive-deps)
+    // fetchWorkdays is intentionally omitted from dependencies to avoid redefining on every render
   }, [severaUserId]);
 
   /**
