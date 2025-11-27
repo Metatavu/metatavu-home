@@ -56,10 +56,10 @@ const App = () => {
           path: "/vacations",
           element: <VacationRequestsScreen />
         },
-        // {
-        //   path: "/sprintview",
-        //   element: <SprintViewScreen />
-        // },
+        {
+          path: "/sprintview",
+          element: <SprintViewScreen />
+        },
         {
           path: "/softwareregistry",
           element: <SoftwareRegistryScreen />
