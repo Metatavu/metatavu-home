@@ -205,7 +205,7 @@ const VacationRequestsScreen = () => {
           vacationRequestData,
           currentYear,
           setError,
-          setLoading,
+          setLoading
         )
       ) {
         return;
@@ -320,7 +320,7 @@ const VacationRequestsScreen = () => {
           currentYear,
           setError,
           setLoading,
-          {isAdmin: adminMode}
+          adminMode
         )
       ) {
         return;
@@ -367,9 +367,7 @@ const VacationRequestsScreen = () => {
 
       if (status === VacationRequestStatuses.APPROVED) {
         for (const vacationRequestId of selectedRowIds) {
-          const vacationRequest = vacationRequests.find(
-            (req) => req.id === vacationRequestId
-          );
+          const vacationRequest = vacationRequests.find((req) => req.id === vacationRequestId);
 
           if (!vacationRequest) continue;
 
@@ -381,7 +379,7 @@ const VacationRequestsScreen = () => {
             currentYear,
             setError,
             setLoading,
-            { isAdmin: adminMode } 
+            adminMode
           );
 
           if (!isValid) {

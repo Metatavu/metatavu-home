@@ -77,28 +77,28 @@ export function formatVacationDaysPayload(vacationDays: VacationDays): VacationD
 export const validateVacationRequestDays = (
   requestedDays: number,
   unspentDays: number,
-  options?: { isAdmin?: boolean }
+  isUserAdmin?: boolean
 ): { valid: boolean; errorMessage?: string } => {
   if (requestedDays > unspentDays) {
-    const formatString = (template: string, values: Record<string, string | number>) =>
-      template.replace(/\{(\w+)\}/g, (_, key) => String(values[key] ?? ""));
+    const formatted = strings.formatString(
+      isUserAdmin
+        ? strings.vacationRequestError.tooManyDaysRequestedAdmin
+        : strings.vacationRequestError.tooManyDaysRequestedUser,
+      {
+        requestedDays,
+        unspentDays
+      }
+    );
 
-    const template = options?.isAdmin
-      ? strings.vacationRequestError.tooManyDaysRequestedAdmin
-      : strings.vacationRequestError.tooManyDaysRequestedUser;
+    const errorString = Array.isArray(formatted) ? formatted.join("") : (formatted ?? "");
 
     return {
       valid: false,
-      errorMessage: formatString(template, {
-        requestedDays,
-        unspentDays
-      })
+      errorMessage: errorString
     };
   }
-
   return { valid: true };
 };
-
 
 /**
  * Validates a user's vacation request based on available unspent vacation days.
@@ -116,14 +116,18 @@ export const validateUserVacationRequest = (
   currentYear: string,
   setError: (msg: string) => void,
   setLoading: (loading: boolean) => void,
-  options?: {isAdmin?: boolean}
+  isUserAdmin?: boolean
 ): boolean => {
   const unspentDays = Number(
     getDays(userToValidate?.attributes?.unspentVacationDaysByYear, currentYear)
   );
   const requestedDays = Number(vacationRequestData.days ?? 0);
 
-  const { valid, errorMessage } = validateVacationRequestDays(requestedDays, unspentDays,options);
+  const { valid, errorMessage } = validateVacationRequestDays(
+    requestedDays,
+    unspentDays,
+    isUserAdmin
+  );
 
   if (!valid) {
     setError(errorMessage || "");
