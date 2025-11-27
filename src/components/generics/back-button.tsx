@@ -1,6 +1,6 @@
 import KeyboardReturn from "@mui/icons-material/KeyboardReturn";
 import { Button, type SxProps, type Theme, Typography } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useNavigationType } from "react-router-dom";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 
@@ -18,6 +18,7 @@ const BackButton = (props: BackButtonProps): JSX.Element => {
   const { onClick, styles } = props;
   const navigate = useNavigate();
   const { adminMode } = useUserRole();
+  const navType = useNavigationType();
 
   /**
    * Handles back button behavior:
@@ -32,7 +33,7 @@ const BackButton = (props: BackButtonProps): JSX.Element => {
       return;
     }
 
-    if (window.history.length > 1) {
+    if (navType === "PUSH") {
       navigate(-1);
     } else {
       navigate(adminMode ? "/admin" : "/");
