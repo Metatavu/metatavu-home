@@ -319,7 +319,8 @@ const VacationRequestsScreen = () => {
           vacationRequestData,
           currentYear,
           setError,
-          setLoading
+          setLoading,
+          adminMode
         )
       ) {
         return;
@@ -363,6 +364,30 @@ const VacationRequestsScreen = () => {
 
     try {
       setLoading(true);
+
+      if (status === VacationRequestStatuses.APPROVED) {
+        for (const vacationRequestId of selectedRowIds) {
+          const vacationRequest = vacationRequests.find((req) => req.id === vacationRequestId);
+
+          if (!vacationRequest) continue;
+
+          const selectedUser = await usersApi.findUser({ userId: vacationRequest.userId });
+
+          const isValid = validateUserVacationRequest(
+            selectedUser,
+            vacationRequest,
+            currentYear,
+            setError,
+            setLoading,
+            adminMode
+          );
+
+          if (!isValid) {
+            return;
+          }
+        }
+      }
+
       const updatedVacationRequests = await Promise.all(
         selectedRowIds.map(async (vacationRequestId) => {
           const vacationRequest = vacationRequests.find(
