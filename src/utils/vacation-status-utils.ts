@@ -24,10 +24,10 @@ export const getVacationRequestStatusColor = (vacationRequestStatus: VacationReq
 export const getTotalVacationRequestStatus = (statuses: VacationRequestStatus[]) => {
   if (statuses.some((status) => status.status === VacationRequestStatuses.APPROVED)) {
     return VacationRequestStatuses.APPROVED;
-  } else {
-    if (statuses.some((status) => status.status === VacationRequestStatuses.DECLINED)) {
-      return VacationRequestStatuses.DECLINED;
-    }
   }
+  if (statuses.some((status) => status.status === VacationRequestStatuses.DECLINED)) {
+    return VacationRequestStatuses.DECLINED;
+  }
+
   return VacationRequestStatuses.PENDING;
 };
