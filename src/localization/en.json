@@ -43,6 +43,7 @@
     "noSeveraUserId": "One of your users is missing severaUserId, please contact a member of the metatavu home development team for more information.",
     "noFlextimeData": "Something went wrong while fetching your flextime data",
     "noArticleId": "Article ID is missing",
+    "fetchWorkDaysFailed": "Fetching work days data has failed",
     "fetchWorkWeekFailed": "Error while fetching work week data, five day week will be used.",
     "fetchFailedSevera": "Failed to update Severa opt-in."
   },
@@ -71,7 +72,11 @@
     "viewAllTimeEntries": "View all employees time totals and balances",
     "selectTimespan": "Select time span",
     "searchPlaceholder": "Search for a person...",
-    "employeeBalances": "Employee time totals and balances"
+    "employeeBalances": "Employee time totals and balances",
+    "numberOfWeeks": "Number of weeks:",
+    "enteredHours": "Logged hours",
+    "expectedHours": "Expected hours",
+    "holidayName": "Holiday:"
   },
   "sprint": {
     "sprintview": "Sprint view",
@@ -191,7 +196,10 @@
     "year": "Year",
     "allTime": "All time",
     "startDate": "Start date",
-    "endDate": "End date"
+    "endDate": "End date",
+    "hour": "hour",
+    "hours": "hours",
+    "period": "period"
   },
   "confirmationHandler": {
     "confirmButtonText": "Yes",
@@ -412,9 +420,7 @@
     "employeeBalances": "Employee time totals and balances",
     "viewAllTimeEntries": "View all employees time totals and balances",
     "balance": "Balance",
-    "atTheEndOf": "At the end of {0}",
-    "hour": "hour",
-    "hours": "hours"
+    "atTheEndOf": "At the end of {0}"
   },
   "wikiDocumentation": {
     "cardTitle": "Wiki Documentation",
