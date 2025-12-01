@@ -21,6 +21,8 @@ interface RangeControlsProps {
   onMonthOffsetChange: (delta: number) => void;
   setSelectedRange: (range: "week" | "month" | "year") => void;
   strings: any;
+  resetWeekOffset: () => void;
+  resetMonthOffset: () => void;
 }
 
 /**
@@ -34,7 +36,9 @@ const RangeControls = ({
   onWeekOffsetChange,
   onMonthOffsetChange,
   setSelectedRange,
-  strings
+  strings,
+  resetWeekOffset,
+  resetMonthOffset
 }: RangeControlsProps) => (
   <Box
     sx={{
@@ -46,7 +50,7 @@ const RangeControls = ({
     }}
   >
     {/* WEEK CONTROLS */}
-    {selectedRange === "week" && chartData[0] && (
+    {selectedRange === "week" && (
       <Box
         sx={{
           position: "absolute",
@@ -64,10 +68,12 @@ const RangeControls = ({
           <IconButton onClick={() => onWeekOffsetChange(-1)}>
             <ArrowBack />
           </IconButton>
+
           <IconButton disabled={weekOffset === 0} onClick={() => onWeekOffsetChange(1)}>
             <ArrowForward />
           </IconButton>
-          <IconButton onClick={() => onWeekOffsetChange(0)}>
+
+          <IconButton onClick={resetWeekOffset}>
             <CalendarToday />
           </IconButton>
         </ButtonGroup>
@@ -75,7 +81,7 @@ const RangeControls = ({
     )}
 
     {/* MONTH CONTROLS */}
-    {selectedRange === "month" && chartData[0] && (
+    {selectedRange === "month" && (
       <Box
         sx={{
           position: "absolute",
@@ -86,15 +92,26 @@ const RangeControls = ({
           width: "250px"
         }}
       >
-        <Typography variant="h4">{`${strings.timeExpressions.month}: ${chartData[0].month}`}</Typography>
+        {chartData[0] ? (
+          <Typography variant="h4">
+            {`${strings.timeExpressions.month}: ${chartData[0].month}`}
+          </Typography>
+        ) : (
+          <Typography variant="h6" color="text.secondary">
+            {strings.timebank.noData}
+          </Typography>
+        )}
+
         <ButtonGroup sx={{ mt: 1 }}>
           <IconButton disabled={monthOffset === -12} onClick={() => onMonthOffsetChange(-1)}>
             <ArrowBack />
           </IconButton>
+
           <IconButton disabled={monthOffset === 0} onClick={() => onMonthOffsetChange(1)}>
             <ArrowForward />
           </IconButton>
-          <IconButton onClick={() => onMonthOffsetChange(0)}>
+
+          <IconButton onClick={resetMonthOffset}>
             <CalendarToday />
           </IconButton>
         </ButtonGroup>

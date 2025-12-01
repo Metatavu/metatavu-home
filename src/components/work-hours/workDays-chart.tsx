@@ -62,6 +62,8 @@ const WorkDaysChart = ({ selectedEmployee }: { selectedEmployee?: User }) => {
   const [workdays, setWorkdays] = useAtom(workDayAtom);
   const [language] = useAtom(languageAtom);
   const locale = language === "fi" ? "fi-FI" : "en-US";
+  const resetWeekOffset = useCallback(() => setWeekOffset(0), []);
+  const resetMonthOffset = useCallback(() => setMonthOffset(0), []);
 
   const severaUserId = getSeveraUserId(selectedEmployee);
   const { flexTimeApi, workDaysApi } = useLambdasApi();
@@ -209,6 +211,8 @@ const WorkDaysChart = ({ selectedEmployee }: { selectedEmployee?: User }) => {
         onMonthOffsetChange={handleMonthOffsetChange}
         setSelectedRange={setSelectedRange}
         strings={strings}
+        resetWeekOffset={resetWeekOffset}
+        resetMonthOffset={resetMonthOffset}
       />
 
       {/* Chart */}
