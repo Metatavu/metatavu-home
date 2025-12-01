@@ -284,7 +284,8 @@ export interface Localized extends LocalizedStringsMethods {
     noVacationRequestsFound: string;
     nameNotFound: string;
     noVacationRequestsStatusFound: string;
-    tooManyDaysRequested: string;
+    tooManyDaysRequestedUser: string;
+    tooManyDaysRequestedAdmin: string;
     failedToLoad: string;
   };
 
