@@ -4,8 +4,8 @@ import { $createImageNode, ImageNode } from "../nodes/image-node";
 export const IMAGE_TRANSFORMER: TextMatchTransformer = {
   dependencies: [ImageNode],
   export: (node) => {
-    if (node.getType() === 'image') {
-      const { altText, src } = (node as ImageNode).getImageData(); 
+    if (node.getType() === "image") {
+      const { altText, src } = (node as ImageNode).getImageData();
       return `![${altText}](${src})`;
     }
     return null;
@@ -13,10 +13,10 @@ export const IMAGE_TRANSFORMER: TextMatchTransformer = {
   importRegExp: /!\[([^\]]*)\]\(([^)\s]+)(?:\s+"(.*?)")?\)/,
   regExp: /!\[([^\]]*)\]\(([^)\s]+)(?:\s+"(.*?)")?\)/,
   replace: (textNode, match) => {
-    const [ , alt, src ] = match;
+    const [, alt, src] = match;
     const imageNode = $createImageNode(src, alt);
     textNode.replace(imageNode);
   },
-  trigger: ')',
-  type: 'text-match',
+  trigger: ")",
+  type: "text-match"
 };

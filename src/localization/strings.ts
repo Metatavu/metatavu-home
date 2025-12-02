@@ -59,6 +59,9 @@ export interface Localized extends LocalizedStringsMethods {
     noSeveraUserId: string;
     noFlextimeData: string;
     noArticleId: string;
+    fetchWorkDaysFailed: string;
+    fetchWorkWeekFailed: string;
+    fetchFailedSevera: string;
   };
   /**
    * Translations related to localization
@@ -93,6 +96,10 @@ export interface Localized extends LocalizedStringsMethods {
     atTheEndOf: string;
     searchPlaceholder: string;
     employeeBalances: string;
+    numberOfWeeks: string;
+    enteredHours: string;
+    expectedHours: string;
+    holidayName: string;
   };
   /**
    * Translations related to sprint view
@@ -212,6 +219,9 @@ export interface Localized extends LocalizedStringsMethods {
     allTime: string;
     startDate: string;
     endDate: string;
+    hour: string;
+    hours: string;
+    period: string;
   };
   /**
    * Translations related to confirmation handler
@@ -256,6 +266,8 @@ export interface Localized extends LocalizedStringsMethods {
     noStatus: string;
     person: string;
     noPersonFullName: string;
+    noReview: string;
+    reviewedBy: string;
   };
   /**
    * Translations related to vacation requests errors
@@ -272,7 +284,11 @@ export interface Localized extends LocalizedStringsMethods {
     noVacationRequestsFound: string;
     nameNotFound: string;
     noVacationRequestsStatusFound: string;
+    tooManyDaysRequestedUser: string;
+    tooManyDaysRequestedAdmin: string;
+    failedToLoad: string;
   };
+
   /**
    * Translations related to sprint requests errors
    */
@@ -516,8 +532,6 @@ export interface Localized extends LocalizedStringsMethods {
     viewAllTimeEntries: string;
     balance: string;
     atTheEndOf: string;
-    hour: string;
-    hours: string;
   };
   /**
    * Translations related to Wiki Documentation service
@@ -586,6 +600,9 @@ export interface Localized extends LocalizedStringsMethods {
     editTitle: string;
     totalDays: string;
     remainingDays: string;
+    selectYear: string;
+    currentYear: string;
+    vacationFor: string;
   };
   /**
    * Translations for User Search Bar component
@@ -664,6 +681,7 @@ export interface Localized extends LocalizedStringsMethods {
     date: string;
     noUsernameOnCall: string;
     errorUpdatingPaidStatus: string;
+    noDataForYear: string;
   };
 
   employeeFlextime: {

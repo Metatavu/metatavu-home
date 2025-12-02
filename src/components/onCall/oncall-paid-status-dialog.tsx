@@ -1,21 +1,21 @@
-import { useState } from "react";
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  IconButton,
-  Typography,
-  Box,
-  Switch,
-  Chip,
-  Button,
-  CircularProgress
-} from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import {
+  Box,
+  Button,
+  Chip,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  Switch,
+  Typography
+} from "@mui/material";
 import { DateTime } from "luxon";
-import type { OnCallWeek } from "../../types";
+import { useState } from "react";
 import strings from "src/localization/strings";
+import type { OnCallWeek } from "../../types";
 
 /**
  * Props for OnCallPaidStatusDialog component
@@ -29,7 +29,7 @@ interface Props {
 
 /**
  * Returns formatted week range for a given ISO date
- * 
+ *
  * @param isoDate ISO date string
  * @returns Formatted week range string
  */
@@ -42,19 +42,14 @@ const getWeekRange = (isoDate: string): string => {
 
 /**
  * Dialog component for updating paid status of an on-call week
- * 
+ *
  * @param open Whether the dialog is open
  * @param setOpen Function to set dialog open state
  * @param onCallEntry On-call week entry
  * @param updatePaidStatus Function to update paid status
  * @param refreshOnCallData Optional function to refresh on-call data
  */
-const OnCallPaidStatusDialog = ({
-  open,
-  setOpen,
-  onCallEntry,
-  updatePaidStatus
-}: Props) => {
+const OnCallPaidStatusDialog = ({ open, setOpen, onCallEntry, updatePaidStatus }: Props) => {
   const [loading, setLoading] = useState(false);
 
   if (!onCallEntry) return null;
@@ -97,7 +92,11 @@ const OnCallPaidStatusDialog = ({
             <Typography variant="subtitle1" fontWeight="bold" display="inline">
               {strings.oncall.person}:
             </Typography>
-            <Typography variant="subtitle1" display="inline" color={hasUsername ? "textPrimary" : "error"}>
+            <Typography
+              variant="subtitle1"
+              display="inline"
+              color={hasUsername ? "textPrimary" : "error"}
+            >
               {hasUsername ? onCallEntry.username : strings.oncall.noUsernameOnCall}
             </Typography>
           </Box>
@@ -124,9 +123,7 @@ const OnCallPaidStatusDialog = ({
           </Box>
         </Box>
         <Box sx={{ display: "flex", alignItems: "center", gap: 2, mt: 2 }}>
-          <Typography>
-            {strings.oncall.notPaid}
-          </Typography>
+          <Typography>{strings.oncall.notPaid}</Typography>
           <Box sx={{ position: "relative", display: "inline-flex", alignItems: "center" }}>
             <Switch
               checked={onCallEntry.paid}
@@ -136,12 +133,13 @@ const OnCallPaidStatusDialog = ({
               inputProps={{ "aria-label": "Paid status switch" }}
             />
             {loading && (
-              <CircularProgress size={32} sx={{ position: "absolute", left: 0, top: -4, zIndex: 1 }} />
+              <CircularProgress
+                size={32}
+                sx={{ position: "absolute", left: 0, top: -4, zIndex: 1 }}
+              />
             )}
           </Box>
-          <Typography>
-            {strings.oncall.paid}
-          </Typography>
+          <Typography>{strings.oncall.paid}</Typography>
         </Box>
       </DialogContent>
       <DialogActions>

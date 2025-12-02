@@ -1,27 +1,29 @@
-import { type MouseEvent, useEffect, useState } from "react";
+import SettingsIcon from "@mui/icons-material/Settings";
 import {
-  MenuItem,
   AppBar,
+  Avatar,
   Box,
-  Toolbar,
+  Container,
   IconButton,
   Menu,
-  Container,
-  Tooltip,
-  Avatar,
+  MenuItem,
+  Toolbar,
+  Tooltip
 } from "@mui/material";
-import LocalizationButtons from "../layout-components/localization-buttons";
-import strings from "src/localization/strings";
-import { authAtom, userProfileAtom } from "src/atoms/auth";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
-import NavItems from "./navitems";
-import { avatarsAtom, personsAtom } from "src/atoms/person";
-import type { Person } from "src/generated/client";
-import config from "src/app/config";
-import { useLambdasApi } from "src/hooks/use-api";
-import { errorAtom } from "src/atoms/error";
-import SettingsIcon from '@mui/icons-material/Settings';
+import { type MouseEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+//import { avatarsAtom, personsAtom } from "src/atoms/person";
+//import type { Person } from "src/generated/client";
+import config from "src/app/config";
+import { authAtom, userProfileAtom } from "src/atoms/auth";
+import { errorAtom } from "src/atoms/error";
+import { avatarsAtom } from "src/atoms/person";
+import { useLambdasApi } from "src/hooks/use-api";
+import strings from "src/localization/strings";
+import LocalizationButtons from "../layout-components/localization-buttons";
+import NavItems from "./navitems";
+
 /**
  * NavBar component
  */
@@ -29,17 +31,15 @@ const NavBar = () => {
   const auth = useAtomValue(authAtom);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
   const [avatars, setAvatars] = useAtom(avatarsAtom);
-  const persons: Person[] = useAtomValue(personsAtom);
+  // NOTE: The Person type cannot be used here because it was previously imported from the removed timebank client.
+  //const persons: Person[] = useAtomValue(personsAtom);
   const userProfile = useAtomValue(userProfileAtom);
   const setError = useSetAtom(errorAtom);
   const { slackAvatarsApi } = useLambdasApi();
   const navigate = useNavigate();
-  const loggedInPerson = persons.find(
-    (person: Person) =>
-      person.id === config.person.forecastUserIdOverride || person.keycloakId === userProfile?.id
-  );
+  const loggedInUserId = userProfile?.id;
   const loggedInPersonAvatar =
-    avatars.find((avatar) => loggedInPerson?.id === avatar.personId)?.imageOriginal || "";
+    avatars.find((avatar) => avatar.personId === loggedInUserId)?.imageOriginal || "";
 
   /**
    * Handles opening user menu
@@ -71,7 +71,6 @@ const NavBar = () => {
     navigate("/settings");
   };
 
-
   /**
    * Fetch Slack avatars
    */
@@ -80,8 +79,7 @@ const NavBar = () => {
     try {
       const fetchedAvatars = await slackAvatarsApi.slackAvatar();
       setAvatars(fetchedAvatars);
-    }
-    catch (error) {
+    } catch (error) {
       setError(`${strings.error.fetchSlackAvatarsFailed}: ${error}`);
     }
   };
@@ -102,11 +100,11 @@ const NavBar = () => {
               </IconButton>
             </Tooltip>
             <LocalizationButtons />
-            
+
             <Box>
               <Tooltip title={strings.header.openUserMenu}>
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar src={loggedInPersonAvatar} />
+                  {<Avatar src={loggedInPersonAvatar} />}
                 </IconButton>
               </Tooltip>
               <Menu

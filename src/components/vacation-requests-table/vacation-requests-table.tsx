@@ -5,13 +5,13 @@ import { useAtomValue } from "jotai";
 import { DateTime } from "luxon";
 import { useMemo, useRef, useState } from "react";
 import { userProfileAtom } from "src/atoms/auth";
-import { languageAtom } from "src/atoms/language";
 import { usersAtom } from "src/atoms/user";
 import { displayedVacationRequestsAtom } from "src/atoms/vacation";
 import { type VacationRequest, VacationRequestStatuses } from "src/generated/homeLambdasClient";
 import strings from "src/localization/strings";
 import type { VacationsDataGridRow } from "src/types";
 import LocalizationUtils from "src/utils/localization-utils";
+import type { FilterType } from "src/utils/vacation-filter-type";
 import { getVacationRequestPersonFullName } from "src/utils/vacation-request-utils";
 import {
   getTotalVacationRequestStatus,
@@ -20,7 +20,6 @@ import {
 import SkeletonTableRows from "./skeleton-table-rows/skeleton-table-rows";
 import VacationRequestsTableColumns from "./vacation-requests-table-columns";
 import TableToolbar from "./vacation-requests-table-toolbar/vacation-requests-table-toolbar";
-import type {FilterType} from "src/utils/vacation-filter-type";
 
 /**
  * Component properties
@@ -44,7 +43,7 @@ interface Props {
   ) => Promise<void>;
   fetchVacationRequestById: (vacationRequestId: string) => Promise<VacationRequest | null>;
   loading: boolean;
-  filter: FilterType
+  filter: FilterType;
   setFilter: React.Dispatch<React.SetStateAction<FilterType>>;
 }
 
@@ -71,7 +70,6 @@ const VacationRequestsTable = ({
   const [formOpen, setFormOpen] = useState(false);
   const [selectedRowIds, setSelectedRowIds] = useState<GridRowSelectionModel>([]);
   const [rows, setRows] = useState<VacationsDataGridRow[]>([]);
-  const language = useAtomValue(languageAtom);
   const columns = VacationRequestsTableColumns();
   const users = useAtomValue(usersAtom) || [];
   const userProfile = useAtomValue(userProfileAtom);
@@ -95,13 +93,15 @@ const VacationRequestsTable = ({
       id: vacationRequest.id,
       type: LocalizationUtils.getLocalizedVacationRequestType(vacationRequest.type),
       personFullName: usersFullName,
+      userId: vacationRequest.userId,
       updatedAt: DateTime.fromJSDate(vacationRequest.updatedAt),
       startDate: DateTime.fromJSDate(vacationRequest.startDate),
       endDate: DateTime.fromJSDate(vacationRequest.endDate),
       days: vacationRequest.days,
       message: vacationRequest.message || strings.vacationRequest.noMessage,
       status: VacationRequestStatuses.PENDING,
-      draft: vacationRequest.draft || false
+      draft: vacationRequest.draft || false,
+      vacationRequest: vacationRequest
     };
     return row;
   };
@@ -160,7 +160,7 @@ const VacationRequestsTable = ({
       console.error("Error creating data grid rows:", error);
       setRows([]);
     }
-  }, [vacationRequests, formOpen, language]);
+  }, [vacationRequests, formOpen]);
 
   const StyledGridOverlay = styled("div")(() => ({
     display: "flex",

@@ -1,26 +1,26 @@
-import { useState, useEffect } from "react";
 import {
+  Box,
+  Card,
+  CardContent,
+  Chip,
+  CircularProgress,
   Container,
-  Typography,
+  Paper,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
-  CircularProgress,
-  Box,
-  Card,
-  CardContent,
-  Chip
+  Typography
 } from "@mui/material";
-import { DateTime } from "luxon";
-import { useLambdasApi } from "src/hooks/use-api";
-import type { UserFlextime } from "src/generated/homeLambdasClient";
-import strings from "src/localization/strings";
 import { useSetAtom } from "jotai";
+import { DateTime } from "luxon";
+import { useEffect, useState } from "react";
 import { errorAtom } from "src/atoms/error";
+import type { UserFlextime } from "src/generated/homeLambdasClient";
+import { useLambdasApi } from "src/hooks/use-api";
+import strings from "src/localization/strings";
 
 /**
  * Full-screen view for displaying flextime data for all employees.
@@ -138,8 +138,8 @@ const EmployeeFlextimeScreen = () => {
             <Typography variant="h6" color="primary">
               {strings.employeeFlextime.combinedBalance}
             </Typography>
-            <Typography 
-              variant="h4" 
+            <Typography
+              variant="h4"
               fontWeight="bold"
               sx={{ color: getFlextimeColor(getTotalBalance()) }}
             >
@@ -162,74 +162,92 @@ const EmployeeFlextimeScreen = () => {
             <TableHead>
               <TableRow sx={{ backgroundColor: "#f8f9fa" }}>
                 <TableCell>
-                  <Typography variant="h6" fontWeight="bold">{strings.employeeFlextime.employee}</Typography>
+                  <Typography variant="h6" fontWeight="bold">
+                    {strings.employeeFlextime.employee}
+                  </Typography>
                 </TableCell>
                 <TableCell>
-                  <Typography variant="h6" fontWeight="bold">{strings.employeeFlextime.email}</Typography>
+                  <Typography variant="h6" fontWeight="bold">
+                    {strings.employeeFlextime.email}
+                  </Typography>
                 </TableCell>
                 <TableCell align="right">
-                  <Typography variant="h6" fontWeight="bold">{strings.employeeFlextime.totalFlextimeBalance}</Typography>
+                  <Typography variant="h6" fontWeight="bold">
+                    {strings.employeeFlextime.totalFlextimeBalance}
+                  </Typography>
                 </TableCell>
                 <TableCell align="right">
-                  <Typography variant="h6" fontWeight="bold">{strings.employeeFlextime.currentMonthBalance}</Typography>
+                  <Typography variant="h6" fontWeight="bold">
+                    {strings.employeeFlextime.currentMonthBalance}
+                  </Typography>
                 </TableCell>
                 <TableCell align="center">
-                  <Typography variant="h6" fontWeight="bold">{strings.employeeFlextime.status}</Typography>
+                  <Typography variant="h6" fontWeight="bold">
+                    {strings.employeeFlextime.status}
+                  </Typography>
                 </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {usersFlextime
-                .sort((a, b) => `${a.user.lastName} ${a.user.firstName}`.localeCompare(`${b.user.lastName} ${b.user.firstName}`))
+                .sort((a, b) =>
+                  `${a.user.lastName} ${a.user.firstName}`.localeCompare(
+                    `${b.user.lastName} ${b.user.firstName}`
+                  )
+                )
                 .map((userData, index) => (
-                <TableRow 
-                  key={userData.user.attributes?.severaUserId || index} 
-                  hover
-                  sx={{ backgroundColor: index % 2 === 0 ? "#fafafa" : "white" }}
-                >
-                  <TableCell>
-                    <Box>
-                      <Typography variant="body1" fontWeight="medium">
-                        {userData.user.firstName} {userData.user.lastName}
+                  <TableRow
+                    key={userData.user.attributes?.severaUserId || index}
+                    hover
+                    sx={{ backgroundColor: index % 2 === 0 ? "#fafafa" : "white" }}
+                  >
+                    <TableCell>
+                      <Box>
+                        <Typography variant="body1" fontWeight="medium">
+                          {userData.user.firstName} {userData.user.lastName}
+                        </Typography>
+                      </Box>
+                    </TableCell>
+                    <TableCell>
+                      <Typography variant="body2">
+                        {userData.user.email || strings.employeeFlextime.notAvailable}
                       </Typography>
-                    </Box>
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant="body2">
-                      {userData.user.email || strings.employeeFlextime.notAvailable}
-                    </Typography>
-                  </TableCell>
-                  <TableCell align="right">
-                    <Typography 
-                      variant="h6" 
-                      sx={{ 
-                        color: getFlextimeColor(userData.flextime?.totalFlextimeBalance),
-                        fontWeight: "bold"
-                      }}
-                    >
-                      {formatFlextimeHours(userData.flextime?.totalFlextimeBalance)}
-                    </Typography>
-                  </TableCell>
-                  <TableCell align="right">
-                    <Typography 
-                      variant="h6"
-                      sx={{ 
-                        color: getFlextimeColor(userData.flextime?.monthFlextimeBalance),
-                        fontWeight: "bold"
-                      }}
-                    >
-                      {formatFlextimeHours(userData.flextime?.monthFlextimeBalance)}
-                    </Typography>
-                  </TableCell>
-                  <TableCell align="center">
-                    <Chip
-                      label={userData.user.attributes?.isActive ? strings.employeeFlextime.active : strings.employeeFlextime.inactive}
-                      color={userData.user.attributes?.isActive ? "success" : "warning"}
-                      variant="filled"
-                    />
-                  </TableCell>
-                </TableRow>
-              ))}
+                    </TableCell>
+                    <TableCell align="right">
+                      <Typography
+                        variant="h6"
+                        sx={{
+                          color: getFlextimeColor(userData.flextime?.totalFlextimeBalance),
+                          fontWeight: "bold"
+                        }}
+                      >
+                        {formatFlextimeHours(userData.flextime?.totalFlextimeBalance)}
+                      </Typography>
+                    </TableCell>
+                    <TableCell align="right">
+                      <Typography
+                        variant="h6"
+                        sx={{
+                          color: getFlextimeColor(userData.flextime?.monthFlextimeBalance),
+                          fontWeight: "bold"
+                        }}
+                      >
+                        {formatFlextimeHours(userData.flextime?.monthFlextimeBalance)}
+                      </Typography>
+                    </TableCell>
+                    <TableCell align="center">
+                      <Chip
+                        label={
+                          userData.user.attributes?.isActive
+                            ? strings.employeeFlextime.active
+                            : strings.employeeFlextime.inactive
+                        }
+                        color={userData.user.attributes?.isActive ? "success" : "warning"}
+                        variant="filled"
+                      />
+                    </TableCell>
+                  </TableRow>
+                ))}
             </TableBody>
           </Table>
         </TableContainer>

@@ -4,8 +4,8 @@ import type { ReactNode } from "react";
 import { userProfileAtom } from "src/atoms/auth";
 import { usersAtom } from "src/atoms/user";
 import type { User } from "src/generated/homeLambdasClient";
+import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
-import UserRoleUtils from "src/utils/user-role-utils";
 import BalanceCard from "../home/balance-card";
 import CardGridWrapper from "../home/common/card-grid-wrapper";
 import OnCallCard from "../home/oncall-card";
@@ -20,15 +20,14 @@ import Onboarding from "../onboarding/Onboarding";
  * Home screen component
  */
 const HomeScreen = () => {
+  const { isDeveloper, isTester } = useUserRole();
   const users = useAtomValue(usersAtom);
   const userProfile = useAtomValue(userProfileAtom);
   const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
 
   const hasSeveraUserId = !!loggedInUser?.attributes?.severaUserId;
-  const isDeveloperMode = UserRoleUtils.isDeveloper();
-  const isTesterMode = UserRoleUtils.isTester();
 
-  const isPrivilegedUser = isDeveloperMode || isTesterMode;
+  const isPrivilegedUser = isDeveloper || isTester;
 
   /**
    * Renders a card with a skeleton loader

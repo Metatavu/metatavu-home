@@ -1,7 +1,7 @@
-import { useState } from "react";
 import { Divider, Typography } from "@mui/material";
-import GenericDialog from "../generics/generic-dialog";
+import { useState } from "react";
 import strings from "src/localization/strings";
+import GenericDialog from "../generics/generic-dialog";
 
 /**
  * Component properties
@@ -34,7 +34,7 @@ const EditConfirmationDialogue = ({ open, setOpen, onConfirm, isDraft, setFormOp
     }
   };
 
-  /** 
+  /**
    * Handler for cancel/close click
    */
   const handleCancel = () => {

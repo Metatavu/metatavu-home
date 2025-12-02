@@ -1,4 +1,4 @@
-import { Box, Container, Pagination, Typography } from "@mui/material";
+import { Box, Container, TablePagination, Typography } from "@mui/material";
 import { useAtom, useSetAtom } from "jotai";
 import type React from "react";
 import { useEffect, useMemo, useState } from "react";
@@ -15,17 +15,28 @@ import UserSearchBar from "./UserSearchBar";
 import UserTable from "./UsersTable";
 
 /**
- * Vacation days keyed by year.
+ * Vacation days allocation for each year.
+ *
+ * Represents a record mapping year strings to their total
+ * and remaining vacation days.
  */
 type VacationDays = Record<string, YearlyVacationDays>;
 
+const PAGINATION_THRESHOLD = 20;
+const DEFAULT_ROWS_PER_PAGE = 20;
+
 /**
- * Admin screen for managing users' vacation days.
+ * AdminVacationManagementScreen Component
  *
- * Provides search, pagination, and edit functionality
- * for updating vacation day allocations.
+ * Administrative UI for managing employee vacation day allocations.
  *
- * @returns React component for the admin vacation management screen.
+ * Features:
+ * - Search users by name or email
+ * - Paginated user table with dynamic threshold
+ * - Edit vacation days (total and remaining)
+ * - Conditional pagination visibility
+ *
+ * @returns React component for admin vacation management
  */
 const AdminVacationManagementScreen = () => {
   const { usersApi } = useLambdasApi();
@@ -33,11 +44,53 @@ const AdminVacationManagementScreen = () => {
   const setError = useSetAtom(errorAtom);
   const [searchKeyword, setSearchKeyword] = useState("");
 
+  // Edit dialog state
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [vacationDays, setVacationDays] = useState<VacationDays>({});
+  const [saving, setSaving] = useState(false);
+  const [isValid, setIsValid] = useState(true);
+
+  // Pagination state
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(DEFAULT_ROWS_PER_PAGE);
+  const [loadingUsers, setLoadingUsers] = useState(false);
+
   /**
-   * Filters users by search keyword matching their full name or email.
+   * Fetches users on component mount if not already available in the atom.
+   */
+  useEffect(() => {
+    const fetchUsers = async () => {
+      if (users.length > 0) {
+        return;
+      }
+
+      try {
+        setLoadingUsers(true);
+        const fetchedUsers = await usersApi.listUsers();
+        setUsers(fetchedUsers);
+      } catch (error) {
+        setError(`${strings.vacationRequestError.failedToLoad}, ${error}`);
+      } finally {
+        setLoadingUsers(false);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
+  /**
+   * Filters users based on search keyword.
+   * Matches against user's full name (first + last) or email address.
+   * Case-insensitive search and trims unnecessary whitespace.
+   *
+   * @returns Array of users matching the search criteria
    */
   const filteredUsers = useMemo(() => {
-    const keyword = searchKeyword.toLowerCase();
+    const keyword = searchKeyword.toLowerCase().trim();
+
+    if (!keyword) return users;
+
     return users.filter((user) => {
       const fullName = `${user.firstName} ${user.lastName}`.toLowerCase();
       const email = user.email?.toLowerCase() ?? "";
@@ -45,17 +98,28 @@ const AdminVacationManagementScreen = () => {
     });
   }, [users, searchKeyword]);
 
-  const [editDialogOpen, setEditDialogOpen] = useState(false);
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [vacationDays, setVacationDays] = useState<VacationDays>({});
-  const [saving, setSaving] = useState(false);
-  const [isValid, setIsValid] = useState(true);
-  const [page, setPage] = useState(1);
-  const rowsPerPage = 10;
+  const shouldPaginate = filteredUsers.length > PAGINATION_THRESHOLD;
 
+  /**
+   * Computes the subset of users to display on the current page.
+   * @returns Array of users for the current page view
+   */
+  const paginatedUsers = useMemo(() => {
+    if (!shouldPaginate) return filteredUsers;
+    if (rowsPerPage === -1) return filteredUsers;
+
+    const startIndex = page * rowsPerPage;
+    const endIndex = startIndex + rowsPerPage;
+    return filteredUsers.slice(startIndex, endIndex);
+  }, [filteredUsers, page, rowsPerPage, shouldPaginate]);
+
+  /**
+   * Resets pagination to first page when search results change.
+   * Prevents displaying an empty page when search results decrease.
+   */
   useEffect(() => {
-    setPage(1);
-  }, [searchKeyword, filteredUsers]);
+    setPage(0);
+  }, [searchKeyword]);
 
   /**
    * Opens the edit vacation dialog for a specific user,
@@ -76,6 +140,8 @@ const AdminVacationManagementScreen = () => {
     setEditDialogOpen(false);
     setCurrentUser(null);
     setVacationDays({});
+    setSaving(false);
+    setIsValid(true);
   };
 
   /**
@@ -85,7 +151,11 @@ const AdminVacationManagementScreen = () => {
    * @param field Either "total" or "remaining" vacation days.
    * @param value The new value as string input, converted to number.
    */
-  const handleVacationChange = (year: string, field: "total" | "remaining", value: string) => {
+  const handleVacationChange = (
+    year: string,
+    field: "total" | "remaining",
+    value: string
+  ): void => {
     setVacationDays((prev) => ({
       ...prev,
       [year]: {
@@ -96,8 +166,7 @@ const AdminVacationManagementScreen = () => {
   };
 
   /**
-   * Validates vacation days whenever they change,
-   * updating the validity state.
+   * Validates vacation days whenever they change
    */
   useEffect(() => {
     setIsValid(isVacationDaysValid(vacationDays));
@@ -125,24 +194,38 @@ const AdminVacationManagementScreen = () => {
       );
 
       handleCloseDialog();
-    } catch (_error) {
-      setError("Failed to save vacation days.");
+    } catch (error) {
+      setError(`${strings.vacationRequestError.failedToLoad}, ${error}`);
     } finally {
       setSaving(false);
     }
   };
 
   /**
-   * Handles changing the current page in the pagination control.
+   * Handles pagination page change.
    *
-   * @param _event The change event (ignored).
-   * @param value The new page number selected.
+   * @param _event - Mouse event from pagination button
+   * @param newPage - The new page index
    */
-  const handlePageChange = (_event: React.ChangeEvent<unknown>, value: number) => {
-    setPage(value);
+  const handleChangePage = (
+    _event: React.MouseEvent<HTMLButtonElement> | null,
+    newPage: number
+  ): void => {
+    setPage(newPage);
   };
 
-  const paginatedUsers = filteredUsers.slice((page - 1) * rowsPerPage, page * rowsPerPage);
+  /**
+   * Handles change in rows per page selection.
+   * Resets to first page when rows per page changes.
+   *
+   * @param event - Change event from the select dropdown
+   */
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ): void => {
+    setRowsPerPage(Number.parseInt(event.target.value, 10));
+    setPage(0);
+  };
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4 }}>
@@ -152,15 +235,22 @@ const AdminVacationManagementScreen = () => {
       <Box sx={{ mb: 3 }}>
         <UserSearchBar value={searchKeyword} onChange={setSearchKeyword} />
       </Box>
-      <UserTable users={paginatedUsers} loading={false} onEdit={handleEditUser} />
-      <Box display="flex" justifyContent="center" mt={2}>
-        <Pagination
-          count={Math.ceil(filteredUsers.length / rowsPerPage)}
-          page={page}
-          onChange={handlePageChange}
-          color="primary"
-        />
-      </Box>
+      <UserTable users={paginatedUsers} loading={loadingUsers} onEdit={handleEditUser} />
+      {/* Only shows pagination after loading of users */}
+      {shouldPaginate && !loadingUsers && (
+        <Box display="flex" justifyContent="center" mt={2}>
+          <TablePagination
+            component="div"
+            count={filteredUsers.length}
+            page={page}
+            onPageChange={handleChangePage}
+            rowsPerPage={rowsPerPage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+            rowsPerPageOptions={[20, 50, { label: "All", value: -1 }]}
+            labelRowsPerPage="Rows per page:"
+          />
+        </Box>
+      )}
       <BackButton styles={{ mt: 3, marginBottom: 2 }} />
       <EditVacationDialog
         open={editDialogOpen}
@@ -168,7 +258,7 @@ const AdminVacationManagementScreen = () => {
         vacationDays={vacationDays}
         loading={saving}
         onClose={handleCloseDialog}
-        onChange={handleVacationChange}
+        onVacationDaysChange={handleVacationChange}
         onSave={handleSaveVacationDays}
         disableSave={!isValid || saving}
       />
@@ -188,8 +278,12 @@ const isVacationDaysValid = (vacDays: VacationDays): boolean => {
   for (const year in vacDays) {
     const total = Number(vacDays[year].total);
     const remaining = Number(vacDays[year].remaining);
-    if (total === 0 && remaining > 0) return false;
-    if (remaining > total) return false;
+    if (total === 0 && remaining > 0) {
+      return false;
+    }
+    if (remaining > total) {
+      return false;
+    }
   }
   return true;
 };

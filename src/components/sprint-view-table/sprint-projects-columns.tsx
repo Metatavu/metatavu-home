@@ -1,13 +1,7 @@
 import { Box } from "@mui/material";
 import type { GridColDef } from "@mui/x-data-grid";
-import type {
-  ResourceAllocations
-} from "src/generated/homeLambdasClient";
-import {
-  getAssigneName,
-  getProjectName,
-  getTotalEstimatedHours,
-} from "src/utils/sprint-utils";
+import type { ResourceAllocations } from "src/generated/homeLambdasClient";
+import { getAssigneName, getProjectName, getTotalEstimatedHours } from "src/utils/sprint-utils";
 import strings from "../../localization/strings";
 
 /**
@@ -37,7 +31,7 @@ const createSprintViewProjectsColumns = ({ resourceAllocations }: Props) => {
           <Box display="flex" alignItems="center" justifyContent="center" />
           {getProjectName(params.row.project, resourceAllocations)}{" "}
         </>
-      ),
+      )
     },
     {
       field: "allocationHours",
@@ -49,10 +43,10 @@ const createSprintViewProjectsColumns = ({ resourceAllocations }: Props) => {
         getTotalEstimatedHours(resourceAllocations, param.row.project);
       },
       renderCell: (param) => (
-      <>
-        <Box marginLeft={"50px"} display="flex" alignItems="center" justifyContent="center" />
-        {getTotalEstimatedHours(resourceAllocations, param.row.project)}{" "}
-      </>
+        <>
+          <Box marginLeft={"50px"} display="flex" alignItems="center" justifyContent="center" />
+          {getTotalEstimatedHours(resourceAllocations, param.row.project)}{" "}
+        </>
       )
     },
     {
@@ -65,12 +59,12 @@ const createSprintViewProjectsColumns = ({ resourceAllocations }: Props) => {
         getAssigneName(resourceAllocations, params.row.project);
       },
       renderCell: (params) => (
-      <>
-        <Box display="flex" alignItems="center" justifyContent="center" />
-        {getAssigneName(resourceAllocations, params.row.project)}{" "}
-      </>
+        <>
+          <Box display="flex" alignItems="center" justifyContent="center" />
+          {getAssigneName(resourceAllocations, params.row.project)}{" "}
+        </>
       )
-    },
+    }
   ];
   return columns;
 };

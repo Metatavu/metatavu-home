@@ -31,9 +31,9 @@ import { errorAtom } from "src/atoms/error";
 import { snackbarAtom } from "src/atoms/snackbar";
 import type { ArticleMetadata } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
+import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import { wikiScreenColors } from "src/theme";
-import UserRoleUtils from "src/utils/user-role-utils";
 import BackButton from "../generics/back-button";
 import ArticleCard from "../wiki-documentation/article-card";
 import ArticleListItem from "../wiki-documentation/article-list-item";
@@ -47,7 +47,7 @@ const itemsPerPage = 12;
  * Wiki documentation screen component displaying a list of articles.
  */
 const WikiDocumentationScreen = () => {
-  const adminMode = UserRoleUtils.adminMode();
+  const { adminMode } = useUserRole();
   const setError = useSetAtom(errorAtom);
   const setArticlesAtom = useSetAtom(articleAtom);
   const setDraftArticlesAtom = useSetAtom(draftArticleAtom);

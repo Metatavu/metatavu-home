@@ -2,6 +2,7 @@ import { Card } from "@mui/material";
 import type { GridRowId } from "@mui/x-data-grid";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { useEffect, useMemo, useState } from "react";
+import { useLocation } from "react-router";
 import { userProfileAtom } from "src/atoms/auth";
 import { errorAtom } from "src/atoms/error";
 import { usersAtom } from "src/atoms/user";
@@ -13,25 +14,30 @@ import {
 import type { User } from "src/generated/homeLambdasClient";
 import { type VacationRequest, VacationRequestStatuses } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
+import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
-import UserRoleUtils from "src/utils/user-role-utils";
 import { renderVacationDaysTextForScreen } from "src/utils/vacation-days-utils";
+import type { FilterType } from "src/utils/vacation-filter-type";
+import { validateUserVacationRequest } from "src/utils/vacations-utils";
 import BackButton from "../generics/back-button";
 import VacationRequestsTable from "../vacation-requests-table/vacation-requests-table";
-import type { FilterType } from "src/utils/vacation-filter-type";
 
 /**
  * Vacation requests screen
  */
 const VacationRequestsScreen = () => {
-  const adminMode = UserRoleUtils.adminMode();
+  const { adminMode } = useUserRole();
   const { vacationRequestsApi } = useLambdasApi();
+  const { usersApi } = useLambdasApi();
   const userProfile = useAtomValue(userProfileAtom);
   const setError = useSetAtom(errorAtom);
   const [vacationRequests, setVacationRequests] = useAtom(
     adminMode ? allVacationRequestsAtom : vacationRequestsAtom
   );
   const setDisplayedVacationRequests = useSetAtom(displayedVacationRequestsAtom);
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const selectedId = params.get("selectedId");
 
   const upcomingVacationRequests = useMemo(
     () => vacationRequests.filter((request) => request.endDate.getTime() > Date.now()),
@@ -47,6 +53,7 @@ const VacationRequestsScreen = () => {
   const [users] = useAtom(usersAtom);
   const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
   const [filter, setFilter] = useState<FilterType>("ALL");
+  const currentYear = new Date().getFullYear().toString();
 
   /**
    * Filters a list of vacation requests based on the given filter.
@@ -72,9 +79,14 @@ const VacationRequestsScreen = () => {
    */
   useEffect(() => {
     const baseRequests = isUpcoming ? upcomingVacationRequests : pastVacationRequests;
-    const filteredRequests = filterVacationRequests(baseRequests, filter);
+    let filteredRequests = filterVacationRequests(baseRequests, filter);
+
+    if (selectedId) {
+      filteredRequests = filteredRequests.filter((req) => req.id === selectedId);
+    }
+
     setDisplayedVacationRequests(filteredRequests);
-  }, [isUpcoming, filter, vacationRequests]);
+  }, [isUpcoming, filter, vacationRequests, selectedId]);
 
   /**
    * Handler for upcoming/ past vacations toggle click
@@ -187,6 +199,17 @@ const VacationRequestsScreen = () => {
     if (!loggedInUser) return;
     try {
       setLoading(true);
+      if (
+        !validateUserVacationRequest(
+          loggedInUser,
+          vacationRequestData,
+          currentYear,
+          setError,
+          setLoading
+        )
+      ) {
+        return;
+      }
       const createdRequest = await vacationRequestsApi.createVacationRequest({
         vacationRequest: {
           userId: loggedInUser.id,
@@ -224,6 +247,17 @@ const VacationRequestsScreen = () => {
     if (!loggedInUser) return;
     try {
       setLoading(true);
+      if (
+        !validateUserVacationRequest(
+          loggedInUser,
+          vacationRequestData,
+          currentYear,
+          setError,
+          setLoading
+        )
+      ) {
+        return;
+      }
       const createdRequest = await vacationRequestsApi.createVacationRequest({
         vacationRequest: {
           userId: loggedInUser.id,
@@ -277,6 +311,20 @@ const VacationRequestsScreen = () => {
         updatedAt: new Date()
       };
       const updatedStatus = [newOrUpdatedStatus];
+      const selectedUser = await usersApi.findUser({ userId: vacationRequest.userId });
+
+      if (
+        !validateUserVacationRequest(
+          selectedUser,
+          vacationRequestData,
+          currentYear,
+          setError,
+          setLoading,
+          adminMode
+        )
+      ) {
+        return;
+      }
 
       const updatedRequest = await vacationRequestsApi.updateVacationRequest({
         id: vacationRequestId,
@@ -316,6 +364,30 @@ const VacationRequestsScreen = () => {
 
     try {
       setLoading(true);
+
+      if (status === VacationRequestStatuses.APPROVED) {
+        for (const vacationRequestId of selectedRowIds) {
+          const vacationRequest = vacationRequests.find((req) => req.id === vacationRequestId);
+
+          if (!vacationRequest) continue;
+
+          const selectedUser = await usersApi.findUser({ userId: vacationRequest.userId });
+
+          const isValid = validateUserVacationRequest(
+            selectedUser,
+            vacationRequest,
+            currentYear,
+            setError,
+            setLoading,
+            adminMode
+          );
+
+          if (!isValid) {
+            return;
+          }
+        }
+      }
+
       const updatedVacationRequests = await Promise.all(
         selectedRowIds.map(async (vacationRequestId) => {
           const vacationRequest = vacationRequests.find(

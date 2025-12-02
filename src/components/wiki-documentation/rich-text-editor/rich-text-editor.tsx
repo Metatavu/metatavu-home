@@ -1,41 +1,34 @@
-import { 
-  forwardRef, 
-  useImperativeHandle, 
-  useState 
-} from 'react';
-import { AutoFocusPlugin } from '@lexical/react/LexicalAutoFocusPlugin';
-import { LexicalComposer } from '@lexical/react/LexicalComposer';
-import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
-import { ContentEditable } from '@lexical/react/LexicalContentEditable';
-import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
-import {LexicalErrorBoundary} from '@lexical/react/LexicalErrorBoundary';
-import { Box, Card } from '@mui/material';
-import { HeadingNode, QuoteNode } from '@lexical/rich-text';
-import { ListItemNode, ListNode } from "@lexical/list";
-import { LinkNode } from "@lexical/link";
 import { CodeNode } from "@lexical/code";
-import { ImageNode } from './nodes/image-node';
+import { LinkNode } from "@lexical/link";
+import { ListItemNode, ListNode } from "@lexical/list";
 import {
   $convertFromMarkdownString,
   $convertToMarkdownString,
   TRANSFORMERS
-} from '@lexical/markdown';
-import { ListPlugin } from '@lexical/react/LexicalListPlugin';
-import { LinkPlugin } from '@lexical/react/LexicalLinkPlugin';
-import { TabIndentationPlugin } from '@lexical/react/LexicalTabIndentationPlugin';
-import { OnChangePlugin } from "./plugins"
-import ToolBar from './plugins/toolbar-plugin';
-import type { EditorState } from 'lexical';
-import { IMAGE_TRANSFORMER } from './md-transformers';
-import lexicalTheme from './config';
+} from "@lexical/markdown";
+import { AutoFocusPlugin } from "@lexical/react/LexicalAutoFocusPlugin";
+import { LexicalComposer } from "@lexical/react/LexicalComposer";
+import { ContentEditable } from "@lexical/react/LexicalContentEditable";
+import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
+import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
+import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
+import { ListPlugin } from "@lexical/react/LexicalListPlugin";
+import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
+import { TabIndentationPlugin } from "@lexical/react/LexicalTabIndentationPlugin";
+import { HeadingNode, QuoteNode } from "@lexical/rich-text";
+import { Box, Card } from "@mui/material";
+import type { EditorState } from "lexical";
+import { forwardRef, useImperativeHandle, useState } from "react";
+import lexicalTheme from "./config";
+import { IMAGE_TRANSFORMER } from "./md-transformers";
+import { ImageNode } from "./nodes/image-node";
+import { OnChangePlugin } from "./plugins";
+import ToolBar from "./plugins/toolbar-plugin";
 import "./editor.css";
-import { useSetAtom } from 'jotai';
-import { errorAtom } from 'src/atoms/error';
+import { useSetAtom } from "jotai";
+import { errorAtom } from "src/atoms/error";
 
-const TRANSFORMERS_WITH_IMAGE = [
-  IMAGE_TRANSFORMER,
-  ...TRANSFORMERS
-];
+const TRANSFORMERS_WITH_IMAGE = [IMAGE_TRANSFORMER, ...TRANSFORMERS];
 
 interface Props {
   markdownContent: string;
@@ -45,18 +38,18 @@ interface EditorRef {
   getMarkdownContent: () => string | undefined;
 }
 
-const RichTextEditorLexical = forwardRef<EditorRef, Props>(({markdownContent=""}, ref) => {
+const RichTextEditorLexical = forwardRef<EditorRef, Props>(({ markdownContent = "" }, ref) => {
   const [editorState, setEditorState] = useState<EditorState>();
   const setError = useSetAtom(errorAtom);
 
   const onError = (error: Error) => {
     setError(error.message);
-  }
+  };
 
   useImperativeHandle(ref, () => ({
     getMarkdownContent: () => {
       if (!editorState) return;
-      let markdown = ""
+      let markdown = "";
       editorState.read(() => {
         markdown = $convertToMarkdownString(TRANSFORMERS_WITH_IMAGE);
       });
@@ -65,58 +58,50 @@ const RichTextEditorLexical = forwardRef<EditorRef, Props>(({markdownContent=""}
   }));
 
   const initialConfig = {
-    namespace: 'MyEditor',
+    namespace: "MyEditor",
     theme: lexicalTheme,
     onError,
-    nodes: [
-      HeadingNode,
-      ListNode,
-      ListItemNode,
-      CodeNode,
-      QuoteNode,
-      LinkNode,
-      ImageNode
-    ],
+    nodes: [HeadingNode, ListNode, ListItemNode, CodeNode, QuoteNode, LinkNode, ImageNode],
     editorState: () => $convertFromMarkdownString(markdownContent, TRANSFORMERS_WITH_IMAGE)
   };
 
   return (
     <LexicalComposer initialConfig={initialConfig}>
       <Card
-        variant='outlined'
+        variant="outlined"
         elevation={0}
-        sx={{ 
-          marginTop: 4, 
-          padding: 2, 
+        sx={{
+          marginTop: 4,
+          padding: 2,
           paddingTop: 1,
           height: "auto",
           overflow: "visible",
           position: "relative"
         }}
-      >  
-        <ToolBar/>
-        <Box sx={{ 
-          minHeight: "200px",
-          padding: 1,
-          paddingTop: 1, 
-          borderTop: '1px solid #eee'
-        }}>
+      >
+        <ToolBar />
+        <Box
+          sx={{
+            minHeight: "200px",
+            padding: 1,
+            paddingTop: 1,
+            borderTop: "1px solid #eee"
+          }}
+        >
           <RichTextPlugin
-            contentEditable={
-              <ContentEditable className='editor'/>
-            }
+            contentEditable={<ContentEditable className="editor" />}
             ErrorBoundary={LexicalErrorBoundary}
           />
-          <HistoryPlugin/>
-          <AutoFocusPlugin/>
-          <OnChangePlugin setEditorState={setEditorState}/>
-          <LinkPlugin/> 
-          <ListPlugin/>
-          <TabIndentationPlugin/>
+          <HistoryPlugin />
+          <AutoFocusPlugin />
+          <OnChangePlugin setEditorState={setEditorState} />
+          <LinkPlugin />
+          <ListPlugin />
+          <TabIndentationPlugin />
         </Box>
       </Card>
     </LexicalComposer>
   );
-})
+});
 
 export default RichTextEditorLexical;

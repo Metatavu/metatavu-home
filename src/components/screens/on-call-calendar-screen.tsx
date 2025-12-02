@@ -8,22 +8,25 @@ import {
   MenuItem,
   Select,
   styled,
+  Tooltip,
   Typography
 } from "@mui/material";
 import { red } from "@mui/material/colors";
 import { DateCalendar, PickersDay, type PickersDayProps } from "@mui/x-date-pickers";
-import { useAtom, useSetAtom } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { DateTime } from "luxon";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useState } from "react";
+import { userProfileAtom } from "src/atoms/auth";
 import type { OnCallPaid } from "src/generated/homeLambdasClient";
 import type { OnCall } from "src/generated/homeLambdasClient/models/OnCall";
-import UserRoleUtils from "src/utils/user-role-utils";
+import useUserRole from "src/hooks/use-user-role";
+import { customTheme } from "src/theme";
 import { errorAtom } from "../../atoms/error";
 import { onCallAtom } from "../../atoms/oncall";
 import { useLambdasApi } from "../../hooks/use-api";
 import strings from "../../localization/strings";
 import type { OnCallWeek } from "../../types";
-import { stringToColor } from "../../utils/oncall-utils";
+import { formatUsername, stringToColor } from "../../utils/oncall-utils";
 import OnCallListView from "../onCall/oncall-list-view";
 import OnCallPaidStatusDialog from "../onCall/oncall-paid-status-dialog";
 
@@ -46,11 +49,13 @@ const OnCallCalendarScreen = () => {
   const [open, setOpen] = useState(false);
   const [isCalendarView, setIsCalendarView] = useState(validateJSONString());
   const [selectedDate, setSelectedDate] = useState<DateTime>(DateTime.now());
-  const [onCallPerson, setOnCallPerson] = useState<string | null>(null);
+  const [onCallPerson, setOnCallPerson] = useState<string | undefined>(undefined);
   const [selectedOnCallWeek, setSelectedOnCallWeek] = useState<OnCallWeek>();
-  const isAccountant = UserRoleUtils.isAccountant();
+  const { isAccountant } = useUserRole();
   const setError = useSetAtom(errorAtom);
   const [loading, setLoading] = useState(false);
+  const userProfile = useAtomValue(userProfileAtom);
+  const calendarSelectId = useId();
 
   useEffect(() => {
     getOnCallData(selectedDate.year);
@@ -58,7 +63,7 @@ const OnCallCalendarScreen = () => {
 
   useEffect(() => {
     getCurrentOnCallPerson();
-  }, [onCallData]);
+  }, []);
 
   /**
    * Fetches on call data
@@ -70,21 +75,27 @@ const OnCallCalendarScreen = () => {
       const fetchedData = await onCallApi.listOnCallData({ year: year.toString() });
       setOnCallData(fetchedData);
     } catch (error) {
-      setError(`${strings.oncall.fetchFailed}, ${error}`);
+      if (!(error instanceof SyntaxError)) {
+        setError(`${strings.oncall.fetchFailed} ${error}`);
+      }
+      setOnCallData([]);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   /**
    * Finds the current on call employee and sets them in a state
    */
-  const getCurrentOnCallPerson = () => {
+  const getCurrentOnCallPerson = async () => {
+    const currentYear = DateTime.now().year;
     const currentWeek = DateTime.now().weekNumber;
-    const currentOnCallPerson = onCallData.find((item) => item.week === currentWeek)?.username;
-    if (currentOnCallPerson) {
-      setOnCallPerson(currentOnCallPerson);
-    } else {
-      setOnCallPerson(null);
+    try {
+      const fetchedData = await onCallApi.listOnCallData({ year: currentYear.toString() });
+      const currentOnCallPerson = fetchedData.find((item) => item.week === currentWeek)?.username;
+      setOnCallPerson(currentOnCallPerson ?? undefined);
+    } catch (error) {
+      setError(`${strings.oncall.fetchFailed} ${error}`);
     }
   };
 
@@ -117,23 +128,35 @@ const OnCallCalendarScreen = () => {
    * Renders the current week's on call person if they exist
    */
   const renderCurrentOnCall = () => {
-    const isValidPerson = onCallPerson !== null;
-    return (
-      <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", margin: 2 }}>
-        {isValidPerson ? (
-          <>
-            <Typography sx={{ color: "#5acc31", fontWeight: "bold", textAlign: "center" }}>
-              {strings.oncall.onCallPersonExists}
-            </Typography>
-            <Typography sx={{ color: "black", fontWeight: "bold", ml: 1 }}>
-              {onCallPerson}
-            </Typography>
-          </>
-        ) : (
-          <Typography sx={{ color: red[700], fontWeight: "bold", textAlign: "center" }}>
-            {strings.oncall.noOnCallPerson}
+    if (onCallPerson === undefined) {
+      return (
+        <Box sx={customTheme.customStyles.onCallBox}>
+          <CircularProgress sx={{ color: "black" }} />
+        </Box>
+      );
+    }
+
+    if (onCallPerson) {
+      return (
+        <Box sx={customTheme.customStyles.onCallBox}>
+          <Typography
+            variant="h5"
+            sx={{ display: "block", mb: 1, fontWeight: "bold", color: "black" }}
+          >
+            {strings.oncall.onCallPersonExists}
           </Typography>
-        )}
+          <Typography variant="h5" sx={{ display: "block", color: "black", fontWeight: "bold" }}>
+            {formatUsername(onCallPerson)}
+          </Typography>
+        </Box>
+      );
+    }
+
+    return (
+      <Box sx={customTheme.customStyles.onCallBox}>
+        <Typography variant="h5" sx={{ display: "block", color: red[700], fontWeight: "bold" }}>
+          {strings.oncall.noOnCallPerson}
+        </Typography>
       </Box>
     );
   };
@@ -201,6 +224,7 @@ const OnCallCalendarScreen = () => {
     const { day, outsideCurrentMonth, ...other } = props;
     const weekNumber = day.weekNumber;
     const onCallDayData = onCallByWeek.get(weekNumber);
+    const whenUserIsOnCall = onCallDayData?.email === userProfile?.email;
 
     // Show badge only on the first day of the week
     const showBadge = day.weekday === 1 && onCallDayData;
@@ -232,38 +256,61 @@ const OnCallCalendarScreen = () => {
     return (
       <Box sx={{ position: "relative" }}>
         {showBadge && (
-          <Badge
-            overlap="circular"
-            badgeContent={initials}
-            sx={{
-              ".MuiBadge-badge": {
-                backgroundColor: badgeColor,
-                color: "#fff",
-                right: 60,
-                top: 10,
-                minWidth: 24,
-                minHeight: 24,
-                fontSize: 12,
-                border: "1px none #000",
-                zIndex: 1,
-                fontWeight: hasUsername ? "normal" : "bold"
-              }
-            }}
-          >
-            <StyledPickersDay
-              {...other}
-              day={day}
-              outsideCurrentMonth={outsideCurrentMonth}
+          <Tooltip title={formatUsername(onCallDayData?.username)}>
+            <Badge
+              overlap="circular"
+              badgeContent={initials}
               sx={{
-                ...(onCallDayData?.paid
-                  ? { color: "#000", fontWeight: "bold", border: "2px solid #7bd15c" }
-                  : {}),
-                background: outsideCurrentMonth ? "#d1d0cf" : "#fff",
-                cursor: "pointer"
+                ".MuiBadge-badge": {
+                  backgroundColor: whenUserIsOnCall
+                    ? customTheme.colors.onCallHighlight
+                    : badgeColor,
+                  color: "#fff",
+                  right: 60,
+                  top: 10,
+                  minWidth: 24,
+                  minHeight: 24,
+                  fontSize: 12,
+                  zIndex: 1,
+                  fontWeight: whenUserIsOnCall ? "900" : "normal",
+                  borderRadius: "50%",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  position: "absolute",
+                  overflow: "visible",
+                  ...(whenUserIsOnCall && {
+                    animation: "pulseGlow 1.5s ease-in-out 4"
+                  })
+                },
+                "@keyframes pulseGlow": {
+                  "0%": {
+                    boxShadow: "0 0 0 0 rgba(150, 96, 15, 0.7)"
+                  },
+                  "70%": {
+                    boxShadow: "0 0 0 8px rgba(255, 152, 0, 0)"
+                  },
+                  "100%": {
+                    boxShadow: "0 0 0 0 rgba(255, 152, 0, 0)"
+                  }
+                }
               }}
-              onClick={handleDayClick}
-            />
-          </Badge>
+            >
+              <StyledPickersDay
+                {...other}
+                day={day}
+                outsideCurrentMonth={outsideCurrentMonth}
+                sx={{
+                  ...(onCallDayData?.paid
+                    ? { color: "#000", fontWeight: "bold", border: "2px solid #7bd15c" }
+                    : {}),
+                  background: outsideCurrentMonth ? "#cfc7c7" : "#fff",
+                  cursor: "pointer"
+                }}
+                onClick={handleDayClick}
+              />
+            </Badge>
+          </Tooltip>
         )}
         {!showBadge && (
           <StyledPickersDay
@@ -274,7 +321,7 @@ const OnCallCalendarScreen = () => {
               ...(onCallDayData?.paid
                 ? { color: "#000", fontWeight: "bold", border: "2px solid #7bd15c" }
                 : {}),
-              background: outsideCurrentMonth ? "#d1d0cf" : "#fff",
+              background: outsideCurrentMonth ? "#cfc7c7" : "#fff",
               cursor: onCallDayData ? "pointer" : "default"
             }}
             onClick={handleDayClick}
@@ -384,10 +431,10 @@ const OnCallCalendarScreen = () => {
         }}
       />
       <FormControl sx={{ width: "50%", textAlign: "center", margin: "auto" }}>
-        <InputLabel id="calendarSelect">{strings.oncall.selectView}</InputLabel>
+        <InputLabel id={calendarSelectId}>{strings.oncall.selectView}</InputLabel>
         <Select
-          labelId="calendarSelect"
-          id="calendarSelect"
+          labelId={calendarSelectId}
+          id={`${calendarSelectId}-select`}
           label={strings.oncall.selectView}
           value={isCalendarView ? "Calendar" : "List"}
         >

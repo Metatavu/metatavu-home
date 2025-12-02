@@ -42,7 +42,10 @@
     "missingEmailOrId": "Missing email or ID",
     "noSeveraUserId": "One of your users is missing severaUserId, please contact a member of the metatavu home development team for more information.",
     "noFlextimeData": "Something went wrong while fetching your flextime data",
-    "noArticleId": "Article ID is missing"
+    "noArticleId": "Article ID is missing",
+    "fetchWorkDaysFailed": "Fetching work days data has failed",
+    "fetchWorkWeekFailed": "Error while fetching work week data, five day week will be used.",
+    "fetchFailedSevera": "Failed to update Severa opt-in."
   },
   "localization": {
     "en": "EN",
@@ -69,7 +72,11 @@
     "viewAllTimeEntries": "View all employees time totals and balances",
     "selectTimespan": "Select time span",
     "searchPlaceholder": "Search for a person...",
-    "employeeBalances": "Employee time totals and balances"
+    "employeeBalances": "Employee time totals and balances",
+    "numberOfWeeks": "Number of weeks:",
+    "enteredHours": "Logged hours",
+    "expectedHours": "Expected hours",
+    "holidayName": "Holiday:"
   },
   "sprint": {
     "sprintview": "Sprint view",
@@ -189,7 +196,10 @@
     "year": "Year",
     "allTime": "All time",
     "startDate": "Start date",
-    "endDate": "End date"
+    "endDate": "End date",
+    "hour": "hour",
+    "hours": "hours",
+    "period": "period"
   },
   "confirmationHandler": {
     "confirmButtonText": "Yes",
@@ -225,7 +235,9 @@
     "noMessage": "No message",
     "noStatus": "No status",
     "person": "Person",
-    "noPersonFullName": "No name"
+    "noPersonFullName": "No name",
+    "noReview": "Not reviewed yet",
+    "reviewedBy": "by:"
   },
   "vacationRequestError": {
     "fetchRequestError": "Fetching vacation requests has failed",
@@ -238,7 +250,10 @@
     "updateStatusError": "Updating vacation request status has failed",
     "noVacationRequestsFound": "No vacation requests found",
     "nameNotFound": "Name not found",
-    "noVacationRequestsStatusFound": "Statuses not found"
+    "noVacationRequestsStatusFound": "Statuses not found",
+    "tooManyDaysRequestedUser": "You cannot request {requestedDays} days. You only have {unspentDays} unspent vacation days.",
+    "tooManyDaysRequestedAdmin": "Not enough vacation days. Requested: {requestedDays} days, Available: {unspentDays} days.",
+    "failedToLoad": "Failed to load users"
   },
   "sprintRequestError": {
     "fetchResourceAllocationsError": "Fetching sprint data for resourceAllocations has failed",
@@ -405,9 +420,7 @@
     "employeeBalances": "Employee time totals and balances",
     "viewAllTimeEntries": "View all employees time totals and balances",
     "balance": "Balance",
-    "atTheEndOf": "At the end of {0}",
-    "hour": "hour",
-    "hours": "hours"
+    "atTheEndOf": "At the end of {0}"
   },
   "wikiDocumentation": {
     "cardTitle": "Wiki Documentation",
@@ -463,7 +476,10 @@
     "buttonLabel": "Manage User Vacation Days",
     "editTitle": "Edit Vacation Days",
     "totalDays": "Total Days",
-    "remainingDays": "Remaining Days"
+    "remainingDays": "Remaining Days",
+    "selectYear": "Select Year",
+    "currentYear": "Current Year",
+    "vacationFor": "Vacation Days for"
   },
   "userSearch": {
     "placeholder": "Search users by name or email"
@@ -501,7 +517,8 @@
     "paidStatus": "Paid Status",
     "date": "Date",
     "noUsernameOnCall": "-",
-    "errorUpdatingPaidStatus": "Failed to update on-call shift paid status"
+    "errorUpdatingPaidStatus": "Failed to update on-call shift paid status",
+    "noDataForYear": "No data available for this year"
   },
   "onboarding": {
     "prev": "Previous",

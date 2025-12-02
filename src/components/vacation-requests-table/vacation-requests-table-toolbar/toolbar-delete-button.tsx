@@ -18,7 +18,11 @@ const ToolbarDeleteButton = ({ setConfirmationHandlerOpen }: Props) => (
   <Button
     variant="contained"
     sx={{
-      width: "100%"
+      width: "100%",
+      backgroundColor: "#333",
+      "&:hover": {
+        backgroundColor: "#555"
+      }
     }}
     onClick={() => {
       setConfirmationHandlerOpen(true);

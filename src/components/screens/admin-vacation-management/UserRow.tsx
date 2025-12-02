@@ -9,6 +9,18 @@ interface UserRowProps {
 }
 
 /**
+ * Gets the vacation days string for a given year from an array of "year:value" strings.
+ * @param arr - Array of strings in the format "year:value".
+ * @param year - Year to look up.
+ * @returns Number of days as string or "0" if not found.
+ */
+export const getDays = (arr: string[] | undefined, year: string): string => {
+  if (!arr) return "0";
+  const found = arr.find((s) => s.startsWith(`${year}:`));
+  return found ? found.split(":")[1] : "0";
+};
+
+/**
  * Renders a single user row in a table with editable vacation days.
  * @param user - The user object containing user details and vacation data.
  * @param onEdit - Callback to trigger editing the user's vacation days.
@@ -16,29 +28,23 @@ interface UserRowProps {
  */
 const UserRow = ({ user, onEdit }: UserRowProps) => {
   const currentYear = new Date().getFullYear().toString();
-
-  /**
-   * Gets the vacation days string for a given year from an array of "year:value" strings.
-   * @param arr - Array of strings in the format "year:value".
-   * @param year - Year to look up.
-   * @returns Number of days as string or "0" if not found.
-   */
-  const getDays = (arr: string[] | undefined, year: string): string => {
-    if (!arr) return "0";
-    const found = arr.find((s) => s.startsWith(`${year}:`));
-    return found ? found.split(":")[1] : "0";
-  };
-
   const totalDays = getDays(user.attributes?.vacationDaysByYear, currentYear);
   const remainingDays = getDays(user.attributes?.unspentVacationDaysByYear, currentYear);
   return (
-    <TableRow key={user.id}>
-      <TableCell>{`${user.firstName || ""} ${user.lastName || ""}`}</TableCell>
+    <TableRow
+      hover
+      sx={{
+        "&:hover": { backgroundColor: "#fafafa" },
+        "& td": { py: 2.5 }
+      }}
+      key={user.id}
+    >
+      <TableCell>{`${user.firstName || ""} ${user.lastName || ""}`.trim() || "-"}</TableCell>
       <TableCell>{user.email ?? "-"}</TableCell>
-      <TableCell align="right">
+      <TableCell align="center">
         {Number.parseInt(totalDays, 10)} {strings.userRow.day}
       </TableCell>
-      <TableCell align="right">
+      <TableCell align="center">
         {Number.parseInt(remainingDays, 10)} {strings.userRow.day}
       </TableCell>
       <TableCell align="center">

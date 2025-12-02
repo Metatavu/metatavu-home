@@ -1,5 +1,5 @@
-import { Questionnaire, AnswerOption, Question } from "src/generated/homeLambdasClient";
-import { Localized } from "src/localization/strings";
+import type { AnswerOption, Question, Questionnaire } from "src/generated/homeLambdasClient";
+import type { Localized } from "src/localization/strings";
 
 /**
  * Function to handle input change in the questionnaire title and description

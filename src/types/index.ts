@@ -1,7 +1,7 @@
 import type { DateTime } from "luxon";
-import type { Person, PersonTotalTime, DailyEntry } from "../generated/client";
-import type { VacationType } from "../generated/homeLambdasClient";
 import type { ReactNode } from "react";
+//import type { Person, PersonTotalTime, DailyEntry } from "../generated/client";
+import type { VacationRequest, VacationType } from "../generated/homeLambdasClient";
 
 /**
  * Enum describing table form modes
@@ -9,7 +9,7 @@ import type { ReactNode } from "react";
 export enum ToolbarFormModes {
   CREATE = "CREATE",
   EDIT = "EDIT",
-  NONE = "NONE",
+  NONE = "NONE"
 }
 
 /**
@@ -29,6 +29,7 @@ export interface VacationsDataGridRow {
   id: string | undefined;
   type: VacationType | string;
   personFullName: string;
+  userId?: string;
   updatedAt: string | DateTime;
   startDate: string | DateTime;
   endDate: string | DateTime;
@@ -36,6 +37,7 @@ export interface VacationsDataGridRow {
   message: string;
   status: string;
   draft: boolean;
+  vacationRequest?: VacationRequest;
 }
 
 /**
@@ -79,10 +81,11 @@ export enum Worktime {
 /**
  * Interface for person with total time
  */
-export interface PersonWithTotalTime {
-  person: Person;
-  personTotalTime?: PersonTotalTime;
-}
+// NOTE: This interface was only used in timebank screens and is now commented out due to the removal of the timebank client.
+// export interface PersonWithTotalTime {
+//   person: Person;
+//   personTotalTime?: PersonTotalTime;
+// }
 
 /**
  * Enum for work time category
@@ -117,9 +120,10 @@ export interface VacationInfoListItem {
 /**
  * Type describing daily entry with index signature
  */
-export interface DailyEntryWithIndexSignature extends DailyEntry {
-  [key: string]: any;
-}
+// NOTE: This interface was only used in timebank screens and is now commented out due to the removal of the timebank client.
+// export interface DailyEntryWithIndexSignature extends DailyEntry {
+//   [key: string]: any;
+// }
 
 /**
  * Type describing chart data

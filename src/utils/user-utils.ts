@@ -1,5 +1,5 @@
-import type { User } from "src/generated/homeLambdasClient/models/User";
 import config from "src/app/config";
+import type { User } from "src/generated/homeLambdasClient/models/User";
 
 /**
  * To get the severa user id when logged in, if severaUserId is not found and in develop mode, it will return the test user severa id

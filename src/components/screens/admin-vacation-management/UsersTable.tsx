@@ -11,6 +11,7 @@ import {
   Typography
 } from "@mui/material";
 import type { User } from "src/generated/homeLambdasClient/models/User";
+import { userWithParsedName } from "src/utils/user-name-utils";
 import strings from "../../../localization/strings";
 import UserRow from "./UserRow";
 
@@ -20,7 +21,6 @@ interface UserTableProps {
   loading: boolean;
   onEdit: (user: User) => void;
 }
-
 /**
  * Displays a table of users with vacation information.
  * @param users - Array of users to display.
@@ -51,16 +51,16 @@ const UserTable = ({ users, loading, onEdit }: UserTableProps) => {
           <TableRow>
             <TableCell>{strings.userTable.name}</TableCell>
             <TableCell>{strings.userTable.email}</TableCell>
-            <TableCell align="right">
+            <TableCell align="center">
               {strings.userTable.currentYearTotal.replace("{year}", String(currentYear))}
             </TableCell>
-            <TableCell align="right">{strings.userTable.remainingDays}</TableCell>
+            <TableCell align="center">{strings.userTable.remainingDays}</TableCell>
             <TableCell align="center">{strings.userTable.actions}</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {users.map((user) => (
-            <UserRow key={user.id} user={user} onEdit={onEdit} />
+            <UserRow key={user.id} user={userWithParsedName(user)} onEdit={onEdit} />
           ))}
         </TableBody>
       </Table>

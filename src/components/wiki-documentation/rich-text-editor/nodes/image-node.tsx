@@ -1,11 +1,17 @@
-import { DecoratorNode, type LexicalNode, type NodeKey, type SerializedLexicalNode, type Spread } from 'lexical';
-import type { ReactNode } from 'react';
+import {
+  DecoratorNode,
+  type LexicalNode,
+  type NodeKey,
+  type SerializedLexicalNode,
+  type Spread
+} from "lexical";
+import type { ReactNode } from "react";
 
 export type SerializedImageNode = Spread<
   {
     src: string;
     altText: string;
-    type: 'image';
+    type: "image";
     version: 1;
   },
   SerializedLexicalNode
@@ -16,7 +22,7 @@ export class ImageNode extends DecoratorNode<ReactNode> {
   __altText: string;
 
   static getType(): string {
-    return 'image';
+    return "image";
   }
 
   static clone(node: ImageNode): ImageNode {
@@ -38,14 +44,14 @@ export class ImageNode extends DecoratorNode<ReactNode> {
     return {
       src: this.__src,
       altText: this.__altText,
-      type: 'image',
-      version: 1,
+      type: "image",
+      version: 1
     };
   }
 
   createDOM(): HTMLElement {
-    const div = document.createElement('div');
-    div.style.display = 'contents';
+    const div = document.createElement("div");
+    div.style.display = "contents";
     return div;
   }
 
@@ -55,20 +61,20 @@ export class ImageNode extends DecoratorNode<ReactNode> {
 
   decorate(): ReactNode {
     return (
-      <img 
-        src={this.__src} 
-        alt={this.__altText} 
-        style={{ 
-          display: 'block', 
-          width: '100%',
-          borderRadius: '15px'
+      <img
+        src={this.__src}
+        alt={this.__altText}
+        style={{
+          display: "block",
+          width: "100%",
+          borderRadius: "15px"
         }}
       />
     );
   }
 
   getImageData() {
-    return {altText: this.__altText, src: this.__src}
+    return { altText: this.__altText, src: this.__src };
   }
 }
 

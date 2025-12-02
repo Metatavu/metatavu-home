@@ -1,11 +1,14 @@
 import type { SelectChangeEvent } from "@mui/material";
 import { useState } from "react";
-import type { ResourceAllocations, ResourceAllocationsProject } from "src/generated/homeLambdasClient";
+import type {
+  ResourceAllocations,
+  ResourceAllocationsProject
+} from "src/generated/homeLambdasClient";
 import { SprintViewFilterTypes } from "../types";
 
 /**
  * Custom hook to handle sprint view interactions.
- * 
+ *
  * @returns An object containing state variables and handler functions for sprint view interactions.
  */
 const useSprintViewHandlers = () => {
@@ -15,7 +18,7 @@ const useSprintViewHandlers = () => {
 
   /**
    * Handles the change event for the filter selection.
-   * 
+   *
    * @param event - The event triggered by the filter selection change.
    */
   const handleFilterChange = (event: SelectChangeEvent<string>) => {
@@ -26,7 +29,7 @@ const useSprintViewHandlers = () => {
 
   /**
    * Handles the click event on a row in the resource allocations table.
-   * 
+   *
    * @param row - type of ResourceAllocations.
    */
   const handleRowClick = (row: ResourceAllocations) => {
@@ -51,43 +54,37 @@ const useSprintViewHandlers = () => {
 
   /**
    * Filters the total allocations preventing duplication for phase and assignee.
-   * 
+   *
    * @param allocation - total allocations to be filtered.
-   * 
+   *
    * @returns An array of resource allocations that match the filter criteria.
    */
-  const filterAllocations = (
-    allocations: ResourceAllocations[], 
-    isAdmin: boolean
-  ) => {
+  const filterAllocations = (allocations: ResourceAllocations[], isAdmin: boolean) => {
     const allocationsWithPhaseDuplication = new Map<string, ResourceAllocations>();
-  
+
     allocations.forEach((allocation) => {
       const key = isAdmin
         ? `${allocation.project?.name}-${allocation.user?.name}`
         : allocation.project?.name;
-  
+
       if (key?.toLowerCase().includes(searchQuery.toLowerCase())) {
         allocationsWithPhaseDuplication.set(key, allocation);
       }
     });
-  
+
     const newAllocationWithProjectDuplication = Array.from(
       allocationsWithPhaseDuplication.values()
     );
-  
-    const uniqueAllocations = newAllocationWithProjectDuplication.reduce(
-      (acc, allocation) => {
-        const projectId = allocation.project?.severaProjectId;
-  
-        if (projectId && !acc.some((a) => a.project?.severaProjectId === projectId)) {
-          acc.push(allocation);
-        }
-  
-        return acc;
-      }, 
-      [] as ResourceAllocations[]
-    );
+
+    const uniqueAllocations = newAllocationWithProjectDuplication.reduce((acc, allocation) => {
+      const projectId = allocation.project?.severaProjectId;
+
+      if (projectId && !acc.some((a) => a.project?.severaProjectId === projectId)) {
+        acc.push(allocation);
+      }
+
+      return acc;
+    }, [] as ResourceAllocations[]);
 
     return uniqueAllocations;
   };
@@ -100,8 +97,8 @@ const useSprintViewHandlers = () => {
     handleRowClick,
     handleClearSearch,
     setSearchQuery,
-    setSelectedProject, 
-    filterAllocations,
+    setSelectedProject,
+    filterAllocations
   };
 };
 

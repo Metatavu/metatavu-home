@@ -1,23 +1,18 @@
 import config from "../app/config";
 import {
-  Configuration,
+  ArticleApi,
   type ConfigurationParameters,
-  DailyEntriesApi,
-  PersonsApi,
-  SynchronizeApi,
-} from "../generated/client";
-import {
   FlexTimeApi,
   Configuration as LambdaConfiguration,
-  SeveraApi,
+  OnCallApi,
   QuestionnairesApi,
+  SeveraApi,
   SlackAvatarsApi,
   SoftwareApi,
   UsersApi,
-  VacationRequestsApi,
-  ArticleApi,
-  OnCallApi
+  VacationRequestsApi
 } from "../generated/homeLambdasClient";
+
 /**
  * Generic type that accepts parameters within the @ConfigurationParameters interface
  */
@@ -33,15 +28,11 @@ type ConfigConstructor<T> = new (_params: ConfigurationParameters) => T;
  * @returns ConfigConstructor instance set up with params
  */
 const getConfigurationFactory =
-  <T>(
-    ConfigConstructor: ConfigConstructor<T>,
-    basePath: string,
-    accessToken?: string
-  ) =>
+  <T>(ConfigConstructor: ConfigConstructor<T>, basePath: string, accessToken?: string) =>
   () => {
     return new ConfigConstructor({
       basePath: basePath,
-      accessToken: accessToken,
+      accessToken: accessToken
     });
   };
 
@@ -70,6 +61,7 @@ export const getLambdasApiClient = (accessToken?: string) => {
     questionnairesApi: new QuestionnairesApi(getConfiguration()),
     vacationRequestsApi: new VacationRequestsApi(getConfiguration()),
     articleApi: new ArticleApi(getConfiguration()),
-    onCallApi: new OnCallApi(getConfiguration())
+    onCallApi: new OnCallApi(getConfiguration()),
+    workDaysApi: severaApi
   };
 };
