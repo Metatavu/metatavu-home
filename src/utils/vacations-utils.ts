@@ -76,17 +76,25 @@ export function formatVacationDaysPayload(vacationDays: VacationDays): VacationD
  */
 export const validateVacationRequestDays = (
   requestedDays: number,
-  unspentDays: number
+  unspentDays: number,
+  isUserAdmin?: boolean
 ): { valid: boolean; errorMessage?: string } => {
   if (requestedDays > unspentDays) {
-    const formatString = (template: string, values: Record<string, string | number>) =>
-      template.replace(/\{(\w+)\}/g, (_, key) => String(values[key] ?? ""));
-    return {
-      valid: false,
-      errorMessage: formatString(strings.vacationRequestError.tooManyDaysRequested, {
+    const formatted = strings.formatString(
+      isUserAdmin
+        ? strings.vacationRequestError.tooManyDaysRequestedAdmin
+        : strings.vacationRequestError.tooManyDaysRequestedUser,
+      {
         requestedDays,
         unspentDays
-      })
+      }
+    );
+
+    const errorString = Array.isArray(formatted) ? formatted.join("") : (formatted ?? "");
+
+    return {
+      valid: false,
+      errorMessage: errorString
     };
   }
   return { valid: true };
@@ -107,14 +115,19 @@ export const validateUserVacationRequest = (
   vacationRequestData: { days?: number | string | null },
   currentYear: string,
   setError: (msg: string) => void,
-  setLoading: (loading: boolean) => void
+  setLoading: (loading: boolean) => void,
+  isUserAdmin?: boolean
 ): boolean => {
   const unspentDays = Number(
     getDays(userToValidate?.attributes?.unspentVacationDaysByYear, currentYear)
   );
   const requestedDays = Number(vacationRequestData.days ?? 0);
 
-  const { valid, errorMessage } = validateVacationRequestDays(requestedDays, unspentDays);
+  const { valid, errorMessage } = validateVacationRequestDays(
+    requestedDays,
+    unspentDays,
+    isUserAdmin
+  );
 
   if (!valid) {
     setError(errorMessage || "");

@@ -1,9 +1,12 @@
-import { Box, Button, Checkbox, Typography } from "@mui/material";
+import { alpha, Box, Button, Checkbox, Typography } from "@mui/material";
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
 import { useAtomValue } from "jotai";
 import { DateTime } from "luxon";
+import { userProfileAtom } from "src/atoms/auth";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
+import { customTheme } from "src/theme";
+import { formatUsername } from "src/utils/oncall-utils";
 import { onCallAtom } from "../../atoms/oncall";
 
 /**
@@ -23,6 +26,17 @@ interface Props {
 const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Props) => {
   const onCallData = useAtomValue(onCallAtom);
   const { isAccountant } = useUserRole();
+  const userProfile = useAtomValue(userProfileAtom);
+  const loggedInEmail = userProfile?.email;
+
+  /**
+   * Identify rows that belong to the logged in user
+   * @param email - On call user's email
+   * @returns 'true' if email matches logged in users email.
+   */
+  const isLoggedInUser = (email: string) => {
+    return loggedInEmail && email && loggedInEmail.toLowerCase() === email.toLowerCase();
+  };
 
   const columns: GridColDef[] = [
     {
@@ -34,6 +48,7 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
       sortable: false,
       renderCell: (params) => (
         <Checkbox
+          onClick={(e) => e.stopPropagation()}
           onChange={async () => {
             if (isAccountant) {
               await updatePaidStatus(selectedDate.year, params.row.week, params.value);
@@ -42,9 +57,11 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
           checked={params.value}
           disabled={!isAccountant}
           sx={{
-            color: params.value ? "#7bd15c" : "#f44336",
             "&.Mui-checked": {
-              color: "#7bd15c"
+              color: alpha(customTheme.colors.paidGreen, 0.3)
+            },
+            "&:not(.Mui-checked)": {
+              color: alpha("#ff6384", 0.3)
             }
           }}
         />
@@ -64,7 +81,36 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
       flex: 1,
       headerAlign: "center",
       align: "center",
-      sortable: true
+      sortable: true,
+      renderCell: (params) => (
+        <Typography
+          sx={{
+            fontWeight: isLoggedInUser(params.row.email) ? "bold" : "normal",
+            border: isLoggedInUser(params.row.email) ? "2px solid black" : "none",
+            borderRadius: 2,
+            px: 1
+          }}
+        >
+          {formatUsername(params.value)}
+        </Typography>
+      )
+    },
+    {
+      field: "email",
+      headerName: strings.userTable.email,
+      flex: 1,
+      headerAlign: "center",
+      align: "center",
+      sortable: true,
+      renderCell: (params) => (
+        <Typography
+          sx={{
+            fontWeight: isLoggedInUser(params.value) ? "bold" : "normal"
+          }}
+        >
+          {params.value}
+        </Typography>
+      )
     }
   ];
 
@@ -72,35 +118,43 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
     id: idx,
     paid: item.paid,
     week: item.week,
-    person: item.username ? item.username : strings.oncall.noUsernameOnCall
+    person: item.username ?? strings.oncall.noUsernameOnCall,
+    email: item.email ?? "-"
   }));
 
-  /**
-   * Component render
-   */
   return (
     <>
-      <Box sx={{ display: "flex", my: "3%" }}>
-        <Typography variant="h3" sx={{ flexGrow: 10 }}>
+      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", my: 3 }}>
+        <Typography
+          variant="h4"
+          className="button-text"
+          sx={customTheme.customStyles.listViewTypography}
+        >
           {strings.oncall.oncallShifts} {selectedDate.year}
         </Typography>
-        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+
+        <Box sx={{ display: "flex" }}>
           <Button
             onClick={() => setSelectedDate(selectedDate.minus({ year: 1 }))}
-            variant="outlined"
             disabled={selectedDate.year === 2020}
+            sx={customTheme.customStyles.listViewButton}
           >
-            {strings.oncall.previousYear}
+            <Typography variant="h4" sx={customTheme.customStyles.listViewTypography}>
+              {strings.oncall.previousYear}
+            </Typography>
           </Button>
           <Button
             onClick={() => setSelectedDate(selectedDate.plus({ year: 1 }))}
-            variant="outlined"
             disabled={selectedDate.year === DateTime.now().year}
+            sx={customTheme.customStyles.listViewButton}
           >
-            {strings.oncall.nextYear}
+            <Typography variant="h4" sx={customTheme.customStyles.listViewTypography}>
+              {strings.oncall.nextYear}
+            </Typography>
           </Button>
         </Box>
       </Box>
+
       {rows.length === 0 ? (
         <Box
           sx={{
@@ -116,7 +170,7 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
             mt: 2
           }}
         >
-          No Data for this year
+          {strings.oncall.noDataForYear}
         </Box>
       ) : (
         <DataGrid
@@ -124,27 +178,24 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
           columns={columns}
           disableRowSelectionOnClick
           hideFooter
-          getRowClassName={(params) => (params.row.paid ? "paid-row" : "unpaid-row")}
           sx={{
             marginBottom: "60px",
-            "& .paid-row": {
-              backgroundColor: "#eafbe5"
+            "& .MuiDataGrid-row:hover": {
+              backgroundColor: "#eeeeee"
             },
-            "& .unpaid-row": {
-              backgroundColor: "#ffeaea"
-            },
-            "& .MuiDataGrid-cell": {
-              fontSize: 16
-            },
+            "& .MuiDataGrid-cell": { fontSize: 16, color: "black" },
             "& .MuiDataGrid-columnHeaders": {
-              backgroundColor: "#f5f5f5",
+              backgroundColor: "#cfc7c7"
+            },
+            "& .MuiDataGrid-columnHeaderTitle": {
               fontWeight: "bold"
+            },
+            "& .default-row": {
+              backgroundColor: "#f5f5f5"
             }
           }}
           initialState={{
-            sorting: {
-              sortModel: [{ field: "week", sort: "asc" }]
-            }
+            sorting: { sortModel: [{ field: "week", sort: "asc" }] }
           }}
         />
       )}

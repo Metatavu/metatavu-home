@@ -59,6 +59,8 @@ export interface Localized extends LocalizedStringsMethods {
     noSeveraUserId: string;
     noFlextimeData: string;
     noArticleId: string;
+    fetchWorkDaysFailed: string;
+    fetchWorkWeekFailed: string;
     fetchFailedSevera: string;
   };
   /**
@@ -94,6 +96,10 @@ export interface Localized extends LocalizedStringsMethods {
     atTheEndOf: string;
     searchPlaceholder: string;
     employeeBalances: string;
+    numberOfWeeks: string;
+    enteredHours: string;
+    expectedHours: string;
+    holidayName: string;
   };
   /**
    * Translations related to sprint view
@@ -213,6 +219,9 @@ export interface Localized extends LocalizedStringsMethods {
     allTime: string;
     startDate: string;
     endDate: string;
+    hour: string;
+    hours: string;
+    period: string;
   };
   /**
    * Translations related to confirmation handler
@@ -275,7 +284,8 @@ export interface Localized extends LocalizedStringsMethods {
     noVacationRequestsFound: string;
     nameNotFound: string;
     noVacationRequestsStatusFound: string;
-    tooManyDaysRequested: string;
+    tooManyDaysRequestedUser: string;
+    tooManyDaysRequestedAdmin: string;
     failedToLoad: string;
   };
 
@@ -522,8 +532,6 @@ export interface Localized extends LocalizedStringsMethods {
     viewAllTimeEntries: string;
     balance: string;
     atTheEndOf: string;
-    hour: string;
-    hours: string;
   };
   /**
    * Translations related to Wiki Documentation service
@@ -671,6 +679,7 @@ export interface Localized extends LocalizedStringsMethods {
     date: string;
     noUsernameOnCall: string;
     errorUpdatingPaidStatus: string;
+    noDataForYear: string;
   };
 
   employeeFlextime: {

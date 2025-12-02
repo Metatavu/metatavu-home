@@ -43,7 +43,9 @@
     "noSeveraUserId": "Käyttäjältä puuttuu Severa-käyttäjätunnus, ota yhteyttä Metatavun kehitystiimiin lisätietoja varten.",
     "noFlextimeData": "Jotain meni pieleen joustotyöaikatietoja haettaessa",
     "noArticleId": "Artikkelin ID puuttuu",
-    "fetchFailedSevera": "Severa-opt-in päivitys epäonnistui."
+    "fetchWorkDaysFailed": "Työpäivätietojen haku epäonnistui",
+    "fetchFailedSevera": "Severa-opt-in päivitys epäonnistui.",
+    "fetchWorkWeekFailed": "Virhe työviikon tietoja haettaessa, käytetään oletuksena viiden päivän viikkoa"
   },
   "localization": {
     "en": "EN",
@@ -70,7 +72,11 @@
     "viewAllTimeEntries": "Kaikki henkilöstön aikakirjaukset ja saldot",
     "selectTimespan": "Valitse aikaväli",
     "searchPlaceholder": "Hae henkilöä...",
-    "employeeBalances": "Henkilöstön aikakirjaukset ja saldot"
+    "employeeBalances": "Henkilöstön aikakirjaukset ja saldot",
+    "numberOfWeeks": "Viikkojen määrä:",
+    "enteredHours": "Kirjatut tunnit",
+    "expectedHours": "Odotetut tunnit",
+    "holidayName": "Lomapäivä:"
   },
   "sprint": {
     "sprintview": "Sprintinäkymä",
@@ -190,7 +196,10 @@
     "year": "Vuosi",
     "allTime": "Koko ajalta",
     "startDate": "Alkupäivämäärä",
-    "endDate": "Loppupäivämäärä"
+    "endDate": "Loppupäivämäärä",
+    "hour": "tunti",
+    "hours": "tuntia",
+    "period": "jakso"
   },
   "confirmationHandler": {
     "confirmButtonText": "Kyllä",
@@ -228,7 +237,7 @@
     "person": "Henkilö",
     "noPersonFullName": "Ei nimeä",
     "noReview": "ei ole vielä tarkistettu",
-    "reviewedBy":"Tarkastanut:"
+    "reviewedBy": "Tarkastanut:"
   },
   "vacationRequestError": {
     "fetchRequestError": "Lomahakemusten hakeminen epäonnistui",
@@ -242,7 +251,8 @@
     "noVacationRequestsFound": "Lomahakemuksia ei löydetty",
     "nameNotFound": "Nimeä ei löydetty",
     "noVacationRequestsStatusFound": "Tiloja ei löytynyt",
-    "tooManyDaysRequested": "Et voi pyytää {requestedDays} päivää. Sinulla on vain {unspentDays} käyttämätöntä lomapäivää",
+    "tooManyDaysRequestedUser": "Et voi pyytää {requestedDays} päivää. Sinulla on käytettävissä vain {unspentDays} lomapäivää.",
+    "tooManyDaysRequestedAdmin": "Ei tarpeeksi lomapäiviä. Pyydetty: {requestedDays} päivää, Käytettävissä: {unspentDays} päivää.",
     "failedToLoad": "Käyttäjien lataaminen epäonnistui"
   },
   "sprintRequestError": {
@@ -410,9 +420,7 @@
     "employeeBalances": "Henkilöstön aikakirjaukset ja saldot",
     "viewAllTimeEntries": "Kaikki henkilöstön aikakirjaukset ja saldot",
     "balance": "Saldo",
-    "atTheEndOf": "{0} lopussa",
-    "hour": "tunti",
-    "hours": "Tuntia"
+    "atTheEndOf": "{0} lopussa"
   },
   "wikiDocumentation": {
     "cardTitle": "Wiki Dokumentaatio",
@@ -507,7 +515,8 @@
     "paidStatus": "Maksatus",
     "date": "Päivämäärä",
     "noUsernameOnCall": "-",
-    "errorUpdatingPaidStatus": "Päivystysvuoron maksutilan päivittäminen epäonnistui"
+    "errorUpdatingPaidStatus": "Päivystysvuoron maksutilan päivittäminen epäonnistui",
+    "noDataForYear": "Ei tietoja saatavilla tältä vuodelta"
   },
   "onboarding": {
     "prev": "Edellinen",
