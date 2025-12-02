@@ -27,6 +27,7 @@ import { useLambdasApi } from "../../hooks/use-api";
 import strings from "../../localization/strings";
 import type { OnCallWeek } from "../../types";
 import { formatUsername, stringToColor } from "../../utils/oncall-utils";
+import BackButton from "../generics/back-button";
 import OnCallListView from "../onCall/oncall-list-view";
 import OnCallPaidStatusDialog from "../onCall/oncall-paid-status-dialog";
 
@@ -454,6 +455,7 @@ const OnCallCalendarScreen = () => {
       />
       {renderCurrentOnCall()}
       {renderCalendarOrList()}
+      <BackButton styles={{ mt: 3, mb: 2 }} />
     </Box>
   );
 };
