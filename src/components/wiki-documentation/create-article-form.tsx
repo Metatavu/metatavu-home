@@ -390,7 +390,7 @@ const CreateOrEditArticleForm = ({
                 <input style={{ width: "100%" }} type="file" hidden onChange={handleFileChange} />
               </Button>
             )}
-            {!imagePreview && (
+            {coverImage && !imagePreview && (
               <Button
                 variant="outlined"
                 sx={{ marginTop: 1, marginBottom: 1, width: "100%" }}
