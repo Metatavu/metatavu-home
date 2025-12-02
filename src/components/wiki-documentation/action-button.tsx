@@ -4,8 +4,8 @@ import { wikiScreenColors } from "src/theme";
 const colors = wikiScreenColors;
 
 interface Props {
-  children: string | JSX.Element,
-  onClick?: () => void
+  children: string | JSX.Element;
+  onClick?: () => void;
   disabled?: boolean;
 }
 /**
@@ -14,9 +14,9 @@ interface Props {
  * @param children - Content to display inside the button.
  * @param onClick - Optional function called when the button is clicked.
  */
-const ActionButton = ({children, disabled, onClick}: Props) => (
-  <Button 
-    variant="contained" 
+const ActionButton = ({ children, disabled, onClick }: Props) => (
+  <Button
+    variant="contained"
     sx={{
       width: "100%",
       backgroundColor: colors.button.main,
@@ -31,6 +31,6 @@ const ActionButton = ({children, disabled, onClick}: Props) => (
   >
     {children}
   </Button>
-)
+);
 
 export default ActionButton;

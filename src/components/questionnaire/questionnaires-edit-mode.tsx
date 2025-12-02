@@ -12,16 +12,16 @@ import {
   TextField,
   Typography
 } from "@mui/material";
-import { useEffect, useState } from "react";
-import type { Questionnaire, Question, AnswerOption } from "src/generated/homeLambdasClient";
-import NewQuestionCard from "./new-question-card";
-import { useNavigate } from "react-router";
 import { useSetAtom } from "jotai";
+import isEqual from "lodash/isEqual";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 import { errorAtom } from "src/atoms/error";
+import type { AnswerOption, Question, Questionnaire } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
-import isEqual from "lodash/isEqual";
 import BackButton from "../generics/back-button";
+import NewQuestionCard from "./new-question-card";
 
 /**
  * Component props
@@ -50,7 +50,7 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
 
   useEffect(() => {
     if (!editedQuestionnaire.tags) {
-      setEditedQuestionnaire(prev => ({...prev, tags: []}));
+      setEditedQuestionnaire((prev) => ({ ...prev, tags: [] }));
     }
     const hasChanges = !isEqual(editedQuestionnaire, questionnaire);
     const isValid = validateEditedQuestionnaire(editedQuestionnaire);
@@ -85,12 +85,14 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
     if (!question.questionText || !question.questionText.trim()) {
       return false;
     }
-  
+
     if (!question.answerOptions || question.answerOptions.length === 0) {
       return false;
     }
-    
-    const hasEmptyLabel = question.answerOptions.some((option) => !option.label || !option.label.trim());
+
+    const hasEmptyLabel = question.answerOptions.some(
+      (option) => !option.label || !option.label.trim()
+    );
     if (hasEmptyLabel) {
       return false;
     }
@@ -117,14 +119,14 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
       setTagError(strings.questionnaireTags.emptyTagError);
       return;
     }
-  
+
     const trimmedTag = newTag.trim();
-    if (editedQuestionnaire.tags?.some(tag => tag.toLowerCase() === trimmedTag.toLowerCase())) {
+    if (editedQuestionnaire.tags?.some((tag) => tag.toLowerCase() === trimmedTag.toLowerCase())) {
       setTagError(strings.questionnaireTags.duplicateTagError);
       return;
     }
-  
-    setEditedQuestionnaire(prev => ({
+
+    setEditedQuestionnaire((prev) => ({
       ...prev,
       tags: [...(prev.tags || []), trimmedTag]
     }));
@@ -134,19 +136,19 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
 
   /**
    * Function to remove a tag
-   * 
+   *
    * @param tagToRemove - type string
    */
   const handleRemoveTag = (tagToRemove: string) => {
-    setEditedQuestionnaire(prev => ({
+    setEditedQuestionnaire((prev) => ({
       ...prev,
-      tags: prev.tags?.filter(tag => tag !== tagToRemove) || []
+      tags: prev.tags?.filter((tag) => tag !== tagToRemove) || []
     }));
   };
 
   /**
    * Handle key press event for tag input
-   * 
+   *
    * @param event - Key press event
    */
   const handleTagKeyDown = (event: React.KeyboardEvent) => {
@@ -195,7 +197,10 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
       label: "",
       isCorrect: false
     };
-    const updatedOptions = [...editedQuestionnaire.questions[questionIndex].answerOptions, newOption];
+    const updatedOptions = [
+      ...editedQuestionnaire.questions[questionIndex].answerOptions,
+      newOption
+    ];
     handleQuestionChange(questionIndex, { answerOptions: updatedOptions });
   };
 
@@ -220,19 +225,27 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
   const handleAddQuestion = ({
     questionText,
     answerOptions
-  }: { questionText: string; answerOptions: AnswerOption[] }) => {
+  }: {
+    questionText: string;
+    answerOptions: AnswerOption[];
+  }) => {
     if (!questionText.trim() || !answerOptions || answerOptions.length === 0) {
       return;
     }
-    const validAnswerOptions = answerOptions.filter(option => option.label && option.label.trim());
-    
+    const validAnswerOptions = answerOptions.filter(
+      (option) => option.label && option.label.trim()
+    );
+
     if (validAnswerOptions.length === 0) {
       return;
     }
-    
+
     setEditedQuestionnaire((prevQuestionnaire) => ({
       ...prevQuestionnaire,
-      questions: [...prevQuestionnaire.questions, { questionText: questionText.trim(), answerOptions: validAnswerOptions }]
+      questions: [
+        ...prevQuestionnaire.questions,
+        { questionText: questionText.trim(), answerOptions: validAnswerOptions }
+      ]
     }));
   };
 
@@ -324,10 +337,12 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
             fullWidth
             sx={{ mb: 2 }}
           />
-          
+
           {/* Tags Section */}
           <Box sx={{ mb: 4 }}>
-            <Typography variant="subtitle1" sx={{ mb: 1 }}>{strings.questionnaireTags?.title || "Tags"}</Typography>
+            <Typography variant="subtitle1" sx={{ mb: 1 }}>
+              {strings.questionnaireTags?.title || "Tags"}
+            </Typography>
             <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", mb: 2 }}>
               {editedQuestionnaire.tags?.map((tag, index) => (
                 <Chip
@@ -344,10 +359,12 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
                 </Typography>
               )}
             </Box>
-            <Box sx={{ display: "flex", gap: 1, alignItems: "flex-start", flexDirection: "column" }}>
+            <Box
+              sx={{ display: "flex", gap: 1, alignItems: "flex-start", flexDirection: "column" }}
+            >
               <Box sx={{ display: "flex", gap: 1, width: "100%" }}>
                 <TextField
-                  label = {strings.questionnaireTags.addTagPlaceholder}
+                  label={strings.questionnaireTags.addTagPlaceholder}
                   value={newTag}
                   onChange={(e) => {
                     setNewTag(e.target.value);
@@ -359,11 +376,11 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
                   error={!!tagError}
                   helperText={tagError}
                 />
-                <Button 
-                  variant="contained" 
+                <Button
+                  variant="contained"
                   onClick={handleAddTag}
                   size="small"
-                  sx={{ 
+                  sx={{
                     height: "48px",
                     minWidth: "90px",
                     textTransform: "uppercase",
@@ -378,9 +395,9 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
               </Box>
             </Box>
           </Box>
-          
+
           {editedQuestionnaire.questions.map((question, questionIndex) => (
-            <Card key={questionIndex} sx={{ mb: 2, p: 2, border: '1px solid #e0e0e0' }}>
+            <Card key={questionIndex} sx={{ mb: 2, p: 2, border: "1px solid #e0e0e0" }}>
               <TextField
                 label={`${strings.questionnaireEdit.question} ${questionIndex + 1}`}
                 value={question.questionText}
@@ -391,11 +408,11 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
                 margin="normal"
                 required
               />
-              
+
               <Typography variant="subtitle2" sx={{ mt: 2, mb: 1 }}>
                 Answer Options:
               </Typography>
-              
+
               {question.answerOptions.map((option, optionIndex) => (
                 <Box key={optionIndex} sx={{ display: "flex", alignItems: "center", mb: 1 }}>
                   <Checkbox
@@ -431,8 +448,8 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
                   )}
                 </Box>
               ))}
-              
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
+
+              <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
                 <Button
                   onClick={() => handleAddAnswerOption(questionIndex)}
                   variant="outlined"
@@ -441,7 +458,7 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
                 >
                   + {strings.questionnaireEdit.addAnswerOption}
                 </Button>
-                
+
                 <Button
                   onClick={() => handleDeleteQuestion(questionIndex)}
                   variant="contained"
@@ -453,7 +470,7 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
               </Box>
             </Card>
           ))}
-          
+
           <NewQuestionCard handleAddQuestion={handleAddQuestion} />
           <CardActions
             sx={{
@@ -508,9 +525,7 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
           </CardActions>
         </CardContent>
       </Card>
-      <BackButton 
-        styles={{ mt: 3, marginBottom: 2 }} 
-      />
+      <BackButton styles={{ mt: 3, marginBottom: 2 }} />
       <Snackbar open={snackbarOpen} autoHideDuration={2000} onClose={handleSnackbarClose}>
         <SnackbarContent
           message={strings.questionnaireEdit.snackbarMessageSuccess}

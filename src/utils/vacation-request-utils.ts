@@ -1,6 +1,6 @@
-import type { VacationRequest } from "../generated/homeLambdasClient";
 import type { KeycloakProfile } from "keycloak-js";
-import {User} from "src/generated/homeLambdasClient";
+import type { User } from "src/generated/homeLambdasClient";
+import type { VacationRequest } from "../generated/homeLambdasClient";
 import { getFullUserName } from "./user-name-utils";
 
 /**
@@ -19,5 +19,5 @@ export const getVacationRequestPersonFullName = (
 ) => {
   const user = users.find((user) => user.id === vacationRequest?.userId);
 
-  return(getFullUserName(user));
+  return getFullUserName(user);
 };

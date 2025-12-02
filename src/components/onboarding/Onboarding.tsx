@@ -1,9 +1,9 @@
-import { useEffect, useRef, useState } from "react";
-import { Box, Paper, Typography, Button, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import { getOnboardingSteps } from "./onboardingSteps";
-import strings from "src/localization/strings";
+import { Box, Button, IconButton, Paper, Typography } from "@mui/material";
+import { useEffect, useRef, useState } from "react";
 import useUserRole from "src/hooks/use-user-role";
+import strings from "src/localization/strings";
+import { getOnboardingSteps } from "./onboardingSteps";
 
 const POPUP_WIDTH = 320;
 const POPUP_HEIGHT = 140;

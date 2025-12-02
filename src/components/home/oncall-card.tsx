@@ -23,7 +23,7 @@ const OnCallCard = () => {
 
   /**
    * Fetches on-call data for a specific year
-   * 
+   *
    * @param year Number
    */
   const getOnCallData = async (year: number) => {
@@ -37,7 +37,7 @@ const OnCallCard = () => {
 
   /**
    * Gets the current on-call person
-   * 
+   *
    * @returns JSX.Element containing current on-call person
    */
   const getCurrentOnCallPerson = () => {

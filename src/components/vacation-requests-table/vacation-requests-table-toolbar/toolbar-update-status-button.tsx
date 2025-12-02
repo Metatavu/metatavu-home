@@ -30,7 +30,7 @@ const UpdateStatusButton = ({
   const handleUpdateVacationRequestStatus = async () => {
     await updateVacationRequestStatus(buttonType, selectedRowIds);
   };
-  
+
   return (
     <Button
       variant="contained"

@@ -1,12 +1,12 @@
 import { Box, Typography } from "@mui/material";
 import {
-  ScatterChart,
-  Scatter,
-  XAxis,
-  YAxis,
   CartesianGrid,
-  Tooltip,
   ResponsiveContainer,
+  Scatter,
+  ScatterChart,
+  Tooltip,
+  XAxis,
+  YAxis
 } from "recharts";
 import strings from "src/localization/strings";
 import type { SprintViewChartData } from "src/types";
@@ -29,28 +29,21 @@ interface CustomTooltipProps {
 
 /**
  * CustomTooltip component
- * 
+ *
  * @param active boolean
  * @param payload any[]
- * 
+ *
  * @returns JSX.Element
  */
-const CustomTooltip= ({
-  active,
-  payload,
-}: CustomTooltipProps) => {
+const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
   if (!active || !payload?.length) return null;
 
   const projectName = payload[0]?.payload?.projectName;
 
-  const estimatedEntry = payload.find(
-    (entry) => entry.name === strings.sprint.timeEntries
-  );
+  const estimatedEntry = payload.find((entry) => entry.name === strings.sprint.timeEntries);
 
-  const actualEntry = payload.find(
-    (entry) => entry.name === strings.sprint.timeAllocated
-  );
-  
+  const actualEntry = payload.find((entry) => entry.name === strings.sprint.timeAllocated);
+
   return (
     <Box>
       <Typography variant="h6">{projectName}</Typography>
@@ -69,11 +62,11 @@ const CustomTooltip= ({
 };
 
 const SprintViewScatterChart = ({ chartData }: Props) => {
-    const chartHeight = chartData.length === 1 ? 100 : chartData.length * 60;
-    const estimatedData = chartData.map((item) => ({
-      projectName: item.projectName,
-      x: item.estimatedWorkHour,
-    }));
+  const chartHeight = chartData.length === 1 ? 100 : chartData.length * 60;
+  const estimatedData = chartData.map((item) => ({
+    projectName: item.projectName,
+    x: item.estimatedWorkHour
+  }));
 
   return (
     <ResponsiveContainer width="100%" height={chartHeight}>
@@ -97,11 +90,7 @@ const SprintViewScatterChart = ({ chartData }: Props) => {
           interval={0}
         />
         <Tooltip content={<CustomTooltip />} />
-        <Scatter
-          name={strings.sprint.timeEntries}
-          data={estimatedData}
-          fill="#4d4788"
-        />
+        <Scatter name={strings.sprint.timeEntries} data={estimatedData} fill="#4d4788" />
       </ScatterChart>
     </ResponsiveContainer>
   );

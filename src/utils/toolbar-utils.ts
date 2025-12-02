@@ -1,6 +1,6 @@
 import type { GridRowId } from "@mui/x-data-grid";
-import { ToolbarFormModes } from "../types";
 import strings from "../localization/strings";
+import { ToolbarFormModes } from "../types";
 
 /**
  * Determine toolbar form mode

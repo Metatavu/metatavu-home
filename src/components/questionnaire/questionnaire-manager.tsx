@@ -1,19 +1,26 @@
-import BackButton from "../generics/back-button";
-import { Box, Button, CircularProgress, Dialog, DialogActions, DialogTitle, Chip } from "@mui/material";
+import {
+  Box,
+  Button,
+  Chip,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogTitle
+} from "@mui/material";
+import { useAtomValue, useSetAtom } from "jotai";
 import { useEffect, useState } from "react";
-import type { Questionnaire } from "src/generated/homeLambdasClient";
+import { useParams } from "react-router";
+import { useNavigate } from "react-router-dom";
+import { userProfileAtom } from "src/atoms/auth";
+import { errorAtom } from "src/atoms/error";
+import { usersAtom } from "src/atoms/user";
+import type { Questionnaire, User } from "src/generated/homeLambdasClient";
+import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
 import { QuestionnairePreviewMode } from "src/types";
-import QuestionnaireFillMode from "./questionnaires-fill-mode";
+import BackButton from "../generics/back-button";
 import QuestionnaireEditMode from "./questionnaires-edit-mode";
-import { useAtomValue, useSetAtom } from "jotai";
-import { useParams } from "react-router";
-import { errorAtom } from "src/atoms/error";
-import { useLambdasApi } from "src/hooks/use-api";
-import { useNavigate } from "react-router-dom";
-import { usersAtom } from "src/atoms/user";
-import { userProfileAtom } from "src/atoms/auth";
-import type { User } from "src/generated/homeLambdasClient";
+import QuestionnaireFillMode from "./questionnaires-fill-mode";
 
 /**
  * Component properties
@@ -48,7 +55,9 @@ const QuestionnaireManager = ({ mode }: Props) => {
   });
   const [loading, setLoading] = useState(false);
   const [userResponses, setUserResponses] = useState<UserResponses>({});
-  const [questionnaireFeedbackMessage, setQuestionnaireFeedbackMessage] = useState<string | null>(null);
+  const [questionnaireFeedbackMessage, setQuestionnaireFeedbackMessage] = useState<string | null>(
+    null
+  );
   const [questionnaireFeedbackDialogOpen, setQuestionnaireFeedbackDialogOpen] = useState(false);
   const users = useAtomValue(usersAtom);
   const userProfile = useAtomValue(userProfileAtom);
@@ -201,11 +210,7 @@ const QuestionnaireManager = ({ mode }: Props) => {
           />
         );
       case QuestionnairePreviewMode.EDIT:
-        return (
-          <QuestionnaireEditMode
-            questionnaire={questionnaire}
-          />
-        );
+        return <QuestionnaireEditMode questionnaire={questionnaire} />;
       default:
         return null;
     }
@@ -216,9 +221,8 @@ const QuestionnaireManager = ({ mode }: Props) => {
    */
   const renderTags = () => (
     <Box sx={{ mb: 2 }}>
-      {questionnaire.tags?.map((tag) => (
-        <Chip key={tag} label={tag} sx={{ mr: 1 }} />
-      )) || strings.questionnaireTags.noTags}
+      {questionnaire.tags?.map((tag) => <Chip key={tag} label={tag} sx={{ mr: 1 }} />) ||
+        strings.questionnaireTags.noTags}
     </Box>
   );
 
@@ -237,9 +241,7 @@ const QuestionnaireManager = ({ mode }: Props) => {
               justifyContent: "space-between"
             }}
           >
-            <BackButton 
-              styles={{ width: "auto" }} 
-            />
+            <BackButton styles={{ width: "auto" }} />
             <Button
               sx={{ alignItems: "center" }}
               size="large"

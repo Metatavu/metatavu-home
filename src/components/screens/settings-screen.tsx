@@ -35,7 +35,7 @@ const SettingsScreen = () => {
       grantSeveraOptInConsent();
     }
   };
-  
+
   /**
    * Grants severa opt-in consent
    */

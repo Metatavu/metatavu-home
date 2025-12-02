@@ -1,38 +1,37 @@
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import ClearIcon from "@mui/icons-material/Clear";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import EditIcon from "@mui/icons-material/Edit";
+import LabelIcon from "@mui/icons-material/Label";
+import PendingIcon from "@mui/icons-material/Pending";
+import SearchIcon from "@mui/icons-material/Search";
 import {
-  Paper,
+  Box,
   Button,
+  Chip,
   CircularProgress,
   Dialog,
   DialogActions,
   DialogTitle,
-  Typography,
-  Chip,
-  Box,
-  TextField,
-  InputAdornment,
   IconButton,
-  Popover
+  InputAdornment,
+  Paper,
+  Popover,
+  TextField,
+  Typography
 } from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import PendingIcon from "@mui/icons-material/Pending";
-import LabelIcon from "@mui/icons-material/Label";
-import SearchIcon from "@mui/icons-material/Search";
-import ClearIcon from "@mui/icons-material/Clear";
-import { useState, useEffect, useRef } from "react";
-import type { Questionnaire } from "src/generated/homeLambdasClient";
-import strings from "src/localization/strings";
-import useUserRole from "src/hooks/use-user-role";
-import { DataGrid, type GridRowParams, type GridRenderCellParams } from "@mui/x-data-grid";
-import { useLambdasApi } from "src/hooks/use-api";
+import { DataGrid, type GridRenderCellParams, type GridRowParams } from "@mui/x-data-grid";
 import { useAtomValue, useSetAtom } from "jotai";
-import { errorAtom } from "src/atoms/error";
-import { QuestionnairePreviewMode } from "src/types/index";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
-import { usersAtom } from "src/atoms/user";
 import { userProfileAtom } from "src/atoms/auth";
-import type { User } from "src/generated/homeLambdasClient";
+import { errorAtom } from "src/atoms/error";
+import { usersAtom } from "src/atoms/user";
+import type { Questionnaire, User } from "src/generated/homeLambdasClient";
+import { useLambdasApi } from "src/hooks/use-api";
+import useUserRole from "src/hooks/use-user-role";
+import strings from "src/localization/strings";
+import { QuestionnairePreviewMode } from "src/types/index";
 
 /**
  * Questionnaire Table Component
@@ -59,17 +58,17 @@ const QuestionnaireTable = () => {
   const userProfile = useAtomValue(userProfileAtom);
   const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
   const dataGridRef = useRef(null);
-  
+
   useEffect(() => {
     const fetchQuestionnaires = async () => {
       setLoading(true);
       try {
         const response = await questionnairesApi.listQuestionnaires();
-        const processedQuestionnaires = response.map(question => ({
+        const processedQuestionnaires = response.map((question) => ({
           ...question,
-          tags: question.tags || [] 
+          tags: question.tags || []
         }));
-        
+
         setQuestionnaires(processedQuestionnaires);
         setFilteredQuestionnaires(processedQuestionnaires);
       } catch (error) {
@@ -89,12 +88,12 @@ const QuestionnaireTable = () => {
     const lowerCaseSearchTerm = searchTerm.toLowerCase().trim();
     const filtered = questionnaires.filter((questionnaire) => {
       const titleMatch = questionnaire.title?.toLowerCase().includes(lowerCaseSearchTerm);
-      const tagMatch = questionnaire.tags?.some(tag => 
+      const tagMatch = questionnaire.tags?.some((tag) =>
         tag.toLowerCase().includes(lowerCaseSearchTerm)
       );
       return titleMatch || tagMatch;
     });
-    
+
     setFilteredQuestionnaires(filtered);
   }, [searchTerm, questionnaires]);
 
@@ -107,7 +106,7 @@ const QuestionnaireTable = () => {
   };
 
   const handleTagMoreClick = (event: React.MouseEvent<HTMLElement>, tags: string[]) => {
-    event.stopPropagation(); 
+    event.stopPropagation();
     setTagPopoverAnchor(event.currentTarget);
     setCurrentTags(tags);
   };
@@ -178,13 +177,13 @@ const QuestionnaireTable = () => {
     const MAX_VISIBLE_TAGS = 1;
     const visibleTags = tags.slice(0, MAX_VISIBLE_TAGS);
     const hiddenTagsCount = Math.max(0, tags.length - MAX_VISIBLE_TAGS);
-    
+
     const allTagsTooltip = tags.join(", ");
-    
+
     return (
-      <Box 
-        sx={{ 
-          display: "flex", 
+      <Box
+        sx={{
+          display: "flex",
           flexWrap: "nowrap",
           gap: 0.5,
           overflow: "hidden",
@@ -203,7 +202,7 @@ const QuestionnaireTable = () => {
                 size="small"
                 icon={<LabelIcon />}
                 variant="outlined"
-                sx={{ 
+                sx={{
                   margin: "1px",
                   maxWidth: "120px",
                   "& .MuiChip-label": {
@@ -214,11 +213,11 @@ const QuestionnaireTable = () => {
                 }}
                 onClick={(e) => {
                   e.stopPropagation();
-                  setSearchTerm(tag); 
+                  setSearchTerm(tag);
                 }}
               />
             ))}
-      
+
             {hiddenTagsCount > 0 && (
               <Chip
                 size="small"
@@ -246,8 +245,8 @@ const QuestionnaireTable = () => {
   const columns = [
     { field: "title", headerName: `${strings.questionnaireTable.title}`, flex: 3 },
     { field: "description", headerName: `${strings.questionnaireTable.description}`, flex: 5 },
-    { 
-      field: "tags", 
+    {
+      field: "tags",
       headerName: strings.questionnaireTags.title || "Tags",
       flex: 3,
       minWidth: 180,
@@ -273,12 +272,12 @@ const QuestionnaireTable = () => {
                 variant="outlined"
                 color="success"
                 onClick={() => handleEditClick(params.row as Questionnaire)}
-                sx={{ 
-                  mr: 0.8, 
+                sx={{
+                  mr: 0.8,
                   minWidth: "100px",
-                  width: "auto", 
+                  width: "auto",
                   height: "auto",
-                  fontSize: "0.80rem" 
+                  fontSize: "0.80rem"
                 }}
               >
                 <EditIcon sx={{ color: "success.main", mr: 0.3 }} />
@@ -289,11 +288,11 @@ const QuestionnaireTable = () => {
                 variant="contained"
                 color="secondary"
                 onClick={() => handleOpenDialog(params.row.id, params.row.title)}
-                sx={{ 
+                sx={{
                   minWidth: "85px",
-                  width: "auto", 
+                  width: "auto",
                   height: "auto",
-                  fontSize: "0.80rem",
+                  fontSize: "0.80rem"
                 }}
               >
                 <DeleteForeverIcon sx={{ color: "red", mr: 0.3 }} />
@@ -333,15 +332,15 @@ const QuestionnaireTable = () => {
       onClose={handleCloseTagPopover}
       anchorOrigin={{
         vertical: "bottom",
-        horizontal: "center",
+        horizontal: "center"
       }}
       transformOrigin={{
         vertical: "top",
-        horizontal: "center",
+        horizontal: "center"
       }}
       slotProps={{
-        paper: { 
-          sx: { maxWidth: "400px", p: 2 } 
+        paper: {
+          sx: { maxWidth: "400px", p: 2 }
         }
       }}
     >
@@ -357,7 +356,7 @@ const QuestionnaireTable = () => {
             icon={<LabelIcon />}
             variant="outlined"
             onClick={() => handleTagClick(tag)}
-            sx={{ 
+            sx={{
               cursor: "pointer",
               "&:hover": {
                 backgroundColor: "rgba(0, 0, 0, 0.08)"
@@ -388,7 +387,7 @@ const QuestionnaireTable = () => {
             ? selectedQuestionnaire.title
             : strings.questionnaireScreen.currentQuestionnaires}
         </Typography>
-        
+
         <Box sx={{ px: 2, pb: 2 }}>
           <TextField
             fullWidth
@@ -413,16 +412,16 @@ const QuestionnaireTable = () => {
             }}
           />
         </Box>
-        
+
         <DataGrid
           ref={dataGridRef}
-          sx={{ 
+          sx={{
             margin: 0,
             "& .MuiDataGrid-cell": {
-              padding: "8px", 
+              padding: "8px"
             },
             "& .MuiDataGrid-columnHeader": {
-              padding: "0 8px", 
+              padding: "0 8px"
             }
           }}
           rows={filteredQuestionnaires}
@@ -434,7 +433,7 @@ const QuestionnaireTable = () => {
           initialState={{
             pagination: {
               paginationModel: { pageSize: 10 }
-            },
+            }
           }}
           pageSizeOptions={[5, 10, 25, 50, 100]}
         />

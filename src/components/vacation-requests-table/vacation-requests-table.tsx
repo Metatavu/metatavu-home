@@ -11,6 +11,7 @@ import { type VacationRequest, VacationRequestStatuses } from "src/generated/hom
 import strings from "src/localization/strings";
 import type { VacationsDataGridRow } from "src/types";
 import LocalizationUtils from "src/utils/localization-utils";
+import type { FilterType } from "src/utils/vacation-filter-type";
 import { getVacationRequestPersonFullName } from "src/utils/vacation-request-utils";
 import {
   getTotalVacationRequestStatus,
@@ -19,7 +20,6 @@ import {
 import SkeletonTableRows from "./skeleton-table-rows/skeleton-table-rows";
 import VacationRequestsTableColumns from "./vacation-requests-table-columns";
 import TableToolbar from "./vacation-requests-table-toolbar/vacation-requests-table-toolbar";
-import type {FilterType} from "src/utils/vacation-filter-type";
 
 /**
  * Component properties
@@ -43,7 +43,7 @@ interface Props {
   ) => Promise<void>;
   fetchVacationRequestById: (vacationRequestId: string) => Promise<VacationRequest | null>;
   loading: boolean;
-  filter: FilterType
+  filter: FilterType;
   setFilter: React.Dispatch<React.SetStateAction<FilterType>>;
 }
 

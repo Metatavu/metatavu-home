@@ -1,45 +1,41 @@
+import LabelIcon from "@mui/icons-material/Label";
 import {
   Box,
   Button,
   Card,
   CardActions,
   CardContent,
+  Chip,
   CircularProgress,
+  InputAdornment,
   Slider,
   TextField,
   Tooltip,
-  Typography,
-  Chip,
-  InputAdornment,
+  Typography
 } from "@mui/material";
-import { useState, type ChangeEvent } from "react";
-import { useNavigate } from "react-router-dom";
-import NewQuestionCard from "./new-question-card";
-import LabelIcon from "@mui/icons-material/Label";
-import type {
-  Questionnaire,
-  AnswerOption,
-  Question,
-} from "src/generated/homeLambdasClient";
-import strings from "src/localization/strings";
-import { useLambdasApi } from "src/hooks/use-api";
 import { useSetAtom } from "jotai";
+import { type ChangeEvent, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { errorAtom } from "src/atoms/error";
-import QuestionnairePreview from "./questionnaire-preview";
+import type { AnswerOption, Question, Questionnaire } from "src/generated/homeLambdasClient";
+import { useLambdasApi } from "src/hooks/use-api";
+import strings from "src/localization/strings";
 import {
-  handleQuestionnaireInputChange,
-  addTag,
-  removeTag,
-  updatePassScore,
   addQuestion,
-  removeQuestion,
-  editQuestion,
+  addTag,
   countCorrectAnswers,
-  getValidationTooltipMessage,
   createEmptyQuestionnaire,
-  isFormValid
+  editQuestion,
+  getValidationTooltipMessage,
+  handleQuestionnaireInputChange,
+  isFormValid,
+  removeQuestion,
+  removeTag,
+  updatePassScore
 } from "src/utils/questionnaireBuilderUtils";
 import BackButton from "../generics/back-button";
+import NewQuestionCard from "./new-question-card";
+import QuestionnairePreview from "./questionnaire-preview";
 
 /**
  * New Questionnaire Builder component
@@ -54,20 +50,20 @@ const NewQuestionnaireBuilder = () => {
   const [tagError, setTagError] = useState<string | null>(null);
   const isDisabled = !isFormValid(questionnaire);
 
- /**
- * Function to handle input change in the questionnaire title and description
- * @param event - The change event from the input field
- */
+  /**
+   * Function to handle input change in the questionnaire title and description
+   * @param event - The change event from the input field
+   */
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setQuestionnaire(prevQuestionnaire => 
+    setQuestionnaire((prevQuestionnaire) =>
       handleQuestionnaireInputChange(event, prevQuestionnaire)
     );
   };
 
   /**
- * Function to handle tag input change
- * @param event - The change event from the input field that contains the new tag value
- */
+   * Function to handle tag input change
+   * @param event - The change event from the input field that contains the new tag value
+   */
   const handleTagInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     setTagInput(event.target.value);
     if (tagError) setTagError(null);
@@ -78,12 +74,12 @@ const NewQuestionnaireBuilder = () => {
    */
   const handleAddTag = () => {
     const { updatedQuestionnaire, error } = addTag(tagInput, questionnaire, strings);
-    
+
     if (error) {
       setTagError(error);
       return;
     }
-    
+
     setQuestionnaire(updatedQuestionnaire);
     setTagInput("");
     setTagError(null);
@@ -99,37 +95,33 @@ const NewQuestionnaireBuilder = () => {
     }
   };
 
- /**
- * Function to remove a tag from the questionnaire
- * 
- * @param {string} tagToRemove - The tag to be removed from the questionnaire
- */
+  /**
+   * Function to remove a tag from the questionnaire
+   *
+   * @param {string} tagToRemove - The tag to be removed from the questionnaire
+   */
   const handleRemoveTag = (tagToRemove: string) => {
-    setQuestionnaire(prevQuestionnaire => 
-      removeTag(tagToRemove, prevQuestionnaire)
-    );
+    setQuestionnaire((prevQuestionnaire) => removeTag(tagToRemove, prevQuestionnaire));
   };
 
- /**
- * Function to handle slider that pass value about what is the minimum score to pass the questionnaire
- * 
- * @param _ - The event object
- * @param value - The slider value, can be a single number or array of numbers
- */
+  /**
+   * Function to handle slider that pass value about what is the minimum score to pass the questionnaire
+   *
+   * @param _ - The event object
+   * @param value - The slider value, can be a single number or array of numbers
+   */
   const handlePassScoreSliderChange = (_: Event, value: number | number[]) => {
-    setQuestionnaire(prevQuestionnaire => 
-      updatePassScore(value, prevQuestionnaire)
-    );
+    setQuestionnaire((prevQuestionnaire) => updatePassScore(value, prevQuestionnaire));
   };
 
- /**
- * Functions to add new question to Questionnaire that is being built
- * 
- * @param questionText - The text content of the question to be added
- * @param answerOptions - Array of answer options for the question
- */
+  /**
+   * Functions to add new question to Questionnaire that is being built
+   *
+   * @param questionText - The text content of the question to be added
+   * @param answerOptions - Array of answer options for the question
+   */
   const handleAddQuestion = (questionText: string, answerOptions: AnswerOption[]) => {
-    setQuestionnaire(prevQuestionnaire => 
+    setQuestionnaire((prevQuestionnaire) =>
       addQuestion(questionText, answerOptions, prevQuestionnaire)
     );
   };
@@ -137,20 +129,18 @@ const NewQuestionnaireBuilder = () => {
   /**
    * Function to delete question from the questionnaire that is being built
    * @param index number- The index of the question to remove
-*/
+   */
   const removeQuestionFromPreview = (index: number) => {
-    setQuestionnaire(prevQuestionnaire => 
-      removeQuestion(index, prevQuestionnaire)
-    );
+    setQuestionnaire((prevQuestionnaire) => removeQuestion(index, prevQuestionnaire));
   };
-/**
- * Function to edit question in the questionnaire that is being built
- *
- * @param index - The index of the question to be edited
- * @param updatedQuestion - The new question data to replace the existing question
- */
+  /**
+   * Function to edit question in the questionnaire that is being built
+   *
+   * @param index - The index of the question to be edited
+   * @param updatedQuestion - The new question data to replace the existing question
+   */
   const editQuestionInPreview = (index: number, updatedQuestion: Question) => {
-    setQuestionnaire(prevQuestionnaire => 
+    setQuestionnaire((prevQuestionnaire) =>
       editQuestion(index, updatedQuestion, prevQuestionnaire)
     );
   };
@@ -199,7 +189,7 @@ const NewQuestionnaireBuilder = () => {
           width: "100%",
           display: "flex",
           flexDirection: "column",
-          height: "100",
+          height: "100"
         }}
       >
         <CardContent sx={{ p: 2 }}>
@@ -250,7 +240,7 @@ const NewQuestionnaireBuilder = () => {
                     <InputAdornment position="start">
                       <LabelIcon />
                     </InputAdornment>
-                  ),
+                  )
                 }}
               />
               <Button
@@ -264,8 +254,8 @@ const NewQuestionnaireBuilder = () => {
                   textTransform: "lowercase",
                   backgroundColor: "#212121",
                   "&:hover": {
-                    backgroundColor: "#000000",
-                  },
+                    backgroundColor: "#000000"
+                  }
                 }}
               >
                 {strings.questionnaireTags.addTag}
@@ -291,7 +281,7 @@ const NewQuestionnaireBuilder = () => {
               )}
             </Box>
           </Box>
-          
+
           <NewQuestionCard
             handleAddQuestion={(params) =>
               handleAddQuestion(params.questionText, params.answerOptions)
@@ -303,7 +293,7 @@ const NewQuestionnaireBuilder = () => {
               mt: 4,
               width: "100%",
               display: "flex",
-              flexDirection: "column",
+              flexDirection: "column"
             }}
           >
             <CardActions
@@ -313,7 +303,7 @@ const NewQuestionnaireBuilder = () => {
                 padding: 0,
                 alignItems: "flex-start",
                 flexDirection: { xs: "column", sm: "row" },
-                width: "100%",
+                width: "100%"
               }}
             >
               <Box
@@ -321,7 +311,7 @@ const NewQuestionnaireBuilder = () => {
                   display: "flex",
                   flexDirection: "column",
                   width: "70%",
-                  mr: 4,
+                  mr: 4
                 }}
               >
                 <Typography
@@ -333,8 +323,7 @@ const NewQuestionnaireBuilder = () => {
                   {countCorrectAnswers(questionnaire)}
                 </Typography>
                 <Typography variant="h6" gutterBottom sx={{ mb: 1, mt: 1 }}>
-                  {strings.newQuestionnaireBuilder.requiredAnswers}{" "}
-                  {questionnaire.passScore}
+                  {strings.newQuestionnaireBuilder.requiredAnswers} {questionnaire.passScore}
                 </Typography>
                 <Slider
                   value={questionnaire.passScore}
@@ -347,8 +336,8 @@ const NewQuestionnaireBuilder = () => {
                   sx={{ mt: 1, mb: 1, width: "70%" }}
                 />
               </Box>
-              <Tooltip 
-                title={getValidationTooltipMessage(questionnaire, strings)} 
+              <Tooltip
+                title={getValidationTooltipMessage(questionnaire, strings)}
                 placement="bottom"
                 disableHoverListener={isFormValid(questionnaire)}
               >
@@ -379,9 +368,7 @@ const NewQuestionnaireBuilder = () => {
         removeQuestionFromPreview={removeQuestionFromPreview}
         editQuestionInPreview={editQuestionInPreview}
       />
-      <BackButton 
-        styles={{ mt: 3, marginBottom: 2 }}
-      />
+      <BackButton styles={{ mt: 3, marginBottom: 2 }} />
     </>
   );
 };
