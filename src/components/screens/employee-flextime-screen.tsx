@@ -21,6 +21,7 @@ import { errorAtom } from "src/atoms/error";
 import type { UserFlextime } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
+import BackButton from "../generics/back-button";
 
 /**
  * Full-screen view for displaying flextime data for all employees.
@@ -252,6 +253,7 @@ const EmployeeFlextimeScreen = () => {
           </Table>
         </TableContainer>
       )}
+      <BackButton styles={{ mt: 3, mb: 2 }} />
     </Container>
   );
 };
