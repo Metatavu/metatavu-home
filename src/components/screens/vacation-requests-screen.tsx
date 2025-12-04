@@ -50,7 +50,7 @@ const VacationRequestsScreen = () => {
 
   const [loading, setLoading] = useState(false);
   const [isUpcoming, setIsUpcoming] = useState(true);
-  const [users] = useAtom(usersAtom);
+  const [users, setUsers] = useAtom(usersAtom);
   const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
   const [filter, setFilter] = useState<FilterType>("ALL");
   const currentYear = new Date().getFullYear().toString();
@@ -417,6 +417,9 @@ const VacationRequestsScreen = () => {
             updatedVacationRequests.find((req) => req?.id === vacationRequest.id) || vacationRequest
         )
       );
+      // Refresh user data to get updated remaining vacation days.
+      const updatedUser = await usersApi.findUser({ userId: loggedInUser.id });
+      setUsers((prevUsers) => prevUsers.map((u) => (u.id === updatedUser.id ? updatedUser : u)));
     } catch (error) {
       setError(`${strings.vacationRequestError.updateRequestError}, ${error}`);
     }
