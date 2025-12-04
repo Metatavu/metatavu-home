@@ -27,7 +27,6 @@ import {
   FORMAT_TEXT_COMMAND,
   type TextFormatType
 } from "lexical";
-import type { ReactJSXElement } from "node_modules/@emotion/react/types/jsx-namespace";
 import { useEffect, useMemo, useState } from "react";
 import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
@@ -39,7 +38,7 @@ const colors = wikiScreenColors;
 
 interface TextCommand {
   key: string;
-  icon: ReactJSXElement;
+  icon: React.JSX.Element;
   handler: () => void;
 }
 
