@@ -42,20 +42,24 @@ const SettingsScreen = () => {
   const grantSeveraOptInConsent = async () => {
     setLoading(true);
     try {
-      if (!userProfile?.email || !userProfile?.id) {
+      if (!usersApi) {
+        setError(strings.error.fetchFailedSevera);
+        return;
+      }
+      if (!userProfile?.id) {
         setError(strings.error.missingEmailOrId);
         return;
       }
 
-      const response = await usersApi.updateUserAttribute({
-        updateUserAttributeRequest: { email: userProfile.email },
-        id: userProfile.id,
-        attributeName: "isSeveraOptIn"
-      });
+      // Call new single-purpose endpoint that accepts keycloak id
+      await usersApi.addSeveraOptIn({ userId: userProfile.id });
 
-      const severaUserIdRaw = response?.updatedKeycloakAttributes?.severaUserId;
+      // Refetch authorative user to get updated Keycloak attributes
+      const fresh = await usersApi.findUser({ userId: userProfile.id });
+      const severaUserIdRaw = fresh?.attributes?.severaUserId;
       const severaUserId = Array.isArray(severaUserIdRaw) ? severaUserIdRaw[0] : severaUserIdRaw;
-
+      
+      // Keep state in sync so UI updates correctly
       setIsConsentGiven(Boolean(severaUserId));
       if (severaUserId) {
         const updatedAttributes = {
