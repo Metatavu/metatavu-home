@@ -90,9 +90,7 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
       return false;
     }
 
-    const hasEmptyLabel = question.answerOptions.some(
-      (option) => !option.label || !option.label.trim()
-    );
+    const hasEmptyLabel = question.answerOptions.some((option) => !option.label?.trim());
     if (hasEmptyLabel) {
       return false;
     }
@@ -232,9 +230,7 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
     if (!questionText.trim() || !answerOptions || answerOptions.length === 0) {
       return;
     }
-    const validAnswerOptions = answerOptions.filter(
-      (option) => option.label && option.label.trim()
-    );
+    const validAnswerOptions = answerOptions.filter((option) => option.label?.trim());
 
     if (validAnswerOptions.length === 0) {
       return;
