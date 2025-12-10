@@ -282,9 +282,9 @@ const ToolBar = () => {
         <input style={{ width: "100%" }} type="file" hidden onChange={handleFileChange} />
       </Button>
       <Box>
-        {file && !fileUploadError ? (
+        {file && !fileUploadError && (
           <Typography sx={{ width: "100%" }}>{file?.name}</Typography>
-        ) : null}
+        )}
         {fileUploadError && <Typography sx={{ width: "100%" }}>{fileUploadError}</Typography>}
       </Box>
 
