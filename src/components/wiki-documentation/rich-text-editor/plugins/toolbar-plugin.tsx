@@ -284,9 +284,7 @@ const ToolBar = () => {
       <Box>
         {file && !fileUploadError ? (
           <Typography sx={{ width: "100%" }}>{file?.name}</Typography>
-        ) : (
-          <></>
-        )}
+        ) : null}
         {fileUploadError ?? <Typography sx={{ width: "100%" }}>{fileUploadError}</Typography>}
       </Box>
 
