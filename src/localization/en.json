@@ -456,7 +456,9 @@
     "articleCreated": "Article created successfully!",
     "articleUpdated": "Article updated successfully!",
     "articleApproved": "Article approved successfully!",
-    "changesSaved": "Changes saved successfully!"
+    "changesSaved": "Changes saved successfully!",
+    "correctImageUrl": "Not a valid image URL",
+    "correctUrl": "Must start with http:// or https://"
   },
   "settingsScreen": {
     "saveSettings": "Save settings",

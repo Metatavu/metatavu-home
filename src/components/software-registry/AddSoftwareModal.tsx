@@ -12,10 +12,11 @@ import {
   TextField,
   Typography
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { SoftwareRegistry, User } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
+import { isValidHttpUrl, isValidImageUrl } from "src/utils/url-validators";
 
 /**
  * AddSoftwareModal component props
@@ -64,8 +65,9 @@ const AddSoftwareModal = ({
   const [tags, setTags] = useState("");
   const [nameExists, setNameExists] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
+  const [errorSnackbarOpen, setErrorSnackbarOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const errorRef = useRef<string | null>(null);
   /**
    * Fetch the list of users when the modal opens.
    */
@@ -74,8 +76,9 @@ const AddSoftwareModal = ({
       try {
         const users = await usersApi.listUsers();
         setUserList(users);
-      } catch (error) {
-        setError(`${strings.error.fetchFailedGeneral}: ${error}`);
+      } catch (err: unknown) {
+        errorRef.current = `${strings.error.fetchFailedGeneral}: ${err}`;
+        console.error(errorRef.current);
       }
     };
 
@@ -138,15 +141,34 @@ const AddSoftwareModal = ({
   };
 
   /**
-   * Handle submitting the software data. If the name doesn't already exist, it saves the data.
+   * Handle submitting the software data. If the name doesn't already exist, it validates URLs.
+   * After URLs are validated then it saves data and closes form.
    */
-  const handleSubmit = () => {
-    if (!nameExists) {
-      handleSave(software);
-      setSnackbarOpen(true);
-      resetForm();
-      handleClose();
+  const handleSubmit = async () => {
+    if (nameExists) {
+      setErrorMessage(strings.softwareRegistry.alreadyExists);
+      setErrorSnackbarOpen(true);
+      return;
     }
+
+    if (!isValidHttpUrl(software.url)) {
+      setErrorMessage(strings.snackbar.correctUrl);
+      setErrorSnackbarOpen(true);
+      return;
+    }
+
+    const isImageValid =
+      (isValidHttpUrl(software.image) && (await isValidImageUrl(software.image))) || false;
+
+    if (!isImageValid) {
+      setErrorMessage(strings.snackbar.correctImageUrl);
+      setErrorSnackbarOpen(true);
+      return;
+    }
+    handleSave(software);
+    setSnackbarOpen(true);
+    resetForm();
+    handleClose();
   };
 
   const isFormValid = Boolean(software.name.trim() && software.image.trim() && software.url.trim());
@@ -323,6 +345,7 @@ const AddSoftwareModal = ({
                 }}
                 renderTags={(value, getTagProps) =>
                   value.map((option, index) => (
+                    // biome-ignore lint/correctness/useJsxKeyInIterable: false positive, getTagProps provides key
                     <Chip
                       label={`${option.firstName} ${option.lastName}`}
                       {...getTagProps({ index })}
@@ -411,6 +434,34 @@ const AddSoftwareModal = ({
           }}
         >
           {strings.softwareRegistry.addedSuccessfully}
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        open={errorSnackbarOpen}
+        autoHideDuration={4000}
+        onClose={() => setErrorSnackbarOpen(false)}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        sx={{
+          "& .MuiSnackbarContent-root": {
+            minWidth: 400,
+            minHeight: 100,
+            fontSize: "1.5rem",
+            borderRadius: "16px"
+          }
+        }}
+      >
+        <Alert
+          onClose={() => setErrorSnackbarOpen(false)}
+          severity="error"
+          sx={{
+            width: "100%",
+            fontSize: "1.5rem",
+            py: 3,
+            px: 4,
+            borderRadius: "14px"
+          }}
+        >
+          {errorMessage}
         </Alert>
       </Snackbar>
     </>

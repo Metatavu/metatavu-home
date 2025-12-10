@@ -566,11 +566,13 @@ export interface Localized extends LocalizedStringsMethods {
     connectedArticles: string;
   };
   snackbar: {
-    articleSubmitted: string;
-    articleCreated: string;
-    articleUpdated: string;
     articleApproved: string;
+    articleCreated: string;
+    articleSubmitted: string;
+    articleUpdated: string;
     changesSaved: string;
+    correctImageUrl: string;
+    correctUrl: string;
   };
   /**
    * Translation related settings screen

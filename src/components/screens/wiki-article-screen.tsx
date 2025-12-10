@@ -208,7 +208,7 @@ const ArticleScreen = () => {
                     sx={{
                       width: "100%",
                       maxHeight: 400,
-                      objectFit: "cover",
+                      objectFit: "contain",
                       borderRadius: 2,
                       mb: 2
                     }}
@@ -227,6 +227,7 @@ const ArticleScreen = () => {
                   <Box sx={{ mb: 2 }}>
                     {article.tags.map((tag: string) => (
                       <Box
+                        key={tag}
                         component="span"
                         sx={{
                           display: "inline-block",
@@ -271,24 +272,17 @@ const ArticleScreen = () => {
                   {article?.content || ""}
                 </ReactMarkdown>
               </Card>
-              {!adminMode && (
-                <>
-                  {connectedArticles.length !== 0 && (
-                    <Box sx={{ marginBottom: 3 }}>
-                      <Typography variant="h5" sx={{ marginLeft: 3, marginBottom: 3 }}>
-                        {strings.wikiDocumentation.connectedArticles}
-                      </Typography>
-                      {connectedArticles.map((article) => (
-                        <Box sx={{ marginBottom: 4 }}>
-                          <ArticleListItem
-                            article={article}
-                            key={`connected-article-${article.id}`}
-                          />
-                        </Box>
-                      ))}
+              {!adminMode && connectedArticles.length !== 0 && (
+                <Box sx={{ marginBottom: 3 }}>
+                  <Typography variant="h5" sx={{ marginLeft: 3, marginBottom: 3 }}>
+                    {strings.wikiDocumentation.connectedArticles}
+                  </Typography>
+                  {connectedArticles.map((article) => (
+                    <Box key={`connected-article-${article.id}`} sx={{ marginBottom: 4 }}>
+                      <ArticleListItem article={article} />
                     </Box>
-                  )}
-                </>
+                  ))}
+                </Box>
               )}
             </>
           )}

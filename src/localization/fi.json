@@ -456,7 +456,9 @@
     "articleCreated": "Artikkeli luotu onnistuneesti!",
     "articleUpdated": "Artikkeli päivitetty onnistuneesti!",
     "articleApproved": "Artikkeli hyväksytty onnistuneesti!",
-    "changesSaved": "Muutokset tallennettu onnistuneesti!"
+    "changesSaved": "Muutokset tallennettu onnistuneesti!",
+    "correctImageUrl": "Ei kelvollinen kuvan URL!",
+    "correctUrl": "Täytyy alkaa osoitteella http:// tai https://!"
   },
   "settingsScreen": {
     "saveSettings": "Tallena Asetukset",
