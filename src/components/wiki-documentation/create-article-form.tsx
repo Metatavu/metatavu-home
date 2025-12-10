@@ -64,7 +64,7 @@ const CreateOrEditArticleForm = ({
   const [path, setPath] = useState(article ? article.path : "");
   const [coverImage, setCoverImage] = useState(article ? article.coverImage : "");
   const [description, setDescription] = useState(article ? article.description : "");
-  const [imagePreview, setImagPreview] = useState(false);
+  const [imagePreview, setImagePreview] = useState(false);
   const [selectedTags, setSelectedTags] = useState<string[]>(article ? article.tags || [] : []);
   const [tag, setTag] = useState("");
   const users = useAtomValue(usersAtom);
@@ -191,7 +191,7 @@ const CreateOrEditArticleForm = ({
     if (file.type?.includes("image/")) {
       const imageUrl = await uploadFile(file, articleApi);
       setCoverImage(imageUrl || "");
-      setImagPreview(true);
+      setImagePreview(true);
     }
   };
 
@@ -330,7 +330,7 @@ const CreateOrEditArticleForm = ({
               label={strings.wikiDocumentation.labelImage}
               required
             />
-            {imagePreview && coverImage?.length !== 0 ? (
+            {imagePreview && coverImage?.length !== 0 && (
               <Grid container>
                 <img
                   style={{
@@ -351,15 +351,15 @@ const CreateOrEditArticleForm = ({
                     }}
                     onClick={() => {
                       setCoverImage("");
-                      setImagPreview(false);
+                      setImagePreview(false);
                     }}
                   >
                     <ClearIcon />
                   </IconButton>
                 </Grid>
               </Grid>
-            ) : null}
-            {!coverImage ? (
+            )}
+            {!coverImage && (
               <Button
                 variant="outlined"
                 component="label"
@@ -368,15 +368,16 @@ const CreateOrEditArticleForm = ({
                 {strings.wikiDocumentation.uploadImage}
                 <input style={{ width: "100%" }} type="file" hidden onChange={handleFileChange} />
               </Button>
-            ) : !imagePreview ? (
+            )}
+            {coverImage && !imagePreview && (
               <Button
                 variant="outlined"
                 sx={{ marginTop: 1, marginBottom: 1, width: "100%" }}
-                onClick={() => setImagPreview(true)}
+                onClick={() => setImagePreview(true)}
               >
                 {strings.wikiDocumentation.imagePreview}
               </Button>
-            ) : null}
+            )}
           </Grid>
           <Grid item md={6} xs={12}>
             <TextField

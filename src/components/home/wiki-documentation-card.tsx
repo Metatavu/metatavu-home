@@ -186,11 +186,12 @@ const WikiDocumentationCard = () => {
           <Typography variant="h6" fontWeight={"bold"} style={{ marginTop: 6, marginBottom: 3 }}>
             {strings.wikiDocumentation.cardTitle}
           </Typography>
-          {loading ? <Skeleton /> : adminMode ? renderAdminCardContent() : renderCardContent()}
+          {loading && <Skeleton />}
+          {!loading && adminMode && renderAdminCardContent()}
+          {!loading && !adminMode && renderCardContent()}
         </Box>
       </Card>
     </Link>
   );
 };
-
 export default WikiDocumentationCard;
