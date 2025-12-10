@@ -25,7 +25,7 @@ import {
   Typography
 } from "@mui/material";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { articleAtom, draftArticleAtom, tagsAtom } from "src/atoms/article";
 import { errorAtom } from "src/atoms/error";
 import { snackbarAtom } from "src/atoms/snackbar";
@@ -70,7 +70,7 @@ const WikiDocumentationScreen = () => {
   const [displayOption, setDisplayOption] = useState("all");
   const [pageNumber, setPageNumber] = useState(1);
   const [snackbar, setSnackbar] = useAtom(snackbarAtom);
-
+  const autoCompleteId = useId();
   useEffect(() => {
     if (!articles) getArticles();
     else if (articles.length !== 0) {
@@ -276,7 +276,7 @@ const WikiDocumentationScreen = () => {
           PopperComponent={CustomPopper}
           multiple
           disableCloseOnSelect
-          id="checkboxes-tags-select-component"
+          id={autoCompleteId}
           options={tags}
           sx={{ width: "100%" }}
           clearOnBlur={false}
