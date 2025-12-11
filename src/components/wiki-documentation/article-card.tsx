@@ -1,5 +1,7 @@
 import { Box, Button, Card, Chip, Typography } from "@mui/material";
+import { useAtomValue } from "jotai";
 import { Link } from "react-router-dom";
+import { usersAtom } from "src/atoms/user";
 import type { ArticleMetadata } from "src/generated/homeLambdasClient";
 import strings from "src/localization/strings";
 import { getLastActivityString } from "src/utils/wiki-utils";
@@ -18,8 +20,11 @@ interface Props {
  * @param handleDelete - Callback function to delete the article.
  */
 const ArticleCard = ({ article, adminMode, handleDelete }: Props) => {
-  if (!article || !article.lastUpdatedAt) return;
-  const lastActivityData = getLastActivityString(article);
+  const users = useAtomValue(usersAtom);
+
+  if (!article || !article.lastUpdatedAt) return null;
+
+  const lastActivityData = getLastActivityString(article, users);
   const tags = article.tags || [];
   const visibleTags = tags.slice(0, 2);
   const hiddenCount = tags.length - visibleTags.length;

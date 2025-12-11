@@ -82,7 +82,7 @@ const CreateOrEditArticleForm = ({
     const newArticle = {
       path: path,
       title: title,
-      createdBy: `${loggedInUser?.firstName} ${loggedInUser?.lastName}`,
+      createdBy: loggedInUser?.id || "",
       content: content,
       tags: selectedTags,
       coverImage: coverImage,
@@ -129,7 +129,7 @@ const CreateOrEditArticleForm = ({
       coverImage: coverImage,
       description: description,
       createdBy: article.createdBy,
-      lastUpdatedBy: `${loggedInUser?.firstName} ${loggedInUser?.lastName}`,
+      lastUpdatedBy: loggedInUser?.id || "",
       draft: !adminMode
     };
 

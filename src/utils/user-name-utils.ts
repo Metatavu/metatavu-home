@@ -60,13 +60,16 @@ export const getFullUserName = (user: User | undefined): string => {
   if (!user) {
     return strings.softwareRegistry.errorUnknownUser;
   }
-  if (user.firstName && user.lastName) {
-    return `${user.firstName} ${user.lastName}`.trim();
+
+  if (user.firstName?.trim() && user.lastName?.trim()) {
+    return `${user.firstName.trim()} ${user.lastName.trim()}`;
   }
+
   const { firstName, lastName } = parseNameFromEmail(user.email);
   if (firstName && lastName) {
-    return `${firstName} ${lastName}`.trim();
+    return `${firstName} ${lastName}`;
   }
+
   return user.email || strings.softwareRegistry.errorUnknownUser;
 };
 
