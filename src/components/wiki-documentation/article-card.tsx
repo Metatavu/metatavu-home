@@ -22,7 +22,7 @@ interface Props {
 const ArticleCard = ({ article, adminMode, handleDelete }: Props) => {
   const users = useAtomValue(usersAtom);
 
-  if (!article || !article.lastUpdatedAt) return null;
+  if (!article?.lastUpdatedAt) return null;
 
   const lastActivityData = getLastActivityString(article, users);
   const tags = article.tags || [];

@@ -21,12 +21,10 @@ interface Props {
  */
 const ArticleListItem = ({ article, adminMode = false, handleDelete }: Props) => {
   const users = useAtomValue(usersAtom);
-
-  if (!article || !article.lastUpdatedAt) return null;
-
-  const lastActivityData = getLastActivityString(article, users);
-
-  return (
+  
+  if (!article?.lastUpdatedAt) return null;
+  
+  const lastActivityData = getLastActivityString(article, users);  return (
     <Link to={article.path} style={{ textDecoration: "none" }}>
       <Card
         key={`article-card-${article.id}`}
