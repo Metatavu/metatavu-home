@@ -22,7 +22,7 @@ interface Props {
 const ArticleCard = ({ article, adminMode, handleDelete }: Props) => {
   const users = useAtomValue(usersAtom);
 
-  if (!article?.lastUpdatedAt) return null;
+  if (!article?.createdBy) return null;
 
   const lastActivityData = getLastActivityString(article, users);
   const tags = article.tags || [];
@@ -85,7 +85,7 @@ const ArticleCard = ({ article, adminMode, handleDelete }: Props) => {
           {strings.formatString(
             "{0} {1}",
             lastActivityData.action,
-            article.lastUpdatedAt.toLocaleDateString()
+            (article.lastUpdatedAt || article.createdAt)?.toLocaleDateString() || ""
           )}
         </Typography>
         <Typography variant="body1" sx={{ paddingLeft: "5px", textAlign: "left" }}>

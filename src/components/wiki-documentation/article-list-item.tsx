@@ -21,10 +21,11 @@ interface Props {
  */
 const ArticleListItem = ({ article, adminMode = false, handleDelete }: Props) => {
   const users = useAtomValue(usersAtom);
-  
-  if (!article?.lastUpdatedAt) return null;
-  
-  const lastActivityData = getLastActivityString(article, users);  return (
+
+  if (!article?.createdBy) return null;
+
+  const lastActivityData = getLastActivityString(article, users);
+  return (
     <Link to={article.path} style={{ textDecoration: "none" }}>
       <Card
         key={`article-card-${article.id}`}
@@ -120,7 +121,7 @@ const ArticleListItem = ({ article, adminMode = false, handleDelete }: Props) =>
                   {strings.formatString(
                     "{0} {1} by {2}",
                     lastActivityData.action,
-                    article.lastUpdatedAt.toLocaleDateString(),
+                    (article.lastUpdatedAt || article.createdAt)?.toLocaleDateString() || "",
                     lastActivityData.user || ""
                   )}
                 </Typography>
