@@ -1,13 +1,13 @@
-import { Typography, Card, CardContent, Grid } from "@mui/material";
+import { Card, CardContent, Grid, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
+import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
-import UserRoleUtils from "src/utils/user-role-utils";
 
 /**
  * Component for displaying memo card
  */
 const MemoCard = () => {
-  const adminMode = UserRoleUtils.adminMode();
+  const { adminMode } = useUserRole();
   const linkTarget = "/memos";
 
   /**
@@ -17,8 +17,11 @@ const MemoCard = () => {
     if (adminMode) {
       return (
         <CardContent>
-          <Typography variant="h6" fontWeight={"bold"} style={{ marginTop: 6, marginBottom: 3 }}>
-          </Typography>
+          <Typography
+            variant="h6"
+            fontWeight={"bold"}
+            style={{ marginTop: 6, marginBottom: 3 }}
+          ></Typography>
         </CardContent>
       );
     }
