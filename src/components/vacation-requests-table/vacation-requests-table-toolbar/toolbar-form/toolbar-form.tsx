@@ -44,12 +44,10 @@ const ToolbarForm = ({
   setFormOpen,
   createVacationRequest,
   createDraftVacationRequest,
-  updateVacationRequest,
   selectedRowIds,
   rows,
   toolbarFormMode,
   setToolbarFormMode,
-  setSelectedRowIds,
   onSaveClick
 }: Props) => {
   const defaultDateRange = {
@@ -156,23 +154,15 @@ const ToolbarForm = ({
   /**
    * Handle edit vacation request
    *
-   * if user is not admin and the request is not in pending status, call onSaveClick that opens the edit confirmation dialog
-   * otherwise just update the vacation request as usual
+   * Always call onSaveClick to show confirmation dialog before updating
    */
-  const handleEdit = async () => {
-    const currentStatus = vacationRequestData.status?.[0]?.status;
-
-    if (onSaveClick && !adminMode && currentStatus !== VacationRequestStatuses.PENDING) {
+  const handleEdit = () => {
+    if (onSaveClick) {
       onSaveClick({
         ...vacationRequestData,
         id: selectedVacationRequestId
       });
-    } else {
-      await updateVacationRequest(vacationRequestData, selectedVacationRequestId);
-      setFormOpen(false);
     }
-
-    setSelectedRowIds([]);
   };
 
   /**

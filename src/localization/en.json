@@ -207,7 +207,8 @@
     "title": "Are you sure?",
     "message": "Delete selected vacation request(s)?",
     "editMessage": "This reviewed request will go back to pending if you save changes. Do you want to proceed?",
-    "editDraftMessage": "This draft request will be sent for approval if you save changes. Do you want to proceed?"
+    "editDraftMessage": "This draft request will be sent for approval if you save changes. Do you want to proceed?",
+    "updateMessage": "Are you sure you want to update ?"
   },
   "errorHandler": {
     "cancelButtonText": "Close",

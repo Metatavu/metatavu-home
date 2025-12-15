@@ -21,6 +21,39 @@ import SkeletonTableRows from "./skeleton-table-rows/skeleton-table-rows";
 import VacationRequestsTableColumns from "./vacation-requests-table-columns";
 import TableToolbar from "./vacation-requests-table-toolbar/vacation-requests-table-toolbar";
 
+const StyledGridOverlay = styled("div")(() => ({
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  justifyContent: "center",
+  height: "100%"
+}));
+
+const CustomNoRowsOverlay = () => (
+  <StyledGridOverlay>
+    <Inventory />
+    <Box sx={{ mt: 1 }}>{strings.dataGrid.noRows}</Box>
+  </StyledGridOverlay>
+);
+
+interface CustomSkeletonTableRowsProps {
+  dataGridHeight: number;
+  dataGridRowHeight: number;
+  dataGridColumnHeaderHeight: number;
+}
+
+const CustomSkeletonTableRows = ({
+  dataGridHeight,
+  dataGridRowHeight,
+  dataGridColumnHeaderHeight
+}: CustomSkeletonTableRowsProps) => (
+  <SkeletonTableRows
+    dataGridHeight={dataGridHeight}
+    dataGridRowHeight={dataGridRowHeight}
+    dataGridColumnHeaderHeight={dataGridColumnHeaderHeight}
+  />
+);
+
 /**
  * Component properties
  */
@@ -162,29 +195,6 @@ const VacationRequestsTable = ({
     }
   }, [vacationRequests, formOpen]);
 
-  const StyledGridOverlay = styled("div")(() => ({
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    height: "100%"
-  }));
-
-  const CustomNoRowsOverlay = () => (
-    <StyledGridOverlay>
-      <Inventory />
-      <Box sx={{ mt: 1 }}>{strings.dataGrid.noRows}</Box>
-    </StyledGridOverlay>
-  );
-
-  const CustomSkeletonTableRows = () => (
-    <SkeletonTableRows
-      dataGridHeight={dataGridHeight}
-      dataGridRowHeight={dataGridRowHeight}
-      dataGridColumnHeaderHeight={dataGridColumnHeaderHeight}
-    />
-  );
-
   return (
     <Box
       sx={{
@@ -228,7 +238,13 @@ const VacationRequestsTable = ({
         rows={rows}
         loading={loading && !rows.length}
         slots={{
-          loadingOverlay: CustomSkeletonTableRows,
+          loadingOverlay: () => (
+            <CustomSkeletonTableRows
+              dataGridHeight={dataGridHeight}
+              dataGridRowHeight={dataGridRowHeight}
+              dataGridColumnHeaderHeight={dataGridColumnHeaderHeight}
+            />
+          ),
           noRowsOverlay: CustomNoRowsOverlay
         }}
         columns={columns}

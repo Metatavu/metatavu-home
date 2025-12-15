@@ -205,6 +205,7 @@ const TableToolbar = ({
         open={editConfirmationHandlerOpen}
         setOpen={setEditConfirmationHandlerOpen}
         isDraft={wasDraftBeforeEdit}
+        isAdmin={adminMode}
         onConfirm={handleEditConfirm}
         setFormOpen={setFormOpen}
       />
