@@ -8,10 +8,12 @@ import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import BalanceCard from "../home/balance-card";
 import CardGridWrapper from "../home/common/card-grid-wrapper";
+import MemoCard from "../home/memo-card";
 import OnCallCard from "../home/oncall-card";
 import QuestionnaireCard from "../home/questionnaire-card";
 import SoftwareRegistryCard from "../home/software-registry-card";
 import SprintViewCard from "../home/sprint-view-card";
+import TrelloCard from "../home/trello-card";
 import VacationsCard from "../home/vacations-card";
 import WikiDocumentationCard from "../home/wiki-documentation-card";
 import Onboarding from "../onboarding/Onboarding";
@@ -110,6 +112,11 @@ const HomeScreen = () => {
     isPrivilegedUser && (
       <Box key="oncall" id="oncall-card">
         <OnCallCard />
+      </Box>
+    ),
+    isPrivilegedUser && (
+      <Box key="memo" id="memo-card">
+        <MemoCard />
       </Box>
     )
   ].filter(Boolean);

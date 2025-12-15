@@ -16,9 +16,11 @@ import AdminScreen from "./components/screens/admin-screen";
 import AdminVacationManagementScreen from "./components/screens/admin-vacation-management/admin-vacation-management-screen";
 import AllSoftwareScreen from "./components/screens/all-software-screen";
 import BalanceScreen from "./components/screens/balance-screen";
+import CardScreen from "./components/screens/card-screen";
 import EmployeeFlextimeScreen from "./components/screens/employee-flextime-screen";
 import ErrorScreen from "./components/screens/error-screen";
 import HomeScreen from "./components/screens/home-screen";
+import MemoScreen from "./components/screens/memo-screen";
 import OnCallCalendarScreen from "./components/screens/on-call-calendar-screen";
 import QuestionnaireScreen from "./components/screens/questionnaire-screen";
 import SettingsScreen from "./components/screens/settings-screen";
@@ -82,6 +84,14 @@ const App = () => {
         {
           path: "/questionnaire",
           element: <QuestionnaireScreen />
+        },
+        {
+          path: "/memos",
+          element: <MemoScreen />
+        },
+        {
+          path: "/cards",
+          element: <CardScreen />
         },
         {
           path: "/questionnaire/:id",
