@@ -96,8 +96,8 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
         isAccountant ? (
           <Checkbox
             onClick={(e) => e.stopPropagation()}
-            onChange={async () => {
-              await updatePaidStatus(selectedDate.year, params.row.week, !params.value);
+            onChange={() => {
+              updatePaidStatus(selectedDate.year, params.row.week, !params.value);
             }}
             checked={params.value}
             sx={{
