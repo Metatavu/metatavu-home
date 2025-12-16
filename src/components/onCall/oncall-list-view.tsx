@@ -1,3 +1,4 @@
+import { HelpOutline } from "@mui/icons-material";
 import { alpha, Box, Button, Checkbox, Typography } from "@mui/material";
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
 import { useAtomValue } from "jotai";
@@ -91,26 +92,34 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
       align: "center",
       flex: 1,
       sortable: false,
-      renderCell: (params) => (
-        <Checkbox
-          onClick={(e) => e.stopPropagation()}
-          onChange={async () => {
-            if (isAccountant) {
-              await updatePaidStatus(selectedDate.year, params.row.week, params.value);
-            }
-          }}
-          checked={params.value}
-          disabled={!isAccountant}
-          sx={{
-            "&.Mui-checked": {
-              color: alpha(customTheme.colors.paidGreen, 0.3)
-            },
-            "&:not(.Mui-checked)": {
-              color: alpha("#ff6384", 0.3)
-            }
-          }}
-        />
-      )
+      renderCell: (params) =>
+        isAccountant ? (
+          <Checkbox
+            onClick={(e) => e.stopPropagation()}
+            onChange={async () => {
+              await updatePaidStatus(selectedDate.year, params.row.week, !params.value);
+            }}
+            checked={params.value}
+            sx={{
+              "&.Mui-checked": {
+                color: alpha(customTheme.colors.paidGreen, 0.3)
+              },
+              "&:not(.Mui-checked)": {
+                color: alpha("#ff6384", 0.3)
+              }
+            }}
+          />
+        ) : (
+          // Readonly icon for non-accountants, green if paid, red if not paid.
+          <HelpOutline
+            sx={{
+              color: params.value
+                ? alpha(customTheme.colors.paidGreen, 0.8)
+                : alpha("#ff6384", 0.8),
+              cursor: "default"
+            }}
+          />
+        )
     }
   ];
 
