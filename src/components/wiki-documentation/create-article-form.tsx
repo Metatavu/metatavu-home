@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import { useAtomValue, useSetAtom } from "jotai";
 import { type ChangeEvent, type KeyboardEvent, type SyntheticEvent, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { articleAtom, draftArticleAtom, tagsAtom } from "src/atoms/article";
 import { userProfileAtom } from "src/atoms/auth";
 import { errorAtom } from "src/atoms/error";
@@ -59,6 +60,7 @@ const CreateOrEditArticleForm = ({
   const setDraftArticlesAtom = useSetAtom(draftArticleAtom);
   const setTags = useSetAtom(tagsAtom);
   const tags = useAtomValue(tagsAtom);
+  const navigate = useNavigate();
   const editorRef = useRef<EditorRef>(null);
   const [title, setTitle] = useState(article ? article.title : "");
   const [path, setPath] = useState(article ? article.path : "");
@@ -168,7 +170,11 @@ const CreateOrEditArticleForm = ({
         message: messages[key],
         severity: "success"
       });
-      handleClose();
+      if (adminMode && action === "edit") {
+        navigate("/admin/wiki-documentation");
+      } else {
+        handleClose();
+      }
     } catch (error: any) {
       const message = (await error.response.json()).message;
       setError(message);
