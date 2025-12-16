@@ -329,12 +329,10 @@ const TableToolbar = ({
           setFormOpen={setFormOpen}
           createVacationRequest={createVacationRequest}
           createDraftVacationRequest={createDraftVacationRequest}
-          updateVacationRequest={updateVacationRequest}
           selectedRowIds={selectedRowIds}
           rows={rows}
           toolbarFormMode={toolbarFormMode}
           setToolbarFormMode={setToolbarFormMode}
-          setSelectedRowIds={setSelectedRowIds}
           onSaveClick={handleSaveClick}
         />
       </Collapse>

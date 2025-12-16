@@ -20,17 +20,13 @@ import ToolbarFormFields from "./toolbar-form-fields";
 interface Props {
   formOpen: boolean;
   setFormOpen: (formOpen: boolean) => void;
-  updateVacationRequest: (
-    vacationRequestData: VacationRequest,
-    vacationRequestId: string
-  ) => Promise<void>;
+
   createVacationRequest: (vacationRequestData: VacationRequest) => Promise<void>;
   createDraftVacationRequest: (vacationRequestData: VacationRequest) => Promise<void>;
   selectedRowIds: GridRowId[];
   rows: VacationsDataGridRow[];
   toolbarFormMode: ToolbarFormModes;
   setToolbarFormMode: (toolbarFormMode: ToolbarFormModes) => void;
-  setSelectedRowIds: (selectedRowIds: GridRowId[]) => void;
   onSaveClick?: (data: VacationRequest) => void;
 }
 

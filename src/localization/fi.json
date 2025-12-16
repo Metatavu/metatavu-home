@@ -207,7 +207,7 @@
     "title": "Oletko varma?",
     "message": "Poista valitut lomahakemukset?",
     "editMessage": "Tämä tarkistettu lomapyyntö palautetaan käsittelyyn, jos tallennat muutokset. Haluatko jatkaa?",
-    "editDraftMessage": "Tämä luonnos lomapyyntö lähetetään käsittelyyn, jos tallennat muutokset. Haluatko jatkaa?",
+    "editDraftMessage": "Tämä lomapyyntöluonnos lähetetään käsittelyyn, jos tallennat muutokset. Haluatko jatkaa?",
     "updateMessage": "Haluatko varmasti päivittää?"
   },
   "errorHandler": {

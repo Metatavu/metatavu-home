@@ -110,6 +110,18 @@ const VacationRequestsTable = ({
   const dataGridRowHeight = 52;
   const dataGridColumnHeaderHeight = 56;
 
+  // Loading overlay component for DataGrid
+  const LoadingOverlay = useMemo(
+    () => () => (
+      <CustomSkeletonTableRows
+        dataGridHeight={dataGridHeight}
+        dataGridRowHeight={dataGridRowHeight}
+        dataGridColumnHeaderHeight={dataGridColumnHeaderHeight}
+      />
+    ),
+    [dataGridHeight, dataGridRowHeight, dataGridColumnHeaderHeight]
+  );
+
   /**
    * Create a single vacation request data grid row
    *
@@ -238,13 +250,7 @@ const VacationRequestsTable = ({
         rows={rows}
         loading={loading && !rows.length}
         slots={{
-          loadingOverlay: () => (
-            <CustomSkeletonTableRows
-              dataGridHeight={dataGridHeight}
-              dataGridRowHeight={dataGridRowHeight}
-              dataGridColumnHeaderHeight={dataGridColumnHeaderHeight}
-            />
-          ),
+          loadingOverlay: LoadingOverlay,
           noRowsOverlay: CustomNoRowsOverlay
         }}
         columns={columns}
