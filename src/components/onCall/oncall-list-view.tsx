@@ -40,34 +40,6 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
 
   const columns: GridColDef[] = [
     {
-      field: "paid",
-      headerName: strings.oncall.paid,
-      headerAlign: "center",
-      align: "center",
-      flex: 1,
-      sortable: false,
-      renderCell: (params) => (
-        <Checkbox
-          onClick={(e) => e.stopPropagation()}
-          onChange={async () => {
-            if (isAccountant) {
-              await updatePaidStatus(selectedDate.year, params.row.week, params.value);
-            }
-          }}
-          checked={params.value}
-          disabled={!isAccountant}
-          sx={{
-            "&.Mui-checked": {
-              color: alpha(customTheme.colors.paidGreen, 0.3)
-            },
-            "&:not(.Mui-checked)": {
-              color: alpha("#ff6384", 0.3)
-            }
-          }}
-        />
-      )
-    },
-    {
       field: "week",
       headerName: strings.timeExpressions.week,
       flex: 1,
@@ -110,6 +82,34 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
         >
           {params.value}
         </Typography>
+      )
+    },
+    {
+      field: "paid",
+      headerName: strings.oncall.paid,
+      headerAlign: "center",
+      align: "center",
+      flex: 1,
+      sortable: false,
+      renderCell: (params) => (
+        <Checkbox
+          onClick={(e) => e.stopPropagation()}
+          onChange={async () => {
+            if (isAccountant) {
+              await updatePaidStatus(selectedDate.year, params.row.week, params.value);
+            }
+          }}
+          checked={params.value}
+          disabled={!isAccountant}
+          sx={{
+            "&.Mui-checked": {
+              color: alpha(customTheme.colors.paidGreen, 0.3)
+            },
+            "&:not(.Mui-checked)": {
+              color: alpha("#ff6384", 0.3)
+            }
+          }}
+        />
       )
     }
   ];
