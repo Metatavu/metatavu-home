@@ -1,7 +1,7 @@
 import { HelpOutline } from "@mui/icons-material";
 import { alpha, Box, Button, Checkbox, Typography } from "@mui/material";
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
-import { useAtomValue } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import { DateTime } from "luxon";
 import { userProfileAtom } from "src/atoms/auth";
 import useUserRole from "src/hooks/use-user-role";
@@ -16,7 +16,7 @@ import { onCallAtom } from "../../atoms/oncall";
 interface Props {
   selectedDate: DateTime;
   setSelectedDate: (date: DateTime) => void;
-  updatePaidStatus: (year: number, week: number, paid: boolean) => void;
+  updatePaidStatus: (year: number, week: number, paid: boolean) => Promise<void>;
 }
 
 /**
@@ -25,7 +25,7 @@ interface Props {
  * @param props component properties
  */
 const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Props) => {
-  const onCallData = useAtomValue(onCallAtom);
+  const [onCallData, setOnCallData] = useAtom(onCallAtom);
   const { isAccountant } = useUserRole();
   const userProfile = useAtomValue(userProfileAtom);
   const loggedInEmail = userProfile?.email;
@@ -37,6 +37,32 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
    */
   const isLoggedInUser = (email: string) => {
     return loggedInEmail && email && loggedInEmail.toLowerCase() === email.toLowerCase();
+  };
+
+  /**
+   * Handle checkbox change for paid status
+   *
+   * @param week - Week number
+   * @param currentPaid - Current paid status
+   *
+   */
+  const handleCheckboxChange = async (week: number, currentPaid: boolean) => {
+    try {
+      // Wait for the API call to succeed first
+      await updatePaidStatus(selectedDate.year, week, currentPaid);
+
+      // Only update local state after successful API call
+      setOnCallData((prev) =>
+        prev.map((item) =>
+          item.year === selectedDate.year && item.week === week
+            ? { ...item, paid: !currentPaid }
+            : item
+        )
+      );
+    } catch (error) {
+      // Show an error, local state is unchanged
+      console.error("Failed to update paid status:", error);
+    }
   };
 
   const columns: GridColDef[] = [
@@ -96,13 +122,11 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
         isAccountant ? (
           <Checkbox
             onClick={(e) => e.stopPropagation()}
-            onChange={() => {
-              updatePaidStatus(selectedDate.year, params.row.week, !params.value);
-            }}
+            onChange={() => handleCheckboxChange(params.row.week, params.value)}
             checked={params.value}
             sx={{
               "&.Mui-checked": {
-                color: alpha(customTheme.colors.paidGreen, 0.3)
+                color: alpha(customTheme.colors.paidGreen, 0.5)
               },
               "&:not(.Mui-checked)": {
                 color: alpha("#ff6384", 0.3)
@@ -123,13 +147,15 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
     }
   ];
 
-  const rows = onCallData.map((item, idx) => ({
-    id: idx,
-    paid: item.paid,
-    week: item.week,
-    person: item.username ?? strings.oncall.noUsernameOnCall,
-    email: item.email ?? "-"
-  }));
+  const rows = onCallData
+    .filter((item) => item.year === selectedDate.year)
+    .map((item, idx) => ({
+      id: idx,
+      paid: item.paid,
+      week: item.week,
+      person: item.username ?? strings.oncall.noUsernameOnCall,
+      email: item.email ?? "-"
+    }));
 
   return (
     <>
