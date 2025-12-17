@@ -4,6 +4,14 @@ import { useEffect, useRef, useState } from "react";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import { getOnboardingSteps } from "./onboardingSteps";
+import { getWikiOnboardingSteps } from "./onboardingStepsWikiDocumentation";
+
+/**
+ * Screens that have onboarding steps.
+ */
+type OnboardingProps = {
+  screen: "home" | "wiki";
+};
 
 const POPUP_WIDTH = 320;
 const POPUP_HEIGHT = 140;
@@ -13,9 +21,9 @@ const POPUP_HEIGHT = 140;
  *
  * Displays guided onboarding tooltips around selected UI elements.
  */
-const Onboarding: React.FC = () => {
+const Onboarding: React.FC<OnboardingProps> = ({ screen }) => {
   const [stepIndex, setStepIndex] = useState<number | null>(null);
-  const ONBOARDING_KEY = "onboardingComplete";
+  const ONBOARDING_KEY = `onboarding_completed_${screen}`;
   const [targetRect, setTargetRect] = useState<DOMRect | null>(null);
   const rafRef = useRef<number | null>(null);
   const { isAdmin, isDeveloper, isTester, isAccountant } = useUserRole();
@@ -26,9 +34,9 @@ const Onboarding: React.FC = () => {
   const isAllowed = isAdmin || isDeveloper || isTester || isAccountant;
 
   /**
-   * The current set of onboarding steps, localized.
+   * The current screen and onboarding steps for that screen, localized.
    */
-  const onboardingSteps = getOnboardingSteps();
+  const onboardingSteps = screen === "wiki" ? getWikiOnboardingSteps() : getOnboardingSteps();
 
   /**
    * Safely queries a DOM element by selector.
@@ -75,7 +83,7 @@ const Onboarding: React.FC = () => {
     const completed = localStorage.getItem(ONBOARDING_KEY);
     if (!completed) {
       const first = findNextValid(0);
-      setStepIndex(first);
+      setStepIndex(first !== null ? first : 0);
     }
   }, []);
 
@@ -194,7 +202,15 @@ const Onboarding: React.FC = () => {
 
     switch (pos) {
       case "center":
-        return { left: pageLeft, top: pageTop - POPUP_HEIGHT - 12 };
+        return {
+          left: pageLeft + width / 2 - POPUP_WIDTH / 2,
+          top: pageTop + height / 2 - POPUP_HEIGHT / 2
+        };
+      case "top-left":
+        return {
+          left: pageLeft,
+          top: pageTop - POPUP_HEIGHT - 12
+        };
       case "top-center":
         return {
           left: pageLeft + width / 2 - POPUP_WIDTH / 2,
@@ -206,10 +222,18 @@ const Onboarding: React.FC = () => {
           top: pageTop - POPUP_HEIGHT - 12
         };
       case "bottom-left":
-        return { left: pageLeft, top: pageTop + height + 12 };
+        return {
+          left: pageLeft,
+          top: pageTop + height + 12
+        };
       case "bottom-right":
         return {
           left: pageLeft + width - POPUP_WIDTH,
+          top: pageTop + height + 12
+        };
+      case "bottom-center":
+        return {
+          left: pageLeft + width / 2 - POPUP_WIDTH / 2,
           top: pageTop + height + 12
         };
       default:

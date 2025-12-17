@@ -35,7 +35,7 @@ import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import { wikiScreenColors } from "src/theme";
 import BackButton from "../generics/back-button";
-import OnboardingWikiDocumentation from "../onboarding/OnBoardingWikiDocumentation";
+import Onboarding from "../onboarding/Onboarding";
 import ArticleCard from "../wiki-documentation/article-card";
 import ArticleListItem from "../wiki-documentation/article-list-item";
 import CarouselArticleCards from "../wiki-documentation/carousel-article-cards";
@@ -503,7 +503,7 @@ const WikiDocumentationScreen = () => {
       }}
     >
       {renderSearch()}
-      <OnboardingWikiDocumentation />
+      <Onboarding screen="wiki" />
       {adminMode && renderDropdownMenu()}
       {renderListViewButton()}
       {renderCreateButton()}
