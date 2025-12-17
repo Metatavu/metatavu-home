@@ -126,10 +126,10 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
             checked={params.value}
             sx={{
               "&.Mui-checked": {
-                color: alpha(customTheme.colors.paidGreen, 0.5)
+                color: alpha(customTheme.colors.paidGreen, 0.8)
               },
               "&:not(.Mui-checked)": {
-                color: alpha("#ff6384", 0.3)
+                color: alpha("#ff6384", 0.8)
               }
             }}
           />
