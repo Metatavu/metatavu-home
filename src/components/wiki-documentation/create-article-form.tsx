@@ -116,6 +116,36 @@ const CreateOrEditArticleForm = ({
     }
   };
   /**
+   * Updates article atoms based on admin mode and draft status
+   */
+  const updateArticleAtoms = (updatedArticle: Article, response: Article) => {
+    if (!adminMode) {
+      if (!updatedArticle.draft) {
+        setArticlesAtom((articles) =>
+          (articles || []).map((a) => (a.id === updatedArticle.id ? updatedArticle : a))
+        );
+      } else {
+        setDraftArticlesAtom((articles) =>
+          (articles || []).map((a) => (a.id === updatedArticle.id ? updatedArticle : a))
+        );
+      }
+    } else {
+      if (article?.draft) {
+        setDraftArticlesAtom((articles) =>
+          (articles || []).filter((article) => article.id !== response.id)
+        );
+      } else {
+        setArticlesAtom((articles) =>
+          (articles || []).filter((article) => article.id !== response.id)
+        );
+      }
+      setArticlesAtom((articles) => [response, ...(articles || [])]);
+      setTags((tags) => [...new Set<string>(tags.concat(selectedTags))]);
+      if (setArticle) setArticle(updatedArticle);
+    }
+  };
+
+  /**
    * Handles updating an existing article with current form and editor content.
    * Sends updated data to the API, updates local state, and manages tag sets.
    * Closes the form on success or sets an error message on failure.
@@ -137,29 +167,8 @@ const CreateOrEditArticleForm = ({
 
     try {
       const response = await articleApi.updateArticle({ article: updatedArticle, id: article.id });
-      if (!adminMode) {
-        if (!updatedArticle.draft) {
-          setArticlesAtom((articles) =>
-            (articles || []).map((a) => (a.id === updatedArticle.id ? updatedArticle : a))
-          );
-        } else {
-          setDraftArticlesAtom((articles) =>
-            (articles || []).map((a) => (a.id === updatedArticle.id ? updatedArticle : a))
-          );
-        }
-      } else {
-        if (article.draft)
-          setDraftArticlesAtom((articles) =>
-            (articles || []).filter((article) => article.id !== response.id)
-          );
-        else
-          setArticlesAtom((articles) =>
-            (articles || []).filter((article) => article.id !== response.id)
-          );
-        setArticlesAtom((articles) => [response, ...(articles || [])]);
-        setTags((tags) => [...new Set<string>(tags.concat(selectedTags))]);
-        if (setArticle) setArticle(updatedArticle);
-      }
+      updateArticleAtoms(updatedArticle, response);
+
       const key = `edit-${adminMode ? "admin" : "user"}`;
       const messages: Record<string, string> = {
         "edit-admin": strings.snackbar.articleUpdated,
