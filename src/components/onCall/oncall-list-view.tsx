@@ -25,7 +25,7 @@ interface Props {
  * @param props component properties
  */
 const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Props) => {
-  const [onCallData, setOnCallData] = useAtom(onCallAtom);
+  const [onCallData] = useAtom(onCallAtom);
   const { isAccountant } = useUserRole();
   const userProfile = useAtomValue(userProfileAtom);
   const loggedInEmail = userProfile?.email;
@@ -50,14 +50,6 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
   const handleCheckboxChange = async (week: number, currentPaid: boolean) => {
     try {
       await updatePaidStatus(selectedDate.year, week, currentPaid);
-
-      setOnCallData((prev) =>
-        prev.map((item) =>
-          item.year === selectedDate.year && item.week === week
-            ? { ...item, paid: !currentPaid }
-            : item
-        )
-      );
     } catch (error) {
       console.error("Failed to update paid status:", error);
     }

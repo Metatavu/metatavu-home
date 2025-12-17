@@ -200,11 +200,11 @@ const OnCallCalendarScreen = () => {
           <DateCalendar
             defaultValue={selectedDate}
             onMonthChange={(date) => {
-              if (date > endOfCurrentWeek) return;
+              if (date.valueOf() > endOfCurrentWeek.valueOf()) return;
               setSelectedDate(date);
             }}
             onYearChange={(date) => {
-              if (date > endOfCurrentWeek) return;
+              if (date.valueOf() > endOfCurrentWeek.valueOf()) return;
               setSelectedDate(date);
             }}
             displayWeekNumber
