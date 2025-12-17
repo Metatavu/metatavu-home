@@ -57,6 +57,7 @@ const OnCallCalendarScreen = () => {
   const [loading, setLoading] = useState(false);
   const userProfile = useAtomValue(userProfileAtom);
   const calendarSelectId = useId();
+  const endOfCurrentWeek = DateTime.now().endOf("week");
 
   useEffect(() => {
     getOnCallData(selectedDate.year);
@@ -198,11 +199,18 @@ const OnCallCalendarScreen = () => {
         <CalendarContainer>
           <DateCalendar
             defaultValue={selectedDate}
-            onMonthChange={setSelectedDate}
-            onYearChange={setSelectedDate}
+            onMonthChange={(date) => {
+              if (date > endOfCurrentWeek) return;
+              setSelectedDate(date);
+            }}
+            onYearChange={(date) => {
+              if (date > endOfCurrentWeek) return;
+              setSelectedDate(date);
+            }}
             displayWeekNumber
             showDaysOutsideCurrentMonth
             slots={{ day: fillCalendarDays }}
+            maxDate={endOfCurrentWeek}
           />
         </CalendarContainer>
       );
@@ -357,6 +365,7 @@ const OnCallCalendarScreen = () => {
     flexDirection: "column",
     alignItems: "center",
     margin: "auto",
+    marginBottom: 30,
     minWidth: WEEK_NUMBER_WIDTH + DAY_WIDTH * 7 + 80,
     maxWidth: WEEK_NUMBER_WIDTH + DAY_WIDTH * 7 + 80,
     border: `2px solid ${theme.palette.divider}`,
@@ -390,8 +399,9 @@ const OnCallCalendarScreen = () => {
           ".MuiDateCalendar-root": {
             minWidth: WEEK_NUMBER_WIDTH + DAY_WIDTH * 7 + 32,
             maxWidth: "none",
-            minHeight: (DAY_WIDTH + 8) * 6 + 120,
-            height: (DAY_WIDTH + 8) * 6 + 120
+            minHeight: (DAY_WIDTH + 8) * 6 + 50,
+            height: (DAY_WIDTH + 8) * 6 + 50,
+            marginBottom: 3
           },
           // Header for days of the week (Mon, Tue, ...)
           ".MuiDayCalendar-header": {
@@ -455,7 +465,19 @@ const OnCallCalendarScreen = () => {
       />
       {renderCurrentOnCall()}
       {renderCalendarOrList()}
-      <BackButton styles={{ mt: 3, mb: 2 }} />
+      <BackButton
+        styles={
+          isCalendarView
+            ? {
+                width: "50%",
+                textAlign: "center",
+                margin: "auto"
+              }
+            : {
+                mb: 2
+              }
+        }
+      />
     </Box>
   );
 };

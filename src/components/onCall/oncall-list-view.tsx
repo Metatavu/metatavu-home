@@ -188,7 +188,7 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
           disableRowSelectionOnClick
           hideFooter
           sx={{
-            marginBottom: "60px",
+            marginBottom: "30px",
             "& .MuiDataGrid-row:hover": {
               backgroundColor: "#eeeeee"
             },
