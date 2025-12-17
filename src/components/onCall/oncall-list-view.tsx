@@ -41,6 +41,7 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
 
   /**
    * Handle checkbox change for paid status
+   * Make API call to update status and update local state on success
    *
    * @param week - Week number
    * @param currentPaid - Current paid status
@@ -48,10 +49,8 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
    */
   const handleCheckboxChange = async (week: number, currentPaid: boolean) => {
     try {
-      // Wait for the API call to succeed first
       await updatePaidStatus(selectedDate.year, week, currentPaid);
 
-      // Only update local state after successful API call
       setOnCallData((prev) =>
         prev.map((item) =>
           item.year === selectedDate.year && item.week === week
@@ -60,7 +59,6 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
         )
       );
     } catch (error) {
-      // Show an error, local state is unchanged
       console.error("Failed to update paid status:", error);
     }
   };
