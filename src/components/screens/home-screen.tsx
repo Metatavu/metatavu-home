@@ -122,7 +122,7 @@ const HomeScreen = () => {
 
       <Box id="onboarding-complete" sx={{ display: "none" }} />
 
-      <Onboarding />
+      <Onboarding screen="home" />
     </>
   );
 };
