@@ -1,7 +1,6 @@
 import { Box, Grid } from "@mui/material";
 import type { GridRowId } from "@mui/x-data-grid";
 import { useAtomValue } from "jotai";
-import { update } from "lodash";
 import { DateTime } from "luxon";
 import { useEffect, useState } from "react";
 import { allVacationRequestsAtom, vacationRequestsAtom } from "src/atoms/vacation";
@@ -156,19 +155,20 @@ const ToolbarForm = ({
 
   /**
    * Handle edit vacation request
-   *
-   * Always call onSaveClick to show confirmation dialog before updating
+   * For pending status: directly update without confirmation
+   * For other statuses: show confirmation dialog before updating
    */
   const handleEdit = async () => {
     const currentStatus = vacationRequestData.status?.[0]?.status;
     setFormOpen(false);
-    if (onSaveClick && !adminMode && currentStatus !== VacationRequestStatuses.PENDING) {
+
+    if (currentStatus === VacationRequestStatuses.PENDING && !adminMode) {
+      await updateVacationRequest(vacationRequestData, selectedVacationRequestId);
+    } else if (onSaveClick && adminMode) {
       onSaveClick({
         ...vacationRequestData,
         id: selectedVacationRequestId
       });
-    } else {
-      await updateVacationRequest(vacationRequestData, selectedVacationRequestId);
     }
     setSelectedRowIds([]);
   };
