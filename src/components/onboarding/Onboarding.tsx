@@ -83,7 +83,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ screen }) => {
     const completed = localStorage.getItem(ONBOARDING_KEY);
     if (!completed) {
       const first = findNextValid(0);
-      setStepIndex(first !== null ? first : 0);
+      setStepIndex(first ?? 0);
     }
   }, []);
 
@@ -188,7 +188,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ screen }) => {
       };
     }
 
-    const pos = step.position ?? "bottom-center";
+    const pos = step.position;
     const { top, left, width, height } = targetRect;
     const pageTop = top + window.scrollY;
     const pageLeft = left + window.scrollX;
@@ -229,11 +229,6 @@ const Onboarding: React.FC<OnboardingProps> = ({ screen }) => {
       case "bottom-right":
         return {
           left: pageLeft + width - POPUP_WIDTH,
-          top: pageTop + height + 12
-        };
-      case "bottom-center":
-        return {
-          left: pageLeft + width / 2 - POPUP_WIDTH / 2,
           top: pageTop + height + 12
         };
       default:
