@@ -13,10 +13,12 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { authAtom } from "src/atoms/auth";
 import { softwareAtom } from "src/atoms/software";
+import { usersAtom } from "src/atoms/user";
 import type { SoftwareRegistry } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
+import { getFullUserName } from "src/utils/user-name-utils";
 import BackButton from "../generics/back-button";
 import AddSoftwareModal from "./AddSoftwareModal";
 
@@ -33,12 +35,12 @@ const SoftwareDetails = () => {
   const [software, setSoftware] = useState<SoftwareRegistry | null>(null);
   const [softwareList, setSoftwareList] = useAtom(softwareAtom);
   const [error, setError] = useState<string | null>(null);
-  const [createdByUserName, setCreatedByUserName] = useState<string>("");
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const { softwareApi, usersApi } = useLambdasApi();
+  const { softwareApi } = useLambdasApi();
   const auth = useAtomValue(authAtom);
   const loggedUserId = auth?.token?.sub ?? "";
   const { adminMode } = useUserRole();
+  const users = useAtomValue(usersAtom) || [];
 
   /**
    * Fetches software details.
@@ -61,9 +63,6 @@ const SoftwareDetails = () => {
     try {
       const data = await softwareApi.getSoftwareById({ id });
       setSoftware(data);
-      if (data?.createdBy) {
-        fetchUserName(data.createdBy);
-      }
     } catch (error) {
       setError((error as Error).message || "Error fetching software details");
     } finally {
@@ -83,23 +82,6 @@ const SoftwareDetails = () => {
       setError((error as Error).message || strings.softwareRegistry.errorFetchingSoftwareToList);
     } finally {
       setLoading(false);
-    }
-  };
-
-  /**
-   * Fetches the name of a user based on their user id.
-   * @param userId - The ID of the user to fetch.
-   */
-  const fetchUserName = async (userId: string) => {
-    try {
-      const users = await usersApi.listUsers();
-      const user = users.find((u) => u.id === userId);
-      if (user) {
-        setCreatedByUserName(`${user.firstName} ${user.lastName}`);
-      }
-    } catch (error) {
-      setCreatedByUserName("Unknown User");
-      console.error("Error fetching user name", error);
     }
   };
 
@@ -216,17 +198,8 @@ const SoftwareDetails = () => {
 
   return (
     <Container sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-      <Box my={4} display="flex" alignItems="center" position="relative">
-        <BackButton
-          styles={{
-            width: "auto",
-            position: "absolute",
-            left: 0
-          }}
-        />
-        <Box flexGrow={1} textAlign="center">
-          <Typography variant="h2">{strings.softwareRegistry.application}</Typography>
-        </Box>
+      <Box my={4} textAlign="center">
+        <Typography variant="h2">{strings.softwareRegistry.application}</Typography>
       </Box>
       <Box textAlign="center" mb={4}>
         {software.image && (
@@ -258,7 +231,8 @@ const SoftwareDetails = () => {
           ))}
         </Box>
         <Typography gutterBottom sx={{ color: "#000", fontWeight: "bold" }}>
-          {createdByUserName} - {new Date(software.createdAt || "").toLocaleDateString()}
+          {getFullUserName(users.find((u) => u.id === software.createdBy))} -{" "}
+          {new Date(software.createdAt || "").toLocaleDateString()}
         </Typography>
         <Link href={software.url} target="_blank" rel="noopener" sx={{ color: "#F9473B" }}>
           {software.url}
@@ -370,6 +344,7 @@ const SoftwareDetails = () => {
           existingSoftwareList={softwareList}
         />
       )}
+      <BackButton styles={{ marginBottom: 2 }} />
     </Container>
   );
 };

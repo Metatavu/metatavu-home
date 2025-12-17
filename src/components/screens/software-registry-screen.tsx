@@ -106,7 +106,11 @@ const SoftwareScreen = () => {
    */
   const filteredTags = useMemo(() => {
     const tags = new Set<string>();
-    filteredSoftware.forEach((app) => app.tags?.forEach((tag) => tags.add(tag)));
+    filteredSoftware.forEach((app) => {
+      app.tags?.forEach((tag) => {
+        tags.add(tag);
+      });
+    });
     return Array.from(tags);
   }, [filteredSoftware]);
 
