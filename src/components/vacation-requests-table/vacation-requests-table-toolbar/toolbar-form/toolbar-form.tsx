@@ -1,6 +1,7 @@
 import { Box, Grid } from "@mui/material";
 import type { GridRowId } from "@mui/x-data-grid";
 import { useAtomValue } from "jotai";
+import { update } from "lodash";
 import { DateTime } from "luxon";
 import { useEffect, useState } from "react";
 import { allVacationRequestsAtom, vacationRequestsAtom } from "src/atoms/vacation";
@@ -20,13 +21,17 @@ import ToolbarFormFields from "./toolbar-form-fields";
 interface Props {
   formOpen: boolean;
   setFormOpen: (formOpen: boolean) => void;
-
+  updateVacationRequest: (
+    vacationRequestData: VacationRequest,
+    vacationRequestId: string
+  ) => Promise<void>;
   createVacationRequest: (vacationRequestData: VacationRequest) => Promise<void>;
   createDraftVacationRequest: (vacationRequestData: VacationRequest) => Promise<void>;
   selectedRowIds: GridRowId[];
   rows: VacationsDataGridRow[];
   toolbarFormMode: ToolbarFormModes;
   setToolbarFormMode: (toolbarFormMode: ToolbarFormModes) => void;
+  setSelectedRowIds: (selectedRowIds: GridRowId[]) => void;
   onSaveClick?: (data: VacationRequest) => void;
 }
 
@@ -40,7 +45,9 @@ const ToolbarForm = ({
   setFormOpen,
   createVacationRequest,
   createDraftVacationRequest,
+  updateVacationRequest,
   selectedRowIds,
+  setSelectedRowIds,
   rows,
   toolbarFormMode,
   setToolbarFormMode,
@@ -152,13 +159,18 @@ const ToolbarForm = ({
    *
    * Always call onSaveClick to show confirmation dialog before updating
    */
-  const handleEdit = () => {
-    if (onSaveClick) {
+  const handleEdit = async () => {
+    const currentStatus = vacationRequestData.status?.[0]?.status;
+    setFormOpen(false);
+    if (onSaveClick && !adminMode && currentStatus !== VacationRequestStatuses.PENDING) {
       onSaveClick({
         ...vacationRequestData,
         id: selectedVacationRequestId
       });
+    } else {
+      await updateVacationRequest(vacationRequestData, selectedVacationRequestId);
     }
+    setSelectedRowIds([]);
   };
 
   /**
