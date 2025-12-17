@@ -155,8 +155,8 @@ const ToolbarForm = ({
 
   /**
    * Handle edit vacation request
-   * For pending status: directly update without confirmation
-   * For other statuses: show confirmation dialog before updating
+   * For pending status (non-admin): directly update without confirmation
+   * For other statuses or admin mode: show confirmation dialog before updating
    */
   const handleEdit = async () => {
     const currentStatus = vacationRequestData.status?.[0]?.status;
@@ -164,7 +164,7 @@ const ToolbarForm = ({
 
     if (currentStatus === VacationRequestStatuses.PENDING && !adminMode) {
       await updateVacationRequest(vacationRequestData, selectedVacationRequestId);
-    } else if (onSaveClick && adminMode) {
+    } else if (onSaveClick) {
       onSaveClick({
         ...vacationRequestData,
         id: selectedVacationRequestId
