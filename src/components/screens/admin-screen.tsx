@@ -2,6 +2,7 @@ import { Box } from "@mui/material";
 import useUserRole from "src/hooks/use-user-role";
 import BalanceCard from "../home/balance-card";
 import CardGridWrapper from "../home/common/card-grid-wrapper";
+import OnCallCard from "../home/oncall-card";
 import QuestionnaireCard from "../home/questionnaire-card";
 import SoftwareRegistryCard from "../home/software-registry-card";
 import SprintViewCard from "../home/sprint-view-card";
@@ -35,7 +36,8 @@ const AdminScreen = () => {
         <VacationManagementCard />
       </Box>
     ),
-    isPrivilegedUser && <WikiDocumentationCard key="wiki" />
+    isPrivilegedUser && <WikiDocumentationCard key="wiki" />,
+    isPrivilegedUser && <OnCallCard key="oncall" />
   ].filter(Boolean);
 
   return <CardGridWrapper>{cards}</CardGridWrapper>;
