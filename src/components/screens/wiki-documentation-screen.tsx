@@ -35,6 +35,7 @@ import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import { wikiScreenColors } from "src/theme";
 import BackButton from "../generics/back-button";
+import OnboardingWikiDocumentation from "../onboarding/OnBoardingWikiDocumentation";
 import ArticleCard from "../wiki-documentation/article-card";
 import ArticleListItem from "../wiki-documentation/article-list-item";
 import CarouselArticleCards from "../wiki-documentation/carousel-article-cards";
@@ -255,6 +256,7 @@ const WikiDocumentationScreen = () => {
    */
   const renderSearch = () => (
     <Card
+      id="wiki-article-search-bar"
       sx={{
         width: {
           lg: adminMode ? "55%" : "73%",
@@ -352,6 +354,7 @@ const WikiDocumentationScreen = () => {
   );
   const renderCreateButton = () => (
     <Button
+      id="wiki-create-article-button"
       onClick={() => setFormOpen(true)}
       variant="contained"
       sx={{
@@ -500,6 +503,7 @@ const WikiDocumentationScreen = () => {
       }}
     >
       {renderSearch()}
+      <OnboardingWikiDocumentation />
       {adminMode && renderDropdownMenu()}
       {renderListViewButton()}
       {renderCreateButton()}
@@ -529,11 +533,13 @@ const WikiDocumentationScreen = () => {
           adminMode={adminMode}
         />
       ) : (
-        <>
+        <Box id="wiki-card-title" sx={{ width: "100%" }}>
           {!adminMode && (
             <>
               {renderTitle(strings.wikiDocumentation.cardTitle)}
-              <CarouselArticleCards articles={lastUpdatedArticles} />
+              <Box id="wiki-latest-updated-articles">
+                <CarouselArticleCards articles={lastUpdatedArticles} />
+              </Box>
             </>
           )}
           <Box
@@ -545,7 +551,12 @@ const WikiDocumentationScreen = () => {
           >
             {renderToolBar()}
             {displayedArticlesOnPage.length !== 0 ? (
-              <Grid container spacing={adminMode ? 4 : 3} textAlign={"center"}>
+              <Grid
+                id="wiki-articles-list"
+                container
+                spacing={adminMode ? 4 : 3}
+                textAlign={"center"}
+              >
                 {displayedArticlesOnPage.map((article) => (
                   <Grid
                     item
@@ -590,7 +601,7 @@ const WikiDocumentationScreen = () => {
             </Grid>
           )}
           <BackButton styles={{ marginBottom: 2 }} />
-        </>
+        </Box>
       )}
       <Snackbar
         open={snackbar.open}
