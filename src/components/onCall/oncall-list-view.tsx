@@ -1,6 +1,7 @@
+import { HelpOutline } from "@mui/icons-material";
 import { alpha, Box, Button, Checkbox, Typography } from "@mui/material";
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
-import { useAtomValue } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import { DateTime } from "luxon";
 import { userProfileAtom } from "src/atoms/auth";
 import useUserRole from "src/hooks/use-user-role";
@@ -15,7 +16,7 @@ import { onCallAtom } from "../../atoms/oncall";
 interface Props {
   selectedDate: DateTime;
   setSelectedDate: (date: DateTime) => void;
-  updatePaidStatus: (year: number, week: number, paid: boolean) => void;
+  updatePaidStatus: (year: number, week: number, paid: boolean) => Promise<void>;
 }
 
 /**
@@ -24,7 +25,7 @@ interface Props {
  * @param props component properties
  */
 const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Props) => {
-  const onCallData = useAtomValue(onCallAtom);
+  const [onCallData] = useAtom(onCallAtom);
   const { isAccountant } = useUserRole();
   const userProfile = useAtomValue(userProfileAtom);
   const loggedInEmail = userProfile?.email;
@@ -38,35 +39,22 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
     return loggedInEmail && email && loggedInEmail.toLowerCase() === email.toLowerCase();
   };
 
+  /**
+   * Handle checkbox change for paid status
+   * Make API call to update status and update local state on success
+   *
+   * @param week - Week number
+   * @param currentPaid - Current paid status
+   */
+  const handleCheckboxChange = async (week: number, currentPaid: boolean) => {
+    try {
+      await updatePaidStatus(selectedDate.year, week, currentPaid);
+    } catch (error) {
+      console.error("Failed to update paid status:", error);
+    }
+  };
+
   const columns: GridColDef[] = [
-    {
-      field: "paid",
-      headerName: strings.oncall.paid,
-      headerAlign: "center",
-      align: "center",
-      flex: 1,
-      sortable: false,
-      renderCell: (params) => (
-        <Checkbox
-          onClick={(e) => e.stopPropagation()}
-          onChange={async () => {
-            if (isAccountant) {
-              await updatePaidStatus(selectedDate.year, params.row.week, params.value);
-            }
-          }}
-          checked={params.value}
-          disabled={!isAccountant}
-          sx={{
-            "&.Mui-checked": {
-              color: alpha(customTheme.colors.paidGreen, 0.3)
-            },
-            "&:not(.Mui-checked)": {
-              color: alpha("#ff6384", 0.3)
-            }
-          }}
-        />
-      )
-    },
     {
       field: "week",
       headerName: strings.timeExpressions.week,
@@ -111,16 +99,51 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
           {params.value}
         </Typography>
       )
+    },
+    {
+      field: "paid",
+      headerName: strings.oncall.paid,
+      headerAlign: "center",
+      align: "center",
+      flex: 1,
+      sortable: false,
+      renderCell: (params) =>
+        isAccountant ? (
+          <Checkbox
+            onClick={(e) => e.stopPropagation()}
+            onChange={() => handleCheckboxChange(params.row.week, params.value)}
+            checked={params.value}
+            sx={{
+              "&.Mui-checked": {
+                color: alpha(customTheme.colors.paidGreen, 0.8)
+              },
+              "&:not(.Mui-checked)": {
+                color: alpha("#ff6384", 0.8)
+              }
+            }}
+          />
+        ) : (
+          <HelpOutline
+            sx={{
+              color: params.value
+                ? alpha(customTheme.colors.paidGreen, 0.8)
+                : alpha("#ff6384", 0.8),
+              cursor: "default"
+            }}
+          />
+        )
     }
   ];
 
-  const rows = onCallData.map((item, idx) => ({
-    id: idx,
-    paid: item.paid,
-    week: item.week,
-    person: item.username ?? strings.oncall.noUsernameOnCall,
-    email: item.email ?? "-"
-  }));
+  const rows = onCallData
+    .filter((item) => item.year === selectedDate.year)
+    .map((item, idx) => ({
+      id: idx,
+      paid: item.paid,
+      week: item.week,
+      person: item.username ?? strings.oncall.noUsernameOnCall,
+      email: item.email ?? "-"
+    }));
 
   return (
     <>
@@ -179,7 +202,7 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
           disableRowSelectionOnClick
           hideFooter
           sx={{
-            marginBottom: "60px",
+            marginBottom: "30px",
             "& .MuiDataGrid-row:hover": {
               backgroundColor: "#eeeeee"
             },
