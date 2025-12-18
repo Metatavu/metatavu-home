@@ -1,4 +1,4 @@
-import { Box, Grid, Skeleton } from "@mui/material";
+import { Box } from "@mui/material";
 import { useAtomValue } from "jotai";
 import { type ReactNode, useId } from "react";
 import { userProfileAtom } from "src/atoms/auth";
@@ -6,6 +6,7 @@ import { usersAtom } from "src/atoms/user";
 import type { User } from "src/generated/homeLambdasClient";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
+import renderCardWithSkeleton from "src/utils/home-admin-utils";
 import BalanceCard from "../home/balance-card";
 import CardGridWrapper from "../home/common/card-grid-wrapper";
 import OnCallCard from "../home/oncall-card";
@@ -37,24 +38,6 @@ const HomeScreen = () => {
    * @param title
    * @returns
    */
-  const renderCardWithSkeleton = (title: string) => (
-    <Box
-      sx={{
-        background: "#ffffff",
-        borderRadius: 1,
-        boxShadow: "0px 2px 8px rgba(0,0,0,0.05)",
-        minHeight: title === strings.sprint.sprintview ? 258 : 139
-      }}
-    >
-      <Grid sx={{ padding: 2 }}>
-        <Box sx={{ fontWeight: "bold", fontSize: 22 }}>{title}</Box>
-        <div style={{ color: "#888", fontSize: 15, padding: "12px 0" }}>
-          {strings.notOptedInDescription.description}
-        </div>
-        <Skeleton variant="rectangular" height={20} sx={{ mt: 1 }} />
-      </Grid>
-    </Box>
-  );
 
   const cards: ReactNode[] = [
     isPrivilegedUser && (
