@@ -45,7 +45,6 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
    *
    * @param week - Week number
    * @param currentPaid - Current paid status
-   *
    */
   const handleCheckboxChange = async (week: number, currentPaid: boolean) => {
     try {
