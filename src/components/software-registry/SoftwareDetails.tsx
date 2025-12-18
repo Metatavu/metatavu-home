@@ -9,6 +9,7 @@ import {
   Typography
 } from "@mui/material";
 import { useAtom, useAtomValue } from "jotai";
+import { DateTime } from "luxon";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { authAtom } from "src/atoms/auth";
@@ -18,6 +19,7 @@ import type { SoftwareRegistry } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
+import { formatDate } from "src/utils/time-utils";
 import { getFullUserName } from "src/utils/user-name-utils";
 import BackButton from "../generics/back-button";
 import AddSoftwareModal from "./AddSoftwareModal";
@@ -232,7 +234,7 @@ const SoftwareDetails = () => {
         </Box>
         <Typography gutterBottom sx={{ color: "#000", fontWeight: "bold" }}>
           {getFullUserName(users.find((u) => u.id === software.createdBy))} -{" "}
-          {new Date(software.createdAt || "").toLocaleDateString()}
+          {formatDate(DateTime.fromJSDate(new Date(software.createdAt || "")))}
         </Typography>
         <Link href={software.url} target="_blank" rel="noopener" sx={{ color: "#F9473B" }}>
           {software.url}
