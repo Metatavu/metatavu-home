@@ -1,9 +1,10 @@
-import { HelpOutline } from "@mui/icons-material";
+import { CancelOutlined, CheckCircleOutline } from "@mui/icons-material";
 import { alpha, Box, Button, Checkbox, Typography } from "@mui/material";
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
-import { useAtom, useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { DateTime } from "luxon";
 import { userProfileAtom } from "src/atoms/auth";
+import { errorAtom } from "src/atoms/error";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import { customTheme } from "src/theme";
@@ -25,10 +26,11 @@ interface Props {
  * @param props component properties
  */
 const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Props) => {
-  const [onCallData] = useAtom(onCallAtom);
+  const [onCallData] = useAtomValue(onCallAtom);
   const { isAccountant } = useUserRole();
   const userProfile = useAtomValue(userProfileAtom);
   const loggedInEmail = userProfile?.email;
+  const setError = useSetAtom(errorAtom);
 
   /**
    * Identify rows that belong to the logged in user
@@ -50,7 +52,7 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
     try {
       await updatePaidStatus(selectedDate.year, week, currentPaid);
     } catch (error) {
-      console.error("Failed to update paid status:", error);
+      setError(strings.oncall.errorUpdatingPaidStatus);
     }
   };
 
@@ -122,12 +124,17 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
               }
             }}
           />
-        ) : (
-          <HelpOutline
+        ) : params.value ? (
+          <CheckCircleOutline
             sx={{
-              color: params.value
-                ? alpha(customTheme.colors.paidGreen, 0.8)
-                : alpha("#ff6384", 0.8),
+              color: alpha(customTheme.colors.paidGreen, 0.8),
+              cursor: "default"
+            }}
+          />
+        ) : (
+          <CancelOutlined
+            sx={{
+              color: alpha("#ff6384", 0.8),
               cursor: "default"
             }}
           />
