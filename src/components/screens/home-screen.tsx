@@ -34,9 +34,8 @@ const HomeScreen = () => {
   /**
    * Renders a card with a skeleton loader
    *
-   * @param title - Title of the card
-   * @param content - Content to render inside the card
-   * @returns ReactNode containing the card
+   * @param title
+   * @returns
    */
   const renderCardWithSkeleton = (title: string) => (
     <Box
@@ -44,7 +43,7 @@ const HomeScreen = () => {
         background: "#ffffff",
         borderRadius: 1,
         boxShadow: "0px 2px 8px rgba(0,0,0,0.05)",
-        minHeight: title === strings.sprint.sprintview ? 270 : 120
+        minHeight: title === strings.sprint.sprintview ? 258 : 139
       }}
     >
       <Grid sx={{ padding: 2 }}>
