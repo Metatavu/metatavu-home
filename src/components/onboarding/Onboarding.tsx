@@ -21,7 +21,7 @@ const POPUP_HEIGHT = 140;
  *
  * Displays guided onboarding tooltips around selected UI elements.
  */
-const Onboarding: React.FC<OnboardingProps> = ({ screen }) => {
+const Onboarding = ({ screen }: OnboardingProps) => {
   const [stepIndex, setStepIndex] = useState<number | null>(null);
   const ONBOARDING_KEY = `onboarding_completed_${screen}`;
   const [targetRect, setTargetRect] = useState<DOMRect | null>(null);
