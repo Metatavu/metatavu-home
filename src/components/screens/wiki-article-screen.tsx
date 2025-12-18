@@ -84,12 +84,12 @@ const ArticleScreen = () => {
    * @returns {Promise<void>} A promise that resolves once the read record is processed.
    */
   const recordReadArticle = async (article?: Article) => {
-    const user = `${loggedInUser?.firstName} ${loggedInUser?.lastName}`;
-    if (!article || !article.id) return;
-    if (article.readBy?.includes(user)) return;
+    const userId = loggedInUser?.id;
+    if (!article || !article.id || !userId) return;
+    if (article.readBy?.includes(userId)) return;
     try {
-      await articleApi.readArticle({ id: article.id, readArticleRequest: { user: user } });
-      setArticle((prev) => (prev ? { ...prev, readBy: [...(prev.readBy || []), user] } : prev));
+      await articleApi.readArticle({ id: article.id, readArticleRequest: { user: userId } });
+      setArticle((prev) => (prev ? { ...prev, readBy: [...(prev.readBy || []), userId] } : prev));
     } catch (error: any) {
       const message = (await error.response.json()).message;
       setError(message);
@@ -112,7 +112,7 @@ const ArticleScreen = () => {
     const updatedArticle: Article = {
       ...article,
       draft: false,
-      lastUpdatedBy: `${loggedInUser?.firstName} ${loggedInUser?.lastName}`
+      lastUpdatedBy: loggedInUser?.id || ""
     };
     try {
       const response = await articleApi.updateArticle({ article: updatedArticle, id: article.id });

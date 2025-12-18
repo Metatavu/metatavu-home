@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { articleAtom, draftArticleAtom } from "src/atoms/article";
 import { errorAtom } from "src/atoms/error";
+import { usersAtom } from "src/atoms/user";
 import type { ArticleMetadata } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
 import useUserRole from "src/hooks/use-user-role";
@@ -24,6 +25,7 @@ const WikiDocumentationCard = () => {
   const articlesAtom = adminMode ? draftArticles : normalArticles;
   const setArticlesAtom = adminMode ? setDraftArticles : setNormalArticles;
   const { articleApi } = useLambdasApi();
+  const users = useAtomValue(usersAtom);
   const [loading, setLoading] = useState(false);
   const [lastUpdatedArticle, setLastUpdatedArticle] = useState<ArticleMetadata>();
 
@@ -58,7 +60,7 @@ const WikiDocumentationCard = () => {
    */
   const renderCardContent = () => {
     if (!lastUpdatedArticle?.lastUpdatedAt) return;
-    const lastActivityData = getLastActivityString(lastUpdatedArticle);
+    const lastActivityData = getLastActivityString(lastUpdatedArticle, users);
 
     return (
       <>
