@@ -187,8 +187,8 @@ const Onboarding = ({ screen }: OnboardingProps) => {
         top: Math.max((window.innerHeight - POPUP_HEIGHT) / 2, 12)
       };
     }
-
-    const pos = step.position;
+    // Default position for undefined or "bottom-center"
+    const pos = step.position ?? "bottom-center";
     const { top, left, width, height } = targetRect;
     const pageTop = top + window.scrollY;
     const pageLeft = left + window.scrollX;

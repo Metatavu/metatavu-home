@@ -503,7 +503,6 @@ const WikiDocumentationScreen = () => {
       }}
     >
       {renderSearch()}
-      <Onboarding screen="wiki" />
       {adminMode && renderDropdownMenu()}
       {renderListViewButton()}
       {renderCreateButton()}
@@ -526,6 +525,7 @@ const WikiDocumentationScreen = () => {
 
   return (
     <>
+      <Onboarding screen="wiki" />
       {formOpen ? (
         <CreateOrEditArticleForm
           handleClose={() => setFormOpen(false)}
