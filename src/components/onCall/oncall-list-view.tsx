@@ -123,7 +123,6 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
             }}
           />
         ) : (
-          // Readonly icon for non-accountants, green if paid, red if not paid.
           <HelpOutline
             sx={{
               color: params.value
