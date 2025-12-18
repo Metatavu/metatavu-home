@@ -47,7 +47,7 @@ export function getWikiOnboardingSteps(): OnboardingStep[] {
       title: strings.onboardingWikiDocumentation.listOfArticlesTitle,
       content: strings.onboardingWikiDocumentation.listOfArticlesContent,
       selector: "#wiki-articles-list",
-      position: "bottom-center"
+      position: "center"
     }
   ];
 }
