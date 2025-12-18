@@ -1,6 +1,6 @@
 import { Box, Grid, Skeleton } from "@mui/material";
 import { useAtomValue } from "jotai";
-import type { ReactNode } from "react";
+import { type ReactNode, useId } from "react";
 import { userProfileAtom } from "src/atoms/auth";
 import { usersAtom } from "src/atoms/user";
 import type { User } from "src/generated/homeLambdasClient";
@@ -24,7 +24,9 @@ const HomeScreen = () => {
   const users = useAtomValue(usersAtom);
   const userProfile = useAtomValue(userProfileAtom);
   const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
-
+  const screenId = useId();
+  const homeScreenId = useId();
+  const onboardingCompleteId = useId();
   const hasSeveraUserId = !!loggedInUser?.attributes?.severaUserId;
 
   const isPrivilegedUser = isDeveloper || isTester;
@@ -36,79 +38,58 @@ const HomeScreen = () => {
    * @param content - Content to render inside the card
    * @returns ReactNode containing the card
    */
-  const renderCardWithSkeleton = (title: string, content: ReactNode) => (
+  const renderCardWithSkeleton = (title: string) => (
     <Box
       sx={{
         background: "#ffffff",
         borderRadius: 1,
         boxShadow: "0px 2px 8px rgba(0,0,0,0.05)",
-        minHeight: title === strings.sprint.sprintview ? 270 : 120,
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "flex-start"
+        minHeight: title === strings.sprint.sprintview ? 270 : 120
       }}
     >
       <Grid sx={{ padding: 2 }}>
         <Box sx={{ fontWeight: "bold", fontSize: 22 }}>{title}</Box>
-        {!hasSeveraUserId ? (
-          <>
-            <div style={{ color: "#888", fontSize: 15, padding: "12px 0" }}>
-              {strings.notOptedInDescription.description}
-            </div>
-            <Skeleton
-              variant="rectangular"
-              height={20}
-              sx={{ borderRadius: 1, marginTop: 1, width: "100%" }}
-            />
-          </>
-        ) : (
-          content
-        )}
+        <div style={{ color: "#888", fontSize: 15, padding: "12px 0" }}>
+          {strings.notOptedInDescription.description}
+        </div>
+        <Skeleton variant="rectangular" height={20} sx={{ mt: 1 }} />
       </Grid>
     </Box>
   );
 
   const cards: ReactNode[] = [
     isPrivilegedUser && (
-      <Box key="balance" id="balance-card">
-        {!hasSeveraUserId ? (
-          renderCardWithSkeleton(strings.balanceCard.balance, <></>)
-        ) : (
-          <BalanceCard />
-        )}
+      <Box key="balance" id={`${screenId}-balance-card`}>
+        {hasSeveraUserId ? <BalanceCard /> : renderCardWithSkeleton(strings.balanceCard.balance)}
       </Box>
     ),
     isPrivilegedUser && (
-      <Box key="sprint" id="sprint-view-card" sx={{ minHeight: 270 }}>
-        {!hasSeveraUserId ? (
-          renderCardWithSkeleton(strings.sprint.sprintview, <></>)
-        ) : (
-          <SprintViewCard />
-        )}
+      <Box key="sprint" id={`${screenId}-sprint-view-card`}>
+        {hasSeveraUserId ? <SprintViewCard /> : renderCardWithSkeleton(strings.sprint.sprintview)}
       </Box>
     ),
     isPrivilegedUser && (
-      <Box key="vacations" id="vacations-card">
+      <Box key="vacations" id={`${screenId}-vacations-card`}>
         <VacationsCard />
       </Box>
     ),
     isPrivilegedUser && (
-      <Box key="questionnaires" id="questionnaires-card">
+      <Box key="questionnaires" id={`${screenId}-questionnaires-card`}>
         <QuestionnaireCard />
       </Box>
     ),
     isPrivilegedUser && (
-      <Box key="software" id="software-registry-card">
+      <Box key="software" id={`${screenId}-software-registry-card`}>
         <SoftwareRegistryCard />
       </Box>
     ),
     isPrivilegedUser && (
-      <Box key="wiki" id="wiki-documentation-card">
+      <Box key="wiki" id={`${screenId}-wiki-documentation-card`}>
         <WikiDocumentationCard />
       </Box>
     ),
     isPrivilegedUser && (
-      <Box key="oncall" id="oncall-card">
+      <Box key="oncall" id={`${screenId}-oncall-card`}>
         <OnCallCard />
       </Box>
     )
@@ -116,11 +97,11 @@ const HomeScreen = () => {
 
   return (
     <>
-      <Box id="home-screen">
+      <Box id={homeScreenId}>
         <CardGridWrapper>{cards}</CardGridWrapper>
       </Box>
 
-      <Box id="onboarding-complete" sx={{ display: "none" }} />
+      <Box id={onboardingCompleteId} sx={{ display: "none" }} />
 
       <Onboarding />
     </>
