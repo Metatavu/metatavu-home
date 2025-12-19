@@ -32,6 +32,7 @@ import useSprintViewHandlers from "src/hooks/sprint-custom-hooks";
 import { useLambdasApi } from "src/hooks/use-api";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
+import { SprintViewFilterTypes } from "src/types/index";
 import { getSeveraUserId } from "src/utils/sprint-utils";
 import { getSprintEnd, getSprintStart } from "src/utils/time-utils";
 import BackButton from "../generics/back-button";
@@ -129,17 +130,28 @@ const SprintViewScreen = () => {
                         labelId="filter-select-label"
                         value={filterType}
                         onChange={handleFilterChange}
-                        label="Filter Type"
+                        label={strings.sprint.filterType}
                       >
-                        <MenuItem value="project">{strings.sprint.project}</MenuItem>
-                        <MenuItem value="user">{strings.sprint.user}</MenuItem>
+                        <MenuItem value={SprintViewFilterTypes.clear}>
+                          {strings.sprint.clear}
+                        </MenuItem>
+                        <MenuItem value={SprintViewFilterTypes.project}>
+                          {strings.sprint.project}
+                        </MenuItem>
+                        <MenuItem value={SprintViewFilterTypes.user}>
+                          {strings.sprint.user}
+                        </MenuItem>
                       </Select>
                     </FormControl>
                   </Box>
                   <TextField
                     label={strings.formatString(
                       strings.sprint.searchBy,
-                      filterType === "project" ? strings.sprint.project : strings.sprint.user
+                      filterType === SprintViewFilterTypes.project
+                        ? strings.sprint.project
+                        : filterType === SprintViewFilterTypes.user
+                          ? strings.sprint.user
+                          : ""
                     )}
                     variant="outlined"
                     fullWidth

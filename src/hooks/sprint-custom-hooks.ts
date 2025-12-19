@@ -4,7 +4,7 @@ import type {
   ResourceAllocations,
   ResourceAllocationsProject
 } from "src/generated/homeLambdasClient";
-import { SprintViewFilterTypes } from "../types";
+import { type SprintViewFilterType, SprintViewFilterTypes } from "../types";
 
 /**
  * Custom hook to handle sprint view interactions.
@@ -12,7 +12,8 @@ import { SprintViewFilterTypes } from "../types";
  * @returns An object containing state variables and handler functions for sprint view interactions.
  */
 const useSprintViewHandlers = () => {
-  const [filterType, setFilterType] = useState("");
+  const [filterType, setFilterType] = useState<SprintViewFilterType>(SprintViewFilterTypes.clear);
+
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedProject, setSelectedProject] = useState<ResourceAllocationsProject | null>(null);
 
@@ -22,7 +23,7 @@ const useSprintViewHandlers = () => {
    * @param event - The event triggered by the filter selection change.
    */
   const handleFilterChange = (event: SelectChangeEvent<string>) => {
-    setFilterType(event.target.value);
+    setFilterType(event.target.value as SprintViewFilterType);
     setSearchQuery("");
     setSelectedProject(null);
   };
@@ -33,12 +34,20 @@ const useSprintViewHandlers = () => {
    * @param row - type of ResourceAllocations.
    */
   const handleRowClick = (row: ResourceAllocations) => {
-    if (filterType === SprintViewFilterTypes.project) {
-      setSearchQuery(row.project?.name || "");
-      setSelectedProject(row.project || null);
-    } else if (filterType === SprintViewFilterTypes.user) {
-      setSearchQuery(row.user?.name || "");
-      setSelectedProject(row.project || null);
+    const clickedProject = row.project || null;
+
+    // Toggle selection
+    if (selectedProject?.severaProjectId === clickedProject?.severaProjectId) {
+      setSelectedProject(null);
+      setSearchQuery("");
+    } else {
+      setSelectedProject(clickedProject);
+
+      if (filterType === SprintViewFilterTypes.project) {
+        setSearchQuery(clickedProject?.name || "");
+      } else if (filterType === SprintViewFilterTypes.user) {
+        setSearchQuery(row.user?.name || "");
+      }
     }
   };
 
