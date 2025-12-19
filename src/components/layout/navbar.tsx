@@ -1,4 +1,4 @@
-import { Lock } from "@mui/icons-material";
+import LogoutIcon from "@mui/icons-material/Logout";
 import SettingsIcon from "@mui/icons-material/Settings";
 import {
   AppBar,
@@ -9,14 +9,14 @@ import {
   Menu,
   MenuItem,
   Toolbar,
-  Tooltip
+  Tooltip,
+  Typography
 } from "@mui/material";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { type MouseEvent, useEffect, useId, useState } from "react";
 import { useNavigate } from "react-router-dom";
 //import { avatarsAtom, personsAtom } from "src/atoms/person";
 //import type { Person } from "src/generated/client";
-import config from "src/app/config";
 import { authAtom, userProfileAtom } from "src/atoms/auth";
 import { errorAtom } from "src/atoms/error";
 import { avatarsAtom } from "src/atoms/person";
@@ -119,11 +119,12 @@ const NavBar = () => {
               onClose={handleCloseUserMenu}
             >
               <MenuItem onClick={handleSettingsClick}>
-                <SettingsIcon sx={{ mr: 1 }} /> {strings.header.settings}
+                <SettingsIcon sx={{ mr: 1 }} />
+                <Typography>{strings.header.settings}</Typography>
               </MenuItem>
               <MenuItem onClick={handleClickLogOut}>
-                <Lock sx={{ mr: 1 }} />
-                {strings.header.logout}
+                <LogoutIcon sx={{ mr: 1 }} />
+                <Typography>{strings.header.logout}</Typography>
               </MenuItem>
             </Menu>
           </Box>
