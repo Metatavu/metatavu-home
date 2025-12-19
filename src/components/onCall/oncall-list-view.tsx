@@ -124,8 +124,9 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
               }
             }}
           />
-        ) : params.value ? (
-          <CheckCircleOutline
+        ) : (
+          // Readonly icon for non-accountants, green if paid, red if not paid.
+          <HelpOutline
             sx={{
               color: alpha(customTheme.colors.paidGreen, 0.8),
               cursor: "default"
