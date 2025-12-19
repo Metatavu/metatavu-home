@@ -33,12 +33,25 @@ const useSprintViewHandlers = () => {
    * @param row - type of ResourceAllocations.
    */
   const handleRowClick = (row: ResourceAllocations) => {
+    const clickedProject = row.project;
+    const clickedProjectId = clickedProject?.severaProjectId;
+
+    // If clicking the same project again → clear filter
+    if (selectedProject?.severaProjectId === clickedProjectId) {
+      setSearchQuery("");
+      setSelectedProject(null);
+      return;
+    }
+
+    // Otherwise apply filter
     if (filterType === SprintViewFilterTypes.project) {
-      setSearchQuery(row.project?.name || "");
-      setSelectedProject(row.project || null);
-    } else if (filterType === SprintViewFilterTypes.user) {
+      setSearchQuery(clickedProject?.name || "");
+      setSelectedProject(clickedProject || null);
+    }
+
+    if (filterType === SprintViewFilterTypes.user) {
       setSearchQuery(row.user?.name || "");
-      setSelectedProject(row.project || null);
+      setSelectedProject(clickedProject || null);
     }
   };
 
@@ -96,6 +109,7 @@ const useSprintViewHandlers = () => {
     handleFilterChange,
     handleRowClick,
     handleClearSearch,
+    setFilterType,
     setSearchQuery,
     setSelectedProject,
     filterAllocations
