@@ -72,6 +72,12 @@ const WikiDocumentationScreen = () => {
   const [pageNumber, setPageNumber] = useState(1);
   const [snackbar, setSnackbar] = useAtom(snackbarAtom);
   const autoCompleteId = useId();
+  const searchBarId = "wiki-article-search-bar";
+  const createButtonId = "wiki-create-article-button";
+  const cardTitleId = "wiki-card-title";
+  const latestArticlesId = "wiki-latest-updated-articles";
+  const articlesListId = "wiki-articles-list";
+
   useEffect(() => {
     if (!articles) getArticles();
     else if (articles.length !== 0) {
@@ -256,7 +262,7 @@ const WikiDocumentationScreen = () => {
    */
   const renderSearch = () => (
     <Card
-      id="wiki-article-search-bar"
+      id={searchBarId}
       sx={{
         width: {
           lg: adminMode ? "55%" : "73%",
@@ -354,7 +360,7 @@ const WikiDocumentationScreen = () => {
   );
   const renderCreateButton = () => (
     <Button
-      id="wiki-create-article-button"
+      id={createButtonId}
       onClick={() => setFormOpen(true)}
       variant="contained"
       sx={{
@@ -533,11 +539,11 @@ const WikiDocumentationScreen = () => {
           adminMode={adminMode}
         />
       ) : (
-        <Box id="wiki-card-title" sx={{ width: "100%" }}>
+        <Box id={cardTitleId} sx={{ width: "100%" }}>
           {!adminMode && (
             <>
               {renderTitle(strings.wikiDocumentation.cardTitle)}
-              <Box id="wiki-latest-updated-articles">
+              <Box id={latestArticlesId}>
                 <CarouselArticleCards articles={lastUpdatedArticles} />
               </Box>
             </>
@@ -551,12 +557,7 @@ const WikiDocumentationScreen = () => {
           >
             {renderToolBar()}
             {displayedArticlesOnPage.length !== 0 ? (
-              <Grid
-                id="wiki-articles-list"
-                container
-                spacing={adminMode ? 4 : 3}
-                textAlign={"center"}
-              >
+              <Grid id={articlesListId} container spacing={adminMode ? 4 : 3} textAlign={"center"}>
                 {displayedArticlesOnPage.map((article) => (
                   <Grid
                     item
