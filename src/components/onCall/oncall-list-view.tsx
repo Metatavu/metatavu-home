@@ -27,7 +27,6 @@ interface Props {
  */
 const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Props) => {
   const onCallData = useAtomValue(onCallAtom);
-  console.log("oncall data", onCallData);
   const { isAccountant } = useUserRole();
   const userProfile = useAtomValue(userProfileAtom);
   const loggedInEmail = userProfile?.email;
@@ -52,7 +51,7 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
   const handleCheckboxChange = async (week: number, currentPaid: boolean) => {
     try {
       await updatePaidStatus(selectedDate.year, week, currentPaid);
-    } catch (_error) {
+    } catch {
       setError(strings.oncall.errorUpdatingPaidStatus);
     }
   };
@@ -110,36 +109,33 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
       align: "center",
       flex: 1,
       sortable: false,
-      renderCell: (params) =>
-        isAccountant ? (
-          <Checkbox
-            onClick={(e) => e.stopPropagation()}
-            onChange={() => handleCheckboxChange(params.row.week, params.value)}
-            checked={params.value}
-            sx={{
-              "&.Mui-checked": {
-                color: alpha(customTheme.colors.paidGreen, 0.8)
-              },
-              "&:not(.Mui-checked)": {
-                color: alpha("#ff6384", 0.8)
-              }
-            }}
-          />
-        ) : params.value ? (
-          <CheckCircleOutline
-            sx={{
-              color: alpha(customTheme.colors.paidGreen, 0.8),
-              cursor: "default"
-            }}
-          />
-        ) : (
-          <CancelOutlined
-            sx={{
-              color: alpha("#ff6384", 0.8),
-              cursor: "default"
-            }}
-          />
-        )
+      renderCell: (params) => {
+        if (isAccountant) {
+          return (
+            <Checkbox
+              onClick={(e) => e.stopPropagation()}
+              onChange={() => handleCheckboxChange(params.row.week, params.value)}
+              checked={params.value}
+              sx={{
+                "&.Mui-checked": {
+                  color: alpha(customTheme.colors.paidGreen, 0.8)
+                },
+                "&:not(.Mui-checked)": {
+                  color: alpha("#ff6384", 0.8)
+                }
+              }}
+            />
+          );
+        }
+
+        // Extracted nested ternary into variable
+        const Icon = params.value ? CheckCircleOutline : CancelOutlined;
+        const iconColor = params.value
+          ? alpha(customTheme.colors.paidGreen, 0.8)
+          : alpha("#ff6384", 0.8);
+
+        return <Icon sx={{ color: iconColor, cursor: "default" }} />;
+      }
     }
   ];
 
