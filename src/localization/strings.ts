@@ -136,7 +136,6 @@ export interface Localized extends LocalizedStringsMethods {
     project: string;
     user: string;
     searchBy: string;
-    phase: string;
   };
   /**
    * Translations related to software registry

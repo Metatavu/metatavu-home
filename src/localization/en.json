@@ -109,8 +109,7 @@
     "filterType": "Filter type",
     "project": "Project",
     "user": "User",
-    "searchBy": "Search by {0}",
-    "phase": "Phase"
+    "searchBy": "Search by {0}"
   },
   "softwareRegistry": {
     "softwareRegistry": "Software registry",
