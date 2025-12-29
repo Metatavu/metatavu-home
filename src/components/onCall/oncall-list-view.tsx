@@ -128,7 +128,6 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
           );
         }
 
-        // Extracted nested ternary into variable
         const Icon = params.value ? CheckCircleOutline : CancelOutlined;
         const iconColor = params.value
           ? alpha(customTheme.colors.paidGreen, 0.8)
