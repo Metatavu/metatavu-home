@@ -320,19 +320,19 @@
     "employeeSelectlabel": "Valitse työntekijä"
   },
   "questionnaireCard": {
-    "questionnairesBuilder": "Tee uusi kysely",
+    "questionnairesBuilder": "Luo uusi kysely",
     "questionnaires": "Kyselylomake",
     "progressBar": "Edistyminen"
   },
   "questionnaireScreen": {
     "currentQuestionnaires": "Kyselyt",
-    "buildNewQuestionnaire": "Tee uusi kysely",
+    "buildNewQuestionnaire": "Luo uusi kysely",
     "status": "Tila:",
     "edit": "Muokkaa",
     "delete": "Poista"
   },
   "newQuestionnaireBuilder": {
-    "makeNewQuestionnaire": "Tee uusi kysely",
+    "makeNewQuestionnaire": "Luo uusi kysely",
     "title": "Otsikko",
     "insertTitle": "Syötä otsikko",
     "saveButton": "Tallenna kysely",
@@ -531,7 +531,7 @@
     "vacationsTitle": "Lomahakemukset",
     "vacationsContent": "Seuraa tulevia lomia ja niiden tilaa.",
     "questionnaireTitle": "Kyselyt",
-    "questionnaireContent": "Tee kyselyitä ja vastaa kyselyihin.",
+    "questionnaireContent": "Luo kyselyitä ja vastaa kyselyihin.",
     "softwareTitle": "Ohjelmistorekisteri",
     "softwareContent": "Löydä ja hallitse yrityksen sovelluksia.",
     "wikiTitle": "Wikidokumentaatio",
