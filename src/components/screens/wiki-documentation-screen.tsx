@@ -78,12 +78,12 @@ const WikiDocumentationScreen = () => {
         const allArticles = [...articles, ...(draftArticles ?? [])];
         getTags(allArticles);
         if (displayOption === "all") {
-          allArticles.sort((a, b) => {
+          const sortedArticles = [...allArticles].sort((a, b) => {
             const dateA = new Date(a.lastUpdatedAt || a.createdAt || 0).getTime();
             const dateB = new Date(b.lastUpdatedAt || b.createdAt || 0).getTime();
             return dateB - dateA;
           });
-          setDisplayedArticles(allArticles);
+          setDisplayedArticles(sortedArticles);
         } else if (displayOption === "approved") {
           setDisplayedArticles(articles.filter((article) => !article.draft));
         } else if (displayOption === "draft") {
@@ -115,12 +115,13 @@ const WikiDocumentationScreen = () => {
       if (adminMode) {
         const fetchedDraftArticles = await articleApi.getArticles({ draft: true });
         setDraftArticlesAtom(fetchedDraftArticles);
-        const allArticles = [...(fetchedArticles ?? []), ...(fetchedDraftArticles ?? [])];
-        allArticles.sort((a, b) => {
-          const dateA = new Date(a.lastUpdatedAt || a.createdAt || 0).getTime();
-          const dateB = new Date(b.lastUpdatedAt || b.createdAt || 0).getTime();
-          return dateB - dateA;
-        });
+        const allArticles = [...(fetchedArticles ?? []), ...(fetchedDraftArticles ?? [])].sort(
+          (a, b) => {
+            const dateA = new Date(a.lastUpdatedAt || a.createdAt || 0).getTime();
+            const dateB = new Date(b.lastUpdatedAt || b.createdAt || 0).getTime();
+            return dateB - dateA;
+          }
+        );
         setDisplayedArticles(allArticles);
         setDisplayedArticlesOnPage(allArticles.slice(0, itemsPerPage));
         getTags(allArticles);
@@ -265,8 +266,7 @@ const WikiDocumentationScreen = () => {
     setDisplayOption(newOption);
     switch (newOption) {
       case "all": {
-        const allArticles = [...(articles ?? []), ...(draftArticles ?? [])];
-        allArticles.sort((a, b) => {
+        const allArticles = [...(articles ?? []), ...(draftArticles ?? [])].sort((a, b) => {
           const dateA = new Date(a.lastUpdatedAt || a.createdAt || 0).getTime();
           const dateB = new Date(b.lastUpdatedAt || b.createdAt || 0).getTime();
           return dateB - dateA;
