@@ -277,13 +277,11 @@ const ArticleScreen = () => {
                   ))}
                 </Box>
               )}
-              {!formOpen && (
-                <Grid container spacing={1.5} sx={{ marginBottom: 3 }}>
-                  <Grid item xs={12}>
-                    <BackButton styles={{ padding: "6px" }} />
-                  </Grid>
+              <Grid container spacing={1.5} sx={{ marginBottom: 3 }}>
+                <Grid item xs={12}>
+                  <BackButton styles={{ padding: "6px" }} />
                 </Grid>
-              )}
+              </Grid>
             </>
           )}
         </>

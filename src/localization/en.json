@@ -444,7 +444,7 @@
     "labelPath": "Path",
     "labelTags": "Tags",
     "labelImage": "Image Link",
-    "labelDescription": "Desciption",
+    "labelDescription": "Description",
     "labelLink": "Link",
     "labelLinkPlaceholder": "Enter URL here, e.g. https://example.com",
     "draft": "draft",
