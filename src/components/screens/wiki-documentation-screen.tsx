@@ -34,6 +34,7 @@ import { useLambdasApi } from "src/hooks/use-api";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import { wikiScreenColors } from "src/theme";
+import { getArticlesToFilter, sortArticlesByDate } from "src/utils/wiki-utils";
 import BackButton from "../generics/back-button";
 import ArticleCard from "../wiki-documentation/article-card";
 import ArticleListItem from "../wiki-documentation/article-list-item";
@@ -78,12 +79,7 @@ const WikiDocumentationScreen = () => {
         const allArticles = [...articles, ...(draftArticles ?? [])];
         getTags(allArticles);
         if (displayOption === "all") {
-          const sortedArticles = [...allArticles].sort((a, b) => {
-            const dateA = new Date(a.lastUpdatedAt || a.createdAt || 0).getTime();
-            const dateB = new Date(b.lastUpdatedAt || b.createdAt || 0).getTime();
-            return dateB - dateA;
-          });
-          setDisplayedArticles(sortedArticles);
+          setDisplayedArticles(sortArticlesByDate(allArticles));
         } else if (displayOption === "approved") {
           setDisplayedArticles(articles.filter((article) => !article.draft));
         } else if (displayOption === "draft") {
@@ -115,13 +111,10 @@ const WikiDocumentationScreen = () => {
       if (adminMode) {
         const fetchedDraftArticles = await articleApi.getArticles({ draft: true });
         setDraftArticlesAtom(fetchedDraftArticles);
-        const allArticles = [...(fetchedArticles ?? []), ...(fetchedDraftArticles ?? [])].sort(
-          (a, b) => {
-            const dateA = new Date(a.lastUpdatedAt || a.createdAt || 0).getTime();
-            const dateB = new Date(b.lastUpdatedAt || b.createdAt || 0).getTime();
-            return dateB - dateA;
-          }
-        );
+        const allArticles = sortArticlesByDate([
+          ...(fetchedArticles ?? []),
+          ...(fetchedDraftArticles ?? [])
+        ]);
         setDisplayedArticles(allArticles);
         setDisplayedArticlesOnPage(allArticles.slice(0, itemsPerPage));
         getTags(allArticles);
@@ -207,16 +200,12 @@ const WikiDocumentationScreen = () => {
     const newSearchInput = event.target.value;
     setSearchInput(newSearchInput ?? "");
 
-    let articlesToFilter = articles ?? [];
-    if (adminMode) {
-      if (displayOption === "all") {
-        articlesToFilter = [...(articles ?? []), ...(draftArticles ?? [])];
-      } else if (displayOption === "draft") {
-        articlesToFilter = draftArticles ?? [];
-      } else if (displayOption === "approved") {
-        articlesToFilter = (articles ?? []).filter((article) => !article.draft);
-      }
-    }
+    const articlesToFilter = getArticlesToFilter(
+      adminMode,
+      displayOption,
+      articles ?? [],
+      draftArticles ?? []
+    );
 
     if (!newSearchInput || newSearchInput === "") {
       setDisplayedArticles(articlesToFilter);
@@ -238,16 +227,12 @@ const WikiDocumentationScreen = () => {
    */
   const handleSelectedTagChange = (values: string[]) => {
     setSelectedTags(values);
-    let articlesToFilter = articles ?? [];
-    if (adminMode) {
-      if (displayOption === "all") {
-        articlesToFilter = [...(articles ?? []), ...(draftArticles ?? [])];
-      } else if (displayOption === "draft") {
-        articlesToFilter = draftArticles ?? [];
-      } else if (displayOption === "approved") {
-        articlesToFilter = (articles ?? []).filter((article) => !article.draft);
-      }
-    }
+    const articlesToFilter = getArticlesToFilter(
+      adminMode,
+      displayOption,
+      articles ?? [],
+      draftArticles ?? []
+    );
     const filteredArticles = articlesToFilter.filter(
       (article) =>
         article.title.toLowerCase().includes(searchInput.toLowerCase()) &&
@@ -266,11 +251,7 @@ const WikiDocumentationScreen = () => {
     setDisplayOption(newOption);
     switch (newOption) {
       case "all": {
-        const allArticles = [...(articles ?? []), ...(draftArticles ?? [])].sort((a, b) => {
-          const dateA = new Date(a.lastUpdatedAt || a.createdAt || 0).getTime();
-          const dateB = new Date(b.lastUpdatedAt || b.createdAt || 0).getTime();
-          return dateB - dateA;
-        });
+        const allArticles = sortArticlesByDate([...(articles ?? []), ...(draftArticles ?? [])]);
         setDisplayedArticles(allArticles);
         break;
       }
