@@ -236,6 +236,7 @@ const VacationRequestsScreen = () => {
         }
       });
       setVacationRequests([createdRequest, ...vacationRequests]);
+      showSnackbar(strings.snackbar.vacationRequestCreated, "success");
     } catch (error) {
       setError(`${strings.vacationRequestError.createRequestError}, ${error}`);
     }
