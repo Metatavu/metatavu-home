@@ -565,6 +565,9 @@ export interface Localized extends LocalizedStringsMethods {
     approvedArticles: string;
     connectedArticles: string;
   };
+  /**
+   * Translations related to Snackbar notifications
+   */
   snackbar: {
     articleSubmitted: string;
     articleCreated: string;
@@ -578,6 +581,7 @@ export interface Localized extends LocalizedStringsMethods {
     softwareUpdated: string;
     softwareDeleted: string;
     softwareStatusChanged: string;
+    vacationDraftSaved: string;
     vacationRequestCreated: string;
     vacationRequestUpdated: string;
     vacationRequestDeleted: string;

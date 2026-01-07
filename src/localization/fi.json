@@ -464,6 +464,7 @@
     "softwareUpdated": "Software updated successfully!",
     "softwareDeleted": "Software deleted successfully!",
     "softwareStatusChanged": "Software status changed successfully!",
+    "vacationDraftSaved": "Draft saved successfully!",
     "vacationRequestCreated": "Vacation request created successfully!",
     "vacationRequestUpdated": "Vacation request updated successfully!",
     "vacationRequestDeleted": "Vacation request deleted successfully!",
