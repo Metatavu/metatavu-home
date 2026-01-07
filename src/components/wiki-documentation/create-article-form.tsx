@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import { useAtomValue, useSetAtom } from "jotai";
 import { type ChangeEvent, type KeyboardEvent, type SyntheticEvent, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { articleAtom, draftArticleAtom, tagsAtom } from "src/atoms/article";
 import { userProfileAtom } from "src/atoms/auth";
 import { errorAtom } from "src/atoms/error";
@@ -59,6 +60,7 @@ const CreateOrEditArticleForm = ({
   const setDraftArticlesAtom = useSetAtom(draftArticleAtom);
   const setTags = useSetAtom(tagsAtom);
   const tags = useAtomValue(tagsAtom);
+  const navigate = useNavigate();
   const editorRef = useRef<EditorRef>(null);
   const [title, setTitle] = useState(article ? article.title : "");
   const [path, setPath] = useState(article ? article.path : "");
@@ -114,6 +116,39 @@ const CreateOrEditArticleForm = ({
     }
   };
   /**
+   * Updates article atoms based on admin mode and draft status
+   *
+   * @param updatedArticle - The updated article data
+   * @param response - The response article from the API
+   */
+  const updateArticleAtoms = (updatedArticle: Article, response: Article) => {
+    if (!adminMode) {
+      if (!updatedArticle.draft) {
+        setArticlesAtom((articles) =>
+          (articles || []).map((a) => (a.id === updatedArticle.id ? updatedArticle : a))
+        );
+      } else {
+        setDraftArticlesAtom((articles) =>
+          (articles || []).map((a) => (a.id === updatedArticle.id ? updatedArticle : a))
+        );
+      }
+    } else {
+      if (article?.draft) {
+        setDraftArticlesAtom((articles) =>
+          (articles || []).filter((article) => article.id !== response.id)
+        );
+      } else {
+        setArticlesAtom((articles) =>
+          (articles || []).filter((article) => article.id !== response.id)
+        );
+      }
+      setArticlesAtom((articles) => [response, ...(articles || [])]);
+      setTags((tags) => [...new Set<string>(tags.concat(selectedTags))]);
+      if (setArticle) setArticle(updatedArticle);
+    }
+  };
+
+  /**
    * Handles updating an existing article with current form and editor content.
    * Sends updated data to the API, updates local state, and manages tag sets.
    * Closes the form on success or sets an error message on failure.
@@ -135,29 +170,8 @@ const CreateOrEditArticleForm = ({
 
     try {
       const response = await articleApi.updateArticle({ article: updatedArticle, id: article.id });
-      if (!adminMode) {
-        if (!updatedArticle.draft) {
-          setArticlesAtom((articles) =>
-            (articles || []).map((a) => (a.id === updatedArticle.id ? updatedArticle : a))
-          );
-        } else {
-          setDraftArticlesAtom((articles) =>
-            (articles || []).map((a) => (a.id === updatedArticle.id ? updatedArticle : a))
-          );
-        }
-      } else {
-        if (article.draft)
-          setDraftArticlesAtom((articles) =>
-            (articles || []).filter((article) => article.id !== response.id)
-          );
-        else
-          setArticlesAtom((articles) =>
-            (articles || []).filter((article) => article.id !== response.id)
-          );
-        setArticlesAtom((articles) => [response, ...(articles || [])]);
-        setTags((tags) => [...new Set<string>(tags.concat(selectedTags))]);
-        if (setArticle) setArticle(updatedArticle);
-      }
+      updateArticleAtoms(updatedArticle, response);
+
       const key = `edit-${adminMode ? "admin" : "user"}`;
       const messages: Record<string, string> = {
         "edit-admin": strings.snackbar.articleUpdated,
@@ -168,7 +182,11 @@ const CreateOrEditArticleForm = ({
         message: messages[key],
         severity: "success"
       });
-      handleClose();
+      if (adminMode && action === "edit") {
+        navigate("/admin/wiki-documentation");
+      } else {
+        handleClose();
+      }
     } catch (error: any) {
       const message = (await error.response.json()).message;
       setError(message);

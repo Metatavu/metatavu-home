@@ -2,7 +2,7 @@ import { Alert, Box, Card, CircularProgress, Grid, Snackbar, Typography } from "
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { articleAtom, draftArticleAtom } from "src/atoms/article";
 import { userProfileAtom } from "src/atoms/auth";
 import { errorAtom } from "src/atoms/error";
@@ -36,6 +36,7 @@ const ArticleScreen = () => {
   const [snackbar, setSnackbar] = useAtom(snackbarAtom);
   const setArticlesAtom = useSetAtom(articleAtom);
   const setDraftArticlesAtom = useSetAtom(draftArticleAtom);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchArticle();
@@ -138,6 +139,9 @@ const ArticleScreen = () => {
         message: strings.snackbar.articleApproved,
         severity: "success"
       });
+      if (adminMode) {
+        navigate("/admin/wiki-documentation");
+      }
     } catch (error: any) {
       const message = (await error.response.json()).message;
       setError(message);

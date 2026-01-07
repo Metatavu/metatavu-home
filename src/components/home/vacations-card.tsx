@@ -18,14 +18,12 @@ import type { VacationInfoListItem } from "src/types";
 import { validateValueIsNotUndefinedNorNull } from "src/utils/check-utils";
 import LocalizationUtils from "src/utils/localization-utils";
 import { formatDate } from "src/utils/time-utils";
+import { renderVacationDaysTextForCard } from "src/utils/vacation-days-utils";
 import { getVacationRequestPersonFullName } from "src/utils/vacation-request-utils";
 import {
   getTotalVacationRequestStatus,
   getVacationRequestStatusColor
 } from "src/utils/vacation-status-utils";
-
-// TODO: Component is commented out due backend calculations about vacation days being incorrect. Once the error is fixed, introduce the text components back in the code.
-// import { renderVacationDaysTextForCard } from "../../utils/vacation-days-utils";
 
 /**
  * Vacations card component
@@ -163,11 +161,10 @@ const VacationsCard = () => {
                   getTotalVacationRequestStatus(earliestUpcomingVacationRequest?.status)
                 )
               }}
-              //NOTE: This localization is commented out due to the removal of timebank-client.
             >
-              {/* {LocalizationUtils.getLocalizedVacationRequestStatus(
+              {LocalizationUtils.getLocalizedVacationRequestStatus(
                 getTotalVacationRequestStatus(earliestUpcomingVacationRequest?.status)
-              )} */}
+              )}
             </span>
           ) : (
             <span
@@ -277,8 +274,7 @@ const VacationsCard = () => {
           </Typography>
           <Grid container>
             <Box sx={{ width: "100%", display: "flex", flexDirection: "column", mb: 2 }}>
-              {/* TODO: Component is commented out due backend calculations about vacation days being incorrect. Once the error is fixed, introduce the text components back in the code. */}
-              {/* {loggedInUser && renderVacationDaysTextForCard(loggedInUser)} */}
+              {loggedInUser && renderVacationDaysTextForCard(loggedInUser)}
             </Box>
             {renderUpcomingOrPendingVacationRequestsCount()}
             {renderEarliestUpcomingVacationRequest()}
