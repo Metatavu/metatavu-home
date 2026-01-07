@@ -443,7 +443,7 @@
     "labelTitle": "Title",
     "labelPath": "Path",
     "labelTags": "Tags",
-    "labelImage": "Image Link",
+    "labelImage": "Image URL",
     "labelDescription": "Description",
     "labelLink": "Link",
     "labelLinkPlaceholder": "Enter URL here, e.g. https://example.com",

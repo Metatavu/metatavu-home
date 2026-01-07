@@ -443,7 +443,7 @@
     "labelTitle": "Otsikko",
     "labelPath": "Polku",
     "labelTags": "Tunnisteet",
-    "labelImage": "Kuvan linkki",
+    "labelImage": "Kuvan URL-osoite",
     "labelDescription": "Kuvaus",
     "labelLink": "Sinulla on {0} artikkelia odottamassa tarkistusta.",
     "labelLinkPlaceholder": "Syötä URL-osoite tähän, esim. https://example.com",
