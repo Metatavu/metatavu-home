@@ -571,6 +571,17 @@ export interface Localized extends LocalizedStringsMethods {
     articleUpdated: string;
     articleApproved: string;
     changesSaved: string;
+    questionnaireCreated: string;
+    questionnaireUpdated: string;
+    questionnaireDeleted: string;
+    softwareAdded: string;
+    softwareUpdated: string;
+    softwareDeleted: string;
+    softwareStatusChanged: string;
+    vacationRequestCreated: string;
+    vacationRequestUpdated: string;
+    vacationRequestDeleted: string;
+    vacationRequestStatusUpdated: string;
   };
   /**
    * Translation related settings screen

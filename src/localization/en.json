@@ -456,7 +456,18 @@
     "articleCreated": "Article created successfully!",
     "articleUpdated": "Article updated successfully!",
     "articleApproved": "Article approved successfully!",
-    "changesSaved": "Changes saved successfully!"
+    "changesSaved": "Changes saved successfully!",
+    "questionnaireCreated": "Questionnaire created successfully!",
+    "questionnaireUpdated": "Questionnaire updated successfully!",
+    "questionnaireDeleted": "Questionnaire deleted successfully!",
+    "softwareAdded": "Software added successfully!",
+    "softwareUpdated": "Software updated successfully!",
+    "softwareDeleted": "Software deleted successfully!",
+    "softwareStatusChanged": "Software status changed successfully!",
+    "vacationRequestCreated": "Vacation request created successfully!",
+    "vacationRequestUpdated": "Vacation request updated successfully!",
+    "vacationRequestDeleted": "Vacation request deleted successfully!",
+    "vacationRequestStatusUpdated": "Vacation request status updated successfully!"
   },
   "settingsScreen": {
     "saveSettings": "Save settings",

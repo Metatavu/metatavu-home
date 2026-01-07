@@ -456,7 +456,18 @@
     "articleCreated": "Artikkeli luotu onnistuneesti!",
     "articleUpdated": "Artikkeli päivitetty onnistuneesti!",
     "articleApproved": "Artikkeli hyväksytty onnistuneesti!",
-    "changesSaved": "Muutokset tallennettu onnistuneesti!"
+    "changesSaved": "Muutokset tallennettu onnistuneesti!",
+    "questionnaireCreated": "Questionnaire created successfully!",
+    "questionnaireUpdated": "Questionnaire updated successfully!",
+    "questionnaireDeleted": "Questionnaire deleted successfully!",
+    "softwareAdded": "Software added successfully!",
+    "softwareUpdated": "Software updated successfully!",
+    "softwareDeleted": "Software deleted successfully!",
+    "softwareStatusChanged": "Software status changed successfully!",
+    "vacationRequestCreated": "Vacation request created successfully!",
+    "vacationRequestUpdated": "Vacation request updated successfully!",
+    "vacationRequestDeleted": "Vacation request deleted successfully!",
+    "vacationRequestStatusUpdated": "Vacation request status updated successfully!"
   },
   "settingsScreen": {
     "saveSettings": "Tallena Asetukset",
