@@ -240,6 +240,7 @@ const ToolBar = () => {
         onInput={handleInputChange("link")}
         size="small"
         label={strings.wikiDocumentation.labelLink}
+        placeholder={strings.wikiDocumentation.labelLinkPlaceholder}
       />
       <Button onClick={() => addLink()}>Add</Button>
       <Button onClick={() => setLinkDialogOpen(false)}>Close</Button>
@@ -282,9 +283,7 @@ const ToolBar = () => {
         <input style={{ width: "100%" }} type="file" hidden onChange={handleFileChange} />
       </Button>
       <Box>
-        {file && !fileUploadError && (
-          <Typography sx={{ width: "100%" }}>{file?.name}</Typography>
-        )}
+        {file && !fileUploadError && <Typography sx={{ width: "100%" }}>{file?.name}</Typography>}
         {fileUploadError && <Typography sx={{ width: "100%" }}>{fileUploadError}</Typography>}
       </Box>
 

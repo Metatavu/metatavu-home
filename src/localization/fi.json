@@ -447,6 +447,7 @@
     "labelImage": "Kuvan URL-osoite",
     "labelDescription": "Kuvaus",
     "labelLink": "Sinulla on {0} artikkelia odottamassa tarkistusta.",
+    "labelLinkPlaceholder": "Syötä URL-osoite tähän, esim. https://example.com",
     "draft": "luonnos",
     "allArticles": "kaikki",
     "approvedArticles": "hyväksytyt",

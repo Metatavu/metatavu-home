@@ -1,9 +1,11 @@
 import { Box, Button, Card, Chip, Typography } from "@mui/material";
 import { useAtomValue } from "jotai";
+import { DateTime } from "luxon";
 import { Link } from "react-router-dom";
 import { usersAtom } from "src/atoms/user";
 import type { ArticleMetadata } from "src/generated/homeLambdasClient";
 import strings from "src/localization/strings";
+import { formatDate } from "src/utils/time-utils";
 import { getLastActivityString } from "src/utils/wiki-utils";
 
 interface Props {
@@ -85,7 +87,9 @@ const ArticleCard = ({ article, adminMode, handleDelete }: Props) => {
           {strings.formatString(
             "{0} {1}",
             lastActivityData.action,
-            (article.lastUpdatedAt || article.createdAt)?.toLocaleDateString() || ""
+            formatDate(
+              DateTime.fromJSDate(article.lastUpdatedAt || article.createdAt || new Date())
+            )
           )}
         </Typography>
         <Typography variant="body1" sx={{ paddingLeft: "5px", textAlign: "left" }}>
