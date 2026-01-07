@@ -14,6 +14,7 @@ import {
 import type { User } from "src/generated/homeLambdasClient";
 import { type VacationRequest, VacationRequestStatuses } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
+import { useSnackbar } from "src/hooks/use-snackbar";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import { renderVacationDaysTextForScreen } from "src/utils/vacation-days-utils";
@@ -38,6 +39,7 @@ const VacationRequestsScreen = () => {
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const selectedId = params.get("selectedId");
+  const showSnackbar = useSnackbar();
 
   const upcomingVacationRequests = useMemo(
     () => vacationRequests.filter((request) => request.endDate.getTime() > Date.now()),
@@ -187,6 +189,8 @@ const VacationRequestsScreen = () => {
         })
       );
       setVacationRequests(updatedVacationRequests);
+
+      showSnackbar(strings.snackbar.vacationRequestDeleted, "success");
     }
   };
 
