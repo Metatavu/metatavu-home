@@ -72,7 +72,7 @@ const NavBar = () => {
   };
 
   /**
-   * Fetch Slack avatars
+   * Fetch Slack avatars for logged in user
    */
   const getSlackAvatars = async () => {
     if (avatars) return;
