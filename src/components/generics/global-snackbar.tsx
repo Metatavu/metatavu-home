@@ -14,7 +14,7 @@ const GlobalSnackbar = () => {
       open={snackbar.open}
       autoHideDuration={4000}
       onClose={handleClose}
-      anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+      anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       sx={{
         "& .MuiSnackbarContent-root": {
           minWidth: 400,
@@ -32,7 +32,10 @@ const GlobalSnackbar = () => {
           fontSize: "1.5rem",
           py: 3,
           px: 4,
-          borderRadius: 2
+          borderRadius: 2,
+          backgroundColor: snackbar.severity === "success" ? "#4caf50" : "#f44336",
+          color: "#fff",
+          fontWeight: 600
         }}
       >
         {snackbar.message}
