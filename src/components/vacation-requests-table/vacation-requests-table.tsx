@@ -110,7 +110,10 @@ const VacationRequestsTable = ({
   const dataGridRowHeight = 52;
   const dataGridColumnHeaderHeight = 56;
 
-  // Loading overlay component for DataGrid
+  /**
+   *
+   * Loading overlay component for DataGrid
+   */
   const LoadingOverlay = useMemo(
     () => () => (
       <CustomSkeletonTableRows
