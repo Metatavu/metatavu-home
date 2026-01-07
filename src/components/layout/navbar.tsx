@@ -39,9 +39,7 @@ const NavBar = () => {
   const setError = useSetAtom(errorAtom);
   const { slackAvatarsApi } = useLambdasApi();
   const navigate = useNavigate();
-  const loggedInUserId = userProfile?.id;
-  const loggedInPersonAvatar =
-    avatars.find((avatar) => avatar.personId === loggedInUserId)?.imageOriginal || "";
+  const loggenInUserEmail = userProfile?.email || "";
 
   /**
    * Handles opening user menu
@@ -79,8 +77,11 @@ const NavBar = () => {
   const getSlackAvatars = async () => {
     if (avatars) return;
     try {
-      const fetchedAvatars = await slackAvatarsApi.slackAvatar();
-      setAvatars(fetchedAvatars);
+      const encodedEmail = encodeURIComponent(loggenInUserEmail);
+      const fetchedAvatars = await slackAvatarsApi.getSlackUserAvatarByEmail({
+        email: encodedEmail
+      });
+      setAvatars({ image_original: fetchedAvatars.imageOriginal });
     } catch (error) {
       setError(`${strings.error.fetchSlackAvatarsFailed}: ${error}`);
     }
@@ -100,7 +101,7 @@ const NavBar = () => {
           <Box>
             <Tooltip title={strings.header.openUserMenu}>
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                {<Avatar src={loggedInPersonAvatar} />}
+                {<Avatar src={avatars?.image_original} />}
               </IconButton>
             </Tooltip>
             <Menu

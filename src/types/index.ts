@@ -201,3 +201,10 @@ export interface OnCallWeek {
   paid: boolean;
   badgeColor: string;
 }
+
+/**
+ * Interface describing Slack user avatars
+ */
+export interface SlackAvatar {
+  image_original: string | undefined;
+}
