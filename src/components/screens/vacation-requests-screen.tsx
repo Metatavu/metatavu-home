@@ -427,6 +427,7 @@ const VacationRequestsScreen = () => {
       // Refresh user data to get updated remaining vacation days.
       const updatedUser = await usersApi.findUser({ userId: loggedInUser.id });
       setUsers((prevUsers) => prevUsers.map((u) => (u.id === updatedUser.id ? updatedUser : u)));
+      showSnackbar(strings.snackbar.vacationRequestStatusUpdated, "success");
     } catch (error) {
       setError(`${strings.vacationRequestError.updateRequestError}, ${error}`);
     }
