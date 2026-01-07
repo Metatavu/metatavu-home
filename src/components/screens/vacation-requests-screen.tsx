@@ -279,6 +279,7 @@ const VacationRequestsScreen = () => {
         }
       });
       setVacationRequests([createdRequest, ...vacationRequests]);
+      showSnackbar(strings.snackbar.vacationDraftSaved, "success");
     } catch (error) {
       setError(`${strings.vacationRequestError.createRequestError}, ${error}`);
     }
@@ -349,6 +350,7 @@ const VacationRequestsScreen = () => {
         vacationRequest.id === updatedRequest.id ? updatedRequest : vacationRequest
       );
       setVacationRequests(updatedVacationRequests);
+      showSnackbar(strings.snackbar.vacationRequestUpdated, "success");
     } catch (error) {
       setError(`${strings.vacationRequestError.updateRequestError}, ${error}`);
     }
