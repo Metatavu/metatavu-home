@@ -33,8 +33,7 @@ const GlobalSnackbar = () => {
           py: 3,
           px: 4,
           borderRadius: 2,
-          backgroundColor: snackbar.severity === "success" ? "#4caf50" : "#f44336",
-          color: "#fff",
+          backgroundColor: snackbar.severity === "success" ? "#D0F0C0" : "#f44336",
           fontWeight: 600
         }}
       >
