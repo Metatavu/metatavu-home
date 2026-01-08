@@ -296,7 +296,7 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
         }
       });
 
-      showSnackbar(strings.questionnaireEdit.snackbarMessageSuccess, "success");
+      showSnackbar(strings.snackbar.questionnaireUpdated);
       navigate(-1);
       return updatedQuestionnaire;
     } catch (error) {
