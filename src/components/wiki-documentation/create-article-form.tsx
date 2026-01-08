@@ -17,10 +17,10 @@ import { type ChangeEvent, type KeyboardEvent, type SyntheticEvent, useRef, useS
 import { articleAtom, draftArticleAtom, tagsAtom } from "src/atoms/article";
 import { userProfileAtom } from "src/atoms/auth";
 import { errorAtom } from "src/atoms/error";
-import { snackbarAtom } from "src/atoms/snackbar";
 import { usersAtom } from "src/atoms/user";
 import type { Article, User } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
+import { useSnackbar } from "src/hooks/use-snackbar";
 import strings from "src/localization/strings";
 import { uploadFile } from "src/utils/s3-file-utils";
 import BackButton from "../generics/back-button";
@@ -70,7 +70,7 @@ const CreateOrEditArticleForm = ({
   const users = useAtomValue(usersAtom);
   const userProfile = useAtomValue(userProfileAtom);
   const loggedInUser = users.find((users: User) => users.id === userProfile?.id);
-  const setSnackbar = useSetAtom(snackbarAtom);
+  const showSnackbar = useSnackbar();
   /**
    * Handles creating a new article using the editor content and form state.
    * Sends the article data to the API and updates local state accordingly.
@@ -96,16 +96,11 @@ const CreateOrEditArticleForm = ({
         setTags((tags) => [...new Set<string>(tags.concat(selectedTags))]);
       } else setArticlesAtom((articles) => [response, ...(articles || [])]);
 
-      const key = `create-${adminMode ? "admin" : "user"}`;
-      const messages: Record<string, string> = {
-        "create-user": strings.snackbar.articleSubmitted,
-        "create-admin": strings.snackbar.articleCreated
-      };
-      setSnackbar({
-        open: true,
-        message: messages[key],
-        severity: "success"
-      });
+      const message = adminMode
+        ? strings.snackbar.articleCreated
+        : strings.snackbar.articleSubmitted;
+
+      showSnackbar(message, "success");
 
       handleClose();
     } catch (error: any) {
@@ -130,44 +125,20 @@ const CreateOrEditArticleForm = ({
       description: description,
       createdBy: article.createdBy,
       lastUpdatedBy: loggedInUser?.id || "",
-      draft: !adminMode
+      draft: false
     };
 
     try {
-      const response = await articleApi.updateArticle({ article: updatedArticle, id: article.id });
-      if (!adminMode) {
-        if (!updatedArticle.draft) {
-          setArticlesAtom((articles) =>
-            (articles || []).map((a) => (a.id === updatedArticle.id ? updatedArticle : a))
-          );
-        } else {
-          setDraftArticlesAtom((articles) =>
-            (articles || []).map((a) => (a.id === updatedArticle.id ? updatedArticle : a))
-          );
-        }
-      } else {
-        if (article.draft)
-          setDraftArticlesAtom((articles) =>
-            (articles || []).filter((article) => article.id !== response.id)
-          );
-        else
-          setArticlesAtom((articles) =>
-            (articles || []).filter((article) => article.id !== response.id)
-          );
-        setArticlesAtom((articles) => [response, ...(articles || [])]);
-        setTags((tags) => [...new Set<string>(tags.concat(selectedTags))]);
-        if (setArticle) setArticle(updatedArticle);
-      }
-      const key = `edit-${adminMode ? "admin" : "user"}`;
-      const messages: Record<string, string> = {
-        "edit-admin": strings.snackbar.articleUpdated,
-        "edit-user": strings.snackbar.changesSaved
-      };
-      setSnackbar({
-        open: true,
-        message: messages[key],
-        severity: "success"
+      const response = await articleApi.updateArticle({
+        id: article.id,
+        article: updatedArticle
       });
+      setArticlesAtom((articles) =>
+        (articles || []).map((a) => (a.id === response.id ? response : a))
+      );
+      setArticle?.(response);
+      setTags((tags) => [...new Set(tags.concat(selectedTags))]);
+      showSnackbar(strings.snackbar.articleUpdated);
       handleClose();
     } catch (error: any) {
       const message = (await error.response.json()).message;
