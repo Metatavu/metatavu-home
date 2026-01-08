@@ -2,7 +2,7 @@ import { Box, Card, CircularProgress, Grid, Typography } from "@mui/material";
 import { useAtomValue, useSetAtom } from "jotai";
 import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
-import { useParams } from "react-router";
+import { Navigate, useParams } from "react-router";
 import { articleAtom, draftArticleAtom } from "src/atoms/article";
 import { userProfileAtom } from "src/atoms/auth";
 import { errorAtom } from "src/atoms/error";
@@ -16,6 +16,7 @@ import ActionButton from "../wiki-documentation/action-button";
 import ArticleListItem from "../wiki-documentation/article-list-item";
 import CreateOrEditArticleForm from "../wiki-documentation/create-article-form";
 import "../wiki-documentation/rich-text-editor/editor.css";
+import { useNavigate } from "react-router";
 import { useSnackbar } from "src/hooks/use-snackbar";
 
 /**
@@ -36,6 +37,7 @@ const ArticleScreen = () => {
   const showSnackbar = useSnackbar();
   const setArticlesAtom = useSetAtom(articleAtom);
   const setDraftArticlesAtom = useSetAtom(draftArticleAtom);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchArticle();
@@ -134,6 +136,7 @@ const ArticleScreen = () => {
         if (setArticle) setArticle(updatedArticle);
       }
       showSnackbar(strings.snackbar.articleApproved);
+      navigate(-1);
     } catch (error: any) {
       const message = (await error.response.json()).message;
       setError(message);
