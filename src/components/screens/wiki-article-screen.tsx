@@ -1,5 +1,5 @@
 import { Box, Card, CircularProgress, Grid, Typography } from "@mui/material";
-import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { useParams } from "react-router";

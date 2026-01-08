@@ -573,6 +573,7 @@ export interface Localized extends LocalizedStringsMethods {
     articleCreated: string;
     articleUpdated: string;
     articleApproved: string;
+    articleDeleted: string;
     changesSaved: string;
     questionnaireCreated: string;
     questionnaireUpdated: string;
