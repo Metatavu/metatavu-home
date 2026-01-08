@@ -1,9 +1,10 @@
-import { HelpOutline } from "@mui/icons-material";
+import { CancelOutlined, CheckCircleOutline } from "@mui/icons-material";
 import { alpha, Box, Button, Checkbox, Typography } from "@mui/material";
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
-import { useAtom, useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { DateTime } from "luxon";
 import { userProfileAtom } from "src/atoms/auth";
+import { errorAtom } from "src/atoms/error";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import { customTheme } from "src/theme";
@@ -25,10 +26,11 @@ interface Props {
  * @param props component properties
  */
 const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Props) => {
-  const [onCallData] = useAtom(onCallAtom);
+  const onCallData = useAtomValue(onCallAtom);
   const { isAccountant } = useUserRole();
   const userProfile = useAtomValue(userProfileAtom);
   const loggedInEmail = userProfile?.email;
+  const setError = useSetAtom(errorAtom);
 
   /**
    * Identify rows that belong to the logged in user
@@ -49,8 +51,8 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
   const handleCheckboxChange = async (week: number, currentPaid: boolean) => {
     try {
       await updatePaidStatus(selectedDate.year, week, currentPaid);
-    } catch (error) {
-      console.error("Failed to update paid status:", error);
+    } catch {
+      setError(strings.oncall.errorUpdatingPaidStatus);
     }
   };
 
@@ -107,31 +109,32 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
       align: "center",
       flex: 1,
       sortable: false,
-      renderCell: (params) =>
-        isAccountant ? (
-          <Checkbox
-            onClick={(e) => e.stopPropagation()}
-            onChange={() => handleCheckboxChange(params.row.week, params.value)}
-            checked={params.value}
-            sx={{
-              "&.Mui-checked": {
-                color: alpha(customTheme.colors.paidGreen, 0.8)
-              },
-              "&:not(.Mui-checked)": {
-                color: alpha("#ff6384", 0.8)
-              }
-            }}
-          />
-        ) : (
-          <HelpOutline
-            sx={{
-              color: params.value
-                ? alpha(customTheme.colors.paidGreen, 0.8)
-                : alpha("#ff6384", 0.8),
-              cursor: "default"
-            }}
-          />
-        )
+      renderCell: (params) => {
+        if (isAccountant) {
+          return (
+            <Checkbox
+              onClick={(e) => e.stopPropagation()}
+              onChange={() => handleCheckboxChange(params.row.week, params.value)}
+              checked={params.value}
+              sx={{
+                "&.Mui-checked": {
+                  color: alpha(customTheme.colors.paidGreen, 0.8)
+                },
+                "&:not(.Mui-checked)": {
+                  color: alpha("#ff6384", 0.8)
+                }
+              }}
+            />
+          );
+        }
+
+        const Icon = params.value ? CheckCircleOutline : CancelOutlined;
+        const iconColor = params.value
+          ? alpha(customTheme.colors.paidGreen, 0.8)
+          : alpha("#ff6384", 0.8);
+
+        return <Icon sx={{ color: iconColor, cursor: "default" }} />;
+      }
     }
   ];
 
@@ -147,7 +150,14 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
 
   return (
     <>
-      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", my: 3 }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          my: 3
+        }}
+      >
         <Typography
           variant="h4"
           className="button-text"

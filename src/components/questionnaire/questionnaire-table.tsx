@@ -421,10 +421,12 @@ const QuestionnaireTable = () => {
           sx={{
             margin: 0,
             "& .MuiDataGrid-cell": {
-              padding: "8px"
+              padding: "8px",
+              cursor: "pointer"
             },
             "& .MuiDataGrid-columnHeader": {
-              padding: "0 8px"
+              padding: "0 8px",
+              cursor: "pointer"
             }
           }}
           rows={filteredQuestionnaires}

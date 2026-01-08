@@ -19,7 +19,7 @@ interface Config {
     testProjectSeveraId: string;
   };
   s3: {
-    articleBuket: string;
+    articleBucket: string;
     articleImagesFolder: string;
   };
 }
@@ -40,22 +40,22 @@ const config: Config = {
   auth: {
     url: env.VITE_KEYCLOAK_URL,
     realm: env.VITE_KEYCLOAK_REALM,
-    clientId: env.VITE_KEYCLOAK_CLIENT_ID,
+    clientId: env.VITE_KEYCLOAK_CLIENT_ID
   },
   lambdas: {
-    baseUrl: env.VITE_HOME_LAMBDAS_BASE_URL,
+    baseUrl: env.VITE_HOME_LAMBDAS_BASE_URL
   },
   person: {
-    forecastUserIdOverride: env.VITE_FORECAST_USER_ID_OVERRIDE,
+    forecastUserIdOverride: env.VITE_FORECAST_USER_ID_OVERRIDE
   },
   user: {
-    testUserSeveraId: env.VITE_SEVERA_TEST_USER_ID,
+    testUserSeveraId: env.VITE_SEVERA_TEST_USER_ID
   },
   project: {
-    testProjectSeveraId: env.VITE_SEVERA_TEST_PROJECT_ID,
+    testProjectSeveraId: env.VITE_SEVERA_TEST_PROJECT_ID
   },
   s3: {
-    articleBuket: env.VITE_S3_ARTICLE_BUCKET,
+    articleBucket: env.VITE_S3_ARTICLE_BUCKET,
     articleImagesFolder: env.VITE_S3_ARTICLE_IMAGES_FOLDER
   }
 };

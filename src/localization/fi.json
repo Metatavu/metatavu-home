@@ -207,7 +207,8 @@
     "title": "Oletko varma?",
     "message": "Poista valitut lomahakemukset?",
     "editMessage": "Tämä tarkistettu lomapyyntö palautetaan käsittelyyn, jos tallennat muutokset. Haluatko jatkaa?",
-    "editDraftMessage": "Tämä luonnos lomapyyntö lähetetään käsittelyyn, jos tallennat muutokset. Haluatko jatkaa?"
+    "editDraftMessage": "Tämä lomapyyntöluonnos lähetetään käsittelyyn, jos tallennat muutokset. Haluatko jatkaa?",
+    "updateMessage": "Haluatko varmasti päivittää?"
   },
   "errorHandler": {
     "cancelButtonText": "Sulje",
@@ -446,6 +447,7 @@
     "labelImage": "Kuvan URL-osoite",
     "labelDescription": "Kuvaus",
     "labelLink": "Sinulla on {0} artikkelia odottamassa tarkistusta.",
+    "labelLinkPlaceholder": "Syötä URL-osoite tähän, esim. https://example.com",
     "draft": "luonnos",
     "allArticles": "kaikki",
     "approvedArticles": "hyväksytyt",

@@ -233,6 +233,7 @@ export interface Localized extends LocalizedStringsMethods {
     message: string;
     editMessage: string;
     editDraftMessage: string;
+    updateMessage: string;
   };
   /**
    * Translations related to error handler
@@ -560,6 +561,7 @@ export interface Localized extends LocalizedStringsMethods {
     labelImage: string;
     labelDescription: string;
     labelLink: string;
+    labelLinkPlaceholder: string;
     draft: string;
     allArticles: string;
     approvedArticles: string;

@@ -11,6 +11,7 @@ import type { Article, ArticleMetadata, User } from "src/generated/homeLambdasCl
 import { useLambdasApi } from "src/hooks/use-api";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
+import { formatDate } from "src/utils/time-utils";
 import BackButton from "../generics/back-button";
 import ActionButton from "../wiki-documentation/action-button";
 import ArticleListItem from "../wiki-documentation/article-list-item";
@@ -167,28 +168,20 @@ const ArticleScreen = () => {
             />
           ) : (
             <>
-              <Grid container spacing={1.5} sx={{ marginBottom: 3, marginTop: 0.5 }}>
-                <Grid item xs={adminMode ? 4 : 12}>
-                  <BackButton
-                    onClick={formOpen ? handleClose : undefined}
-                    styles={{ padding: "6px" }}
-                  />
+              {adminMode && (
+                <Grid container spacing={1.5} sx={{ marginBottom: 3, marginTop: 0.5 }}>
+                  <Grid item xs={6}>
+                    <ActionButton onClick={() => setFormOpen(true)}>
+                      {strings.wikiDocumentation.edit}
+                    </ActionButton>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <ActionButton onClick={handleApprove}>
+                      {strings.wikiDocumentation.approve}
+                    </ActionButton>
+                  </Grid>
                 </Grid>
-                {adminMode && (
-                  <>
-                    <Grid item xs={4}>
-                      <ActionButton onClick={() => setFormOpen(true)}>
-                        {strings.wikiDocumentation.edit}
-                      </ActionButton>
-                    </Grid>
-                    <Grid item xs={4}>
-                      <ActionButton onClick={handleApprove}>
-                        {strings.wikiDocumentation.approve}
-                      </ActionButton>
-                    </Grid>
-                  </>
-                )}
-              </Grid>
+              )}
               <Card sx={{ padding: 3, paddingTop: 0, marginBottom: 3 }}>
                 {/* Title */}
                 {article?.title && (
@@ -215,9 +208,9 @@ const ArticleScreen = () => {
                 {/* Created / Updated Dates */}
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                   {article?.createdAt &&
-                    `Created: ${new Date(article.createdAt).toLocaleDateString()}`}
+                    `Created: ${formatDate(DateTime.fromJSDate(article.createdAt))}`}
                   {article?.lastUpdatedAt &&
-                    ` | Updated: ${new Date(article.lastUpdatedAt).toLocaleDateString()}`}
+                    ` | Updated: ${formatDate(DateTime.fromJSDate(article.lastUpdatedAt))}`}
                 </Typography>
                 {/* Tags */}
                 {article?.tags && article.tags.length > 0 && (
@@ -281,6 +274,11 @@ const ArticleScreen = () => {
                   ))}
                 </Box>
               )}
+              <Grid container spacing={1.5} sx={{ marginBottom: 3 }}>
+                <Grid item xs={12}>
+                  <BackButton styles={{ padding: "6px" }} />
+                </Grid>
+              </Grid>
             </>
           )}
         </>
