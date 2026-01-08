@@ -1,4 +1,4 @@
-import { Alert, Box, Card, CircularProgress, Grid, Snackbar, Typography } from "@mui/material";
+import { Box, Card, CircularProgress, Grid, Typography } from "@mui/material";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
@@ -6,7 +6,6 @@ import { useParams } from "react-router";
 import { articleAtom, draftArticleAtom } from "src/atoms/article";
 import { userProfileAtom } from "src/atoms/auth";
 import { errorAtom } from "src/atoms/error";
-import { snackbarAtom } from "src/atoms/snackbar";
 import { usersAtom } from "src/atoms/user";
 import type { Article, ArticleMetadata, User } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
@@ -17,6 +16,7 @@ import ActionButton from "../wiki-documentation/action-button";
 import ArticleListItem from "../wiki-documentation/article-list-item";
 import CreateOrEditArticleForm from "../wiki-documentation/create-article-form";
 import "../wiki-documentation/rich-text-editor/editor.css";
+import { useSnackbar } from "src/hooks/use-snackbar";
 
 /**
  * Article screen component displaying the article content.
@@ -33,7 +33,7 @@ const ArticleScreen = () => {
   const users = useAtomValue(usersAtom);
   const userProfile = useAtomValue(userProfileAtom);
   const loggedInUser = users.find((users: User) => users.id === userProfile?.id);
-  const [snackbar, setSnackbar] = useAtom(snackbarAtom);
+  const showSnackbar = useSnackbar();
   const setArticlesAtom = useSetAtom(articleAtom);
   const setDraftArticlesAtom = useSetAtom(draftArticleAtom);
 
@@ -133,11 +133,7 @@ const ArticleScreen = () => {
         setArticlesAtom((articles) => [response, ...(articles || [])]);
         if (setArticle) setArticle(updatedArticle);
       }
-      setSnackbar({
-        open: true,
-        message: strings.snackbar.articleApproved,
-        severity: "success"
-      });
+      showSnackbar(strings.snackbar.articleApproved);
     } catch (error: any) {
       const message = (await error.response.json()).message;
       setError(message);
@@ -287,34 +283,6 @@ const ArticleScreen = () => {
           )}
         </>
       )}
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={4000}
-        onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
-        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-        sx={{
-          "& .MuiSnackbarContent-root": {
-            minWidth: 400,
-            minHeight: 100,
-            fontSize: "1.5rem",
-            borderRadius: "16px"
-          }
-        }}
-      >
-        <Alert
-          onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
-          severity="success"
-          sx={{
-            width: "100%",
-            fontSize: "1.5rem",
-            py: 3,
-            px: 4,
-            borderRadius: "14px"
-          }}
-        >
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
     </>
   );
 };
