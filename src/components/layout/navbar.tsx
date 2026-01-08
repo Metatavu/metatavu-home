@@ -39,7 +39,7 @@ const NavBar = () => {
   const setError = useSetAtom(errorAtom);
   const { slackAvatarsApi } = useLambdasApi();
   const navigate = useNavigate();
-  const loggenInUserEmail = userProfile?.email || undefined;
+  const loggedInUserEmail = userProfile?.email || undefined;
 
   /**
    * Handles opening user menu
@@ -75,10 +75,10 @@ const NavBar = () => {
    * Fetch Slack avatars for logged in user
    */
   const getSlackAvatars = async () => {
-    if (avatars) return;
+    if (avatars?.image_original) return;
     try {
-      if (!loggenInUserEmail) return;
-      const encodedEmail = encodeURIComponent(loggenInUserEmail);
+      if (!loggedInUserEmail) return;
+      const encodedEmail = encodeURIComponent(loggedInUserEmail);
       const fetchedAvatars = await slackAvatarsApi.getSlackUserAvatarByEmail({
         email: encodedEmail
       });
@@ -102,7 +102,7 @@ const NavBar = () => {
           <Box>
             <Tooltip title={strings.header.openUserMenu}>
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                {<Avatar src={avatars?.image_original} />}
+                {<Avatar src={avatars?.image_original || ""} />}
               </IconButton>
             </Tooltip>
             <Menu
