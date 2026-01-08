@@ -17,6 +17,7 @@ import { softwareAtom } from "src/atoms/software";
 import { usersAtom } from "src/atoms/user";
 import type { SoftwareRegistry } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
+import { useSnackbar } from "src/hooks/use-snackbar";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import { formatDate } from "src/utils/time-utils";
@@ -43,6 +44,7 @@ const SoftwareDetails = () => {
   const loggedUserId = auth?.token?.sub ?? "";
   const { adminMode } = useUserRole();
   const users = useAtomValue(usersAtom) || [];
+  const showSnackbar = useSnackbar();
 
   /**
    * Fetches software details.
@@ -100,6 +102,7 @@ const SoftwareDetails = () => {
         softwareRegistry: { ...software, users: updatedUsers }
       });
       setSoftware({ ...software, users: updatedUsers });
+      showSnackbar(strings.snackbar.softwareRemoved);
     } catch (error) {
       setError((error as Error).message || "Error removing user from software");
     }
@@ -132,6 +135,7 @@ const SoftwareDetails = () => {
         softwareRegistry: { ...software, users: updatedUsers }
       });
       setSoftware({ ...software, users: updatedUsers });
+      showSnackbar(strings.snackbar.softwareAdded);
     } catch (error) {
       setError((error as Error).message || "Error adding user to software");
     }
@@ -150,6 +154,7 @@ const SoftwareDetails = () => {
       });
       setSoftware(updatedSoftware);
       setIsEditModalOpen(false);
+      showSnackbar(strings.snackbar.softwareUpdated);
     } catch (error) {
       setError((error as Error).message || "Error updating software");
     }

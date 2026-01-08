@@ -461,6 +461,8 @@
     "questionnaireUpdated": "Questionnaire updated successfully!",
     "questionnaireDeleted": "Questionnaire deleted successfully!",
     "softwareAdded": "Software added successfully!",
+    "softwareSubmitted": "Software submitted successfully!",
+    "softwareRemoved": "Software removed successfully!",
     "softwareUpdated": "Software updated successfully!",
     "softwareDeleted": "Software deleted successfully!",
     "softwareStatusChanged": "Software status changed successfully!",
