@@ -39,7 +39,7 @@ const NavBar = () => {
   const setError = useSetAtom(errorAtom);
   const { slackAvatarsApi } = useLambdasApi();
   const navigate = useNavigate();
-  const loggenInUserEmail = userProfile?.email || "";
+  const loggenInUserEmail = userProfile?.email || undefined;
 
   /**
    * Handles opening user menu
@@ -77,6 +77,7 @@ const NavBar = () => {
   const getSlackAvatars = async () => {
     if (avatars) return;
     try {
+      if (!loggenInUserEmail) return;
       const encodedEmail = encodeURIComponent(loggenInUserEmail);
       const fetchedAvatars = await slackAvatarsApi.getSlackUserAvatarByEmail({
         email: encodedEmail
