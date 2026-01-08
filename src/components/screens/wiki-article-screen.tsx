@@ -2,7 +2,7 @@ import { Box, Card, CircularProgress, Grid, Typography } from "@mui/material";
 import { useAtomValue, useSetAtom } from "jotai";
 import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
-import { Navigate, useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { articleAtom, draftArticleAtom } from "src/atoms/article";
 import { userProfileAtom } from "src/atoms/auth";
 import { errorAtom } from "src/atoms/error";
@@ -16,7 +16,6 @@ import ActionButton from "../wiki-documentation/action-button";
 import ArticleListItem from "../wiki-documentation/article-list-item";
 import CreateOrEditArticleForm from "../wiki-documentation/create-article-form";
 import "../wiki-documentation/rich-text-editor/editor.css";
-import { useNavigate } from "react-router";
 import { useSnackbar } from "src/hooks/use-snackbar";
 
 /**
