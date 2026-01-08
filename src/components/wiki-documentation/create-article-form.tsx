@@ -110,38 +110,6 @@ const CreateOrEditArticleForm = ({
       setError(message);
     }
   };
-  /**
-   * Updates article atoms based on admin mode and draft status
-   *
-   * @param updatedArticle - The updated article data
-   * @param response - The response article from the API
-   */
-  const updateArticleAtoms = (updatedArticle: Article, response: Article) => {
-    if (!adminMode) {
-      if (!updatedArticle.draft) {
-        setArticlesAtom((articles) =>
-          (articles || []).map((a) => (a.id === updatedArticle.id ? updatedArticle : a))
-        );
-      } else {
-        setDraftArticlesAtom((articles) =>
-          (articles || []).map((a) => (a.id === updatedArticle.id ? updatedArticle : a))
-        );
-      }
-    } else {
-      if (article?.draft) {
-        setDraftArticlesAtom((articles) =>
-          (articles || []).filter((article) => article.id !== response.id)
-        );
-      } else {
-        setArticlesAtom((articles) =>
-          (articles || []).filter((article) => article.id !== response.id)
-        );
-      }
-      setArticlesAtom((articles) => [response, ...(articles || [])]);
-      setTags((tags) => [...new Set<string>(tags.concat(selectedTags))]);
-      if (setArticle) setArticle(updatedArticle);
-    }
-  };
 
   /**
    * Handles updating an existing article with current form and editor content.
@@ -174,6 +142,7 @@ const CreateOrEditArticleForm = ({
       setArticle?.(response);
       setTags((tags) => [...new Set(tags.concat(selectedTags))]);
       showSnackbar(strings.snackbar.articleUpdated);
+      navigate(-1);
       handleClose();
     } catch (error: any) {
       const message = (await error.response.json()).message;
