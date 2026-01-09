@@ -94,6 +94,8 @@ const SprintViewScreen = () => {
     filterLabel = strings.sprint.project;
   } else if (filterType === SprintViewFilterTypes.user) {
     filterLabel = strings.sprint.user;
+  } else if (filterType === SprintViewFilterTypes.clear) {
+    filterLabel = `${strings.sprint.project} / ${strings.sprint.user}`;
   }
 
   return (
