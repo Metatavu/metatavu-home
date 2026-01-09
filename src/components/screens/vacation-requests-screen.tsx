@@ -190,7 +190,7 @@ const VacationRequestsScreen = () => {
       );
       setVacationRequests(updatedVacationRequests);
 
-      showSnackbar(strings.snackbar.vacationRequestDeleted, "success");
+      showSnackbar(strings.snackbar.vacationRequestDeleted);
     }
   };
 
@@ -236,7 +236,7 @@ const VacationRequestsScreen = () => {
         }
       });
       setVacationRequests([createdRequest, ...vacationRequests]);
-      showSnackbar(strings.snackbar.vacationRequestCreated, "success");
+      showSnackbar(strings.snackbar.vacationRequestCreated);
     } catch (error) {
       setError(`${strings.vacationRequestError.createRequestError}, ${error}`);
     }
@@ -279,7 +279,7 @@ const VacationRequestsScreen = () => {
         }
       });
       setVacationRequests([createdRequest, ...vacationRequests]);
-      showSnackbar(strings.snackbar.vacationDraftSaved, "success");
+      showSnackbar(strings.snackbar.vacationDraftSaved);
     } catch (error) {
       setError(`${strings.vacationRequestError.createRequestError}, ${error}`);
     }
@@ -350,7 +350,7 @@ const VacationRequestsScreen = () => {
         vacationRequest.id === updatedRequest.id ? updatedRequest : vacationRequest
       );
       setVacationRequests(updatedVacationRequests);
-      showSnackbar(strings.snackbar.vacationRequestUpdated, "success");
+      showSnackbar(strings.snackbar.vacationRequestUpdated);
     } catch (error) {
       setError(`${strings.vacationRequestError.updateRequestError}, ${error}`);
     }
@@ -427,7 +427,7 @@ const VacationRequestsScreen = () => {
       // Refresh user data to get updated remaining vacation days.
       const updatedUser = await usersApi.findUser({ userId: loggedInUser.id });
       setUsers((prevUsers) => prevUsers.map((u) => (u.id === updatedUser.id ? updatedUser : u)));
-      showSnackbar(strings.snackbar.vacationRequestStatusUpdated, "success");
+      showSnackbar(strings.snackbar.vacationRequestStatusUpdated);
     } catch (error) {
       setError(`${strings.vacationRequestError.updateRequestError}, ${error}`);
     }
