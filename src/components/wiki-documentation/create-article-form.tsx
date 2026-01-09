@@ -119,31 +119,21 @@ const CreateOrEditArticleForm = ({
    * @param updatedArticle - The updated article data
    * @param response - The response article from the API
    */
-  const updateArticleAtoms = (updatedArticle: Article, response: Article) => {
-    if (!adminMode) {
-      if (!updatedArticle.draft) {
-        setArticlesAtom((articles) =>
-          (articles || []).map((a) => (a.id === updatedArticle.id ? updatedArticle : a))
-        );
-      } else {
-        setDraftArticlesAtom((articles) =>
-          (articles || []).map((a) => (a.id === updatedArticle.id ? updatedArticle : a))
-        );
-      }
+  const updateArticleAtoms = (response: Article) => {
+    if (!article) return;
+
+    if (article?.draft) {
+      setDraftArticlesAtom((articles) => (articles || []).filter((a) => a.id !== article.id));
     } else {
-      if (article?.draft) {
-        setDraftArticlesAtom((articles) =>
-          (articles || []).filter((article) => article.id !== response.id)
-        );
-      } else {
-        setArticlesAtom((articles) =>
-          (articles || []).filter((article) => article.id !== response.id)
-        );
-      }
-      setArticlesAtom((articles) => [response, ...(articles || [])]);
-      setTags((tags) => [...new Set<string>(tags.concat(selectedTags))]);
-      if (setArticle) setArticle(updatedArticle);
+      setArticlesAtom((articles) => (articles || []).filter((a) => a.id !== article.id));
     }
+    if (response.draft) {
+      setDraftArticlesAtom((articles) => [response, ...(articles || [])]);
+    } else {
+      setArticlesAtom((articles) => [response, ...(articles || [])]);
+    }
+    setTags((tags) => [...new Set(tags.concat(selectedTags))]);
+    setArticle?.(response);
   };
 
   /**
@@ -152,8 +142,9 @@ const CreateOrEditArticleForm = ({
    * Closes the form on success or sets an error message on failure.
    */
   const handleEdit = async () => {
-    if (!editorRef.current || !article?.id) return;
+    if (!adminMode || !editorRef.current || !article?.id) return;
     const content = editorRef.current?.getMarkdownContent();
+
     const updatedArticle: Article = {
       path: path,
       title: title,
@@ -163,23 +154,13 @@ const CreateOrEditArticleForm = ({
       description: description,
       createdBy: article.createdBy,
       lastUpdatedBy: loggedInUser?.id || "",
-      draft: !adminMode
+      draft: article.draft
     };
 
     try {
       const response = await articleApi.updateArticle({ article: updatedArticle, id: article.id });
-      updateArticleAtoms(updatedArticle, response);
-
-      const key = `edit-${adminMode ? "admin" : "user"}`;
-      const messages: Record<string, string> = {
-        "edit-admin": strings.snackbar.articleUpdated,
-        "edit-user": strings.snackbar.changesSaved
-      };
-      setSnackbar({
-        open: true,
-        message: messages[key],
-        severity: "success"
-      });
+      updateArticleAtoms(response);
+      showSnackbar(strings.snackbar.articleUpdated);
       if (adminMode && action === "edit") {
         navigate("/admin/wiki-documentation");
       } else {
