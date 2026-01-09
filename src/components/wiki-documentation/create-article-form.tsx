@@ -116,7 +116,6 @@ const CreateOrEditArticleForm = ({
   /**
    * Updates article atoms based on admin mode and draft status
    *
-   * @param updatedArticle - The updated article data
    * @param response - The response article from the API
    */
   const updateArticleAtoms = (response: Article) => {
