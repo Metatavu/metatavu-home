@@ -18,10 +18,10 @@ import { useNavigate } from "react-router-dom";
 import { articleAtom, draftArticleAtom, tagsAtom } from "src/atoms/article";
 import { userProfileAtom } from "src/atoms/auth";
 import { errorAtom } from "src/atoms/error";
-import { snackbarAtom } from "src/atoms/snackbar";
 import { usersAtom } from "src/atoms/user";
 import type { Article, User } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
+import { useSnackbar } from "src/hooks/use-snackbar";
 import strings from "src/localization/strings";
 import { uploadFile } from "src/utils/s3-file-utils";
 import BackButton from "../generics/back-button";
@@ -72,7 +72,8 @@ const CreateOrEditArticleForm = ({
   const users = useAtomValue(usersAtom);
   const userProfile = useAtomValue(userProfileAtom);
   const loggedInUser = users.find((users: User) => users.id === userProfile?.id);
-  const setSnackbar = useSetAtom(snackbarAtom);
+  const showSnackbar = useSnackbar();
+
   /**
    * Handles creating a new article using the editor content and form state.
    * Sends the article data to the API and updates local state accordingly.
@@ -103,11 +104,7 @@ const CreateOrEditArticleForm = ({
         "create-user": strings.snackbar.articleSubmitted,
         "create-admin": strings.snackbar.articleCreated
       };
-      setSnackbar({
-        open: true,
-        message: messages[key],
-        severity: "success"
-      });
+      showSnackbar(messages[key]);
 
       handleClose();
     } catch (error: any) {
@@ -115,6 +112,7 @@ const CreateOrEditArticleForm = ({
       setError(message);
     }
   };
+
   /**
    * Updates article atoms based on admin mode and draft status
    *
