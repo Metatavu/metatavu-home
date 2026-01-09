@@ -88,6 +88,14 @@ const SprintViewScreen = () => {
     setLoading(false);
   };
 
+  // Extracted label for search TextField
+  let filterLabel = "";
+  if (filterType === SprintViewFilterTypes.project) {
+    filterLabel = strings.sprint.project;
+  } else if (filterType === SprintViewFilterTypes.user) {
+    filterLabel = strings.sprint.user;
+  }
+
   return (
     <>
       {loading ? (
@@ -145,14 +153,7 @@ const SprintViewScreen = () => {
                     </FormControl>
                   </Box>
                   <TextField
-                    label={strings.formatString(
-                      strings.sprint.searchBy,
-                      filterType === SprintViewFilterTypes.project
-                        ? strings.sprint.project
-                        : filterType === SprintViewFilterTypes.user
-                          ? strings.sprint.user
-                          : ""
-                    )}
+                    label={strings.formatString(strings.sprint.searchBy, filterLabel)}
                     variant="outlined"
                     fullWidth
                     value={searchQuery}
