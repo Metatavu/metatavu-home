@@ -32,6 +32,7 @@ import type { SoftwareRegistry } from "src/generated/homeLambdasClient";
 import { SoftwareStatus } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
 import useCreateSoftware from "src/hooks/use-create-software";
+import { useSnackbar } from "src/hooks/use-snackbar";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import BackButton from "../generics/back-button";
@@ -61,6 +62,7 @@ const AllSoftwareScreen = () => {
   const { createSoftware } = useCreateSoftware(loggedUserId, setApplications);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedApplicationId, setSelectedApplicationId] = useState<string | null>(null);
+  const showSnackbar = useSnackbar();
 
   type SoftwareStatusFilterOptions = (typeof allStatusValues)[number];
 
@@ -183,6 +185,7 @@ const AllSoftwareScreen = () => {
           id,
           softwareRegistry: updatedApp
         });
+        showSnackbar(strings.snackbar.softwareStatusChanged);
       }
     } catch (error) {
       setError(`Error updating status: ${error}`);
@@ -219,6 +222,7 @@ const AllSoftwareScreen = () => {
           users: updatedUsers
         }
       });
+      showSnackbar(strings.snackbar.softwareAdded);
     } catch (error) {
       setError(`Error saving the app: ${error}`);
     }
@@ -258,6 +262,7 @@ const AllSoftwareScreen = () => {
       setApplications(updatedApplications);
 
       await softwareApi.deleteSoftwareById({ id: selectedApplicationId });
+      showSnackbar(strings.snackbar.softwareDeleted);
     } catch (error) {
       setError(`Error deleting the app: ${error}`);
     } finally {

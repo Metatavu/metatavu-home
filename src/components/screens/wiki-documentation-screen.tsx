@@ -3,7 +3,6 @@ import FormatListBulletedOutlinedIcon from "@mui/icons-material/FormatListBullet
 import GridViewIcon from "@mui/icons-material/GridView";
 import SearchOffIcon from "@mui/icons-material/SearchOff";
 import {
-  Alert,
   Autocomplete,
   Box,
   Button,
@@ -19,18 +18,17 @@ import {
   type PopperProps,
   Select,
   type SelectChangeEvent,
-  Snackbar,
   styled,
   TextField,
   Typography
 } from "@mui/material";
-import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { useEffect, useId, useState } from "react";
 import { articleAtom, draftArticleAtom, tagsAtom } from "src/atoms/article";
 import { errorAtom } from "src/atoms/error";
-import { snackbarAtom } from "src/atoms/snackbar";
 import type { ArticleMetadata } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
+import { useSnackbar } from "src/hooks/use-snackbar";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import { wikiScreenColors } from "src/theme";
@@ -70,7 +68,7 @@ const WikiDocumentationScreen = () => {
   const [searchInput, setSearchInput] = useState("");
   const [displayOption, setDisplayOption] = useState("all");
   const [pageNumber, setPageNumber] = useState(1);
-  const [snackbar, setSnackbar] = useAtom(snackbarAtom);
+  const showSnackbar = useSnackbar();
   const autoCompleteId = useId();
   useEffect(() => {
     if (!articles) getArticles();
@@ -185,6 +183,7 @@ const WikiDocumentationScreen = () => {
     try {
       await articleApi.deleteArticle({ id: articleId });
       setArticlesAtom((articles) => (articles ?? []).filter((article) => article.id !== articleId));
+      showSnackbar(strings.snackbar.articleDeleted);
     } catch (error: any) {
       const message = (await error.response.json()).message;
       setError(message);
@@ -620,34 +619,6 @@ const WikiDocumentationScreen = () => {
           <BackButton styles={{ marginBottom: 2 }} />
         </>
       )}
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={4000}
-        onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
-        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-        sx={{
-          "& .MuiSnackbarContent-root": {
-            minWidth: 400,
-            minHeight: 100,
-            fontSize: "1.5rem",
-            borderRadius: "16px"
-          }
-        }}
-      >
-        <Alert
-          onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
-          severity="success"
-          sx={{
-            width: "100%",
-            fontSize: "1.5rem",
-            py: 3,
-            px: 4,
-            borderRadius: "14px"
-          }}
-        >
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
     </>
   );
 };

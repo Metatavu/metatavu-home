@@ -19,6 +19,7 @@ import { useNavigate } from "react-router-dom";
 import { errorAtom } from "src/atoms/error";
 import type { AnswerOption, Question, Questionnaire } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
+import { useSnackbar } from "src/hooks/use-snackbar";
 import strings from "src/localization/strings";
 import {
   addQuestion,
@@ -49,6 +50,7 @@ const NewQuestionnaireBuilder = () => {
   const [tagInput, setTagInput] = useState<string>("");
   const [tagError, setTagError] = useState<string | null>(null);
   const isDisabled = !isFormValid(questionnaire);
+  const showSnackbar = useSnackbar();
 
   /**
    * Function to handle input change in the questionnaire title and description
@@ -171,6 +173,7 @@ const NewQuestionnaireBuilder = () => {
           passedUsers: []
         }
       });
+      showSnackbar(strings.snackbar.questionnaireCreated);
       closeAndClear();
       navigate(-1);
       return createdQuestionnaire;

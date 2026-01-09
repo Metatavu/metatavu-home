@@ -29,6 +29,7 @@ import { errorAtom } from "src/atoms/error";
 import { usersAtom } from "src/atoms/user";
 import type { Questionnaire, User } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
+import { useSnackbar } from "src/hooks/use-snackbar";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import { QuestionnairePreviewMode } from "src/types/index";
@@ -58,6 +59,7 @@ const QuestionnaireTable = () => {
   const userProfile = useAtomValue(userProfileAtom);
   const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
   const dataGridRef = useRef(null);
+  const showSnackbar = useSnackbar();
 
   useEffect(() => {
     const fetchQuestionnaires = async () => {
@@ -141,6 +143,7 @@ const QuestionnaireTable = () => {
       setQuestionnaires((prevQuestionnaires) =>
         prevQuestionnaires.filter((questionnaire) => questionnaire.id !== deleteId)
       );
+      showSnackbar(strings.snackbar.questionnaireDeleted);
       handleCloseDialog();
     } catch (error) {
       setError(`${strings.error.questionnaireDeleteFailed}, ${error}`);

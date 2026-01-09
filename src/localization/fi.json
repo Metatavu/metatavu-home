@@ -458,7 +458,22 @@
     "articleCreated": "Artikkeli luotu onnistuneesti!",
     "articleUpdated": "Artikkeli päivitetty onnistuneesti!",
     "articleApproved": "Artikkeli hyväksytty onnistuneesti!",
-    "changesSaved": "Muutokset tallennettu onnistuneesti!"
+    "articleDeleted": "Artikkeli poistettu onnistuneesti!",
+    "changesSaved": "Muutokset tallennettu onnistuneesti!",
+    "questionnaireCreated": "Kysely on luotu!",
+    "questionnaireUpdated": "Kysely on päivitetty!",
+    "questionnaireDeleted": "Kysely on poistettu!",
+    "softwareAdded": "Sovellus on lisätty omiin sovelluksiin!",
+    "softwareSubmitted": "Sovellus on lähetetty hyväksyttäväksi!",
+    "softwareRemoved": "Sovellus on poistettu omista sovelluksista!",
+    "softwareUpdated": "Sovellus on päivitetty!",
+    "softwareDeleted": "Sovellus on poistettu!",
+    "softwareStatusChanged": "Sovelluksen tila on päivitetty!",
+    "vacationDraftSaved": "Luonnos on tallennettu!",
+    "vacationRequestCreated": "Lomapyyntö on luotu!",
+    "vacationRequestUpdated": "Lomapyyntö on päivitetty!",
+    "vacationRequestDeleted": "Lomapyyntö on poistettu!",
+    "vacationRequestStatusUpdated": "Lomapyynnön tila on päivitetty!"
   },
   "settingsScreen": {
     "saveSettings": "Tallena Asetukset",

@@ -2,12 +2,14 @@ import { useState } from "react";
 import type { SoftwareRegistry } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
+import { useSnackbar } from "./use-snackbar";
 
 const useCreateSoftware = (
   loggedUserId: string,
   setApplications: React.Dispatch<React.SetStateAction<SoftwareRegistry[]>>
 ) => {
   const { softwareApi } = useLambdasApi();
+  const showSnackbar = useSnackbar();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -24,6 +26,7 @@ const useCreateSoftware = (
         softwareRegistry: newSoftware
       });
       setApplications((prev) => [createdSoftware, ...prev]);
+      showSnackbar(strings.snackbar.softwareAdded);
     } catch (error) {
       setError(`${strings.softwareRegistry.errorCreatingSoftware} ${error}`);
     } finally {

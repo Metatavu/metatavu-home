@@ -14,6 +14,7 @@ import {
 import type { User } from "src/generated/homeLambdasClient";
 import { type VacationRequest, VacationRequestStatuses } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
+import { useSnackbar } from "src/hooks/use-snackbar";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import { renderVacationDaysTextForScreen } from "src/utils/vacation-days-utils";
@@ -38,6 +39,7 @@ const VacationRequestsScreen = () => {
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const selectedId = params.get("selectedId");
+  const showSnackbar = useSnackbar();
 
   const upcomingVacationRequests = useMemo(
     () => vacationRequests.filter((request) => request.endDate.getTime() > Date.now()),
@@ -187,6 +189,8 @@ const VacationRequestsScreen = () => {
         })
       );
       setVacationRequests(updatedVacationRequests);
+
+      showSnackbar(strings.snackbar.vacationRequestDeleted);
     }
   };
 
@@ -232,6 +236,7 @@ const VacationRequestsScreen = () => {
         }
       });
       setVacationRequests([createdRequest, ...vacationRequests]);
+      showSnackbar(strings.snackbar.vacationRequestCreated);
     } catch (error) {
       setError(`${strings.vacationRequestError.createRequestError}, ${error}`);
     }
@@ -274,6 +279,7 @@ const VacationRequestsScreen = () => {
         }
       });
       setVacationRequests([createdRequest, ...vacationRequests]);
+      showSnackbar(strings.snackbar.vacationDraftSaved);
     } catch (error) {
       setError(`${strings.vacationRequestError.createRequestError}, ${error}`);
     }
@@ -344,6 +350,7 @@ const VacationRequestsScreen = () => {
         vacationRequest.id === updatedRequest.id ? updatedRequest : vacationRequest
       );
       setVacationRequests(updatedVacationRequests);
+      showSnackbar(strings.snackbar.vacationRequestUpdated);
     } catch (error) {
       setError(`${strings.vacationRequestError.updateRequestError}, ${error}`);
     }
@@ -420,6 +427,7 @@ const VacationRequestsScreen = () => {
       // Refresh user data to get updated remaining vacation days.
       const updatedUser = await usersApi.findUser({ userId: loggedInUser.id });
       setUsers((prevUsers) => prevUsers.map((u) => (u.id === updatedUser.id ? updatedUser : u)));
+      showSnackbar(strings.snackbar.vacationRequestStatusUpdated);
     } catch (error) {
       setError(`${strings.vacationRequestError.updateRequestError}, ${error}`);
     }
