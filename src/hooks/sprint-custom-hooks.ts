@@ -34,20 +34,22 @@ const useSprintViewHandlers = () => {
    * @param row - type of ResourceAllocations.
    */
   const handleRowClick = (row: ResourceAllocations) => {
+    if (filterType === SprintViewFilterTypes.clear) return;
     const clickedProject = row.project || null;
 
+    if (!clickedProject) return;
     // Toggle selection
     if (selectedProject?.severaProjectId === clickedProject?.severaProjectId) {
       setSelectedProject(null);
       setSearchQuery("");
-    } else {
-      setSelectedProject(clickedProject);
+      return;
+    }
+    setSelectedProject(clickedProject);
 
-      if (filterType === SprintViewFilterTypes.project) {
-        setSearchQuery(clickedProject?.name || "");
-      } else if (filterType === SprintViewFilterTypes.user) {
-        setSearchQuery(row.user?.name || "");
-      }
+    if (filterType === SprintViewFilterTypes.project) {
+      setSearchQuery(clickedProject?.name || "");
+    } else if (filterType === SprintViewFilterTypes.user) {
+      setSearchQuery(row.user?.name || "");
     }
   };
 
