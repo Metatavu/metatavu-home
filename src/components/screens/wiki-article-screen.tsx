@@ -1,5 +1,5 @@
-import { Alert, Box, Card, CircularProgress, Grid, Snackbar, Typography } from "@mui/material";
-import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { Box, Card, CircularProgress, Grid, Typography } from "@mui/material";
+import { useAtomValue, useSetAtom } from "jotai";
 import { DateTime } from "luxon";
 import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
@@ -7,10 +7,10 @@ import { useNavigate, useParams } from "react-router";
 import { articleAtom, draftArticleAtom } from "src/atoms/article";
 import { userProfileAtom } from "src/atoms/auth";
 import { errorAtom } from "src/atoms/error";
-import { snackbarAtom } from "src/atoms/snackbar";
 import { usersAtom } from "src/atoms/user";
 import type { Article, ArticleMetadata, User } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
+import { useSnackbar } from "src/hooks/use-snackbar";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import { formatDate } from "src/utils/time-utils";
@@ -35,7 +35,7 @@ const ArticleScreen = () => {
   const users = useAtomValue(usersAtom);
   const userProfile = useAtomValue(userProfileAtom);
   const loggedInUser = users.find((users: User) => users.id === userProfile?.id);
-  const [snackbar, setSnackbar] = useAtom(snackbarAtom);
+  const showSnackbar = useSnackbar();
   const setArticlesAtom = useSetAtom(articleAtom);
   const setDraftArticlesAtom = useSetAtom(draftArticleAtom);
   const navigate = useNavigate();
@@ -136,11 +136,7 @@ const ArticleScreen = () => {
         setArticlesAtom((articles) => [response, ...(articles || [])]);
         if (setArticle) setArticle(updatedArticle);
       }
-      setSnackbar({
-        open: true,
-        message: strings.snackbar.articleApproved,
-        severity: "success"
-      });
+      showSnackbar(strings.snackbar.articleApproved);
       if (adminMode) {
         navigate("/admin/wiki-documentation");
       }
@@ -290,34 +286,6 @@ const ArticleScreen = () => {
           )}
         </>
       )}
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={4000}
-        onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
-        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-        sx={{
-          "& .MuiSnackbarContent-root": {
-            minWidth: 400,
-            minHeight: 100,
-            fontSize: "1.5rem",
-            borderRadius: "16px"
-          }
-        }}
-      >
-        <Alert
-          onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
-          severity="success"
-          sx={{
-            width: "100%",
-            fontSize: "1.5rem",
-            py: 3,
-            px: 4,
-            borderRadius: "14px"
-          }}
-        >
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
     </>
   );
 };
