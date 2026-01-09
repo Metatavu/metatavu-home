@@ -202,7 +202,7 @@ const ArticleScreen = () => {
                     sx={{
                       width: "100%",
                       maxHeight: 400,
-                      objectFit: "cover",
+                      objectFit: "contain",
                       borderRadius: 2,
                       mb: 2
                     }}
