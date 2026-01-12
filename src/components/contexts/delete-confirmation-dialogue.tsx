@@ -14,7 +14,7 @@ interface Props {
 }
 
 /**
- * Confirmation handler component
+ * Delete confirmation dialog component
  *
  * @param props component properties
  */
