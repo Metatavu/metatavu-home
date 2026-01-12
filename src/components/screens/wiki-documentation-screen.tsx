@@ -203,7 +203,6 @@ const WikiDocumentationScreen = () => {
    * Deletes the specified article by its ID and updates the articles atom.
    *
    * @param {string} selectedArticleId - The ID of the article to delete.
-   *
    */
   const handleDelete = async (selectedArticleId: string) => {
     if (!selectedArticleId) return;
