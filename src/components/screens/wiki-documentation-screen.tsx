@@ -35,7 +35,7 @@ import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import { wikiScreenColors } from "src/theme";
 import { getArticlesToFilter, sortArticlesByDate } from "src/utils/wiki-utils";
-import DeleteConfirmationDialog from "../contexts/delete-confirmation-dialogue";
+import DeleteConfirmationDialog from "../contexts/delete-confirmation-dialog";
 import BackButton from "../generics/back-button";
 import ArticleCard from "../wiki-documentation/article-card";
 import ArticleListItem from "../wiki-documentation/article-list-item";

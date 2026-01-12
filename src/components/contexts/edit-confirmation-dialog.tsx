@@ -20,7 +20,7 @@ interface Props {
  *
  * @param props component properties
  */
-const EditConfirmationDialogue = ({
+const EditConfirmationDialog = ({
   open,
   setOpen,
   onConfirm,
@@ -82,4 +82,4 @@ const EditConfirmationDialogue = ({
   );
 };
 
-export default EditConfirmationDialogue;
+export default EditConfirmationDialog;

@@ -29,7 +29,7 @@ import { useLambdasApi } from "src/hooks/use-api";
 import useCreateSoftware from "src/hooks/use-create-software";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
-import DeleteConfirmationDialog from "../contexts/delete-confirmation-dialogue";
+import DeleteConfirmationDialog from "../contexts/delete-confirmation-dialog";
 import BackButton from "../generics/back-button";
 import AddSoftwareModal from "../software-registry/AddSoftwareModal";
 import Content from "../software-registry/allContent";

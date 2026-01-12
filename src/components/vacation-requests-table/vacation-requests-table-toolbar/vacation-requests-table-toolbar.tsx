@@ -5,7 +5,7 @@ import { useAtomValue } from "jotai";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { languageAtom } from "src/atoms/language";
-import EditConfirmationDialogue from "src/components/contexts/edit-confirmation-dialogue";
+import EditConfirmationDialog from "src/components/contexts/edit-confirmation-dialog";
 import type { VacationRequest } from "src/generated/homeLambdasClient";
 import { VacationRequestStatuses } from "src/generated/homeLambdasClient";
 import useUserRole from "src/hooks/use-user-role";
@@ -13,7 +13,7 @@ import strings from "src/localization/strings";
 import { ToolbarFormModes, type VacationsDataGridRow } from "src/types";
 import { getToolbarTitle } from "src/utils/toolbar-utils";
 import type { FilterType } from "src/utils/vacation-filter-type";
-import DeleteConfirmationDialog from "../../contexts/delete-confirmation-dialogue";
+import DeleteConfirmationDialog from "../../contexts/delete-confirmation-dialog";
 import ToolbarDeleteButton from "./toolbar-delete-button";
 import ToolbarForm from "./toolbar-form/toolbar-form";
 import FormToggleButton from "./toolbar-form-toggle-button";
@@ -202,7 +202,7 @@ const TableToolbar = ({
         onConfirm={deleteVacationsData}
         deleteType="vacation"
       />
-      <EditConfirmationDialogue
+      <EditConfirmationDialog
         open={editConfirmationHandlerOpen}
         setOpen={setEditConfirmationHandlerOpen}
         isDraft={wasDraftBeforeEdit}

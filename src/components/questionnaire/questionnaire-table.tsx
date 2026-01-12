@@ -29,7 +29,7 @@ import { useLambdasApi } from "src/hooks/use-api";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import { QuestionnairePreviewMode } from "src/types/index";
-import DeleteConfirmationDialog from "../contexts/delete-confirmation-dialogue";
+import DeleteConfirmationDialog from "../contexts/delete-confirmation-dialog";
 
 /**
  * Questionnaire Table Component
