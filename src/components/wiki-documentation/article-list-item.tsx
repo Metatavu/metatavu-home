@@ -19,7 +19,7 @@ interface Props {
  *
  * @param article - Article metadata to display.
  * @param adminMode - Optional flag to enable admin features like delete button (default: false).
- * @param onDeleteClick - Optional callback to open the delete confirmation dialog.
+ * @param onDeleteClick - Optional callback function to open the delete confirmation dialog.
  */
 const ArticleListItem = ({ article, adminMode = false, onDeleteClick }: Props) => {
   const users = useAtomValue(usersAtom);

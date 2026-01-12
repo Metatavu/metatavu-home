@@ -181,18 +181,14 @@ const WikiDocumentationScreen = () => {
   };
   /**
    * Opens the delete confirmation dialog.
+   *
+   * @param {string | undefined} articleId - The ID of the article to be deleted.
    */
   const handleDeleteDialogOpen = (articleId: string | undefined) => {
     setSelectedArticleId(articleId);
     setDeleteDialogOpen(true);
   };
-  /**
-   * Closes the delete confirmation dialog.
-   */
-  const handleCloseDeleteDialog = () => {
-    setSelectedArticleId(undefined);
-    setDeleteDialogOpen(false);
-  };
+
   /**
    * Handles the confirmation of article deletion.
    */
@@ -219,8 +215,6 @@ const WikiDocumentationScreen = () => {
     } catch (error: any) {
       const message = (await error.response.json()).message;
       setError(message);
-    } finally {
-      handleCloseDeleteDialog();
     }
   };
   /**
