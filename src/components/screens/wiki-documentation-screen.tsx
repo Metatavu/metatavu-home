@@ -102,6 +102,7 @@ const WikiDocumentationScreen = () => {
       displayedArticles.slice((pageNumber - 1) * itemsPerPage, itemsPerPage * pageNumber)
     );
   }, [pageNumber, displayedArticles]);
+
   /**
    * Fetches all articles from the API and updates the relevant atoms.
    * If the user is in admin mode, it also fetches draft articles.
@@ -136,6 +137,7 @@ const WikiDocumentationScreen = () => {
       setLoading(false);
     }, 1000);
   };
+
   /**
    * Extracts unique tags from the provided articles and updates the tags atom.
    *
@@ -146,6 +148,7 @@ const WikiDocumentationScreen = () => {
     const uniqueTags = [...new Set(allTags)];
     setTags(uniqueTags);
   };
+
   /**
    * Retrieves the most recently created, updated, and read articles from the provided list.
    * Updates the lastUpdatedArticles state with these selected articles.
@@ -179,6 +182,7 @@ const WikiDocumentationScreen = () => {
     }
     setlastUpdatedArticles(lastUpdatedArticles);
   };
+
   /**
    * Opens the delete confirmation dialog.
    *
@@ -216,6 +220,7 @@ const WikiDocumentationScreen = () => {
       setError(message);
     }
   };
+
   /**
    * Handles changes in the search input field.
    * Filters articles based on the search query and selected tags.
@@ -245,6 +250,7 @@ const WikiDocumentationScreen = () => {
     );
     setDisplayedArticles(filteredArticles);
   };
+
   /**
    * Handles the selection of tags from the autocomplete component.
    * Filters the articles based on the selected tags and search input.
@@ -266,6 +272,7 @@ const WikiDocumentationScreen = () => {
     );
     setDisplayedArticles(filteredArticles);
   };
+
   /**
    * Handles the change of the display option between all articles and draft articles.
    * Updates the displayed articles based on the selected option.
@@ -303,6 +310,7 @@ const WikiDocumentationScreen = () => {
       color: colors.button.text
     }
   });
+
   /**
    * Renders the search bar component with autocomplete and tag selection.
    * Allows filtering articles based on input text and selected tags.
