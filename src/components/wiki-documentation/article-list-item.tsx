@@ -11,7 +11,7 @@ import { getLastActivityString } from "src/utils/wiki-utils";
 interface Props {
   article: ArticleMetadata;
   adminMode?: boolean;
-  handleDelete?: (articleId?: string) => void;
+  onDeleteClick?: () => void;
 }
 /**
  * Renders a responsive article list item with image, title, description, tags, and activity info.
@@ -19,9 +19,9 @@ interface Props {
  *
  * @param article - Article metadata to display.
  * @param adminMode - Optional flag to enable admin features like delete button (default: false).
- * @param handleDelete - Optional callback to delete the article by its ID.
+ * @param onDeleteClick - Optional callback to open the delete confirmation dialog.
  */
-const ArticleListItem = ({ article, adminMode = false, handleDelete }: Props) => {
+const ArticleListItem = ({ article, adminMode = false, onDeleteClick }: Props) => {
   const users = useAtomValue(usersAtom);
 
   if (!article?.createdBy) return null;
@@ -131,15 +131,15 @@ const ArticleListItem = ({ article, adminMode = false, handleDelete }: Props) =>
                 </Typography>
               </Grid>
             </Grid>
-            {adminMode && handleDelete && (
+            {adminMode && onDeleteClick && (
               <Button
                 variant="outlined"
                 size="small"
-                sx={{ marginTop: 1, zIndex: 10 }}
                 fullWidth
-                onClick={(event) => {
-                  event.preventDefault();
-                  handleDelete(article.id);
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  onDeleteClick();
                 }}
               >
                 {strings.questionnaireTable.delete}

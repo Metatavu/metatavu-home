@@ -205,10 +205,17 @@
     "confirmButtonText": "Kyllä",
     "cancelButtonText": "En",
     "title": "Oletko varma?",
-    "message": "Poista valitut lomahakemukset?",
-    "editMessage": "Tämä tarkistettu lomapyyntö palautetaan käsittelyyn, jos tallennat muutokset. Haluatko jatkaa?",
-    "editDraftMessage": "Tämä lomapyyntöluonnos lähetetään käsittelyyn, jos tallennat muutokset. Haluatko jatkaa?",
-    "updateMessage": "Haluatko varmasti päivittää?"
+    "delete": {
+      "vacation": "Poista valitut lomahakemukset?",
+      "questionnaire": "Poista valittu kysely?",
+      "software": "Poista valittu ohjelmisto?",
+      "article": "Poista valittu artikkeli?"
+    },
+    "edit": {
+      "draft": "Tämä lomapyyntöluonnos lähetetään käsittelyyn, jos tallennat muutokset. Haluatko jatkaa?",
+      "reviewed": "Tämä tarkistettu lomapyyntö palautetaan käsittelyyn, jos tallennat muutokset. Haluatko jatkaa?"
+    },
+    "update": "Haluatko varmasti päivittää?"
   },
   "errorHandler": {
     "cancelButtonText": "Sulje",

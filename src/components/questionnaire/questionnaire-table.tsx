@@ -10,9 +10,6 @@ import {
   Button,
   Chip,
   CircularProgress,
-  Dialog,
-  DialogActions,
-  DialogTitle,
   IconButton,
   InputAdornment,
   Paper,
@@ -32,6 +29,7 @@ import { useLambdasApi } from "src/hooks/use-api";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import { QuestionnairePreviewMode } from "src/types/index";
+import DeleteConfirmationDialog from "../contexts/delete-confirmation-dialogue";
 
 /**
  * Questionnaire Table Component
@@ -49,7 +47,6 @@ const QuestionnaireTable = () => {
   const [loading, setLoading] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
-  const [deleteTitle, setDeleteTitle] = useState<string | null>(null);
   const [selectedQuestionnaire, setSelectedQuestionnaire] = useState<Questionnaire | null>(null);
   const [tagPopoverAnchor, setTagPopoverAnchor] = useState<HTMLElement | null>(null);
   const [currentTags, setCurrentTags] = useState<string[]>([]);
@@ -97,42 +94,73 @@ const QuestionnaireTable = () => {
     setFilteredQuestionnaires(filtered);
   }, [searchTerm, questionnaires]);
 
+  /**
+   * Handler for search term change
+   *
+   * @param event input change event
+   */
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
   };
 
+  /**
+   * Handler for clearing the search term
+   */
   const handleClearSearch = () => {
     setSearchTerm("");
   };
 
+  /**
+   * Handler for tag "more" click to open popover
+   *
+   * @param event mouse event
+   * @param tags all tags
+   */
   const handleTagMoreClick = (event: React.MouseEvent<HTMLElement>, tags: string[]) => {
     event.stopPropagation();
     setTagPopoverAnchor(event.currentTarget);
     setCurrentTags(tags);
   };
 
+  /**
+   * Handler for closing the tag popover
+   */
   const handleCloseTagPopover = () => {
     setTagPopoverAnchor(null);
   };
 
+  /**
+   * Handler for clicking a tag in the popover
+   *
+   * @param tag clicked tag
+   */
   const handleTagClick = (tag: string) => {
     setSearchTerm(tag);
     handleCloseTagPopover();
   };
 
-  const handleOpenDialog = (id: string, title: string) => {
+  /**
+   * Handler for opening the delete confirmation dialog
+   *
+   * @param id questionnaire id to delete
+   */
+  const handleOpenDialog = (id: string) => {
     setDeleteId(id);
-    setDeleteTitle(title);
     setDialogOpen(true);
   };
 
+  /**
+   * Handler for closing the delete confirmation dialog
+   */
   const handleCloseDialog = () => {
     setDialogOpen(false);
     setDeleteId(null);
-    setDeleteTitle(null);
     setSelectedQuestionnaire(null);
   };
 
+  /**
+   * Handler for confirming deletion
+   */
   const handleConfirmDelete = async () => {
     if (!deleteId) return;
     setLoading(true);
@@ -148,18 +176,34 @@ const QuestionnaireTable = () => {
     setLoading(false);
   };
 
+  /**
+   * Handler for row click in non-admin mode
+   *
+   * @param params row parameters
+   */
   const handleRowClick = (params: GridRowParams) => {
     setSelectedQuestionnaire(params.row as Questionnaire);
     setMode(QuestionnairePreviewMode.FILL);
     navigate(`/questionnaire/${params.row.id}`);
   };
 
+  /**
+   * Handler for edit button click in admin mode
+   *
+   * @param questionnaire questionnaire to edit
+   */
   const handleEditClick = (questionnaire: Questionnaire) => {
     setSelectedQuestionnaire(questionnaire);
     setMode(QuestionnairePreviewMode.EDIT);
     navigate(`${questionnaire.id}/edit`);
   };
 
+  /**
+   * Function to render the status cell with appropriate icon
+   *
+   * @param params cell parameters
+   * @returns JSX element representing the status
+   */
   const renderStatusCell = (params: GridRenderCellParams) => {
     const userHasPassed = params.row.passedUsers?.includes(loggedInUser?.id);
     return userHasPassed ? (
@@ -287,7 +331,7 @@ const QuestionnaireTable = () => {
                 name="delete"
                 variant="contained"
                 color="secondary"
-                onClick={() => handleOpenDialog(params.row.id, params.row.title)}
+                onClick={() => handleOpenDialog(params.row.id)}
                 sx={{
                   minWidth: "85px",
                   width: "auto",
@@ -308,22 +352,6 @@ const QuestionnaireTable = () => {
           renderCell: renderStatusCell
         }
   ];
-
-  const renderConfirmDeleteDialog = () => (
-    <Dialog open={dialogOpen} onClose={handleCloseDialog}>
-      <DialogTitle>
-        {strings.formatString(strings.questionnaireTable.confirmDeleteTitle, deleteTitle ?? "")}
-      </DialogTitle>
-      <DialogActions>
-        <Button onClick={handleCloseDialog} color="primary">
-          {strings.questionnaireTable.cancel}
-        </Button>
-        <Button onClick={handleConfirmDelete} color="secondary" variant="contained">
-          {strings.questionnaireTable.confirm}
-        </Button>
-      </DialogActions>
-    </Dialog>
-  );
 
   const renderTagPopover = () => (
     <Popover
@@ -441,7 +469,12 @@ const QuestionnaireTable = () => {
         />
       </Paper>
       {renderTagPopover()}
-      {renderConfirmDeleteDialog()}
+      <DeleteConfirmationDialog
+        open={dialogOpen}
+        setOpen={setDialogOpen}
+        onConfirm={handleConfirmDelete}
+        deleteType="questionnaire"
+      />
     </>
   );
 };

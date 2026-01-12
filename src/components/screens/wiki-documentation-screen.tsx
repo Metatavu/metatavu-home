@@ -35,6 +35,7 @@ import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import { wikiScreenColors } from "src/theme";
 import { getArticlesToFilter, sortArticlesByDate } from "src/utils/wiki-utils";
+import DeleteConfirmationDialog from "../contexts/delete-confirmation-dialogue";
 import BackButton from "../generics/back-button";
 import ArticleCard from "../wiki-documentation/article-card";
 import ArticleListItem from "../wiki-documentation/article-list-item";
@@ -71,7 +72,10 @@ const WikiDocumentationScreen = () => {
   const [displayOption, setDisplayOption] = useState("all");
   const [pageNumber, setPageNumber] = useState(1);
   const [snackbar, setSnackbar] = useAtom(snackbarAtom);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const autoCompleteId = useId();
+  const [selectedArticleId, setSelectedArticleId] = useState<string | undefined>(undefined);
+
   useEffect(() => {
     if (!articles) getArticles();
     else if (articles.length !== 0) {
@@ -176,18 +180,47 @@ const WikiDocumentationScreen = () => {
     setlastUpdatedArticles(lastUpdatedArticles);
   };
   /**
+   * Opens the delete confirmation dialog.
+   */
+  const handleDeleteDialogOpen = (articleId: string | undefined) => {
+    setSelectedArticleId(articleId);
+    setDeleteDialogOpen(true);
+  };
+  /**
+   * Closes the delete confirmation dialog.
+   */
+  const handleCloseDeleteDialog = () => {
+    setSelectedArticleId(undefined);
+    setDeleteDialogOpen(false);
+  };
+  /**
+   * Handles the confirmation of article deletion.
+   */
+  const handleConfirmDelete = () => {
+    if (!selectedArticleId) return;
+    handleDelete(selectedArticleId);
+    setSelectedArticleId(undefined);
+    setDeleteDialogOpen(false);
+  };
+
+  /**
    * Deletes the specified article by its ID and updates the articles atom.
    *
-   * @param {string | undefined} articleId - The ID of the article to delete.
+   * @param {string} selectedArticleId - The ID of the article to delete.
+   *
    */
-  const handleDelete = async (articleId?: string) => {
-    if (!articleId) return;
+  const handleDelete = async (selectedArticleId: string) => {
+    if (!selectedArticleId) return;
     try {
-      await articleApi.deleteArticle({ id: articleId });
-      setArticlesAtom((articles) => (articles ?? []).filter((article) => article.id !== articleId));
+      await articleApi.deleteArticle({ id: selectedArticleId });
+      setArticlesAtom((articles) =>
+        (articles ?? []).filter((article) => article.id !== selectedArticleId)
+      );
     } catch (error: any) {
       const message = (await error.response.json()).message;
       setError(message);
+    } finally {
+      handleCloseDeleteDialog();
     }
   };
   /**
@@ -587,13 +620,17 @@ const WikiDocumentationScreen = () => {
                       <ArticleListItem
                         article={article}
                         adminMode={adminMode}
-                        handleDelete={handleDelete}
+                        onDeleteClick={
+                          article.id ? () => handleDeleteDialogOpen(article.id) : undefined
+                        }
                       />
                     ) : (
                       <ArticleCard
                         article={article}
                         adminMode={adminMode}
-                        handleDelete={handleDelete}
+                        onDeleteClick={
+                          article.id ? () => handleDeleteDialogOpen(article.id) : undefined
+                        }
                       />
                     )}
                   </Grid>
@@ -648,6 +685,12 @@ const WikiDocumentationScreen = () => {
           {snackbar.message}
         </Alert>
       </Snackbar>
+      <DeleteConfirmationDialog
+        open={deleteDialogOpen}
+        setOpen={setDeleteDialogOpen}
+        onConfirm={handleConfirmDelete}
+        deleteType="article"
+      />
     </>
   );
 };

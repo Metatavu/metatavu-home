@@ -11,7 +11,7 @@ import { getLastActivityString } from "src/utils/wiki-utils";
 interface Props {
   article: ArticleMetadata;
   adminMode: boolean;
-  handleDelete: (articleId?: string) => void;
+  onDeleteClick?: () => void;
 }
 /**
  * Displays an article summary card with image, title, activity info, tags,
@@ -19,9 +19,9 @@ interface Props {
  *
  * @param article - Article metadata to display.
  * @param adminMode - Flag to show admin controls like delete button.
- * @param handleDelete - Callback function to delete the article.
+ * @param onDeleteClick - Callback function to open the delete confirmation dialog.
  */
-const ArticleCard = ({ article, adminMode, handleDelete }: Props) => {
+const ArticleCard = ({ article, adminMode, onDeleteClick }: Props) => {
   const users = useAtomValue(usersAtom);
 
   if (!article?.createdBy) return null;
@@ -126,15 +126,15 @@ const ArticleCard = ({ article, adminMode, handleDelete }: Props) => {
             />
           )}
         </Box>
-        {adminMode && (
+        {adminMode && onDeleteClick && (
           <Button
             variant="outlined"
             size="small"
-            sx={{ marginTop: "auto", zIndex: 10 }}
             fullWidth
-            onClick={(event) => {
-              event.preventDefault();
-              handleDelete(article.id);
+            onClick={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              onDeleteClick();
             }}
           >
             {strings.questionnaireTable.delete}

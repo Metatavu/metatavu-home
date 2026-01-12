@@ -201,3 +201,8 @@ export interface OnCallWeek {
   paid: boolean;
   badgeColor: string;
 }
+
+/**
+ * Type describing delete item types
+ */
+export type DeleteItemType = "vacation" | "questionnaire" | "software" | "article";

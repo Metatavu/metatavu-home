@@ -10,11 +10,6 @@ import {
   Chip,
   CircularProgress,
   Container,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
   FormControl,
   Grid,
   IconButton,
@@ -34,6 +29,7 @@ import { useLambdasApi } from "src/hooks/use-api";
 import useCreateSoftware from "src/hooks/use-create-software";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
+import DeleteConfirmationDialog from "../contexts/delete-confirmation-dialogue";
 import BackButton from "../generics/back-button";
 import AddSoftwareModal from "../software-registry/AddSoftwareModal";
 import Content from "../software-registry/allContent";
@@ -458,31 +454,12 @@ const AllSoftwareScreen = () => {
         disabled={loading}
         existingSoftwareList={software}
       />
-
-      {/* Delete Confirmation Dialog */}
-      <Dialog
+      <DeleteConfirmationDialog
         open={deleteDialogOpen}
-        onClose={closeDeleteDialog}
-        aria-labelledby="delete-dialog-title"
-        aria-describedby="delete-dialog-description"
-      >
-        <DialogTitle id="delete-dialog-title">
-          {strings.softwareRegistry.confirmDeletion}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="delete-dialog-description">
-            {strings.softwareRegistry.deleteSoftwareDescription}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={closeDeleteDialog} color="primary">
-            {strings.softwareRegistry.cancel}
-          </Button>
-          <Button onClick={handleRemove} color="secondary" autoFocus>
-            {strings.softwareRegistry.delete}
-          </Button>
-        </DialogActions>
-      </Dialog>
+        setOpen={setDeleteDialogOpen}
+        onConfirm={handleRemove}
+        deleteType="software"
+      />
     </Container>
   );
 };

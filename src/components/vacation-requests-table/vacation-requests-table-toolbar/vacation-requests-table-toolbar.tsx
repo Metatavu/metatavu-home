@@ -13,7 +13,7 @@ import strings from "src/localization/strings";
 import { ToolbarFormModes, type VacationsDataGridRow } from "src/types";
 import { getToolbarTitle } from "src/utils/toolbar-utils";
 import type { FilterType } from "src/utils/vacation-filter-type";
-import ConfirmationHandler from "../../contexts/confirmation-handler";
+import DeleteConfirmationDialog from "../../contexts/delete-confirmation-dialogue";
 import ToolbarDeleteButton from "./toolbar-delete-button";
 import ToolbarForm from "./toolbar-form/toolbar-form";
 import FormToggleButton from "./toolbar-form-toggle-button";
@@ -196,10 +196,11 @@ const TableToolbar = ({
 
   return (
     <Box>
-      <ConfirmationHandler
+      <DeleteConfirmationDialog
         open={confirmationHandlerOpen}
         setOpen={setConfirmationHandlerOpen}
-        deleteVacationsData={deleteVacationsData}
+        onConfirm={deleteVacationsData}
+        deleteType="vacation"
       />
       <EditConfirmationDialogue
         open={editConfirmationHandlerOpen}
