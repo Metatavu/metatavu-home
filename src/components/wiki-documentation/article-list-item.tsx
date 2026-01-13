@@ -135,6 +135,7 @@ const ArticleListItem = ({ article, adminMode = false, onDeleteClick }: Props) =
               <Button
                 variant="outlined"
                 size="small"
+                sx={{ marginTop: 1, zIndex: 10 }}
                 fullWidth
                 onClick={(e) => {
                   e.stopPropagation();

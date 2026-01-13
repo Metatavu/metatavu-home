@@ -130,6 +130,7 @@ const ArticleCard = ({ article, adminMode, onDeleteClick }: Props) => {
           <Button
             variant="outlined"
             size="small"
+            sx={{ marginTop: "auto", zIndex: 10 }}
             fullWidth
             onClick={(e) => {
               e.stopPropagation();
