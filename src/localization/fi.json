@@ -109,6 +109,7 @@
     "filterType": "Suodattimen tyyppi",
     "project": "Projekti",
     "user": "Käyttäjä",
+    "clear": "Tyhjennä",
     "searchBy": "Hae nimellä {0}"
   },
   "softwareRegistry": {

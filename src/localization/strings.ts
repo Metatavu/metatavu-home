@@ -135,6 +135,7 @@ export interface Localized extends LocalizedStringsMethods {
     filterType: string;
     project: string;
     user: string;
+    clear: string;
     searchBy: string;
   };
   /**
