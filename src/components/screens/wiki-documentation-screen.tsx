@@ -34,6 +34,7 @@ import { useLambdasApi } from "src/hooks/use-api";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import { wikiScreenColors } from "src/theme";
+import { getArticlesToFilter, sortArticlesByDate } from "src/utils/wiki-utils";
 import BackButton from "../generics/back-button";
 import ArticleCard from "../wiki-documentation/article-card";
 import ArticleListItem from "../wiki-documentation/article-list-item";
@@ -74,9 +75,21 @@ const WikiDocumentationScreen = () => {
   useEffect(() => {
     if (!articles) getArticles();
     else if (articles.length !== 0) {
-      if (!adminMode) getLastUpdatedArticles(articles);
-      getTags(adminMode ? articles.concat(draftArticles ?? []) : articles);
-      setDisplayedArticles(articles);
+      if (adminMode) {
+        const allArticles = [...articles, ...(draftArticles ?? [])];
+        getTags(allArticles);
+        if (displayOption === "all") {
+          setDisplayedArticles(sortArticlesByDate(allArticles));
+        } else if (displayOption === "approved") {
+          setDisplayedArticles(articles.filter((article) => !article.draft));
+        } else if (displayOption === "draft") {
+          setDisplayedArticles(draftArticles ?? []);
+        }
+      } else {
+        getLastUpdatedArticles(articles);
+        getTags(articles);
+        setDisplayedArticles(articles);
+      }
     }
   }, [articles, draftArticles]);
 
@@ -93,18 +106,24 @@ const WikiDocumentationScreen = () => {
   const getArticles = async () => {
     try {
       const fetchedArticles = await articleApi.getArticles();
-      let allArticles = fetchedArticles ?? [];
+      setArticlesAtom(fetchedArticles);
+
       if (adminMode) {
         const fetchedDraftArticles = await articleApi.getArticles({ draft: true });
         setDraftArticlesAtom(fetchedDraftArticles);
-        allArticles = allArticles.concat(fetchedDraftArticles);
+        const allArticles = sortArticlesByDate([
+          ...(fetchedArticles ?? []),
+          ...(fetchedDraftArticles ?? [])
+        ]);
+        setDisplayedArticles(allArticles);
+        setDisplayedArticlesOnPage(allArticles.slice(0, itemsPerPage));
+        getTags(allArticles);
       } else {
         getLastUpdatedArticles(fetchedArticles);
+        setDisplayedArticles(fetchedArticles ?? []);
+        setDisplayedArticlesOnPage((fetchedArticles ?? []).slice(0, itemsPerPage));
+        getTags(fetchedArticles ?? []);
       }
-      setDisplayedArticles(allArticles);
-      setDisplayedArticlesOnPage(allArticles.slice(0, itemsPerPage));
-      setArticlesAtom(allArticles);
-      getTags(allArticles);
     } catch (error: any) {
       const message = (await error.response.json()).message;
       setError(message);
@@ -181,16 +200,19 @@ const WikiDocumentationScreen = () => {
     const newSearchInput = event.target.value;
     setSearchInput(newSearchInput ?? "");
 
+    const articlesToFilter = getArticlesToFilter(
+      adminMode,
+      displayOption,
+      articles ?? [],
+      draftArticles ?? []
+    );
+
     if (!newSearchInput || newSearchInput === "") {
-      setDisplayedArticles(
-        adminMode && displayOption === "draft" ? (draftArticles ?? []) : (articles ?? [])
-      );
+      setDisplayedArticles(articlesToFilter);
       return;
     }
 
-    const filteredArticles = (
-      adminMode && displayOption === "draft" ? (draftArticles ?? []) : (articles ?? [])
-    ).filter(
+    const filteredArticles = articlesToFilter.filter(
       (article) =>
         article.title.toLowerCase().includes(newSearchInput.toLowerCase()) &&
         selectedTags.every((tag) => article.tags?.includes(tag))
@@ -205,9 +227,13 @@ const WikiDocumentationScreen = () => {
    */
   const handleSelectedTagChange = (values: string[]) => {
     setSelectedTags(values);
-    const filteredArticles = (
-      adminMode && displayOption === "draft" ? (draftArticles ?? []) : (articles ?? [])
-    ).filter(
+    const articlesToFilter = getArticlesToFilter(
+      adminMode,
+      displayOption,
+      articles ?? [],
+      draftArticles ?? []
+    );
+    const filteredArticles = articlesToFilter.filter(
       (article) =>
         article.title.toLowerCase().includes(searchInput.toLowerCase()) &&
         values.every((tag) => article.tags?.includes(tag))
@@ -224,9 +250,11 @@ const WikiDocumentationScreen = () => {
     const newOption = event.target.value;
     setDisplayOption(newOption);
     switch (newOption) {
-      case "all":
-        setDisplayedArticles([...(articles ?? []), ...(draftArticles ?? [])]);
+      case "all": {
+        const allArticles = sortArticlesByDate([...(articles ?? []), ...(draftArticles ?? [])]);
+        setDisplayedArticles(allArticles);
         break;
+      }
       case "approved":
         setDisplayedArticles((articles ?? []).filter((article) => !article.draft));
         break;
