@@ -19,8 +19,6 @@ interface Props {
  * @param props component properties
  */
 const DeleteConfirmationDialog = ({ open, setOpen, onConfirm, deleteType }: Props) => {
-  const message = strings.confirmationHandler.delete[deleteType];
-
   /**
    * Handler for confirm click
    */
@@ -45,7 +43,7 @@ const DeleteConfirmationDialog = ({ open, setOpen, onConfirm, deleteType }: Prop
     >
       {
         <Typography marginBottom={3} sx={{ fontSize: 16, fontWeight: "bold" }}>
-          {message}
+          {strings.confirmationHandler.delete[deleteType]}
         </Typography>
       }
       <Divider />

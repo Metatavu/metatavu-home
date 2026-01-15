@@ -205,4 +205,9 @@ export interface OnCallWeek {
 /**
  * Type describing delete item types
  */
-export type DeleteItemType = "vacation" | "questionnaire" | "software" | "article";
+export enum DeleteItemType {
+  VACATION = "vacation",
+  QUESTIONNAIRE = "questionnaire",
+  SOFTWARE = "software",
+  ARTICLE = "article"
+}

@@ -29,6 +29,7 @@ import { useLambdasApi } from "src/hooks/use-api";
 import useCreateSoftware from "src/hooks/use-create-software";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
+import { DeleteItemType } from "src/types/index";
 import DeleteConfirmationDialog from "../contexts/delete-confirmation-dialog";
 import BackButton from "../generics/back-button";
 import AddSoftwareModal from "../software-registry/AddSoftwareModal";
@@ -458,7 +459,7 @@ const AllSoftwareScreen = () => {
         open={deleteDialogOpen}
         setOpen={setDeleteDialogOpen}
         onConfirm={handleRemove}
-        deleteType="software"
+        deleteType={DeleteItemType.SOFTWARE}
       />
     </Container>
   );

@@ -28,7 +28,7 @@ import type { Questionnaire, User } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
-import { QuestionnairePreviewMode } from "src/types/index";
+import { DeleteItemType, QuestionnairePreviewMode } from "src/types/index";
 import DeleteConfirmationDialog from "../contexts/delete-confirmation-dialog";
 
 /**
@@ -132,7 +132,7 @@ const QuestionnaireTable = () => {
   /**
    * Handler for clicking a tag in the popover
    *
-   * @param tag clicked tag
+   * @param tag string
    */
   const handleTagClick = (tag: string) => {
     setSearchTerm(tag);
@@ -473,7 +473,7 @@ const QuestionnaireTable = () => {
         open={dialogOpen}
         setOpen={setDialogOpen}
         onConfirm={handleConfirmDelete}
-        deleteType="questionnaire"
+        deleteType={DeleteItemType.QUESTIONNAIRE}
       />
     </>
   );

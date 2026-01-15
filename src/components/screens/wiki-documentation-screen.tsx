@@ -34,6 +34,7 @@ import { useLambdasApi } from "src/hooks/use-api";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import { wikiScreenColors } from "src/theme";
+import { DeleteItemType } from "src/types/index";
 import { getArticlesToFilter, sortArticlesByDate } from "src/utils/wiki-utils";
 import DeleteConfirmationDialog from "../contexts/delete-confirmation-dialog";
 import BackButton from "../generics/back-button";
@@ -690,7 +691,7 @@ const WikiDocumentationScreen = () => {
         open={deleteDialogOpen}
         setOpen={setDeleteDialogOpen}
         onConfirm={handleConfirmDelete}
-        deleteType="article"
+        deleteType={DeleteItemType.ARTICLE}
       />
     </>
   );
