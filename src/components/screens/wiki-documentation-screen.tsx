@@ -34,6 +34,7 @@ import { useLambdasApi } from "src/hooks/use-api";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import { wikiScreenColors } from "src/theme";
+import { OnboardingScreen } from "src/types/index";
 import BackButton from "../generics/back-button";
 import Onboarding from "../onboarding/Onboarding";
 import ArticleCard from "../wiki-documentation/article-card";
@@ -72,11 +73,6 @@ const WikiDocumentationScreen = () => {
   const [pageNumber, setPageNumber] = useState(1);
   const [snackbar, setSnackbar] = useAtom(snackbarAtom);
   const autoCompleteId = useId();
-  const searchBarId = "wiki-article-search-bar";
-  const createButtonId = "wiki-create-article-button";
-  const cardTitleId = "wiki-card-title";
-  const latestArticlesId = "wiki-latest-updated-articles";
-  const articlesListId = "wiki-articles-list";
 
   useEffect(() => {
     if (!articles) getArticles();
@@ -262,7 +258,7 @@ const WikiDocumentationScreen = () => {
    */
   const renderSearch = () => (
     <Card
-      id={searchBarId}
+      id="wiki-article-search-bar"
       sx={{
         width: {
           lg: adminMode ? "55%" : "73%",
@@ -360,7 +356,7 @@ const WikiDocumentationScreen = () => {
   );
   const renderCreateButton = () => (
     <Button
-      id={createButtonId}
+      id="wiki-create-article-button"
       onClick={() => setFormOpen(true)}
       variant="contained"
       sx={{
@@ -531,7 +527,7 @@ const WikiDocumentationScreen = () => {
 
   return (
     <>
-      <Onboarding screen="wiki" />
+      <Onboarding screen={OnboardingScreen.Wiki} />
       {formOpen ? (
         <CreateOrEditArticleForm
           handleClose={() => setFormOpen(false)}
@@ -539,11 +535,11 @@ const WikiDocumentationScreen = () => {
           adminMode={adminMode}
         />
       ) : (
-        <Box id={cardTitleId} sx={{ width: "100%" }}>
+        <Box id="wiki-card-title" sx={{ width: "100%" }}>
           {!adminMode && (
             <>
               {renderTitle(strings.wikiDocumentation.cardTitle)}
-              <Box id={latestArticlesId}>
+              <Box id="wiki-latest-updated-articles">
                 <CarouselArticleCards articles={lastUpdatedArticles} />
               </Box>
             </>
@@ -557,7 +553,12 @@ const WikiDocumentationScreen = () => {
           >
             {renderToolBar()}
             {displayedArticlesOnPage.length !== 0 ? (
-              <Grid id={articlesListId} container spacing={adminMode ? 4 : 3} textAlign={"center"}>
+              <Grid
+                id="wiki-articles-list"
+                container
+                spacing={adminMode ? 4 : 3}
+                textAlign={"center"}
+              >
                 {displayedArticlesOnPage.map((article) => (
                   <Grid
                     item

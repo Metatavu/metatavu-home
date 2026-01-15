@@ -201,3 +201,10 @@ export interface OnCallWeek {
   paid: boolean;
   badgeColor: string;
 }
+/**
+ * Enum for the different screens in the onboarding flow
+ */
+export enum OnboardingScreen {
+  Home = "home",
+  Wiki = "wiki"
+}

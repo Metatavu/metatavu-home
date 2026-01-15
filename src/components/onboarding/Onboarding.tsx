@@ -3,14 +3,15 @@ import { Box, Button, IconButton, Paper, Typography } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
+import { OnboardingScreen } from "src/types/index";
 import { getOnboardingSteps } from "./onboardingSteps";
 import { getWikiOnboardingSteps } from "./onboardingStepsWikiDocumentation";
 
 /**
- * Screens that have onboarding steps.
+ * Props for onboarding components, where screen indicates the active onboarding step.
  */
 type OnboardingProps = {
-  screen: "home" | "wiki";
+  screen: OnboardingScreen;
 };
 
 const POPUP_WIDTH = 320;
@@ -36,7 +37,14 @@ const Onboarding = ({ screen }: OnboardingProps) => {
   /**
    * The current screen and onboarding steps for that screen, localized.
    */
-  const onboardingSteps = screen === "wiki" ? getWikiOnboardingSteps() : getOnboardingSteps();
+  const onboardingSteps = (() => {
+    switch (screen) {
+      case OnboardingScreen.Wiki:
+        return getWikiOnboardingSteps();
+      case OnboardingScreen.Home:
+        return getOnboardingSteps();
+    }
+  })();
 
   /**
    * Safely queries a DOM element by selector.
