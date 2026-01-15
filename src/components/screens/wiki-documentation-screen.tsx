@@ -285,6 +285,7 @@ const WikiDocumentationScreen = () => {
    * Allows filtering articles based on input text and selected tags.
    */
   const renderSearch = () => (
+    // biome-ignore lint/correctness/useUniqueElementIds: keeping static id
     <Card
       id="wiki-article-search-bar"
       sx={{
@@ -383,6 +384,7 @@ const WikiDocumentationScreen = () => {
     </Card>
   );
   const renderCreateButton = () => (
+    // biome-ignore lint/correctness/useUniqueElementIds: keeping static id
     <Button
       id="wiki-create-article-button"
       onClick={() => setFormOpen(true)}
@@ -563,10 +565,12 @@ const WikiDocumentationScreen = () => {
           adminMode={adminMode}
         />
       ) : (
+        // biome-ignore lint/correctness/useUniqueElementIds: keeping static id
         <Box id="wiki-card-title" sx={{ width: "100%" }}>
           {!adminMode && (
             <>
               {renderTitle(strings.wikiDocumentation.cardTitle)}
+              {/* biome-ignore lint/correctness/useUniqueElementIds: keeping static id */}
               <Box id="wiki-latest-updated-articles">
                 <CarouselArticleCards articles={lastUpdatedArticles} />
               </Box>
@@ -581,6 +585,7 @@ const WikiDocumentationScreen = () => {
           >
             {renderToolBar()}
             {displayedArticlesOnPage.length !== 0 ? (
+              // biome-ignore lint/correctness/useUniqueElementIds: keeping static id
               <Grid
                 id="wiki-articles-list"
                 container
