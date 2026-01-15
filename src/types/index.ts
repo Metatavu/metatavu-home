@@ -215,3 +215,9 @@ export enum OnboardingScreen {
   Home = "home",
   Wiki = "wiki"
 }
+/**
+ * Interface describing Slack user avatars
+ */
+export interface SlackAvatar {
+  image_original: string | undefined;
+}
