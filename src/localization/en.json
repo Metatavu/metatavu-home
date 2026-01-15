@@ -109,6 +109,7 @@
     "filterType": "Filter type",
     "project": "Project",
     "user": "User",
+    "clear": "Clear",
     "searchBy": "Search by {0}"
   },
   "softwareRegistry": {

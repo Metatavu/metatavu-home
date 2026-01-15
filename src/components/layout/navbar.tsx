@@ -18,8 +18,8 @@ import { useNavigate } from "react-router-dom";
 //import { avatarsAtom, personsAtom } from "src/atoms/person";
 //import type { Person } from "src/generated/client";
 import { authAtom, userProfileAtom } from "src/atoms/auth";
+import { avatarsAtom } from "src/atoms/avatar";
 import { errorAtom } from "src/atoms/error";
-import { avatarsAtom } from "src/atoms/person";
 import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
 import LocalizationButtons from "../layout-components/localization-buttons";
@@ -39,9 +39,7 @@ const NavBar = () => {
   const setError = useSetAtom(errorAtom);
   const { slackAvatarsApi } = useLambdasApi();
   const navigate = useNavigate();
-  const loggedInUserId = userProfile?.id;
-  const loggedInPersonAvatar =
-    avatars.find((avatar) => avatar.personId === loggedInUserId)?.imageOriginal || "";
+  const loggedInUserEmail = userProfile?.email || undefined;
 
   /**
    * Handles opening user menu
@@ -74,13 +72,17 @@ const NavBar = () => {
   };
 
   /**
-   * Fetch Slack avatars
+   * Fetch Slack avatars for logged in user
    */
   const getSlackAvatars = async () => {
-    if (avatars) return;
+    if (avatars?.image_original) return;
     try {
-      const fetchedAvatars = await slackAvatarsApi.slackAvatar();
-      setAvatars(fetchedAvatars);
+      if (!loggedInUserEmail) return;
+      const encodedEmail = encodeURIComponent(loggedInUserEmail);
+      const fetchedAvatars = await slackAvatarsApi.getSlackUserAvatarByEmail({
+        email: encodedEmail
+      });
+      setAvatars({ image_original: fetchedAvatars.imageOriginal });
     } catch (error) {
       setError(`${strings.error.fetchSlackAvatarsFailed}: ${error}`);
     }
@@ -100,7 +102,7 @@ const NavBar = () => {
           <Box>
             <Tooltip title={strings.header.openUserMenu}>
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                {<Avatar src={loggedInPersonAvatar} />}
+                {<Avatar src={avatars?.image_original || ""} />}
               </IconButton>
             </Tooltip>
             <Menu

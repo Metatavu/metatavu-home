@@ -188,9 +188,16 @@ export interface PhaseRow {
  * Enum describing the filter types for the sprint view.
  */
 export const SprintViewFilterTypes = {
+  clear: "clear",
   project: "project",
   user: "user"
-};
+} as const;
+
+/**
+ * Type describing the filter type values for sprint view.
+ */
+export type SprintViewFilterType =
+  (typeof SprintViewFilterTypes)[keyof typeof SprintViewFilterTypes];
 
 /**
  * Type describing on call data for a week
@@ -200,6 +207,13 @@ export interface OnCallWeek {
   username: string;
   paid: boolean;
   badgeColor: string;
+}
+
+/**
+ * Interface describing Slack user avatars
+ */
+export interface SlackAvatar {
+  image_original: string | undefined;
 }
 
 /**
