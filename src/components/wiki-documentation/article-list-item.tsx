@@ -1,7 +1,11 @@
 import { Box, Button, Card, Chip, Grid, Typography } from "@mui/material";
+import { useAtomValue } from "jotai";
+import { DateTime } from "luxon";
 import { Link } from "react-router-dom";
+import { usersAtom } from "src/atoms/user";
 import type { ArticleMetadata } from "src/generated/homeLambdasClient";
 import strings from "src/localization/strings";
+import { formatDate } from "src/utils/time-utils";
 import { getLastActivityString } from "src/utils/wiki-utils";
 
 interface Props {
@@ -18,9 +22,11 @@ interface Props {
  * @param handleDelete - Optional callback to delete the article by its ID.
  */
 const ArticleListItem = ({ article, adminMode = false, handleDelete }: Props) => {
-  if (!article || !article.lastUpdatedAt) return;
-  const lastActivityData = getLastActivityString(article);
+  const users = useAtomValue(usersAtom);
 
+  if (!article?.createdBy) return null;
+
+  const lastActivityData = getLastActivityString(article, users);
   return (
     <Link to={article.path} style={{ textDecoration: "none" }}>
       <Card
@@ -117,7 +123,9 @@ const ArticleListItem = ({ article, adminMode = false, handleDelete }: Props) =>
                   {strings.formatString(
                     "{0} {1} by {2}",
                     lastActivityData.action,
-                    article.lastUpdatedAt.toLocaleDateString(),
+                    formatDate(
+                      DateTime.fromJSDate(article.lastUpdatedAt || article.createdAt || new Date())
+                    ),
                     lastActivityData.user || ""
                   )}
                 </Typography>

@@ -205,6 +205,7 @@ const TableToolbar = ({
         open={editConfirmationHandlerOpen}
         setOpen={setEditConfirmationHandlerOpen}
         isDraft={wasDraftBeforeEdit}
+        isAdmin={adminMode}
         onConfirm={handleEditConfirm}
         setFormOpen={setFormOpen}
       />
@@ -328,12 +329,12 @@ const TableToolbar = ({
           setFormOpen={setFormOpen}
           createVacationRequest={createVacationRequest}
           createDraftVacationRequest={createDraftVacationRequest}
-          updateVacationRequest={updateVacationRequest}
           selectedRowIds={selectedRowIds}
           rows={rows}
+          updateVacationRequest={updateVacationRequest}
+          setSelectedRowIds={setSelectedRowIds}
           toolbarFormMode={toolbarFormMode}
           setToolbarFormMode={setToolbarFormMode}
-          setSelectedRowIds={setSelectedRowIds}
           onSaveClick={handleSaveClick}
         />
       </Collapse>

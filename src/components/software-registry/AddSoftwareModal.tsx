@@ -12,7 +12,9 @@ import {
   TextField,
   Typography
 } from "@mui/material";
+import { useSetAtom } from "jotai";
 import { useEffect, useState } from "react";
+import { errorAtom } from "src/atoms/error";
 import type { SoftwareRegistry, User } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
@@ -59,12 +61,12 @@ const AddSoftwareModal = ({
     users: []
   };
   const { usersApi } = useLambdasApi();
+  const setError = useSetAtom(errorAtom);
   const [userList, setUserList] = useState<User[]>([]);
   const [software, setSoftware] = useState<SoftwareRegistry>(softwareData || initialSoftwareState);
   const [tags, setTags] = useState("");
   const [nameExists, setNameExists] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   /**
    * Fetch the list of users when the modal opens.
@@ -322,12 +324,16 @@ const AddSoftwareModal = ({
                   }));
                 }}
                 renderTags={(value, getTagProps) =>
-                  value.map((option, index) => (
-                    <Chip
-                      label={`${option.firstName} ${option.lastName}`}
-                      {...getTagProps({ index })}
-                    />
-                  ))
+                  value.map((option, index) => {
+                    const { key, ...tagProps } = getTagProps({ index });
+                    return (
+                      <Chip
+                        key={key}
+                        label={`${option.firstName} ${option.lastName}`}
+                        {...tagProps}
+                      />
+                    );
+                  })
                 }
                 renderOption={(props, option) => (
                   <li {...props} key={option.id}>

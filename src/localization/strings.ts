@@ -135,6 +135,7 @@ export interface Localized extends LocalizedStringsMethods {
     filterType: string;
     project: string;
     user: string;
+    clear: string;
     searchBy: string;
   };
   /**
@@ -233,6 +234,7 @@ export interface Localized extends LocalizedStringsMethods {
     message: string;
     editMessage: string;
     editDraftMessage: string;
+    updateMessage: string;
   };
   /**
    * Translations related to error handler
@@ -560,6 +562,7 @@ export interface Localized extends LocalizedStringsMethods {
     labelImage: string;
     labelDescription: string;
     labelLink: string;
+    labelLinkPlaceholder: string;
     draft: string;
     allArticles: string;
     approvedArticles: string;

@@ -1,14 +1,17 @@
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import { Box, Card, Grid, Skeleton, Typography } from "@mui/material";
 import { useAtomValue, useSetAtom } from "jotai";
+import { DateTime } from "luxon";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { articleAtom, draftArticleAtom } from "src/atoms/article";
 import { errorAtom } from "src/atoms/error";
+import { usersAtom } from "src/atoms/user";
 import type { ArticleMetadata } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
+import { formatDate } from "src/utils/time-utils";
 import { getLastActivityString } from "src/utils/wiki-utils";
 
 /**
@@ -24,6 +27,7 @@ const WikiDocumentationCard = () => {
   const articlesAtom = adminMode ? draftArticles : normalArticles;
   const setArticlesAtom = adminMode ? setDraftArticles : setNormalArticles;
   const { articleApi } = useLambdasApi();
+  const users = useAtomValue(usersAtom);
   const [loading, setLoading] = useState(false);
   const [lastUpdatedArticle, setLastUpdatedArticle] = useState<ArticleMetadata>();
 
@@ -58,7 +62,7 @@ const WikiDocumentationCard = () => {
    */
   const renderCardContent = () => {
     if (!lastUpdatedArticle?.lastUpdatedAt) return;
-    const lastActivityData = getLastActivityString(lastUpdatedArticle);
+    const lastActivityData = getLastActivityString(lastUpdatedArticle, users);
 
     return (
       <>
@@ -133,7 +137,7 @@ const WikiDocumentationCard = () => {
               {strings.formatString(
                 "{0} {1}",
                 lastActivityData.action,
-                lastUpdatedArticle.lastUpdatedAt.toLocaleDateString()
+                formatDate(DateTime.fromJSDate(lastUpdatedArticle.lastUpdatedAt || new Date()))
               )}
             </Typography>
             <Typography variant="body1">
