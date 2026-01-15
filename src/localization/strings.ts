@@ -666,7 +666,24 @@ export interface Localized extends LocalizedStringsMethods {
     doneTitle: string;
     doneContent: string;
   };
-
+  /**
+   * Translations related to Onboarding Wiki Documentation Screen
+   */
+  onboardingWikiDocumentation: {
+    prev: string;
+    next: string;
+    close: string;
+    welcomeWikiTitle: string;
+    welcomeWikiContent: string;
+    latestUpdatedArticlesTitle: string;
+    latestUpdatedArticlesContent: string;
+    wikiSearchBarTitle: string;
+    wikiSearchBarContent: string;
+    createArticleTitle: string;
+    createArticleContent: string;
+    listOfArticlesTitle: string;
+    listOfArticlesContent: string;
+  };
   /**
    * Translations related to On Call
    */

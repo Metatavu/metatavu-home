@@ -549,6 +549,21 @@
     "doneTitle": "Complete the Onboarding",
     "doneContent": "You're all set! You can restart from Settings."
   },
+  "onboardingWikiDocumentation": {
+    "prev": "Previous",
+    "next": "Next",
+    "close": "Close",
+    "welcomeWikiTitle": "Wiki Documentation",
+    "welcomeWikiContent": "Find, read and create articles here.",
+    "latestUpdatedArticlesTitle": "Latest article",
+    "latestUpdatedArticlesContent": "Here you can see the most recently created or updated article.",
+    "wikiSearchBarTitle": "Search",
+    "wikiSearchBarContent": "Search for articles here.",
+    "createArticleTitle": "Create",
+    "createArticleContent": "Here you can create a new article.",
+    "listOfArticlesTitle": "Articles",
+    "listOfArticlesContent": "Browse all articles here."
+  },
   "employeeFlextime": {
     "title": "Employee Time Totals and Balances",
     "subtitle": "Overview of flextime balances for all opted-in employees",

@@ -34,10 +34,11 @@ import { useLambdasApi } from "src/hooks/use-api";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import { wikiScreenColors } from "src/theme";
-import { DeleteItemType } from "src/types/index";
+import { DeleteItemType, OnboardingScreen } from "src/types/index";
 import { getArticlesToFilter, sortArticlesByDate } from "src/utils/wiki-utils";
 import DeleteConfirmationDialog from "../contexts/delete-confirmation-dialog";
 import BackButton from "../generics/back-button";
+import Onboarding from "../onboarding/Onboarding";
 import ArticleCard from "../wiki-documentation/article-card";
 import ArticleListItem from "../wiki-documentation/article-list-item";
 import CarouselArticleCards from "../wiki-documentation/carousel-article-cards";
@@ -317,7 +318,9 @@ const WikiDocumentationScreen = () => {
    * Allows filtering articles based on input text and selected tags.
    */
   const renderSearch = () => (
+    // biome-ignore lint/correctness/useUniqueElementIds: keeping static id
     <Card
+      id="wiki-article-search-bar"
       sx={{
         width: {
           lg: adminMode ? "55%" : "73%",
@@ -414,7 +417,9 @@ const WikiDocumentationScreen = () => {
     </Card>
   );
   const renderCreateButton = () => (
+    // biome-ignore lint/correctness/useUniqueElementIds: keeping static id
     <Button
+      id="wiki-create-article-button"
       onClick={() => setFormOpen(true)}
       variant="contained"
       sx={{
@@ -585,6 +590,7 @@ const WikiDocumentationScreen = () => {
 
   return (
     <>
+      <Onboarding screen={OnboardingScreen.Wiki} />
       {formOpen ? (
         <CreateOrEditArticleForm
           handleClose={() => setFormOpen(false)}
@@ -592,11 +598,15 @@ const WikiDocumentationScreen = () => {
           adminMode={adminMode}
         />
       ) : (
-        <>
+        // biome-ignore lint/correctness/useUniqueElementIds: keeping static id
+        <Box id="wiki-card-title" sx={{ width: "100%" }}>
           {!adminMode && (
             <>
               {renderTitle(strings.wikiDocumentation.cardTitle)}
-              <CarouselArticleCards articles={lastUpdatedArticles} />
+              {/* biome-ignore lint/correctness/useUniqueElementIds: keeping static id */}
+              <Box id="wiki-latest-updated-articles">
+                <CarouselArticleCards articles={lastUpdatedArticles} />
+              </Box>
             </>
           )}
           <Box
@@ -608,7 +618,13 @@ const WikiDocumentationScreen = () => {
           >
             {renderToolBar()}
             {displayedArticlesOnPage.length !== 0 ? (
-              <Grid container spacing={adminMode ? 4 : 3} textAlign={"center"}>
+              // biome-ignore lint/correctness/useUniqueElementIds: keeping static id
+              <Grid
+                id="wiki-articles-list"
+                container
+                spacing={adminMode ? 4 : 3}
+                textAlign={"center"}
+              >
                 {displayedArticlesOnPage.map((article) => (
                   <Grid
                     item
@@ -657,7 +673,7 @@ const WikiDocumentationScreen = () => {
             </Grid>
           )}
           <BackButton styles={{ marginBottom: 2 }} />
-        </>
+        </Box>
       )}
       <Snackbar
         open={snackbar.open}

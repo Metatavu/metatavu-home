@@ -549,6 +549,21 @@
     "doneTitle": "Onboarding valmis",
     "doneContent": "Valmista! Voit aloittaa alusta asetuksista."
   },
+  "onboardingWikiDocumentation": {
+    "prev": "Edellinen",
+    "next": "Seuraava",
+    "close": "Sulje",
+    "welcomeWikiTitle": "Wikidokumentaatio",
+    "welcomeWikiContent": "Etsi, lue ja luo artikkeleita täällä.",
+    "latestUpdatedArticlesTitle": "Viimeisin artikkeli",
+    "latestUpdatedArticlesContent": "Katso viimeisimmäksi päivitetty tai luotu artikkeli tästä.",
+    "wikiSearchBarTitle": "Haku",
+    "wikiSearchBarContent": "Etsi artikkeleita täältä.",
+    "createArticleTitle": "Luo uusi",
+    "createArticleContent": "Tästä voit luoda uuden artikkelin.",
+    "listOfArticlesTitle": "Artikkelit",
+    "listOfArticlesContent": "Selaa kaikkia artikkeleita täällä."
+  },
   "employeeFlextime": {
     "title": "Työntekijöiden joustotunnit",
     "subtitle": "Yleiskatsaus kaikkien työntekijöiden joustotuntisaldoihin",
