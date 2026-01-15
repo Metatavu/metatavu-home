@@ -206,10 +206,17 @@
     "confirmButtonText": "Yes",
     "cancelButtonText": "No",
     "title": "Are you sure?",
-    "message": "Delete selected vacation request(s)?",
-    "editMessage": "This reviewed request will go back to pending if you save changes. Do you want to proceed?",
-    "editDraftMessage": "This draft request will be sent for approval if you save changes. Do you want to proceed?",
-    "updateMessage": "Are you sure you want to update?"
+    "delete": {
+      "vacation": "Delete selected vacation request(s)?",
+      "questionnaire": "Delete selected questionnaire?",
+      "software": "Delete selected software?",
+      "article": "Delete selected article?"
+    },
+    "edit": {
+      "draft": "This draft request will be sent for approval if you save changes. Do you want to proceed?",
+      "reviewed": "This reviewed request will go back to pending if you save changes. Do you want to proceed?"
+    },
+    "update": "Are you sure you want to update?"
   },
   "errorHandler": {
     "cancelButtonText": "Close",
