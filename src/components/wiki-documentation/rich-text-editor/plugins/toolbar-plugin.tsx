@@ -27,7 +27,6 @@ import {
   FORMAT_TEXT_COMMAND,
   type TextFormatType
 } from "lexical";
-import type { ReactJSXElement } from "node_modules/@emotion/react/types/jsx-namespace";
 import { useEffect, useMemo, useState } from "react";
 import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
@@ -39,7 +38,7 @@ const colors = wikiScreenColors;
 
 interface TextCommand {
   key: string;
-  icon: ReactJSXElement;
+  icon: React.JSX.Element;
   handler: () => void;
 }
 
@@ -241,6 +240,7 @@ const ToolBar = () => {
         onInput={handleInputChange("link")}
         size="small"
         label={strings.wikiDocumentation.labelLink}
+        placeholder={strings.wikiDocumentation.labelLinkPlaceholder}
       />
       <Button onClick={() => addLink()}>Add</Button>
       <Button onClick={() => setLinkDialogOpen(false)}>Close</Button>
@@ -283,12 +283,8 @@ const ToolBar = () => {
         <input style={{ width: "100%" }} type="file" hidden onChange={handleFileChange} />
       </Button>
       <Box>
-        {file && !fileUploadError ? (
-          <Typography sx={{ width: "100%" }}>{file?.name}</Typography>
-        ) : (
-          <></>
-        )}
-        {fileUploadError ?? <Typography sx={{ width: "100%" }}>{fileUploadError}</Typography>}
+        {file && !fileUploadError && <Typography sx={{ width: "100%" }}>{file?.name}</Typography>}
+        {fileUploadError && <Typography sx={{ width: "100%" }}>{fileUploadError}</Typography>}
       </Box>
 
       {file && !fileUploadError ? (

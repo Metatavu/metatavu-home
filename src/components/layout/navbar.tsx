@@ -1,3 +1,4 @@
+import LogoutIcon from "@mui/icons-material/Logout";
 import SettingsIcon from "@mui/icons-material/Settings";
 import {
   AppBar,
@@ -8,14 +9,14 @@ import {
   Menu,
   MenuItem,
   Toolbar,
-  Tooltip
+  Tooltip,
+  Typography
 } from "@mui/material";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
-import { type MouseEvent, useEffect, useState } from "react";
+import { type MouseEvent, useEffect, useId, useState } from "react";
 import { useNavigate } from "react-router-dom";
 //import { avatarsAtom, personsAtom } from "src/atoms/person";
 //import type { Person } from "src/generated/client";
-import config from "src/app/config";
 import { authAtom, userProfileAtom } from "src/atoms/auth";
 import { errorAtom } from "src/atoms/error";
 import { avatarsAtom } from "src/atoms/person";
@@ -29,6 +30,7 @@ import NavItems from "./navitems";
  */
 const NavBar = () => {
   const auth = useAtomValue(authAtom);
+  const menuId = useId();
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
   const [avatars, setAvatars] = useAtom(avatarsAtom);
   // NOTE: The Person type cannot be used here because it was previously imported from the removed timebank client.
@@ -89,46 +91,46 @@ const NavBar = () => {
   }, []);
 
   return (
-    <>
-      <AppBar position="relative">
-        <Container maxWidth="xl">
-          <Toolbar disableGutters>
-            <NavItems />
-            <Tooltip title={strings.header.settings}>
-              <IconButton onClick={handleSettingsClick} color="inherit">
-                <SettingsIcon />
+    <AppBar position="relative">
+      <Container maxWidth="xl">
+        <Toolbar disableGutters>
+          <NavItems />
+          <LocalizationButtons />
+
+          <Box>
+            <Tooltip title={strings.header.openUserMenu}>
+              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                {<Avatar src={loggedInPersonAvatar} />}
               </IconButton>
             </Tooltip>
-            <LocalizationButtons />
-
-            <Box>
-              <Tooltip title={strings.header.openUserMenu}>
-                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  {<Avatar src={loggedInPersonAvatar} />}
-                </IconButton>
-              </Tooltip>
-              <Menu
-                id="menu-appbar"
-                anchorEl={anchorElUser}
-                anchorOrigin={{
-                  vertical: "top",
-                  horizontal: "right"
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "right"
-                }}
-                open={Boolean(anchorElUser)}
-                onClose={handleCloseUserMenu}
-              >
-                <MenuItem onClick={handleClickLogOut}>{strings.header.logout}</MenuItem>
-              </Menu>
-            </Box>
-          </Toolbar>
-        </Container>
-      </AppBar>
-    </>
+            <Menu
+              id={menuId}
+              anchorEl={anchorElUser}
+              anchorOrigin={{
+                vertical: "top",
+                horizontal: "right"
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "right"
+              }}
+              open={Boolean(anchorElUser)}
+              onClose={handleCloseUserMenu}
+            >
+              <MenuItem onClick={handleSettingsClick}>
+                <SettingsIcon sx={{ mr: 1 }} />
+                <Typography>{strings.header.settings}</Typography>
+              </MenuItem>
+              <MenuItem onClick={handleClickLogOut}>
+                <LogoutIcon sx={{ mr: 1 }} />
+                <Typography>{strings.header.logout}</Typography>
+              </MenuItem>
+            </Menu>
+          </Box>
+        </Toolbar>
+      </Container>
+    </AppBar>
   );
 };
 

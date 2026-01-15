@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import { useAtomValue, useSetAtom } from "jotai";
 import { type ChangeEvent, type KeyboardEvent, type SyntheticEvent, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { articleAtom, draftArticleAtom, tagsAtom } from "src/atoms/article";
 import { userProfileAtom } from "src/atoms/auth";
 import { errorAtom } from "src/atoms/error";
@@ -59,12 +60,13 @@ const CreateOrEditArticleForm = ({
   const setDraftArticlesAtom = useSetAtom(draftArticleAtom);
   const setTags = useSetAtom(tagsAtom);
   const tags = useAtomValue(tagsAtom);
+  const navigate = useNavigate();
   const editorRef = useRef<EditorRef>(null);
   const [title, setTitle] = useState(article ? article.title : "");
   const [path, setPath] = useState(article ? article.path : "");
   const [coverImage, setCoverImage] = useState(article ? article.coverImage : "");
   const [description, setDescription] = useState(article ? article.description : "");
-  const [imagePreview, setImagPreview] = useState(false);
+  const [imagePreview, setImagePreview] = useState(false);
   const [selectedTags, setSelectedTags] = useState<string[]>(article ? article.tags || [] : []);
   const [tag, setTag] = useState("");
   const users = useAtomValue(usersAtom);
@@ -82,7 +84,7 @@ const CreateOrEditArticleForm = ({
     const newArticle = {
       path: path,
       title: title,
-      createdBy: `${loggedInUser?.firstName} ${loggedInUser?.lastName}`,
+      createdBy: loggedInUser?.id || "",
       content: content,
       tags: selectedTags,
       coverImage: coverImage,
@@ -114,6 +116,39 @@ const CreateOrEditArticleForm = ({
     }
   };
   /**
+   * Updates article atoms based on admin mode and draft status
+   *
+   * @param updatedArticle - The updated article data
+   * @param response - The response article from the API
+   */
+  const updateArticleAtoms = (updatedArticle: Article, response: Article) => {
+    if (!adminMode) {
+      if (!updatedArticle.draft) {
+        setArticlesAtom((articles) =>
+          (articles || []).map((a) => (a.id === updatedArticle.id ? updatedArticle : a))
+        );
+      } else {
+        setDraftArticlesAtom((articles) =>
+          (articles || []).map((a) => (a.id === updatedArticle.id ? updatedArticle : a))
+        );
+      }
+    } else {
+      if (article?.draft) {
+        setDraftArticlesAtom((articles) =>
+          (articles || []).filter((article) => article.id !== response.id)
+        );
+      } else {
+        setArticlesAtom((articles) =>
+          (articles || []).filter((article) => article.id !== response.id)
+        );
+      }
+      setArticlesAtom((articles) => [response, ...(articles || [])]);
+      setTags((tags) => [...new Set<string>(tags.concat(selectedTags))]);
+      if (setArticle) setArticle(updatedArticle);
+    }
+  };
+
+  /**
    * Handles updating an existing article with current form and editor content.
    * Sends updated data to the API, updates local state, and manages tag sets.
    * Closes the form on success or sets an error message on failure.
@@ -129,35 +164,14 @@ const CreateOrEditArticleForm = ({
       coverImage: coverImage,
       description: description,
       createdBy: article.createdBy,
-      lastUpdatedBy: `${loggedInUser?.firstName} ${loggedInUser?.lastName}`,
+      lastUpdatedBy: loggedInUser?.id || "",
       draft: !adminMode
     };
 
     try {
       const response = await articleApi.updateArticle({ article: updatedArticle, id: article.id });
-      if (!adminMode) {
-        if (!updatedArticle.draft) {
-          setArticlesAtom((articles) =>
-            (articles || []).map((a) => (a.id === updatedArticle.id ? updatedArticle : a))
-          );
-        } else {
-          setDraftArticlesAtom((articles) =>
-            (articles || []).map((a) => (a.id === updatedArticle.id ? updatedArticle : a))
-          );
-        }
-      } else {
-        if (article.draft)
-          setDraftArticlesAtom((articles) =>
-            (articles || []).filter((article) => article.id !== response.id)
-          );
-        else
-          setArticlesAtom((articles) =>
-            (articles || []).filter((article) => article.id !== response.id)
-          );
-        setArticlesAtom((articles) => [response, ...(articles || [])]);
-        setTags((tags) => [...new Set<string>(tags.concat(selectedTags))]);
-        if (setArticle) setArticle(updatedArticle);
-      }
+      updateArticleAtoms(updatedArticle, response);
+
       const key = `edit-${adminMode ? "admin" : "user"}`;
       const messages: Record<string, string> = {
         "edit-admin": strings.snackbar.articleUpdated,
@@ -168,7 +182,11 @@ const CreateOrEditArticleForm = ({
         message: messages[key],
         severity: "success"
       });
-      handleClose();
+      if (adminMode && action === "edit") {
+        navigate("/admin/wiki-documentation");
+      } else {
+        handleClose();
+      }
     } catch (error: any) {
       const message = (await error.response.json()).message;
       setError(message);
@@ -191,7 +209,7 @@ const CreateOrEditArticleForm = ({
     if (file.type?.includes("image/")) {
       const imageUrl = await uploadFile(file, articleApi);
       setCoverImage(imageUrl || "");
-      setImagPreview(true);
+      setImagePreview(true);
     }
   };
 
@@ -330,7 +348,7 @@ const CreateOrEditArticleForm = ({
               label={strings.wikiDocumentation.labelImage}
               required
             />
-            {imagePreview && coverImage?.length !== 0 ? (
+            {imagePreview && coverImage?.length !== 0 && (
               <Grid container>
                 <img
                   style={{
@@ -351,17 +369,15 @@ const CreateOrEditArticleForm = ({
                     }}
                     onClick={() => {
                       setCoverImage("");
-                      setImagPreview(false);
+                      setImagePreview(false);
                     }}
                   >
                     <ClearIcon />
                   </IconButton>
                 </Grid>
               </Grid>
-            ) : (
-              <></>
             )}
-            {!coverImage ? (
+            {!coverImage && (
               <Button
                 variant="outlined"
                 component="label"
@@ -370,20 +386,15 @@ const CreateOrEditArticleForm = ({
                 {strings.wikiDocumentation.uploadImage}
                 <input style={{ width: "100%" }} type="file" hidden onChange={handleFileChange} />
               </Button>
-            ) : (
-              <>
-                {!imagePreview ? (
-                  <Button
-                    variant="outlined"
-                    sx={{ marginTop: 1, marginBottom: 1, width: "100%" }}
-                    onClick={() => setImagPreview(true)}
-                  >
-                    {strings.wikiDocumentation.imagePreview}
-                  </Button>
-                ) : (
-                  <></>
-                )}
-              </>
+            )}
+            {coverImage && !imagePreview && (
+              <Button
+                variant="outlined"
+                sx={{ marginTop: 1, marginBottom: 1, width: "100%" }}
+                onClick={() => setImagePreview(true)}
+              >
+                {strings.wikiDocumentation.imagePreview}
+              </Button>
             )}
           </Grid>
           <Grid item md={6} xs={12}>

@@ -18,7 +18,7 @@ import {
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { useAtomValue, useSetAtom } from "jotai";
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { userProfileAtom } from "src/atoms/auth";
 import { errorAtom } from "src/atoms/error";
 import { usersAtom } from "src/atoms/user";
@@ -32,15 +32,35 @@ import useSprintViewHandlers from "src/hooks/sprint-custom-hooks";
 import { useLambdasApi } from "src/hooks/use-api";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
+import { SprintViewFilterTypes, type SprintViewFilterType } from "src/types/index";
 import { getSeveraUserId } from "src/utils/sprint-utils";
 import { getSprintEnd, getSprintStart } from "src/utils/time-utils";
 import BackButton from "../generics/back-button";
 import createSprintViewProjectsColumns from "../sprint-view-table/sprint-projects-columns";
 
 /**
+ * Gets the filter label based on the filter type
+ *
+ * @param filterType - The current filter type
+ * @returns The appropriate label string
+ */
+const getFilterLabel = (filterType: SprintViewFilterType): string => {
+  if (filterType === SprintViewFilterTypes.project) {
+    return strings.sprint.project;
+  }
+  if (filterType === SprintViewFilterTypes.user) {
+    return strings.sprint.user;
+  }
+  if (filterType === SprintViewFilterTypes.clear) {
+    return `${strings.sprint.project} / ${strings.sprint.user}`;
+  }
+  return "";
+};
+/**
  * Sprint view screen component
  */
 const SprintViewScreen = () => {
+  const filterSelectId = useId();
   const { resourceAllocationsApi } = useLambdasApi();
   const {
     filterType,
@@ -87,6 +107,8 @@ const SprintViewScreen = () => {
     setLoading(false);
   };
 
+  const filterLabel = getFilterLabel(filterType);
+
   return (
     <>
       {loading ? (
@@ -124,23 +146,27 @@ const SprintViewScreen = () => {
                       {strings.sprint.filter}
                     </Typography>
                     <FormControl sx={{ minWidth: 140 }}>
-                      <InputLabel id="filter-select-label">{strings.sprint.filterType}</InputLabel>
+                      <InputLabel id={filterSelectId}>{strings.sprint.filterType}</InputLabel>
                       <Select
-                        labelId="filter-select-label"
+                        labelId={filterSelectId}
                         value={filterType}
                         onChange={handleFilterChange}
-                        label="Filter Type"
+                        label={strings.sprint.filterType}
                       >
-                        <MenuItem value="project">{strings.sprint.project}</MenuItem>
-                        <MenuItem value="user">{strings.sprint.user}</MenuItem>
+                        <MenuItem value={SprintViewFilterTypes.clear}>
+                          {strings.sprint.clear}
+                        </MenuItem>
+                        <MenuItem value={SprintViewFilterTypes.project}>
+                          {strings.sprint.project}
+                        </MenuItem>
+                        <MenuItem value={SprintViewFilterTypes.user}>
+                          {strings.sprint.user}
+                        </MenuItem>
                       </Select>
                     </FormControl>
                   </Box>
                   <TextField
-                    label={strings.formatString(
-                      strings.sprint.searchBy,
-                      filterType === "project" ? strings.sprint.project : strings.sprint.user
-                    )}
+                    label={strings.formatString(strings.sprint.searchBy, filterLabel)}
                     variant="outlined"
                     fullWidth
                     value={searchQuery}
