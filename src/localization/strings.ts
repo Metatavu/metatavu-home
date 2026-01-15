@@ -135,6 +135,7 @@ export interface Localized extends LocalizedStringsMethods {
     filterType: string;
     project: string;
     user: string;
+    clear: string;
     searchBy: string;
   };
   /**
@@ -230,10 +231,17 @@ export interface Localized extends LocalizedStringsMethods {
     confirmButtonText: string;
     cancelButtonText: string;
     title: string;
-    message: string;
-    editMessage: string;
-    editDraftMessage: string;
-    updateMessage: string;
+    delete: {
+      vacation: string;
+      questionnaire: string;
+      software: string;
+      article: string;
+    };
+    edit: {
+      draft: string;
+      reviewed: string;
+    };
+    update: string;
   };
   /**
    * Translations related to error handler
@@ -658,7 +666,24 @@ export interface Localized extends LocalizedStringsMethods {
     doneTitle: string;
     doneContent: string;
   };
-
+  /**
+   * Translations related to Onboarding Wiki Documentation Screen
+   */
+  onboardingWikiDocumentation: {
+    prev: string;
+    next: string;
+    close: string;
+    welcomeWikiTitle: string;
+    welcomeWikiContent: string;
+    latestUpdatedArticlesTitle: string;
+    latestUpdatedArticlesContent: string;
+    wikiSearchBarTitle: string;
+    wikiSearchBarContent: string;
+    createArticleTitle: string;
+    createArticleContent: string;
+    listOfArticlesTitle: string;
+    listOfArticlesContent: string;
+  };
   /**
    * Translations related to On Call
    */

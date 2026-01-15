@@ -34,8 +34,11 @@ import { useLambdasApi } from "src/hooks/use-api";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import { wikiScreenColors } from "src/theme";
+import { DeleteItemType, OnboardingScreen } from "src/types/index";
 import { getArticlesToFilter, sortArticlesByDate } from "src/utils/wiki-utils";
+import DeleteConfirmationDialog from "../contexts/delete-confirmation-dialog";
 import BackButton from "../generics/back-button";
+import Onboarding from "../onboarding/Onboarding";
 import ArticleCard from "../wiki-documentation/article-card";
 import ArticleListItem from "../wiki-documentation/article-list-item";
 import CarouselArticleCards from "../wiki-documentation/carousel-article-cards";
@@ -71,7 +74,10 @@ const WikiDocumentationScreen = () => {
   const [displayOption, setDisplayOption] = useState("all");
   const [pageNumber, setPageNumber] = useState(1);
   const [snackbar, setSnackbar] = useAtom(snackbarAtom);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const autoCompleteId = useId();
+  const [selectedArticleId, setSelectedArticleId] = useState<string | undefined>(undefined);
+
   useEffect(() => {
     if (!articles) getArticles();
     else if (articles.length !== 0) {
@@ -98,6 +104,7 @@ const WikiDocumentationScreen = () => {
       displayedArticles.slice((pageNumber - 1) * itemsPerPage, itemsPerPage * pageNumber)
     );
   }, [pageNumber, displayedArticles]);
+
   /**
    * Fetches all articles from the API and updates the relevant atoms.
    * If the user is in admin mode, it also fetches draft articles.
@@ -132,6 +139,7 @@ const WikiDocumentationScreen = () => {
       setLoading(false);
     }, 1000);
   };
+
   /**
    * Extracts unique tags from the provided articles and updates the tags atom.
    *
@@ -142,6 +150,7 @@ const WikiDocumentationScreen = () => {
     const uniqueTags = [...new Set(allTags)];
     setTags(uniqueTags);
   };
+
   /**
    * Retrieves the most recently created, updated, and read articles from the provided list.
    * Updates the lastUpdatedArticles state with these selected articles.
@@ -175,21 +184,45 @@ const WikiDocumentationScreen = () => {
     }
     setlastUpdatedArticles(lastUpdatedArticles);
   };
+
+  /**
+   * Opens the delete confirmation dialog.
+   *
+   * @param {string | undefined} articleId - The ID of the article to be deleted.
+   */
+  const handleDeleteDialogOpen = (articleId: string | undefined) => {
+    setSelectedArticleId(articleId);
+    setDeleteDialogOpen(true);
+  };
+
+  /**
+   * Handles the confirmation of article deletion.
+   */
+  const handleConfirmDelete = () => {
+    if (!selectedArticleId) return;
+    handleDelete(selectedArticleId);
+    setSelectedArticleId(undefined);
+    setDeleteDialogOpen(false);
+  };
+
   /**
    * Deletes the specified article by its ID and updates the articles atom.
    *
-   * @param {string | undefined} articleId - The ID of the article to delete.
+   * @param {string} selectedArticleId - The ID of the article to delete.
    */
-  const handleDelete = async (articleId?: string) => {
-    if (!articleId) return;
+  const handleDelete = async (selectedArticleId: string) => {
+    if (!selectedArticleId) return;
     try {
-      await articleApi.deleteArticle({ id: articleId });
-      setArticlesAtom((articles) => (articles ?? []).filter((article) => article.id !== articleId));
+      await articleApi.deleteArticle({ id: selectedArticleId });
+      setArticlesAtom((articles) =>
+        (articles ?? []).filter((article) => article.id !== selectedArticleId)
+      );
     } catch (error: any) {
       const message = (await error.response.json()).message;
       setError(message);
     }
   };
+
   /**
    * Handles changes in the search input field.
    * Filters articles based on the search query and selected tags.
@@ -219,6 +252,7 @@ const WikiDocumentationScreen = () => {
     );
     setDisplayedArticles(filteredArticles);
   };
+
   /**
    * Handles the selection of tags from the autocomplete component.
    * Filters the articles based on the selected tags and search input.
@@ -240,6 +274,7 @@ const WikiDocumentationScreen = () => {
     );
     setDisplayedArticles(filteredArticles);
   };
+
   /**
    * Handles the change of the display option between all articles and draft articles.
    * Updates the displayed articles based on the selected option.
@@ -277,12 +312,15 @@ const WikiDocumentationScreen = () => {
       color: colors.button.text
     }
   });
+
   /**
    * Renders the search bar component with autocomplete and tag selection.
    * Allows filtering articles based on input text and selected tags.
    */
   const renderSearch = () => (
+    // biome-ignore lint/correctness/useUniqueElementIds: keeping static id
     <Card
+      id="wiki-article-search-bar"
       sx={{
         width: {
           lg: adminMode ? "55%" : "73%",
@@ -379,7 +417,9 @@ const WikiDocumentationScreen = () => {
     </Card>
   );
   const renderCreateButton = () => (
+    // biome-ignore lint/correctness/useUniqueElementIds: keeping static id
     <Button
+      id="wiki-create-article-button"
       onClick={() => setFormOpen(true)}
       variant="contained"
       sx={{
@@ -550,6 +590,7 @@ const WikiDocumentationScreen = () => {
 
   return (
     <>
+      <Onboarding screen={OnboardingScreen.Wiki} />
       {formOpen ? (
         <CreateOrEditArticleForm
           handleClose={() => setFormOpen(false)}
@@ -557,11 +598,15 @@ const WikiDocumentationScreen = () => {
           adminMode={adminMode}
         />
       ) : (
-        <>
+        // biome-ignore lint/correctness/useUniqueElementIds: keeping static id
+        <Box id="wiki-card-title" sx={{ width: "100%" }}>
           {!adminMode && (
             <>
               {renderTitle(strings.wikiDocumentation.cardTitle)}
-              <CarouselArticleCards articles={lastUpdatedArticles} />
+              {/* biome-ignore lint/correctness/useUniqueElementIds: keeping static id */}
+              <Box id="wiki-latest-updated-articles">
+                <CarouselArticleCards articles={lastUpdatedArticles} />
+              </Box>
             </>
           )}
           <Box
@@ -573,7 +618,13 @@ const WikiDocumentationScreen = () => {
           >
             {renderToolBar()}
             {displayedArticlesOnPage.length !== 0 ? (
-              <Grid container spacing={adminMode ? 4 : 3} textAlign={"center"}>
+              // biome-ignore lint/correctness/useUniqueElementIds: keeping static id
+              <Grid
+                id="wiki-articles-list"
+                container
+                spacing={adminMode ? 4 : 3}
+                textAlign={"center"}
+              >
                 {displayedArticlesOnPage.map((article) => (
                   <Grid
                     item
@@ -587,13 +638,17 @@ const WikiDocumentationScreen = () => {
                       <ArticleListItem
                         article={article}
                         adminMode={adminMode}
-                        handleDelete={handleDelete}
+                        onDeleteClick={
+                          article.id ? () => handleDeleteDialogOpen(article.id) : undefined
+                        }
                       />
                     ) : (
                       <ArticleCard
                         article={article}
                         adminMode={adminMode}
-                        handleDelete={handleDelete}
+                        onDeleteClick={
+                          article.id ? () => handleDeleteDialogOpen(article.id) : undefined
+                        }
                       />
                     )}
                   </Grid>
@@ -618,7 +673,7 @@ const WikiDocumentationScreen = () => {
             </Grid>
           )}
           <BackButton styles={{ marginBottom: 2 }} />
-        </>
+        </Box>
       )}
       <Snackbar
         open={snackbar.open}
@@ -648,6 +703,12 @@ const WikiDocumentationScreen = () => {
           {snackbar.message}
         </Alert>
       </Snackbar>
+      <DeleteConfirmationDialog
+        open={deleteDialogOpen}
+        setOpen={setDeleteDialogOpen}
+        onConfirm={handleConfirmDelete}
+        deleteType={DeleteItemType.ARTICLE}
+      />
     </>
   );
 };

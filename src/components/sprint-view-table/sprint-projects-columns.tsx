@@ -21,48 +21,42 @@ const createSprintViewProjectsColumns = ({ resourceAllocations }: Props) => {
       field: "project",
       headerClassName: "header-color",
       filterable: false,
+      sortable: true,
       headerName: strings.sprint.myAllocation,
       flex: 2,
-      valueGetter: (params) => {
-        getProjectName(params.row.project, resourceAllocations);
-      },
+      valueGetter: (params) => getProjectName(params.row.project, resourceAllocations),
       renderCell: (params) => (
-        <>
-          <Box display="flex" alignItems="center" justifyContent="center" />
-          {getProjectName(params.row.project, resourceAllocations)}{" "}
-        </>
+        <Box display="flex" alignItems="center" justifyContent="center">
+          {getProjectName(params.row.project, resourceAllocations)}
+        </Box>
       )
     },
     {
       field: "allocationHours",
       headerClassName: "header-color",
       filterable: false,
+      sortable: true,
       headerName: strings.sprint.estimatedTime,
       flex: 2,
-      valueGetter: (param) => {
-        getTotalEstimatedHours(resourceAllocations, param.row.project);
-      },
-      renderCell: (param) => (
-        <>
-          <Box marginLeft={"50px"} display="flex" alignItems="center" justifyContent="center" />
-          {getTotalEstimatedHours(resourceAllocations, param.row.project)}{" "}
-        </>
+      valueGetter: (params) => getTotalEstimatedHours(resourceAllocations, params.row.project),
+      renderCell: (params) => (
+        <Box display="flex" alignItems="center" justifyContent="center" ml={5}>
+          {getTotalEstimatedHours(resourceAllocations, params.row.project)}
+        </Box>
       )
     },
     {
       field: "user",
       headerClassName: "header-color",
       filterable: false,
+      sortable: true,
       headerName: strings.sprint.assigned,
       flex: 4,
-      valueGetter: (params) => {
-        getAssigneName(resourceAllocations, params.row.project);
-      },
+      valueGetter: (params) => getAssigneName(resourceAllocations, params.row.project),
       renderCell: (params) => (
-        <>
-          <Box display="flex" alignItems="center" justifyContent="center" />
-          {getAssigneName(resourceAllocations, params.row.project)}{" "}
-        </>
+        <Box display="flex" alignItems="center" justifyContent="center">
+          {getAssigneName(resourceAllocations, params.row.project)}
+        </Box>
       )
     }
   ];
