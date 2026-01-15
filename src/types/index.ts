@@ -215,3 +215,13 @@ export interface OnCallWeek {
 export interface SlackAvatar {
   image_original: string | undefined;
 }
+
+/**
+ * Type describing delete item types
+ */
+export enum DeleteItemType {
+  VACATION = "vacation",
+  QUESTIONNAIRE = "questionnaire",
+  SOFTWARE = "software",
+  ARTICLE = "article"
+}

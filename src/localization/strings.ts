@@ -231,10 +231,17 @@ export interface Localized extends LocalizedStringsMethods {
     confirmButtonText: string;
     cancelButtonText: string;
     title: string;
-    message: string;
-    editMessage: string;
-    editDraftMessage: string;
-    updateMessage: string;
+    delete: {
+      vacation: string;
+      questionnaire: string;
+      software: string;
+      article: string;
+    };
+    edit: {
+      draft: string;
+      reviewed: string;
+    };
+    update: string;
   };
   /**
    * Translations related to error handler
