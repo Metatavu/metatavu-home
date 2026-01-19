@@ -477,7 +477,7 @@ const QuestionnaireTable = () => {
         setOpen={setDialogOpen}
         onConfirm={handleConfirmDelete}
         deleteType={DeleteItemType.QUESTIONNAIRE}
-        deleteTitle={deleteTitle || ""}
+        deleteTitle={deleteTitle}
       />
     </>
   );
