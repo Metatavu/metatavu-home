@@ -55,7 +55,7 @@ const QuestionnaireTable = () => {
   const userProfile = useAtomValue(userProfileAtom);
   const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
   const dataGridRef = useRef(null);
-  const [deleteTitle, setDeleteTitle] = useState<string | null>(null);
+  const [deleteTitle, setDeleteTitle] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     const fetchQuestionnaires = async () => {
