@@ -44,10 +44,7 @@ const DeleteConfirmationDialog = ({ open, setOpen, onConfirm, deleteType, delete
     >
       {
         <Typography marginBottom={3} sx={{ fontSize: 16, fontWeight: "bold" }}>
-          {strings.confirmationHandler.delete[deleteType].replace(
-            "{deleteTitle}",
-            deleteTitle || ""
-          )}
+          {strings.formatString(strings.confirmationHandler.delete[deleteType], deleteTitle || "")}
         </Typography>
       }
       <Divider />
