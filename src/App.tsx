@@ -89,10 +89,10 @@ const App = () => {
           path: "/memos",
           element: <MemoScreen />
         },
-        {
-          path: "/cards",
-          element: <CardScreen />
-        },
+        // {
+        //   path: "/cards",
+        //   element: <CardScreen />
+        // },
         {
           path: "/questionnaire/:id",
           element: <QuestionnaireManager mode={QuestionnairePreviewMode.FILL} />
