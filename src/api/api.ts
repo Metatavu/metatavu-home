@@ -8,7 +8,7 @@ import {
   OnCallApi,
   QuestionnairesApi,
   SeveraApi,
-  SlackAvatarsApi,
+  SlackApi,
   SoftwareApi,
   TrelloApi,
   UsersApi,
@@ -55,7 +55,7 @@ export const getLambdasApiClient = (accessToken?: string) => {
   return {
     resourceAllocationsApi: severaApi,
     phaseApi: severaApi,
-    slackAvatarsApi: new SlackAvatarsApi(getConfiguration()),
+    slackAvatarsApi: new SlackApi(getConfiguration()),
     softwareApi: new SoftwareApi(getConfiguration()),
     usersApi: new UsersApi(getConfiguration()),
     memoApi: new MemoApi(getConfiguration()),

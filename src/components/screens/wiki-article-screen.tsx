@@ -1,8 +1,9 @@
 import { Alert, Box, Card, CircularProgress, Grid, Snackbar, Typography } from "@mui/material";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { DateTime } from "luxon";
 import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { articleAtom, draftArticleAtom } from "src/atoms/article";
 import { userProfileAtom } from "src/atoms/auth";
 import { errorAtom } from "src/atoms/error";
@@ -12,6 +13,7 @@ import type { Article, ArticleMetadata, User } from "src/generated/homeLambdasCl
 import { useLambdasApi } from "src/hooks/use-api";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
+import { formatDate } from "src/utils/time-utils";
 import BackButton from "../generics/back-button";
 import ActionButton from "../wiki-documentation/action-button";
 import ArticleListItem from "../wiki-documentation/article-list-item";
@@ -36,6 +38,7 @@ const ArticleScreen = () => {
   const [snackbar, setSnackbar] = useAtom(snackbarAtom);
   const setArticlesAtom = useSetAtom(articleAtom);
   const setDraftArticlesAtom = useSetAtom(draftArticleAtom);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchArticle();
@@ -84,12 +87,12 @@ const ArticleScreen = () => {
    * @returns {Promise<void>} A promise that resolves once the read record is processed.
    */
   const recordReadArticle = async (article?: Article) => {
-    const user = `${loggedInUser?.firstName} ${loggedInUser?.lastName}`;
-    if (!article || !article.id) return;
-    if (article.readBy?.includes(user)) return;
+    const userId = loggedInUser?.id;
+    if (!article || !article.id || !userId) return;
+    if (article.readBy?.includes(userId)) return;
     try {
-      await articleApi.readArticle({ id: article.id, readArticleRequest: { user: user } });
-      setArticle((prev) => (prev ? { ...prev, readBy: [...(prev.readBy || []), user] } : prev));
+      await articleApi.readArticle({ id: article.id, readArticleRequest: { user: userId } });
+      setArticle((prev) => (prev ? { ...prev, readBy: [...(prev.readBy || []), userId] } : prev));
     } catch (error: any) {
       const message = (await error.response.json()).message;
       setError(message);
@@ -112,7 +115,7 @@ const ArticleScreen = () => {
     const updatedArticle: Article = {
       ...article,
       draft: false,
-      lastUpdatedBy: `${loggedInUser?.firstName} ${loggedInUser?.lastName}`
+      lastUpdatedBy: loggedInUser?.id || ""
     };
     try {
       const response = await articleApi.updateArticle({ article: updatedArticle, id: article.id });
@@ -138,6 +141,9 @@ const ArticleScreen = () => {
         message: strings.snackbar.articleApproved,
         severity: "success"
       });
+      if (adminMode) {
+        navigate("/admin/wiki-documentation");
+      }
     } catch (error: any) {
       const message = (await error.response.json()).message;
       setError(message);
@@ -169,28 +175,20 @@ const ArticleScreen = () => {
             />
           ) : (
             <>
-              <Grid container spacing={1.5} sx={{ marginBottom: 3, marginTop: 0.5 }}>
-                <Grid item xs={adminMode ? 4 : 12}>
-                  <BackButton
-                    onClick={formOpen ? handleClose : undefined}
-                    styles={{ padding: "6px" }}
-                  />
+              {adminMode && (
+                <Grid container spacing={1.5} sx={{ marginBottom: 3, marginTop: 0.5 }}>
+                  <Grid item xs={6}>
+                    <ActionButton onClick={() => setFormOpen(true)}>
+                      {strings.wikiDocumentation.edit}
+                    </ActionButton>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <ActionButton onClick={handleApprove}>
+                      {strings.wikiDocumentation.approve}
+                    </ActionButton>
+                  </Grid>
                 </Grid>
-                {adminMode && (
-                  <>
-                    <Grid item xs={4}>
-                      <ActionButton onClick={() => setFormOpen(true)}>
-                        {strings.wikiDocumentation.edit}
-                      </ActionButton>
-                    </Grid>
-                    <Grid item xs={4}>
-                      <ActionButton onClick={handleApprove}>
-                        {strings.wikiDocumentation.approve}
-                      </ActionButton>
-                    </Grid>
-                  </>
-                )}
-              </Grid>
+              )}
               <Card sx={{ padding: 3, paddingTop: 0, marginBottom: 3 }}>
                 {/* Title */}
                 {article?.title && (
@@ -217,9 +215,9 @@ const ArticleScreen = () => {
                 {/* Created / Updated Dates */}
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                   {article?.createdAt &&
-                    `Created: ${new Date(article.createdAt).toLocaleDateString()}`}
+                    `Created: ${formatDate(DateTime.fromJSDate(article.createdAt))}`}
                   {article?.lastUpdatedAt &&
-                    ` | Updated: ${new Date(article.lastUpdatedAt).toLocaleDateString()}`}
+                    ` | Updated: ${formatDate(DateTime.fromJSDate(article.lastUpdatedAt))}`}
                 </Typography>
                 {/* Tags */}
                 {article?.tags && article.tags.length > 0 && (
@@ -283,6 +281,11 @@ const ArticleScreen = () => {
                   ))}
                 </Box>
               )}
+              <Grid container spacing={1.5} sx={{ marginBottom: 3 }}>
+                <Grid item xs={12}>
+                  <BackButton styles={{ padding: "6px" }} />
+                </Grid>
+              </Grid>
             </>
           )}
         </>

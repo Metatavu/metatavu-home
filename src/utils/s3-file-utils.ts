@@ -2,7 +2,7 @@ import config from "src/app/config";
 import type { ArticleApi } from "src/generated/homeLambdasClient";
 
 const s3ImageFolder = config.s3.articleImagesFolder;
-const s3ArticleBucket = config.s3.articleBuket;
+const s3ArticleBucket = config.s3.articleBucket;
 
 export const uploadFile = async (file: File, articleApi: ArticleApi) => {
   if (!file) return;

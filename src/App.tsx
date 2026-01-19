@@ -179,6 +179,10 @@ const App = () => {
         {
           path: "/admin/wiki-documentation/*",
           element: <ArticleScreen />
+        },
+        {
+          path: "/admin/oncall",
+          element: <OnCallCalendarScreen />
         }
       ]
     }

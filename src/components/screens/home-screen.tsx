@@ -6,6 +6,7 @@ import { usersAtom } from "src/atoms/user";
 import type { User } from "src/generated/homeLambdasClient";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
+import { OnboardingScreen } from "src/types/index";
 import BalanceCard from "../home/balance-card";
 import CardGridWrapper from "../home/common/card-grid-wrapper";
 import MemoCard from "../home/memo-card";
@@ -129,7 +130,7 @@ const HomeScreen = () => {
 
       <Box id="onboarding-complete" sx={{ display: "none" }} />
 
-      <Onboarding />
+      <Onboarding screen={OnboardingScreen.Home} />
     </>
   );
 };

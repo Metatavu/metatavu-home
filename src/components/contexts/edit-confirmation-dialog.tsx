@@ -11,6 +11,7 @@ interface Props {
   setOpen: (confirmation: boolean) => void;
   onConfirm: () => Promise<void>;
   isDraft: boolean;
+  isAdmin: boolean;
   setFormOpen: (formOpen: boolean) => void;
 }
 
@@ -19,7 +20,14 @@ interface Props {
  *
  * @param props component properties
  */
-const EditConfirmationDialogue = ({ open, setOpen, onConfirm, isDraft, setFormOpen }: Props) => {
+const EditConfirmationDialog = ({
+  open,
+  setOpen,
+  onConfirm,
+  isDraft,
+  isAdmin,
+  setFormOpen
+}: Props) => {
   const [loading, setLoading] = useState(false);
 
   /** Handler for confirm click
@@ -42,6 +50,18 @@ const EditConfirmationDialogue = ({ open, setOpen, onConfirm, isDraft, setFormOp
     setFormOpen(false);
   };
 
+  /**
+   * Get confirmation message based on admin status and draft status
+   */
+  const getConfirmationMessage = () => {
+    if (isAdmin) {
+      return strings.confirmationHandler.update;
+    }
+    return isDraft
+      ? strings.confirmationHandler.edit.draft
+      : strings.confirmationHandler.edit.reviewed;
+  };
+
   return (
     <GenericDialog
       open={open}
@@ -55,13 +75,11 @@ const EditConfirmationDialogue = ({ open, setOpen, onConfirm, isDraft, setFormOp
       loading={loading}
     >
       <Typography marginBottom={3} sx={{ fontSize: 16, fontWeight: "bold" }}>
-        {isDraft
-          ? strings.confirmationHandler.editDraftMessage
-          : strings.confirmationHandler.editMessage}
+        {getConfirmationMessage()}
       </Typography>
       <Divider />
     </GenericDialog>
   );
 };
 
-export default EditConfirmationDialogue;
+export default EditConfirmationDialog;

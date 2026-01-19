@@ -109,6 +109,7 @@
     "filterType": "Filter type",
     "project": "Project",
     "user": "User",
+    "clear": "Clear",
     "searchBy": "Search by {0}"
   },
   "softwareRegistry": {
@@ -205,9 +206,17 @@
     "confirmButtonText": "Yes",
     "cancelButtonText": "No",
     "title": "Are you sure?",
-    "message": "Delete selected vacation request(s)?",
-    "editMessage": "This reviewed request will go back to pending if you save changes. Do you want to proceed?",
-    "editDraftMessage": "This draft request will be sent for approval if you save changes. Do you want to proceed?"
+    "delete": {
+      "vacation": "Delete selected vacation request(s)?",
+      "questionnaire": "Delete selected questionnaire?",
+      "software": "Delete selected software?",
+      "article": "Delete selected article?"
+    },
+    "edit": {
+      "draft": "This draft request will be sent for approval if you save changes. Do you want to proceed?",
+      "reviewed": "This reviewed request will go back to pending if you save changes. Do you want to proceed?"
+    },
+    "update": "Are you sure you want to update?"
   },
   "errorHandler": {
     "cancelButtonText": "Close",
@@ -503,8 +512,9 @@
     "labelPath": "Path",
     "labelTags": "Tags",
     "labelImage": "Image URL",
-    "labelDescription": "Desciption",
+    "labelDescription": "Description",
     "labelLink": "Link",
+    "labelLinkPlaceholder": "Enter URL here, e.g. https://example.com",
     "draft": "draft",
     "allArticles": "all",
     "approvedArticles": "approved",
@@ -597,6 +607,21 @@
     "wikiContent": "Read or create documentation.",
     "doneTitle": "Complete the Onboarding",
     "doneContent": "You're all set! You can restart from Settings."
+  },
+  "onboardingWikiDocumentation": {
+    "prev": "Previous",
+    "next": "Next",
+    "close": "Close",
+    "welcomeWikiTitle": "Wiki Documentation",
+    "welcomeWikiContent": "Find, read and create articles here.",
+    "latestUpdatedArticlesTitle": "Latest article",
+    "latestUpdatedArticlesContent": "Here you can see the most recently created or updated article.",
+    "wikiSearchBarTitle": "Search",
+    "wikiSearchBarContent": "Search for articles here.",
+    "createArticleTitle": "Create",
+    "createArticleContent": "Here you can create a new article.",
+    "listOfArticlesTitle": "Articles",
+    "listOfArticlesContent": "Browse all articles here."
   },
   "employeeFlextime": {
     "title": "Employee Time Totals and Balances",

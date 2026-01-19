@@ -5,15 +5,15 @@ import { useAtomValue } from "jotai";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { languageAtom } from "src/atoms/language";
-import EditConfirmationDialogue from "src/components/contexts/edit-confirmation-dialogue";
+import EditConfirmationDialog from "src/components/contexts/edit-confirmation-dialog";
 import type { VacationRequest } from "src/generated/homeLambdasClient";
 import { VacationRequestStatuses } from "src/generated/homeLambdasClient";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
-import { ToolbarFormModes, type VacationsDataGridRow } from "src/types";
+import { DeleteItemType, ToolbarFormModes, type VacationsDataGridRow } from "src/types";
 import { getToolbarTitle } from "src/utils/toolbar-utils";
 import type { FilterType } from "src/utils/vacation-filter-type";
-import ConfirmationHandler from "../../contexts/confirmation-handler";
+import DeleteConfirmationDialog from "../../contexts/delete-confirmation-dialog";
 import ToolbarDeleteButton from "./toolbar-delete-button";
 import ToolbarForm from "./toolbar-form/toolbar-form";
 import FormToggleButton from "./toolbar-form-toggle-button";
@@ -196,15 +196,17 @@ const TableToolbar = ({
 
   return (
     <Box>
-      <ConfirmationHandler
+      <DeleteConfirmationDialog
         open={confirmationHandlerOpen}
         setOpen={setConfirmationHandlerOpen}
-        deleteVacationsData={deleteVacationsData}
+        onConfirm={deleteVacationsData}
+        deleteType={DeleteItemType.VACATION}
       />
-      <EditConfirmationDialogue
+      <EditConfirmationDialog
         open={editConfirmationHandlerOpen}
         setOpen={setEditConfirmationHandlerOpen}
         isDraft={wasDraftBeforeEdit}
+        isAdmin={adminMode}
         onConfirm={handleEditConfirm}
         setFormOpen={setFormOpen}
       />
@@ -328,12 +330,12 @@ const TableToolbar = ({
           setFormOpen={setFormOpen}
           createVacationRequest={createVacationRequest}
           createDraftVacationRequest={createDraftVacationRequest}
-          updateVacationRequest={updateVacationRequest}
           selectedRowIds={selectedRowIds}
           rows={rows}
+          updateVacationRequest={updateVacationRequest}
+          setSelectedRowIds={setSelectedRowIds}
           toolbarFormMode={toolbarFormMode}
           setToolbarFormMode={setToolbarFormMode}
-          setSelectedRowIds={setSelectedRowIds}
           onSaveClick={handleSaveClick}
         />
       </Collapse>

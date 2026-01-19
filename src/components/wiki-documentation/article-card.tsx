@@ -1,13 +1,17 @@
 import { Box, Button, Card, Chip, Typography } from "@mui/material";
+import { useAtomValue } from "jotai";
+import { DateTime } from "luxon";
 import { Link } from "react-router-dom";
+import { usersAtom } from "src/atoms/user";
 import type { ArticleMetadata } from "src/generated/homeLambdasClient";
 import strings from "src/localization/strings";
+import { formatDate } from "src/utils/time-utils";
 import { getLastActivityString } from "src/utils/wiki-utils";
 
 interface Props {
   article: ArticleMetadata;
   adminMode: boolean;
-  handleDelete: (articleId?: string) => void;
+  onDeleteClick?: () => void;
 }
 /**
  * Displays an article summary card with image, title, activity info, tags,
@@ -15,11 +19,14 @@ interface Props {
  *
  * @param article - Article metadata to display.
  * @param adminMode - Flag to show admin controls like delete button.
- * @param handleDelete - Callback function to delete the article.
+ * @param onDeleteClick - Callback function to open the delete confirmation dialog.
  */
-const ArticleCard = ({ article, adminMode, handleDelete }: Props) => {
-  if (!article || !article.lastUpdatedAt) return;
-  const lastActivityData = getLastActivityString(article);
+const ArticleCard = ({ article, adminMode, onDeleteClick }: Props) => {
+  const users = useAtomValue(usersAtom);
+
+  if (!article?.createdBy) return null;
+
+  const lastActivityData = getLastActivityString(article, users);
   const tags = article.tags || [];
   const visibleTags = tags.slice(0, 2);
   const hiddenCount = tags.length - visibleTags.length;
@@ -80,7 +87,9 @@ const ArticleCard = ({ article, adminMode, handleDelete }: Props) => {
           {strings.formatString(
             "{0} {1}",
             lastActivityData.action,
-            article.lastUpdatedAt.toLocaleDateString()
+            formatDate(
+              DateTime.fromJSDate(article.lastUpdatedAt || article.createdAt || new Date())
+            )
           )}
         </Typography>
         <Typography variant="body1" sx={{ paddingLeft: "5px", textAlign: "left" }}>
@@ -117,15 +126,16 @@ const ArticleCard = ({ article, adminMode, handleDelete }: Props) => {
             />
           )}
         </Box>
-        {adminMode && (
+        {adminMode && onDeleteClick && (
           <Button
             variant="outlined"
             size="small"
             sx={{ marginTop: "auto", zIndex: 10 }}
             fullWidth
-            onClick={(event) => {
-              event.preventDefault();
-              handleDelete(article.id);
+            onClick={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              onDeleteClick();
             }}
           >
             {strings.questionnaireTable.delete}

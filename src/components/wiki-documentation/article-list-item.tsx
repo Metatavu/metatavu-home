@@ -1,13 +1,17 @@
 import { Box, Button, Card, Chip, Grid, Typography } from "@mui/material";
+import { useAtomValue } from "jotai";
+import { DateTime } from "luxon";
 import { Link } from "react-router-dom";
+import { usersAtom } from "src/atoms/user";
 import type { ArticleMetadata } from "src/generated/homeLambdasClient";
 import strings from "src/localization/strings";
+import { formatDate } from "src/utils/time-utils";
 import { getLastActivityString } from "src/utils/wiki-utils";
 
 interface Props {
   article: ArticleMetadata;
   adminMode?: boolean;
-  handleDelete?: (articleId?: string) => void;
+  onDeleteClick?: () => void;
 }
 /**
  * Renders a responsive article list item with image, title, description, tags, and activity info.
@@ -15,12 +19,14 @@ interface Props {
  *
  * @param article - Article metadata to display.
  * @param adminMode - Optional flag to enable admin features like delete button (default: false).
- * @param handleDelete - Optional callback to delete the article by its ID.
+ * @param onDeleteClick - Optional callback function to open the delete confirmation dialog.
  */
-const ArticleListItem = ({ article, adminMode = false, handleDelete }: Props) => {
-  if (!article || !article.lastUpdatedAt) return;
-  const lastActivityData = getLastActivityString(article);
+const ArticleListItem = ({ article, adminMode = false, onDeleteClick }: Props) => {
+  const users = useAtomValue(usersAtom);
 
+  if (!article?.createdBy) return null;
+
+  const lastActivityData = getLastActivityString(article, users);
   return (
     <Link to={article.path} style={{ textDecoration: "none" }}>
       <Card
@@ -117,21 +123,24 @@ const ArticleListItem = ({ article, adminMode = false, handleDelete }: Props) =>
                   {strings.formatString(
                     "{0} {1} by {2}",
                     lastActivityData.action,
-                    article.lastUpdatedAt.toLocaleDateString(),
+                    formatDate(
+                      DateTime.fromJSDate(article.lastUpdatedAt || article.createdAt || new Date())
+                    ),
                     lastActivityData.user || ""
                   )}
                 </Typography>
               </Grid>
             </Grid>
-            {adminMode && handleDelete && (
+            {adminMode && onDeleteClick && (
               <Button
                 variant="outlined"
                 size="small"
                 sx={{ marginTop: 1, zIndex: 10 }}
                 fullWidth
-                onClick={(event) => {
-                  event.preventDefault();
-                  handleDelete(article.id);
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  onDeleteClick();
                 }}
               >
                 {strings.questionnaireTable.delete}
