@@ -1,13 +1,12 @@
-import { theme } from "src/theme";
-
 /**
  * Colors array to be mapped in elements such as the pie chart.
  */
-export const COLORS = [
-  theme.palette.success.dark,
-  theme.palette.success.light,
-  theme.palette.warning.main
-];
+//Was used in timebank only
+//export const COLORS = [
+//  theme.palette.success.dark,
+//  theme.palette.success.light,
+//  theme.palette.warning.main
+//];
 
 /**
  * Days of week array.

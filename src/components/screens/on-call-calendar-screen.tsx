@@ -9,7 +9,8 @@ import {
   Select,
   styled,
   Tooltip,
-  Typography
+  Typography,
+  useTheme
 } from "@mui/material";
 import { red } from "@mui/material/colors";
 import { DateCalendar, PickersDay, type PickersDayProps } from "@mui/x-date-pickers";
@@ -125,14 +126,14 @@ const OnCallCalendarScreen = () => {
       setError(`${strings.oncall.errorUpdatingPaidStatus}, ${error}`);
     }
   };
-
+  const theme = useTheme();
   /**
    * Renders the current week's on call person if they exist
    */
   const renderCurrentOnCall = () => {
     if (onCallPerson === undefined) {
       return (
-        <Box sx={customTheme.customStyles.onCallBox}>
+        <Box sx={customTheme(theme).customStyles.onCallBox}>
           <CircularProgress sx={{ color: "black" }} />
         </Box>
       );
@@ -140,7 +141,7 @@ const OnCallCalendarScreen = () => {
 
     if (onCallPerson) {
       return (
-        <Box sx={customTheme.customStyles.onCallBox}>
+        <Box sx={customTheme(theme).customStyles.onCallBox}>
           <Typography
             variant="h5"
             sx={{ display: "block", mb: 1, fontWeight: "bold", color: "black" }}
@@ -155,7 +156,7 @@ const OnCallCalendarScreen = () => {
     }
 
     return (
-      <Box sx={customTheme.customStyles.onCallBox}>
+      <Box sx={customTheme(theme).customStyles.onCallBox}>
         <Typography variant="h5" sx={{ display: "block", color: red[700], fontWeight: "bold" }}>
           {strings.oncall.noOnCallPerson}
         </Typography>
@@ -272,7 +273,7 @@ const OnCallCalendarScreen = () => {
               sx={{
                 ".MuiBadge-badge": {
                   backgroundColor: whenUserIsOnCall
-                    ? customTheme.colors.onCallHighlight
+                    ? customTheme(theme).colors.onCallHighlight
                     : badgeColor,
                   color: "#fff",
                   right: 60,

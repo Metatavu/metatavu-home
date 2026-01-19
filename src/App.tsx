@@ -2,8 +2,9 @@ import { CssBaseline, ThemeProvider } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { useAtomValue } from "jotai";
+//import { create } from "lodash";
 import { Settings } from "luxon";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { languageAtom } from "./atoms/language";
 import ErrorHandler from "./components/contexts/error-handler";
@@ -28,7 +29,7 @@ import VacationRequestsScreen from "./components/screens/vacation-requests-scree
 import ArticleScreen from "./components/screens/wiki-article-screen";
 import WikiDocumentationScreen from "./components/screens/wiki-documentation-screen";
 import SoftwareDetails from "./components/software-registry/SoftwareDetails";
-import { theme } from "./theme";
+import { createAppTheme } from "./theme";
 import { QuestionnairePreviewMode } from "./types";
 
 /**
@@ -40,6 +41,10 @@ const App = () => {
   useMemo(() => {
     Settings.defaultLocale = language;
   }, [language]);
+
+  const [mode, setMode] = useState<"light" | "dark">("light");
+
+  const appTheme = useMemo(() => createAppTheme(mode), [mode]);
 
   const router = createBrowserRouter([
     {
@@ -97,7 +102,7 @@ const App = () => {
         },
         {
           path: "/settings",
-          element: <SettingsScreen />
+          element: <SettingsScreen mode={mode} setMode={setMode} />
         },
         {
           path: "/oncall",
@@ -179,7 +184,7 @@ const App = () => {
   ]);
   return (
     <div className="App">
-      <ThemeProvider theme={theme}>
+      <ThemeProvider theme={appTheme}>
         <ErrorHandler>
           <AuthenticationProvider>
             <LocalizationProvider dateAdapter={AdapterLuxon} adapterLocale={language}>

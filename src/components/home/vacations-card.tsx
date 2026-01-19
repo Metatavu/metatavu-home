@@ -1,6 +1,6 @@
 import { Check, Pending } from "@mui/icons-material";
 import LuggageIcon from "@mui/icons-material/Luggage";
-import { Box, Card, CardContent, Grid, Skeleton, Typography } from "@mui/material";
+import { Box, Card, CardContent, Grid, Skeleton, Typography, useTheme } from "@mui/material";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { DateTime } from "luxon";
 import { useMemo, useState } from "react";
@@ -29,6 +29,7 @@ import {
  * Vacations card component
  */
 const VacationsCard = () => {
+  const theme = useTheme();
   const { adminMode } = useUserRole();
   const { vacationRequestsApi } = useLambdasApi();
   const userProfile = useAtomValue(userProfileAtom);
@@ -158,7 +159,8 @@ const VacationsCard = () => {
             <span
               style={{
                 color: getVacationRequestStatusColor(
-                  getTotalVacationRequestStatus(earliestUpcomingVacationRequest?.status)
+                  getTotalVacationRequestStatus(earliestUpcomingVacationRequest?.status),
+                  theme
                 )
               }}
             >
@@ -169,7 +171,7 @@ const VacationsCard = () => {
           ) : (
             <span
               style={{
-                color: getVacationRequestStatusColor(VacationRequestStatuses.PENDING)
+                color: getVacationRequestStatusColor(VacationRequestStatuses.PENDING, theme)
               }}
             >
               {strings.vacationRequest.pending}

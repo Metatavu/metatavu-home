@@ -7,10 +7,14 @@ import { usersAtom } from "src/atoms/user";
 import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
 
+type SettingsScreenProps = {
+  mode: "light" | "dark";
+  setMode: (mode: "light" | "dark") => void;
+};
 /**
  * Settings screen component
  */
-const SettingsScreen = () => {
+const SettingsScreen = ({ mode, setMode }: SettingsScreenProps) => {
   const [userProfile, setUserProfile] = useAtom(userProfileAtom);
   const { usersApi } = useLambdasApi();
   const setUsers = useSetAtom(usersAtom);
@@ -109,30 +113,50 @@ const SettingsScreen = () => {
   };
 
   return (
-    <Box p={2} bgcolor="grey.100" borderRadius={2}>
-      <Typography variant="h5" gutterBottom>
-        {strings.settingsScreen.consentToDataProcessing}
-      </Typography>
-      <Box display="flex" alignItems="center" mt={2}>
-        <Typography variant="body1" sx={{ marginRight: 2 }}>
-          {strings.settingsScreen.decline}
+    <Box p={2}>
+      <Box p={2} bgcolor="grey.100" borderRadius={2}>
+        <Typography variant="h5" gutterBottom>
+          {strings.settingsScreen.consentToDataProcessing}
         </Typography>
-        <Box display="flex" alignItems="center">
-          <Switch
-            checked={isConsentGiven}
-            onChange={handleToggleChange}
-            inputProps={{ "aria-label": "severa-opt-in" }}
-            disabled={loading}
-          />
-          {loading && (
-            <Box ml={1}>
-              <CircularProgress size={20} />
-            </Box>
-          )}
+        <Box display="flex" alignItems="center" mt={2}>
+          <Typography variant="body1" sx={{ marginRight: 2 }}>
+            {strings.settingsScreen.decline}
+          </Typography>
+          <Box display="flex" alignItems="center">
+            <Switch
+              checked={isConsentGiven}
+              onChange={handleToggleChange}
+              inputProps={{ "aria-label": "severa-opt-in" }}
+              disabled={loading}
+            />
+            {loading && (
+              <Box ml={1}>
+                <CircularProgress size={20} />
+              </Box>
+            )}
+          </Box>
+          <Typography variant="body1" sx={{ marginLeft: 2 }}>
+            {strings.settingsScreen.accept}
+          </Typography>
         </Box>
-        <Typography variant="body1" sx={{ marginLeft: 2 }}>
-          {strings.settingsScreen.accept}
+      </Box>
+      <Box p={2} bgcolor="grey.100" borderRadius={2}>
+        <Typography variant="h5" gutterBottom>
+          Dark Mode
         </Typography>
+        <Box display="flex" alignItems="center" mt={2}>
+          <Typography variant="body1" sx={{ marginRight: 2 }}>
+            Light
+          </Typography>
+          <Switch
+            checked={mode === "dark"}
+            onChange={() => setMode(mode === "light" ? "dark" : "light")}
+            inputProps={{ "aria-label": "dark-mode-toggle" }}
+          />
+          <Typography variant="body1" sx={{ marginLeft: 2 }}>
+            Dark
+          </Typography>
+        </Box>
       </Box>
     </Box>
   );

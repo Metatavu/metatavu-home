@@ -1,5 +1,5 @@
 import { CancelOutlined, CheckCircleOutline } from "@mui/icons-material";
-import { alpha, Box, Button, Checkbox, Typography } from "@mui/material";
+import { alpha, Box, Button, Checkbox, Typography, useTheme } from "@mui/material";
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
 import { useAtomValue, useSetAtom } from "jotai";
 import { DateTime } from "luxon";
@@ -31,6 +31,7 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
   const userProfile = useAtomValue(userProfileAtom);
   const loggedInEmail = userProfile?.email;
   const setError = useSetAtom(errorAtom);
+  const theme = useTheme();
 
   /**
    * Identify rows that belong to the logged in user
@@ -118,7 +119,7 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
               checked={params.value}
               sx={{
                 "&.Mui-checked": {
-                  color: alpha(customTheme.colors.paidGreen, 0.8)
+                  color: alpha(customTheme(theme).colors.paidGreen, 0.8)
                 },
                 "&:not(.Mui-checked)": {
                   color: alpha("#ff6384", 0.8)
@@ -130,7 +131,7 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
 
         const Icon = params.value ? CheckCircleOutline : CancelOutlined;
         const iconColor = params.value
-          ? alpha(customTheme.colors.paidGreen, 0.8)
+          ? alpha(customTheme(theme).colors.paidGreen, 0.8)
           : alpha("#ff6384", 0.8);
 
         return <Icon sx={{ color: iconColor, cursor: "default" }} />;
@@ -161,7 +162,7 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
         <Typography
           variant="h4"
           className="button-text"
-          sx={customTheme.customStyles.listViewTypography}
+          sx={customTheme(theme).customStyles.listViewTypography}
         >
           {strings.oncall.oncallShifts} {selectedDate.year}
         </Typography>
@@ -170,18 +171,18 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
           <Button
             onClick={() => setSelectedDate(selectedDate.minus({ year: 1 }))}
             disabled={selectedDate.year === 2020}
-            sx={customTheme.customStyles.listViewButton}
+            sx={customTheme(theme).customStyles.listViewButton}
           >
-            <Typography variant="h4" sx={customTheme.customStyles.listViewTypography}>
+            <Typography variant="h4" sx={customTheme(theme).customStyles.listViewTypography}>
               {strings.oncall.previousYear}
             </Typography>
           </Button>
           <Button
             onClick={() => setSelectedDate(selectedDate.plus({ year: 1 }))}
             disabled={selectedDate.year === DateTime.now().year}
-            sx={customTheme.customStyles.listViewButton}
+            sx={customTheme(theme).customStyles.listViewButton}
           >
-            <Typography variant="h4" sx={customTheme.customStyles.listViewTypography}>
+            <Typography variant="h4" sx={customTheme(theme).customStyles.listViewTypography}>
               {strings.oncall.nextYear}
             </Typography>
           </Button>
