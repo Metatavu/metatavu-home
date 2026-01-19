@@ -15,8 +15,6 @@ import {
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { type MouseEvent, useEffect, useId, useState } from "react";
 import { useNavigate } from "react-router-dom";
-//import { avatarsAtom, personsAtom } from "src/atoms/person";
-//import type { Person } from "src/generated/client";
 import { authAtom, userProfileAtom } from "src/atoms/auth";
 import { avatarsAtom } from "src/atoms/avatar";
 import { errorAtom } from "src/atoms/error";
@@ -33,8 +31,6 @@ const NavBar = () => {
   const menuId = useId();
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
   const [avatars, setAvatars] = useAtom(avatarsAtom);
-  // NOTE: The Person type cannot be used here because it was previously imported from the removed timebank client.
-  //const persons: Person[] = useAtomValue(personsAtom);
   const userProfile = useAtomValue(userProfileAtom);
   const setError = useSetAtom(errorAtom);
   const { slackAvatarsApi } = useLambdasApi();
@@ -75,14 +71,14 @@ const NavBar = () => {
    * Fetch Slack avatars for logged in user
    */
   const getSlackAvatars = async () => {
-    if (avatars?.image_original) return;
+    if (avatars?.imageOriginal) return;
     try {
       if (!loggedInUserEmail) return;
       const encodedEmail = encodeURIComponent(loggedInUserEmail);
       const fetchedAvatars = await slackAvatarsApi.getSlackUserAvatarByEmail({
         email: encodedEmail
       });
-      setAvatars({ image_original: fetchedAvatars.imageOriginal });
+      setAvatars({ imageOriginal: fetchedAvatars.imageOriginal });
     } catch (error) {
       setError(`${strings.error.fetchSlackAvatarsFailed}: ${error}`);
     }
@@ -102,7 +98,7 @@ const NavBar = () => {
           <Box>
             <Tooltip title={strings.header.openUserMenu}>
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                {<Avatar src={avatars?.image_original || ""} />}
+                {<Avatar src={avatars?.imageOriginal || ""} />}
               </IconButton>
             </Tooltip>
             <Menu
