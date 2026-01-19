@@ -208,9 +208,9 @@
     "title": "Are you sure?",
     "delete": {
       "vacation": "Delete selected vacation request(s)?",
-      "questionnaire": "Delete selected questionnaire?",
-      "software": "Delete selected software?",
-      "article": "Delete selected article?"
+      "questionnaire": "Delete questionnaire: \"{deleteTitle}\"?",
+      "software": "Delete software: \"{deleteTitle}\"?",
+      "article": "Delete article: \"{deleteTitle}\"?"
     },
     "edit": {
       "draft": "This draft request will be sent for approval if you save changes. Do you want to proceed?",

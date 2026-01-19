@@ -11,7 +11,7 @@ interface ContentProps {
   onStatusChange: (id: string, newStatus: SoftwareStatus) => void;
   adminMode: boolean;
   onSave: (id: string) => void;
-  onRemove: (id: string) => void;
+  onRemove: (id: string, title: string) => void;
   loggedUserId: string;
 }
 
@@ -55,7 +55,7 @@ const Content = ({
                 adminMode ? (newStatus) => onStatusChange(app.id || "", newStatus) : undefined
               }
               onSave={() => onSave(app.id || "")}
-              onRemove={adminMode ? () => onRemove(app.id || "") : undefined}
+              onRemove={adminMode ? () => onRemove(app.id || "", app.name || "") : undefined}
               isInMyApplications={isInMyApplications}
               url={""}
               createdBy={""}
@@ -84,7 +84,7 @@ const Content = ({
               adminMode ? (newStatus) => onStatusChange(app.id || "", newStatus) : undefined
             }
             onSave={() => onSave(app.id || "")}
-            onRemove={adminMode ? () => onRemove(app.id || "") : undefined}
+            onRemove={adminMode ? () => onRemove(app.id || "", app.name || "") : undefined}
             isInMyApplications={isInMyApplications}
             url={""}
             createdBy={""}

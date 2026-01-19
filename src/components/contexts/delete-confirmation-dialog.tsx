@@ -11,6 +11,7 @@ interface Props {
   setOpen: (confirmation: boolean) => void;
   onConfirm: () => void | Promise<void>;
   deleteType: DeleteItemType;
+  deleteTitle?: string;
 }
 
 /**
@@ -18,7 +19,7 @@ interface Props {
  *
  * @param props component properties
  */
-const DeleteConfirmationDialog = ({ open, setOpen, onConfirm, deleteType }: Props) => {
+const DeleteConfirmationDialog = ({ open, setOpen, onConfirm, deleteType, deleteTitle }: Props) => {
   /**
    * Handler for confirm click
    */
@@ -43,7 +44,10 @@ const DeleteConfirmationDialog = ({ open, setOpen, onConfirm, deleteType }: Prop
     >
       {
         <Typography marginBottom={3} sx={{ fontSize: 16, fontWeight: "bold" }}>
-          {strings.confirmationHandler.delete[deleteType]}
+          {strings.confirmationHandler.delete[deleteType].replace(
+            "{deleteTitle}",
+            deleteTitle || ""
+          )}
         </Typography>
       }
       <Divider />

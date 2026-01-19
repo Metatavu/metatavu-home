@@ -77,6 +77,7 @@ const WikiDocumentationScreen = () => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const autoCompleteId = useId();
   const [selectedArticleId, setSelectedArticleId] = useState<string | undefined>(undefined);
+  const [deleteTitle, setDeleteTitle] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     if (!articles) getArticles();
@@ -189,9 +190,14 @@ const WikiDocumentationScreen = () => {
    * Opens the delete confirmation dialog.
    *
    * @param {string | undefined} articleId - The ID of the article to be deleted.
+   * @param {string | undefined} articleTitle - The title of the article to be deleted.
    */
-  const handleDeleteDialogOpen = (articleId: string | undefined) => {
+  const handleDeleteDialogOpen = (
+    articleId: string | undefined,
+    articleTitle: string | undefined
+  ) => {
     setSelectedArticleId(articleId);
+    setDeleteTitle(articleTitle);
     setDeleteDialogOpen(true);
   };
 
@@ -639,7 +645,9 @@ const WikiDocumentationScreen = () => {
                         article={article}
                         adminMode={adminMode}
                         onDeleteClick={
-                          article.id ? () => handleDeleteDialogOpen(article.id) : undefined
+                          article.id
+                            ? () => handleDeleteDialogOpen(article.id, article.title)
+                            : undefined
                         }
                       />
                     ) : (
@@ -647,7 +655,9 @@ const WikiDocumentationScreen = () => {
                         article={article}
                         adminMode={adminMode}
                         onDeleteClick={
-                          article.id ? () => handleDeleteDialogOpen(article.id) : undefined
+                          article.id
+                            ? () => handleDeleteDialogOpen(article.id, article.title)
+                            : undefined
                         }
                       />
                     )}
@@ -708,6 +718,7 @@ const WikiDocumentationScreen = () => {
         setOpen={setDeleteDialogOpen}
         onConfirm={handleConfirmDelete}
         deleteType={DeleteItemType.ARTICLE}
+        deleteTitle={deleteTitle}
       />
     </>
   );

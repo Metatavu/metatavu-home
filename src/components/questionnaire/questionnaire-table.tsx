@@ -55,6 +55,7 @@ const QuestionnaireTable = () => {
   const userProfile = useAtomValue(userProfileAtom);
   const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
   const dataGridRef = useRef(null);
+  const [deleteTitle, setDeleteTitle] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchQuestionnaires = async () => {
@@ -143,8 +144,10 @@ const QuestionnaireTable = () => {
    * Handler for opening the delete confirmation dialog
    *
    * @param id questionnaire id to delete
+   * @param title questionnaire title
    */
-  const handleOpenDialog = (id: string) => {
+  const handleOpenDialog = (id: string, title: string) => {
+    setDeleteTitle(title);
     setDeleteId(id);
     setDialogOpen(true);
   };
@@ -331,7 +334,7 @@ const QuestionnaireTable = () => {
                 name="delete"
                 variant="contained"
                 color="secondary"
-                onClick={() => handleOpenDialog(params.row.id)}
+                onClick={() => handleOpenDialog(params.row.id, params.row.title)}
                 sx={{
                   minWidth: "85px",
                   width: "auto",
@@ -474,6 +477,7 @@ const QuestionnaireTable = () => {
         setOpen={setDialogOpen}
         onConfirm={handleConfirmDelete}
         deleteType={DeleteItemType.QUESTIONNAIRE}
+        deleteTitle={deleteTitle || ""}
       />
     </>
   );
