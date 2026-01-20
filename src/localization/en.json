@@ -472,7 +472,10 @@
     "saveSettings": "Save settings",
     "accept": "Accept",
     "decline": "Decline",
-    "consentToDataProcessing": "Grant permissions for processing your Severa data to gain additional Home features."
+    "consentToDataProcessing": "Grant permissions for processing your Severa data to gain additional Home features.",
+    "lightOrDarkMode": "Mode",
+    "light": "Light",
+    "dark": "Dark"
   },
   "notOptedInDescription": {
     "description": "Accept the processing of user data to view this section."

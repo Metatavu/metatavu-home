@@ -590,6 +590,9 @@ export interface Localized extends LocalizedStringsMethods {
     accept: string;
     decline: string;
     consentToDataProcessing: string;
+    lightOrDarkMode: string;
+    light: string;
+    dark: string;
   };
   /**
    * Translations related to if user is not Severa Opt in

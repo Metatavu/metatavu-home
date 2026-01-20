@@ -93,7 +93,13 @@ const NavBar = () => {
   }, []);
 
   return (
-    <AppBar position="relative">
+    <AppBar
+      position="relative"
+      sx={{
+        backgroundColor: (theme) => theme.palette.background.paper,
+        color: (theme) => theme.palette.text.primary
+      }}
+    >
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <NavItems />

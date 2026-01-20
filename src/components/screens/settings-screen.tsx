@@ -142,11 +142,11 @@ const SettingsScreen = ({ mode, setMode }: SettingsScreenProps) => {
       </Box>
       <Box p={2} bgcolor="grey.100" borderRadius={2}>
         <Typography variant="h5" gutterBottom>
-          Dark Mode
+          {strings.settingsScreen.lightOrDarkMode}
         </Typography>
         <Box display="flex" alignItems="center" mt={2}>
           <Typography variant="body1" sx={{ marginRight: 2 }}>
-            Light
+            {strings.settingsScreen.light}
           </Typography>
           <Switch
             checked={mode === "dark"}
@@ -154,7 +154,7 @@ const SettingsScreen = ({ mode, setMode }: SettingsScreenProps) => {
             inputProps={{ "aria-label": "dark-mode-toggle" }}
           />
           <Typography variant="body1" sx={{ marginLeft: 2 }}>
-            Dark
+            {strings.settingsScreen.dark}
           </Typography>
         </Box>
       </Box>
