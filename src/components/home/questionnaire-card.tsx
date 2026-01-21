@@ -41,15 +41,7 @@ const QuestionnaireCard = () => {
 
   return (
     <Link to={linkTarget} style={{ textDecoration: "none" }}>
-      <Card
-        sx={{
-          "&:hover": {
-            background: "#efefef"
-          }
-        }}
-      >
-        {renderCardContent()}
-      </Card>
+      <Card>{renderCardContent()}</Card>
     </Link>
   );
 };

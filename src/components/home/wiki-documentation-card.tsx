@@ -179,13 +179,7 @@ const WikiDocumentationCard = () => {
       to={adminMode ? "/admin/wiki-documentation" : "/wiki-documentation"}
       style={{ textDecoration: "none" }}
     >
-      <Card
-        sx={{
-          "&:hover": {
-            background: "#efefef"
-          }
-        }}
-      >
+      <Card>
         <Box sx={{ padding: 2 }}>
           <Typography variant="h6" fontWeight={"bold"} style={{ marginTop: 6, marginBottom: 3 }}>
             {strings.wikiDocumentation.cardTitle}

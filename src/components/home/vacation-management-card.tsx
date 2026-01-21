@@ -10,15 +10,7 @@ import strings from "../../localization/strings";
 const VacationManagementCard = () => {
   return (
     <Link to="/admin/vacation-management" style={{ textDecoration: "none" }}>
-      <Card
-        sx={{
-          height: "100%",
-          "&:hover": {
-            background: "#efefef",
-            cursor: "pointer"
-          }
-        }}
-      >
+      <Card>
         <CardContent>
           <Typography variant="h6" fontWeight="bold" sx={{ marginTop: 1, marginBottom: 1 }}>
             {strings.adminVacationManagement.title}

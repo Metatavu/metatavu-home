@@ -10,7 +10,7 @@ export const createAppTheme = (mode: "light" | "dark"): Theme =>
     palette: {
       mode,
       primary: {
-        main: "#222"
+        main: mode === "dark" ? "#fff" : "#222"
       },
       secondary: {
         main: "#F47D38"
@@ -114,7 +114,12 @@ export const createAppTheme = (mode: "light" | "dark"): Theme =>
         },
         styleOverrides: {
           root: ({ theme }) => ({
-            backgroundColor: theme.palette.background.paper
+            backgroundColor: theme.palette.background.paper,
+            transition: "background-color 0.2s ease",
+            "&:hover": {
+              backgroundColor:
+                theme.palette.mode === "dark" ? "#333333" : theme.palette.action.hover
+            }
           })
         }
       },

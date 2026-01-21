@@ -103,11 +103,6 @@ const BalanceCard = () => {
     return (
       <Card
         sx={{
-          "&:hover": {
-            background: "#efefef",
-            transform: "translateY(-2px)",
-            boxShadow: 3
-          },
           minHeight: 150,
           cursor: "pointer",
           transition: "all 0.2s ease-in-out"
@@ -128,9 +123,6 @@ const BalanceCard = () => {
     <Link to="/balance" style={{ textDecoration: "none" }}>
       <Card
         sx={{
-          "&:hover": {
-            background: "#efefef"
-          },
           minHeight: 150
         }}
       >

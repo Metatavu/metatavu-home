@@ -11,6 +11,7 @@ type SettingsScreenProps = {
   mode: "light" | "dark";
   setMode: (mode: "light" | "dark") => void;
 };
+
 /**
  * Settings screen component
  */
@@ -114,7 +115,20 @@ const SettingsScreen = ({ mode, setMode }: SettingsScreenProps) => {
 
   return (
     <Box p={2}>
-      <Box p={2} bgcolor="grey.100" borderRadius={2}>
+      <Box
+        p={2}
+        borderRadius={2}
+        sx={{
+          bgcolor: (theme) =>
+            theme.palette.mode === "dark"
+              ? theme.palette.background.paper
+              : theme.palette.background.default,
+          "&:hover": {
+            bgcolor: (theme) => theme.palette.action.hover
+          },
+          transition: "background-color 0.2s ease"
+        }}
+      >
         <Typography variant="h5" gutterBottom>
           {strings.settingsScreen.consentToDataProcessing}
         </Typography>
@@ -140,7 +154,20 @@ const SettingsScreen = ({ mode, setMode }: SettingsScreenProps) => {
           </Typography>
         </Box>
       </Box>
-      <Box p={2} bgcolor="grey.100" borderRadius={2}>
+      <Box
+        p={2}
+        borderRadius={2}
+        sx={{
+          bgcolor: (theme) =>
+            theme.palette.mode === "dark"
+              ? theme.palette.background.paper
+              : theme.palette.background.default,
+          "&:hover": {
+            bgcolor: (theme) => theme.palette.action.hover
+          },
+          transition: "background-color 0.2s ease"
+        }}
+      >
         <Typography variant="h5" gutterBottom>
           {strings.settingsScreen.lightOrDarkMode}
         </Typography>
@@ -148,11 +175,18 @@ const SettingsScreen = ({ mode, setMode }: SettingsScreenProps) => {
           <Typography variant="body1" sx={{ marginRight: 2 }}>
             {strings.settingsScreen.light}
           </Typography>
-          <Switch
-            checked={mode === "dark"}
-            onChange={() => setMode(mode === "light" ? "dark" : "light")}
-            inputProps={{ "aria-label": "dark-mode-toggle" }}
-          />
+          <Box display="flex" alignItems="center">
+            <Switch
+              checked={mode === "dark"}
+              onChange={() => setMode(mode === "light" ? "dark" : "light")}
+              inputProps={{ "aria-label": "dark-mode-toggle" }}
+            />
+            {loading && (
+              <Box ml={1}>
+                <CircularProgress size={20} />
+              </Box>
+            )}
+          </Box>
           <Typography variant="body1" sx={{ marginLeft: 2 }}>
             {strings.settingsScreen.dark}
           </Typography>
