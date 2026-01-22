@@ -55,15 +55,13 @@ const SettingsScreen = () => {
       const fresh = await usersApi.findUser({ userId: userProfile.id });
       const severaUserIdRaw = fresh?.attributes?.severaUserId;
       const severaUserId = Array.isArray(severaUserIdRaw) ? severaUserIdRaw[0] : severaUserIdRaw;
-      
-      // Keep state in sync so UI updates correctly
+
+      /**
+       * Update consent state
+       */
       setIsConsentGiven(Boolean(severaUserId));
       if (severaUserId) {
-        const updatedAttributes = {
-          ...(userProfile.attributes || {}),
-          severaUserId
-        };
-
+        const updatedAttributes = { ...(userProfile.attributes) };
         const updatedProfile = { ...userProfile, attributes: updatedAttributes };
         setUserProfile(updatedProfile);
         setUsers((prev) =>
@@ -92,7 +90,7 @@ const SettingsScreen = () => {
        * Revokes severa opt-out consent
        */
       await usersApi.removeSeveraOptIn({ userId: userProfile.id });
-      const updatedAttributes = { ...(userProfile.attributes || {}) };
+      const updatedAttributes = { ...(userProfile.attributes) };
       delete updatedAttributes.severaUserId;
       delete updatedAttributes.isSeveraOptIn;
 
