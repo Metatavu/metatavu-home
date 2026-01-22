@@ -208,10 +208,26 @@ export interface OnCallWeek {
   paid: boolean;
   badgeColor: string;
 }
-
+/**
+ * Enum for the different screens in the onboarding flow
+ */
+export enum OnboardingScreen {
+  Home = "home",
+  Wiki = "wiki"
+}
 /**
  * Interface describing Slack user avatars
  */
 export interface SlackAvatar {
   image_original: string | undefined;
+}
+
+/**
+ * Type describing delete item types
+ */
+export enum DeleteItemType {
+  VACATION = "vacation",
+  QUESTIONNAIRE = "questionnaire",
+  SOFTWARE = "software",
+  ARTICLE = "article"
 }
