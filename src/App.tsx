@@ -2,7 +2,6 @@ import { CssBaseline, ThemeProvider } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { useAtomValue } from "jotai";
-//import { create } from "lodash";
 import { Settings } from "luxon";
 import { useMemo, useState } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
