@@ -1,4 +1,5 @@
-import { Grid, Typography, useTheme } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
+import type { Theme } from "@mui/material/styles";
 import type { User } from "src/generated/homeLambdasClient";
 import { getVacationColors, parseVacationDays } from "src/utils/time-utils.ts";
 import strings from "../localization/strings";
@@ -8,8 +9,7 @@ import strings from "../localization/strings";
  *
  * @param user KeyCloak user
  */
-export const renderVacationDaysTextForCard = (user: User) => {
-  const theme = useTheme();
+export const renderVacationDaysTextForCard = (user: User, theme: Theme) => {
   const { vacationDaysByYearColor, unspentVacationDaysByYearColor } = getVacationColors(
     user,
     theme
@@ -54,8 +54,7 @@ export const renderVacationDaysTextForCard = (user: User) => {
  *
  * @param user Keycloak user
  */
-export const renderVacationDaysTextForScreen = (user: User) => {
-  const theme = useTheme();
+export const renderVacationDaysTextForScreen = (user: User, theme: Theme) => {
   const { vacationDaysByYearColor, unspentVacationDaysByYearColor } = getVacationColors(
     user,
     theme
