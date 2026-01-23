@@ -52,8 +52,8 @@ const SettingsScreen = () => {
       }
 
       await usersApi.addSeveraOptIn({ userId: userProfile.id });
-      const fresh = await usersApi.findUser({ userId: userProfile.id });
-      const severaUserIdRaw = fresh?.attributes?.severaUserId;
+      const fetchedUser = await usersApi.findUser({ userId: userProfile.id });
+      const severaUserIdRaw = fetchedUser?.attributes?.severaUserId;
       const severaUserId = Array.isArray(severaUserIdRaw) ? severaUserIdRaw[0] : severaUserIdRaw;
 
       /**
