@@ -208,9 +208,9 @@
     "title": "Oletko varma?",
     "delete": {
       "vacation": "Poista valitut lomahakemukset?",
-      "questionnaire": "Poista valittu kysely?",
-      "software": "Poista valittu ohjelmisto?",
-      "article": "Poista valittu artikkeli?"
+      "questionnaire": "Poista kysely: \"{0}\"?",
+      "software": "Poista ohjelmisto: \"{0}\"?",
+      "article": "Poista artikkeli: \"{0}\"?"
     },
     "edit": {
       "draft": "Tämä lomapyyntöluonnos lähetetään käsittelyyn, jos tallennat muutokset. Haluatko jatkaa?",
