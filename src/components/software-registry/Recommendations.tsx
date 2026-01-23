@@ -99,7 +99,8 @@ const Recommendations = ({ applications, onAddUser }: RecommendationsProps) => {
     <Box
       sx={{
         width: "100%",
-        backgroundColor: "#f5f5f5",
+        backgroundColor: (theme) =>
+          theme.palette.mode === "dark" ? theme.palette.background.default : "#f5f5f5",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -109,7 +110,7 @@ const Recommendations = ({ applications, onAddUser }: RecommendationsProps) => {
         gap: { xs: "15px", sm: "30px" },
         textAlign: "left",
         fontSize: { xs: "18px", sm: "30px" },
-        color: "#000",
+        color: (theme) => (theme.palette.mode === "dark" ? theme.palette.text.primary : "#000"),
         fontFamily: "Poppins",
         marginBottom: "30px"
       }}
@@ -122,19 +123,19 @@ const Recommendations = ({ applications, onAddUser }: RecommendationsProps) => {
         <Grid container sx={{ position: "relative", alignItems: "center" }}>
           <IconButton
             onClick={handleScrollLeft}
-            sx={{
-              backgroundColor: "#f9473b",
+            sx={(theme) => ({
+              backgroundColor: theme.palette.primary.main,
               marginLeft: "4px",
-              color: "#fff",
+              color: theme.palette.getContrastText(theme.palette.primary.main),
               position: "absolute",
               left: "-50px",
               zIndex: 1,
               top: "50%",
               transform: "translateY(-50%)",
               "&:hover": {
-                backgroundColor: "#d63b31"
+                backgroundColor: theme.palette.primary.dark
               }
-            }}
+            })}
           >
             <ChevronLeftIcon />
           </IconButton>
@@ -175,7 +176,7 @@ const Recommendations = ({ applications, onAddUser }: RecommendationsProps) => {
           </IconButton>
         </Grid>
       ) : (
-        <Typography variant="h6" sx={{ color: "#000", mt: 3 }}>
+        <Typography variant="h6" sx={{ color: "text.primary", mt: 3 }}>
           {strings.softwareRegistry.noRecommendations}
         </Typography>
       )}
@@ -184,13 +185,14 @@ const Recommendations = ({ applications, onAddUser }: RecommendationsProps) => {
           variant="contained"
           color="secondary"
           onClick={() => navigate("/softwareregistry/allsoftware")}
-          sx={{
+          sx={(theme) => ({
             textTransform: "none",
-            color: "#fff",
+            color: theme.palette.getContrastText(theme.palette.secondary.main),
+            backgroundColor: theme.palette.secondary.main,
             fontSize: "18px",
             borderRadius: "25px",
-            "&:hover": { background: "#000" }
-          }}
+            "&:hover": { background: theme.palette.secondary.dark }
+          })}
         >
           {strings.softwareRegistry.allApplications}
         </Button>

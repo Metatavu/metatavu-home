@@ -8,7 +8,8 @@ import {
   IconButton,
   InputAdornment,
   TextField,
-  Typography
+  Typography,
+  useTheme
 } from "@mui/material";
 import { useCallback, useMemo, useState } from "react";
 import strings from "src/localization/strings";
@@ -41,6 +42,7 @@ const Sidebar = ({
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [searchValue, setSearchValue] = useState("");
+  const theme = useTheme();
 
   /**
    * Filters available tags based on the search input and selected tags.
@@ -114,7 +116,8 @@ const Sidebar = ({
           sx={{
             width: 260,
             padding: 2,
-            backgroundColor: "#fff",
+            backgroundColor: theme.palette.background.paper,
+            color: theme.palette.text.primary,
             height: "100%",
             borderRadius: 0.5,
             boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.25)"
@@ -126,11 +129,7 @@ const Sidebar = ({
               <CloseIcon />
             </IconButton>
           </Box>
-          <Typography
-            variant="body1"
-            sx={{ color: (theme) => theme.palette.info.main }}
-            gutterBottom
-          >
+          <Typography variant="body1" sx={{ color: theme.palette.info.main }} gutterBottom>
             {filteredApplicationsCount} {strings.softwareRegistry.results}
           </Typography>
           <TextField
@@ -142,18 +141,19 @@ const Sidebar = ({
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
-                  <SearchIcon sx={{ color: "#747474" }} />
+                  <SearchIcon sx={{ color: theme.palette.text.secondary }} />
                 </InputAdornment>
               )
             }}
             sx={{
-              "& fieldset": { borderColor: "#121212" },
+              "& fieldset": { borderColor: theme.palette.divider },
               "& .MuiInputBase-root": {
                 height: "40px",
-                backgroundColor: "#fff",
-                borderRadius: "7px"
+                backgroundColor: theme.palette.background.default,
+                borderRadius: "7px",
+                color: theme.palette.text.primary
               },
-              "& .MuiInputBase-input": { color: "#747474" },
+              "& .MuiInputBase-input": { color: theme.palette.text.primary },
               mb: 2
             }}
           />
@@ -161,32 +161,49 @@ const Sidebar = ({
             {strings.softwareRegistry.tags}
           </Typography>
           <Box display="flex" flexWrap="wrap" gap={1} mb={2}>
-            {filteredTags.map((tag) => (
-              <Chip
-                key={tag}
-                label={tag}
-                onClick={() => handleTagClick(tag)}
-                onDelete={selectedTags.includes(tag) ? () => handleTagClick(tag) : undefined}
-                sx={{
-                  borderRadius: "4px",
-                  backgroundColor: selectedTags.includes(tag) ? "#f9473b" : "#fff",
-                  color: selectedTags.includes(tag) ? "#fff" : "#000",
-                  border: `1px solid ${selectedTags.includes(tag) ? "transparent" : "#f9473b"}`,
-                  "& .MuiChip-deleteIcon": {
-                    color: selectedTags.includes(tag) ? "#fff" : "#f9473b"
-                  },
-                  "&:hover": {
-                    backgroundColor: selectedTags.includes(tag) ? "#000" : "#f9473b",
-                    color: "#fff",
+            {filteredTags.map((tag) => {
+              const isSelected = selectedTags.includes(tag);
+              return (
+                <Chip
+                  key={tag}
+                  label={tag}
+                  onClick={() => handleTagClick(tag)}
+                  onDelete={isSelected ? () => handleTagClick(tag) : undefined}
+                  sx={{
+                    borderRadius: "4px",
+                    backgroundColor: isSelected
+                      ? theme.palette.secondary.main
+                      : theme.palette.background.paper,
+                    color: isSelected
+                      ? theme.palette.primary.contrastText
+                      : theme.palette.text.primary,
+                    border: `1px solid ${isSelected ? "transparent" : theme.palette.primary.main}`,
                     "& .MuiChip-deleteIcon": {
-                      color: "#fff"
+                      color: isSelected
+                        ? theme.palette.primary.contrastText
+                        : theme.palette.primary.main
+                    },
+                    "&:hover": {
+                      backgroundColor: isSelected
+                        ? theme.palette.primary.dark
+                        : theme.palette.primary.main,
+                      color: theme.palette.primary.contrastText,
+                      "& .MuiChip-deleteIcon": {
+                        color: theme.palette.primary.contrastText
+                      }
                     }
-                  }
-                }}
-              />
-            ))}
+                  }}
+                />
+              );
+            })}
           </Box>
-          <Button onClick={handleClearSearch} variant="text" color="primary" fullWidth>
+          <Button
+            onClick={handleClearSearch}
+            variant="text"
+            color="primary"
+            fullWidth
+            sx={{ color: theme.palette.text.primary }}
+          >
             {strings.softwareRegistry.clearSearch}
           </Button>
         </Box>

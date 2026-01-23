@@ -366,7 +366,7 @@ const AllSoftwareScreen = () => {
                 height: "45px",
                 width: "50%",
                 padding: "10px",
-                backgroundColor: "#f1f1f1",
+                backgroundColor: (theme) => theme.palette.background.paper,
                 boxShadow: "inset 0px 4px 6px rgba(0, 0, 0, 0.1)"
               }}
             />

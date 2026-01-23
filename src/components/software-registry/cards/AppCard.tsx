@@ -20,19 +20,26 @@ const AppCard = ({ id, image, name, description, tags = [], isGridView }: AppCar
     <MuiLink component={Link} to={`${id}`} underline="none" color="inherit">
       {isGridView ? (
         <Card
-          sx={{
+          sx={(theme) => ({
             height: 320,
             width: 240,
-            backgroundColor: "#fff",
+            backgroundColor: theme.palette.background.paper,
             borderRadius: "10px",
             boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.25)",
             overflow: "hidden",
             ":hover": {
-              boxShadow: "0px 6px 14px rgba(0, 0, 0, 0.3)"
+              boxShadow: "0px 6px 14px rgba(0, 0, 0, 0.3)",
+              backgroundColor: theme.palette.action.hover
             }
-          }}
+          })}
         >
-          <CardActionArea sx={{ padding: "16px" }}>
+          <CardActionArea
+            sx={(theme) => ({
+              padding: "16px",
+              backgroundColor: theme.palette.background.paper,
+              "&:hover": { backgroundColor: theme.palette.action.hover }
+            })}
+          >
             <CardMedia
               component="img"
               height="100px"
@@ -85,16 +92,16 @@ const AppCard = ({ id, image, name, description, tags = [], isGridView }: AppCar
                   <Chip
                     key={tag}
                     label={tag}
-                    sx={{
+                    sx={(theme) => ({
                       borderRadius: "5px",
                       margin: "-5px",
-                      backgroundColor: "#F9473B",
+                      backgroundColor: theme.palette.mode === "dark" ? "#b71c1c" : "#F9473B",
                       color: "#fff",
                       fontSize: "14px",
                       whiteSpace: "nowrap",
                       maxWidth: "70px",
                       minWidth: "60px"
-                    }}
+                    })}
                   />
                 ))}
               </Box>
@@ -106,7 +113,7 @@ const AppCard = ({ id, image, name, description, tags = [], isGridView }: AppCar
           sx={{
             width: "100%",
             display: "flex",
-            backgroundColor: "#fff",
+            backgroundColor: "background.paper",
             borderRadius: "10px",
             boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.25)",
             overflow: "hidden",
@@ -116,13 +123,17 @@ const AppCard = ({ id, image, name, description, tags = [], isGridView }: AppCar
           }}
         >
           <CardActionArea
-            sx={{
+            sx={(theme) => ({
               padding: "8px",
               display: "flex",
               flexDirection: "row",
               alignItems: "center",
-              height: "150px"
-            }}
+              height: "150px",
+              backgroundColor: theme.palette.background.paper,
+              "&:hover": {
+                backgroundColor: theme.palette.action.hover
+              }
+            })}
           >
             <Box
               sx={{

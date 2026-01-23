@@ -10,7 +10,8 @@ import {
   Container,
   Grid,
   IconButton,
-  Typography
+  Typography,
+  useTheme
 } from "@mui/material";
 import { useAtom, useAtomValue } from "jotai";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -44,6 +45,7 @@ const SoftwareScreen = () => {
   const [showAll, setShowAll] = useState(false);
   const recommendationRef = useRef<null | HTMLDivElement>(null);
   const { createSoftware } = useCreateSoftware(loggedUserId, setApplications);
+  const theme = useTheme();
 
   /**
    * Scrolls to the recommendations section.
@@ -177,7 +179,8 @@ const SoftwareScreen = () => {
         sx={{
           p: "25%",
           display: "flex",
-          justifyContent: "center"
+          justifyContent: "center",
+          backgroundColor: theme.palette.background.paper
         }}
       >
         <Box sx={{ textAlign: "center" }}>
@@ -202,7 +205,7 @@ const SoftwareScreen = () => {
         </Typography>
         {recommendedApplications.length > 0 && (
           <Grid item container justifyContent="center" alignItems="center" mb={4}>
-            <Typography sx={{ fontWeight: 600, fontSize: 18, color: "#f9473b" }}>
+            <Typography sx={{ fontWeight: 600, fontSize: 18, color: theme.palette.primary.main }}>
               {strings.softwareRegistry.recommendationMessage.replace(
                 "{recommendationCount}",
                 recommendedApplications.length.toString()
@@ -211,7 +214,7 @@ const SoftwareScreen = () => {
             <IconButton
               onClick={scrollToRecommendations}
               sx={{
-                color: "#F9473B",
+                color: theme.palette.primary.main,
                 backgroundColor: "transparent",
                 ":hover": {
                   backgroundColor: "transparent",
@@ -233,8 +236,7 @@ const SoftwareScreen = () => {
               textTransform: "none",
               color: "#fff",
               fontSize: "18px",
-              borderRadius: "100px",
-              "&:hover": { background: "#000" }
+              borderRadius: "100px"
             }}
           >
             {strings.softwareRegistry.addApplication}
@@ -245,14 +247,16 @@ const SoftwareScreen = () => {
             <IconButton
               onClick={() => setIsGridView(true)}
               sx={{
-                backgroundColor: isGridView ? "#F9473B" : "#f2f2f2",
-                color: isGridView ? "#fff" : "#000",
+                backgroundColor: isGridView
+                  ? theme.palette.primary.main
+                  : theme.palette.background.paper,
+                color: isGridView ? theme.palette.common.white : theme.palette.text.primary,
                 borderRadius: "4px",
                 padding: "6px",
                 marginRight: "10px",
                 ":hover": {
-                  backgroundColor: "#000",
-                  color: "#fff"
+                  backgroundColor: theme.palette.primary.dark,
+                  color: theme.palette.common.white
                 }
               }}
             >
@@ -261,13 +265,16 @@ const SoftwareScreen = () => {
             <IconButton
               onClick={() => setIsGridView(false)}
               sx={{
-                backgroundColor: !isGridView ? "#F9473B" : "#f2f2f2",
-                color: !isGridView ? "#fff" : "#000",
+                backgroundColor: !isGridView
+                  ? theme.palette.primary.main
+                  : theme.palette.background.paper,
+
+                color: !isGridView ? theme.palette.common.white : theme.palette.text.primary,
                 borderRadius: "4px",
                 padding: "6px",
                 ":hover": {
-                  backgroundColor: "#000",
-                  color: "#fff"
+                  backgroundColor: theme.palette.primary.dark,
+                  color: theme.palette.common.white
                 }
               }}
             >
@@ -308,10 +315,8 @@ const SoftwareScreen = () => {
                   onClick={() => setShowAll(!showAll)}
                   sx={{
                     textTransform: "none",
-                    color: "#fff",
                     fontSize: "18px",
-                    borderRadius: "100px",
-                    "&:hover": { background: "#000" }
+                    borderRadius: "100px"
                   }}
                 >
                   {showAll ? strings.softwareRegistry.showLess : strings.softwareRegistry.showMore}
