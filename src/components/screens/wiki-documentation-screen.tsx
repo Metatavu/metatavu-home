@@ -202,6 +202,15 @@ const WikiDocumentationScreen = () => {
   };
 
   /**
+   * Returns a function that opens the delete confirmation dialog for the specified article.
+   *
+   * @param {ArticleMetadata} article - The article for which to get the delete click handler.
+   * @returns A function that opens the delete confirmation dialog when called.
+   */
+  const getOnDeleteClick = (article: ArticleMetadata) =>
+    article.id ? () => handleDeleteDialogOpen(article.id, article.title) : undefined;
+
+  /**
    * Handles the confirmation of article deletion.
    */
   const handleConfirmDelete = () => {
@@ -644,21 +653,13 @@ const WikiDocumentationScreen = () => {
                       <ArticleListItem
                         article={article}
                         adminMode={adminMode}
-                        onDeleteClick={
-                          article.id
-                            ? () => handleDeleteDialogOpen(article.id, article.title)
-                            : undefined
-                        }
+                        onDeleteClick={getOnDeleteClick(article)}
                       />
                     ) : (
                       <ArticleCard
                         article={article}
                         adminMode={adminMode}
-                        onDeleteClick={
-                          article.id
-                            ? () => handleDeleteDialogOpen(article.id, article.title)
-                            : undefined
-                        }
+                        onDeleteClick={getOnDeleteClick(article)}
                       />
                     )}
                   </Grid>
