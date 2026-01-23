@@ -1,4 +1,4 @@
 import { atom } from "jotai";
-import type { SlackAvatar } from "../types";
+import type { SlackAvatarResponse } from "src/generated/homeLambdasClient";
 
-export const avatarsAtom = atom<SlackAvatar | undefined>(undefined);
+export const avatarsAtom = atom<SlackAvatarResponse | undefined>(undefined);
