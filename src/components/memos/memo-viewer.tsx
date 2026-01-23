@@ -6,8 +6,8 @@ import { errorAtom } from "src/atoms/error";
 import { languageAtom } from "src/atoms/language";
 import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
+import { base64ToBlob } from "src/utils/memo-utils";
 import { PdfObject } from "./memo-component";
-
 /**
  * Component to display a selected PDF file with services provided
  */
@@ -58,8 +58,16 @@ export const PdfViewer = ({ fileId }: { fileId: string }) => {
   const translatePdf = async () => {
     setIsTranslating(true);
     try {
-      const translatedPdf = await memoApi.getTranslatedMemo({ fileId, language });
-      const pdfUrl = URL.createObjectURL(translatedPdf);
+      const translatedPdfId = await memoApi.createTranslatedMemoPdf({ fileId });
+      console.log("Translated PDF ID:", translatedPdfId.id);
+      const translatedPdf = await memoApi.getTranslatedMemoPdf({
+        id: translatedPdfId.id || "",
+        language: "fi"
+      });
+      if (!translatedPdf?.translatedBase64) {
+        throw new Error("No translated PDF returned from API");
+      }
+      const pdfUrl = URL.createObjectURL(translatedPdf.translatedBase64);
       setPdfBlobUrl(pdfUrl);
       setTranslated(true);
     } catch (error) {
