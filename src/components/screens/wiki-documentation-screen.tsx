@@ -77,6 +77,7 @@ const WikiDocumentationScreen = () => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const autoCompleteId = useId();
   const [selectedArticleId, setSelectedArticleId] = useState<string | undefined>(undefined);
+  const [deleteTitle, setDeleteTitle] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     if (!articles) getArticles();
@@ -189,11 +190,25 @@ const WikiDocumentationScreen = () => {
    * Opens the delete confirmation dialog.
    *
    * @param {string | undefined} articleId - The ID of the article to be deleted.
+   * @param {string | undefined} articleTitle - The title of the article to be deleted.
    */
-  const handleDeleteDialogOpen = (articleId: string | undefined) => {
+  const handleDeleteDialogOpen = (
+    articleId: string | undefined,
+    articleTitle: string | undefined
+  ) => {
     setSelectedArticleId(articleId);
+    setDeleteTitle(articleTitle);
     setDeleteDialogOpen(true);
   };
+
+  /**
+   * Returns a function that opens the delete confirmation dialog for the specified article.
+   *
+   * @param {ArticleMetadata} article - The article for which to get the delete click handler.
+   * @returns A function that opens the delete confirmation dialog when called.
+   */
+  const getOnDeleteClick = (article: ArticleMetadata) =>
+    article.id ? () => handleDeleteDialogOpen(article.id, article.title) : undefined;
 
   /**
    * Handles the confirmation of article deletion.
@@ -638,17 +653,13 @@ const WikiDocumentationScreen = () => {
                       <ArticleListItem
                         article={article}
                         adminMode={adminMode}
-                        onDeleteClick={
-                          article.id ? () => handleDeleteDialogOpen(article.id) : undefined
-                        }
+                        onDeleteClick={getOnDeleteClick(article)}
                       />
                     ) : (
                       <ArticleCard
                         article={article}
                         adminMode={adminMode}
-                        onDeleteClick={
-                          article.id ? () => handleDeleteDialogOpen(article.id) : undefined
-                        }
+                        onDeleteClick={getOnDeleteClick(article)}
                       />
                     )}
                   </Grid>
@@ -708,6 +719,7 @@ const WikiDocumentationScreen = () => {
         setOpen={setDeleteDialogOpen}
         onConfirm={handleConfirmDelete}
         deleteType={DeleteItemType.ARTICLE}
+        deleteTitle={deleteTitle}
       />
     </>
   );

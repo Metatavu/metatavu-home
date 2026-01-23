@@ -58,6 +58,7 @@ const AllSoftwareScreen = () => {
   const { createSoftware } = useCreateSoftware(loggedUserId, setApplications);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedApplicationId, setSelectedApplicationId] = useState<string | null>(null);
+  const [deleteTitle, setDeleteTitle] = useState<string | undefined>(undefined);
 
   type SoftwareStatusFilterOptions = (typeof allStatusValues)[number];
 
@@ -225,9 +226,11 @@ const AllSoftwareScreen = () => {
    * Opens the delete confirmation dialog.
    *
    * @param id - The ID of the application to delete.
+   * @param title - The title of the application to delete.
    */
-  const openDeleteDialog = (id: string) => {
+  const openDeleteDialog = (id: string, title: string) => {
     setSelectedApplicationId(id);
+    setDeleteTitle(title);
     setDeleteDialogOpen(true);
   };
 
@@ -460,6 +463,7 @@ const AllSoftwareScreen = () => {
         setOpen={setDeleteDialogOpen}
         onConfirm={handleRemove}
         deleteType={DeleteItemType.SOFTWARE}
+        deleteTitle={deleteTitle}
       />
     </Container>
   );

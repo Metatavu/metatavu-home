@@ -20,6 +20,7 @@ import { errorAtom } from "src/atoms/error";
 import type { AnswerOption, Question, Questionnaire } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
+import { v4 as uuidv4 } from "uuid";
 import BackButton from "../generics/back-button";
 import NewQuestionCard from "./new-question-card";
 
@@ -192,6 +193,7 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
    */
   const handleAddAnswerOption = (questionIndex: number) => {
     const newOption: AnswerOption = {
+      id: uuidv4(),
       label: "",
       isCorrect: false
     };
@@ -230,7 +232,12 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
     if (!questionText.trim() || !answerOptions || answerOptions.length === 0) {
       return;
     }
-    const validAnswerOptions = answerOptions.filter((option) => option.label?.trim());
+    const validAnswerOptions = answerOptions
+      .filter((option) => option.label?.trim())
+      .map((option) => ({
+        ...option,
+        id: option.id || uuidv4()
+      }));
 
     if (validAnswerOptions.length === 0) {
       return;
@@ -240,7 +247,7 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
       ...prevQuestionnaire,
       questions: [
         ...prevQuestionnaire.questions,
-        { questionText: questionText.trim(), answerOptions: validAnswerOptions }
+        { id: uuidv4(), questionText: questionText.trim(), answerOptions: validAnswerOptions }
       ]
     }));
   };
@@ -340,9 +347,9 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
               {strings.questionnaireTags?.title || "Tags"}
             </Typography>
             <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", mb: 2 }}>
-              {editedQuestionnaire.tags?.map((tag, index) => (
+              {editedQuestionnaire.tags?.map((tag) => (
                 <Chip
-                  key={index}
+                  key={tag}
                   label={tag}
                   onDelete={() => handleRemoveTag(tag)}
                   color="primary"
@@ -393,7 +400,7 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
           </Box>
 
           {editedQuestionnaire.questions.map((question, questionIndex) => (
-            <Card key={questionIndex} sx={{ mb: 2, p: 2, border: "1px solid #e0e0e0" }}>
+            <Card key={question.id} sx={{ mb: 2, p: 2, border: "1px solid #e0e0e0" }}>
               <TextField
                 label={`${strings.questionnaireEdit.question} ${questionIndex + 1}`}
                 value={question.questionText}
@@ -410,7 +417,7 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
               </Typography>
 
               {question.answerOptions.map((option, optionIndex) => (
-                <Box key={optionIndex} sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+                <Box key={option.id} sx={{ display: "flex", alignItems: "center", mb: 1 }}>
                   <Checkbox
                     sx={{ mr: 1 }}
                     color="success"
