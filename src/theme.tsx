@@ -153,13 +153,14 @@ export const createAppTheme = (mode: "light" | "dark"): Theme =>
     }
   });
 
-export const wikiScreenColors = {
+export const wikiScreenColors = (theme: Theme) => ({
   button: {
-    main: "#E9E8E8",
-    hover: "#DCD8D8",
-    text: "#787272"
+    main: theme.palette.background.paper,
+    hover: theme.palette.action.hover,
+    text: theme.palette.text.primary,
+    border: theme.palette.divider
   }
-};
+});
 
 export const customTheme = (theme: Theme) => ({
   colors: {

@@ -22,7 +22,8 @@ import {
   Snackbar,
   styled,
   TextField,
-  Typography
+  Typography,
+  useTheme
 } from "@mui/material";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { useEffect, useId, useState } from "react";
@@ -44,7 +45,6 @@ import ArticleListItem from "../wiki-documentation/article-list-item";
 import CarouselArticleCards from "../wiki-documentation/carousel-article-cards";
 import CreateOrEditArticleForm from "../wiki-documentation/create-article-form";
 
-const colors = wikiScreenColors;
 const itemsPerPage = 12;
 
 /**
@@ -78,6 +78,8 @@ const WikiDocumentationScreen = () => {
   const autoCompleteId = useId();
   const [selectedArticleId, setSelectedArticleId] = useState<string | undefined>(undefined);
   const [deleteTitle, setDeleteTitle] = useState<string | undefined>(undefined);
+  const theme = useTheme();
+  const colors = wikiScreenColors(theme);
 
   useEffect(() => {
     if (!articles) getArticles();

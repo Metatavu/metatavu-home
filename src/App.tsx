@@ -184,12 +184,11 @@ const App = () => {
   return (
     <div className="App">
       <ThemeProvider theme={appTheme}>
+        <CssBaseline />
         <ErrorHandler>
           <AuthenticationProvider>
             <LocalizationProvider dateAdapter={AdapterLuxon} adapterLocale={language}>
-              <CssBaseline>
-                <RouterProvider router={router} />
-              </CssBaseline>
+              <RouterProvider router={router} />
             </LocalizationProvider>
           </AuthenticationProvider>
         </ErrorHandler>

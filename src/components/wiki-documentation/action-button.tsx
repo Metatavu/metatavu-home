@@ -1,7 +1,4 @@
-import { Button } from "@mui/material";
-import { wikiScreenColors } from "src/theme";
-
-const colors = wikiScreenColors;
+import { Button, useTheme } from "@mui/material";
 
 interface Props {
   children: string | JSX.Element;
@@ -14,23 +11,27 @@ interface Props {
  * @param children - Content to display inside the button.
  * @param onClick - Optional function called when the button is clicked.
  */
-const ActionButton = ({ children, disabled, onClick }: Props) => (
-  <Button
-    variant="contained"
-    sx={{
-      width: "100%",
-      backgroundColor: colors.button.main,
-      color: colors.button.text,
-      cursor: disabled ? "not-allowed" : "pointer",
-      "&:hover": {
-        backgroundColor: colors.button.hover
-      }
-    }}
-    onClick={onClick}
-    disabled={disabled}
-  >
-    {children}
-  </Button>
-);
+const ActionButton = ({ children, disabled, onClick }: Props) => {
+  const theme = useTheme();
+
+  return (
+    <Button
+      variant="contained"
+      sx={{
+        width: "100%",
+        backgroundColor: theme.palette.primary.main,
+        color: theme.palette.getContrastText(theme.palette.primary.main),
+        cursor: disabled ? "not-allowed" : "pointer",
+        "&:hover": {
+          backgroundColor: theme.palette.action.hover
+        }
+      }}
+      onClick={onClick}
+      disabled={disabled}
+    >
+      {children}
+    </Button>
+  );
+};
 
 export default ActionButton;

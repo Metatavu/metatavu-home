@@ -1,4 +1,13 @@
-import { Alert, Box, Card, CircularProgress, Grid, Snackbar, Typography } from "@mui/material";
+import {
+  Alert,
+  Box,
+  Card,
+  CircularProgress,
+  Grid,
+  Snackbar,
+  Typography,
+  useTheme
+} from "@mui/material";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { DateTime } from "luxon";
 import { useEffect, useState } from "react";
@@ -24,6 +33,7 @@ import "../wiki-documentation/rich-text-editor/editor.css";
  * Article screen component displaying the article content.
  */
 const ArticleScreen = () => {
+  const theme = useTheme();
   const { adminMode } = useUserRole();
   const setError = useSetAtom(errorAtom);
   const { "*": path } = useParams();
@@ -189,7 +199,15 @@ const ArticleScreen = () => {
                   </Grid>
                 </Grid>
               )}
-              <Card sx={{ padding: 3, paddingTop: 0, marginBottom: 3 }}>
+              <Card
+                sx={{
+                  padding: 3,
+                  paddingTop: 0,
+                  marginBottom: 3,
+                  backgroundColor: theme.palette.background.paper,
+                  color: theme.palette.text.primary
+                }}
+              >
                 {/* Title */}
                 {article?.title && (
                   <Typography variant="h4" sx={{ marginBottom: 2 }}>
@@ -228,7 +246,8 @@ const ArticleScreen = () => {
                         component="span"
                         sx={{
                           display: "inline-block",
-                          backgroundColor: "#e0e0e0",
+                          backgroundColor: theme.palette.background.paper,
+                          color: theme.palette.text.primary,
                           borderRadius: "20px",
                           px: 2,
                           py: 0.5,
@@ -269,6 +288,7 @@ const ArticleScreen = () => {
                   {article?.content || ""}
                 </ReactMarkdown>
               </Card>
+
               {!adminMode && connectedArticles.length !== 0 && (
                 <Box sx={{ marginBottom: 3 }}>
                   <Typography variant="h5" sx={{ marginLeft: 3, marginBottom: 3 }}>
