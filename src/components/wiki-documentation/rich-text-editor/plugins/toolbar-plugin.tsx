@@ -19,7 +19,16 @@ import InsertLinkIcon from "@mui/icons-material/InsertLink";
 import InsertPhotoIcon from "@mui/icons-material/InsertPhoto";
 import LinkOffIcon from "@mui/icons-material/LinkOff";
 import TitleIcon from "@mui/icons-material/Title";
-import { Box, Button, Card, Grid, IconButton, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Card,
+  Grid,
+  IconButton,
+  TextField,
+  Typography,
+  useTheme
+} from "@mui/material";
 import {
   $createParagraphNode,
   $getSelection,
@@ -33,8 +42,6 @@ import strings from "src/localization/strings";
 import { wikiScreenColors } from "src/theme";
 import { uploadFile } from "src/utils/s3-file-utils";
 import { $createImageNode } from "../nodes/image-node";
-
-const colors = wikiScreenColors;
 
 interface TextCommand {
   key: string;
@@ -52,6 +59,8 @@ const ToolBar = () => {
   const [linkDialogOpen, setLinkDialogOpen] = useState(false);
   const [imageDialogOpen, setImageDialogOpen] = useState(false);
   const [isLinkSelcted, setIsLinkSelected] = useState(false);
+  const theme = useTheme();
+  const colors = wikiScreenColors(theme);
 
   useEffect(() => {
     return editor.registerUpdateListener(({ editorState }) => {
