@@ -17,6 +17,14 @@ export const createAppTheme = (mode: "light" | "dark"): Theme =>
       },
       info: {
         main: "#F9473B"
+      },
+      background: {
+        default: mode === "dark" ? "#121212" : "#f5f5f5",
+        paper: mode === "dark" ? "#1e1e1e" : "#fff"
+      },
+      text: {
+        primary: mode === "dark" ? "#fff" : "#222",
+        secondary: mode === "dark" ? "#ccc" : "#555"
       }
     },
     typography: {
@@ -26,12 +34,12 @@ export const createAppTheme = (mode: "light" | "dark"): Theme =>
       h2: {
         fontWeight: 500,
         fontSize: 45,
-        fontStyle: "medium"
+        fontStyle: "normal"
       },
       h3: {
         fontWeight: 700,
         fontSize: 30,
-        fontStyle: "bold"
+        fontStyle: "normal"
       },
       h4: {
         fontWeight: 600,
@@ -40,17 +48,17 @@ export const createAppTheme = (mode: "light" | "dark"): Theme =>
       h6: {
         fontWeight: 700,
         fontSize: 20,
-        fontStyle: "bold"
+        fontStyle: "normal"
       },
       body1: {
         fontWeight: 400,
         fontSize: 16,
-        fontStyle: "regular"
+        fontStyle: "normal"
       },
       body2: {
         fontWeight: 400,
         fontSize: 16,
-        fontStyle: "regular"
+        fontStyle: "normal"
       }
     },
     components: {
@@ -115,6 +123,7 @@ export const createAppTheme = (mode: "light" | "dark"): Theme =>
         styleOverrides: {
           root: ({ theme }) => ({
             backgroundColor: theme.palette.background.paper,
+            color: theme.palette.text.primary,
             transition: "background-color 0.2s ease",
             "&:hover": {
               backgroundColor:
@@ -126,7 +135,8 @@ export const createAppTheme = (mode: "light" | "dark"): Theme =>
       MuiPaper: {
         styleOverrides: {
           root: ({ theme }) => ({
-            backgroundColor: theme.palette.background.paper
+            backgroundColor: theme.palette.background.paper,
+            color: theme.palette.text.primary
           })
         }
       },
@@ -172,7 +182,7 @@ export const customTheme = (theme: Theme) => ({
     onCallBox: {
       display: "inline-block",
       backgroundColor: theme.palette.background.paper,
-      borderRadius: 4,
+      borderRadius: theme.shape.borderRadius,
       px: 3,
       py: 2,
       textAlign: "center",
@@ -183,7 +193,7 @@ export const customTheme = (theme: Theme) => ({
     },
     listViewTypography: {
       backgroundColor: theme.palette.background.paper,
-      borderRadius: 4,
+      borderRadius: theme.shape.borderRadius,
       px: 3,
       py: 2,
       fontWeight: "bold",

@@ -144,11 +144,14 @@ const OnCallCalendarScreen = () => {
         <Box sx={customTheme(theme).customStyles.onCallBox}>
           <Typography
             variant="h5"
-            sx={{ display: "block", mb: 1, fontWeight: "bold", color: "black" }}
+            sx={{ display: "block", mb: 1, fontWeight: "bold", color: theme.palette.text.primary }}
           >
             {strings.oncall.onCallPersonExists}
           </Typography>
-          <Typography variant="h5" sx={{ display: "block", color: "black", fontWeight: "bold" }}>
+          <Typography
+            variant="h5"
+            sx={{ display: "block", color: theme.palette.text.primary, fontWeight: "bold" }}
+          >
             {formatUsername(onCallPerson)}
           </Typography>
         </Box>

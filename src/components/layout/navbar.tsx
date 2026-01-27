@@ -10,7 +10,8 @@ import {
   MenuItem,
   Toolbar,
   Tooltip,
-  Typography
+  Typography,
+  useTheme
 } from "@mui/material";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { type MouseEvent, useEffect, useId, useState } from "react";
@@ -29,6 +30,7 @@ import NavItems from "./navitems";
  * NavBar component
  */
 const NavBar = () => {
+  const theme = useTheme();
   const auth = useAtomValue(authAtom);
   const menuId = useId();
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
@@ -96,8 +98,8 @@ const NavBar = () => {
     <AppBar
       position="relative"
       sx={{
-        backgroundColor: (theme) => theme.palette.background.paper,
-        color: (theme) => theme.palette.text.primary
+        backgroundColor: theme.palette.background.paper,
+        color: theme.palette.text.primary
       }}
     >
       <Container maxWidth="xl">

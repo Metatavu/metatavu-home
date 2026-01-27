@@ -64,7 +64,10 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
       flex: 1,
       headerAlign: "center",
       align: "center",
-      sortable: true
+      sortable: true,
+      renderCell: (params) => (
+        <Typography sx={{ color: theme.palette.text.primary }}>{params.value}</Typography>
+      )
     },
     {
       field: "person",
@@ -77,9 +80,12 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
         <Typography
           sx={{
             fontWeight: isLoggedInUser(params.row.email) ? "bold" : "normal",
-            border: isLoggedInUser(params.row.email) ? "2px solid black" : "none",
+            border: isLoggedInUser(params.row.email)
+              ? `2px solid ${theme.palette.primary.main}`
+              : "none",
             borderRadius: 2,
-            px: 1
+            px: 1,
+            color: theme.palette.text.primary
           }}
         >
           {formatUsername(params.value)}
@@ -96,7 +102,8 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
       renderCell: (params) => (
         <Typography
           sx={{
-            fontWeight: isLoggedInUser(params.value) ? "bold" : "normal"
+            fontWeight: isLoggedInUser(params.value) ? "bold" : "normal",
+            color: theme.palette.text.primary
           }}
         >
           {params.value}
@@ -122,7 +129,7 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
                   color: alpha(customTheme(theme).colors.paidGreen, 0.8)
                 },
                 "&:not(.Mui-checked)": {
-                  color: alpha("#ff6384", 0.8)
+                  color: alpha(customTheme(theme).colors.unpaidRed, 0.8)
                 }
               }}
             />
@@ -132,7 +139,7 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
         const Icon = params.value ? CheckCircleOutline : CancelOutlined;
         const iconColor = params.value
           ? alpha(customTheme(theme).colors.paidGreen, 0.8)
-          : alpha("#ff6384", 0.8);
+          : alpha(customTheme(theme).colors.unpaidRed, 0.8);
 
         return <Icon sx={{ color: iconColor, cursor: "default" }} />;
       }
@@ -197,10 +204,10 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
             py: 6,
             fontSize: 24,
             fontWeight: "bold",
-            color: "#bdbdbd",
-            border: "1px solid #eee",
-            borderRadius: 4,
-            background: "#fafafa",
+            color: theme.palette.text.secondary,
+            border: `1px solid ${theme.palette.divider}`,
+            borderRadius: theme.shape.borderRadius,
+            backgroundColor: theme.palette.background.paper,
             mt: 2
           }}
         >
@@ -215,17 +222,18 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
           sx={{
             marginBottom: "30px",
             "& .MuiDataGrid-row:hover": {
-              backgroundColor: "#eeeeee"
+              backgroundColor: theme.palette.action.hover
             },
             "& .MuiDataGrid-cell": { fontSize: 16, color: "black" },
             "& .MuiDataGrid-columnHeaders": {
-              backgroundColor: "#cfc7c7"
+              backgroundColor: theme.palette.background.paper,
+              color: theme.palette.text.primary
             },
             "& .MuiDataGrid-columnHeaderTitle": {
               fontWeight: "bold"
             },
             "& .default-row": {
-              backgroundColor: "#f5f5f5"
+              backgroundColor: alpha(theme.palette.primary.main, 0.1)
             }
           }}
           initialState={{
