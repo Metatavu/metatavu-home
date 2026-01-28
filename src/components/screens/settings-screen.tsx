@@ -42,26 +42,18 @@ const SettingsScreen = () => {
   const grantSeveraOptInConsent = async () => {
     setLoading(true);
     try {
-      if (!usersApi) {
-        setError(strings.error.fetchFailedSevera);
-        return;
-      }
       if (!userProfile?.id) {
-        setError(strings.error.missingEmailOrId);
+        setError(strings.error.missingUserId);
         return;
       }
 
       await usersApi.addSeveraOptIn({ userId: userProfile.id });
       const fetchedUser = await usersApi.findUser({ userId: userProfile.id });
-      const severaUserIdRaw = fetchedUser?.attributes?.severaUserId;
-      const severaUserId = Array.isArray(severaUserIdRaw) ? severaUserIdRaw[0] : severaUserIdRaw;
+      const severaUserId = fetchedUser?.attributes?.severaUserId?.[0];
 
-      /**
-       * Update consent state
-       */
       setIsConsentGiven(Boolean(severaUserId));
       if (severaUserId) {
-        const updatedAttributes = { ...(userProfile.attributes) };
+        const updatedAttributes = { ...userProfile.attributes };
         const updatedProfile = { ...userProfile, attributes: updatedAttributes };
         setUserProfile(updatedProfile);
         setUsers((prev) =>
@@ -82,15 +74,12 @@ const SettingsScreen = () => {
     setLoading(true);
     try {
       if (!userProfile?.id) {
-        setError(strings.error.missingEmailOrId);
+        setError(strings.error.missingUserId);
         return;
       }
 
-      /**
-       * Revokes severa opt-out consent
-       */
       await usersApi.removeSeveraOptIn({ userId: userProfile.id });
-      const updatedAttributes = { ...(userProfile.attributes) };
+      const updatedAttributes = { ...userProfile.attributes };
       delete updatedAttributes.severaUserId;
       delete updatedAttributes.isSeveraOptIn;
 
