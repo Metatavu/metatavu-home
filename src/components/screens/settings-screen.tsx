@@ -42,27 +42,18 @@ const SettingsScreen = () => {
   const grantSeveraOptInConsent = async () => {
     setLoading(true);
     try {
-      if (!userProfile?.email || !userProfile?.id) {
-        setError(strings.error.missingEmailOrId);
+      if (!userProfile?.id) {
+        setError(strings.error.missingUserId);
         return;
       }
 
-      const response = await usersApi.updateUserAttribute({
-        updateUserAttributeRequest: { email: userProfile.email },
-        id: userProfile.id,
-        attributeName: "isSeveraOptIn"
-      });
-
-      const severaUserIdRaw = response?.updatedKeycloakAttributes?.severaUserId;
-      const severaUserId = Array.isArray(severaUserIdRaw) ? severaUserIdRaw[0] : severaUserIdRaw;
+      await usersApi.addSeveraOptIn({ userId: userProfile.id });
+      const fetchedUser = await usersApi.findUser({ userId: userProfile.id });
+      const severaUserId = fetchedUser?.attributes?.severaUserId?.[0];
 
       setIsConsentGiven(Boolean(severaUserId));
       if (severaUserId) {
-        const updatedAttributes = {
-          ...(userProfile.attributes || {}),
-          severaUserId
-        } as Record<string, string[] | string | undefined>;
-
+        const updatedAttributes = { ...userProfile.attributes };
         const updatedProfile = { ...userProfile, attributes: updatedAttributes };
         setUserProfile(updatedProfile);
         setUsers((prev) =>
@@ -83,15 +74,12 @@ const SettingsScreen = () => {
     setLoading(true);
     try {
       if (!userProfile?.id) {
-        setError(strings.error.missingEmailOrId);
+        setError(strings.error.missingUserId);
         return;
       }
 
       await usersApi.removeSeveraOptIn({ userId: userProfile.id });
-      const updatedAttributes = { ...(userProfile.attributes || {}) } as Record<
-        string,
-        string[] | string | undefined
-      >;
+      const updatedAttributes = { ...userProfile.attributes };
       delete updatedAttributes.severaUserId;
       delete updatedAttributes.isSeveraOptIn;
 
