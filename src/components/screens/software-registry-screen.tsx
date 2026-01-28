@@ -173,6 +173,8 @@ const SoftwareScreen = () => {
     }
   }, []);
 
+  const isListView = !isGridView;
+
   if (loading) {
     return (
       <Card
@@ -234,7 +236,7 @@ const SoftwareScreen = () => {
             onClick={() => setIsModalOpen(true)}
             sx={{
               textTransform: "none",
-              color: "#fff",
+              color: theme.palette.common.white,
               fontSize: "18px",
               borderRadius: "100px"
             }}
@@ -250,13 +252,15 @@ const SoftwareScreen = () => {
                 backgroundColor: isGridView
                   ? theme.palette.primary.main
                   : theme.palette.background.paper,
-                color: isGridView ? theme.palette.common.white : theme.palette.text.primary,
+                color: isGridView
+                  ? theme.palette.getContrastText(theme.palette.primary.main)
+                  : theme.palette.text.primary,
                 borderRadius: "4px",
                 padding: "6px",
                 marginRight: "10px",
                 ":hover": {
                   backgroundColor: theme.palette.primary.dark,
-                  color: theme.palette.common.white
+                  color: theme.palette.getContrastText(theme.palette.primary.dark)
                 }
               }}
             >
@@ -265,16 +269,18 @@ const SoftwareScreen = () => {
             <IconButton
               onClick={() => setIsGridView(false)}
               sx={{
-                backgroundColor: !isGridView
+                backgroundColor: isListView
                   ? theme.palette.primary.main
                   : theme.palette.background.paper,
 
-                color: !isGridView ? theme.palette.common.white : theme.palette.text.primary,
+                color: isListView
+                  ? theme.palette.getContrastText(theme.palette.primary.main)
+                  : theme.palette.text.primary,
                 borderRadius: "4px",
                 padding: "6px",
                 ":hover": {
                   backgroundColor: theme.palette.primary.dark,
-                  color: theme.palette.common.white
+                  color: theme.palette.getContrastText(theme.palette.primary.dark)
                 }
               }}
             >
