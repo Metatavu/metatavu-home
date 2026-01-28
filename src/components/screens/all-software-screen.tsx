@@ -17,7 +17,8 @@ import {
   MenuItem,
   OutlinedInput,
   Select,
-  Typography
+  Typography,
+  useTheme
 } from "@mui/material";
 import { useAtomValue } from "jotai";
 import type React from "react";
@@ -59,6 +60,7 @@ const AllSoftwareScreen = () => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedApplicationId, setSelectedApplicationId] = useState<string | null>(null);
   const [deleteTitle, setDeleteTitle] = useState<string | undefined>(undefined);
+  const theme = useTheme();
 
   type SoftwareStatusFilterOptions = (typeof allStatusValues)[number];
 
@@ -377,16 +379,20 @@ const AllSoftwareScreen = () => {
               <IconButton
                 onClick={() => setIsGridView(true)}
                 sx={{
-                  backgroundColor: isGridView ? "#F9473B" : "#f2f2f2",
-                  color: isGridView ? "#fff" : "#000",
+                  backgroundColor: isGridView
+                    ? theme.palette.primary.main
+                    : theme.palette.background.paper,
+                  color: theme.palette.getContrastText(
+                    isGridView ? theme.palette.primary.main : theme.palette.background.paper
+                  ),
                   borderRadius: "8px",
                   padding: "10px",
                   marginRight: "4px",
                   marginLeft: "10px",
                   transition: "background-color 0.3s ease",
                   "&:hover": {
-                    backgroundColor: "#000",
-                    color: "#fff"
+                    backgroundColor: theme.palette.primary.dark,
+                    color: theme.palette.getContrastText(theme.palette.primary.dark)
                   }
                 }}
               >
@@ -395,14 +401,18 @@ const AllSoftwareScreen = () => {
               <IconButton
                 onClick={() => setIsGridView(false)}
                 sx={{
-                  backgroundColor: !isGridView ? "#F9473B" : "#f2f2f2",
-                  color: !isGridView ? "#fff" : "#000",
+                  backgroundColor: !isGridView
+                    ? theme.palette.primary.main
+                    : theme.palette.background.paper,
+                  color: theme.palette.getContrastText(
+                    !isGridView ? theme.palette.primary.main : theme.palette.background.paper
+                  ),
                   borderRadius: "8px",
                   padding: "10px",
                   transition: "background-color 0.3s ease",
                   "&:hover": {
-                    backgroundColor: "#000",
-                    color: "#fff"
+                    backgroundColor: theme.palette.primary.dark,
+                    color: theme.palette.getContrastText(theme.palette.primary.dark)
                   }
                 }}
               >
