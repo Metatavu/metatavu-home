@@ -266,7 +266,7 @@ const AllSoftwareScreen = () => {
       closeDeleteDialog();
     }
   };
-
+  const isListView = !isGridView;
   if (loading) {
     return (
       <Card
@@ -301,10 +301,10 @@ const AllSoftwareScreen = () => {
             onClick={() => setIsModalOpen(true)}
             sx={{
               textTransform: "none",
-              color: "#fff",
+              color: theme.palette.secondary.contrastText,
               fontSize: "18px",
               borderRadius: "100px",
-              "&:hover": { background: "#000" }
+              "&:hover": { background: theme.palette.secondary.dark }
             }}
           >
             {strings.softwareRegistry.addApplication}
@@ -331,7 +331,7 @@ const AllSoftwareScreen = () => {
                   height: "45px",
                   padding: "0 15px",
                   "& .MuiSvgIcon-root": {
-                    color: "#121212"
+                    color: theme.palette.text.primary
                   }
                 }}
               >
@@ -355,14 +355,14 @@ const AllSoftwareScreen = () => {
                   onDelete={() => handleDeleteChip(term)}
                   sx={{
                     marginRight: "5px",
-                    backgroundColor: "#BDBDBD",
-                    color: "#fff"
+                    backgroundColor: theme.palette.action.selected,
+                    color: theme.palette.text.primary
                   }}
                 />
               ))}
               endAdornment={
                 <InputAdornment position="end">
-                  <SearchIcon sx={{ color: "gray" }} />
+                  <SearchIcon sx={{ color: theme.palette.text.secondary }} />
                 </InputAdornment>
               }
               sx={{
@@ -372,7 +372,10 @@ const AllSoftwareScreen = () => {
                 width: "50%",
                 padding: "10px",
                 backgroundColor: (theme) => theme.palette.background.paper,
-                boxShadow: "inset 0px 4px 6px rgba(0, 0, 0, 0.1)"
+                boxShadow:
+                  theme.palette.mode === "light"
+                    ? `inset 0px 2px 4px ${theme.palette.action.disabledBackground}`
+                    : "none"
               }}
             />
             <Box sx={{ display: "flex", marginLeft: "auto" }}>
@@ -401,11 +404,11 @@ const AllSoftwareScreen = () => {
               <IconButton
                 onClick={() => setIsGridView(false)}
                 sx={{
-                  backgroundColor: !isGridView
+                  backgroundColor: isListView
                     ? theme.palette.primary.main
                     : theme.palette.background.paper,
                   color: theme.palette.getContrastText(
-                    !isGridView ? theme.palette.primary.main : theme.palette.background.paper
+                    isListView ? theme.palette.primary.main : theme.palette.background.paper
                   ),
                   borderRadius: "8px",
                   padding: "10px",
@@ -446,10 +449,11 @@ const AllSoftwareScreen = () => {
                   onClick={() => setShowAll(!showAll)}
                   sx={{
                     textTransform: "none",
-                    color: "#fff",
+                    color: theme.palette.secondary.contrastText,
                     fontSize: "18px",
                     borderRadius: "100px",
-                    "&:hover": { background: "#000" }
+                    backgroundColor: theme.palette.secondary.main,
+                    "&:hover": { backgroundColor: theme.palette.secondary.dark }
                   }}
                 >
                   {showAll ? strings.softwareRegistry.showLess : strings.softwareRegistry.showMore}
