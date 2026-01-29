@@ -371,7 +371,7 @@ const AllSoftwareScreen = () => {
                 height: "45px",
                 width: "50%",
                 padding: "10px",
-                backgroundColor: (theme) => theme.palette.background.paper,
+                backgroundColor: theme.palette.background.paper,
                 boxShadow:
                   theme.palette.mode === "light"
                     ? `inset 0px 2px 4px ${theme.palette.action.disabledBackground}`

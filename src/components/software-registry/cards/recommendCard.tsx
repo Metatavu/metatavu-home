@@ -8,7 +8,8 @@ import {
   Chip,
   CircularProgress,
   IconButton,
-  Typography
+  Typography,
+  useTheme
 } from "@mui/material";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
@@ -39,6 +40,7 @@ const RecommendCard = ({
   loadingAppId,
   setLoadingAppId
 }: RecommendCardProps) => {
+  const theme = useTheme();
   useEffect(() => {
     if (app.createdBy) {
       fetchUserName(app.createdBy);
@@ -50,13 +52,13 @@ const RecommendCard = ({
       sx={{
         width: 288,
         height: 213,
-        backgroundColor: "#fff",
+        backgroundColor: theme.palette.background.paper,
         borderRadius: "10px",
-        boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+        boxShadow: theme.shadows[1],
         overflow: "hidden",
         margin: "10px",
         ":hover": {
-          boxShadow: "0px 6px 14px rgba(0, 0, 0, 0.3)"
+          boxShadow: theme.shadows[4]
         },
         position: "relative"
       }}
@@ -102,7 +104,7 @@ const RecommendCard = ({
               mt={1}
               sx={{
                 fontSize: "16px",
-                color: "#f9473b",
+                color: theme.palette.secondary.main,
                 fontWeight: "600"
               }}
             >
@@ -132,8 +134,8 @@ const RecommendCard = ({
                   borderRadius: "5px",
                   padding: "0 6px",
                   margin: "2px",
-                  backgroundColor: "#F9473B",
-                  color: "#fff",
+                  backgroundColor: theme.palette.error.main,
+                  color: theme.palette.getContrastText(theme.palette.error.main),
                   fontSize: "14px",
                   whiteSpace: "nowrap",
                   maxWidth: "80px",
@@ -151,7 +153,7 @@ const RecommendCard = ({
           position: "absolute",
           top: "10px",
           right: "10px",
-          color: "#000"
+          color: theme.palette.text.primary
         }}
         onClick={() => {
           if (app.id) {

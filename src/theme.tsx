@@ -16,7 +16,7 @@ export const createAppTheme = (mode: "light" | "dark"): Theme =>
         main: "#F47D38"
       },
       info: {
-        main: "#F9473B"
+        main: "#1976d2"
       },
       background: {
         default: mode === "dark" ? "#121212" : "#f5f5f5",

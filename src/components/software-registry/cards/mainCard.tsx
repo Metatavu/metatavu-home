@@ -12,7 +12,8 @@ import {
   ListItemText,
   Menu,
   MenuItem,
-  Typography
+  Typography,
+  useTheme
 } from "@mui/material";
 import { useState } from "react";
 import { Link } from "react-router-dom";
@@ -43,22 +44,32 @@ const MainCard = ({
   onRemove,
   onStatusChange
 }: CardProps) => {
+  const theme = useTheme();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
   // Move statusInfo here so it updates with language changes
   const statusInfo: { [key in SoftwareStatus]: { color: string; displayText: string } } = {
-    [SoftwareStatus.PENDING]: { color: "#f7cb73", displayText: strings.softwareStatus.pending },
+    [SoftwareStatus.PENDING]: {
+      color: theme.palette.warning.light,
+      displayText: strings.softwareStatus.pending
+    },
     [SoftwareStatus.UNDER_REVIEW]: {
-      color: "#077e8c",
+      color: theme.palette.info.light,
       displayText: strings.softwareStatus.under_review
     },
-    [SoftwareStatus.ACCEPTED]: { color: "#47b758", displayText: strings.softwareStatus.accepted },
+    [SoftwareStatus.ACCEPTED]: {
+      color: theme.palette.success.main,
+      displayText: strings.softwareStatus.accepted
+    },
     [SoftwareStatus.DEPRECATED]: {
-      color: "#9f9080",
+      color: theme.palette.grey[500],
       displayText: strings.softwareStatus.deprecated
     },
-    [SoftwareStatus.DECLINED]: { color: "#c82922", displayText: strings.softwareStatus.declined }
+    [SoftwareStatus.DECLINED]: {
+      color: theme.palette.error.main,
+      displayText: strings.softwareStatus.declined
+    }
   };
 
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
