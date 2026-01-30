@@ -231,3 +231,14 @@ export enum DeleteItemType {
   SOFTWARE = "software",
   ARTICLE = "article"
 }
+/**
+ * Type describing light or dark mode
+ */
+export const ThemeModes = {
+  LIGHT: "light",
+  DARK: "dark"
+} as const;
+/**
+ * Type to be used in state and props
+ */
+export type ThemeMode = (typeof ThemeModes)[keyof typeof ThemeModes];

@@ -29,7 +29,7 @@ import ArticleScreen from "./components/screens/wiki-article-screen";
 import WikiDocumentationScreen from "./components/screens/wiki-documentation-screen";
 import SoftwareDetails from "./components/software-registry/SoftwareDetails";
 import { createAppTheme } from "./theme";
-import { QuestionnairePreviewMode } from "./types";
+import { QuestionnairePreviewMode, type ThemeMode, ThemeModes } from "./types";
 
 /**
  * Application component
@@ -41,7 +41,10 @@ const App = () => {
     Settings.defaultLocale = language;
   }, [language]);
 
-  const [mode, setMode] = useState<"light" | "dark">("light");
+  const [mode, setMode] = useState<ThemeMode>(() => {
+    const savedMode = localStorage.getItem("mode") as ThemeMode | null;
+    return savedMode ?? ThemeModes.LIGHT;
+  });
 
   const appTheme = useMemo(() => createAppTheme(mode), [mode]);
 

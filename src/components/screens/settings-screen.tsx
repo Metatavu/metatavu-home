@@ -6,10 +6,11 @@ import { errorAtom } from "src/atoms/error";
 import { usersAtom } from "src/atoms/user";
 import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
+import { type ThemeMode, ThemeModes } from "src/types/index";
 
 type SettingsScreenProps = {
-  mode: "light" | "dark";
-  setMode: (mode: "light" | "dark") => void;
+  mode: ThemeMode;
+  setMode: (mode: ThemeMode) => void;
 };
 
 /**
@@ -113,6 +114,12 @@ const SettingsScreen = ({ mode, setMode }: SettingsScreenProps) => {
     }
   };
 
+  const handleModeToggle = () => {
+    const newMode: ThemeMode = mode === ThemeModes.LIGHT ? ThemeModes.DARK : ThemeModes.LIGHT;
+    setMode(newMode);
+    localStorage.setItem("mode", newMode);
+  };
+
   return (
     <Box p={2}>
       <Box
@@ -177,8 +184,8 @@ const SettingsScreen = ({ mode, setMode }: SettingsScreenProps) => {
           </Typography>
           <Box display="flex" alignItems="center">
             <Switch
-              checked={mode === "dark"}
-              onChange={() => setMode(mode === "light" ? "dark" : "light")}
+              checked={mode === ThemeModes.DARK}
+              onChange={handleModeToggle}
               inputProps={{ "aria-label": "dark-mode-toggle" }}
             />
             {loading && (
