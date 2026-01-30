@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, useTheme } from "@mui/material";
 import {
   CartesianGrid,
   ResponsiveContainer,
@@ -45,7 +45,14 @@ const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
   const actualEntry = payload.find((entry) => entry.name === strings.sprint.timeAllocated);
 
   return (
-    <Box>
+    <Box
+      sx={{
+        bgcolor: "background.paper",
+        p: 1,
+        borderRadius: 1,
+        boxShadow: 3
+      }}
+    >
       <Typography variant="h6">{projectName}</Typography>
       {actualEntry && (
         <Typography variant="body1">
@@ -62,22 +69,27 @@ const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
 };
 
 const SprintViewScatterChart = ({ chartData }: Props) => {
+  const theme = useTheme();
   const chartHeight = chartData.length === 1 ? 100 : chartData.length * 60;
   const estimatedData = chartData.map((item) => ({
     projectName: item.projectName,
     x: item.estimatedWorkHour
   }));
+  const actualData = chartData.map((item) => ({
+    projectName: item.projectName,
+    x: item.actualWorkHours
+  }));
 
   return (
     <ResponsiveContainer width="100%" height={chartHeight}>
       <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
-        <CartesianGrid />
+        <CartesianGrid stroke={theme.palette.divider} />
         <XAxis
           type="number"
           dataKey="x"
           name="Work Hours"
-          tick={{ fontSize: 14 }}
-          axisLine
+          tick={{ fontSize: 14, fill: theme.palette.text.primary }}
+          axisLine={{ stroke: theme.palette.text.primary }}
           padding={{ left: 0, right: 0 }}
           domain={[0, (dataMax: number) => dataMax]}
         />
@@ -85,12 +97,21 @@ const SprintViewScatterChart = ({ chartData }: Props) => {
           type="category"
           dataKey="projectName"
           name="Project"
-          tick={{ fontSize: 14 }}
+          tick={{ fontSize: 14, fill: theme.palette.text.primary }}
           width={150}
           interval={0}
         />
         <Tooltip content={<CustomTooltip />} />
-        <Scatter name={strings.sprint.timeEntries} data={estimatedData} fill="#4d4788" />
+        <Scatter
+          name={strings.sprint.timeEntries}
+          data={estimatedData}
+          fill={theme.palette.info.main}
+        />
+        <Scatter
+          name={strings.sprint.timeAllocated}
+          data={actualData}
+          fill={theme.palette.success.main}
+        />
       </ScatterChart>
     </ResponsiveContainer>
   );
