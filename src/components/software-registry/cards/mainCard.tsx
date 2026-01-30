@@ -160,10 +160,11 @@ const MainCard = ({
           }}
           sx={{
             textTransform: "none",
-            color: "#fff",
+            color: theme.palette.getContrastText(theme.palette.primary.main),
+            backgroundColor: theme.palette.primary.main,
             marginRight: "6px",
             borderRadius: "25px",
-            "&:hover": { background: "#000" }
+            "&:hover": { backgroundColor: theme.palette.primary.dark }
           }}
         >
           {strings.softwareRegistry.addApplication}
@@ -176,11 +177,11 @@ const MainCard = ({
           disabled={true}
           sx={{
             textTransform: "none",
-            color: "#fff",
+            color: theme.palette.getContrastText(theme.palette.success.main),
             marginRight: "6px",
-            background: "#f9473b",
+            backgroundColor: theme.palette.success.main,
             borderRadius: "25px",
-            "&:hover": { background: "#f9473b" }
+            "&:hover": { backgroundColor: theme.palette.success.main }
           }}
         >
           {strings.softwareRegistry.added}
@@ -193,11 +194,11 @@ const MainCard = ({
           disabled={true}
           sx={{
             textTransform: "none",
-            color: "#fff",
+            color: theme.palette.getContrastText(statusInfo.PENDING.color),
             marginRight: "6px",
-            background: "#f7cb73",
+            backgroundColor: statusInfo.PENDING.color,
             borderRadius: "25px",
-            "&:hover": { background: "#f7cb73" }
+            "&:hover": { backgroundColor: statusInfo.PENDING.color }
           }}
         >
           {statusInfo.PENDING?.displayText}
@@ -210,11 +211,11 @@ const MainCard = ({
           disabled={true}
           sx={{
             textTransform: "none",
-            color: "#fff",
+            color: theme.palette.getContrastText(statusInfo.DEPRECATED.color),
             marginRight: "6px",
-            background: "#f7cb73",
+            backgroundColor: statusInfo.DEPRECATED.color,
             borderRadius: "25px",
-            "&:hover": { background: "#f7cb73" }
+            "&:hover": { backgroundColor: statusInfo.DEPRECATED.color }
           }}
         >
           {statusInfo.DEPRECATED?.displayText}
@@ -227,11 +228,11 @@ const MainCard = ({
           disabled={true}
           sx={{
             textTransform: "none",
-            color: "#fff",
+            color: theme.palette.getContrastText(statusInfo.DECLINED.color),
             marginRight: "6px",
-            background: "#f7cb73",
+            backgroundColor: statusInfo.DECLINED.color,
             borderRadius: "25px",
-            "&:hover": { background: "#f7cb73" }
+            "&:hover": { backgroundColor: statusInfo.DECLINED.color }
           }}
         >
           {statusInfo.DECLINED?.displayText}
@@ -244,11 +245,11 @@ const MainCard = ({
           disabled={true}
           sx={{
             textTransform: "none",
-            color: "#fff",
+            color: theme.palette.getContrastText(statusInfo.UNDER_REVIEW.color),
             marginRight: "6px",
-            background: "#f7cb73",
+            backgroundColor: statusInfo.UNDER_REVIEW.color,
             borderRadius: "25px",
-            "&:hover": { background: "#f7cb73" }
+            "&:hover": { backgroundColor: statusInfo.UNDER_REVIEW.color }
           }}
         >
           {statusInfo.UNDER_REVIEW?.displayText}
@@ -266,11 +267,11 @@ const MainCard = ({
             textTransform: "none",
             borderRadius: "25px",
             fontWeight: "bold",
-            color: "#000",
-            borderColor: "#000",
+            color: theme.palette.text.primary,
+            borderColor: theme.palette.text.primary,
             "&:hover": {
-              borderColor: "#000",
-              backgroundColor: "#f0f0f0"
+              borderColor: theme.palette.text.primary,
+              backgroundColor: theme.palette.action.hover
             }
           }}
         >
@@ -294,8 +295,8 @@ const MainCard = ({
             borderRadius: "5px",
             padding: "0px",
             margin: "2px",
-            backgroundColor: "#F9473B",
-            color: "#fff",
+            backgroundColor: theme.palette.error.main,
+            color: theme.palette.getContrastText(theme.palette.error.main),
             fontSize: "12px",
             whiteSpace: "nowrap",
             maxWidth: "70px",
@@ -311,8 +312,8 @@ const MainCard = ({
             borderRadius: "5px",
             padding: "0px",
             margin: "2px",
-            backgroundColor: "#F9473B",
-            color: "#fff",
+            backgroundColor: theme.palette.error.main,
+            color: theme.palette.getContrastText(theme.palette.error.main),
             fontSize: "12px",
             whiteSpace: "nowrap"
           }}
@@ -329,12 +330,12 @@ const MainCard = ({
             height: 330,
             width: 260,
             position: "relative",
-            backgroundColor: (theme) => theme.palette.background.paper,
+            backgroundColor: theme.palette.background.paper,
             borderRadius: "10px",
-            boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.25)",
+            boxShadow: theme.shadows[4],
             overflow: "hidden",
             ":hover": {
-              boxShadow: "0px 6px 14px rgba(0, 0, 0, 0.3)"
+              boxShadow: theme.shadows[6]
             }
           }}
         >
@@ -383,7 +384,7 @@ const MainCard = ({
               </Box>
             </CardContent>
           </CardActionArea>
-          <Divider />
+          <Divider sx={{ backgroundColor: theme.palette.divider }} />
           <Box
             sx={{
               display: "flex",
@@ -403,12 +404,12 @@ const MainCard = ({
             display: "flex",
             flexDirection: "column",
             position: "relative",
-            backgroundColor: (theme) => theme.palette.background.paper,
+            backgroundColor: theme.palette.background.paper,
             borderRadius: "10px",
-            boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.25)",
+            boxShadow: theme.shadows[4],
             overflow: "hidden",
             ":hover": {
-              boxShadow: "0px 6px 14px rgba(0, 0, 0, 0.3)"
+              boxShadow: theme.shadows[6]
             }
           }}
         >
@@ -481,7 +482,7 @@ const MainCard = ({
               </CardContent>
             </CardActionArea>
           </Box>
-          <Divider flexItem />
+          <Divider flexItem sx={{ backgroundColor: theme.palette.divider }} />
           <Box
             sx={{
               display: "flex",
