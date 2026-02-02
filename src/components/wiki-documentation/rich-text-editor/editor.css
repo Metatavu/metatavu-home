@@ -87,8 +87,8 @@ li:has(> ul) {
 }
 
 .MuiCard-root a[href^="/wiki-documentation"]:hover {
-  color: #0d47a1;
-  border-bottom-color: #0d47a1;
+  color: #003d82;
+  border-bottom-color: #003d82;
   background-color: rgba(25, 118, 210, 0.12);
 }
 

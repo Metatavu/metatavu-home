@@ -196,7 +196,7 @@ const ArticleLinkDialog = ({ open, onClose, onSelectArticle, selectedText = "" }
         </Button>
         <Button 
           onClick={handleConfirm} 
-          disabled={!selectedArticle || !linkText.trim()} 
+          disabled={!selectedArticle } 
           variant="contained"
           startIcon={<LinkIcon />}
           sx={{ minWidth: 120 }}

@@ -6,9 +6,10 @@ import {
   type Spread
 } from "lexical";
 import type { ReactNode } from "react";
+import { applyImageAlignmentStyles, getImageMaxWidth } from "src/utils/image-style-utils";
+import type { ImageAlignment, ImageSize } from "src/utils/image-style-utils";
 
-export type ImageSize = "small" | "medium" | "large" | "full";
-export type ImageAlignment = "left" | "center" | "right";
+export type { ImageSize, ImageAlignment };
 
 export type SerializedImageNode = Spread<
   {
@@ -63,40 +64,10 @@ export class ImageNode extends DecoratorNode<ReactNode> {
   createDOM(): HTMLElement {
     const div = document.createElement("div");
     
-    const maxWidth = (() => {
-      switch (this.__size) {
-        case "small":
-          return "300px";
-        case "medium":
-          return "500px";
-        case "large":
-          return "700px";
-        case "full":
-          return "100%";
-        default:
-          return "500px";
-      }
-    })();
-    
+    const maxWidth = getImageMaxWidth(this.__size);
     div.style.maxWidth = maxWidth;
     
-    switch (this.__alignment) {
-      case "left":
-        div.style.float = "left";
-        div.style.marginRight = "1.5rem";
-        div.style.marginBottom = "1rem";
-        break;
-      case "center":
-        div.style.display = "block";
-        div.style.margin = "1rem auto";
-        div.style.clear = "both";
-        break;
-      case "right":
-        div.style.float = "right";
-        div.style.marginLeft = "1.5rem";
-        div.style.marginBottom = "1rem";
-        break;
-    }
+    applyImageAlignmentStyles(div, this.__alignment);
     
     return div;
   }

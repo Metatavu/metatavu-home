@@ -15,9 +15,9 @@ export const IMAGE_TRANSFORMER: TextMatchTransformer = {
   replace: (textNode, match) => {
     const [, altWithMeta, src] = match;
     const parts = altWithMeta.split("|");
-    const alt = parts[0] || "";
-    const size = (parts[1] || "medium") as "small" | "medium" | "large" | "full";
-    const alignment = (parts[2] || "center") as "left" | "center" | "right";
+    const alignment = (parts.length >= 3 ? parts.pop()?.trim() : "center") as "left" | "center" | "right";
+    const size = (parts.length >= 2 ? parts.pop()?.trim() : "medium") as "small" | "medium" | "large" | "full";
+    const alt = parts.join("|").trim() || "";
     const imageNode = $createImageNode(src, alt, size, alignment);
     textNode.replace(imageNode);
   },

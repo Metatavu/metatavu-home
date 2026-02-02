@@ -14,6 +14,8 @@ import { useLambdasApi } from "src/hooks/use-api";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import { formatDate } from "src/utils/time-utils";
+import { getImageContainerStyle, getImageMaxWidth } from "src/utils/image-style-utils";
+import type { ImageAlignment, ImageSize } from "src/utils/image-style-utils";
 import BackButton from "../generics/back-button";
 import ActionButton from "../wiki-documentation/action-button";
 import ArticleListItem from "../wiki-documentation/article-list-item";
@@ -249,52 +251,12 @@ const ArticleScreen = () => {
                     img: ({ node, ...props }) => {
                       const altText = props.alt || "";
                       const parts = altText.split("|");
-                      const alt = parts[0] || "";
-                      const size = parts[1] || "medium";
-                      const alignment = parts[2] || "center";
+                      const alignment = (parts.length >= 3 ? (parts.pop()?.trim() || "center") : "center") as ImageAlignment;
+                      const size = (parts.length >= 2 ? (parts.pop()?.trim() || "medium") : "medium") as ImageSize;
+                      const alt = parts.join("|").trim() || "";
 
-                      const maxWidth = (() => {
-                        switch (size) {
-                          case "small":
-                            return "300px";
-                          case "medium":
-                            return "500px";
-                          case "large":
-                            return "700px";
-                          case "full":
-                            return "100%";
-                          default:
-                            return "500px";
-                        }
-                      })();
-
-                      const containerStyle: React.CSSProperties = (() => {
-                        switch (alignment) {
-                          case "left":
-                            return {
-                              float: "left",
-                              marginRight: "1.5rem",
-                              marginBottom: "1rem",
-                              maxWidth: maxWidth
-                            };
-                          case "right":
-                            return {
-                              float: "right",
-                              marginLeft: "1.5rem",
-                              marginBottom: "1rem",
-                              maxWidth: maxWidth
-                            };
-                          case "center":
-                            return {
-                              display: "block",
-                              margin: "1rem auto",
-                              maxWidth: maxWidth,
-                              clear: "both"
-                            };
-                          default:
-                            return {};
-                        }
-                      })();
+                      const maxWidth = getImageMaxWidth(size);
+                      const containerStyle = getImageContainerStyle(alignment, maxWidth);
 
                       return (
                         <div style={containerStyle}>

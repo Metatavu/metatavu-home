@@ -239,9 +239,10 @@ const ToolBar = () => {
     }
   };
 
-  const handleFileChange = (event: any) => {
-    console.log("called");
-    const file = event.target.files[0];
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    
     if (file.type?.includes("image/")) {
       setFile(file);
       setFileUploadError("");
@@ -398,7 +399,11 @@ const ToolBar = () => {
             >
               {strings.wikiDocumentation.add}
             </Button>
-            <Button variant="outlined" onClick={() => setImageDialogOpen(false)}>{strings.wikiDocumentation.close}</Button>
+            <Button variant="outlined" onClick={() => {
+              setImageDialogOpen(false);
+              setFile(null);
+              setFileUploadError("");
+            }}>{strings.wikiDocumentation.close}</Button>
           </>
         )}
       </Box>
