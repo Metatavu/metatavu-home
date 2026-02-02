@@ -23,8 +23,24 @@ export const createAppTheme = (mode: "light" | "dark"): Theme =>
         paper: mode === "dark" ? "#1e1e1e" : "#fff"
       },
       text: {
-        primary: mode === "dark" ? "#fff" : "#222",
-        secondary: mode === "dark" ? "#ccc" : "#555"
+        primary: mode === "dark" ? "#fff" : "#1a1a1a",
+        secondary: mode === "dark" ? "#bdbdbd" : "#555"
+      },
+      success: {
+        main: "#4caf50",
+        dark: "#45a049",
+        contrastText: "#fff"
+      },
+      error: {
+        main: "#f44336",
+        dark: "#da190b",
+        contrastText: "#fff"
+      },
+      divider: mode === "dark" ? "#444" : "#e0e0e0",
+      action: {
+        hover: mode === "dark" ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.04)",
+        selected: mode === "dark" ? "rgba(255,255,255,0.16)" : "rgba(0,0,0,0.08)",
+        disabledBackground: mode === "dark" ? "rgba(255,255,255,0.12)" : "rgba(0,0,0,0.12)"
       }
     },
     typography: {
@@ -126,8 +142,7 @@ export const createAppTheme = (mode: "light" | "dark"): Theme =>
             color: theme.palette.text.primary,
             transition: "background-color 0.2s ease",
             "&:hover": {
-              backgroundColor:
-                theme.palette.mode === "dark" ? "#333333" : theme.palette.action.hover
+              backgroundColor: theme.palette.action.hover
             }
           })
         }
@@ -181,7 +196,6 @@ export const customTheme = (theme: Theme) => ({
   customStyles: {
     onCallBox: {
       display: "inline-block",
-      backgroundColor: theme.palette.background.paper,
       borderRadius: theme.shape.borderRadius,
       px: 3,
       py: 2,
@@ -192,12 +206,10 @@ export const customTheme = (theme: Theme) => ({
       maxWidth: 600
     },
     listViewTypography: {
-      backgroundColor: theme.palette.background.paper,
       borderRadius: theme.shape.borderRadius,
       px: 3,
       py: 2,
       fontWeight: "bold",
-      color: theme.palette.text.primary,
       display: "inline-block",
       textAlign: "center",
       pointerEvents: "none"

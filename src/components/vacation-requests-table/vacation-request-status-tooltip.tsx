@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, useTheme } from "@mui/material";
 import { useAtomValue } from "jotai";
 import { usersAtom } from "src/atoms/user";
 import type { VacationRequestStatus } from "src/generated/homeLambdasClient";
@@ -20,6 +20,7 @@ interface Props {
  * @param props component properties
  */
 const StatusToolTipContent = ({ statuses }: Props) => {
+  const theme = useTheme();
   const users = useAtomValue(usersAtom) || [];
 
   if (statuses.length === 0) {
@@ -33,7 +34,7 @@ const StatusToolTipContent = ({ statuses }: Props) => {
           fontWeight: 600,
           mb: 1,
           pb: 0.5,
-          borderBottom: "1px solid rgba(255,255,255,0.3)",
+          borderBottom: `1px solid ${theme.palette.divider}`,
           fontSize: "0.875rem"
         }}
       >
@@ -54,22 +55,25 @@ const StatusToolTipContent = ({ statuses }: Props) => {
             key={uniqueKey}
             sx={{
               py: 0.5,
-              borderBottom: index < statuses.length - 1 ? "1px solid rgba(255,255,255,0.2)" : "none"
+              borderBottom:
+                index < statuses.length - 1 ? `1px solid ${theme.palette.divider}` : "none"
             }}
           >
             <Box
               sx={{
                 fontWeight: 600,
-                color: "#ffd700",
+                color: theme.palette.warning.main,
                 fontSize: "0.875rem"
               }}
             >
               {LocalizationUtils.getLocalizedVacationRequestStatus(statusItem.status)}
             </Box>
-            <Box sx={{ color: "#90cafd", fontSize: "0.8rem", mt: 0.25 }}>
+            <Box sx={{ color: theme.palette.info.main, fontSize: "0.8rem", mt: 0.25 }}>
               {strings.vacationRequest.reviewedBy} {adminName}
             </Box>
-            <Box sx={{ color: "#bbb", fontSize: "0.75rem", mt: 0.25 }}>{date}</Box>
+            <Box sx={{ color: theme.palette.text.secondary, fontSize: "0.75rem", mt: 0.25 }}>
+              {date}
+            </Box>
           </Box>
         );
       })}
