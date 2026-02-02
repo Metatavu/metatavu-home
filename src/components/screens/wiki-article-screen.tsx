@@ -246,18 +246,70 @@ const ArticleScreen = () => {
                 {/* Markdown Content */}
                 <ReactMarkdown
                   components={{
-                    img: ({ node, ...props }) => (
-                      <img
-                        {...props}
-                        alt={props.alt || ""}
-                        style={{
-                          display: "block",
-                          width: "100%",
-                          borderRadius: "15px",
-                          marginBottom: "1rem"
-                        }}
-                      />
-                    ),
+                    img: ({ node, ...props }) => {
+                      const altText = props.alt || "";
+                      const parts = altText.split("|");
+                      const alt = parts[0] || "";
+                      const size = parts[1] || "medium";
+                      const alignment = parts[2] || "center";
+
+                      const maxWidth = (() => {
+                        switch (size) {
+                          case "small":
+                            return "300px";
+                          case "medium":
+                            return "500px";
+                          case "large":
+                            return "700px";
+                          case "full":
+                            return "100%";
+                          default:
+                            return "500px";
+                        }
+                      })();
+
+                      const containerStyle: React.CSSProperties = (() => {
+                        switch (alignment) {
+                          case "left":
+                            return {
+                              float: "left",
+                              marginRight: "1.5rem",
+                              marginBottom: "1rem",
+                              maxWidth: maxWidth
+                            };
+                          case "right":
+                            return {
+                              float: "right",
+                              marginLeft: "1.5rem",
+                              marginBottom: "1rem",
+                              maxWidth: maxWidth
+                            };
+                          case "center":
+                            return {
+                              display: "block",
+                              margin: "1rem auto",
+                              maxWidth: maxWidth,
+                              clear: "both"
+                            };
+                          default:
+                            return {};
+                        }
+                      })();
+
+                      return (
+                        <div style={containerStyle}>
+                          <img
+                            {...props}
+                            alt={alt}
+                            style={{
+                              display: "block",
+                              width: "100%",
+                              borderRadius: "15px"
+                            }}
+                          />
+                        </div>
+                      );
+                    },
                     code: ({ node, inline, ...props }) => (
                       <code {...props} className={!inline ? "editor-code" : ""} />
                     ),

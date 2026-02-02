@@ -76,3 +76,37 @@ li:has(> ol),
 li:has(> ul) {
   list-style-type: none;
 }
+
+.MuiCard-root a[href^="/wiki-documentation"] {
+  color: #1976d2;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(25, 118, 210, 0.4);
+  transition: all 0.2s ease;
+  padding-bottom: 2px;
+  font-weight: 500;
+}
+
+.MuiCard-root a[href^="/wiki-documentation"]:hover {
+  color: #1565c0;
+  border-bottom-color: #1565c0;
+  background-color: rgba(25, 118, 210, 0.08);
+}
+
+.MuiCard-root a[href^="/wiki-documentation"]:visited {
+  color: #7b1fa2;
+  border-bottom-color: rgba(123, 31, 162, 0.4);
+}
+
+.editor img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  border-radius: 15px;
+  cursor: default;
+}
+
+.editor::after {
+  content: "";
+  display: table;
+  clear: both;
+}
