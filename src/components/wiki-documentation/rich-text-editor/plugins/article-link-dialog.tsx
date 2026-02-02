@@ -28,6 +28,15 @@ interface Props {
 }
 
 /**
+ * Autocomplete dropdown paper component for article search results
+ */
+const AutocompleteDropdown = ({ children }: { children?: React.ReactNode }) => (
+  <Paper elevation={8} sx={{ mt: 1 }}>
+    {children}
+  </Paper>
+);
+
+/**
  * Dialog for searching and linking to other existing wiki articles
  */
 const ArticleLinkDialog = ({ open, onClose, onSelectArticle, selectedText = "" }: Props) => {
@@ -137,11 +146,7 @@ const ArticleLinkDialog = ({ open, onClose, onSelectArticle, selectedText = "" }
             </li>
           )}
           noOptionsText={strings.wikiDocumentation.noArticlesFound}
-          PaperComponent={({ children }) => (
-            <Paper elevation={8} sx={{ mt: 1 }}>
-              {children}
-            </Paper>
-          )}
+          PaperComponent={AutocompleteDropdown}
         />
         
         {selectedArticle && (
