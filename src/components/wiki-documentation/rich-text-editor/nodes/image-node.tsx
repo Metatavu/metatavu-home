@@ -9,8 +9,6 @@ import type { ReactNode } from "react";
 import { applyImageAlignmentStyles, getImageMaxWidth } from "src/utils/image-style-utils";
 import type { ImageAlignment, ImageSize } from "src/utils/image-style-utils";
 
-export type { ImageSize, ImageAlignment };
-
 export type SerializedImageNode = Spread<
   {
     src: string;

@@ -23,6 +23,48 @@ import CreateOrEditArticleForm from "../wiki-documentation/create-article-form";
 import "../wiki-documentation/rich-text-editor/editor.css";
 
 /**
+ * Custom image component for ReactMarkdown that handles size and alignment metadata
+ */
+const MarkdownImage = ({ node, ...props }: any) => {
+  const altText = props.alt || "";
+  const parts = altText.split("|");
+  const alignment = (parts.length >= 3 ? (parts.pop()?.trim() || "center") : "center") as ImageAlignment;
+  const size = (parts.length >= 2 ? (parts.pop()?.trim() || "medium") : "medium") as ImageSize;
+  const alt = parts.join("|").trim() || "";
+
+  const maxWidth = getImageMaxWidth(size);
+  const containerStyle = getImageContainerStyle(alignment, maxWidth);
+
+  return (
+    <div style={containerStyle}>
+      <img
+        {...props}
+        alt={alt}
+        style={{
+          display: "block",
+          width: "100%",
+          borderRadius: "15px"
+        }}
+      />
+    </div>
+  );
+};
+
+/**
+ * Custom code component for ReactMarkdown
+ */
+const MarkdownCode = ({ node, inline, ...props }: any) => (
+  <code {...props} className={!inline ? "editor-code" : ""} />
+);
+
+/**
+ * Custom blockquote component for ReactMarkdown
+ */
+const MarkdownBlockquote = ({ node, ...props }: any) => (
+  <blockquote {...props} className="editor-quote" />
+);
+
+/**
  * Article screen component displaying the article content.
  */
 const ArticleScreen = () => {
@@ -248,36 +290,9 @@ const ArticleScreen = () => {
                 {/* Markdown Content */}
                 <ReactMarkdown
                   components={{
-                    img: ({ node, ...props }) => {
-                      const altText = props.alt || "";
-                      const parts = altText.split("|");
-                      const alignment = (parts.length >= 3 ? (parts.pop()?.trim() || "center") : "center") as ImageAlignment;
-                      const size = (parts.length >= 2 ? (parts.pop()?.trim() || "medium") : "medium") as ImageSize;
-                      const alt = parts.join("|").trim() || "";
-
-                      const maxWidth = getImageMaxWidth(size);
-                      const containerStyle = getImageContainerStyle(alignment, maxWidth);
-
-                      return (
-                        <div style={containerStyle}>
-                          <img
-                            {...props}
-                            alt={alt}
-                            style={{
-                              display: "block",
-                              width: "100%",
-                              borderRadius: "15px"
-                            }}
-                          />
-                        </div>
-                      );
-                    },
-                    code: ({ node, inline, ...props }) => (
-                      <code {...props} className={!inline ? "editor-code" : ""} />
-                    ),
-                    blockquote: ({ node, ...props }) => (
-                      <blockquote {...props} className="editor-quote" />
-                    )
+                    img: MarkdownImage,
+                    code: MarkdownCode,
+                    blockquote: MarkdownBlockquote
                   }}
                 >
                   {article?.content || ""}

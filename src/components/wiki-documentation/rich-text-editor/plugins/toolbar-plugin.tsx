@@ -34,7 +34,8 @@ import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
 import { wikiScreenColors } from "src/theme";
 import { uploadFile } from "src/utils/s3-file-utils";
-import { $createImageNode, type ImageSize, type ImageAlignment } from "../nodes/image-node";
+import type { ImageAlignment, ImageSize } from "src/utils/image-style-utils";
+import { $createImageNode } from "../nodes/image-node";
 import ArticleLinkDialog from "./article-link-dialog";
 
 const colors = wikiScreenColors;
