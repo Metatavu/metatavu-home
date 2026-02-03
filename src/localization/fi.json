@@ -39,7 +39,7 @@
     "questionnaireDeleteFailed": "Kyselylomakkeen poistaminen epäonnistui",
     "questionnaireUpdateFailed": "Kyselylomakkeen päivittäminen epäonnistui",
     "fetchFailedFlextime": "Joustotyöaikatietojen hakeminen epäonnistui",
-    "missingEmailOrId": "Sähköposti tai käyttäjätunnus puuttuu",
+    "missingUserId": "Käyttäjätunnus puuttuu",
     "noSeveraUserId": "Käyttäjältä puuttuu Severa-käyttäjätunnus, ota yhteyttä Metatavun kehitystiimiin lisätietoja varten.",
     "noFlextimeData": "Jotain meni pieleen joustotyöaikatietoja haettaessa",
     "noArticleId": "Artikkelin ID puuttuu",
