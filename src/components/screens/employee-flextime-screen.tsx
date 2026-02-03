@@ -12,7 +12,8 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Typography
+  Typography,
+  useTheme
 } from "@mui/material";
 import { useSetAtom } from "jotai";
 import { DateTime } from "luxon";
@@ -32,6 +33,7 @@ const EmployeeFlextimeScreen = () => {
   const [loading, setLoading] = useState(false);
   const setError = useSetAtom(errorAtom);
   const currentDate = DateTime.now().toLocaleString(DateTime.DATE_FULL);
+  const theme = useTheme();
 
   useEffect(() => {
     loadFlextimeData();
@@ -76,7 +78,7 @@ const EmployeeFlextimeScreen = () => {
    */
   const getFlextimeColor = (hours: number | null | undefined): string => {
     if (hours === null || hours === undefined) return "#666";
-    return hours >= 0 ? "#4caf50" : "#f44336";
+    return hours >= 0 ? theme.palette.success.main : theme.palette.error.main;
   };
 
   /**
@@ -161,7 +163,7 @@ const EmployeeFlextimeScreen = () => {
         <TableContainer component={Paper} elevation={2}>
           <Table>
             <TableHead>
-              <TableRow sx={{ backgroundColor: "#f8f9fa" }}>
+              <TableRow sx={{ backgroundColor: theme.palette.background.paper }}>
                 <TableCell>
                   <Typography variant="h6" fontWeight="bold">
                     {strings.employeeFlextime.employee}
