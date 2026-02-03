@@ -142,11 +142,8 @@ const ArticleScreen = () => {
     try {
       await articleApi.readArticle({ id: article.id, readArticleRequest: { user: userId } });
       setArticle((prev) => (prev ? { ...prev, readBy: [...(prev.readBy || []), userId] } : prev));
-    } catch (error: unknown) {
-      const message =
-        error && typeof error === "object" && "response" in error
-          ? (await (error as { response: Response }).response.json()).message
-          : "Unknown error";
+    } catch (error: any) {
+      const message = (await error.response.json()).message;
       setError(message);
     }
   };
@@ -196,11 +193,8 @@ const ArticleScreen = () => {
       if (adminMode) {
         navigate("/admin/wiki-documentation");
       }
-    } catch (error) {
-      const message =
-        error && typeof error === "object" && "response" in error
-          ? (await (error as { response: Response }).response.json()).message
-          : "Unknown error";
+    } catch (error: any) {
+      const message = (await error.response.json()).message;
       setError(message);
     }
   };
