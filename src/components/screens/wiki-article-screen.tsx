@@ -13,8 +13,11 @@ import type { Article, ArticleMetadata, User } from "src/generated/homeLambdasCl
 import { useLambdasApi } from "src/hooks/use-api";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
-import type { ImageAlignment, ImageSize } from "src/utils/image-style-utils";
-import { getImageContainerStyle, getImageMaxWidth } from "src/utils/image-style-utils";
+import {
+  getImageContainerStyle,
+  getImageMaxWidth,
+  parseImageMetadata
+} from "src/utils/image-style-utils";
 import { formatDate } from "src/utils/time-utils";
 import BackButton from "../generics/back-button";
 import ActionButton from "../wiki-documentation/action-button";
@@ -26,13 +29,7 @@ import "../wiki-documentation/rich-text-editor/editor.css";
  * Custom image component for ReactMarkdown that handles size and alignment metadata
  */
 const MarkdownImage = (props: React.ImgHTMLAttributes<HTMLImageElement>) => {
-  const altText = props.alt || "";
-  const parts = altText.split("|");
-  const alignment = (
-    parts.length >= 3 ? parts.pop()?.trim() || "center" : "center"
-  ) as ImageAlignment;
-  const size = (parts.length >= 2 ? parts.pop()?.trim() || "medium" : "medium") as ImageSize;
-  const alt = parts.join("|").trim() || "";
+  const { alt, size, alignment } = parseImageMetadata(props.alt || "");
 
   const maxWidth = getImageMaxWidth(size);
   const containerStyle = getImageContainerStyle(alignment, maxWidth);

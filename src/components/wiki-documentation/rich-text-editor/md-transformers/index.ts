@@ -1,4 +1,5 @@
 import type { TextMatchTransformer } from "@lexical/markdown";
+import { parseImageMetadata } from "src/utils/image-style-utils";
 import { $createImageNode, ImageNode } from "../nodes/image-node";
 
 export const IMAGE_TRANSFORMER: TextMatchTransformer = {
@@ -14,10 +15,7 @@ export const IMAGE_TRANSFORMER: TextMatchTransformer = {
   regExp: /!\[([^\]]*)\]\(([^)\s]+)(?:\s+"(.*?)")?\)/,
   replace: (textNode, match) => {
     const [, altWithMeta, src] = match;
-    const parts = altWithMeta.split("|");
-    const alignment = (parts.length >= 3 ? parts.pop()?.trim() : "center") as "left" | "center" | "right";
-    const size = (parts.length >= 2 ? parts.pop()?.trim() : "medium") as "small" | "medium" | "large" | "full";
-    const alt = parts.join("|").trim() || "";
+    const { alt, size, alignment } = parseImageMetadata(altWithMeta);
     const imageNode = $createImageNode(src, alt, size, alignment);
     textNode.replace(imageNode);
   },

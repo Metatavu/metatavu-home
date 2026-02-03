@@ -3,6 +3,28 @@ import type React from "react";
 export type ImageSize = "small" | "medium" | "large" | "full";
 export type ImageAlignment = "left" | "center" | "right";
 
+export interface ParsedImageMetadata {
+  alt: string;
+  size: ImageSize;
+  alignment: ImageAlignment;
+}
+
+/**
+ * Parses image metadata from alt text in the format: "alt text|size|alignment"
+ * @param altText - The raw alt text string that may contain metadata
+ * @returns Parsed metadata with alt text, size, and alignment
+ */
+export const parseImageMetadata = (altText: string): ParsedImageMetadata => {
+  const parts = altText.split("|");
+  const alignment = (
+    parts.length >= 3 ? parts.pop()?.trim() || "center" : "center"
+  ) as ImageAlignment;
+  const size = (parts.length >= 2 ? parts.pop()?.trim() || "medium" : "medium") as ImageSize;
+  const alt = parts.join("|").trim() || "";
+
+  return { alt, size, alignment };
+};
+
 /**
  * Gets the max width value for an image based on size
  * @param size - The image size
