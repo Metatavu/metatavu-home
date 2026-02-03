@@ -65,7 +65,7 @@ const SettingsScreen = ({ mode, setMode }: SettingsScreenProps) => {
       setIsConsentGiven(Boolean(severaUserId));
       if (severaUserId) {
         const updatedAttributes = {
-          ...(userProfile.attributes || {}),
+          ...(userProfile.attributes ?? {}),
           severaUserId
         } as Record<string, string[] | string | undefined>;
 
@@ -94,7 +94,7 @@ const SettingsScreen = ({ mode, setMode }: SettingsScreenProps) => {
       }
 
       await usersApi.removeSeveraOptIn({ userId: userProfile.id });
-      const updatedAttributes = { ...(userProfile.attributes || {}) } as Record<
+      const updatedAttributes = { ...(userProfile.attributes ?? {}) } as Record<
         string,
         string[] | string | undefined
       >;
