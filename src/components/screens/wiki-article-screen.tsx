@@ -13,9 +13,9 @@ import type { Article, ArticleMetadata, User } from "src/generated/homeLambdasCl
 import { useLambdasApi } from "src/hooks/use-api";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
-import { formatDate } from "src/utils/time-utils";
-import { getImageContainerStyle, getImageMaxWidth } from "src/utils/image-style-utils";
 import type { ImageAlignment, ImageSize } from "src/utils/image-style-utils";
+import { getImageContainerStyle, getImageMaxWidth } from "src/utils/image-style-utils";
+import { formatDate } from "src/utils/time-utils";
 import BackButton from "../generics/back-button";
 import ActionButton from "../wiki-documentation/action-button";
 import ArticleListItem from "../wiki-documentation/article-list-item";
@@ -25,11 +25,13 @@ import "../wiki-documentation/rich-text-editor/editor.css";
 /**
  * Custom image component for ReactMarkdown that handles size and alignment metadata
  */
-const MarkdownImage = ({ node, ...props }: any) => {
+const MarkdownImage = (props: React.ImgHTMLAttributes<HTMLImageElement>) => {
   const altText = props.alt || "";
   const parts = altText.split("|");
-  const alignment = (parts.length >= 3 ? (parts.pop()?.trim() || "center") : "center") as ImageAlignment;
-  const size = (parts.length >= 2 ? (parts.pop()?.trim() || "medium") : "medium") as ImageSize;
+  const alignment = (
+    parts.length >= 3 ? parts.pop()?.trim() || "center" : "center"
+  ) as ImageAlignment;
+  const size = (parts.length >= 2 ? parts.pop()?.trim() || "medium" : "medium") as ImageSize;
   const alt = parts.join("|").trim() || "";
 
   const maxWidth = getImageMaxWidth(size);
@@ -53,14 +55,17 @@ const MarkdownImage = ({ node, ...props }: any) => {
 /**
  * Custom code component for ReactMarkdown
  */
-const MarkdownCode = ({ node, inline, ...props }: any) => (
+const MarkdownCode = ({
+  inline,
+  ...props
+}: React.HTMLAttributes<HTMLElement> & { inline?: boolean }) => (
   <code {...props} className={!inline ? "editor-code" : ""} />
 );
 
 /**
  * Custom blockquote component for ReactMarkdown
  */
-const MarkdownBlockquote = ({ node, ...props }: any) => (
+const MarkdownBlockquote = (props: React.BlockquoteHTMLAttributes<HTMLQuoteElement>) => (
   <blockquote {...props} className="editor-quote" />
 );
 
@@ -137,8 +142,11 @@ const ArticleScreen = () => {
     try {
       await articleApi.readArticle({ id: article.id, readArticleRequest: { user: userId } });
       setArticle((prev) => (prev ? { ...prev, readBy: [...(prev.readBy || []), userId] } : prev));
-    } catch (error: any) {
-      const message = (await error.response.json()).message;
+    } catch (error: unknown) {
+      const message =
+        error && typeof error === "object" && "response" in error
+          ? (await (error as { response: Response }).response.json()).message
+          : "Unknown error";
       setError(message);
     }
   };
@@ -188,8 +196,11 @@ const ArticleScreen = () => {
       if (adminMode) {
         navigate("/admin/wiki-documentation");
       }
-    } catch (error: any) {
-      const message = (await error.response.json()).message;
+    } catch (error) {
+      const message =
+        error && typeof error === "object" && "response" in error
+          ? (await (error as { response: Response }).response.json()).message
+          : "Unknown error";
       setError(message);
     }
   };
