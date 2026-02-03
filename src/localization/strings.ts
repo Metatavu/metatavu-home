@@ -709,6 +709,36 @@ export interface Localized extends LocalizedStringsMethods {
     listOfArticlesContent: string;
   };
   /**
+   * Translations related to Onboarding Wiki Create Article Form
+   */
+  onboardingWikiCreate: {
+    prev: string;
+    next: string;
+    close: string;
+    welcomeTitle: string;
+    welcomeContent: string;
+    titleFieldTitle: string;
+    titleFieldContent: string;
+    pathFieldTitle: string;
+    pathFieldContent: string;
+    tagsFieldTitle: string;
+    tagsFieldContent: string;
+    imageFieldTitle: string;
+    imageFieldContent: string;
+    descriptionFieldTitle: string;
+    descriptionFieldContent: string;
+    editorTitle: string;
+    editorContent: string;
+    editorLinksTitle: string;
+    editorLinksContent: string;
+    editorArticleLinksTitle: string;
+    editorArticleLinksContent: string;
+    editorImagesTitle: string;
+    editorImagesContent: string;
+    actionButtonTitle: string;
+    actionButtonContent: string;
+  };
+  /**
    * Translations related to On Call
    */
   oncall: {

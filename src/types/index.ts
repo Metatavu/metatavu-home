@@ -213,7 +213,8 @@ export interface OnCallWeek {
  */
 export enum OnboardingScreen {
   Home = "home",
-  Wiki = "wiki"
+  Wiki = "wiki",
+  WikiCreate = "wikiCreate"
 }
 /**
  * Interface describing Slack user avatars

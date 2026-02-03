@@ -471,6 +471,15 @@ const ToolBar = () => {
             key={`inline-command-${command.key}`}
             onClick={() => command.handler()}
             sx={{ fontSize: "21px", fontWeight: "bold" }}
+            id={
+              command.key === "add-link"
+                ? "wiki-editor-link-button"
+                : command.key === "link-article"
+                  ? "wiki-editor-article-link-button"
+                  : command.key === "add-image"
+                    ? "wiki-editor-image-button"
+                    : undefined
+            }
           >
             {command.icon}
           </IconButton>
