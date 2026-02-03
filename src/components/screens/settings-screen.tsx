@@ -1,4 +1,4 @@
-import { Box, CircularProgress, Switch, Typography } from "@mui/material";
+import { Box, CircularProgress, Switch, Typography, useTheme } from "@mui/material";
 import { useAtom, useSetAtom } from "jotai";
 import { useEffect, useState } from "react";
 import { userProfileAtom } from "src/atoms/auth";
@@ -17,6 +17,7 @@ type SettingsScreenProps = {
  * Settings screen component
  */
 const SettingsScreen = ({ mode, setMode }: SettingsScreenProps) => {
+  const theme = useTheme();
   const [userProfile, setUserProfile] = useAtom(userProfileAtom);
   const { usersApi } = useLambdasApi();
   const setUsers = useSetAtom(usersAtom);
@@ -126,12 +127,9 @@ const SettingsScreen = ({ mode, setMode }: SettingsScreenProps) => {
         p={2}
         borderRadius={2}
         sx={{
-          bgcolor: (theme) =>
-            theme.palette.mode === "dark"
-              ? theme.palette.background.paper
-              : theme.palette.background.default,
+          bgcolor: theme.palette.background.paper,
           "&:hover": {
-            bgcolor: (theme) => theme.palette.action.hover
+            bgcolor: theme.palette.action.hover
           },
           transition: "background-color 0.2s ease"
         }}
@@ -165,12 +163,9 @@ const SettingsScreen = ({ mode, setMode }: SettingsScreenProps) => {
         p={2}
         borderRadius={2}
         sx={{
-          bgcolor: (theme) =>
-            theme.palette.mode === "dark"
-              ? theme.palette.background.paper
-              : theme.palette.background.default,
+          bgcolor: theme.palette.background.paper,
           "&:hover": {
-            bgcolor: (theme) => theme.palette.action.hover
+            bgcolor: theme.palette.action.hover
           },
           transition: "background-color 0.2s ease"
         }}

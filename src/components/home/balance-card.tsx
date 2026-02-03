@@ -1,5 +1,5 @@
 import ScheduleIcon from "@mui/icons-material/Schedule";
-import { Card, CardContent, Grid, Skeleton, Typography } from "@mui/material";
+import { Card, CardContent, Grid, Skeleton, Typography, useTheme } from "@mui/material";
 import { useAtomValue, useSetAtom } from "jotai";
 import { DateTime } from "luxon";
 import { useEffect, useState } from "react";
@@ -37,6 +37,7 @@ const BalanceCard = () => {
   const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
   const severaUserId = getSeveraUserId(loggedInUser);
   const navigate = useNavigate();
+  const theme = useTheme();
 
   /**
    * Effect hook that fetches flextime data for the logged-in user.
@@ -88,7 +89,8 @@ const BalanceCard = () => {
       return <Typography variant="body1">{strings.error.noFlextimeData}</Typography>;
     }
     const totalFlextimeBalance = usersFlextime.totalFlextimeBalance;
-    const textColor = totalFlextimeBalance >= 0 ? "green" : "red";
+    const textColor =
+      totalFlextimeBalance >= 0 ? theme.palette.success.main : theme.palette.error.main;
     const hourLabel =
       totalFlextimeBalance === 1 ? strings.timeExpressions.hour : strings.timeExpressions.hours;
     return (
@@ -120,7 +122,7 @@ const BalanceCard = () => {
   }
 
   return (
-    <Link to="/balance" style={{ textDecoration: "none" }}>
+    <Link to="/balance" style={{ textDecoration: "none", color: "inherit" }}>
       <Card
         sx={{
           minHeight: 150

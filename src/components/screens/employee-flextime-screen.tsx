@@ -77,7 +77,7 @@ const EmployeeFlextimeScreen = () => {
    * @returns A string hex color.
    */
   const getFlextimeColor = (hours: number | null | undefined): string => {
-    if (hours === null || hours === undefined) return "#666";
+    if (hours === null || hours === undefined) return theme.palette.text.secondary;
     return hours >= 0 ? theme.palette.success.main : theme.palette.error.main;
   };
 
@@ -163,7 +163,7 @@ const EmployeeFlextimeScreen = () => {
         <TableContainer component={Paper} elevation={2}>
           <Table>
             <TableHead>
-              <TableRow sx={{ backgroundColor: theme.palette.background.paper }}>
+              <TableRow sx={{ backgroundColor: theme.palette.action.selected }}>
                 <TableCell>
                   <Typography variant="h6" fontWeight="bold">
                     {strings.employeeFlextime.employee}
@@ -202,7 +202,13 @@ const EmployeeFlextimeScreen = () => {
                   <TableRow
                     key={userData.user.attributes?.severaUserId || index}
                     hover
-                    sx={{ backgroundColor: index % 2 === 0 ? "#fafafa" : "white" }}
+                    sx={{
+                      backgroundColor:
+                        index % 2 === 0
+                          ? theme.palette.background.default
+                          : theme.palette.background.paper,
+                      borderBottom: `3px solid ${theme.palette.divider}`
+                    }}
                   >
                     <TableCell>
                       <Box>
@@ -246,7 +252,7 @@ const EmployeeFlextimeScreen = () => {
                             : strings.employeeFlextime.inactive
                         }
                         color={userData.user.attributes?.isActive ? "success" : "warning"}
-                        variant="filled"
+                        variant="outlined"
                       />
                     </TableCell>
                   </TableRow>
