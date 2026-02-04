@@ -265,6 +265,18 @@ const ArticleScreen = () => {
                 {/* Markdown Content */}
                 <ReactMarkdown
                   components={{
+                    a: ({ node, ...props }) => (
+                      <a
+                        {...props}
+                        style={{
+                          color:
+                            theme.palette.mode === "dark"
+                              ? theme.palette.primary.light
+                              : theme.palette.primary.main,
+                          textDecoration: "underline"
+                        }}
+                      />
+                    ),
                     img: ({ node, ...props }) => (
                       <img
                         {...props}

@@ -23,7 +23,8 @@ const ActionButton = ({ children, disabled, onClick }: Props) => {
         color: theme.palette.getContrastText(theme.palette.primary.main),
         cursor: disabled ? "not-allowed" : "pointer",
         "&:hover": {
-          backgroundColor: theme.palette.action.hover
+          backgroundColor: theme.palette.primary.dark,
+          color: theme.palette.primary.contrastText
         }
       }}
       onClick={onClick}

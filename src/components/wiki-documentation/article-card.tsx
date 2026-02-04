@@ -33,7 +33,7 @@ const ArticleCard = ({ article, adminMode, onDeleteClick }: Props) => {
   const hiddenCount = tags.length - visibleTags.length;
 
   return (
-    <Link to={article.path} style={{ textDecoration: "none" }}>
+    <Link to={article.path} style={{ textDecoration: "none", color: "inherit" }}>
       <Card
         key={`article-card-${article.id}`}
         sx={{
@@ -42,7 +42,7 @@ const ArticleCard = ({ article, adminMode, onDeleteClick }: Props) => {
           borderRadius: "20px",
           backgroundColor: theme.palette.background.paper,
           color: theme.palette.text.primary,
-          boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.25)",
+          boxShadow: theme.shadows[4],
           width: { lg: "260px" },
           maxWidth: { md: "360px", sm: "400px" },
           display: "flex",
@@ -51,7 +51,7 @@ const ArticleCard = ({ article, adminMode, onDeleteClick }: Props) => {
             ? { lg: "394px", md: "414px", sm: "420px", xs: "530px" }
             : { lg: "354px", md: "374px", sm: "380px", xs: "485px" },
           ":hover": {
-            boxShadow: "0px 6px 14px rgba(0, 0, 0, 0.3)",
+            boxShadow: theme.shadows[6],
             backgroundColor: theme.palette.action.hover
           }
         }}
@@ -108,6 +108,7 @@ const ArticleCard = ({ article, adminMode, onDeleteClick }: Props) => {
           {visibleTags?.map((tag) => (
             <Chip
               label={tag}
+              color="default"
               sx={{
                 marginRight: 1,
                 marginTop: 0.5,

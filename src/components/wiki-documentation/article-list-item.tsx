@@ -29,7 +29,7 @@ const ArticleListItem = ({ article, adminMode = false, onDeleteClick }: Props) =
 
   const lastActivityData = getLastActivityString(article, users);
   return (
-    <Link to={article.path} style={{ textDecoration: "none" }}>
+    <Link to={article.path} style={{ textDecoration: "none", color: "inherit" }}>
       <Card
         key={`article-card-${article.id}`}
         sx={{
@@ -40,7 +40,7 @@ const ArticleListItem = ({ article, adminMode = false, onDeleteClick }: Props) =
           color: theme.palette.text.primary,
           width: "100%",
           ":hover": {
-            boxShadow: "0px 6px 14px rgba(0, 0, 0, 0.3)",
+            boxShadow: theme.shadows[6],
             backgroundColor: theme.palette.action.hover
           }
         }}
