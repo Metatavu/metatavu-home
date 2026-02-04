@@ -31,6 +31,7 @@ import "../wiki-documentation/rich-text-editor/editor.css";
 
 const MarkdownLink = (props: any) => {
   const theme = useTheme();
+  const content = props.children || props.alt || "Link";
   return (
     <a
       {...props}
@@ -39,7 +40,9 @@ const MarkdownLink = (props: any) => {
           theme.palette.mode === "dark" ? theme.palette.primary.light : theme.palette.primary.main,
         textDecoration: "underline"
       }}
-    />
+    >
+      {content}
+    </a>
   );
 };
 
