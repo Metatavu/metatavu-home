@@ -29,6 +29,20 @@ import ArticleListItem from "../wiki-documentation/article-list-item";
 import CreateOrEditArticleForm from "../wiki-documentation/create-article-form";
 import "../wiki-documentation/rich-text-editor/editor.css";
 
+const MarkdownLink = (props: any) => {
+  const theme = useTheme();
+  return (
+    <a
+      {...props}
+      style={{
+        color:
+          theme.palette.mode === "dark" ? theme.palette.primary.light : theme.palette.primary.main,
+        textDecoration: "underline"
+      }}
+    />
+  );
+};
+
 /**
  * Article screen component displaying the article content.
  */
@@ -265,18 +279,7 @@ const ArticleScreen = () => {
                 {/* Markdown Content */}
                 <ReactMarkdown
                   components={{
-                    a: ({ node, ...props }) => (
-                      <a
-                        {...props}
-                        style={{
-                          color:
-                            theme.palette.mode === "dark"
-                              ? theme.palette.primary.light
-                              : theme.palette.primary.main,
-                          textDecoration: "underline"
-                        }}
-                      />
-                    ),
+                    a: MarkdownLink,
                     img: ({ node, ...props }) => (
                       <img
                         {...props}
