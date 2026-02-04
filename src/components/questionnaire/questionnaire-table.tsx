@@ -15,7 +15,8 @@ import {
   Paper,
   Popover,
   TextField,
-  Typography
+  Typography,
+  useTheme
 } from "@mui/material";
 import { DataGrid, type GridRenderCellParams, type GridRowParams } from "@mui/x-data-grid";
 import { useAtomValue, useSetAtom } from "jotai";
@@ -56,6 +57,7 @@ const QuestionnaireTable = () => {
   const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
   const dataGridRef = useRef(null);
   const [deleteTitle, setDeleteTitle] = useState<string | undefined>(undefined);
+  const theme = useTheme();
 
   useEffect(() => {
     const fetchQuestionnaires = async () => {
@@ -210,9 +212,9 @@ const QuestionnaireTable = () => {
   const renderStatusCell = (params: GridRenderCellParams) => {
     const userHasPassed = params.row.passedUsers?.includes(loggedInUser?.id);
     return userHasPassed ? (
-      <CheckCircleIcon sx={{ color: "green" }} />
+      <CheckCircleIcon sx={{ color: theme.palette.success.main }} />
     ) : (
-      <PendingIcon sx={{ color: "gray" }} />
+      <PendingIcon sx={{ color: theme.palette.text.secondary }} />
     );
   };
 
@@ -252,6 +254,8 @@ const QuestionnaireTable = () => {
                 sx={{
                   margin: "1px",
                   maxWidth: "120px",
+                  color: theme.palette.text.primary,
+                  borderColor: theme.palette.divider,
                   "& .MuiChip-label": {
                     overflow: "hidden",
                     textOverflow: "ellipsis",
@@ -271,9 +275,10 @@ const QuestionnaireTable = () => {
                 label={strings.formatString(strings.questionnaireTags.moreCount, hiddenTagsCount)}
                 sx={{
                   flexShrink: 0,
-                  backgroundColor: "rgba(0, 0, 0, 0.08)",
+                  backgroundColor: theme.palette.action.selected,
+                  color: theme.palette.text.primary,
                   "&:hover": {
-                    backgroundColor: "rgba(0, 0, 0, 0.12)"
+                    backgroundColor: theme.palette.action.hover
                   }
                 }}
                 onClick={(e) => handleTagMoreClick(e, tags)}
@@ -281,7 +286,7 @@ const QuestionnaireTable = () => {
             )}
           </>
         ) : (
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="body2" color={theme.palette.text.secondary}>
             {strings.questionnaireTags.noTags}
           </Typography>
         )}
@@ -302,8 +307,10 @@ const QuestionnaireTable = () => {
       filterable: true,
       renderHeader: () => (
         <Box sx={{ display: "flex", alignItems: "center" }}>
-          <LabelIcon sx={{ mr: 0.5, fontSize: "1.25rem" }} />
-          <Typography variant="subtitle2">{strings.questionnaireTags.title}</Typography>
+          <LabelIcon sx={{ mr: 0.5, fontSize: "1.25rem", color: theme.palette.text.primary }} />
+          <Typography variant="subtitle2" color={theme.palette.text.primary}>
+            {strings.questionnaireTags.title}
+          </Typography>
         </Box>
       )
     },
@@ -324,25 +331,31 @@ const QuestionnaireTable = () => {
                   minWidth: "100px",
                   width: "auto",
                   height: "auto",
-                  fontSize: "0.80rem"
+                  fontSize: "0.80rem",
+                  color: theme.palette.success.main,
+                  borderColor: theme.palette.success.main
                 }}
               >
-                <EditIcon sx={{ color: "success.main", mr: 0.3 }} />
+                <EditIcon sx={{ color: theme.palette.success.main, mr: 0.3 }} />
                 {strings.questionnaireTable.edit}
               </Button>
               <Button
                 name="delete"
                 variant="contained"
-                color="secondary"
                 onClick={() => handleOpenDialog(params.row.id, params.row.title)}
                 sx={{
                   minWidth: "85px",
                   width: "auto",
                   height: "auto",
-                  fontSize: "0.80rem"
+                  fontSize: "0.80rem",
+                  backgroundColor: theme.palette.error.main,
+                  color: theme.palette.getContrastText(theme.palette.error.main),
+                  "&:hover": { backgroundColor: theme.palette.error.dark }
                 }}
               >
-                <DeleteForeverIcon sx={{ color: "red", mr: 0.3 }} />
+                <DeleteForeverIcon
+                  sx={{ color: theme.palette.getContrastText(theme.palette.error.main), mr: 0.3 }}
+                />
                 {strings.questionnaireTable.delete}
               </Button>
             </>
@@ -371,7 +384,12 @@ const QuestionnaireTable = () => {
       }}
       slotProps={{
         paper: {
-          sx: { maxWidth: "400px", p: 2 }
+          sx: {
+            maxWidth: "400px",
+            p: 2,
+            backgroundColor: theme.palette.background.paper,
+            color: theme.palette.text.primary
+          }
         }
       }}
     >
@@ -389,8 +407,10 @@ const QuestionnaireTable = () => {
             onClick={() => handleTagClick(tag)}
             sx={{
               cursor: "pointer",
+              color: theme.palette.text.primary,
+              borderColor: theme.palette.divider,
               "&:hover": {
-                backgroundColor: "rgba(0, 0, 0, 0.08)"
+                backgroundColor: theme.palette.action.hover
               }
             }}
           />
@@ -401,7 +421,17 @@ const QuestionnaireTable = () => {
 
   return (
     <>
-      <Paper style={{ minHeight: 500, maxHeight: "auto", width: "100%", overflow: "auto" }}>
+      <Paper
+        style={{
+          minHeight: 500,
+          maxHeight: "auto",
+          width: "100%",
+          overflow: "auto",
+          backgroundColor: theme.palette.background.default,
+          color: theme.palette.text.primary,
+          position: "relative"
+        }}
+      >
         {loading && (
           <CircularProgress
             size={50}
@@ -409,7 +439,8 @@ const QuestionnaireTable = () => {
               position: "absolute",
               top: "50%",
               left: "50%",
-              transform: "translate(-50%, -50%)"
+              transform: "translate(-50%, -50%)",
+              color: theme.palette.primary.main
             }}
           />
         )}
@@ -430,17 +461,19 @@ const QuestionnaireTable = () => {
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <SearchIcon />
+                  <SearchIcon sx={{ color: theme.palette.text.primary }} />
                 </InputAdornment>
               ),
               endAdornment: searchTerm && (
                 <InputAdornment position="end">
                   <IconButton size="small" onClick={handleClearSearch}>
-                    <ClearIcon />
+                    <ClearIcon sx={{ color: theme.palette.text.primary }} />
                   </IconButton>
                 </InputAdornment>
-              )
+              ),
+              sx: { color: theme.palette.text.primary }
             }}
+            InputLabelProps={{ style: { color: theme.palette.text.primary } }}
           />
         </Box>
 
@@ -450,12 +483,19 @@ const QuestionnaireTable = () => {
             margin: 0,
             "& .MuiDataGrid-cell": {
               padding: "8px",
-              cursor: "pointer"
+              cursor: "pointer",
+              color: theme.palette.text.primary
             },
             "& .MuiDataGrid-columnHeader": {
               padding: "0 8px",
-              cursor: "pointer"
-            }
+              cursor: "pointer",
+              color: theme.palette.text.primary
+            },
+            "& .MuiDataGrid-footerContainer": {
+              color: theme.palette.text.primary,
+              borderTop: `1px solid ${theme.palette.divider}`
+            },
+            backgroundColor: theme.palette.background.paper
           }}
           rows={filteredQuestionnaires}
           columns={columns}

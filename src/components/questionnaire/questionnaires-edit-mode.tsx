@@ -10,7 +10,8 @@ import {
   Snackbar,
   SnackbarContent,
   TextField,
-  Typography
+  Typography,
+  useTheme
 } from "@mui/material";
 import { useSetAtom } from "jotai";
 import isEqual from "lodash/isEqual";
@@ -48,6 +49,7 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
   const [saveEnabled, setSaveEnabled] = useState(false);
   const [newTag, setNewTag] = useState("");
   const [tagError, setTagError] = useState<string | null>(null);
+  const theme = useTheme();
 
   useEffect(() => {
     if (!editedQuestionnaire.tags) {
@@ -321,7 +323,9 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
 
   return (
     <>
-      <Card>
+      <Card
+        sx={{ backgroundColor: theme.palette.background.paper, color: theme.palette.text.primary }}
+      >
         <CardContent>
           <Typography variant="h5">{strings.questionnaireEdit.title}</Typography>
           <TextField
@@ -331,6 +335,7 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
             onChange={handleChange}
             fullWidth
             sx={{ mt: 3, mb: 2 }}
+            InputLabelProps={{ style: { color: theme.palette.text.secondary } }}
           />
           <TextField
             label={strings.questionnaireEdit.descriptionLabel}
@@ -339,6 +344,7 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
             onChange={handleChange}
             fullWidth
             sx={{ mb: 2 }}
+            InputLabelProps={{ style: { color: theme.palette.text.secondary } }}
           />
 
           {/* Tags Section */}
@@ -378,6 +384,7 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
                   fullWidth
                   error={!!tagError}
                   helperText={tagError}
+                  InputLabelProps={{ style: { color: theme.palette.text.secondary } }}
                 />
                 <Button
                   variant="contained"
@@ -387,9 +394,10 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
                     height: "48px",
                     minWidth: "90px",
                     textTransform: "uppercase",
-                    backgroundColor: "#212121",
+                    backgroundColor: theme.palette.primary.main,
+                    color: theme.palette.primary.contrastText,
                     "&:hover": {
-                      backgroundColor: "#000000"
+                      backgroundColor: theme.palette.primary.dark
                     }
                   }}
                 >
@@ -400,7 +408,10 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
           </Box>
 
           {editedQuestionnaire.questions.map((question, questionIndex) => (
-            <Card key={question.id} sx={{ mb: 2, p: 2, border: "1px solid #e0e0e0" }}>
+            <Card
+              key={question.id}
+              sx={{ mb: 2, p: 2, border: `1px solid ${theme.palette.divider}` }}
+            >
               <TextField
                 label={`${strings.questionnaireEdit.question} ${questionIndex + 1}`}
                 value={question.questionText}
@@ -410,6 +421,7 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
                 fullWidth
                 margin="normal"
                 required
+                InputLabelProps={{ style: { color: theme.palette.text.secondary } }}
               />
 
               <Typography variant="subtitle2" sx={{ mt: 2, mb: 1 }}>
@@ -533,8 +545,8 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
         <SnackbarContent
           message={strings.questionnaireEdit.snackbarMessageSuccess}
           sx={{
-            backgroundColor: "green",
-            color: "white"
+            backgroundColor: theme.palette.success.main,
+            color: theme.palette.success.contrastText
           }}
         />
       </Snackbar>
