@@ -1,4 +1,4 @@
-import { Box, Card, CardContent, Typography } from "@mui/material";
+import { Box, Card, CardContent, Typography, useTheme } from "@mui/material";
 import { Link } from "react-router-dom";
 import strings from "../../localization/strings";
 
@@ -8,9 +8,15 @@ import strings from "../../localization/strings";
  * @returns React element for the vacation management card.
  */
 const VacationManagementCard = () => {
+  const theme = useTheme();
   return (
     <Link to="/admin/vacation-management" style={{ textDecoration: "none" }}>
-      <Card>
+      <Card
+        sx={{
+          backgroundColor: theme.palette.background.paper,
+          color: theme.palette.text.primary
+        }}
+      >
         <CardContent>
           <Typography variant="h6" fontWeight="bold" sx={{ marginTop: 1, marginBottom: 1 }}>
             {strings.adminVacationManagement.title}
@@ -24,7 +30,7 @@ const VacationManagementCard = () => {
               justifyContent: "center",
               alignItems: "center",
               mt: 2,
-              color: "rgba(0, 0, 0, 0.54)"
+              color: theme.palette.text.secondary
             }}
           />
         </CardContent>

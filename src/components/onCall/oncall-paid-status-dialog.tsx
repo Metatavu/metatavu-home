@@ -10,7 +10,8 @@ import {
   DialogTitle,
   IconButton,
   Switch,
-  Typography
+  Typography,
+  useTheme
 } from "@mui/material";
 import { DateTime } from "luxon";
 import { useState } from "react";
@@ -51,6 +52,7 @@ const getWeekRange = (isoDate: string): string => {
  */
 const OnCallPaidStatusDialog = ({ open, setOpen, onCallEntry, updatePaidStatus }: Props) => {
   const [loading, setLoading] = useState(false);
+  const theme = useTheme();
 
   if (!onCallEntry) return null;
 
@@ -80,7 +82,7 @@ const OnCallPaidStatusDialog = ({ open, setOpen, onCallEntry, updatePaidStatus }
             position: "absolute",
             right: 8,
             top: 8,
-            color: (theme) => theme.palette.grey[500]
+            color: theme.palette.grey[500]
           }}
         >
           <CloseIcon />
@@ -108,8 +110,10 @@ const OnCallPaidStatusDialog = ({ open, setOpen, onCallEntry, updatePaidStatus }
               label={onCallEntry.paid ? strings.oncall.paid : strings.oncall.notPaid}
               color={onCallEntry.paid ? "success" : "default"}
               sx={{
-                bgcolor: onCallEntry.paid ? "#7bd15c" : "#f44336",
-                color: "#fff"
+                bgcolor: onCallEntry.paid ? theme.palette.success.main : theme.palette.error.main,
+                color: theme.palette.getContrastText(
+                  onCallEntry.paid ? theme.palette.success.main : theme.palette.error.main
+                )
               }}
             />
           </Box>

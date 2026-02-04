@@ -120,7 +120,7 @@ const Sidebar = ({
             color: theme.palette.text.primary,
             height: "100%",
             borderRadius: 0.5,
-            boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.25)"
+            boxShadow: theme.shadows[3]
           }}
         >
           <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
@@ -129,7 +129,7 @@ const Sidebar = ({
               <CloseIcon />
             </IconButton>
           </Box>
-          <Typography variant="body1" sx={{ color: theme.palette.info.main }} gutterBottom>
+          <Typography variant="body1" sx={{ color: theme.palette.info.light }} gutterBottom>
             {filteredApplicationsCount} {strings.softwareRegistry.results}
           </Typography>
           <TextField
@@ -150,8 +150,8 @@ const Sidebar = ({
               "& .MuiInputBase-root": {
                 height: "40px",
                 backgroundColor: theme.palette.background.default,
-                borderRadius: "7px",
-                color: theme.palette.text.primary
+                "&:hover": { bgcolor: theme.palette.action.hover },
+                borderRadius: "7px"
               },
               "& .MuiInputBase-input": { color: theme.palette.text.primary },
               mb: 2
@@ -202,7 +202,10 @@ const Sidebar = ({
             variant="text"
             color="primary"
             fullWidth
-            sx={{ color: theme.palette.text.primary }}
+            sx={{
+              color: theme.palette.text.primary,
+              "&:hover": { bgcolor: theme.palette.action.hover }
+            }}
           >
             {strings.softwareRegistry.clearSearch}
           </Button>
