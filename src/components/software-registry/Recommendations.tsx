@@ -185,14 +185,14 @@ const Recommendations = ({ applications, onAddUser }: RecommendationsProps) => {
           variant="contained"
           color="secondary"
           onClick={() => navigate("/softwareregistry/allsoftware")}
-          sx={(theme) => ({
+          sx={{
             textTransform: "none",
             color: theme.palette.getContrastText(theme.palette.secondary.main),
             backgroundColor: theme.palette.secondary.main,
             fontSize: "18px",
             borderRadius: "25px",
             "&:hover": { background: theme.palette.secondary.dark }
-          })}
+          }}
         >
           {strings.softwareRegistry.allApplications}
         </Button>
