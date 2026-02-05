@@ -221,13 +221,19 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
           hideFooter
           sx={{
             marginBottom: "30px",
+            border: `1px solid ${alpha(theme.palette.text.primary, 0.3)}`,
             "& .MuiDataGrid-row:hover": {
               backgroundColor: theme.palette.action.hover
             },
-            "& .MuiDataGrid-cell": { fontSize: 16, color: "black" },
+            "& .MuiDataGrid-cell": {
+              fontSize: 16,
+              color: theme.palette.text.primary,
+              borderBottom: `1px solid ${alpha(theme.palette.text.primary, 0.15)}`
+            },
             "& .MuiDataGrid-columnHeaders": {
               backgroundColor: theme.palette.background.paper,
-              color: theme.palette.text.primary
+              color: theme.palette.text.primary,
+              borderBottom: `1px solid ${alpha(theme.palette.text.primary, 0.3)}`
             },
             "& .MuiDataGrid-columnHeaderTitle": {
               fontWeight: "bold"
