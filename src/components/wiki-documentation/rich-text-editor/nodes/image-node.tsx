@@ -6,8 +6,8 @@ import {
   type Spread
 } from "lexical";
 import type { ReactNode } from "react";
-import { applyImageAlignmentStyles, getImageMaxWidth } from "src/utils/image-style-utils";
 import type { ImageAlignment, ImageSize } from "src/utils/image-style-utils";
+import { applyImageAlignmentStyles, getImageMaxWidth } from "src/utils/image-style-utils";
 
 export type SerializedImageNode = Spread<
   {
@@ -35,7 +35,13 @@ export class ImageNode extends DecoratorNode<ReactNode> {
     return new ImageNode(node.__src, node.__altText, node.__size, node.__alignment, node.__key);
   }
 
-  constructor(src: string, altText: string, size: ImageSize = "medium", alignment: ImageAlignment = "center", key?: NodeKey) {
+  constructor(
+    src: string,
+    altText: string,
+    size: ImageSize = "medium",
+    alignment: ImageAlignment = "center",
+    key?: NodeKey
+  ) {
     super(key);
     this.__src = src;
     this.__altText = altText;
@@ -61,12 +67,12 @@ export class ImageNode extends DecoratorNode<ReactNode> {
 
   createDOM(): HTMLElement {
     const div = document.createElement("div");
-    
+
     const maxWidth = getImageMaxWidth(this.__size);
     div.style.maxWidth = maxWidth;
-    
+
     applyImageAlignmentStyles(div, this.__alignment);
-    
+
     return div;
   }
 
@@ -91,8 +97,8 @@ export class ImageNode extends DecoratorNode<ReactNode> {
   }
 
   getImageData() {
-    return { 
-      altText: this.__altText, 
+    return {
+      altText: this.__altText,
       src: this.__src,
       size: this.__size,
       alignment: this.__alignment
@@ -100,7 +106,12 @@ export class ImageNode extends DecoratorNode<ReactNode> {
   }
 }
 
-export function $createImageNode(src: string, altText: string, size: ImageSize = "medium", alignment: ImageAlignment = "center"): ImageNode {
+export function $createImageNode(
+  src: string,
+  altText: string,
+  size: ImageSize = "medium",
+  alignment: ImageAlignment = "center"
+): ImageNode {
   return new ImageNode(src, altText, size, alignment);
 }
 

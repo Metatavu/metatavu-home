@@ -592,8 +592,8 @@
     "prev": "Edellinen",
     "next": "Seuraava",
     "close": "Sulje",
-    "welcomeTitle": "Luo Wiki-artikkeli",
-    "welcomeContent": "Käydään läpi, kuinka luodaan uusi wiki-artikkeli.",
+    "welcomeTitle": "Luo wikiartikkeli",
+    "welcomeContent": "Käydään läpi, kuinka luodaan uusi wikiartikkeli.",
     "titleFieldTitle": "Artikkelin otsikko",
     "titleFieldContent": "Syötä kuvaava otsikko artikkelillesi. Otsikko näytetään artikkelin yläosassa ja artikkeliluetteloissa.",
     "pathFieldTitle": "Artikkelin polku",
@@ -607,13 +607,13 @@
     "editorTitle": "Sisältöeditori",
     "editorContent": "Käytä tätä rikastekstieditoria artikkelisisällön kirjoittamiseen. Se tukee markdown-muotoilua, kuvia, linkkejä ja paljon muuta.",
     "editorLinksTitle": "Linkkien lisääminen",
-    "editorLinksContent": "Valitse teksti ja käytä työkalupalkin linkkipainiketta lisätäksesi ulkoisia linkkejä. Voit linkittää verkkosivustoihin, dokumentaatioon tai resursseihin.",
+    "editorLinksContent": "Valitse artikkeli listasta ja paina Enter luodaksesi linkki artikkeliin. Tämä muodostaa sisäisen linkin wikissä.",
     "editorArticleLinksTitle": "Linkitys artikkeleihin",
     "editorArticleLinksContent": "Linkittääksesi muihin wiki-artikkeleihin, käytä artikkelipolun muotoa: [Artikkelin otsikko](/articles/artikkeli_polku). Tämä luo sisäisen navigoinnin liittyvien artikkelien välille.",
     "editorImagesTitle": "Kuvien lisääminen",
     "editorImagesContent": "Klikkaa editorin työkalupalkin kuvapainiketta lisätäksesi kuvia. Voit liittää kuvan URL:n tai ladata kuvatiedoston. Kuvat auttavat havainnollistamaan sisältöäsi.",
     "actionButtonTitle": "Luo artikkeli",
-    "actionButtonContent": "Kun kaikki pakolliset kentät on täytetty, klikkaa tästä luodaksesi artikkelin. Se lähetetään tarkistettavaksi tai julkaistaan käyttöoikeuksiesi mukaan."
+    "actionButtonContent": "Kun kaikki pakolliset kentät on täytetty, klikkaa tästä artikkelin luomiseksi. Se lähetetään tarkistettavaksi tai julkaistaan suoraan käyttöoikeuksistasi riippuen."
   },
   "employeeFlextime": {
     "title": "Työntekijöiden joustotunnit",
