@@ -347,11 +347,11 @@ const ToolBar = () => {
         fullWidth
         sx={{
           mb: 2,
-          borderColor: colors.button.main,
-          color: colors.button.main,
+          borderColor: theme.palette.primary.main,
+          color: theme.palette.primary.main,
           "&:hover": {
-            borderColor: colors.button.hover,
-            backgroundColor: "rgba(0, 0, 0, 0.04)"
+            borderColor: theme.palette.primary.dark,
+            backgroundColor: theme.palette.action.hover
           }
         }}
       >
@@ -409,6 +409,7 @@ const ToolBar = () => {
               sx={{
                 flex: 1,
                 backgroundColor: colors.button.main,
+                color: theme.palette.getContrastText(colors.button.main),
                 "&:hover": { backgroundColor: colors.button.hover }
               }}
             >
@@ -427,6 +428,7 @@ const ToolBar = () => {
               sx={{
                 flex: 1,
                 backgroundColor: colors.button.main,
+                color: theme.palette.getContrastText(colors.button.main),
                 "&:hover": { backgroundColor: colors.button.hover }
               }}
             >

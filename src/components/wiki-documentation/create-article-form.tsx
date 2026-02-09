@@ -10,7 +10,8 @@ import {
   Popper,
   type PopperProps,
   styled,
-  TextField
+  TextField,
+  useTheme
 } from "@mui/material";
 import { useAtomValue, useSetAtom } from "jotai";
 import { type ChangeEvent, type KeyboardEvent, type SyntheticEvent, useRef, useState } from "react";
@@ -73,6 +74,7 @@ const CreateOrEditArticleForm = ({
   const userProfile = useAtomValue(userProfileAtom);
   const loggedInUser = users.find((users: User) => users.id === userProfile?.id);
   const setSnackbar = useSetAtom(snackbarAtom);
+  const theme = useTheme();
   /**
    * Handles creating a new article using the editor content and form state.
    * Sends the article data to the API and updates local state accordingly.

@@ -71,26 +71,40 @@ const MarkdownCode = ({
 /**
  * Custom blockquote component for ReactMarkdown
  */
-const MarkdownBlockquote = (props: React.BlockquoteHTMLAttributes<HTMLQuoteElement>) => (
-  <blockquote {...props} className="editor-quote" />
-);
+const MarkdownBlockquote = (props: React.BlockquoteHTMLAttributes<HTMLQuoteElement>) => {
+  const theme = useTheme();
+
+  return (
+    <blockquote
+      {...props}
+      style={{
+        margin: 0,
+        marginLeft: 20,
+        marginBottom: 10,
+        fontSize: 15,
+        color: theme.palette.text.secondary,
+        borderLeft: `4px solid ${theme.palette.divider}`,
+        paddingLeft: 16
+      }}
+    />
+  );
+};
 /**
  * Custom component for MarkdownLink
  */
-const MarkdownLink = (props: any) => {
+const MarkdownLink = (props: React.AnchorHTMLAttributes<HTMLAnchorElement>) => {
   const theme = useTheme();
-  const content = props.children || props.alt || "Link";
+  const isWikiLink = typeof props.href === "string" && props.href.startsWith("/wiki-documentation");
+
   return (
     <a
       {...props}
       style={{
-        color:
-          theme.palette.mode === "dark" ? theme.palette.primary.light : theme.palette.primary.main,
-        textDecoration: "underline"
+        color: isWikiLink ? theme.palette.primary.main : theme.palette.text.primary,
+        textDecoration: "underline",
+        textUnderlineOffset: "2px"
       }}
-    >
-      {content}
-    </a>
+    />
   );
 };
 
