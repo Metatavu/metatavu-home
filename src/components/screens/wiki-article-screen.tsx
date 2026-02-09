@@ -104,7 +104,9 @@ const MarkdownLink = (props: React.AnchorHTMLAttributes<HTMLAnchorElement>) => {
         textDecoration: "underline",
         textUnderlineOffset: "2px"
       }}
-    />
+    >
+      {props.children}
+    </a>
   );
 };
 
