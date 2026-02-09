@@ -135,7 +135,7 @@ const WorkDaysRechart = ({
           <Bar
             dataKey="hours"
             name={strings.timebank.logged}
-            fill={theme.palette.mode === "dark" ? "#ffffff" : "#000000"}
+            fill={theme.palette.primary.main}
             isAnimationActive
             shape={renderBarShape(getBarColor)}
           />

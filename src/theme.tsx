@@ -155,12 +155,10 @@ export const createAppTheme = (mode: "light" | "dark"): Theme =>
           color: "default"
         },
         styleOverrides: {
-          root: ({ theme }) => ({
-            backgroundColor: theme.palette.secondary.main,
-            color: theme.palette.getContrastText(theme.palette.secondary.main),
+          root: {
             fontWeight: "600",
             borderRadius: "5px"
-          })
+          }
         }
       },
       MuiButton: {
