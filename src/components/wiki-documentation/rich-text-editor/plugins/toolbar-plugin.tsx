@@ -20,8 +20,19 @@ import InsertLinkIcon from "@mui/icons-material/InsertLink";
 import InsertPhotoIcon from "@mui/icons-material/InsertPhoto";
 import LinkOffIcon from "@mui/icons-material/LinkOff";
 import TitleIcon from "@mui/icons-material/Title";
-import { Box, Button, Card, FormControl, Grid, IconButton, InputLabel, MenuItem, Select, TextField, Typography } from "@mui/material";
-import type { ArticleMetadata } from "src/generated/homeLambdasClient";
+import {
+  Box,
+  Button,
+  Card,
+  FormControl,
+  Grid,
+  IconButton,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+  Typography
+} from "@mui/material";
 import {
   $createParagraphNode,
   $getSelection,
@@ -30,11 +41,12 @@ import {
   type TextFormatType
 } from "lexical";
 import { useEffect, useMemo, useState } from "react";
+import type { ArticleMetadata } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
 import { wikiScreenColors } from "src/theme";
-import { uploadFile } from "src/utils/s3-file-utils";
 import type { ImageAlignment, ImageSize } from "src/utils/image-style-utils";
+import { uploadFile } from "src/utils/s3-file-utils";
 import { $createImageNode } from "../nodes/image-node";
 import ArticleLinkDialog from "./article-link-dialog";
 
@@ -196,6 +208,14 @@ const ToolBar = () => {
     setLink("");
   };
 
+  /**
+   * Handles article link selection from the dropdown list of articles.
+   * Constructs a markdown-formatted link and inserts it into the editor at the current selection.
+   * Closes the dialog and resets the selected text state after insertion.
+   *
+   * @param article - The selected article metadata containing path and other details
+   * @param linkText - The text to display for the link
+   */
   const handleArticleLinkSelect = (article: ArticleMetadata, linkText: string) => {
     const url = `/wiki-documentation/${article.path}`;
     editor.update(() => {
@@ -240,10 +260,17 @@ const ToolBar = () => {
     }
   };
 
+  /**
+   * Handles file selection from input.
+   * Validates that the selected file is an image and updates state accordingly.
+   * Sets an error message if a non-image file is selected.
+   *
+   * @param event - File input change event
+   */
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
-    
+
     if (file.type?.includes("image/")) {
       setFile(file);
       setFileUploadError("");
@@ -300,8 +327,10 @@ const ToolBar = () => {
         overflow: "auto"
       }}
     >
-      <Typography variant="h6" sx={{ mb: 2 }}>{strings.wikiDocumentation.insertImage}</Typography>
-      
+      <Typography variant="h6" sx={{ mb: 2 }}>
+        {strings.wikiDocumentation.insertImage}
+      </Typography>
+
       <TextField
         sx={{ width: "100%", mb: 2 }}
         value={imageLink}
@@ -310,7 +339,7 @@ const ToolBar = () => {
         label={strings.wikiDocumentation.labelImage}
         placeholder={strings.wikiDocumentation.imageLinkPlaceholder}
       />
-      
+
       <Button
         variant="outlined"
         component="label"
@@ -328,10 +357,10 @@ const ToolBar = () => {
         {strings.wikiDocumentation.uploadImage}
         <input style={{ width: "100%" }} type="file" hidden onChange={handleFileChange} />
       </Button>
-      
+
       {file && !fileUploadError && (
         <Typography sx={{ mb: 2, fontSize: "0.875rem", color: "text.secondary" }}>
-          📎 {file?.name}
+          {file?.name}
         </Typography>
       )}
       {fileUploadError && (
@@ -373,8 +402,8 @@ const ToolBar = () => {
       <Box sx={{ display: "flex", gap: 1 }}>
         {file && !fileUploadError ? (
           <>
-            <Button 
-              variant="contained" 
+            <Button
+              variant="contained"
               onClick={() => uploadImage()}
               sx={{
                 flex: 1,
@@ -384,12 +413,14 @@ const ToolBar = () => {
             >
               {strings.wikiDocumentation.upload}
             </Button>
-            <Button variant="outlined" onClick={() => setFile(null)}>{strings.label.cancel}</Button>
+            <Button variant="outlined" onClick={() => setFile(null)}>
+              {strings.label.cancel}
+            </Button>
           </>
         ) : (
           <>
-            <Button 
-              variant="contained" 
+            <Button
+              variant="contained"
               onClick={() => addImage()}
               disabled={!imageLink}
               sx={{
@@ -400,11 +431,16 @@ const ToolBar = () => {
             >
               {strings.wikiDocumentation.add}
             </Button>
-            <Button variant="outlined" onClick={() => {
-              setImageDialogOpen(false);
-              setFile(null);
-              setFileUploadError("");
-            }}>{strings.wikiDocumentation.close}</Button>
+            <Button
+              variant="outlined"
+              onClick={() => {
+                setImageDialogOpen(false);
+                setFile(null);
+                setFileUploadError("");
+              }}
+            >
+              {strings.wikiDocumentation.close}
+            </Button>
           </>
         )}
       </Box>

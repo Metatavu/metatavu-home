@@ -3,6 +3,12 @@ import type React from "react";
 export type ImageSize = "small" | "medium" | "large" | "full";
 export type ImageAlignment = "left" | "center" | "right";
 
+/**
+ * Parsed metadata for an image including display properties
+ * @param alt - The alt text for the image
+ * @param size - The size of the image
+ * @param alignment - The alignment of the image
+ */
 export interface ParsedImageMetadata {
   alt: string;
   size: ImageSize;

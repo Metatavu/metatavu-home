@@ -1,3 +1,5 @@
+import ArticleIcon from "@mui/icons-material/Article";
+import LinkIcon from "@mui/icons-material/Link";
 import {
   Autocomplete,
   Box,
@@ -12,14 +14,19 @@ import {
   TextField,
   Typography
 } from "@mui/material";
-import LinkIcon from "@mui/icons-material/Link";
-import ArticleIcon from "@mui/icons-material/Article";
 import { useAtomValue } from "jotai";
 import { useState } from "react";
 import { articleAtom } from "src/atoms/article";
 import type { ArticleMetadata } from "src/generated/homeLambdasClient";
 import strings from "src/localization/strings";
 
+/**
+ * Props for the ArticleLinkDialog component
+ * @property open - Whether the dialog is open
+ * @property onClose - Callback to close the dialog
+ * @property onSelectArticle - Callback when an article is selected, receives the article metadata and link text
+ * @property [selectedText] - Optional pre-filled text for the link, defaults to empty string
+ */
 interface Props {
   open: boolean;
   onClose: () => void;
@@ -28,9 +35,14 @@ interface Props {
 }
 
 /**
- * Autocomplete dropdown paper component for article search results
+ * Custom Paper component wrapper for the article search.
+ * Provides elevated styling and spacing for the dropdown results.
+ *
+ * @param props - Component props
+ * @param props.children - The dropdown content to render inside the Paper
+ * @returns Styled Paper component for autocomplete results
  */
-const AutocompleteDropdown = ({ children }: { children?: React.ReactNode }) => (
+const ArticleSearchPaper = ({ children }: { children?: React.ReactNode }) => (
   <Paper elevation={8} sx={{ mt: 1 }}>
     {children}
   </Paper>
@@ -44,6 +56,11 @@ const ArticleLinkDialog = ({ open, onClose, onSelectArticle, selectedText = "" }
   const [selectedArticle, setSelectedArticle] = useState<ArticleMetadata | null>(null);
   const [linkText, setLinkText] = useState(selectedText);
 
+  /**
+   * Handles the confirmation of article selection.
+   * Invokes the onSelectArticle callback with the selected article and link text,
+   * then closes the dialog. If no link text is provided, uses the article title.
+   */
   const handleConfirm = () => {
     if (selectedArticle) {
       onSelectArticle(selectedArticle, linkText || selectedArticle.title);
@@ -51,13 +68,20 @@ const ArticleLinkDialog = ({ open, onClose, onSelectArticle, selectedText = "" }
     }
   };
 
+  // Handles closing the dialog and resetting the state
   const handleClose = () => {
     setSelectedArticle(null);
     setLinkText(selectedText);
     onClose();
   };
 
-  const handleArticleChange = (_: any, newValue: ArticleMetadata | null) => {
+  /**
+   * Handles article selection changes in the dropdown link to article.
+   * Sets the name of selected article as title and can be changed if user wants to have different link text than article title.
+   * @param _event - The synthetic event triggered by the selection change.
+   * @param newValue - The newly selected article or null if cleared
+   */
+  const handleArticleChange = (_event: React.SyntheticEvent, newValue: ArticleMetadata | null) => {
     setSelectedArticle(newValue);
     if (!selectedText && newValue) {
       setLinkText(newValue.title);
@@ -65,10 +89,10 @@ const ArticleLinkDialog = ({ open, onClose, onSelectArticle, selectedText = "" }
   };
 
   return (
-    <Dialog 
-      open={open} 
-      onClose={handleClose} 
-      maxWidth="md" 
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      maxWidth="md"
       fullWidth
       PaperProps={{
         sx: {
@@ -96,19 +120,19 @@ const ArticleLinkDialog = ({ open, onClose, onSelectArticle, selectedText = "" }
           value={selectedArticle}
           onChange={handleArticleChange}
           renderInput={(params) => (
-            <TextField 
-              {...params} 
-              label={strings.wikiDocumentation.searchArticle} 
-              placeholder={strings.wikiDocumentation.startTypingToSearch} 
+            <TextField
+              {...params}
+              label={strings.wikiDocumentation.searchArticle}
+              placeholder={strings.wikiDocumentation.startTypingToSearch}
               variant="outlined"
               fullWidth
             />
           )}
           renderOption={(props, option) => (
             <li {...props} key={option.id}>
-              <Box 
-                sx={{ 
-                  width: "100%", 
+              <Box
+                sx={{
+                  width: "100%",
                   py: 1.5,
                   px: 1,
                   borderRadius: 1,
@@ -123,8 +147,8 @@ const ArticleLinkDialog = ({ open, onClose, onSelectArticle, selectedText = "" }
                     {option.title}
                   </Typography>
                 </Box>
-                <Typography 
-                  variant="caption" 
+                <Typography
+                  variant="caption"
                   color="text.secondary"
                   sx={{ pl: 3, display: "block" }}
                 >
@@ -133,10 +157,10 @@ const ArticleLinkDialog = ({ open, onClose, onSelectArticle, selectedText = "" }
                 {option.tags && option.tags.length > 0 && (
                   <Box display="flex" gap={0.5} mt={1} pl={3} flexWrap="wrap">
                     {option.tags.slice(0, 3).map((tag) => (
-                      <Chip 
-                        key={tag} 
-                        label={tag} 
-                        size="small" 
+                      <Chip
+                        key={tag}
+                        label={tag}
+                        size="small"
                         sx={{ height: 20, fontSize: "0.7rem" }}
                       />
                     ))}
@@ -146,9 +170,9 @@ const ArticleLinkDialog = ({ open, onClose, onSelectArticle, selectedText = "" }
             </li>
           )}
           noOptionsText={strings.wikiDocumentation.noArticlesFound}
-          PaperComponent={AutocompleteDropdown}
+          PaperComponent={ArticleSearchPaper}
         />
-        
+
         {selectedArticle && (
           <>
             <TextField
@@ -161,11 +185,11 @@ const ArticleLinkDialog = ({ open, onClose, onSelectArticle, selectedText = "" }
               sx={{ mt: 3 }}
               helperText={strings.wikiDocumentation.linkTextHelper}
             />
-            <Paper 
-              elevation={0} 
-              sx={{ 
-                mt: 2, 
-                p: 2, 
+            <Paper
+              elevation={0}
+              sx={{
+                mt: 2,
+                p: 2,
                 backgroundColor: "primary.50",
                 border: "1px solid",
                 borderColor: "primary.200",
@@ -187,16 +211,12 @@ const ArticleLinkDialog = ({ open, onClose, onSelectArticle, selectedText = "" }
       </DialogContent>
       <Divider />
       <DialogActions sx={{ px: 3, py: 2 }}>
-        <Button 
-          onClick={handleClose}
-          variant="outlined"
-          sx={{ minWidth: 100 }}
-        >
+        <Button onClick={handleClose} variant="outlined" sx={{ minWidth: 100 }}>
           {strings.label.cancel}
         </Button>
-        <Button 
-          onClick={handleConfirm} 
-          disabled={!selectedArticle } 
+        <Button
+          onClick={handleConfirm}
+          disabled={!selectedArticle}
           variant="contained"
           startIcon={<LinkIcon />}
           sx={{ minWidth: 120 }}
