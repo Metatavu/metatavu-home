@@ -13,12 +13,58 @@ import type { Article, ArticleMetadata, User } from "src/generated/homeLambdasCl
 import { useLambdasApi } from "src/hooks/use-api";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
+import {
+  getImageContainerStyle,
+  getImageMaxWidth,
+  parseImageMetadata
+} from "src/utils/image-style-utils";
 import { formatDate } from "src/utils/time-utils";
 import BackButton from "../generics/back-button";
 import ActionButton from "../wiki-documentation/action-button";
 import ArticleListItem from "../wiki-documentation/article-list-item";
 import CreateOrEditArticleForm from "../wiki-documentation/create-article-form";
 import "../wiki-documentation/rich-text-editor/editor.css";
+
+/**
+ * Custom image component for ReactMarkdown that handles size and alignment metadata
+ */
+const MarkdownImage = (props: React.ImgHTMLAttributes<HTMLImageElement>) => {
+  const { alt, size, alignment } = parseImageMetadata(props.alt || "");
+
+  const maxWidth = getImageMaxWidth(size);
+  const containerStyle = getImageContainerStyle(alignment, maxWidth);
+
+  return (
+    <div style={containerStyle}>
+      <img
+        {...props}
+        alt={alt}
+        style={{
+          display: "block",
+          width: "100%",
+          borderRadius: "15px"
+        }}
+      />
+    </div>
+  );
+};
+
+/**
+ * Custom code component for ReactMarkdown
+ */
+const MarkdownCode = ({
+  inline,
+  ...props
+}: React.HTMLAttributes<HTMLElement> & { inline?: boolean }) => (
+  <code {...props} className={!inline ? "editor-code" : ""} />
+);
+
+/**
+ * Custom blockquote component for ReactMarkdown
+ */
+const MarkdownBlockquote = (props: React.BlockquoteHTMLAttributes<HTMLQuoteElement>) => (
+  <blockquote {...props} className="editor-quote" />
+);
 
 /**
  * Article screen component displaying the article content.
@@ -246,24 +292,9 @@ const ArticleScreen = () => {
                 {/* Markdown Content */}
                 <ReactMarkdown
                   components={{
-                    img: ({ node, ...props }) => (
-                      <img
-                        {...props}
-                        alt={props.alt || ""}
-                        style={{
-                          display: "block",
-                          width: "100%",
-                          borderRadius: "15px",
-                          marginBottom: "1rem"
-                        }}
-                      />
-                    ),
-                    code: ({ node, inline, ...props }) => (
-                      <code {...props} className={!inline ? "editor-code" : ""} />
-                    ),
-                    blockquote: ({ node, ...props }) => (
-                      <blockquote {...props} className="editor-quote" />
-                    )
+                    img: MarkdownImage,
+                    code: MarkdownCode,
+                    blockquote: MarkdownBlockquote
                   }}
                 >
                   {article?.content || ""}

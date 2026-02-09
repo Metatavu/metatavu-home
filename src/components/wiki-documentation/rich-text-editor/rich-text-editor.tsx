@@ -13,6 +13,7 @@ import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
 import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
 import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
+import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPlugin";
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { TabIndentationPlugin } from "@lexical/react/LexicalTabIndentationPlugin";
 import { HeadingNode, QuoteNode } from "@lexical/rich-text";
@@ -98,6 +99,7 @@ const RichTextEditorLexical = forwardRef<EditorRef, Props>(({ markdownContent = 
           <LinkPlugin />
           <ListPlugin />
           <TabIndentationPlugin />
+          <MarkdownShortcutPlugin transformers={TRANSFORMERS_WITH_IMAGE} />
         </Box>
       </Card>
     </LexicalComposer>
