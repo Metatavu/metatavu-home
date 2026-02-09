@@ -49,13 +49,11 @@ export const createAppTheme = (mode: "light" | "dark"): Theme =>
       fontSize: 15,
       h2: {
         fontWeight: 500,
-        fontSize: 45,
-        fontStyle: "normal"
+        fontSize: 45
       },
       h3: {
         fontWeight: 700,
-        fontSize: 30,
-        fontStyle: "normal"
+        fontSize: 30
       },
       h4: {
         fontWeight: 600,
@@ -63,18 +61,15 @@ export const createAppTheme = (mode: "light" | "dark"): Theme =>
       },
       h6: {
         fontWeight: 700,
-        fontSize: 20,
-        fontStyle: "normal"
+        fontSize: 20
       },
       body1: {
         fontWeight: 400,
-        fontSize: 16,
-        fontStyle: "normal"
+        fontSize: 16
       },
       body2: {
         fontWeight: 400,
-        fontSize: 16,
-        fontStyle: "normal"
+        fontSize: 16
       }
     },
     components: {
