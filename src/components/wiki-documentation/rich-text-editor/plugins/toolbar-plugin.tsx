@@ -8,6 +8,7 @@ import {
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { $createHeadingNode, $createQuoteNode, type HeadingTagType } from "@lexical/rich-text";
 import { $setBlocksType } from "@lexical/selection";
+import ArticleIcon from "@mui/icons-material/Article";
 import CodeIcon from "@mui/icons-material/Code";
 import FormatBoldIcon from "@mui/icons-material/FormatBold";
 import FormatItalicIcon from "@mui/icons-material/FormatItalic";
@@ -23,8 +24,12 @@ import {
   Box,
   Button,
   Card,
+  FormControl,
   Grid,
   IconButton,
+  InputLabel,
+  MenuItem,
+  Select,
   TextField,
   Typography,
   useTheme
@@ -37,11 +42,14 @@ import {
   type TextFormatType
 } from "lexical";
 import { useEffect, useMemo, useState } from "react";
+import type { ArticleMetadata } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
 import { wikiScreenColors } from "src/theme";
+import type { ImageAlignment, ImageSize } from "src/utils/image-style-utils";
 import { uploadFile } from "src/utils/s3-file-utils";
 import { $createImageNode } from "../nodes/image-node";
+import ArticleLinkDialog from "./article-link-dialog";
 
 interface TextCommand {
   key: string;
@@ -58,9 +66,13 @@ const ToolBar = () => {
   const [fileUploadError, setFileUploadError] = useState("");
   const [linkDialogOpen, setLinkDialogOpen] = useState(false);
   const [imageDialogOpen, setImageDialogOpen] = useState(false);
+  const [articleLinkDialogOpen, setArticleLinkDialogOpen] = useState(false);
   const [isLinkSelcted, setIsLinkSelected] = useState(false);
   const theme = useTheme();
   const colors = wikiScreenColors(theme);
+  const [imageSize, setImageSize] = useState<ImageSize>("medium");
+  const [imageAlignment, setImageAlignment] = useState<ImageAlignment>("center");
+  const [selectedText, setSelectedText] = useState("");
 
   useEffect(() => {
     return editor.registerUpdateListener(({ editorState }) => {
@@ -96,7 +108,23 @@ const ToolBar = () => {
           : () => {
               setLinkDialogOpen(!linkDialogOpen);
               setImageDialogOpen(false);
+              setArticleLinkDialogOpen(false);
             }
+      },
+      {
+        key: "link-article",
+        icon: <ArticleIcon />,
+        handler: () => {
+          editor.getEditorState().read(() => {
+            const selection = $getSelection();
+            if ($isRangeSelection(selection)) {
+              setSelectedText(selection.getTextContent());
+            }
+          });
+          setArticleLinkDialogOpen(!articleLinkDialogOpen);
+          setLinkDialogOpen(false);
+          setImageDialogOpen(false);
+        }
       },
       {
         key: "add-image",
@@ -104,11 +132,12 @@ const ToolBar = () => {
         handler: () => {
           setImageDialogOpen(!imageDialogOpen);
           setLinkDialogOpen(false);
+          setArticleLinkDialogOpen(false);
           setFileUploadError("");
         }
       }
     ],
-    [isLinkSelcted, linkDialogOpen, imageDialogOpen]
+    [isLinkSelcted, linkDialogOpen, imageDialogOpen, articleLinkDialogOpen]
   );
 
   const formatText = (command: TextFormatType) => {
@@ -180,6 +209,26 @@ const ToolBar = () => {
     setLink("");
   };
 
+  /**
+   * Handles article link selection from the dropdown list of articles.
+   * Constructs a markdown-formatted link and inserts it into the editor at the current selection.
+   * Closes the dialog and resets the selected text state after insertion.
+   *
+   * @param article - The selected article metadata containing path and other details
+   * @param linkText - The text to display for the link
+   */
+  const handleArticleLinkSelect = (article: ArticleMetadata, linkText: string) => {
+    const url = `/wiki-documentation/${article.path}`;
+    editor.update(() => {
+      const selection = $getSelection();
+      if ($isRangeSelection(selection)) {
+        selection.insertText(`[${linkText}](${url})`);
+      }
+    });
+    setArticleLinkDialogOpen(false);
+    setSelectedText("");
+  };
+
   const addImage = (uploadedImageUrl?: string) => {
     const src = uploadedImageUrl ?? imageLink;
     if (!src) return;
@@ -187,13 +236,15 @@ const ToolBar = () => {
     editor.update(() => {
       const selection = $getSelection();
       if ($isRangeSelection(selection)) {
-        const imageNode = $createImageNode(src, src);
+        const imageNode = $createImageNode(src, src, imageSize, imageAlignment);
         selection.insertNodes([imageNode]);
       }
     });
 
     setImageLink("");
     setImageDialogOpen(false);
+    setImageSize("medium");
+    setImageAlignment("center");
   };
 
   const handleInputChange = (type: "imageLink" | "link") => (event: any) => {
@@ -210,14 +261,22 @@ const ToolBar = () => {
     }
   };
 
-  const handleFileChange = (event: any) => {
-    console.log("called");
-    const file = event.target.files[0];
+  /**
+   * Handles file selection from input.
+   * Validates that the selected file is an image and updates state accordingly.
+   * Sets an error message if a non-image file is selected.
+   *
+   * @param event - File input change event
+   */
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
     if (file.type?.includes("image/")) {
       setFile(file);
       setFileUploadError("");
     } else {
-      setFileUploadError("Please upload image file");
+      setFileUploadError(strings.wikiDocumentation.pleaseUploadImageFile);
       setFile(null);
     }
   };
@@ -251,8 +310,8 @@ const ToolBar = () => {
         label={strings.wikiDocumentation.labelLink}
         placeholder={strings.wikiDocumentation.labelLinkPlaceholder}
       />
-      <Button onClick={() => addLink()}>Add</Button>
-      <Button onClick={() => setLinkDialogOpen(false)}>Close</Button>
+      <Button onClick={() => addLink()}>{strings.wikiDocumentation.add}</Button>
+      <Button onClick={() => setLinkDialogOpen(false)}>{strings.wikiDocumentation.close}</Button>
     </Card>
   );
 
@@ -262,50 +321,130 @@ const ToolBar = () => {
         position: "absolute",
         top: { md: "80px", xs: "100px" },
         right: 3,
-        padding: 1,
+        padding: 2,
         zIndex: 20,
-        width: "50%"
+        width: { xs: "90%", md: "450px" },
+        maxHeight: "80vh",
+        overflow: "auto"
       }}
     >
+      <Typography variant="h6" sx={{ mb: 2 }}>
+        {strings.wikiDocumentation.insertImage}
+      </Typography>
+
       <TextField
-        sx={{ width: "100%" }}
+        sx={{ width: "100%", mb: 2 }}
         value={imageLink}
         onInput={handleInputChange("imageLink")}
         size="small"
         label={strings.wikiDocumentation.labelImage}
+        placeholder={strings.wikiDocumentation.imageLinkPlaceholder}
       />
+
       <Button
-        variant="contained"
+        variant="outlined"
         component="label"
         fullWidth
         sx={{
-          marginTop: 1,
-          marginBottom: 1,
-          backgroundColor: colors.button.main,
-          color: colors.button.text,
+          mb: 2,
+          borderColor: colors.button.main,
+          color: colors.button.main,
           "&:hover": {
-            backgroundColor: colors.button.hover
+            borderColor: colors.button.hover,
+            backgroundColor: "rgba(0, 0, 0, 0.04)"
           }
         }}
       >
         {strings.wikiDocumentation.uploadImage}
         <input style={{ width: "100%" }} type="file" hidden onChange={handleFileChange} />
       </Button>
-      <Box>
-        {file && !fileUploadError && <Typography sx={{ width: "100%" }}>{file?.name}</Typography>}
-        {fileUploadError && <Typography sx={{ width: "100%" }}>{fileUploadError}</Typography>}
-      </Box>
 
-      {file && !fileUploadError ? (
-        <Button onClick={() => uploadImage()}>Upload</Button>
-      ) : (
-        <Button onClick={() => addImage()}>Add</Button>
+      {file && !fileUploadError && (
+        <Typography sx={{ mb: 2, fontSize: "0.875rem", color: "text.secondary" }}>
+          {file?.name}
+        </Typography>
       )}
-      {file ? (
-        <Button onClick={() => setFile(null)}>Cancel</Button>
-      ) : (
-        <Button onClick={() => setImageDialogOpen(false)}>Close</Button>
+      {fileUploadError && (
+        <Typography sx={{ mb: 2, color: "error.main" }}>{fileUploadError}</Typography>
       )}
+
+      <Grid container spacing={2} sx={{ mb: 2 }}>
+        <Grid item xs={6}>
+          <FormControl fullWidth size="small">
+            <InputLabel>{strings.wikiDocumentation.size}</InputLabel>
+            <Select
+              value={imageSize}
+              label={strings.wikiDocumentation.size}
+              onChange={(e) => setImageSize(e.target.value as ImageSize)}
+            >
+              <MenuItem value="small">{strings.wikiDocumentation.sizeSmall}</MenuItem>
+              <MenuItem value="medium">{strings.wikiDocumentation.sizeMedium}</MenuItem>
+              <MenuItem value="large">{strings.wikiDocumentation.sizeLarge}</MenuItem>
+              <MenuItem value="full">{strings.wikiDocumentation.sizeFull}</MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid item xs={6}>
+          <FormControl fullWidth size="small">
+            <InputLabel>{strings.wikiDocumentation.alignment}</InputLabel>
+            <Select
+              value={imageAlignment}
+              label={strings.wikiDocumentation.alignment}
+              onChange={(e) => setImageAlignment(e.target.value as ImageAlignment)}
+            >
+              <MenuItem value="left">{strings.wikiDocumentation.alignLeft}</MenuItem>
+              <MenuItem value="center">{strings.wikiDocumentation.alignCenter}</MenuItem>
+              <MenuItem value="right">{strings.wikiDocumentation.alignRight}</MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
+      </Grid>
+
+      <Box sx={{ display: "flex", gap: 1 }}>
+        {file && !fileUploadError ? (
+          <>
+            <Button
+              variant="contained"
+              onClick={() => uploadImage()}
+              sx={{
+                flex: 1,
+                backgroundColor: colors.button.main,
+                "&:hover": { backgroundColor: colors.button.hover }
+              }}
+            >
+              {strings.wikiDocumentation.upload}
+            </Button>
+            <Button variant="outlined" onClick={() => setFile(null)}>
+              {strings.label.cancel}
+            </Button>
+          </>
+        ) : (
+          <>
+            <Button
+              variant="contained"
+              onClick={() => addImage()}
+              disabled={!imageLink}
+              sx={{
+                flex: 1,
+                backgroundColor: colors.button.main,
+                "&:hover": { backgroundColor: colors.button.hover }
+              }}
+            >
+              {strings.wikiDocumentation.add}
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={() => {
+                setImageDialogOpen(false);
+                setFile(null);
+                setFileUploadError("");
+              }}
+            >
+              {strings.wikiDocumentation.close}
+            </Button>
+          </>
+        )}
+      </Box>
     </Card>
   );
 
@@ -321,6 +460,12 @@ const ToolBar = () => {
     >
       {linkDialogOpen && !imageDialogOpen && renderLinkInput()}
       {!linkDialogOpen && imageDialogOpen && renderImageInput()}
+      <ArticleLinkDialog
+        open={articleLinkDialogOpen}
+        onClose={() => setArticleLinkDialogOpen(false)}
+        onSelectArticle={handleArticleLinkSelect}
+        selectedText={selectedText}
+      />
       <Grid container justifyContent={"space-between"} sx={{ marginBottom: 1 }}>
         {commands.map((command) => (
           <IconButton
