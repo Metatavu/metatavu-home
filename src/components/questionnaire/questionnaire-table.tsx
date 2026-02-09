@@ -333,7 +333,8 @@ const QuestionnaireTable = () => {
                   height: "auto",
                   fontSize: "0.80rem",
                   color: theme.palette.success.main,
-                  borderColor: theme.palette.success.main
+                  borderColor: theme.palette.success.main,
+                  "&:hover": { backgroundColor: theme.palette.action.hover }
                 }}
               >
                 <EditIcon sx={{ color: theme.palette.success.main, mr: 0.3 }} />
