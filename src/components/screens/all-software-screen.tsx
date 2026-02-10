@@ -266,7 +266,9 @@ const AllSoftwareScreen = () => {
       closeDeleteDialog();
     }
   };
+
   const isListView = !isGridView;
+
   if (loading) {
     return (
       <Card

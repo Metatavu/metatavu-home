@@ -123,6 +123,7 @@ const WorkDaysRechart = ({
   YAXIS_DOMAIN
 }: WorkDaysRechartProps) => {
   const theme = useTheme();
+
   return (
     <Box sx={{ width: "100%", height: 500 }}>
       <ResponsiveContainer width="100%" height="100%">

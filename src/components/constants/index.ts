@@ -1,14 +1,4 @@
 /**
- * Colors array to be mapped in elements such as the pie chart.
- */
-//Was used in timebank only
-//export const COLORS = [
-//  theme.palette.success.dark,
-//  theme.palette.success.light,
-//  theme.palette.warning.main
-//];
-
-/**
  * Days of week array.
  * */
 export const DAYS_OF_WEEK = [

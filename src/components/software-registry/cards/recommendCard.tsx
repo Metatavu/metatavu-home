@@ -41,6 +41,7 @@ const RecommendCard = ({
   setLoadingAppId
 }: RecommendCardProps) => {
   const theme = useTheme();
+
   useEffect(() => {
     if (app.createdBy) {
       fetchUserName(app.createdBy);

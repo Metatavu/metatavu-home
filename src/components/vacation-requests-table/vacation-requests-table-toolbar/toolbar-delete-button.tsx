@@ -16,6 +16,7 @@ interface Props {
  */
 const ToolbarDeleteButton = ({ setConfirmationHandlerOpen }: Props) => {
   const theme = useTheme();
+
   return (
     <Button
       variant="contained"

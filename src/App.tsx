@@ -41,12 +41,12 @@ const App = () => {
     Settings.defaultLocale = language;
   }, [language]);
 
-  const [mode, setMode] = useState<ThemeMode>(() => {
-    const savedMode = localStorage.getItem("mode") as ThemeMode | null;
-    return savedMode ?? ThemeModes.LIGHT;
+  const [screenColorMode, setScreenColorMode] = useState<ThemeMode>(() => {
+    const savedScreenColorMode = localStorage.getItem("screenColorMode") as ThemeMode | null;
+    return savedScreenColorMode ?? ThemeModes.LIGHT;
   });
 
-  const appTheme = useMemo(() => createAppTheme(mode), [mode]);
+  const appTheme = useMemo(() => createAppTheme(screenColorMode), [screenColorMode]);
 
   const router = createBrowserRouter([
     {
@@ -104,7 +104,12 @@ const App = () => {
         },
         {
           path: "/settings",
-          element: <SettingsScreen mode={mode} setMode={setMode} />
+          element: (
+            <SettingsScreen
+              screenColorMode={screenColorMode}
+              setScreenColorMode={setScreenColorMode}
+            />
+          )
         },
         {
           path: "/oncall",

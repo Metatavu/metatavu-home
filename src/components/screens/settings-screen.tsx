@@ -9,14 +9,14 @@ import strings from "src/localization/strings";
 import { type ThemeMode, ThemeModes } from "src/types/index";
 
 type SettingsScreenProps = {
-  mode: ThemeMode;
-  setMode: (mode: ThemeMode) => void;
+  screenColorMode: ThemeMode;
+  setScreenColorMode: (screenColorMode: ThemeMode) => void;
 };
 
 /**
  * Settings screen component
  */
-const SettingsScreen = ({ mode, setMode }: SettingsScreenProps) => {
+const SettingsScreen = ({ screenColorMode, setScreenColorMode }: SettingsScreenProps) => {
   const theme = useTheme();
   const [userProfile, setUserProfile] = useAtom(userProfileAtom);
   const { usersApi } = useLambdasApi();
@@ -103,10 +103,14 @@ const SettingsScreen = ({ mode, setMode }: SettingsScreenProps) => {
     }
   };
 
+  /**
+   * Toggles the screen color mode between light and dark. Updates the screenColorMode state and saves the new value in localStorage.
+   */
   const handleModeToggle = () => {
-    const newMode: ThemeMode = mode === ThemeModes.LIGHT ? ThemeModes.DARK : ThemeModes.LIGHT;
-    setMode(newMode);
-    localStorage.setItem("mode", newMode);
+    const newScreenColorMode: ThemeMode =
+      screenColorMode === ThemeModes.LIGHT ? ThemeModes.DARK : ThemeModes.LIGHT;
+    setScreenColorMode(newScreenColorMode);
+    localStorage.setItem("screenColorMode", newScreenColorMode);
   };
 
   return (
@@ -167,7 +171,7 @@ const SettingsScreen = ({ mode, setMode }: SettingsScreenProps) => {
           </Typography>
           <Box display="flex" alignItems="center">
             <Switch
-              checked={mode === ThemeModes.DARK}
+              checked={screenColorMode === ThemeModes.DARK}
               onChange={handleModeToggle}
               inputProps={{ "aria-label": "dark-mode-toggle" }}
             />

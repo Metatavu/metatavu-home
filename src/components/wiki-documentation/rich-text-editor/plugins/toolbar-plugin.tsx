@@ -58,6 +58,7 @@ interface TextCommand {
 }
 
 const ToolBar = () => {
+  const theme = useTheme();
   const { articleApi } = useLambdasApi();
   const [editor] = useLexicalComposerContext();
   const [link, setLink] = useState("");
@@ -68,7 +69,6 @@ const ToolBar = () => {
   const [imageDialogOpen, setImageDialogOpen] = useState(false);
   const [articleLinkDialogOpen, setArticleLinkDialogOpen] = useState(false);
   const [isLinkSelcted, setIsLinkSelected] = useState(false);
-  const theme = useTheme();
   const colors = wikiScreenColors(theme);
   const [imageSize, setImageSize] = useState<ImageSize>("medium");
   const [imageAlignment, setImageAlignment] = useState<ImageAlignment>("center");

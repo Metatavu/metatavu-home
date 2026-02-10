@@ -1,3 +1,4 @@
+import type { Theme } from "@mui/material";
 import { Box, Typography } from "@mui/material";
 import type { TooltipProps } from "recharts";
 import type { NameType, ValueType } from "recharts/types/component/DefaultTooltipContent";
@@ -94,7 +95,7 @@ export const renderCustomizedTooltipPieChart = ({
  * @param color Font color of the line
  * @returns MUI Typography line inside the tooltip containing data name and value.
  */
-const renderCustomizedTooltipRow = (name: string, time: number, color: string, theme: any) => (
+const renderCustomizedTooltipRow = (name: string, time: number, color: string, theme: Theme) => (
   <Typography
     variant="h6"
     style={{
@@ -114,7 +115,7 @@ const renderCustomizedTooltipRow = (name: string, time: number, color: string, t
  */
 export const renderCustomizedTooltipBarChart = (
   { active, payload }: TooltipProps<ValueType, NameType>,
-  theme: any
+  theme: Theme
 ) => {
   if (!active || !payload || !payload.length || !payload[0].payload) {
     return null;

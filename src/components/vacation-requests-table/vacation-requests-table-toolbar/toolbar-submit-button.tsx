@@ -16,6 +16,7 @@ interface Props {
  */
 const ToolbarSubmitButton = ({ onClick }: Props) => {
   const theme = useTheme();
+
   return (
     <Button
       variant="contained"
