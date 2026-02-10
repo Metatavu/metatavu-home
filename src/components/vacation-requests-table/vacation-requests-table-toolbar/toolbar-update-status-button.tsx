@@ -27,6 +27,7 @@ const UpdateStatusButton = ({
   updateVacationRequestStatus
 }: UpdateStatusButtonProps) => {
   const theme = useTheme();
+  
   const isApproved = buttonType === VacationRequestStatuses.APPROVED;
   const handleUpdateVacationRequestStatus = async () => {
     await updateVacationRequestStatus(buttonType, selectedRowIds);
