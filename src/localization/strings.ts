@@ -568,6 +568,7 @@ export interface Localized extends LocalizedStringsMethods {
     labelTags: string;
     labelImage: string;
     labelDescription: string;
+    coverImageAlt: string;
     labelLink: string;
     labelLinkPlaceholder: string;
     draft: string;

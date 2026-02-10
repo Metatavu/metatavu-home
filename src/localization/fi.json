@@ -454,6 +454,7 @@
     "labelTags": "Tunnisteet",
     "labelImage": "Kuvan URL-osoite",
     "labelDescription": "Kuvaus",
+    "coverImageAlt": "Kansikuva",
     "labelLink": "Linkki",
     "labelLinkPlaceholder": "Syötä URL-osoite tähän, esim. https://example.com",
     "draft": "luonnos",

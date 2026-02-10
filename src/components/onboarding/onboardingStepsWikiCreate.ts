@@ -1,21 +1,5 @@
 import strings from "src/localization/strings";
-
-/**
- * Type definition for an onboarding step
- */
-export type OnboardingStep = {
-  selector: string;
-  position?:
-    | "top-left"
-    | "top-center"
-    | "top-right"
-    | "bottom-left"
-    | "bottom-right"
-    | "bottom-center"
-    | "center";
-  title: string;
-  content: string;
-};
+import type { OnboardingStep } from "src/types/index";
 
 /**
  * Returns onboarding steps for Wiki Article Creation Form using the current language from strings

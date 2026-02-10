@@ -454,6 +454,7 @@
     "labelTags": "Tags",
     "labelImage": "Image URL",
     "labelDescription": "Description",
+    "coverImageAlt": "Cover image",
     "labelLink": "Link",
     "labelLinkPlaceholder": "Enter URL here, e.g. https://example.com",
     "draft": "draft",

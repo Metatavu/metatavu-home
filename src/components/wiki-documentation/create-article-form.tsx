@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/correctness/useUniqueElementIds: used for onboarding */
 import ClearIcon from "@mui/icons-material/Clear";
 import {
   Autocomplete,
@@ -252,7 +253,6 @@ const CreateOrEditArticleForm = ({
   return (
     <>
       <Onboarding screen={OnboardingScreen.WikiCreate} />
-      {/* biome-ignore lint/correctness/useUniqueElementIds: used for onboarding */}
       <Box id="wiki-create-form-container">
         <Grid container spacing={1.5} sx={{ marginBottom: 3, marginTop: 0.5 }}>
           <Grid item xs={6}>
@@ -260,7 +260,6 @@ const CreateOrEditArticleForm = ({
           </Grid>
           <Grid item xs={6}>
             {action === "create" ? (
-              // biome-ignore lint/correctness/useUniqueElementIds: <Id used for onboarding />
               <ActionButton
                 id="wiki-article-action-button"
                 onClick={handleCreate}
@@ -269,7 +268,6 @@ const CreateOrEditArticleForm = ({
                 {strings.wikiDocumentation.create}
               </ActionButton>
             ) : (
-              // biome-ignore lint/correctness/useUniqueElementIds: <Id used for onboarding />
               <ActionButton id="wiki-article-action-button" onClick={handleEdit}>
                 {adminMode && article?.draft
                   ? strings.wikiDocumentation.confirm
@@ -279,7 +277,6 @@ const CreateOrEditArticleForm = ({
           </Grid>
         </Grid>
         <Card sx={{ padding: 2.5, overflow: "visible", marginBottom: 4 }}>
-          {/* biome-ignore lint/correctness/useUniqueElementIds: used for onboarding */}
           <TextField
             id="wiki-article-title-field"
             sx={{ width: "100%" }}
@@ -291,7 +288,6 @@ const CreateOrEditArticleForm = ({
           />
           <Grid container spacing={1.5}>
             <Grid item md={6} xs={12}>
-              {/* biome-ignore lint/correctness/useUniqueElementIds: used for onboarding */}
               <TextField
                 id="wiki-article-path-field"
                 sx={{ width: "100%", marginTop: 3 }}
@@ -303,7 +299,6 @@ const CreateOrEditArticleForm = ({
               />
             </Grid>
             <Grid item md={6} xs={12}>
-              {/* biome-ignore lint/correctness/useUniqueElementIds: used for onboarding */}
               <Autocomplete
                 id="wiki-article-tags-field"
                 multiple
@@ -357,7 +352,6 @@ const CreateOrEditArticleForm = ({
           </Grid>
           <Grid container spacing={1.5}>
             <Grid item md={6} xs={12}>
-              {/* biome-ignore lint/correctness/useUniqueElementIds: used for onboarding */}
               <TextField
                 id="wiki-article-image-field"
                 sx={{ width: "100%", marginTop: 3 }}
@@ -377,7 +371,7 @@ const CreateOrEditArticleForm = ({
                       marginLeft: 3
                     }}
                     src={coverImage}
-                    alt="cover-image"
+                    alt={strings.wikiDocumentation.coverImageAlt}
                   />
                   <Grid item sx={{ position: "relative" }}>
                     <IconButton
@@ -417,7 +411,6 @@ const CreateOrEditArticleForm = ({
               )}
             </Grid>
             <Grid item md={6} xs={12}>
-              {/* biome-ignore lint/correctness/useUniqueElementIds: used for onboarding */}
               <TextField
                 id="wiki-article-description-field"
                 sx={{ width: "100%", marginTop: 3 }}
@@ -431,7 +424,7 @@ const CreateOrEditArticleForm = ({
               />
             </Grid>
           </Grid>
-          {/* biome-ignore lint/correctness/useUniqueElementIds: used for onboarding */}
+
           <Box id="wiki-article-content-editor">
             <RichTextEditorLexical
               ref={editorRef}
