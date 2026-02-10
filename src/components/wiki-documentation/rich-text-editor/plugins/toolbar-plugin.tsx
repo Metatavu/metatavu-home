@@ -447,6 +447,25 @@ const ToolBar = () => {
     </Card>
   );
 
+  /**
+   * Returns the onboarding ID for a specific toolbar command button
+   *
+   * @param commandKey - The key identifying the command
+   * @returns The HTML id attribute for onboarding targeting, or undefined
+   */
+  const getCommandId = (commandKey: string): string | undefined => {
+    switch (commandKey) {
+      case "add-link":
+        return "wiki-editor-link-button";
+      case "link-article":
+        return "wiki-editor-article-link-button";
+      case "add-image":
+        return "wiki-editor-image-button";
+      default:
+        return undefined;
+    }
+  };
+
   return (
     <Box
       sx={{
@@ -471,6 +490,7 @@ const ToolBar = () => {
             key={`inline-command-${command.key}`}
             onClick={() => command.handler()}
             sx={{ fontSize: "21px", fontWeight: "bold" }}
+            id={getCommandId(command.key)}
           >
             {command.icon}
           </IconButton>
