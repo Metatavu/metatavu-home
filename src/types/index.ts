@@ -213,8 +213,26 @@ export interface OnCallWeek {
  */
 export enum OnboardingScreen {
   Home = "home",
-  Wiki = "wiki"
+  Wiki = "wiki",
+  WikiCreate = "wikiCreate"
 }
+
+/**
+ * Type definition for an onboarding step
+ */
+export type OnboardingStep = {
+  selector: string;
+  position?:
+    | "top-left"
+    | "top-center"
+    | "top-right"
+    | "bottom-left"
+    | "bottom-right"
+    | "bottom-center"
+    | "center";
+  title: string;
+  content: string;
+};
 /**
  * Interface describing Slack user avatars
  */

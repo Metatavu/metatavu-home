@@ -5,6 +5,7 @@ import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import { OnboardingScreen } from "src/types/index";
 import { getOnboardingSteps } from "./onboardingSteps";
+import { getWikiCreateOnboardingSteps } from "./onboardingStepsWikiCreate";
 import { getWikiOnboardingSteps } from "./onboardingStepsWikiDocumentation";
 
 /**
@@ -41,6 +42,8 @@ const Onboarding = ({ screen }: OnboardingProps) => {
     switch (screen) {
       case OnboardingScreen.Wiki:
         return getWikiOnboardingSteps();
+      case OnboardingScreen.WikiCreate:
+        return getWikiCreateOnboardingSteps();
       case OnboardingScreen.Home:
         return getOnboardingSteps();
     }

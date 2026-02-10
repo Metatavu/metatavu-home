@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/correctness/useUniqueElementIds: used for onboarding */
 import ClearIcon from "@mui/icons-material/Clear";
 import {
   Autocomplete,
@@ -23,8 +24,10 @@ import { usersAtom } from "src/atoms/user";
 import type { Article, User } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
+import { OnboardingScreen } from "src/types/index";
 import { uploadFile } from "src/utils/s3-file-utils";
 import BackButton from "../generics/back-button";
+import Onboarding from "../onboarding/Onboarding";
 import ActionButton from "./action-button";
 import RichTextEditorLexical from "./rich-text-editor/rich-text-editor";
 
@@ -250,172 +253,187 @@ const CreateOrEditArticleForm = ({
   );
   return (
     <>
-      <Grid container spacing={1.5} sx={{ marginBottom: 3, marginTop: 0.5 }}>
-        <Grid item xs={6}>
-          <BackButton onClick={handleClose} styles={{ padding: "6px" }} />
-        </Grid>
-        <Grid item xs={6}>
-          {action === "create" ? (
-            <ActionButton onClick={handleCreate} disabled={!isFormValid}>
-              {strings.wikiDocumentation.create}
-            </ActionButton>
-          ) : (
-            <ActionButton onClick={handleEdit}>
-              {adminMode && article?.draft
-                ? strings.wikiDocumentation.confirm
-                : strings.wikiDocumentation.save}
-            </ActionButton>
-          )}
-        </Grid>
-      </Grid>
-      <Card sx={{ padding: 2.5, overflow: "visible", marginBottom: 4 }}>
-        <TextField
-          sx={{ width: "100%" }}
-          size="small"
-          value={title}
-          onChange={handleTitleChange}
-          label={strings.wikiDocumentation.labelTitle}
-          required
-        />
-        <Grid container spacing={1.5}>
-          <Grid item md={6} xs={12}>
-            <TextField
-              sx={{ width: "100%", marginTop: 3 }}
-              size="small"
-              value={path}
-              onChange={handlePathChange}
-              label={strings.wikiDocumentation.labelPath}
-              required
-            />
+      <Onboarding screen={OnboardingScreen.WikiCreate} />
+      <Box id="wiki-create-form-container">
+        <Grid container spacing={1.5} sx={{ marginBottom: 3, marginTop: 0.5 }}>
+          <Grid item xs={6}>
+            <BackButton onClick={handleClose} styles={{ padding: "6px" }} />
           </Grid>
-          <Grid item md={6} xs={12}>
-            <Autocomplete
-              multiple
-              disableClearable
-              freeSolo
-              PopperComponent={CustomPopper}
-              options={tags}
-              sx={{ width: "100%" }}
-              inputValue={tag}
-              size="small"
-              value={selectedTags}
-              onInputChange={handleTagChange}
-              onChange={handleSelectedTagChange}
-              renderInput={(tag) => {
-                return (
-                  <TextField
-                    {...tag}
-                    sx={{ width: "100%", marginTop: 3 }}
-                    size="small"
-                    onKeyDown={handleEnter}
-                    label={strings.wikiDocumentation.labelTags}
-                  />
-                );
-              }}
-              renderOption={(props, option, { selected }) => (
-                <li
-                  {...props}
-                  style={{ display: "flex", alignItems: "center" }}
-                  key={`tags-option-${option}`}
-                >
-                  <Checkbox
-                    sx={{
-                      marginRight: 2
-                    }}
-                    checked={selected}
-                  />
-                  <Box
-                    minWidth="5px"
-                    style={{ marginRight: "10px" }}
-                    component="span"
-                    sx={{
-                      height: 40,
-                      borderRadius: "5px"
-                    }}
-                  />
-                  {option}
-                </li>
-              )}
-            />
+          <Grid item xs={6}>
+            {action === "create" ? (
+              <ActionButton
+                id="wiki-article-action-button"
+                onClick={handleCreate}
+                disabled={!isFormValid}
+              >
+                {strings.wikiDocumentation.create}
+              </ActionButton>
+            ) : (
+              <ActionButton id="wiki-article-action-button" onClick={handleEdit}>
+                {adminMode && article?.draft
+                  ? strings.wikiDocumentation.confirm
+                  : strings.wikiDocumentation.save}
+              </ActionButton>
+            )}
           </Grid>
         </Grid>
-        <Grid container spacing={1.5}>
-          <Grid item md={6} xs={12}>
-            <TextField
-              sx={{ width: "100%", marginTop: 3 }}
-              size="small"
-              value={coverImage}
-              onInput={handleImageLinkChange}
-              label={strings.wikiDocumentation.labelImage}
-              required
-            />
-            {imagePreview && coverImage?.length !== 0 && (
-              <Grid container>
-                <img
-                  style={{
-                    height: "150px",
-                    borderRadius: "15px",
-                    marginTop: "16px",
-                    marginLeft: 3
-                  }}
-                  src={coverImage}
-                  alt="cover-image"
-                />
-                <Grid item sx={{ position: "relative" }}>
-                  <IconButton
-                    sx={{
-                      position: "absolute",
-                      top: "50%",
-                      transform: "translateY(-50%)"
-                    }}
-                    onClick={() => {
-                      setCoverImage("");
-                      setImagePreview(false);
-                    }}
+        <Card sx={{ padding: 2.5, overflow: "visible", marginBottom: 4 }}>
+          <TextField
+            id="wiki-article-title-field"
+            sx={{ width: "100%" }}
+            size="small"
+            value={title}
+            onChange={handleTitleChange}
+            label={strings.wikiDocumentation.labelTitle}
+            required
+          />
+          <Grid container spacing={1.5}>
+            <Grid item md={6} xs={12}>
+              <TextField
+                id="wiki-article-path-field"
+                sx={{ width: "100%", marginTop: 3 }}
+                size="small"
+                value={path}
+                onChange={handlePathChange}
+                label={strings.wikiDocumentation.labelPath}
+                required
+              />
+            </Grid>
+            <Grid item md={6} xs={12}>
+              <Autocomplete
+                id="wiki-article-tags-field"
+                multiple
+                disableClearable
+                freeSolo
+                PopperComponent={CustomPopper}
+                options={tags}
+                sx={{ width: "100%" }}
+                inputValue={tag}
+                size="small"
+                value={selectedTags}
+                onInputChange={handleTagChange}
+                onChange={handleSelectedTagChange}
+                renderInput={(tag) => {
+                  return (
+                    <TextField
+                      {...tag}
+                      sx={{ width: "100%", marginTop: 3 }}
+                      size="small"
+                      onKeyDown={handleEnter}
+                      label={strings.wikiDocumentation.labelTags}
+                    />
+                  );
+                }}
+                renderOption={(props, option, { selected }) => (
+                  <li
+                    {...props}
+                    style={{ display: "flex", alignItems: "center" }}
+                    key={`tags-option-${option}`}
                   >
-                    <ClearIcon />
-                  </IconButton>
+                    <Checkbox
+                      sx={{
+                        marginRight: 2
+                      }}
+                      checked={selected}
+                    />
+                    <Box
+                      minWidth="5px"
+                      style={{ marginRight: "10px" }}
+                      component="span"
+                      sx={{
+                        height: 40,
+                        borderRadius: "5px"
+                      }}
+                    />
+                    {option}
+                  </li>
+                )}
+              />
+            </Grid>
+          </Grid>
+          <Grid container spacing={1.5}>
+            <Grid item md={6} xs={12}>
+              <TextField
+                id="wiki-article-image-field"
+                sx={{ width: "100%", marginTop: 3 }}
+                size="small"
+                value={coverImage}
+                onInput={handleImageLinkChange}
+                label={strings.wikiDocumentation.labelImage}
+                required
+              />
+              {imagePreview && coverImage?.length !== 0 && (
+                <Grid container>
+                  <img
+                    style={{
+                      height: "150px",
+                      borderRadius: "15px",
+                      marginTop: "16px",
+                      marginLeft: 3
+                    }}
+                    src={coverImage}
+                    alt={strings.wikiDocumentation.coverImageAlt}
+                  />
+                  <Grid item sx={{ position: "relative" }}>
+                    <IconButton
+                      sx={{
+                        position: "absolute",
+                        top: "50%",
+                        transform: "translateY(-50%)"
+                      }}
+                      onClick={() => {
+                        setCoverImage("");
+                        setImagePreview(false);
+                      }}
+                    >
+                      <ClearIcon />
+                    </IconButton>
+                  </Grid>
                 </Grid>
-              </Grid>
-            )}
-            {!coverImage && (
-              <Button
-                variant="outlined"
-                component="label"
-                sx={{ marginTop: 1.5, marginBottom: 1, width: "100%" }}
-              >
-                {strings.wikiDocumentation.uploadImage}
-                <input style={{ width: "100%" }} type="file" hidden onChange={handleFileChange} />
-              </Button>
-            )}
-            {coverImage && !imagePreview && (
-              <Button
-                variant="outlined"
-                sx={{ marginTop: 1, marginBottom: 1, width: "100%" }}
-                onClick={() => setImagePreview(true)}
-              >
-                {strings.wikiDocumentation.imagePreview}
-              </Button>
-            )}
+              )}
+              {!coverImage && (
+                <Button
+                  variant="outlined"
+                  component="label"
+                  sx={{ marginTop: 1.5, marginBottom: 1, width: "100%" }}
+                >
+                  {strings.wikiDocumentation.uploadImage}
+                  <input style={{ width: "100%" }} type="file" hidden onChange={handleFileChange} />
+                </Button>
+              )}
+              {coverImage && !imagePreview && (
+                <Button
+                  variant="outlined"
+                  sx={{ marginTop: 1, marginBottom: 1, width: "100%" }}
+                  onClick={() => setImagePreview(true)}
+                >
+                  {strings.wikiDocumentation.imagePreview}
+                </Button>
+              )}
+            </Grid>
+            <Grid item md={6} xs={12}>
+              <TextField
+                id="wiki-article-description-field"
+                sx={{ width: "100%", marginTop: 3 }}
+                size="small"
+                multiline
+                rows={3}
+                value={description}
+                onInput={handleDescriptionChange}
+                label={strings.wikiDocumentation.labelDescription}
+                required
+              />
+            </Grid>
           </Grid>
-          <Grid item md={6} xs={12}>
-            <TextField
-              sx={{ width: "100%", marginTop: 3 }}
-              size="small"
-              multiline
-              rows={3}
-              value={description}
-              onInput={handleDescriptionChange}
-              label={strings.wikiDocumentation.labelDescription}
-              required
+
+          <Box id="wiki-article-content-editor">
+            <RichTextEditorLexical
+              ref={editorRef}
+              markdownContent={article?.content || "Article content is required"}
             />
-          </Grid>
-        </Grid>
-        <RichTextEditorLexical
-          ref={editorRef}
-          markdownContent={article?.content || "Article content is required"}
-        />
-      </Card>
+          </Box>
+        </Card>
+      </Box>
     </>
   );
 };
