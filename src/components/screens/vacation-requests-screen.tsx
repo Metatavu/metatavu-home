@@ -1,4 +1,4 @@
-import { Card } from "@mui/material";
+import { Card, useTheme } from "@mui/material";
 import type { GridRowId } from "@mui/x-data-grid";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { useEffect, useMemo, useState } from "react";
@@ -54,6 +54,7 @@ const VacationRequestsScreen = () => {
   const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
   const [filter, setFilter] = useState<FilterType>("ALL");
   const currentYear = new Date().getFullYear().toString();
+  const theme = useTheme();
 
   /**
    * Filters a list of vacation requests based on the given filter.
@@ -428,7 +429,7 @@ const VacationRequestsScreen = () => {
 
   return (
     <>
-      {loggedInUser && renderVacationDaysTextForScreen(loggedInUser)}
+      {loggedInUser && renderVacationDaysTextForScreen(loggedInUser, theme)}
       <Card sx={{ margin: 0, padding: "10px", width: "100%", height: "100", marginBottom: "16px" }}>
         <VacationRequestsTable
           isUpcoming={isUpcoming}

@@ -17,7 +17,8 @@ import {
   MenuItem,
   OutlinedInput,
   Select,
-  Typography
+  Typography,
+  useTheme
 } from "@mui/material";
 import { useAtomValue } from "jotai";
 import type React from "react";
@@ -59,6 +60,7 @@ const AllSoftwareScreen = () => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedApplicationId, setSelectedApplicationId] = useState<string | null>(null);
   const [deleteTitle, setDeleteTitle] = useState<string | undefined>(undefined);
+  const theme = useTheme();
 
   type SoftwareStatusFilterOptions = (typeof allStatusValues)[number];
 
@@ -265,6 +267,8 @@ const AllSoftwareScreen = () => {
     }
   };
 
+  const isListView = !isGridView;
+
   if (loading) {
     return (
       <Card
@@ -299,10 +303,10 @@ const AllSoftwareScreen = () => {
             onClick={() => setIsModalOpen(true)}
             sx={{
               textTransform: "none",
-              color: "#fff",
+              color: theme.palette.secondary.contrastText,
               fontSize: "18px",
               borderRadius: "100px",
-              "&:hover": { background: "#000" }
+              "&:hover": { background: theme.palette.secondary.dark }
             }}
           >
             {strings.softwareRegistry.addApplication}
@@ -329,7 +333,7 @@ const AllSoftwareScreen = () => {
                   height: "45px",
                   padding: "0 15px",
                   "& .MuiSvgIcon-root": {
-                    color: "#121212"
+                    color: theme.palette.text.primary
                   }
                 }}
               >
@@ -353,14 +357,14 @@ const AllSoftwareScreen = () => {
                   onDelete={() => handleDeleteChip(term)}
                   sx={{
                     marginRight: "5px",
-                    backgroundColor: "#BDBDBD",
-                    color: "#fff"
+                    backgroundColor: theme.palette.action.selected,
+                    color: theme.palette.text.primary
                   }}
                 />
               ))}
               endAdornment={
                 <InputAdornment position="end">
-                  <SearchIcon sx={{ color: "gray" }} />
+                  <SearchIcon sx={{ color: theme.palette.text.secondary }} />
                 </InputAdornment>
               }
               sx={{
@@ -369,24 +373,31 @@ const AllSoftwareScreen = () => {
                 height: "45px",
                 width: "50%",
                 padding: "10px",
-                backgroundColor: "#f1f1f1",
-                boxShadow: "inset 0px 4px 6px rgba(0, 0, 0, 0.1)"
+                backgroundColor: theme.palette.background.paper,
+                boxShadow:
+                  theme.palette.mode === "light"
+                    ? `inset 0px 2px 4px ${theme.palette.action.disabledBackground}`
+                    : "none"
               }}
             />
             <Box sx={{ display: "flex", marginLeft: "auto" }}>
               <IconButton
                 onClick={() => setIsGridView(true)}
                 sx={{
-                  backgroundColor: isGridView ? "#F9473B" : "#f2f2f2",
-                  color: isGridView ? "#fff" : "#000",
+                  backgroundColor: isGridView
+                    ? theme.palette.primary.main
+                    : theme.palette.background.paper,
+                  color: theme.palette.getContrastText(
+                    isGridView ? theme.palette.primary.main : theme.palette.background.paper
+                  ),
                   borderRadius: "8px",
                   padding: "10px",
                   marginRight: "4px",
                   marginLeft: "10px",
                   transition: "background-color 0.3s ease",
                   "&:hover": {
-                    backgroundColor: "#000",
-                    color: "#fff"
+                    backgroundColor: theme.palette.primary.dark,
+                    color: theme.palette.getContrastText(theme.palette.primary.dark)
                   }
                 }}
               >
@@ -395,14 +406,18 @@ const AllSoftwareScreen = () => {
               <IconButton
                 onClick={() => setIsGridView(false)}
                 sx={{
-                  backgroundColor: !isGridView ? "#F9473B" : "#f2f2f2",
-                  color: !isGridView ? "#fff" : "#000",
+                  backgroundColor: isListView
+                    ? theme.palette.primary.main
+                    : theme.palette.background.paper,
+                  color: theme.palette.getContrastText(
+                    isListView ? theme.palette.primary.main : theme.palette.background.paper
+                  ),
                   borderRadius: "8px",
                   padding: "10px",
                   transition: "background-color 0.3s ease",
                   "&:hover": {
-                    backgroundColor: "#000",
-                    color: "#fff"
+                    backgroundColor: theme.palette.primary.dark,
+                    color: theme.palette.getContrastText(theme.palette.primary.dark)
                   }
                 }}
               >
@@ -436,10 +451,11 @@ const AllSoftwareScreen = () => {
                   onClick={() => setShowAll(!showAll)}
                   sx={{
                     textTransform: "none",
-                    color: "#fff",
+                    color: theme.palette.secondary.contrastText,
                     fontSize: "18px",
                     borderRadius: "100px",
-                    "&:hover": { background: "#000" }
+                    backgroundColor: theme.palette.secondary.main,
+                    "&:hover": { backgroundColor: theme.palette.secondary.dark }
                   }}
                 >
                   {showAll ? strings.softwareRegistry.showLess : strings.softwareRegistry.showMore}

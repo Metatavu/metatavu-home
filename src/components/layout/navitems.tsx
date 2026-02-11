@@ -1,5 +1,5 @@
 import MenuIcon from "@mui/icons-material/Menu";
-import { Box, IconButton, Menu, MenuItem } from "@mui/material";
+import { Box, IconButton, Menu, MenuItem, useTheme } from "@mui/material";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { type MouseEvent, useState } from "react";
@@ -12,6 +12,7 @@ import Logo from "../../../resources/img/Metatavu-icon.svg";
  * Navigation Items component
  */
 const NavItems = () => {
+  const theme = useTheme();
   const [currentPage, setCurrentPage] = useState("");
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const { isAdmin } = useUserRole();
@@ -45,7 +46,10 @@ const NavItems = () => {
           <img
             src={Logo}
             alt={strings.header.logoAlt}
-            style={{ height: 40, filter: "invert(100%)" }}
+            style={{
+              height: 40,
+              filter: theme.palette.mode === "dark" ? "invert(0)" : "invert(1)"
+            }}
           />
         </Button>
       </Link>
@@ -110,11 +114,11 @@ const NavItems = () => {
           style={{ margin: 2, display: "block" }}
           onClick={handleNavItemClick}
         >
-          <Button>{strings.header.home}</Button>
+          <Button sx={{ color: theme.palette.text.primary }}>{strings.header.home}</Button>
         </Link>
         {isAdmin && (
           <Link to={"/admin"} style={{ margin: 2, display: "block" }}>
-            <Button>{strings.header.admin}</Button>
+            <Button sx={{ color: theme.palette.text.primary }}>{strings.header.admin}</Button>
           </Link>
         )}
       </Box>

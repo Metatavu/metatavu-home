@@ -31,7 +31,8 @@ import {
   MenuItem,
   Select,
   TextField,
-  Typography
+  Typography,
+  useTheme
 } from "@mui/material";
 import {
   $createParagraphNode,
@@ -50,8 +51,6 @@ import { uploadFile } from "src/utils/s3-file-utils";
 import { $createImageNode } from "../nodes/image-node";
 import ArticleLinkDialog from "./article-link-dialog";
 
-const colors = wikiScreenColors;
-
 interface TextCommand {
   key: string;
   icon: React.JSX.Element;
@@ -59,6 +58,7 @@ interface TextCommand {
 }
 
 const ToolBar = () => {
+  const theme = useTheme();
   const { articleApi } = useLambdasApi();
   const [editor] = useLexicalComposerContext();
   const [link, setLink] = useState("");
@@ -69,6 +69,7 @@ const ToolBar = () => {
   const [imageDialogOpen, setImageDialogOpen] = useState(false);
   const [articleLinkDialogOpen, setArticleLinkDialogOpen] = useState(false);
   const [isLinkSelcted, setIsLinkSelected] = useState(false);
+  const colors = wikiScreenColors(theme);
   const [imageSize, setImageSize] = useState<ImageSize>("medium");
   const [imageAlignment, setImageAlignment] = useState<ImageAlignment>("center");
   const [selectedText, setSelectedText] = useState("");
@@ -346,11 +347,11 @@ const ToolBar = () => {
         fullWidth
         sx={{
           mb: 2,
-          borderColor: colors.button.main,
-          color: colors.button.main,
+          borderColor: theme.palette.primary.main,
+          color: theme.palette.primary.main,
           "&:hover": {
-            borderColor: colors.button.hover,
-            backgroundColor: "rgba(0, 0, 0, 0.04)"
+            borderColor: theme.palette.primary.dark,
+            backgroundColor: theme.palette.action.hover
           }
         }}
       >
@@ -408,6 +409,7 @@ const ToolBar = () => {
               sx={{
                 flex: 1,
                 backgroundColor: colors.button.main,
+                color: theme.palette.getContrastText(colors.button.main),
                 "&:hover": { backgroundColor: colors.button.hover }
               }}
             >
@@ -426,6 +428,7 @@ const ToolBar = () => {
               sx={{
                 flex: 1,
                 backgroundColor: colors.button.main,
+                color: theme.palette.getContrastText(colors.button.main),
                 "&:hover": { backgroundColor: colors.button.hover }
               }}
             >

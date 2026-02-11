@@ -14,7 +14,8 @@ import {
   Select,
   Stack,
   TextField,
-  Typography
+  Typography,
+  useTheme
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { useAtomValue, useSetAtom } from "jotai";
@@ -32,7 +33,7 @@ import useSprintViewHandlers from "src/hooks/sprint-custom-hooks";
 import { useLambdasApi } from "src/hooks/use-api";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
-import { SprintViewFilterTypes, type SprintViewFilterType } from "src/types/index";
+import { type SprintViewFilterType, SprintViewFilterTypes } from "src/types/index";
 import { getSeveraUserId } from "src/utils/sprint-utils";
 import { getSprintEnd, getSprintStart } from "src/utils/time-utils";
 import BackButton from "../generics/back-button";
@@ -60,6 +61,7 @@ const getFilterLabel = (filterType: SprintViewFilterType): string => {
  * Sprint view screen component
  */
 const SprintViewScreen = () => {
+  const theme = useTheme();
   const filterSelectId = useId();
   const { resourceAllocationsApi } = useLambdasApi();
   const {
@@ -116,7 +118,8 @@ const SprintViewScreen = () => {
           sx={{
             p: "25%",
             display: "flex",
-            justifyContent: "center"
+            justifyContent: "center",
+            backgroundColor: theme.palette.background.paper
           }}
         >
           <Box sx={{ textAlign: "center" }}>
@@ -186,18 +189,31 @@ const SprintViewScreen = () => {
                       ),
                       sx: {
                         borderRadius: 2,
-                        backgroundColor: "background.paper"
+                        backgroundColor: theme.palette.background.default,
+                        color: theme.palette.text.primary
                       }
                     }}
                   />
                 </>
               )}
-              <Card>
+              <Card sx={{ bgcolor: theme.palette.background.paper }}>
                 <DataGrid
                   sx={{
-                    "& .MuiDataGrid-columnHeaders": { backgroundColor: "#e9ecef" },
-                    "& .MuiDataGrid-row:nth-of-type(even)": { backgroundColor: "#dee2e6" },
-                    "& .MuiDataGrid-row:hover": { cursor: "pointer", backgroundColor: "#ced4da" }
+                    "& .MuiDataGrid-columnHeaders": {
+                      backgroundColor: theme.palette.background.default,
+                      color: theme.palette.text.primary
+                    },
+
+                    "& .MuiDataGrid-cell": { color: theme.palette.text.primary },
+                    "& .MuiDataGrid-row:hover": {
+                      backgroundColor: theme.palette.action.hover
+                    },
+                    "& .MuiDataGrid-row.Mui-selected": {
+                      backgroundColor: theme.palette.action.selected
+                    },
+                    "& .MuiDataGrid-row.Mui-selected:hover": {
+                      backgroundColor: theme.palette.action.selected
+                    }
                   }}
                   autoHeight
                   localeText={{ noResultsOverlayLabel: strings.sprint.notFound }}
@@ -208,7 +224,13 @@ const SprintViewScreen = () => {
                   getRowId={(row) => row.severaResourceAllocationId}
                   onRowClick={(params) => handleRowClick(params.row)}
                 />
-                <Box sx={{ backgroundColor: "#e9ecef", p: 1.5, textAlign: "right" }}>
+                <Box
+                  sx={{
+                    backgroundColor: theme.palette.background.default,
+                    p: 1.5,
+                    textAlign: "right"
+                  }}
+                >
                   <Typography variant="body2" color="text.primary">
                     {strings.formatString(
                       strings.sprint.current,
@@ -218,7 +240,7 @@ const SprintViewScreen = () => {
                   </Typography>
                 </Box>
               </Card>
-              <Divider />
+              <Divider sx={{ borderColor: theme.palette.divider }} />
               {selectedProject ? (
                 <TaskTable key={selectedProject.severaProjectId} project={selectedProject} />
               ) : (

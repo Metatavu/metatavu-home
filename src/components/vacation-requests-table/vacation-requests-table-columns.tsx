@@ -1,4 +1,4 @@
-import { Box, Tooltip } from "@mui/material";
+import { Box, Tooltip, useTheme } from "@mui/material";
 import type { GridColDef } from "@mui/x-data-grid";
 import { useAtomValue } from "jotai";
 import { usersAtom } from "src/atoms/user";
@@ -17,6 +17,7 @@ import StatusToolTipContent from "./vacation-request-status-tooltip";
 const VacationRequestsTableColumns = (): GridColDef[] => {
   const users = useAtomValue(usersAtom) || [];
   const { adminMode } = useUserRole();
+  const theme = useTheme();
 
   const columns: GridColDef[] = [
     {
@@ -79,13 +80,14 @@ const VacationRequestsTableColumns = (): GridColDef[] => {
         const statuses = vacationRequest?.status || [];
         const currentStatus = params.value;
         const isUnreviewed = statuses.length === 1 && currentStatus === "PENDING";
+
         return (
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             {adminMode && isUnreviewed && <UnreviewedIndicator />}
             <Tooltip title={<StatusToolTipContent statuses={statuses} />} arrow placement="top">
               <Box
                 sx={{
-                  color: getVacationRequestStatusColor(currentStatus),
+                  color: getVacationRequestStatusColor(currentStatus, theme),
                   fontWeight: 600,
                   cursor: "help"
                 }}

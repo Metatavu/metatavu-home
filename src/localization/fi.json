@@ -497,7 +497,10 @@
     "saveSettings": "Tallenna asetukset",
     "accept": "Hyväksy",
     "decline": "En hyväksy",
-    "consentToDataProcessing": "Suostumus tietojen käsittelyyn"
+    "consentToDataProcessing": "Suostumus tietojen käsittelyyn",
+    "lightOrDarkMode": "Teema",
+    "light": "Vaalea",
+    "dark": "Tumma"
   },
   "notOptedInDescription": {
     "description": "Hyväksy käyttäjätietojen käsittely nähdäksesi tämä osio"

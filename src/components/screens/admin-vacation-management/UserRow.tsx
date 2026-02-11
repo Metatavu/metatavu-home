@@ -1,5 +1,5 @@
 import EditIcon from "@mui/icons-material/Edit";
-import { IconButton, TableCell, TableRow } from "@mui/material";
+import { IconButton, TableCell, TableRow, useTheme } from "@mui/material";
 import type { User } from "src/generated/homeLambdasClient/models/User";
 import strings from "src/localization/strings";
 
@@ -30,11 +30,12 @@ const UserRow = ({ user, onEdit }: UserRowProps) => {
   const currentYear = new Date().getFullYear().toString();
   const totalDays = getDays(user.attributes?.vacationDaysByYear, currentYear);
   const remainingDays = getDays(user.attributes?.unspentVacationDaysByYear, currentYear);
+  const theme = useTheme();
   return (
     <TableRow
       hover
       sx={{
-        "&:hover": { backgroundColor: "#fafafa" },
+        "&:hover": { backgroundColor: theme.palette.action.hover },
         "& td": { py: 2.5 }
       }}
       key={user.id}

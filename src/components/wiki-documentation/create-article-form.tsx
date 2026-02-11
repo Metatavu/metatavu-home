@@ -76,6 +76,7 @@ const CreateOrEditArticleForm = ({
   const userProfile = useAtomValue(userProfileAtom);
   const loggedInUser = users.find((users: User) => users.id === userProfile?.id);
   const setSnackbar = useSetAtom(snackbarAtom);
+
   /**
    * Handles creating a new article using the editor content and form state.
    * Sends the article data to the API and updates local state accordingly.

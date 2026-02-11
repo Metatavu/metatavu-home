@@ -1,4 +1,4 @@
-import { Box, Button, Card, Chip, Grid, Typography } from "@mui/material";
+import { Box, Button, Card, Chip, Grid, Typography, useTheme } from "@mui/material";
 import { useAtomValue } from "jotai";
 import { DateTime } from "luxon";
 import { Link } from "react-router-dom";
@@ -22,24 +22,26 @@ interface Props {
  * @param onDeleteClick - Optional callback function to open the delete confirmation dialog.
  */
 const ArticleListItem = ({ article, adminMode = false, onDeleteClick }: Props) => {
+  const theme = useTheme();
   const users = useAtomValue(usersAtom);
 
   if (!article?.createdBy) return null;
 
   const lastActivityData = getLastActivityString(article, users);
   return (
-    <Link to={article.path} style={{ textDecoration: "none" }}>
+    <Link to={article.path} style={{ textDecoration: "none", color: "inherit" }}>
       <Card
         key={`article-card-${article.id}`}
         sx={{
           padding: "20px",
           position: "relative",
           borderRadius: "20px",
-          backgroundColor: "#fff",
+          backgroundColor: theme.palette.background.paper,
+          color: theme.palette.text.primary,
           width: "100%",
           ":hover": {
-            boxShadow: "0px 6px 14px rgba(0, 0, 0, 0.3)",
-            backgroundColor: "rgba(0, 0, 0, 0.04)"
+            boxShadow: theme.shadows[6],
+            backgroundColor: theme.palette.action.hover
           }
         }}
       >

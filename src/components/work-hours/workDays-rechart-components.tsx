@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, useTheme } from "@mui/material";
 import {
   Bar,
   CartesianGrid,
@@ -37,7 +37,8 @@ const XAxisTick = ({
   payload: any;
   isHoliday?: boolean;
 }) => {
-  const color = isHoliday ? "#FF0000" : "#000";
+  const theme = useTheme();
+  const color = isHoliday ? theme.palette.error.main : theme.palette.text.primary;
   return (
     <text x={x} y={y + 10} textAnchor="middle" fill={color} fontSize={14}>
       {payload.value}
@@ -49,6 +50,7 @@ const XAxisTick = ({
  * Custom Tooltip component
  */
 const ChartTooltip = ({ active, payload, label, strings }: any) => {
+  const theme = useTheme();
   if (!active || !payload || !payload.length) return null;
 
   const data = payload[0].payload as ChartDataPoint;
@@ -56,8 +58,9 @@ const ChartTooltip = ({ active, payload, label, strings }: any) => {
   return (
     <Box
       sx={{
-        backgroundColor: "#fff",
-        border: "1px solid #ccc",
+        backgroundColor: theme.palette.background.paper,
+        color: theme.palette.text.primary,
+        border: `1px solid ${theme.palette.divider}`,
         padding: "8px",
         borderRadius: 1
       }}
@@ -118,32 +121,37 @@ const WorkDaysRechart = ({
   getBarColor,
   strings,
   YAXIS_DOMAIN
-}: WorkDaysRechartProps) => (
-  <Box sx={{ width: "100%", height: 500 }}>
-    <ResponsiveContainer width="100%" height="100%">
-      <ComposedChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="period" tick={renderXAxisTick(chartData)} />
-        <YAxis domain={YAXIS_DOMAIN[selectedRange]} />
-        <Tooltip content={renderTooltip(strings)} />
-        <Legend />
-        <Bar
-          dataKey="hours"
-          name={strings.timebank.logged}
-          isAnimationActive
-          shape={renderBarShape(getBarColor)}
-        />
-        <Line
-          type="monotone"
-          dataKey="expected"
-          name={strings.timebank.expected}
-          stroke="#000"
-          strokeWidth={2}
-          dot={{ r: 6 }}
-        />
-      </ComposedChart>
-    </ResponsiveContainer>
-  </Box>
-);
+}: WorkDaysRechartProps) => {
+  const theme = useTheme();
+
+  return (
+    <Box sx={{ width: "100%", height: 500 }}>
+      <ResponsiveContainer width="100%" height="100%">
+        <ComposedChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="period" tick={renderXAxisTick(chartData)} />
+          <YAxis domain={YAXIS_DOMAIN[selectedRange]} />
+          <Tooltip content={renderTooltip(strings)} />
+          <Legend />
+          <Bar
+            dataKey="hours"
+            name={strings.timebank.logged}
+            fill={theme.palette.primary.main}
+            isAnimationActive
+            shape={renderBarShape(getBarColor)}
+          />
+          <Line
+            type="monotone"
+            dataKey="expected"
+            name={strings.timebank.expected}
+            stroke={theme.palette.text.primary}
+            strokeWidth={2}
+            dot={{ r: 6 }}
+          />
+        </ComposedChart>
+      </ResponsiveContainer>
+    </Box>
+  );
+};
 
 export default WorkDaysRechart;
