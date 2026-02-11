@@ -495,15 +495,15 @@
   },
   "settingsScreen": {
     "saveSettings": "Tallenna asetukset",
-    "accept": "Hyväksy",
-    "decline": "En hyväksy",
+    "accept": "Kyllä",
+    "decline": "Ei",
     "consentToDataProcessing": "Aktivoi tilisi",
     "lightOrDarkMode": "Teema",
     "light": "Vaalea",
     "dark": "Tumma"
   },
   "notOptedInDescription": {
-    "description": "Aktivoi tilisi nähdäksesi tämä osio"
+    "description": "Aktivoi tilisi, jotta voit nähdä tämän osion"
   },
   "adminVacationManagement": {
     "heading": "Ylläpitäjän lomien hallinta",

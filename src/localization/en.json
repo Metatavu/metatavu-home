@@ -495,8 +495,8 @@
   },
   "settingsScreen": {
     "saveSettings": "Save settings",
-    "accept": "Accept",
-    "decline": "Decline",
+    "accept": "Yes",
+    "decline": "No",
     "consentToDataProcessing": "Activate account",
     "lightOrDarkMode": "Mode",
     "light": "Light",
