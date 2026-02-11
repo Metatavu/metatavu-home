@@ -497,13 +497,13 @@
     "saveSettings": "Tallenna asetukset",
     "accept": "Hyväksy",
     "decline": "En hyväksy",
-    "consentToDataProcessing": "Suostumus tietojen käsittelyyn",
+    "consentToDataProcessing": "Aktivoi tilisi",
     "lightOrDarkMode": "Teema",
     "light": "Vaalea",
     "dark": "Tumma"
   },
   "notOptedInDescription": {
-    "description": "Hyväksy käyttäjätietojen käsittely nähdäksesi tämä osio"
+    "description": "Aktivoi tilisi nähdäksesi tämä osio"
   },
   "adminVacationManagement": {
     "heading": "Ylläpitäjän lomien hallinta",
