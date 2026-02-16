@@ -38,6 +38,7 @@ import { getSeveraUserId } from "src/utils/sprint-utils";
 import { getSprintEnd, getSprintStart } from "src/utils/time-utils";
 import BackButton from "../generics/back-button";
 import createSprintViewProjectsColumns from "../sprint-view-table/sprint-projects-columns";
+import OptInRedirect from "../generics/opt-in-redirect";
 
 /**
  * Gets the filter label based on the filter type
@@ -110,6 +111,16 @@ const SprintViewScreen = () => {
   };
 
   const filterLabel = getFilterLabel(filterType);
+  
+  if (!loggedInUser) {
+    return null;
+  }
+  const severaUserId = getSeveraUserId(loggedInUser);
+  const isOptedIn = !!severaUserId;
+
+  if (!isOptedIn) {
+    return <OptInRedirect />;
+  }
 
   return (
     <>
