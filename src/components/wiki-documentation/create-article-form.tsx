@@ -1,13 +1,23 @@
 /** biome-ignore-all lint/correctness/useUniqueElementIds: used for onboarding */
 import ClearIcon from "@mui/icons-material/Clear";
+import ImageIcon from "@mui/icons-material/Image";
 import {
   Autocomplete,
   Box,
   Button,
   Card,
   Checkbox,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Grid,
   IconButton,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
   Popper,
   type PopperProps,
   styled,
@@ -25,7 +35,7 @@ import type { Article, User } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
 import { OnboardingScreen } from "src/types/index";
-import { uploadFile } from "src/utils/s3-file-utils";
+import { getHttpsUrlFromS3, listMediaFiles, uploadFile } from "src/utils/s3-file-utils";
 import BackButton from "../generics/back-button";
 import Onboarding from "../onboarding/Onboarding";
 import ActionButton from "./action-button";
@@ -72,6 +82,9 @@ const CreateOrEditArticleForm = ({
   const [imagePreview, setImagePreview] = useState(false);
   const [selectedTags, setSelectedTags] = useState<string[]>(article ? article.tags || [] : []);
   const [tag, setTag] = useState("");
+  const [mediaFiles, setMediaFiles] = useState<string[]>([]);
+  const [showMediaSelector, setShowMediaSelector] = useState(false);
+  const [loadingMedia, setLoadingMedia] = useState(false);
   const users = useAtomValue(usersAtom);
   const userProfile = useAtomValue(userProfileAtom);
   const loggedInUser = users.find((users: User) => users.id === userProfile?.id);
@@ -230,6 +243,27 @@ const CreateOrEditArticleForm = ({
   const handleImageLinkChange = (event: ChangeEvent<HTMLInputElement>) => {
     const newInput = event.target.value;
     setCoverImage(newInput);
+  };
+
+  const handleOpenMediaSelector = async () => {
+    setShowMediaSelector(true);
+    setLoadingMedia(true);
+    try {
+      const files = await listMediaFiles(articleApi);
+      setMediaFiles(files || []);
+    } catch (error) {
+      console.error("Failed to load media files:", error);
+      setSnackbar({ open: true, message: "Failed to load media files", severity: "error" });
+    } finally {
+      setLoadingMedia(false);
+    }
+  };
+
+  const handleSelectMediaFile = (fileName: string) => {
+    const httpsUrl = getHttpsUrlFromS3(fileName);
+    setCoverImage(httpsUrl);
+    setImagePreview(true);
+    setShowMediaSelector(false);
   };
 
   const handleEnter = (event: KeyboardEvent<HTMLImageElement>) => {
@@ -392,14 +426,29 @@ const CreateOrEditArticleForm = ({
                 </Grid>
               )}
               {!coverImage && (
-                <Button
-                  variant="outlined"
-                  component="label"
-                  sx={{ marginTop: 1.5, marginBottom: 1, width: "100%" }}
-                >
-                  {strings.wikiDocumentation.uploadImage}
-                  <input style={{ width: "100%" }} type="file" hidden onChange={handleFileChange} />
-                </Button>
+                <>
+                  <Button
+                    variant="outlined"
+                    component="label"
+                    sx={{ marginTop: 1.5, marginBottom: 1, width: "100%" }}
+                  >
+                    {strings.wikiDocumentation.uploadImage}
+                    <input
+                      style={{ width: "100%" }}
+                      type="file"
+                      hidden
+                      onChange={handleFileChange}
+                    />
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    startIcon={<ImageIcon />}
+                    sx={{ marginTop: 0.5, marginBottom: 1, width: "100%" }}
+                    onClick={handleOpenMediaSelector}
+                  >
+                    Select from Existing Files
+                  </Button>
+                </>
               )}
               {coverImage && !imagePreview && (
                 <Button
@@ -434,6 +483,43 @@ const CreateOrEditArticleForm = ({
           </Box>
         </Card>
       </Box>
+
+      {/* Media File Selector Dialog */}
+      <Dialog
+        open={showMediaSelector}
+        onClose={() => setShowMediaSelector(false)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>Select Image from S3</DialogTitle>
+        <DialogContent>
+          {loadingMedia ? (
+            <Box display="flex" justifyContent="center" p={3}>
+              <CircularProgress />
+            </Box>
+          ) : (
+            <List>
+              {mediaFiles.length === 0 ? (
+                <ListItem>
+                  <ListItemText primary="No files found" />
+                </ListItem>
+              ) : (
+                mediaFiles.map((fileName) => (
+                  <ListItem key={fileName} disablePadding>
+                    <ListItemButton onClick={() => handleSelectMediaFile(fileName)}>
+                      <ImageIcon sx={{ mr: 2 }} />
+                      <ListItemText primary={fileName} secondary={getHttpsUrlFromS3(fileName)} />
+                    </ListItemButton>
+                  </ListItem>
+                ))
+              )}
+            </List>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setShowMediaSelector(false)}>Cancel</Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };
