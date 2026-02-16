@@ -252,8 +252,12 @@ const CreateOrEditArticleForm = ({
       const files = await listMediaFiles(articleApi);
       setMediaFiles(files || []);
     } catch (error) {
-      console.error("Failed to load media files:", error);
-      setSnackbar({ open: true, message: "Failed to load media files", severity: "error" });
+      console.error("Error loading media files:", error);
+      setSnackbar({
+        open: true,
+        message: strings.wikiDocumentation.failedToLoadMediaFiles,
+        severity: "error"
+      });
     } finally {
       setLoadingMedia(false);
     }
@@ -446,7 +450,7 @@ const CreateOrEditArticleForm = ({
                     sx={{ marginTop: 0.5, marginBottom: 1, width: "100%" }}
                     onClick={handleOpenMediaSelector}
                   >
-                    Select from Existing Files
+                    {strings.wikiDocumentation.selectFromExistingFiles}
                   </Button>
                 </>
               )}
@@ -478,7 +482,7 @@ const CreateOrEditArticleForm = ({
           <Box id="wiki-article-content-editor">
             <RichTextEditorLexical
               ref={editorRef}
-              markdownContent={article?.content || "Article content is required"}
+              markdownContent={article?.content || strings.wikiDocumentation.articleContentRequired}
             />
           </Box>
         </Card>
@@ -491,7 +495,7 @@ const CreateOrEditArticleForm = ({
         maxWidth="sm"
         fullWidth
       >
-        <DialogTitle>Select Image from S3</DialogTitle>
+        <DialogTitle>{strings.wikiDocumentation.selectImageFromS3}</DialogTitle>
         <DialogContent>
           {loadingMedia ? (
             <Box display="flex" justifyContent="center" p={3}>
@@ -501,7 +505,7 @@ const CreateOrEditArticleForm = ({
             <List>
               {mediaFiles.length === 0 ? (
                 <ListItem>
-                  <ListItemText primary="No files found" />
+                  <ListItemText primary={strings.wikiDocumentation.noFilesFound} />
                 </ListItem>
               ) : (
                 mediaFiles.map((fileName) => (
@@ -517,7 +521,9 @@ const CreateOrEditArticleForm = ({
           )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setShowMediaSelector(false)}>Cancel</Button>
+          <Button onClick={() => setShowMediaSelector(false)}>
+            {strings.wikiDocumentation.cancel}
+          </Button>
         </DialogActions>
       </Dialog>
     </>

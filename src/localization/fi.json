@@ -484,7 +484,13 @@
     "add": "Lisää",
     "close": "Sulje",
     "pleaseUploadImageFile": "Ole hyvä ja lataa kuvatiedosto",
-    "startTypingToSearch": "Aloita kirjoittaminen hakeaksesi..."
+    "startTypingToSearch": "Aloita kirjoittaminen hakeaksesi...",
+    "selectFromExistingFiles": "Valitse olemassa olevista tiedostoista",
+    "selectImageFromS3": "Valitse kuva S3:sta",
+    "noFilesFound": "Tiedostoja ei löytynyt",
+    "cancel": "Peruuta",
+    "failedToLoadMediaFiles": "Mediatiedostojen lataus epäonnistui",
+    "articleContentRequired": "Artikkelin sisältö on pakollinen"
   },
   "snackbar": {
     "articleSubmitted": "Artikkeli lähetetty arvioitavaksi onnistuneesti!",

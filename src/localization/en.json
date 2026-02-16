@@ -484,7 +484,13 @@
     "add": "Add",
     "close": "Close",
     "pleaseUploadImageFile": "Please upload image file",
-    "startTypingToSearch": "Start typing to search..."
+    "startTypingToSearch": "Start typing to search...",
+    "selectFromExistingFiles": "Select from Existing Files",
+    "selectImageFromS3": "Select Image from S3",
+    "noFilesFound": "No files found",
+    "cancel": "Cancel",
+    "failedToLoadMediaFiles": "Failed to load media files",
+    "articleContentRequired": "Article content is required"
   },
   "snackbar": {
     "articleSubmitted": "Article submitted for review successfully!",
