@@ -80,7 +80,7 @@ export const uploadFile = async (
 ): Promise<string | undefined> => {
   if (!file) return;
 
-  const folder = s3ImageFolder.replace(/^\//g, "").replace(/\/$/g, "");
+  const folder = s3ImageFolder.replaceAll(/^\//g, "").replaceAll(/\/$/g, "");
   const filePath = folder ? `${folder}/${file.name}` : file.name;
   const presignedUrlResponse = await articleApi.uploadFileForArticle({
     fileMetadata: {
@@ -101,6 +101,6 @@ export const uploadFile = async (
     throw new Error(`Upload failed: ${uploadResponse.status} ${uploadResponse.statusText}`);
   }
 
-  const bucket = s3ArticleBucket.replace(/^\//g, "").replace(/\/$/g, "");
+  const bucket = s3ArticleBucket.replaceAll(/^\//g, "").replaceAll(/\/$/g, "");
   return `${bucket}/${filePath}`;
 };
