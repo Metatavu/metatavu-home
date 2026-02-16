@@ -5,6 +5,22 @@ const s3ImageFolder = config.s3.articleImagesFolder;
 const s3ArticleBucket = config.s3.articleBucket;
 
 /**
+ * Type for response data from API that could be in various formats
+ */
+interface ApiResponse {
+  data?: string[];
+  files?: string[];
+  [key: string]: string[] | undefined;
+}
+
+/**
+ * Type guard to check if value is an array of strings
+ */
+const isStringArray = (value: unknown): value is string[] => {
+  return Array.isArray(value) && value.every((item) => typeof item === "string");
+};
+
+/**
  * Convert S3 URI to HTTPS URL
  * @param fileName - The file name to construct URL for
  * @returns HTTPS URL for the S3 file
@@ -33,12 +49,15 @@ export const getHttpsUrlFromS3 = (fileName: string): string => {
  * @param prefix - Optional prefix to filter files
  * @returns Array of file metadata
  */
-export const listMediaFiles = async (articleApi: ArticleApi, prefix?: string) => {
+export const listMediaFiles = async (
+  articleApi: ArticleApi,
+  prefix?: string
+): Promise<string[]> => {
   const response = await articleApi.listMediaFilesRaw({ prefix });
-  const rawResponse = await response.raw.json();
+  const rawResponse = (await response.raw.json()) as ApiResponse | string[];
 
   // Handle different response formats
-  let files: any;
+  let files: string[];
   if (Array.isArray(rawResponse)) {
     files = rawResponse;
   } else if (rawResponse?.data && Array.isArray(rawResponse.data)) {
@@ -47,14 +66,18 @@ export const listMediaFiles = async (articleApi: ArticleApi, prefix?: string) =>
     files = rawResponse.files;
   } else if (rawResponse && typeof rawResponse === "object") {
     const keys = Object.keys(rawResponse);
-    files = rawResponse[keys[0]];
+    const firstValue = rawResponse[keys[0]];
+    files = isStringArray(firstValue) ? firstValue : [];
   } else {
     files = [];
   }
   return files;
 };
 
-export const uploadFile = async (file: File, articleApi: ArticleApi) => {
+export const uploadFile = async (
+  file: File,
+  articleApi: ArticleApi
+): Promise<string | undefined> => {
   if (!file) return;
 
   const folder = s3ImageFolder.replace(/^\//g, "").replace(/\/$/g, "");
