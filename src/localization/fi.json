@@ -503,7 +503,9 @@
     "dark": "Tumma"
   },
   "notOptedInDescription": {
-    "description": "Aktivoi tilisi, jotta voit nähdä tämän osion"
+    "title": "Tili ei ole aktivoitu",
+    "description": "Aktivoi tilisi, jotta voit nähdä tämän osion",
+    "redirectingMessage": "Tilisi ei ole aktivoitu. Siirtyminen kotisivulle..."
   },
   "adminVacationManagement": {
     "heading": "Ylläpitäjän lomien hallinta",

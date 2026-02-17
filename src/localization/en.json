@@ -503,7 +503,9 @@
     "dark": "Dark"
   },
   "notOptedInDescription": {
-    "description": "Activate your account to view this section."
+    "title": "Not Opted In",
+    "description": "Activate your account to view this section.",
+    "redirectingMessage": "You are not opted in. Redirecting to home page..."
   },
   "adminVacationManagement": {
     "heading": "Admin Vacation Management",

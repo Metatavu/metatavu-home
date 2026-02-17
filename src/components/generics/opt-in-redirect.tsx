@@ -1,19 +1,19 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import ErrorScreen from "../screens/error-screen";
+import NotOptedInScreen from "../screens/not-opted-in-screen";
 
 const OptInRedirect = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      navigate("/");
+      navigate("/", { replace: true });
     }, 5000);
 
     return () => clearTimeout(timer);
   }, [navigate]);
 
-  return <ErrorScreen title="Not Opted In" message="You are not opted in. Redirecting to home page..." />;
+  return <NotOptedInScreen />;
 };
 
 export default OptInRedirect;

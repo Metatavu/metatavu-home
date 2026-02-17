@@ -5,6 +5,7 @@ import { usersAtom } from "src/atoms/user";
 import type { User } from "src/generated/homeLambdasClient";
 import WorkDaysChart from "../work-hours/workDays-chart";
 import OptInRedirect from "../generics/opt-in-redirect";
+import { isUserOptedIn } from "src/utils/user-utils";
 
 /**
  * Balance screen component.
@@ -18,10 +19,7 @@ const BalanceScreen = () => {
     return null;
   }
 
-  const severaUserId = loggedInUser.attributes?.severaUserId?.[0];
-  const isOptedIn = !!severaUserId;
-
-  if (!isOptedIn) {
+  if (!isUserOptedIn(loggedInUser)) {
     return <OptInRedirect />;
   }
 
