@@ -504,8 +504,8 @@
   },
   "notOptedInDescription": {
     "title": "Tili ei ole aktivoitu",
-    "description": "Aktivoi tilisi, jotta voit nähdä tämän osion",
-    "redirectingMessage": "Tilisi ei ole aktivoitu. Siirtyminen kotisivulle..."
+    "description": "Aktivoi tilisi, jotta voit nähdä tämän sivun",
+    "redirectingMessage": "Tilisi ei ole aktivoitu. Palataan kotisivulle..."
   },
   "adminVacationManagement": {
     "heading": "Ylläpitäjän lomien hallinta",
