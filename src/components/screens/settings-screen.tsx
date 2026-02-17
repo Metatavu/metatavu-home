@@ -58,15 +58,19 @@ const SettingsScreen = ({ screenColorMode, setScreenColorMode }: SettingsScreenP
       const fetchedUser = await usersApi.findUser({ userId: userProfile.id });
       const severaUserId = fetchedUser?.attributes?.severaUserId?.[0];
 
+      if (!severaUserId) {
+        setError(strings.error.noSeveraUserId);
+        return;
+      }
+
       setIsConsentGiven(Boolean(severaUserId));
-      if (severaUserId) {
-        const updatedAttributes = { ...userProfile.attributes };
+        const updatedAttributes = { ...userProfile.attributes, severaUserId, isSeveraOptIn: true };
         const updatedProfile = { ...userProfile, attributes: updatedAttributes };
         setUserProfile(updatedProfile);
         setUsers((prev) =>
           prev.map((u) => (u.id === userProfile.id ? { ...u, attributes: updatedAttributes } : u))
         );
-      }
+      
     } catch (error) {
       setError(`${strings.error.fetchFailedSevera}, ${String(error)}`);
     } finally {
