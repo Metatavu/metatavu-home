@@ -18,7 +18,7 @@ import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import { renderVacationDaysTextForScreen } from "src/utils/vacation-days-utils";
 import type { FilterType } from "src/utils/vacation-filter-type";
-import { validateUserVacationRequest } from "src/utils/vacations-utils";
+import { getVacationYear, validateUserVacationRequest } from "src/utils/vacations-utils";
 import BackButton from "../generics/back-button";
 import VacationRequestsTable from "../vacation-requests-table/vacation-requests-table";
 
@@ -53,7 +53,7 @@ const VacationRequestsScreen = () => {
   const [users, setUsers] = useAtom(usersAtom);
   const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
   const [filter, setFilter] = useState<FilterType>("ALL");
-  const currentYear = new Date().getFullYear().toString();
+  const currentYear = getVacationYear().toString();
   const theme = useTheme();
 
   /**

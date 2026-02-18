@@ -2,6 +2,7 @@ import { Grid, Typography } from "@mui/material";
 import type { Theme } from "@mui/material/styles";
 import type { User } from "src/generated/homeLambdasClient";
 import { getVacationColors, parseVacationDays } from "src/utils/time-utils.ts";
+import { getVacationYear } from "src/utils/vacations-utils";
 import strings from "../localization/strings";
 
 /**
@@ -14,7 +15,7 @@ export const renderVacationDaysTextForCard = (user: User, theme: Theme) => {
     user,
     theme
   );
-  const currentYear = new Date().getFullYear();
+  const currentYear = getVacationYear();
 
   if (user) {
     return (
@@ -59,7 +60,7 @@ export const renderVacationDaysTextForScreen = (user: User, theme: Theme) => {
     user,
     theme
   );
-  const currentYear = new Date().getFullYear();
+  const currentYear = getVacationYear();
 
   if (user) {
     return (
