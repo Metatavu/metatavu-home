@@ -262,7 +262,7 @@
     "noVacationRequestsStatusFound": "Tiloja ei löytynyt",
     "tooManyDaysRequestedUser": "Et voi pyytää {requestedDays} päivää. Sinulla on käytettävissä vain {unspentDays} lomapäivää.",
     "tooManyDaysRequestedAdmin": "Ei tarpeeksi lomapäiviä. Pyydetty: {requestedDays} päivää, Käytettävissä: {unspentDays} päivää.",
-    "noVacationDaysAvailable": "Sinulla ei ole lomapäiviä käytettävissä kuluvalle lomavuodelle. Ota yhteyttä järjestelmänvalvojaan.",
+    "noVacationDaysAvailable": "Sinulla ei ole lomapäiviä tälle lomavuodelle. Ota yhteyttä järjestelmänvalvojaan.",
     "failedToLoad": "Käyttäjien lataaminen epäonnistui"
   },
   "sprintRequestError": {
