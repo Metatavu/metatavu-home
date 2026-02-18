@@ -95,7 +95,7 @@ export const validateVacationRequestDays = (
   unspentDays: number,
   isUserAdmin?: boolean
 ): { valid: boolean; errorMessage?: string } => {
-  if (unspentDays === 0) {
+  if (unspentDays === 0 && requestedDays > 0) {
     return {
       valid: false,
       errorMessage: strings.vacationRequestError.noVacationDaysAvailable
