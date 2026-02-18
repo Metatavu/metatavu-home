@@ -65,11 +65,6 @@ const SettingsScreen = ({ screenColorMode, setScreenColorMode }: SettingsScreenP
       setUsers((prev) =>
         prev.map((u) => (u.id === userProfile.id ? { ...u, attributes: updatedAttributes } : u))
       );
-
-      if (!severaUserId) {
-        setError(strings.error.noSeveraUserId);
-      }
-      
     } catch (error) {
       setError(`${strings.error.fetchFailedSevera}, ${String(error)}`);
     } finally {
