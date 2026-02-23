@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import Logo from "../../../resources/img/Metatavu-icon.svg";
-
+import { useLocation } from "react-router-dom";
 /**
  * Navigation Items component
  */
@@ -15,6 +15,8 @@ const NavItems = () => {
   const [currentPage, setCurrentPage] = useState("");
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const { isAdmin } = useUserRole();
+  const location = useLocation();
+
 
   /**
    * Handles opening navigation menu
@@ -85,7 +87,7 @@ const NavItems = () => {
             key={`${strings.header.timebank}mobile`}
             onClick={handleNavItemClick}
           >
-            {strings.header.home}
+            Employee
           </MenuItem>
           {isAdmin && (
             <MenuItem
@@ -107,14 +109,30 @@ const NavItems = () => {
         <Link
           key={strings.header.timebank}
           to={"/"}
-          style={{ margin: 2, display: "block" }}
+          style={{ margin: 2, display: "block", textDecoration: "none"}}
           onClick={handleNavItemClick}
         >
-          <Button>{strings.header.home}</Button>
+          <Button
+          variant={location.pathname === "/" ? "contained" : "text"}
+          sx={{
+            borderRadius: 20,
+            px:2,
+          }}
+          >
+            Employee
+            </Button>
         </Link>
         {isAdmin && (
           <Link to={"/admin"} style={{ margin: 2, display: "block" }}>
-            <Button>{strings.header.admin}</Button>
+            <Button
+            variant={location.pathname.startsWith("/admin") ? "contained" : "text"}
+            sx={{
+              borderRadius: 20,
+              px: 2,
+            }}
+            >
+              {strings.header.admin}
+              </Button>
           </Link>
         )}
       </Box>
