@@ -6,7 +6,8 @@ import {
   Container,
   Grid,
   Link,
-  Typography
+  Typography,
+  useTheme
 } from "@mui/material";
 import { useAtom, useAtomValue } from "jotai";
 import { DateTime } from "luxon";
@@ -43,6 +44,7 @@ const SoftwareDetails = () => {
   const loggedUserId = auth?.token?.sub ?? "";
   const { adminMode } = useUserRole();
   const users = useAtomValue(usersAtom) || [];
+  const theme = useTheme();
 
   /**
    * Fetches software details.
@@ -220,8 +222,8 @@ const SoftwareDetails = () => {
               key={tag}
               component="span"
               sx={{
-                backgroundColor: "#F9473B",
-                color: "#fff",
+                backgroundColor: theme.palette.secondary.main,
+                color: theme.palette.getContrastText(theme.palette.secondary.main),
                 padding: "6px 8px",
                 borderRadius: "5px",
                 fontSize: "14px",
@@ -232,11 +234,16 @@ const SoftwareDetails = () => {
             </Box>
           ))}
         </Box>
-        <Typography gutterBottom sx={{ color: "#000", fontWeight: "bold" }}>
+        <Typography gutterBottom sx={{ color: theme.palette.text.primary, fontWeight: "bold" }}>
           {getFullUserName(users.find((u) => u.id === software.createdBy))} -{" "}
           {formatDate(DateTime.fromJSDate(new Date(software.createdAt || "")))}
         </Typography>
-        <Link href={software.url} target="_blank" rel="noopener" sx={{ color: "#F9473B" }}>
+        <Link
+          href={software.url}
+          target="_blank"
+          rel="noopener"
+          sx={{ color: theme.palette.secondary.main, fontWeight: "bold" }}
+        >
           {software.url}
         </Link>
       </Box>
@@ -286,11 +293,11 @@ const SoftwareDetails = () => {
               padding: "7px 10px",
               fontSize: "17px",
               fontWeight: "bold",
-              color: "#000",
-              borderColor: "#000",
+              color: theme.palette.text.primary,
+              borderColor: theme.palette.text.primary,
               "&:hover": {
-                borderColor: "#000",
-                backgroundColor: "#f0f0f0"
+                borderColor: theme.palette.text.primary,
+                backgroundColor: theme.palette.action.hover
               }
             }}
             onClick={handleRemoveSoftware}
@@ -307,9 +314,10 @@ const SoftwareDetails = () => {
               borderRadius: "25px",
               fontSize: "16px",
               fontWeight: "bold",
-              color: "#fff",
+              color: theme.palette.getContrastText(theme.palette.secondary.main),
+              backgroundColor: theme.palette.secondary.main,
               "&:hover": {
-                backgroundColor: "#000"
+                backgroundColor: theme.palette.secondary.dark
               }
             }}
             onClick={handleAddSoftware}
@@ -323,12 +331,12 @@ const SoftwareDetails = () => {
             color="secondary"
             sx={{
               textTransform: "none",
-              color: "#fff",
+              color: theme.palette.getContrastText(theme.palette.secondary.main),
               marginLeft: "20px",
               fontSize: "18px",
-              background: "#000",
+              backgroundColor: theme.palette.secondary.main,
               borderRadius: "25px",
-              "&:hover": { background: "grey" }
+              "&:hover": { background: theme.palette.secondary.dark }
             }}
             onClick={() => setIsEditModalOpen(true)}
           >

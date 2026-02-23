@@ -1,4 +1,4 @@
-import { Box, CircularProgress, Switch, Typography } from "@mui/material";
+import { Box, CircularProgress, Switch, Typography, useTheme } from "@mui/material";
 import { useAtom, useSetAtom } from "jotai";
 import { useEffect, useState } from "react";
 import { userProfileAtom } from "src/atoms/auth";
@@ -6,11 +6,18 @@ import { errorAtom } from "src/atoms/error";
 import { usersAtom } from "src/atoms/user";
 import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
+import { type ThemeMode, ThemeModes } from "src/types/index";
+
+type SettingsScreenProps = {
+  screenColorMode: ThemeMode;
+  setScreenColorMode: (screenColorMode: ThemeMode) => void;
+};
 
 /**
  * Settings screen component
  */
-const SettingsScreen = () => {
+const SettingsScreen = ({ screenColorMode, setScreenColorMode }: SettingsScreenProps) => {
+  const theme = useTheme();
   const [userProfile, setUserProfile] = useAtom(userProfileAtom);
   const { usersApi } = useLambdasApi();
   const setUsers = useSetAtom(usersAtom);
@@ -96,31 +103,88 @@ const SettingsScreen = () => {
     }
   };
 
+  /**
+   * Toggles the screen color mode between light and dark. Updates the screenColorMode state and saves the new value in localStorage.
+   */
+  const handleModeToggle = () => {
+    const newScreenColorMode: ThemeMode =
+      screenColorMode === ThemeModes.LIGHT ? ThemeModes.DARK : ThemeModes.LIGHT;
+    setScreenColorMode(newScreenColorMode);
+    localStorage.setItem("screenColorMode", newScreenColorMode);
+  };
+
   return (
-    <Box p={2} bgcolor="grey.100" borderRadius={2}>
-      <Typography variant="h5" gutterBottom>
-        {strings.settingsScreen.consentToDataProcessing}
-      </Typography>
-      <Box display="flex" alignItems="center" mt={2}>
-        <Typography variant="body1" sx={{ marginRight: 2 }}>
-          {strings.settingsScreen.decline}
+    <Box p={2}>
+      <Box
+        p={2}
+        borderRadius={2}
+        sx={{
+          bgcolor: theme.palette.background.paper,
+          "&:hover": {
+            bgcolor: theme.palette.action.hover
+          },
+          transition: "background-color 0.2s ease"
+        }}
+      >
+        <Typography variant="h5" gutterBottom>
+          {strings.settingsScreen.consentToDataProcessing}
         </Typography>
-        <Box display="flex" alignItems="center">
-          <Switch
-            checked={isConsentGiven}
-            onChange={handleToggleChange}
-            inputProps={{ "aria-label": "severa-opt-in" }}
-            disabled={loading}
-          />
-          {loading && (
-            <Box ml={1}>
-              <CircularProgress size={20} />
-            </Box>
-          )}
+        <Box display="flex" alignItems="center" mt={2}>
+          <Typography variant="body1" sx={{ marginRight: 2 }}>
+            {strings.settingsScreen.decline}
+          </Typography>
+          <Box display="flex" alignItems="center">
+            <Switch
+              checked={isConsentGiven}
+              onChange={handleToggleChange}
+              inputProps={{ "aria-label": "severa-opt-in" }}
+              disabled={loading}
+            />
+            {loading && (
+              <Box ml={1}>
+                <CircularProgress size={20} />
+              </Box>
+            )}
+          </Box>
+          <Typography variant="body1" sx={{ marginLeft: 2 }}>
+            {strings.settingsScreen.accept}
+          </Typography>
         </Box>
-        <Typography variant="body1" sx={{ marginLeft: 2 }}>
-          {strings.settingsScreen.accept}
+      </Box>
+      <Box
+        p={2}
+        borderRadius={2}
+        sx={{
+          bgcolor: theme.palette.background.paper,
+          "&:hover": {
+            bgcolor: theme.palette.action.hover
+          },
+          transition: "background-color 0.2s ease"
+        }}
+      >
+        <Typography variant="h5" gutterBottom>
+          {strings.settingsScreen.lightOrDarkMode}
         </Typography>
+        <Box display="flex" alignItems="center" mt={2}>
+          <Typography variant="body1" sx={{ marginRight: 2 }}>
+            {strings.settingsScreen.light}
+          </Typography>
+          <Box display="flex" alignItems="center">
+            <Switch
+              checked={screenColorMode === ThemeModes.DARK}
+              onChange={handleModeToggle}
+              inputProps={{ "aria-label": "dark-mode-toggle" }}
+            />
+            {loading && (
+              <Box ml={1}>
+                <CircularProgress size={20} />
+              </Box>
+            )}
+          </Box>
+          <Typography variant="body1" sx={{ marginLeft: 2 }}>
+            {strings.settingsScreen.dark}
+          </Typography>
+        </Box>
       </Box>
     </Box>
   );

@@ -11,7 +11,8 @@ import {
   Slider,
   TextField,
   Tooltip,
-  Typography
+  Typography,
+  useTheme
 } from "@mui/material";
 import { useSetAtom } from "jotai";
 import { type ChangeEvent, useState } from "react";
@@ -49,6 +50,7 @@ const NewQuestionnaireBuilder = () => {
   const [tagInput, setTagInput] = useState<string>("");
   const [tagError, setTagError] = useState<string | null>(null);
   const isDisabled = !isFormValid(questionnaire);
+  const theme = useTheme();
 
   /**
    * Function to handle input change in the questionnaire title and description
@@ -252,9 +254,10 @@ const NewQuestionnaireBuilder = () => {
                   height: "40px",
                   minWidth: "90px",
                   textTransform: "lowercase",
-                  backgroundColor: "#212121",
+                  backgroundColor: theme.palette.primary.main,
+                  color: theme.palette.primary.contrastText,
                   "&:hover": {
-                    backgroundColor: "#000000"
+                    backgroundColor: theme.palette.primary.dark
                   }
                 }}
               >

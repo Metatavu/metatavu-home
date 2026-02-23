@@ -125,13 +125,7 @@ const SoftwareRegistryCard = () => {
       to={adminMode ? "/admin/allsoftware" : "/softwareregistry"}
       style={{ textDecoration: "none" }}
     >
-      <Card
-        sx={{
-          "&:hover": {
-            background: "#efefef"
-          }
-        }}
-      >
+      <Card>
         <CardContent>
           <Typography variant="h6" fontWeight={"bold"} style={{ marginTop: 6, marginBottom: 3 }}>
             {adminMode

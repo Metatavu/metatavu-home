@@ -1,6 +1,6 @@
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import { Box, Card, CircularProgress, IconButton, Typography } from "@mui/material";
+import { Box, Card, CircularProgress, IconButton, Typography, useTheme } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { useAtomValue, useSetAtom } from "jotai";
 import { useEffect, useState } from "react";
@@ -35,6 +35,7 @@ interface Props {
  * @param props component properties
  */
 const TaskTable = ({ filter, project }: Props) => {
+  const theme = useTheme();
   const users = useAtomValue(usersAtom);
   const { adminMode } = useUserRole();
   const userProfile = useAtomValue(userProfileAtom);
@@ -92,7 +93,7 @@ const TaskTable = ({ filter, project }: Props) => {
     <Card
       key={0}
       sx={{
-        backgroundColor: "#f2f2f2",
+        backgroundColor: theme.palette.background.paper,
         margin: 0,
         paddingTop: "5px",
         paddingBottom: "5px",
@@ -100,10 +101,10 @@ const TaskTable = ({ filter, project }: Props) => {
         height: "100",
         marginBottom: "16px",
         "& .high_priority": {
-          color: "red"
+          color: theme.palette.error.main
         },
         "& .low_priority": {
-          color: "green"
+          color: theme.palette.success.main
         }
       }}
     >
@@ -120,49 +121,50 @@ const TaskTable = ({ filter, project }: Props) => {
         <IconButton>{open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}</IconButton>
         <Typography>{project.name}</Typography>
       </Box>
-      {open && (
-        <>
-          {loading ? (
-            <Box sx={{ textAlign: "center" }}>
-              <CircularProgress
-                sx={{
-                  scale: "100%",
-                  mt: "3%",
-                  mb: "3%"
-                }}
-              />
-            </Box>
-          ) : (
-            <DataGrid
+      {open &&
+        (loading ? (
+          <Box sx={{ textAlign: "center" }}>
+            <CircularProgress
               sx={{
-                backgroundColor: "#f6f6f6",
-                borderTop: 0,
-                borderLeft: 0,
-                borderRight: 0,
-                borderBottom: 0,
-                "& .header-color": {
-                  backgroundColor: "#f2f2f2"
-                }
+                scale: "100%",
+                mt: "3%",
+                mb: "3%"
               }}
-              autoHeight={true}
-              localeText={{ noResultsOverlayLabel: strings.sprint.notFound }}
-              disableColumnFilter
-              hideFooter={true}
-              filterModel={{
-                items: [
-                  {
-                    field: "status",
-                    operator: "contains",
-                    value: filter
-                  }
-                ]
-              }}
-              rows={rows}
-              columns={columns}
             />
-          )}
-        </>
-      )}
+          </Box>
+        ) : (
+          <DataGrid
+            sx={{
+              backgroundColor: theme.palette.background.default,
+              borderTop: 0,
+              borderLeft: 0,
+              borderRight: 0,
+              borderBottom: 0,
+              "& .header-color": {
+                backgroundColor: theme.palette.background.paper
+              },
+
+              "& .MuiDataGrid-row:hover": {
+                backgroundColor: theme.palette.action.hover
+              }
+            }}
+            autoHeight={true}
+            localeText={{ noResultsOverlayLabel: strings.sprint.notFound }}
+            disableColumnFilter
+            hideFooter={true}
+            filterModel={{
+              items: [
+                {
+                  field: "status",
+                  operator: "contains",
+                  value: filter
+                }
+              ]
+            }}
+            rows={rows}
+            columns={columns}
+          />
+        ))}
     </Card>
   );
 };

@@ -569,6 +569,7 @@ export interface Localized extends LocalizedStringsMethods {
     labelTags: string;
     labelImage: string;
     labelDescription: string;
+    coverImageAlt: string;
     labelLink: string;
     labelLinkPlaceholder: string;
     draft: string;
@@ -615,6 +616,9 @@ export interface Localized extends LocalizedStringsMethods {
     accept: string;
     decline: string;
     consentToDataProcessing: string;
+    lightOrDarkMode: string;
+    light: string;
+    dark: string;
   };
   /**
    * Translations related to if user is not Severa Opt in
@@ -708,6 +712,36 @@ export interface Localized extends LocalizedStringsMethods {
     createArticleContent: string;
     listOfArticlesTitle: string;
     listOfArticlesContent: string;
+  };
+  /**
+   * Translations related to Onboarding Wiki Create Article Form
+   */
+  onboardingWikiCreate: {
+    prev: string;
+    next: string;
+    close: string;
+    welcomeTitle: string;
+    welcomeContent: string;
+    titleFieldTitle: string;
+    titleFieldContent: string;
+    pathFieldTitle: string;
+    pathFieldContent: string;
+    tagsFieldTitle: string;
+    tagsFieldContent: string;
+    imageFieldTitle: string;
+    imageFieldContent: string;
+    descriptionFieldTitle: string;
+    descriptionFieldContent: string;
+    editorTitle: string;
+    editorContent: string;
+    editorLinksTitle: string;
+    editorLinksContent: string;
+    editorArticleLinksTitle: string;
+    editorArticleLinksContent: string;
+    editorImagesTitle: string;
+    editorImagesContent: string;
+    actionButtonTitle: string;
+    actionButtonContent: string;
   };
   /**
    * Translations related to On Call

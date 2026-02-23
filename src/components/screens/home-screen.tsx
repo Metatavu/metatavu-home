@@ -1,4 +1,4 @@
-import { Box, Grid, Skeleton } from "@mui/material";
+import { Box, Grid, Skeleton, useTheme } from "@mui/material";
 import { useAtomValue } from "jotai";
 import type { ReactNode } from "react";
 import { userProfileAtom } from "src/atoms/auth";
@@ -21,6 +21,7 @@ import Onboarding from "../onboarding/Onboarding";
  * Home screen component
  */
 const HomeScreen = () => {
+  const theme = useTheme();
   const { isDeveloper, isTester } = useUserRole();
   const users = useAtomValue(usersAtom);
   const userProfile = useAtomValue(userProfileAtom);
@@ -40,20 +41,24 @@ const HomeScreen = () => {
   const renderCardWithSkeleton = (title: string, content: ReactNode) => (
     <Box
       sx={{
-        background: "#ffffff",
+        background: theme.palette.background.paper,
         borderRadius: 1,
-        boxShadow: "0px 2px 8px rgba(0,0,0,0.05)",
+        boxShadow: theme.shadows[1],
         minHeight: title === strings.sprint.sprintview ? 270 : 120,
         display: "flex",
         flexDirection: "column",
-        justifyContent: "flex-start"
+        justifyContent: "flex-start",
+        transition: "background-color 0.2s ease",
+        "&:hover": {
+          backgroundColor: theme.palette.action.hover
+        }
       }}
     >
       <Grid sx={{ padding: 2 }}>
         <Box sx={{ fontWeight: "bold", fontSize: 22 }}>{title}</Box>
         {!hasSeveraUserId ? (
           <>
-            <div style={{ color: "#888", fontSize: 15, padding: "12px 0" }}>
+            <div style={{ color: theme.palette.text.secondary, fontSize: 15, padding: "12px 0" }}>
               {strings.notOptedInDescription.description}
             </div>
             <Skeleton

@@ -1,4 +1,5 @@
 import { Grid, Typography } from "@mui/material";
+import type { Theme } from "@mui/material/styles";
 import type { User } from "src/generated/homeLambdasClient";
 import { getVacationColors, parseVacationDays } from "src/utils/time-utils.ts";
 import strings from "../localization/strings";
@@ -8,8 +9,11 @@ import strings from "../localization/strings";
  *
  * @param user KeyCloak user
  */
-export const renderVacationDaysTextForCard = (user: User) => {
-  const { vacationDaysByYearColor, unspentVacationDaysByYearColor } = getVacationColors(user);
+export const renderVacationDaysTextForCard = (user: User, theme: Theme) => {
+  const { vacationDaysByYearColor, unspentVacationDaysByYearColor } = getVacationColors(
+    user,
+    theme
+  );
   const currentYear = new Date().getFullYear();
 
   if (user) {
@@ -50,8 +54,11 @@ export const renderVacationDaysTextForCard = (user: User) => {
  *
  * @param user Keycloak user
  */
-export const renderVacationDaysTextForScreen = (user: User) => {
-  const { vacationDaysByYearColor, unspentVacationDaysByYearColor } = getVacationColors(user);
+export const renderVacationDaysTextForScreen = (user: User, theme: Theme) => {
+  const { vacationDaysByYearColor, unspentVacationDaysByYearColor } = getVacationColors(
+    user,
+    theme
+  );
   const currentYear = new Date().getFullYear();
 
   if (user) {

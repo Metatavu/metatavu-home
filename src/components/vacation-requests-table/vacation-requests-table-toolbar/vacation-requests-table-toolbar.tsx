@@ -1,5 +1,15 @@
 import { Add, Cancel, Edit, FilterAlt } from "@mui/icons-material";
-import { Box, Button, Collapse, Grid, MenuItem, Select, styled, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Collapse,
+  Grid,
+  MenuItem,
+  Select,
+  styled,
+  Typography,
+  useTheme
+} from "@mui/material";
 import type { GridRowId } from "@mui/x-data-grid";
 import { useAtomValue } from "jotai";
 import { useEffect, useState } from "react";
@@ -72,6 +82,7 @@ const TableToolbar = ({
   filter,
   setFilter
 }: Props) => {
+  const theme = useTheme();
   const [toolbarOpen, setToolbarOpen] = useState(false);
   const [toolbarFormMode, setToolbarFormMode] = useState<ToolbarFormModes>(ToolbarFormModes.NONE);
   const [confirmationHandlerOpen, setConfirmationHandlerOpen] = useState(false);
@@ -262,9 +273,10 @@ const TableToolbar = ({
           <ToolbarGridItem item xs={3}>
             <Button
               sx={{
-                backgroundColor: "#eeeeee",
+                backgroundColor: theme.palette.background.paper,
                 p: 1,
-                "&:hover": { backgroundColor: "#e0e0e0" }
+                "&:hover": { backgroundColor: theme.palette.action.hover },
+                color: theme.palette.text.primary
               }}
               onClick={toggleIsUpcoming}
             >
@@ -278,13 +290,13 @@ const TableToolbar = ({
               onChange={(e) => setFilter(e.target.value as FilterType)}
               sx={{
                 maxWidth: 120,
-                backgroundColor: "#eeeeee",
+                backgroundColor: theme.palette.background.paper,
                 height: 42,
-                color: "#222",
+                color: theme.palette.text.primary,
                 "& .MuiOutlinedInput-notchedOutline": {
                   border: "none"
                 },
-                "&:hover": { backgroundColor: "#e0e0e0" },
+                "&:hover": { backgroundColor: theme.palette.action.hover },
                 fontWeight: 700,
                 display: "flex"
               }}
