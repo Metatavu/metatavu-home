@@ -116,7 +116,7 @@ const NavItems = () => {
           variant={location.pathname === "/" ? "contained" : "text"}
           sx={{
             borderRadius: 20,
-            px:2,
+            px: 2,
           }}
           >
             {strings.header.employee}
