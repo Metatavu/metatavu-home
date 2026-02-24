@@ -24,7 +24,7 @@ const Content = ({ applications, isGridView }: ContentProps) => {
   return isGridView ? (
     <Grid container spacing={2}>
       {applications.map((app) => (
-        <Grid item key={app.id}>
+        <Grid key={app.id}>
           <AppCard
             id={app.id || ""}
             image={app.image}

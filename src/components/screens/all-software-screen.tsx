@@ -295,7 +295,12 @@ const AllSoftwareScreen = () => {
   return (
     <Container>
       <Grid container direction="column" alignItems="center" mt={4}>
-        <Grid item container justifyContent="space-between" alignItems="center" mb={2} mt={4}>
+        <Grid
+          container
+          justifyContent="space-between"
+          alignItems="center"
+          mb={2}
+          mt={4}>
           <Typography variant="h3">{strings.softwareRegistry.allApplications}</Typography>
           <Button
             variant="contained"
@@ -428,7 +433,7 @@ const AllSoftwareScreen = () => {
         </Grid>
 
         <Grid container justifyContent="flex-start" mt={2} mb={6} width="100%">
-          <Grid item xs>
+          <Grid size="grow">
             {error && (
               <Box mb={2} width="100%">
                 <Alert severity="error">{error}</Alert>
@@ -466,7 +471,6 @@ const AllSoftwareScreen = () => {
         </Grid>
       </Grid>
       <BackButton styles={{ marginBottom: 2 }} />
-
       <AddSoftwareModal
         open={isModalOpen}
         handleClose={() => setIsModalOpen(false)}

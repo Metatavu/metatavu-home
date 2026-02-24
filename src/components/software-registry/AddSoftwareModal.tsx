@@ -187,7 +187,11 @@ const AddSoftwareModal = ({
             {strings.softwareRegistry.addSoftware}
           </Typography>
           <Grid container spacing={2} sx={{ flexGrow: 1 }}>
-            <Grid item xs={12} md={6}>
+            <Grid
+              size={{
+                xs: 12,
+                md: 6
+              }}>
               <TextField
                 fullWidth
                 label={strings.softwareRegistry.name}
@@ -203,7 +207,11 @@ const AddSoftwareModal = ({
                 }
               />
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid
+              size={{
+                xs: 12,
+                md: 6
+              }}>
               <TextField
                 fullWidth
                 label={strings.softwareRegistry.imageURL}
@@ -214,7 +222,11 @@ const AddSoftwareModal = ({
                 helperText={strings.softwareRegistry.imageURLRequired}
               />
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid
+              size={{
+                xs: 12,
+                md: 6
+              }}>
               <TextField
                 fullWidth
                 label={strings.softwareRegistry.URLAddress}
@@ -225,7 +237,7 @@ const AddSoftwareModal = ({
                 helperText={strings.softwareRegistry.URLExample}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid size={6}>
               <TextField
                 fullWidth
                 label={strings.softwareRegistry.tags}
@@ -290,7 +302,7 @@ const AddSoftwareModal = ({
                 </Button>
               </Box>
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <TextField
                 fullWidth
                 label={strings.softwareRegistry.description}
@@ -301,7 +313,7 @@ const AddSoftwareModal = ({
                 rows={4}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <TextField
                 fullWidth
                 label={strings.softwareRegistry.ownReview}
@@ -312,7 +324,7 @@ const AddSoftwareModal = ({
                 rows={2}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <Autocomplete
                 multiple
                 options={userList.filter((user) => user.firstName && user.lastName)}
@@ -351,7 +363,7 @@ const AddSoftwareModal = ({
                 )}
               />
             </Grid>
-            <Grid item container justifyContent="right" xs={12} mt={4}>
+            <Grid container justifyContent="right" mt={4} size={12}>
               <Button
                 onClick={() => {
                   handleClose();

@@ -336,7 +336,7 @@ const WikiDocumentationScreen = () => {
    */
   const renderSearch = () => (
     // biome-ignore lint/correctness/useUniqueElementIds: keeping static id
-    <Card
+    (<Card
       id="wiki-article-search-bar"
       sx={{
         width: {
@@ -431,11 +431,11 @@ const WikiDocumentationScreen = () => {
           }}
         />
       </Box>
-    </Card>
+    </Card>)
   );
   const renderCreateButton = () => (
     // biome-ignore lint/correctness/useUniqueElementIds: keeping static id
-    <Button
+    (<Button
       id="wiki-create-article-button"
       onClick={() => setFormOpen(true)}
       variant="contained"
@@ -454,7 +454,7 @@ const WikiDocumentationScreen = () => {
       <Typography variant={"body1"} marginLeft={1} sx={{ fontWeight: "bold" }}>
         {strings.wikiDocumentation.create}
       </Typography>
-    </Button>
+    </Button>)
   );
 
   const renderListViewButton = () => (
@@ -616,7 +616,7 @@ const WikiDocumentationScreen = () => {
         />
       ) : (
         // biome-ignore lint/correctness/useUniqueElementIds: keeping static id
-        <Box id="wiki-card-title" sx={{ width: "100%" }}>
+        (<Box id="wiki-card-title" sx={{ width: "100%" }}>
           {!adminMode && (
             <>
               {renderTitle(strings.wikiDocumentation.cardTitle)}
@@ -636,7 +636,7 @@ const WikiDocumentationScreen = () => {
             {renderToolBar()}
             {displayedArticlesOnPage.length !== 0 ? (
               // biome-ignore lint/correctness/useUniqueElementIds: keeping static id
-              <Grid
+              (<Grid
                 id="wiki-articles-list"
                 container
                 spacing={adminMode ? 4 : 3}
@@ -644,13 +644,13 @@ const WikiDocumentationScreen = () => {
               >
                 {displayedArticlesOnPage.map((article) => (
                   <Grid
-                    item
-                    lg={!listView ? 3 : 12}
-                    md={!listView ? 4 : 12}
-                    sm={!listView ? 6 : 12}
-                    xs={12}
                     key={`article-grid-item-${article.id}`}
-                  >
+                    size={{
+                      lg: !listView ? 3 : 12,
+                      md: !listView ? 4 : 12,
+                      sm: !listView ? 6 : 12,
+                      xs: 12
+                    }}>
                     {listView ? (
                       <ArticleListItem
                         article={article}
@@ -666,7 +666,7 @@ const WikiDocumentationScreen = () => {
                     )}
                   </Grid>
                 ))}
-              </Grid>
+              </Grid>)
             ) : (
               <Grid container justifyContent="center" sx={{ color: colors.button.text }}>
                 <SearchOffIcon />
@@ -674,7 +674,6 @@ const WikiDocumentationScreen = () => {
               </Grid>
             )}
           </Box>
-
           {displayedArticles.length > itemsPerPage && (
             <Grid container justifyContent="center" sx={{ marginBottom: 3 }}>
               <Pagination
@@ -686,7 +685,7 @@ const WikiDocumentationScreen = () => {
             </Grid>
           )}
           <BackButton styles={{ marginBottom: 2 }} />
-        </Box>
+        </Box>)
       )}
       <Snackbar
         open={snackbar.open}

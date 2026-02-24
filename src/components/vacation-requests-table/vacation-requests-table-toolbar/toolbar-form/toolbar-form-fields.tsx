@@ -175,7 +175,6 @@ const ToolbarFormFields = ({
           />
         </>
       )}
-
       {adminMode ? (
         <>
           <FormLabel>{strings.vacationRequest.days}</FormLabel>
@@ -204,10 +203,9 @@ const ToolbarFormFields = ({
           />
         </>
       )}
-
       {toolbarFormMode === ToolbarFormModes.CREATE && (
         <Grid container spacing={2}>
-          <Grid item xs={6}>
+          <Grid size={6}>
             <Button
               disabled={
                 !adminMode &&
@@ -223,7 +221,7 @@ const ToolbarFormFields = ({
             </Button>
           </Grid>
           <Tooltip title={strings.tableToolbar.saveAsDraftTooltip} placement="bottom">
-            <Grid item xs={6}>
+            <Grid size={6}>
               <Button
                 disabled={
                   !adminMode &&
@@ -241,7 +239,6 @@ const ToolbarFormFields = ({
           </Tooltip>
         </Grid>
       )}
-
       {toolbarFormMode === ToolbarFormModes.EDIT && (
         <Button
           disabled={
