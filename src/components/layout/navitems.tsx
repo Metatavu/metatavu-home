@@ -3,11 +3,11 @@ import { Box, IconButton, Menu, MenuItem } from "@mui/material";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { type MouseEvent, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import Logo from "../../../resources/img/Metatavu-icon.svg";
-import { useLocation } from "react-router-dom";
+import { useTheme } from "@mui/material/styles";
 /**
  * Navigation Items component
  */
@@ -16,6 +16,7 @@ const NavItems = () => {
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const { isAdmin } = useUserRole();
   const location = useLocation();
+  const theme = useTheme();
 
 
   /**
@@ -47,7 +48,12 @@ const NavItems = () => {
           <img
             src={Logo}
             alt={strings.header.logoAlt}
-            style={{ height: 40, filter: "invert(100%)" }}
+            style={{ height: 40, 
+              filter: 
+                theme.palette.mode === "dark" 
+                  ? "invert(1)" 
+                  : "invert(0)"
+            }}
           />
         </Button>
       </Link>
@@ -80,14 +86,14 @@ const NavItems = () => {
           sx={{
             display: { xs: "block", md: "none" }
           }}
-        >
+        > 
           <MenuItem
             component={Link}
             to={"/"}
             key={`${strings.header.timebank}mobile`}
             onClick={handleNavItemClick}
           >
-            Employee
+            {strings.header.employee}
           </MenuItem>
           {isAdmin && (
             <MenuItem
@@ -119,9 +125,10 @@ const NavItems = () => {
             px: 2,
           }}
           >
-            {strings.header.employee}
-            </Button>
-        </Link>
+          {strings.header.employee}
+          </Button>
+        </Link>  
+  
         {isAdmin && (
           <Link to={"/admin"} style={{ margin: 2, display: "block", textDecoration: "none"}}>
             <Button
@@ -131,13 +138,12 @@ const NavItems = () => {
               px: 2,
             }}
             >
-              {strings.header.admin}
-              </Button>
+            {strings.header.admin}
+            </Button>
           </Link>
         )}
       </Box>
     </>
   );
 };
-
 export default NavItems;

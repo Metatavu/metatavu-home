@@ -36,7 +36,7 @@ export interface Localized extends LocalizedStringsMethods {
     openSettings: string;
     openUserMenu: string;
     logoAlt: string;
-  }
+  };
   /**
    * Translations related to errors
    */
