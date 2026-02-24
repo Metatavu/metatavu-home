@@ -74,7 +74,6 @@ const ToolbarGridContainer = styled(Grid)({
 interface SelectionToolbarProps {
   selectedIdsSize: number;
   gridItemSize: number;
-  formOpen: boolean;
   adminMode: boolean;
   isDraftSelected: boolean;
   firstId: GridRowId | undefined;
@@ -387,7 +386,6 @@ const TableToolbar = ({
         <SelectionToolbar
           selectedIdsSize={selectedIdsSize}
           gridItemSize={gridItemSize}
-          formOpen={formOpen}
           adminMode={adminMode}
           isDraftSelected={isDraftSelected}
           firstId={firstId}
