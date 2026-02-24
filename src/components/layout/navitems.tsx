@@ -18,6 +18,8 @@ const NavItems = () => {
   const { isAdmin } = useUserRole();
   const location = useLocation();
   const theme = useTheme();
+  const isAdminRoute = location.pathname.startsWith("/admin");
+
 
   /**
    * Handles opening navigation menu
@@ -117,7 +119,7 @@ const NavItems = () => {
           onClick={handleNavItemClick}
         >
           <Button
-            variant={location.pathname === "/" ? "contained" : "text"}
+            variant={!isAdminRoute ? "contained" : "text"}
             sx={{
               borderRadius: 20,
               px: 2
