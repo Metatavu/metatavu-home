@@ -109,7 +109,7 @@ const NavItems = () => {
         <Link
           key={strings.header.timebank}
           to={"/"}
-          style={{ margin: 2, display: "block", textDecoration: "none"}}
+          style={{ margin: 2, display: "block", textDecoration: "none" }}
           onClick={handleNavItemClick}
         >
           <Button
