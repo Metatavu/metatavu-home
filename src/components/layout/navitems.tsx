@@ -1,13 +1,14 @@
 import MenuIcon from "@mui/icons-material/Menu";
 import { Box, IconButton, Menu, MenuItem } from "@mui/material";
 import Button from "@mui/material/Button";
+import { useTheme } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
 import { type MouseEvent, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import Logo from "../../../resources/img/Metatavu-icon.svg";
-import { useTheme } from "@mui/material/styles";
+
 /**
  * Navigation Items component
  */
@@ -17,7 +18,6 @@ const NavItems = () => {
   const { isAdmin } = useUserRole();
   const location = useLocation();
   const theme = useTheme();
-
 
   /**
    * Handles opening navigation menu
@@ -48,11 +48,9 @@ const NavItems = () => {
           <img
             src={Logo}
             alt={strings.header.logoAlt}
-            style={{ height: 40, 
-              filter: 
-                theme.palette.mode === "dark" 
-                  ? "invert(1)" 
-                  : "invert(0)"
+            style={{
+              height: 40,
+              filter: theme.palette.mode === "dark" ? "invert(0)" : "invert(1)"
             }}
           />
         </Button>
@@ -86,7 +84,7 @@ const NavItems = () => {
           sx={{
             display: { xs: "block", md: "none" }
           }}
-        > 
+        >
           <MenuItem
             component={Link}
             to={"/"}
@@ -119,26 +117,26 @@ const NavItems = () => {
           onClick={handleNavItemClick}
         >
           <Button
-          variant={location.pathname === "/" ? "contained" : "text"}
-          sx={{
-            borderRadius: 20,
-            px: 2,
-          }}
-          >
-          {strings.header.employee}
-          </Button>
-        </Link>  
-  
-        {isAdmin && (
-          <Link to={"/admin"} style={{ margin: 2, display: "block", textDecoration: "none"}}>
-            <Button
-            variant={location.pathname.startsWith("/admin") ? "contained" : "text"}
+            variant={location.pathname === "/" ? "contained" : "text"}
             sx={{
               borderRadius: 20,
-              px: 2,
+              px: 2
             }}
+          >
+            {strings.header.employee}
+          </Button>
+        </Link>
+
+        {isAdmin && (
+          <Link to={"/admin"} style={{ margin: 2, display: "block", textDecoration: "none" }}>
+            <Button
+              variant={location.pathname.startsWith("/admin") ? "contained" : "text"}
+              sx={{
+                borderRadius: 20,
+                px: 2
+              }}
             >
-            {strings.header.admin}
+              {strings.header.admin}
             </Button>
           </Link>
         )}
