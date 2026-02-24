@@ -123,7 +123,7 @@ const NavItems = () => {
             </Button>
         </Link>
         {isAdmin && (
-          <Link to={"/admin"} style={{ margin: 2, display: "block" }}>
+          <Link to={"/admin"} style={{ margin: 2, display: "block", textDecoration: "none"}}>
             <Button
             variant={location.pathname.startsWith("/admin") ? "contained" : "text"}
             sx={{
