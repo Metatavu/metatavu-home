@@ -119,7 +119,7 @@ const NavItems = () => {
             px:2,
           }}
           >
-            Employee
+            {strings.header.employee}
             </Button>
         </Link>
         {isAdmin && (
