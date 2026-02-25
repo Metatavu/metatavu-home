@@ -119,7 +119,7 @@ const NavItems = () => {
           onClick={handleNavItemClick}
         >
           <Button
-            variant={!isAdminRoute ? "contained" : "text"}
+            variant={isAdminRoute ? "text" : "contained"}
             sx={{
               borderRadius: 20,
               px: 2
