@@ -236,7 +236,7 @@ const OnCallCalendarScreen = () => {
    *
    * @param props - Properties for rendering a calendar day
    */
-  const fillCalendarDays = (props: PickersDayProps<DateTime>) => {
+  const fillCalendarDays = (props: PickersDayProps) => {
     const { day, outsideCurrentMonth, ...other } = props;
     const weekNumber = day.weekNumber;
     const onCallDayData = onCallByWeek.get(weekNumber);
@@ -369,7 +369,7 @@ const OnCallCalendarScreen = () => {
 
   const DAY_WIDTH = 56; // width of each day cell in the calendar
 
-  const StyledPickersDay = styled(PickersDay<DateTime>)(({ theme }) => ({
+  const StyledPickersDay = styled(PickersDay)(({ theme }) => ({
     width: DAY_WIDTH,
     height: DAY_WIDTH,
     fontSize: 18,
