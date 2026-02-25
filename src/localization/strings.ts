@@ -26,6 +26,7 @@ export interface Localized extends LocalizedStringsMethods {
     hello: string;
     logout: string;
     home: string;
+    employee: string;
     settings: string;
     timebank: string;
     vacations: string;
