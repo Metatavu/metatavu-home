@@ -201,8 +201,8 @@ const SoftwareScreen = () => {
 
   return (
     <Container>
-      <Grid container direction="column" alignItems="center" mt={4}>
-        <Typography variant="h2" m={4}>
+      <Grid container direction="column" alignItems="stretch" mt={4}>
+        <Typography variant="h2" m={4} align="center">
           {strings.softwareRegistry.applications}
         </Typography>
         {recommendedApplications.length > 0 && (

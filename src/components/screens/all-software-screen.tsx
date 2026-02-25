@@ -294,13 +294,8 @@ const AllSoftwareScreen = () => {
 
   return (
     <Container>
-      <Grid container direction="column" alignItems="center" mt={4}>
-        <Grid
-          container
-          justifyContent="space-between"
-          alignItems="center"
-          mb={2}
-          mt={4}>
+      <Grid container direction="column" alignItems="stretch" mt={4}>
+        <Grid container justifyContent="space-between" alignItems="center" mb={2} mt={4}>
           <Typography variant="h3">{strings.softwareRegistry.allApplications}</Typography>
           <Button
             variant="contained"
