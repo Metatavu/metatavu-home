@@ -95,8 +95,16 @@ const NavBar = () => {
   return (
     <AppBar position="relative">
       <Container maxWidth="xl">
-        <Toolbar disableGutters>
+        <Toolbar disableGutters sx={{ display: "flex" }}>
           <NavItems />
+          <Box sx={{ flexGrow: 1 }}/>
+          <Box 
+          sx={{ 
+          display: "flex",
+          alignItems: "center",
+          gap: 2
+          }}
+          >
           <LocalizationButtons />
 
           <Box>
@@ -105,6 +113,7 @@ const NavBar = () => {
                 {<Avatar src={avatars?.image_original || ""} />}
               </IconButton>
             </Tooltip>
+            </Box>
             <Menu
               id={menuId}
               anchorEl={anchorElUser}

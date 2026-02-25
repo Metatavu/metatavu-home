@@ -3,18 +3,25 @@ import { useAtom } from "jotai";
 import { languageAtom } from "src/atoms/language";
 import strings from "src/localization/strings";
 import type { Language } from "src/types";
+import { useState } from "react";
 
 const LocalizationButton = () => {
   const [language, setLanguage] = useAtom(languageAtom);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-   // <Tooltip title={strings.header.changeLanguage}>
+    <Tooltip title={strings.header.changeLanguage}
+    leaveDelay={0}
+    disableHoverListener={menuOpen}
+    >
       <FormControl size="small">
         <Select
           value={language}
           onChange={(event) =>
             setLanguage(event.target.value as Language)
           }
+          onOpen={() => setMenuOpen(true)}
+          onClose={() => setMenuOpen(false)}
           variant="outlined"
           sx={{
             borderRadius: 2,
@@ -30,7 +37,7 @@ const LocalizationButton = () => {
           </MenuItem>
         </Select>
       </FormControl>
-    //</Tooltip>
+    </Tooltip>
   );
 };
 
