@@ -21,10 +21,10 @@ export const renderVacationDaysTextForCard = (user: User, theme: Theme) => {
     return (
       <Grid>
         <Grid container spacing={2} alignItems="center">
-          <Grid item xs={6}>
+          <Grid size={6}>
             {strings.vacationsCard.vacationDays}
           </Grid>
-          <Grid item xs={6}>
+          <Grid size={6}>
             <Typography color={vacationDaysByYearColor}>
               {user.attributes?.vacationDaysByYear
                 ? parseVacationDays(user.attributes?.vacationDaysByYear)[currentYear]
@@ -33,10 +33,10 @@ export const renderVacationDaysTextForCard = (user: User, theme: Theme) => {
           </Grid>
         </Grid>
         <Grid container spacing={2} alignItems="center">
-          <Grid item xs={6}>
+          <Grid size={6}>
             {strings.vacationsCard.unspentVacationDays}
           </Grid>
-          <Grid item xs={6}>
+          <Grid size={6}>
             <Typography color={unspentVacationDaysByYearColor}>
               {user.attributes?.unspentVacationDaysByYear
                 ? parseVacationDays(user.attributes?.unspentVacationDaysByYear)[currentYear]
@@ -65,7 +65,7 @@ export const renderVacationDaysTextForScreen = (user: User, theme: Theme) => {
   if (user) {
     return (
       <Grid container justifyContent="space-around">
-        <Grid item style={{ display: "flex", alignItems: "center" }}>
+        <Grid style={{ display: "flex", alignItems: "center" }}>
           {strings.vacationsCard.vacationDays}
           <Typography color={vacationDaysByYearColor} style={{ marginLeft: "8px" }}>
             {user.attributes?.vacationDaysByYear
@@ -73,7 +73,7 @@ export const renderVacationDaysTextForScreen = (user: User, theme: Theme) => {
               : strings.vacationsCard.vacationDaysNotFound}
           </Typography>
         </Grid>
-        <Grid item style={{ display: "flex", alignItems: "center" }}>
+        <Grid style={{ display: "flex", alignItems: "center" }}>
           {strings.vacationsCard.unspentVacationDays}
           <Typography color={unspentVacationDaysByYearColor} style={{ marginLeft: "8px" }}>
             {user.attributes?.unspentVacationDaysByYear

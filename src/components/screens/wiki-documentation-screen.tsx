@@ -644,12 +644,13 @@ const WikiDocumentationScreen = () => {
               >
                 {displayedArticlesOnPage.map((article) => (
                   <Grid
-                    item
-                    lg={!listView ? 3 : 12}
-                    md={!listView ? 4 : 12}
-                    sm={!listView ? 6 : 12}
-                    xs={12}
                     key={`article-grid-item-${article.id}`}
+                    size={{
+                      lg: listView ? 12 : 3,
+                      md: listView ? 12 : 4,
+                      sm: listView ? 12 : 6,
+                      xs: 12
+                    }}
                   >
                     {listView ? (
                       <ArticleListItem
@@ -674,7 +675,6 @@ const WikiDocumentationScreen = () => {
               </Grid>
             )}
           </Box>
-
           {displayedArticles.length > itemsPerPage && (
             <Grid container justifyContent="center" sx={{ marginBottom: 3 }}>
               <Pagination
