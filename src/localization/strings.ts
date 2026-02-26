@@ -138,6 +138,7 @@ export interface Localized extends LocalizedStringsMethods {
     user: string;
     clear: string;
     searchBy: string;
+    
   };
   /**
    * Translations related to software registry
