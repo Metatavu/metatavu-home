@@ -1,5 +1,5 @@
 import { Box, Typography, useTheme } from "@mui/material";
-import strings from "src/localization/strings";
+//import strings from "src/localization/strings";
 
 const SprintViewLegend = () => {
     const theme = useTheme();
