@@ -1,4 +1,4 @@
-import { CardContent, Skeleton, Typography } from "@mui/material";
+import { Box, CardContent, Skeleton, Typography } from "@mui/material";
 import { useAtomValue, useSetAtom } from "jotai";
 import { useEffect, useState } from "react";
 import { userProfileAtom } from "src/atoms/auth";
@@ -12,6 +12,7 @@ import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import type { SprintViewChartData } from "src/types";
 import { getSeveraUserId, getTotalEstimatedHours } from "src/utils/sprint-utils";
+import SprintViewLegend from "src/components/charts/sprint-view-legend";
 
 /**
  * Sprint card component for users
@@ -75,9 +76,14 @@ const SprintViewCardContent = () => {
   const renderBarChart = () => (
     <>
       {resourceAllocations.length ? (
-        <CardContent sx={{ display: "flex", justifyContent: "left" }}>
+        <CardContent>
           <SprintViewBarChart chartData={createChartData()} />
+            <Box sx={{ ml: 21, display: "flex" }}>
+            <SprintViewLegend />
+            </Box>
+          
         </CardContent>
+        
       ) : (
         <Typography style={{ paddingLeft: "0" }}>{strings.sprint.noAllocation}</Typography>
       )}
