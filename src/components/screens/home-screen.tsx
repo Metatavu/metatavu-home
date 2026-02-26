@@ -75,49 +75,53 @@ const HomeScreen = () => {
   );
 
   const cards: ReactNode[] = [
-    isPrivilegedUser && (
-      <Box key="balance" id="balance-card">
-        {!hasSeveraUserId ? (
-          renderCardWithSkeleton(strings.balanceCard.balance, <></>)
-        ) : (
-          <BalanceCard />
-        )}
-      </Box>
-    ),
-    isPrivilegedUser && (
-      <Box key="sprint" id="sprint-view-card" sx={{ minHeight: 270 }}>
-        {!hasSeveraUserId ? (
-          renderCardWithSkeleton(strings.sprint.sprintview, <></>)
-        ) : (
-          <SprintViewCard />
-        )}
-      </Box>
-    ),
-    isPrivilegedUser && (
-      <Box key="vacations" id="vacations-card">
-        <VacationsCard />
-      </Box>
-    ),
-    isPrivilegedUser && (
-      <Box key="questionnaires" id="questionnaires-card">
-        <QuestionnaireCard />
-      </Box>
-    ),
-    isPrivilegedUser && (
-      <Box key="software" id="software-registry-card">
-        <SoftwareRegistryCard />
-      </Box>
-    ),
-    isPrivilegedUser && (
+    // Wiki is enabled in production for testers only.
+    isTester && (
       <Box key="wiki" id="wiki-documentation-card">
         <WikiDocumentationCard />
       </Box>
-    ),
-    isPrivilegedUser && (
-      <Box key="oncall" id="oncall-card">
-        <OnCallCard />
-      </Box>
     )
+
+    // The following home cards are disabled for production (commented out).
+    // They remain here for reference and easy re-enabling in non-production builds.
+    // isPrivilegedUser && (
+    //   <Box key="balance" id="balance-card">
+    //     {!hasSeveraUserId ? (
+    //       renderCardWithSkeleton(strings.balanceCard.balance, <></>)
+    //     ) : (
+    //       <BalanceCard />
+    //     )}
+    //   </Box>
+    // ),
+    // isPrivilegedUser && (
+    //   <Box key="sprint" id="sprint-view-card" sx={{ minHeight: 270 }}>
+    //     {!hasSeveraUserId ? (
+    //       renderCardWithSkeleton(strings.sprint.sprintview, <></>)
+    //     ) : (
+    //       <SprintViewCard />
+    //     )}
+    //   </Box>
+    // ),
+    // isPrivilegedUser && (
+    //   <Box key="vacations" id="vacations-card">
+    //     <VacationsCard />
+    //   </Box>
+    // ),
+    // isPrivilegedUser && (
+    //   <Box key="questionnaires" id="questionnaires-card">
+    //     <QuestionnaireCard />
+    //   </Box>
+    // ),
+    // isPrivilegedUser && (
+    //   <Box key="software" id="software-registry-card">
+    //     <SoftwareRegistryCard />
+    //   </Box>
+    // ),
+    // isPrivilegedUser && (
+    //   <Box key="oncall" id="oncall-card">
+    //     <OnCallCard />
+    //   </Box>
+    // )
   ].filter(Boolean);
 
   return (

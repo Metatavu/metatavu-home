@@ -14,30 +14,34 @@ import WikiDocumentationCard from "../home/wiki-documentation-card";
  * Admin screen component
  */
 const AdminScreen = () => {
-  const { isDeveloper, isTester } = useUserRole();
-
-  const isPrivilegedUser = isDeveloper || isTester;
+  const { isTester } = useUserRole();
+  //const { isDeveloper, isTester } = useUserRole();
+  // const isPrivilegedUser = isDeveloper || isTester;
 
   /**
    * Сard collection, new component cards should be added here
    */
   const cards = [
-    isPrivilegedUser && <BalanceCard key="balance" />,
-    isPrivilegedUser && (
-      <Box key="sprint" sx={{ minHeight: 260 }}>
-        <SprintViewCard />
-      </Box>
-    ),
-    isPrivilegedUser && <VacationsCard key="vacations" />,
-    isPrivilegedUser && <QuestionnaireCard key="questionnaire" />,
-    isPrivilegedUser && <SoftwareRegistryCard key="software" />,
-    isPrivilegedUser && (
-      <Box key="vacationManagement" sx={{ maxHeight: 420 }}>
-        <VacationManagementCard />
-      </Box>
-    ),
-    isPrivilegedUser && <WikiDocumentationCard key="wiki" />,
-    isPrivilegedUser && <OnCallCard key="oncall" />
+    // Wiki is enabled in production for testers only.
+    isTester && <WikiDocumentationCard key="wiki" />
+
+    // The following admin cards are disabled for production (commented out).
+    // They remain in the codebase for easy re-enabling in non-production builds.
+    // isPrivilegedUser && <BalanceCard key="balance" />,
+    // isPrivilegedUser && (
+    //   <Box key="sprint" sx={{ minHeight: 260 }}>
+    //     <SprintViewCard />
+    //   </Box>
+    // ),
+    // isPrivilegedUser && <VacationsCard key="vacations" />,
+    // isPrivilegedUser && <QuestionnaireCard key="questionnaire" />,
+    // isPrivilegedUser && <SoftwareRegistryCard key="software" />,
+    // isPrivilegedUser && (
+    //   <Box key="vacationManagement" sx={{ maxHeight: 420 }}>
+    //     <VacationManagementCard />
+    //   </Box>
+    // ),
+    // isPrivilegedUser && <OnCallCard key="oncall" />
   ].filter(Boolean);
 
   return <CardGridWrapper>{cards}</CardGridWrapper>;
