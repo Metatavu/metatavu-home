@@ -16,7 +16,6 @@ interface Props {
  * _value- Raw value of the field, unused as displayed values are derived from resourceAllocations
  * row - The full row data containing the project reference
  * @returns Array of GridColDef column definitions for the sprint view projects table
- 
  */
 const createSprintViewProjectsColumns = ({ resourceAllocations }: Props) => {
   const columns: GridColDef[] = [

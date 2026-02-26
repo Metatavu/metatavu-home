@@ -136,7 +136,7 @@ const SprintViewScreen = () => {
       ) : (
         /* TODO: Need to fetch the status from home-lambdas first for phases, then recreate filter in metatavu-home */
         /* <TaskStatusFilter setFilter={setFilter} /> */
-        (<Container maxWidth="lg" sx={{ mt: 4 }}>
+        <Container maxWidth="lg" sx={{ mt: 4 }}>
           <Paper elevation={3} sx={{ padding: 4, borderRadius: 3 }}>
             <Stack spacing={3}>
               {adminMode && (
@@ -254,7 +254,7 @@ const SprintViewScreen = () => {
             </Stack>
           </Paper>
           <BackButton styles={{ mt: 3 }} />
-        </Container>)
+        </Container>
       )}
     </>
   );
