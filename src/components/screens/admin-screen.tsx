@@ -1,14 +1,18 @@
-import { Box } from "@mui/material";
 import useUserRole from "src/hooks/use-user-role";
-import BalanceCard from "../home/balance-card";
 import CardGridWrapper from "../home/common/card-grid-wrapper";
+import WikiDocumentationCard from "../home/wiki-documentation-card";
+
+// Commented out imports for admin cards that are currently disabled in production.
+/* 
+import { Box } from "@mui/material";
+import BalanceCard from "../home/balance-card";
 import OnCallCard from "../home/oncall-card";
 import QuestionnaireCard from "../home/questionnaire-card";
 import SoftwareRegistryCard from "../home/software-registry-card";
 import SprintViewCard from "../home/sprint-view-card";
 import VacationManagementCard from "../home/vacation-management-card";
 import VacationsCard from "../home/vacations-card";
-import WikiDocumentationCard from "../home/wiki-documentation-card";
+*/
 
 /**
  * Admin screen component

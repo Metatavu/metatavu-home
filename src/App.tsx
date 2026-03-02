@@ -10,28 +10,31 @@ import ErrorHandler from "./components/contexts/error-handler";
 import Layout from "./components/layout/layout";
 import AuthenticationProvider from "./components/providers/authentication-provider";
 import RestrictedContentProvider from "./components/providers/restricted-content-provider";
-// The following imports are disabled for production (wiki-only mode).
-// Uncomment together with their corresponding routes when re-enabling features.
-// import NewQuestionnaireBuilder from "./components/questionnaire/new-questionnaire-builder";
-// import QuestionnaireManager from "./components/questionnaire/questionnaire-manager";
 import AdminScreen from "./components/screens/admin-screen";
-// import AdminVacationManagementScreen from "./components/screens/admin-vacation-management/admin-vacation-management-screen";
-// import AllSoftwareScreen from "./components/screens/all-software-screen";
-// import BalanceScreen from "./components/screens/balance-screen";
-// import EmployeeFlextimeScreen from "./components/screens/employee-flextime-screen";
 import ErrorScreen from "./components/screens/error-screen";
 import HomeScreen from "./components/screens/home-screen";
-// import OnCallCalendarScreen from "./components/screens/on-call-calendar-screen";
-// import QuestionnaireScreen from "./components/screens/questionnaire-screen";
 import SettingsScreen from "./components/screens/settings-screen";
-// import SoftwareRegistryScreen from "./components/screens/software-registry-screen";
-// import SprintViewScreen from "./components/screens/sprint-view-screen";
-// import VacationRequestsScreen from "./components/screens/vacation-requests-screen";
 import ArticleScreen from "./components/screens/wiki-article-screen";
 import WikiDocumentationScreen from "./components/screens/wiki-documentation-screen";
-// import SoftwareDetails from "./components/software-registry/SoftwareDetails";
 import { createAppTheme } from "./theme";
 import { type ThemeMode, ThemeModes } from "./types";
+
+/*
+// The following imports are disabled for production (wiki-only mode).
+// Uncomment together with their corresponding routes when re-enabling features.
+import NewQuestionnaireBuilder from "./components/questionnaire/new-questionnaire-builder";
+import QuestionnaireManager from "./components/questionnaire/questionnaire-manager";
+import AdminVacationManagementScreen from "./components/screens/admin-vacation-management/admin-vacation-management-screen";
+import AllSoftwareScreen from "./components/screens/all-software-screen";
+import BalanceScreen from "./components/screens/balance-screen";
+import EmployeeFlextimeScreen from "./components/screens/employee-flextime-screen";
+import OnCallCalendarScreen from "./components/screens/on-call-calendar-screen";
+import QuestionnaireScreen from "./components/screens/questionnaire-screen";
+import SoftwareRegistryScreen from "./components/screens/software-registry-screen";
+import SprintViewScreen from "./components/screens/sprint-view-screen";
+import VacationRequestsScreen from "./components/screens/vacation-requests-screen";
+import SoftwareDetails from "./components/software-registry/SoftwareDetails";
+*/
 
 /**
  * Application component
