@@ -59,12 +59,14 @@ const SettingsScreen = ({ screenColorMode, setScreenColorMode }: SettingsScreenP
       const severaUserId = fetchedUser?.attributes?.severaUserId?.[0];
 
       setIsConsentGiven(Boolean(severaUserId));
-      const updatedAttributes = { ...userProfile.attributes, severaUserId };
-      const updatedProfile = { ...userProfile, attributes: updatedAttributes };
-      setUserProfile(updatedProfile);
-      setUsers((prev) =>
-        prev.map((u) => (u.id === userProfile.id ? { ...u, attributes: updatedAttributes } : u))
-      );
+      if (severaUserId) {
+        const updatedAttributes = { ...userProfile.attributes, severaUserId };
+        const updatedProfile = { ...userProfile, attributes: updatedAttributes };
+        setUserProfile(updatedProfile);
+        setUsers((prev) =>
+          prev.map((u) => (u.id === userProfile.id ? { ...u, attributes: updatedAttributes } : u))
+        );
+      }
     } catch (error) {
       setError(`${strings.error.fetchFailedSevera}, ${String(error)}`);
     } finally {
