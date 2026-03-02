@@ -34,8 +34,7 @@ import { useLambdasApi } from "src/hooks/use-api";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import { type SprintViewFilterType, SprintViewFilterTypes } from "src/types/index";
-import { getSeveraUserId } from "src/utils/sprint-utils";
-import { isUserOptedIn } from "src/utils/user-utils";
+import { getSeveraUserId } from "src/utils/user-utils";
 import { getSprintEnd, getSprintStart } from "src/utils/time-utils";
 import BackButton from "../generics/back-button";
 import createSprintViewProjectsColumns from "../sprint-view-table/sprint-projects-columns";
@@ -96,7 +95,7 @@ const SprintViewScreen = () => {
   }, [loggedInUser]);
 
   const fetchProjectDetails = async () => {
-    if (!loggedInUser || !isUserOptedIn(loggedInUser)) return;
+    if (!loggedInUser || !getSeveraUserId(loggedInUser)) return;
 
     setLoading(true);
     try {
@@ -113,11 +112,8 @@ const SprintViewScreen = () => {
 
   const filterLabel = getFilterLabel(filterType);
 
-  if (!loggedInUser) {
-    return null;
-  }
-
-  if (!isUserOptedIn(loggedInUser)) {
+  // Redirect if user isn't logged in or hasn't opted in
+  if (!loggedInUser || !getSeveraUserId(loggedInUser)) {
     return <OptInRedirect />;
   }
 

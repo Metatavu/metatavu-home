@@ -18,15 +18,3 @@ export const getSeveraUserId = (user: User | undefined): string => {
   }
   return severaUserId;
 };
-
-/**
- * Check if a user is opted in (has a real Severa user ID, without dev fallbacks)
- *
- * @param user
- * @returns true if user has a real severaUserId
- */
-export const isUserOptedIn = (user: User | undefined): boolean => {
-  const severaUserId = user?.attributes?.severaUserId;
-  return !!severaUserId;
-};
-

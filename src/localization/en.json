@@ -505,7 +505,7 @@
   "notOptedInDescription": {
     "title": "Not Opted In",
     "description": "Activate your account to view this section.",
-    "redirectingMessage": "You are not opted in. Redirecting to home page..."
+    "redirectingMessage": "You are not opted in. Redirecting to home page in"
   },
   "adminVacationManagement": {
     "heading": "Admin Vacation Management",
