@@ -97,22 +97,22 @@ const NavBar = () => {
       <Container maxWidth="xl">
         <Toolbar disableGutters sx={{ display: "flex" }}>
           <NavItems />
-          <Box sx={{ flexGrow: 1 }}/>
-          <Box 
-          sx={{ 
-          display: "flex",
-          alignItems: "center",
-          gap: 2
-          }}
+          <Box sx={{ flexGrow: 1 }} />
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: 2
+            }}
           >
-          <LocalizationButtons />
+            <LocalizationButtons />
 
-          <Box>
-            <Tooltip title={strings.header.openUserMenu}>
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                {<Avatar src={avatars?.image_original || ""} />}
-              </IconButton>
-            </Tooltip>
+            <Box>
+              <Tooltip title={strings.header.openUserMenu}>
+                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                  {<Avatar src={avatars?.image_original || ""} />}
+                </IconButton>
+              </Tooltip>
             </Box>
             <Menu
               id={menuId}

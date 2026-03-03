@@ -1,25 +1,20 @@
-import { FormControl, Select, MenuItem, Tooltip } from "@mui/material";
+import { FormControl, MenuItem, Select, Tooltip } from "@mui/material";
 import { useAtom } from "jotai";
+import { useState } from "react";
 import { languageAtom } from "src/atoms/language";
 import strings from "src/localization/strings";
 import type { Language } from "src/types";
-import { useState } from "react";
 
 const LocalizationButton = () => {
   const [language, setLanguage] = useAtom(languageAtom);
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <Tooltip title={strings.header.changeLanguage}
-    leaveDelay={0}
-    disableHoverListener={menuOpen}
-    >
+    <Tooltip title={strings.header.changeLanguage} leaveDelay={0} disableHoverListener={menuOpen}>
       <FormControl size="small">
         <Select
           value={language}
-          onChange={(event) =>
-            setLanguage(event.target.value as Language)
-          }
+          onChange={(event) => setLanguage(event.target.value as Language)}
           onOpen={() => setMenuOpen(true)}
           onClose={() => setMenuOpen(false)}
           variant="outlined"
@@ -28,13 +23,9 @@ const LocalizationButton = () => {
             minWidth: 80
           }}
         >
-          <MenuItem value="fi">
-            {strings.localization.fi}
-          </MenuItem>
+          <MenuItem value="fi">{strings.localization.fi}</MenuItem>
 
-          <MenuItem value="en-gb">
-            {strings.localization.en}
-          </MenuItem>
+          <MenuItem value="en-gb">{strings.localization.en}</MenuItem>
         </Select>
       </FormControl>
     </Tooltip>

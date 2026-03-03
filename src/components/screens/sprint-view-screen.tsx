@@ -32,7 +32,7 @@ import useSprintViewHandlers from "src/hooks/sprint-custom-hooks";
 import { useLambdasApi } from "src/hooks/use-api";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
-import { SprintViewFilterTypes, type SprintViewFilterType } from "src/types/index";
+import { type SprintViewFilterType, SprintViewFilterTypes } from "src/types/index";
 import { getSeveraUserId } from "src/utils/sprint-utils";
 import { getSprintEnd, getSprintStart } from "src/utils/time-utils";
 import BackButton from "../generics/back-button";

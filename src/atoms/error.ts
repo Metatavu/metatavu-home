@@ -1,3 +1,3 @@
 import { atom } from "jotai";
 
-export const    errorAtom = atom<string | undefined>(undefined);
+export const errorAtom = atom<string | undefined>(undefined);
