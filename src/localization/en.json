@@ -487,11 +487,12 @@
     "close": "Close",
     "pleaseUploadImageFile": "Please upload image file",
     "startTypingToSearch": "Start typing to search...",
-    "selectFromExistingFiles": "Select from Existing Files",
+    "selectFromExistingFiles": "Select from existing files",
     "selectImageFromS3": "Select Image from S3",
     "noFilesFound": "No files found",
     "cancel": "Cancel",
     "failedToLoadMediaFiles": "Failed to load media files",
+    "errorLoadingMediaFiles": "Error loading media files:",
     "articleContentRequired": "Article content is required"
   },
   "snackbar": {

@@ -492,6 +492,7 @@
     "noFilesFound": "Tiedostoja ei löytynyt",
     "cancel": "Peruuta",
     "failedToLoadMediaFiles": "Mediatiedostojen lataus epäonnistui",
+    "errorLoadingMediaFiles": "Virhe mediatiedostojen latauksessa:",
     "articleContentRequired": "Artikkelin sisältö on pakollinen"
   },
   "snackbar": {

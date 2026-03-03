@@ -245,6 +245,10 @@ const CreateOrEditArticleForm = ({
     setCoverImage(newInput);
   };
 
+  /**
+   * Opens the media selector dialog and fetches the list of available media files from S3.
+   * Shows a snackbar error if the files fail to load.
+   */
   const handleOpenMediaSelector = async () => {
     setShowMediaSelector(true);
     setLoadingMedia(true);
@@ -252,7 +256,7 @@ const CreateOrEditArticleForm = ({
       const files = await listMediaFiles(articleApi);
       setMediaFiles(files || []);
     } catch (error) {
-      console.error("Error loading media files:", error);
+      console.error(strings.wikiDocumentation.errorLoadingMediaFiles, error);
       setSnackbar({
         open: true,
         message: strings.wikiDocumentation.failedToLoadMediaFiles,
@@ -263,11 +267,57 @@ const CreateOrEditArticleForm = ({
     }
   };
 
+  /**
+   * Handles selecting a media file from the S3 media selector dialog.
+   * Converts the S3 file name to an HTTPS URL, sets it as the cover image,
+   * enables the image preview, and closes the media selector dialog.
+   *
+   * @param fileName - The S3 file name of the selected media file.
+   */
   const handleSelectMediaFile = (fileName: string) => {
     const httpsUrl = getHttpsUrlFromS3(fileName);
     setCoverImage(httpsUrl);
     setImagePreview(true);
     setShowMediaSelector(false);
+  };
+
+  /**
+   * Renders the content of the media file selector dialog.
+   * Shows a loading spinner while files are being fetched,
+   * a "no files found" message if the list is empty,
+   * or a list of selectable media files.
+   */
+  const renderMediaFiles = () => {
+    if (loadingMedia) {
+      return (
+        <Box display="flex" justifyContent="center" p={3}>
+          <CircularProgress />
+        </Box>
+      );
+    }
+
+    if (mediaFiles.length === 0) {
+      return (
+        <List>
+          <ListItem>
+            <ListItemText primary={strings.wikiDocumentation.noFilesFound} />
+          </ListItem>
+        </List>
+      );
+    }
+
+    return (
+      <List>
+        {mediaFiles.map((fileName) => (
+          <ListItem key={fileName} disablePadding>
+            <ListItemButton onClick={() => handleSelectMediaFile(fileName)}>
+              <ImageIcon sx={{ mr: 2 }} />
+              <ListItemText primary={fileName} secondary={getHttpsUrlFromS3(fileName)} />
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
+    );
   };
 
   const handleEnter = (event: KeyboardEvent<HTMLImageElement>) => {
@@ -330,7 +380,8 @@ const CreateOrEditArticleForm = ({
               size={{
                 md: 6,
                 xs: 12
-              }}>
+              }}
+            >
               <TextField
                 id="wiki-article-path-field"
                 sx={{ width: "100%", marginTop: 3 }}
@@ -345,7 +396,8 @@ const CreateOrEditArticleForm = ({
               size={{
                 md: 6,
                 xs: 12
-              }}>
+              }}
+            >
               <Autocomplete
                 id="wiki-article-tags-field"
                 multiple
@@ -402,7 +454,8 @@ const CreateOrEditArticleForm = ({
               size={{
                 md: 6,
                 xs: 12
-              }}>
+              }}
+            >
               <TextField
                 id="wiki-article-image-field"
                 sx={{ width: "100%", marginTop: 3 }}
@@ -480,7 +533,8 @@ const CreateOrEditArticleForm = ({
               size={{
                 md: 6,
                 xs: 12
-              }}>
+              }}
+            >
               <TextField
                 id="wiki-article-description-field"
                 sx={{ width: "100%", marginTop: 3 }}
@@ -510,32 +564,10 @@ const CreateOrEditArticleForm = ({
         onClose={() => setShowMediaSelector(false)}
         maxWidth="sm"
         fullWidth
+        disableRestoreFocus
       >
         <DialogTitle>{strings.wikiDocumentation.selectImageFromS3}</DialogTitle>
-        <DialogContent>
-          {loadingMedia ? (
-            <Box display="flex" justifyContent="center" p={3}>
-              <CircularProgress />
-            </Box>
-          ) : (
-            <List>
-              {mediaFiles.length === 0 ? (
-                <ListItem>
-                  <ListItemText primary={strings.wikiDocumentation.noFilesFound} />
-                </ListItem>
-              ) : (
-                mediaFiles.map((fileName) => (
-                  <ListItem key={fileName} disablePadding>
-                    <ListItemButton onClick={() => handleSelectMediaFile(fileName)}>
-                      <ImageIcon sx={{ mr: 2 }} />
-                      <ListItemText primary={fileName} secondary={getHttpsUrlFromS3(fileName)} />
-                    </ListItemButton>
-                  </ListItem>
-                ))
-              )}
-            </List>
-          )}
-        </DialogContent>
+        <DialogContent>{renderMediaFiles()}</DialogContent>
         <DialogActions>
           <Button onClick={() => setShowMediaSelector(false)}>
             {strings.wikiDocumentation.cancel}

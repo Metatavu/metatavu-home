@@ -606,6 +606,7 @@ export interface Localized extends LocalizedStringsMethods {
     noFilesFound: string;
     cancel: string;
     failedToLoadMediaFiles: string;
+    errorLoadingMediaFiles: string;
     articleContentRequired: string;
   };
   snackbar: {
