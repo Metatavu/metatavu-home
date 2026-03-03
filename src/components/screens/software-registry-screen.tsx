@@ -201,12 +201,12 @@ const SoftwareScreen = () => {
 
   return (
     <Container>
-      <Grid container direction="column" alignItems="center" mt={4}>
-        <Typography variant="h2" m={4}>
+      <Grid container direction="column" alignItems="stretch" mt={4}>
+        <Typography variant="h2" m={4} align="center">
           {strings.softwareRegistry.applications}
         </Typography>
         {recommendedApplications.length > 0 && (
-          <Grid item container justifyContent="center" alignItems="center" mb={4}>
+          <Grid container justifyContent="center" alignItems="center" mb={4}>
             <Typography sx={{ fontWeight: 600, fontSize: 18, color: theme.palette.primary.main }}>
               {strings.softwareRegistry.recommendationMessage.replace(
                 "{recommendationCount}",
@@ -228,7 +228,7 @@ const SoftwareScreen = () => {
             </IconButton>
           </Grid>
         )}
-        <Grid item container justifyContent="space-between" alignItems="center">
+        <Grid container justifyContent="space-between" alignItems="center">
           <Typography variant="h3">{strings.softwareRegistry.myApplications}</Typography>
           <Button
             variant="contained"
@@ -244,7 +244,7 @@ const SoftwareScreen = () => {
             {strings.softwareRegistry.addApplication}
           </Button>
         </Grid>
-        <Grid item container justifyContent="right" mt={2}>
+        <Grid container justifyContent="right" mt={2}>
           <Box>
             <IconButton
               onClick={() => setIsGridView(true)}
@@ -289,7 +289,7 @@ const SoftwareScreen = () => {
           </Box>
         </Grid>
         <Grid container justifyContent="flex-start" mt={2}>
-          <Grid item mr={2}>
+          <Grid mr={2}>
             <Sidebar
               onTagSelection={setSelectedTags}
               filteredApplicationsCount={filteredSoftware.length}
@@ -297,7 +297,7 @@ const SoftwareScreen = () => {
               onSearch={setSearchValue}
             />
           </Grid>
-          <Grid item xs>
+          <Grid size="grow">
             {error && (
               <Box mb={2} width="100%">
                 <Alert severity="error">{error}</Alert>

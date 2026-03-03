@@ -13,6 +13,7 @@
     "hello": "Hi",
     "logout": "Log out",
     "home": "Home",
+    "employee": "Employee",
     "settings": "Settings",
     "timebank": "Timebank",
     "vacations": "Vacations",
@@ -262,6 +263,7 @@
     "noVacationRequestsStatusFound": "Statuses not found",
     "tooManyDaysRequestedUser": "You cannot request {requestedDays} days. You only have {unspentDays} unspent vacation days.",
     "tooManyDaysRequestedAdmin": "Not enough vacation days. Requested: {requestedDays} days, Available: {unspentDays} days.",
+    "noVacationDaysAvailable": "You don't have any vacation days available for the current vacation year. Please contact your administrator.",
     "failedToLoad": "Failed to load users"
   },
   "sprintRequestError": {
@@ -520,7 +522,7 @@
     "totalDays": "Total Days",
     "remainingDays": "Remaining Days",
     "selectYear": "Select Year",
-    "currentYear": "Current Year",
+    "currentYear": "Vacation Year",
     "vacationFor": "Vacation Days for"
   },
   "userSearch": {

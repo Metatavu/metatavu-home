@@ -106,7 +106,7 @@ const VacationsCard = () => {
    * @param index index
    */
   const renderVacationInfoItem = (vacationInfoListItem: VacationInfoListItem, index: number) => (
-    <Grid item xs={12} key={`vacations-info-list-item-${index}`}>
+    <Grid key={`vacations-info-list-item-${index}`} size={12}>
       <Box sx={{ display: "flex" }}>
         <Typography sx={{ flex: 1 }}>{vacationInfoListItem.name}</Typography>
         <Typography sx={{ flex: 1 }}>{vacationInfoListItem.value}</Typography>
@@ -182,10 +182,10 @@ const VacationsCard = () => {
 
       return (
         <>
-          <Grid item xs={1}>
+          <Grid size={1}>
             <LuggageIcon />
           </Grid>
-          <Grid item xs={11}>
+          <Grid size={11}>
             <Box>
               {earliestUpcomingVacationRequest &&
                 DateTime.fromJSDate(earliestUpcomingVacationRequest.startDate) > DateTime.now() && (
@@ -237,10 +237,10 @@ const VacationsCard = () => {
     if (loading) {
       return (
         <>
-          <Grid item xs={1}>
+          <Grid size={1}>
             <Pending />
           </Grid>
-          <Grid item xs={11}>
+          <Grid size={11}>
             <Skeleton />
           </Grid>
         </>
@@ -250,11 +250,11 @@ const VacationsCard = () => {
     return (
       <>
         {adminMode || vacationRequestsCount ? (
-          <Grid item xs={1}>
+          <Grid size={1}>
             {vacationRequestsCount ? <Pending /> : <Check />}
           </Grid>
         ) : null}
-        <Grid item xs={adminMode || vacationRequestsCount ? 11 : 12}>
+        <Grid size={adminMode || vacationRequestsCount ? 11 : 12}>
           {message}
         </Grid>
       </>

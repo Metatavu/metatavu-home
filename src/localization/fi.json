@@ -13,6 +13,7 @@
     "hello": "Hei",
     "logout": "Kirjaudu ulos",
     "home": "Koti",
+    "employee": "Työntekijä",
     "settings": "Asetukset",
     "timebank": "Timebank",
     "vacations": "Lomat",
@@ -262,6 +263,7 @@
     "noVacationRequestsStatusFound": "Tiloja ei löytynyt",
     "tooManyDaysRequestedUser": "Et voi pyytää {requestedDays} päivää. Sinulla on käytettävissä vain {unspentDays} lomapäivää.",
     "tooManyDaysRequestedAdmin": "Ei tarpeeksi lomapäiviä. Pyydetty: {requestedDays} päivää, Käytettävissä: {unspentDays} päivää.",
+    "noVacationDaysAvailable": "Sinulla ei ole lomapäiviä tälle lomavuodelle. Ota yhteyttä järjestelmänvalvojaan.",
     "failedToLoad": "Käyttäjien lataaminen epäonnistui"
   },
   "sprintRequestError": {
@@ -520,7 +522,7 @@
     "totalDays": "Kokonaispäivät",
     "remainingDays": "Jäljellä olevat päivät",
     "selectYear": "Valitse vuosi",
-    "currentYear": "Kuluvan vuoden",
+    "currentYear": "Lomavuosi",
     "vacationFor": "Lomapäivät vuodelle"
   },
   "userSearch": {

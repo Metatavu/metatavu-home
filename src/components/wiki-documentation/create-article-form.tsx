@@ -294,10 +294,10 @@ const CreateOrEditArticleForm = ({
       <Onboarding screen={OnboardingScreen.WikiCreate} />
       <Box id="wiki-create-form-container">
         <Grid container spacing={1.5} sx={{ marginBottom: 3, marginTop: 0.5 }}>
-          <Grid item xs={6}>
+          <Grid size={6}>
             <BackButton onClick={handleClose} styles={{ padding: "6px" }} />
           </Grid>
-          <Grid item xs={6}>
+          <Grid size={6}>
             {action === "create" ? (
               <ActionButton
                 id="wiki-article-action-button"
@@ -326,7 +326,11 @@ const CreateOrEditArticleForm = ({
             required
           />
           <Grid container spacing={1.5}>
-            <Grid item md={6} xs={12}>
+            <Grid
+              size={{
+                md: 6,
+                xs: 12
+              }}>
               <TextField
                 id="wiki-article-path-field"
                 sx={{ width: "100%", marginTop: 3 }}
@@ -337,7 +341,11 @@ const CreateOrEditArticleForm = ({
                 required
               />
             </Grid>
-            <Grid item md={6} xs={12}>
+            <Grid
+              size={{
+                md: 6,
+                xs: 12
+              }}>
               <Autocomplete
                 id="wiki-article-tags-field"
                 multiple
@@ -390,7 +398,11 @@ const CreateOrEditArticleForm = ({
             </Grid>
           </Grid>
           <Grid container spacing={1.5}>
-            <Grid item md={6} xs={12}>
+            <Grid
+              size={{
+                md: 6,
+                xs: 12
+              }}>
               <TextField
                 id="wiki-article-image-field"
                 sx={{ width: "100%", marginTop: 3 }}
@@ -412,7 +424,7 @@ const CreateOrEditArticleForm = ({
                     src={coverImage}
                     alt={strings.wikiDocumentation.coverImageAlt}
                   />
-                  <Grid item sx={{ position: "relative" }}>
+                  <Grid sx={{ position: "relative" }}>
                     <IconButton
                       sx={{
                         position: "absolute",
@@ -464,7 +476,11 @@ const CreateOrEditArticleForm = ({
                 </Button>
               )}
             </Grid>
-            <Grid item md={6} xs={12}>
+            <Grid
+              size={{
+                md: 6,
+                xs: 12
+              }}>
               <TextField
                 id="wiki-article-description-field"
                 sx={{ width: "100%", marginTop: 3 }}

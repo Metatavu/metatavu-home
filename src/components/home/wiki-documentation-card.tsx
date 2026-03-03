@@ -67,10 +67,10 @@ const WikiDocumentationCard = () => {
     return (
       <>
         <Grid container>
-          <Grid style={{ marginBottom: 1 }} item xs={1}>
+          <Grid style={{ marginBottom: 1 }} size={1}>
             <DescriptionOutlinedIcon style={{ marginTop: 1 }} />
           </Grid>
-          <Grid item xs={11}>
+          <Grid size={11}>
             {loading ? (
               <Skeleton />
             ) : (
@@ -85,7 +85,14 @@ const WikiDocumentationCard = () => {
           </Grid>
         </Grid>
         <Grid container spacing={1} sx={{ marginTop: 1 }}>
-          <Grid item xs={6} sm={12} md={5} lg={4} marginBottom={{ sm: 2, md: 0 }}>
+          <Grid
+            marginBottom={{ sm: 2, md: 0 }}
+            size={{
+              xs: 6,
+              sm: 12,
+              md: 5,
+              lg: 4
+            }}>
             <Box
               component="img"
               sx={{
@@ -110,7 +117,13 @@ const WikiDocumentationCard = () => {
               src={lastUpdatedArticle.coverImage}
             />
           </Grid>
-          <Grid item xs={6} sm={12} md={7} lg={8}>
+          <Grid
+            size={{
+              xs: 6,
+              sm: 12,
+              md: 7,
+              lg: 8
+            }}>
             <Typography
               variant="h6"
               sx={{
@@ -154,13 +167,13 @@ const WikiDocumentationCard = () => {
    */
   const renderAdminCardContent = () => (
     <Grid container>
-      <Grid style={{ marginBottom: 1 }} item xs={1}>
+      <Grid style={{ marginBottom: 1 }} size={1}>
         <DescriptionOutlinedIcon style={{ marginTop: 1 }} />
       </Grid>
       {loading ? (
         <Skeleton />
       ) : (
-        <Grid item xs={11}>
+        <Grid size={11}>
           <Typography variant="body1" sx={{ paddingTop: "2px" }}>
             {articlesAtom?.length === 0
               ? strings.wikiDocumentation.noPendingArticles

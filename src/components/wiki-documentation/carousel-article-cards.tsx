@@ -60,7 +60,6 @@ const CarouselArticleCards = ({ articles }: { articles: ArticleMetadata[] }) => 
       >
         <NavigateBeforeIcon />
       </IconButton>
-
       <IconButton
         onClick={handleNextPage}
         sx={{
@@ -106,7 +105,11 @@ const CarouselArticleCards = ({ articles }: { articles: ArticleMetadata[] }) => 
               }}
             >
               <Grid container spacing={3}>
-                <Grid item sm={6} xs={12}>
+                <Grid
+                  size={{
+                    sm: 6,
+                    xs: 12
+                  }}>
                   <Box
                     component="img"
                     sx={{
@@ -121,7 +124,11 @@ const CarouselArticleCards = ({ articles }: { articles: ArticleMetadata[] }) => 
                     src={article.coverImage}
                   />
                 </Grid>
-                <Grid item sm={6} xs={12}>
+                <Grid
+                  size={{
+                    sm: 6,
+                    xs: 12
+                  }}>
                   <Typography
                     variant="h5"
                     sx={{
