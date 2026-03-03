@@ -20,7 +20,6 @@ const NavItems = () => {
   const theme = useTheme();
   const isAdminRoute = location.pathname.startsWith("/admin");
 
-
   /**
    * Handles opening navigation menu
    */

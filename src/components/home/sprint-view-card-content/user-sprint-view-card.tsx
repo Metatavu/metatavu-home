@@ -5,6 +5,7 @@ import { userProfileAtom } from "src/atoms/auth";
 import { errorAtom } from "src/atoms/error";
 import { usersAtom } from "src/atoms/user";
 import SprintViewBarChart from "src/components/charts/sprint-view-bar-chart";
+import SprintViewLegend from "src/components/charts/sprint-view-legend";
 import type { ResourceAllocations, User } from "src/generated/homeLambdasClient";
 import useSprintViewHandlers from "src/hooks/sprint-custom-hooks";
 import { useLambdasApi } from "src/hooks/use-api";
@@ -12,7 +13,6 @@ import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import type { SprintViewChartData } from "src/types";
 import { getSeveraUserId, getTotalEstimatedHours } from "src/utils/sprint-utils";
-import SprintViewLegend from "src/components/charts/sprint-view-legend";
 
 /**
  * Sprint card component for users
@@ -78,12 +78,10 @@ const SprintViewCardContent = () => {
       {resourceAllocations.length ? (
         <CardContent>
           <SprintViewBarChart chartData={createChartData()} />
-            <Box sx={{ ml: 21, display: "flex" }}>
+          <Box sx={{ ml: 21, display: "flex" }}>
             <SprintViewLegend />
-            </Box>
-          
+          </Box>
         </CardContent>
-        
       ) : (
         <Typography style={{ paddingLeft: "0" }}>{strings.sprint.noAllocation}</Typography>
       )}
