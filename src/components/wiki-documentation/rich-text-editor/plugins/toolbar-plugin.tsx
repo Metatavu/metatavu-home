@@ -10,6 +10,7 @@ import { $createHeadingNode, $createQuoteNode, type HeadingTagType } from "@lexi
 import { $setBlocksType } from "@lexical/selection";
 import ArticleIcon from "@mui/icons-material/Article";
 import CodeIcon from "@mui/icons-material/Code";
+import FileUploadIcon from "@mui/icons-material/FileUpload";
 import FormatBoldIcon from "@mui/icons-material/FormatBold";
 import FormatItalicIcon from "@mui/icons-material/FormatItalic";
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
@@ -24,6 +25,7 @@ import {
   Box,
   Button,
   Card,
+  CircularProgress,
   FormControl,
   Grid,
   IconButton,
@@ -69,6 +71,7 @@ const ToolBar = () => {
   const [imageDialogOpen, setImageDialogOpen] = useState(false);
   const [articleLinkDialogOpen, setArticleLinkDialogOpen] = useState(false);
   const [isLinkSelcted, setIsLinkSelected] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const colors = wikiScreenColors(theme);
   const [imageSize, setImageSize] = useState<ImageSize>("medium");
   const [imageAlignment, setImageAlignment] = useState<ImageAlignment>("center");
@@ -283,12 +286,16 @@ const ToolBar = () => {
 
   const uploadImage = async () => {
     if (!file) return;
-    const imageUrl = await uploadFile(file, articleApi);
-
-    if (imageUrl) {
-      addImage(imageUrl);
-      setFile(null);
-      setImageDialogOpen(false);
+    setIsUploading(true);
+    try {
+      const imageUrl = await uploadFile(file, articleApi);
+      if (imageUrl) {
+        addImage(imageUrl);
+        setFile(null);
+        setImageDialogOpen(false);
+      }
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -345,10 +352,12 @@ const ToolBar = () => {
         variant="outlined"
         component="label"
         fullWidth
+        startIcon={isUploading ? <CircularProgress size={16} thickness={4} /> : <FileUploadIcon />}
         sx={{
           mb: 2,
           borderColor: theme.palette.primary.main,
           color: theme.palette.primary.main,
+          pointerEvents: isUploading ? "none" : "auto",
           "&:hover": {
             borderColor: theme.palette.primary.dark,
             backgroundColor: theme.palette.action.hover
@@ -406,11 +415,19 @@ const ToolBar = () => {
             <Button
               variant="contained"
               onClick={() => uploadImage()}
+              startIcon={
+                isUploading ? (
+                  <CircularProgress size={16} thickness={4} sx={{ color: "inherit" }} />
+                ) : (
+                  <FileUploadIcon />
+                )
+              }
               sx={{
                 flex: 1,
                 backgroundColor: colors.button.main,
                 color: theme.palette.getContrastText(colors.button.main),
-                "&:hover": { backgroundColor: colors.button.hover }
+                "&:hover": { backgroundColor: colors.button.hover },
+                pointerEvents: isUploading ? "none" : "auto"
               }}
             >
               {strings.wikiDocumentation.upload}

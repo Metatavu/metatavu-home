@@ -1,5 +1,6 @@
 /** biome-ignore-all lint/correctness/useUniqueElementIds: used for onboarding */
 import ClearIcon from "@mui/icons-material/Clear";
+import FileUploadIcon from "@mui/icons-material/FileUpload";
 import ImageIcon from "@mui/icons-material/Image";
 import {
   Autocomplete,
@@ -221,12 +222,19 @@ const CreateOrEditArticleForm = ({
     setPath(newInput);
   };
 
+  const [isUploadingCover, setIsUploadingCover] = useState(false);
+
   const handleFileChange = async (event: any) => {
     const file = event.target.files[0];
     if (file.type?.includes("image/")) {
-      const imageUrl = await uploadFile(file, articleApi);
-      setCoverImage(imageUrl || "");
-      setImagePreview(true);
+      setIsUploadingCover(true);
+      try {
+        const imageUrl = await uploadFile(file, articleApi);
+        setCoverImage(imageUrl || "");
+        setImagePreview(true);
+      } finally {
+        setIsUploadingCover(false);
+      }
     }
   };
 
@@ -499,7 +507,19 @@ const CreateOrEditArticleForm = ({
                   <Button
                     variant="outlined"
                     component="label"
-                    sx={{ marginTop: 1.5, marginBottom: 1, width: "100%" }}
+                    startIcon={
+                      isUploadingCover ? (
+                        <CircularProgress size={16} thickness={4} />
+                      ) : (
+                        <FileUploadIcon />
+                      )
+                    }
+                    sx={{
+                      marginTop: 1.5,
+                      marginBottom: 1,
+                      width: "100%",
+                      pointerEvents: isUploadingCover ? "none" : "auto"
+                    }}
                   >
                     {strings.wikiDocumentation.uploadImage}
                     <input
