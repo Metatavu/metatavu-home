@@ -601,6 +601,13 @@ export interface Localized extends LocalizedStringsMethods {
     close: string;
     pleaseUploadImageFile: string;
     startTypingToSearch: string;
+    selectFromExistingFiles: string;
+    selectImageFromS3: string;
+    noFilesFound: string;
+    cancel: string;
+    failedToLoadMediaFiles: string;
+    errorLoadingMediaFiles: string;
+    articleContentRequired: string;
   };
   snackbar: {
     articleSubmitted: string;
