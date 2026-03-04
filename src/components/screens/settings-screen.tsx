@@ -60,7 +60,7 @@ const SettingsScreen = ({ screenColorMode, setScreenColorMode }: SettingsScreenP
 
       setIsConsentGiven(Boolean(severaUserId));
       if (severaUserId) {
-        const updatedAttributes = { ...userProfile.attributes };
+        const updatedAttributes = { ...userProfile.attributes, severaUserId };
         const updatedProfile = { ...userProfile, attributes: updatedAttributes };
         setUserProfile(updatedProfile);
         setUsers((prev) =>

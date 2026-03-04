@@ -133,13 +133,13 @@ const BalanceCard = () => {
             {strings.balanceCard.balance}
           </Typography>
           <Grid container>
-            <Grid item xs={12}>
+            <Grid size={12}>
               {strings.formatString(strings.balanceCard.atTheEndOf, yesterday.toLocaleString())}
             </Grid>
-            <Grid style={{ marginBottom: 1 }} item xs={1}>
+            <Grid style={{ marginBottom: 1 }} size={1}>
               <ScheduleIcon style={{ marginTop: 1 }} />
             </Grid>
-            <Grid item xs={11}>
+            <Grid size={11}>
               {loading ? <Skeleton /> : renderUserFlextime()}
             </Grid>
           </Grid>

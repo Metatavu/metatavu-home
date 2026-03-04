@@ -43,7 +43,7 @@ const Content = ({
         const isInMyApplications = app.users?.includes(loggedUserId) || false;
 
         return (
-          <Grid item key={app.id}>
+          <Grid key={app.id}>
             <MainCard
               id={app.id || ""}
               image={app.image}
