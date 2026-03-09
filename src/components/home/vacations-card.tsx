@@ -1,6 +1,6 @@
 import { Check, Pending } from "@mui/icons-material";
 import LuggageIcon from "@mui/icons-material/Luggage";
-import { Box, Card, CardContent, Grid, Skeleton, Typography } from "@mui/material";
+import { Box, Card, CardContent, Grid, Skeleton, Typography, useTheme } from "@mui/material";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { DateTime } from "luxon";
 import { useMemo, useState } from "react";
@@ -29,6 +29,7 @@ import {
  * Vacations card component
  */
 const VacationsCard = () => {
+  const theme = useTheme();
   const { adminMode } = useUserRole();
   const { vacationRequestsApi } = useLambdasApi();
   const userProfile = useAtomValue(userProfileAtom);
@@ -105,7 +106,7 @@ const VacationsCard = () => {
    * @param index index
    */
   const renderVacationInfoItem = (vacationInfoListItem: VacationInfoListItem, index: number) => (
-    <Grid item xs={12} key={`vacations-info-list-item-${index}`}>
+    <Grid key={`vacations-info-list-item-${index}`} size={12}>
       <Box sx={{ display: "flex" }}>
         <Typography sx={{ flex: 1 }}>{vacationInfoListItem.name}</Typography>
         <Typography sx={{ flex: 1 }}>{vacationInfoListItem.value}</Typography>
@@ -158,7 +159,8 @@ const VacationsCard = () => {
             <span
               style={{
                 color: getVacationRequestStatusColor(
-                  getTotalVacationRequestStatus(earliestUpcomingVacationRequest?.status)
+                  getTotalVacationRequestStatus(earliestUpcomingVacationRequest?.status),
+                  theme
                 )
               }}
             >
@@ -169,7 +171,7 @@ const VacationsCard = () => {
           ) : (
             <span
               style={{
-                color: getVacationRequestStatusColor(VacationRequestStatuses.PENDING)
+                color: getVacationRequestStatusColor(VacationRequestStatuses.PENDING, theme)
               }}
             >
               {strings.vacationRequest.pending}
@@ -180,10 +182,10 @@ const VacationsCard = () => {
 
       return (
         <>
-          <Grid item xs={1}>
+          <Grid size={1}>
             <LuggageIcon />
           </Grid>
-          <Grid item xs={11}>
+          <Grid size={11}>
             <Box>
               {earliestUpcomingVacationRequest &&
                 DateTime.fromJSDate(earliestUpcomingVacationRequest.startDate) > DateTime.now() && (
@@ -235,10 +237,10 @@ const VacationsCard = () => {
     if (loading) {
       return (
         <>
-          <Grid item xs={1}>
+          <Grid size={1}>
             <Pending />
           </Grid>
-          <Grid item xs={11}>
+          <Grid size={11}>
             <Skeleton />
           </Grid>
         </>
@@ -248,11 +250,11 @@ const VacationsCard = () => {
     return (
       <>
         {adminMode || vacationRequestsCount ? (
-          <Grid item xs={1}>
+          <Grid size={1}>
             {vacationRequestsCount ? <Pending /> : <Check />}
           </Grid>
         ) : null}
-        <Grid item xs={adminMode || vacationRequestsCount ? 11 : 12}>
+        <Grid size={adminMode || vacationRequestsCount ? 11 : 12}>
           {message}
         </Grid>
       </>
@@ -261,20 +263,14 @@ const VacationsCard = () => {
 
   return (
     <Link to={adminMode ? "/admin/vacations" : "/vacations"} style={{ textDecoration: "none" }}>
-      <Card
-        sx={{
-          "&:hover": {
-            background: "#efefef"
-          }
-        }}
-      >
+      <Card>
         <CardContent>
           <Typography variant="h6" fontWeight={"bold"} style={{ marginTop: 6, marginBottom: 3 }}>
             {adminMode ? strings.tableToolbar.manageRequests : strings.tableToolbar.myRequests}
           </Typography>
           <Grid container>
             <Box sx={{ width: "100%", display: "flex", flexDirection: "column", mb: 2 }}>
-              {loggedInUser && renderVacationDaysTextForCard(loggedInUser)}
+              {loggedInUser && renderVacationDaysTextForCard(loggedInUser, theme)}
             </Box>
             {renderUpcomingOrPendingVacationRequestsCount()}
             {renderEarliestUpcomingVacationRequest()}

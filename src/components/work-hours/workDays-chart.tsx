@@ -1,4 +1,4 @@
-import { Box, CircularProgress, Typography } from "@mui/material";
+import { Box, CircularProgress, Typography, useTheme } from "@mui/material";
 import { useAtom, useSetAtom } from "jotai";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { errorAtom } from "src/atoms/error";
@@ -53,6 +53,7 @@ const YAXIS_DOMAIN: Record<RangeKey, [number, number]> = {
 
  */
 const WorkDaysChart = ({ selectedEmployee }: { selectedEmployee?: User }) => {
+  const theme = useTheme();
   const [selectedRange, setSelectedRange] = useState<RangeKey>("month");
   const [weekOffset, setWeekOffset] = useState(0);
   const [monthOffset, setMonthOffset] = useState(0);
@@ -171,7 +172,7 @@ const WorkDaysChart = ({ selectedEmployee }: { selectedEmployee?: User }) => {
    * @returns A string representing the color code for the bar.
    */
   const getBarColor = (hours: number, expected: number) =>
-    hours >= expected ? "#4caf50" : "#f44336";
+    hours >= expected ? theme.palette.success.main : theme.palette.error.main;
 
   /**
    * Renders the user's total flextime balance with proper color coding.
@@ -184,7 +185,10 @@ const WorkDaysChart = ({ selectedEmployee }: { selectedEmployee?: User }) => {
     return (
       <Typography variant="h4">
         {strings.balanceCard.totalFlextimeBalance}{" "}
-        <Box component="span" sx={{ color: balance >= 0 ? "green" : "red" }}>
+        <Box
+          component="span"
+          sx={{ color: balance >= 0 ? theme.palette.success.main : theme.palette.error.main }}
+        >
           {balance}
         </Box>{" "}
         <Box component="span" ml={1}>

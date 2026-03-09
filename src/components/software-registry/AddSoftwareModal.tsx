@@ -10,7 +10,8 @@ import {
   Modal,
   Snackbar,
   TextField,
-  Typography
+  Typography,
+  useTheme
 } from "@mui/material";
 import { useSetAtom } from "jotai";
 import { useEffect, useState } from "react";
@@ -67,6 +68,7 @@ const AddSoftwareModal = ({
   const [tags, setTags] = useState("");
   const [nameExists, setNameExists] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const theme = useTheme();
 
   /**
    * Fetch the list of users when the modal opens.
@@ -166,9 +168,9 @@ const AddSoftwareModal = ({
             transform: "translate(-50%, -50%)",
             width: { xs: "90%", sm: "80%", md: "60%" },
             maxWidth: 900,
-            bgcolor: "background.paper",
+            bgcolor: theme.palette.background.paper,
             borderRadius: "10px",
-            boxShadow: 24,
+            boxShadow: theme.shadows[24],
             p: 4,
             overflowY: "auto"
           }}
@@ -185,7 +187,11 @@ const AddSoftwareModal = ({
             {strings.softwareRegistry.addSoftware}
           </Typography>
           <Grid container spacing={2} sx={{ flexGrow: 1 }}>
-            <Grid item xs={12} md={6}>
+            <Grid
+              size={{
+                xs: 12,
+                md: 6
+              }}>
               <TextField
                 fullWidth
                 label={strings.softwareRegistry.name}
@@ -201,7 +207,11 @@ const AddSoftwareModal = ({
                 }
               />
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid
+              size={{
+                xs: 12,
+                md: 6
+              }}>
               <TextField
                 fullWidth
                 label={strings.softwareRegistry.imageURL}
@@ -212,7 +222,11 @@ const AddSoftwareModal = ({
                 helperText={strings.softwareRegistry.imageURLRequired}
               />
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid
+              size={{
+                xs: 12,
+                md: 6
+              }}>
               <TextField
                 fullWidth
                 label={strings.softwareRegistry.URLAddress}
@@ -223,7 +237,7 @@ const AddSoftwareModal = ({
                 helperText={strings.softwareRegistry.URLExample}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid size={6}>
               <TextField
                 fullWidth
                 label={strings.softwareRegistry.tags}
@@ -258,9 +272,9 @@ const AddSoftwareModal = ({
                       )}
                       sx={{
                         flexShrink: 0,
-                        backgroundColor: "rgba(0, 0, 0, 0.08)",
+                        backgroundColor: theme.palette.action.selected,
                         "&:hover": {
-                          backgroundColor: "rgba(0, 0, 0, 0.12)"
+                          backgroundColor: theme.palette.action.hover
                         }
                       }}
                     />
@@ -278,9 +292,9 @@ const AddSoftwareModal = ({
                     marginTop: "8px",
                     display: "block",
                     fontSize: "16px",
-                    backgroundColor: "#212121",
+                    backgroundColor: theme.palette.primary.main,
                     "&:hover": {
-                      backgroundColor: "#000000"
+                      backgroundColor: theme.palette.primary.dark
                     }
                   }}
                 >
@@ -288,7 +302,7 @@ const AddSoftwareModal = ({
                 </Button>
               </Box>
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <TextField
                 fullWidth
                 label={strings.softwareRegistry.description}
@@ -299,7 +313,7 @@ const AddSoftwareModal = ({
                 rows={4}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <TextField
                 fullWidth
                 label={strings.softwareRegistry.ownReview}
@@ -310,7 +324,7 @@ const AddSoftwareModal = ({
                 rows={2}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <Autocomplete
                 multiple
                 options={userList.filter((user) => user.firstName && user.lastName)}
@@ -349,7 +363,7 @@ const AddSoftwareModal = ({
                 )}
               />
             </Grid>
-            <Grid item container justifyContent="right" xs={12} mt={4}>
+            <Grid container justifyContent="right" mt={4} size={12}>
               <Button
                 onClick={() => {
                   handleClose();
@@ -361,11 +375,11 @@ const AddSoftwareModal = ({
                   borderRadius: "25px",
                   fontSize: "18px",
                   fontWeight: "bold",
-                  color: "#000",
-                  borderColor: "#000",
+                  color: theme.palette.text.primary,
+                  borderColor: theme.palette.text.primary,
                   "&:hover": {
-                    borderColor: "#000",
-                    backgroundColor: "#f0f0f0"
+                    borderColor: theme.palette.text.primary,
+                    backgroundColor: theme.palette.action.hover
                   }
                 }}
               >
@@ -378,10 +392,9 @@ const AddSoftwareModal = ({
                 sx={{
                   marginLeft: "4px",
                   textTransform: "none",
-                  color: "#fff",
                   fontSize: "18px",
                   borderRadius: "25px",
-                  "&:hover": { background: "#000" }
+                  "&:hover": { backgroundColor: theme.palette.secondary.dark }
                 }}
                 disabled={disabled || nameExists || !isFormValid}
               >

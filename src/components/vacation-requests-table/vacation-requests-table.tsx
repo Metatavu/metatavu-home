@@ -1,5 +1,5 @@
 import { Inventory } from "@mui/icons-material";
-import { Box, styled } from "@mui/material";
+import { Box, styled, useTheme } from "@mui/material";
 import { DataGrid, type GridRowId, type GridRowSelectionModel } from "@mui/x-data-grid";
 import { useAtomValue } from "jotai";
 import { DateTime } from "luxon";
@@ -101,7 +101,10 @@ const VacationRequestsTable = ({
   const vacationRequests = useAtomValue(displayedVacationRequestsAtom) || [];
   const containerRef = useRef(null);
   const [formOpen, setFormOpen] = useState(false);
-  const [selectedRowIds, setSelectedRowIds] = useState<GridRowSelectionModel>([]);
+  const [selectedRowIds, setSelectedRowIds] = useState<GridRowSelectionModel>({
+    type: "include",
+    ids: new Set([])
+  });
   const [rows, setRows] = useState<VacationsDataGridRow[]>([]);
   const columns = VacationRequestsTableColumns();
   const users = useAtomValue(usersAtom) || [];
@@ -111,7 +114,6 @@ const VacationRequestsTable = ({
   const dataGridColumnHeaderHeight = 56;
 
   /**
-   *
    * Loading overlay component for DataGrid
    */
   const LoadingOverlay = useMemo(
@@ -197,8 +199,9 @@ const VacationRequestsTable = ({
     return rows;
   };
 
+  // Reset selection after deletion
   useMemo(() => {
-    setSelectedRowIds([]);
+    setSelectedRowIds({ type: "include", ids: new Set([]) });
   }, [deleteVacationRequests]);
 
   useMemo(() => {
@@ -210,17 +213,19 @@ const VacationRequestsTable = ({
     }
   }, [vacationRequests, formOpen]);
 
+  const theme = useTheme();
+
   return (
     <Box
       sx={{
         "& .APPROVED": {
-          color: `${getVacationRequestStatusColor(VacationRequestStatuses.APPROVED)}`
+          color: `${getVacationRequestStatusColor(VacationRequestStatuses.APPROVED, theme)}`
         },
         "& .DECLINED": {
-          color: `${getVacationRequestStatusColor(VacationRequestStatuses.DECLINED)}`
+          color: `${getVacationRequestStatusColor(VacationRequestStatuses.DECLINED, theme)}`
         },
         "& .PENDING": {
-          color: `${getVacationRequestStatusColor(VacationRequestStatuses.PENDING)}`
+          color: `${getVacationRequestStatusColor(VacationRequestStatuses.PENDING, theme)}`
         }
       }}
       ref={containerRef}
@@ -247,8 +252,8 @@ const VacationRequestsTable = ({
         rowHeight={dataGridRowHeight}
         columnHeaderHeight={dataGridColumnHeaderHeight}
         autoPageSize
-        onRowSelectionModelChange={(index: GridRowSelectionModel) => {
-          setSelectedRowIds(index);
+        onRowSelectionModelChange={(model: GridRowSelectionModel) => {
+          setSelectedRowIds(model);
         }}
         rows={rows}
         loading={loading && !rows.length}

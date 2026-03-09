@@ -1,5 +1,5 @@
 import { Check, Close } from "@mui/icons-material";
-import { Button, Typography } from "@mui/material";
+import { Button, Typography, useTheme } from "@mui/material";
 import type { GridRowId } from "@mui/x-data-grid";
 import { VacationRequestStatuses } from "src/generated/homeLambdasClient";
 import strings from "src/localization/strings";
@@ -26,6 +26,8 @@ const UpdateStatusButton = ({
   selectedRowIds,
   updateVacationRequestStatus
 }: UpdateStatusButtonProps) => {
+  const theme = useTheme();
+
   const isApproved = buttonType === VacationRequestStatuses.APPROVED;
   const handleUpdateVacationRequestStatus = async () => {
     await updateVacationRequestStatus(buttonType, selectedRowIds);
@@ -37,9 +39,10 @@ const UpdateStatusButton = ({
       fullWidth
       onClick={handleUpdateVacationRequestStatus}
       sx={{
-        backgroundColor: isApproved ? "#4caf50" : "#f44336",
+        backgroundColor: isApproved ? theme.palette.success.main : theme.palette.error.main,
+        color: isApproved ? theme.palette.success.contrastText : theme.palette.error.contrastText,
         "&:hover": {
-          backgroundColor: isApproved ? "#45a049" : "#da190b"
+          backgroundColor: isApproved ? theme.palette.success.dark : theme.palette.error.dark
         }
       }}
     >

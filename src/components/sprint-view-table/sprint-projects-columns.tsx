@@ -12,8 +12,10 @@ interface Props {
 }
 /**
  * Sprint view projects table columns component
- *
- * @param props component properties
+ * @param resourceAllocations - List of resource allocations used to derive project name, estimated hours and assignees
+ * _value- Raw value of the field, unused as displayed values are derived from resourceAllocations
+ * row - The full row data containing the project reference
+ * @returns Array of GridColDef column definitions for the sprint view projects table
  */
 const createSprintViewProjectsColumns = ({ resourceAllocations }: Props) => {
   const columns: GridColDef[] = [
@@ -24,9 +26,9 @@ const createSprintViewProjectsColumns = ({ resourceAllocations }: Props) => {
       sortable: true,
       headerName: strings.sprint.myAllocation,
       flex: 2,
-      valueGetter: (params) => getProjectName(params.row.project, resourceAllocations),
+      valueGetter: (_value, row) => getProjectName(row.project, resourceAllocations),
       renderCell: (params) => (
-        <Box display="flex" alignItems="center" justifyContent="center">
+        <Box display="flex" alignItems="center" justifyContent="left">
           {getProjectName(params.row.project, resourceAllocations)}
         </Box>
       )
@@ -38,9 +40,9 @@ const createSprintViewProjectsColumns = ({ resourceAllocations }: Props) => {
       sortable: true,
       headerName: strings.sprint.estimatedTime,
       flex: 2,
-      valueGetter: (params) => getTotalEstimatedHours(resourceAllocations, params.row.project),
+      valueGetter: (_value, row) => getTotalEstimatedHours(resourceAllocations, row.project),
       renderCell: (params) => (
-        <Box display="flex" alignItems="center" justifyContent="center" ml={5}>
+        <Box display="flex" alignItems="center" justifyContent="left" ml={5}>
           {getTotalEstimatedHours(resourceAllocations, params.row.project)}
         </Box>
       )
@@ -52,9 +54,9 @@ const createSprintViewProjectsColumns = ({ resourceAllocations }: Props) => {
       sortable: true,
       headerName: strings.sprint.assigned,
       flex: 4,
-      valueGetter: (params) => getAssigneName(resourceAllocations, params.row.project),
+      valueGetter: (_value, row) => getAssigneName(resourceAllocations, row.project),
       renderCell: (params) => (
-        <Box display="flex" alignItems="center" justifyContent="center">
+        <Box display="flex" alignItems="center" justifyContent="left">
           {getAssigneName(resourceAllocations, params.row.project)}
         </Box>
       )

@@ -1,6 +1,5 @@
-import { Add, Cancel, Edit, FilterAlt } from "@mui/icons-material";
-import { Box, Button, Collapse, Grid, MenuItem, Select, styled, Typography } from "@mui/material";
-import type { GridRowId } from "@mui/x-data-grid";
+import { Box, Collapse } from "@mui/material";
+import type { GridRowId, GridRowSelectionModel } from "@mui/x-data-grid";
 import { useAtomValue } from "jotai";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
@@ -14,11 +13,9 @@ import { DeleteItemType, ToolbarFormModes, type VacationsDataGridRow } from "src
 import { getToolbarTitle } from "src/utils/toolbar-utils";
 import type { FilterType } from "src/utils/vacation-filter-type";
 import DeleteConfirmationDialog from "../../contexts/delete-confirmation-dialog";
-import ToolbarDeleteButton from "./toolbar-delete-button";
+import DefaultToolbar from "./DefaultToolbar";
+import SelectionToolbar from "./SelectionToolbar";
 import ToolbarForm from "./toolbar-form/toolbar-form";
-import FormToggleButton from "./toolbar-form-toggle-button";
-import ToolbarSubmitButton from "./toolbar-submit-button";
-import UpdateStatusButton from "./toolbar-update-status-button";
 
 /**
  * Component properties
@@ -43,9 +40,9 @@ interface Props {
   fetchVacationRequestById: (vacationRequestId: string) => Promise<VacationRequest | null>;
   setFormOpen: (formOpen: boolean) => void;
   formOpen: boolean;
-  selectedRowIds: GridRowId[];
+  selectedRowIds: GridRowSelectionModel;
   rows: VacationsDataGridRow[];
-  setSelectedRowIds: (selectedRowIds: GridRowId[]) => void;
+  setSelectedRowIds: (selectedRowIds: GridRowSelectionModel) => void;
   filter: FilterType;
   setFilter: React.Dispatch<React.SetStateAction<FilterType>>;
 }
@@ -55,6 +52,8 @@ interface Props {
  *
  * @param props component properties
  */
+const EMPTY_SELECTION: GridRowSelectionModel = { type: "include", ids: new Set([]) };
+
 const TableToolbar = ({
   isUpcoming,
   toggleIsUpcoming,
@@ -78,18 +77,22 @@ const TableToolbar = ({
   const [editConfirmationHandlerOpen, setEditConfirmationHandlerOpen] = useState(false);
   const [editVacationsData, setEditVacationsData] = useState<VacationRequest | null>(null);
   const [title, setTitle] = useState(strings.tableToolbar.myRequests);
+  const [wasDraftBeforeEdit, setWasDraftBeforeEdit] = useState(false);
   const language = useAtomValue(languageAtom);
   const { adminMode } = useUserRole();
   const { pathname } = useLocation();
-  const isToolbarVisible = toolbarOpen && !formOpen && selectedRowIds?.length;
-  const buttonLabel = isUpcoming ? strings.tableToolbar.future : strings.tableToolbar.past;
+
+  const selectedIdsSize = selectedRowIds?.ids?.size ?? 0;
+  const firstId: GridRowId | undefined = selectedRowIds?.ids
+    ? [...selectedRowIds.ids][0]
+    : undefined;
+
+  const isToolbarVisible = toolbarOpen && !formOpen && selectedIdsSize > 0;
   const singleSelectionSize = adminMode ? 3 : 4;
   const multiSelectionSize = adminMode ? 6 : 12;
-  const gridItemSize = selectedRowIds?.length === 1 ? singleSelectionSize : multiSelectionSize;
-  const disableEditButton = false;
-  const selectedRow = rows.find((row) => String(row.id) === String(selectedRowIds[0]));
+  const gridItemSize = selectedIdsSize === 1 ? singleSelectionSize : multiSelectionSize;
+  const selectedRow = rows.find((row) => String(row.id) === String(firstId));
   const isDraftSelected = selectedRow ? selectedRow.draft : false;
-  const [wasDraftBeforeEdit, setWasDraftBeforeEdit] = useState(false);
 
   useEffect(() => {
     setTitle(getToolbarTitle(toolbarFormMode));
@@ -99,45 +102,19 @@ const TableToolbar = ({
   }, [toolbarFormMode, language, pathname]);
 
   useEffect(() => {
-    toggleToolbarOpenOnSelectedRowIds(selectedRowIds);
+    setToolbarOpen((selectedRowIds?.ids?.size ?? 0) > 0);
   }, [selectedRowIds]);
-
-  /**
-   * Toggle toolbar open on selected row ids
-   *
-   * @param selectedRowIds selected row ids
-   */
-  const toggleToolbarOpenOnSelectedRowIds = (selectedRowIds: GridRowId[]) => {
-    if (selectedRowIds) {
-      setToolbarOpen(true);
-    } else {
-      setToolbarOpen(false);
-    }
-  };
 
   /**
    * Delete vacation requests and statuses
    */
   const deleteVacationsData = async () => {
-    await deleteVacationRequests(selectedRowIds, rows);
+    const ids: GridRowId[] = selectedRowIds?.ids ? [...selectedRowIds.ids] : [];
+    await deleteVacationRequests(ids, rows);
   };
 
   /**
-   * Toolbar grid item component
-   */
-  const ToolbarGridItem = styled(Grid)({
-    padding: "10px"
-  });
-
-  /**
-   * Toolbar grid container component
-   */
-  const ToolbarGridContainer = styled(Grid)({
-    alignContent: "space-around",
-    alignItems: "center"
-  });
-
-  /** Handler for saving updated vacation request data
+   * Handler for saving updated vacation request data
    *
    * @param data vacation request data
    */
@@ -146,21 +123,21 @@ const TableToolbar = ({
     setEditConfirmationHandlerOpen(true);
   };
 
-  /** Handler for confirming edit to vacation request
-   *
+  /**
+   * Handler for confirming edit to vacation request
    */
   const handleEditConfirm = async () => {
     if (!editVacationsData?.id) return;
 
     await updateVacationRequest(editVacationsData, editVacationsData.id);
-    setSelectedRowIds([]);
+    setSelectedRowIds(EMPTY_SELECTION);
     setFormOpen(false);
   };
 
   /**
    * Submit a draft vacation request for approval
    *
-   * @param {string} vacationRequestId - The ID of the vacation request to submit for approval.
+   * @param vacationRequestId - The ID of the vacation request to submit for approval
    */
   const handleSubmitForApproval = async (vacationRequestId: string) => {
     if (!vacationRequestId) return;
@@ -181,12 +158,12 @@ const TableToolbar = ({
       ]
     };
     await updateVacationRequest(updatedRequest, updatedRequest.id as string);
-    setSelectedRowIds([]);
+    setSelectedRowIds(EMPTY_SELECTION);
     setFormOpen(false);
   };
 
   /**
-   *  handler for edit button click
+   * Handler for edit button click
    */
   const handleEditButtonClick = () => {
     setToolbarFormMode(ToolbarFormModes.EDIT);
@@ -211,118 +188,29 @@ const TableToolbar = ({
         setFormOpen={setFormOpen}
       />
       {isToolbarVisible ? (
-        <ToolbarGridContainer container>
-          <ToolbarGridItem item sm={gridItemSize} xs={4}>
-            <ToolbarDeleteButton setConfirmationHandlerOpen={setConfirmationHandlerOpen} />
-          </ToolbarGridItem>
-          {selectedRowIds?.length === 1 && (
-            <>
-              <ToolbarGridItem item sm={adminMode ? 3 : 4}>
-                <FormToggleButton
-                  title={strings.tableToolbar.edit}
-                  ButtonIcon={Edit}
-                  value={formOpen}
-                  setValue={handleEditButtonClick}
-                  disabled={disableEditButton}
-                />
-              </ToolbarGridItem>
-              {isDraftSelected && !adminMode && (
-                <ToolbarGridItem xs={4}>
-                  <ToolbarSubmitButton
-                    onClick={() => handleSubmitForApproval(selectedRowIds[0] as string)}
-                  />
-                </ToolbarGridItem>
-              )}
-            </>
-          )}
-          {adminMode && (
-            <>
-              <ToolbarGridItem item sm={3} xs={6}>
-                <UpdateStatusButton
-                  updateVacationRequestStatus={updateVacationRequestStatus}
-                  buttonType={VacationRequestStatuses.APPROVED}
-                  selectedRowIds={selectedRowIds}
-                />
-              </ToolbarGridItem>
-              <ToolbarGridItem item sm={3} xs={6}>
-                <UpdateStatusButton
-                  updateVacationRequestStatus={updateVacationRequestStatus}
-                  buttonType={VacationRequestStatuses.DECLINED}
-                  selectedRowIds={selectedRowIds}
-                />
-              </ToolbarGridItem>
-            </>
-          )}
-        </ToolbarGridContainer>
+        <SelectionToolbar
+          selectedIdsSize={selectedIdsSize}
+          gridItemSize={gridItemSize}
+          adminMode={adminMode}
+          isDraftSelected={isDraftSelected}
+          firstId={firstId}
+          selectedRowIds={selectedRowIds}
+          setConfirmationHandlerOpen={setConfirmationHandlerOpen}
+          handleEditButtonClick={handleEditButtonClick}
+          handleSubmitForApproval={handleSubmitForApproval}
+          updateVacationRequestStatus={updateVacationRequestStatus}
+        />
       ) : (
-        <ToolbarGridContainer container>
-          <ToolbarGridItem item xs={3}>
-            <Typography variant="h6">{title}</Typography>
-          </ToolbarGridItem>
-          <ToolbarGridItem item xs={3}>
-            <Button
-              sx={{
-                backgroundColor: "#eeeeee",
-                p: 1,
-                "&:hover": { backgroundColor: "#e0e0e0" }
-              }}
-              onClick={toggleIsUpcoming}
-            >
-              <FilterAlt />
-              {buttonLabel}
-            </Button>
-          </ToolbarGridItem>
-          <ToolbarGridItem item xs={3}>
-            <Select
-              value={filter}
-              onChange={(e) => setFilter(e.target.value as FilterType)}
-              sx={{
-                maxWidth: 120,
-                backgroundColor: "#eeeeee",
-                height: 42,
-                color: "#222",
-                "& .MuiOutlinedInput-notchedOutline": {
-                  border: "none"
-                },
-                "&:hover": { backgroundColor: "#e0e0e0" },
-                fontWeight: 700,
-                display: "flex"
-              }}
-            >
-              <MenuItem value="ALL">{strings.tableToolbar.all}</MenuItem>
-              {!adminMode && <MenuItem value="DRAFT">{strings.tableToolbar.draft}</MenuItem>}
-              <MenuItem value={VacationRequestStatuses.PENDING}>
-                {strings.vacationRequest.pending}
-              </MenuItem>
-              <MenuItem value={VacationRequestStatuses.APPROVED}>
-                {strings.vacationRequest.approved}
-              </MenuItem>
-              <MenuItem value={VacationRequestStatuses.DECLINED}>
-                {strings.vacationRequest.declined}
-              </MenuItem>
-            </Select>
-          </ToolbarGridItem>
-          <ToolbarGridItem item xs={3}>
-            {formOpen ? (
-              <FormToggleButton
-                title={strings.tableToolbar.cancel}
-                ButtonIcon={Cancel}
-                value={formOpen}
-                setValue={setFormOpen}
-                buttonVariant="outlined"
-              />
-            ) : (
-              !adminMode && (
-                <FormToggleButton
-                  value={formOpen}
-                  setValue={setFormOpen}
-                  title={strings.tableToolbar.create}
-                  ButtonIcon={Add}
-                />
-              )
-            )}
-          </ToolbarGridItem>
-        </ToolbarGridContainer>
+        <DefaultToolbar
+          title={title}
+          isUpcoming={isUpcoming}
+          formOpen={formOpen}
+          adminMode={adminMode}
+          filter={filter}
+          setFilter={setFilter}
+          toggleIsUpcoming={toggleIsUpcoming}
+          setFormOpen={setFormOpen}
+        />
       )}
       <Collapse in={formOpen}>
         <ToolbarForm
@@ -330,10 +218,12 @@ const TableToolbar = ({
           setFormOpen={setFormOpen}
           createVacationRequest={createVacationRequest}
           createDraftVacationRequest={createDraftVacationRequest}
-          selectedRowIds={selectedRowIds}
+          selectedRowIds={selectedRowIds?.ids ? [...selectedRowIds.ids] : []}
           rows={rows}
           updateVacationRequest={updateVacationRequest}
-          setSelectedRowIds={setSelectedRowIds}
+          setSelectedRowIds={(ids: GridRowId[]) =>
+            setSelectedRowIds({ type: "include", ids: new Set(ids) })
+          }
           toolbarFormMode={toolbarFormMode}
           setToolbarFormMode={setToolbarFormMode}
           onSaveClick={handleSaveClick}

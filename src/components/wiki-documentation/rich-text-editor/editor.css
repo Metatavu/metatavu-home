@@ -36,8 +36,6 @@
 }
 
 .editor-code {
-  background-color: #e9e8e8;
-  color: #727272;
   border-radius: 15px;
   font-family: Courier, monospace;
   letter-spacing: 1px;
@@ -57,8 +55,6 @@
   margin-left: 20px;
   margin-bottom: 10px;
   font-size: 15px;
-  color: rgb(101, 103, 107);
-  border-left-color: rgb(206, 208, 212);
   border-left-width: 4px;
   border-left-style: solid;
   padding-left: 16px;
@@ -78,23 +74,35 @@ li:has(> ul) {
 }
 
 .MuiCard-root a[href^="/wiki-documentation"] {
-  color: #1976d2;
-  text-decoration: none;
-  border-bottom: 1px solid rgba(25, 118, 210, 0.4);
+  text-decoration: underline;
+  border-bottom: none;
   transition: all 0.2s ease;
   padding-bottom: 2px;
   font-weight: 500;
 }
 
 .MuiCard-root a[href^="/wiki-documentation"]:hover {
+ feature/topbar-language-dropdown
   color: #002a5c;
   border-bottom-color: #002a5c;
+
+ develop
   background-color: rgba(25, 210, 198, 0.12);
 }
 
 .MuiCard-root a[href^="/wiki-documentation"]:visited {
-  color: #7b1fa2;
-  border-bottom-color: rgba(123, 31, 162, 0.4);
+  opacity: 0.8;
+}
+
+.editor a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color 0.2s ease;
+}
+
+.editor a:hover {
+  opacity: 0.8;
 }
 
 .editor img {

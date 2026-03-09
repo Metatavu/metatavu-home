@@ -1,4 +1,13 @@
-import { Alert, Box, Card, CircularProgress, Grid, Snackbar, Typography } from "@mui/material";
+import {
+  Alert,
+  Box,
+  Card,
+  CircularProgress,
+  Grid,
+  Snackbar,
+  Typography,
+  useTheme
+} from "@mui/material";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { DateTime } from "luxon";
 import { useEffect, useState } from "react";
@@ -62,14 +71,50 @@ const MarkdownCode = ({
 /**
  * Custom blockquote component for ReactMarkdown
  */
-const MarkdownBlockquote = (props: React.BlockquoteHTMLAttributes<HTMLQuoteElement>) => (
-  <blockquote {...props} className="editor-quote" />
-);
+const MarkdownBlockquote = (props: React.BlockquoteHTMLAttributes<HTMLQuoteElement>) => {
+  const theme = useTheme();
+
+  return (
+    <blockquote
+      {...props}
+      style={{
+        margin: 0,
+        marginLeft: 20,
+        marginBottom: 10,
+        fontSize: 15,
+        color: theme.palette.text.secondary,
+        borderLeft: `4px solid ${theme.palette.divider}`,
+        paddingLeft: 16
+      }}
+    />
+  );
+};
+/**
+ * Custom component for MarkdownLink
+ */
+const MarkdownLink = (props: React.AnchorHTMLAttributes<HTMLAnchorElement>) => {
+  const theme = useTheme();
+  const isWikiLink = typeof props.href === "string" && props.href.startsWith("/wiki-documentation");
+
+  return (
+    <a
+      {...props}
+      style={{
+        color: isWikiLink ? theme.palette.primary.main : theme.palette.text.primary,
+        textDecoration: "underline",
+        textUnderlineOffset: "2px"
+      }}
+    >
+      {props.children}
+    </a>
+  );
+};
 
 /**
  * Article screen component displaying the article content.
  */
 const ArticleScreen = () => {
+  const theme = useTheme();
   const { adminMode } = useUserRole();
   const setError = useSetAtom(errorAtom);
   const { "*": path } = useParams();
@@ -223,19 +268,27 @@ const ArticleScreen = () => {
             <>
               {adminMode && (
                 <Grid container spacing={1.5} sx={{ marginBottom: 3, marginTop: 0.5 }}>
-                  <Grid item xs={6}>
+                  <Grid size={6}>
                     <ActionButton onClick={() => setFormOpen(true)}>
                       {strings.wikiDocumentation.edit}
                     </ActionButton>
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid size={6}>
                     <ActionButton onClick={handleApprove}>
                       {strings.wikiDocumentation.approve}
                     </ActionButton>
                   </Grid>
                 </Grid>
               )}
-              <Card sx={{ padding: 3, paddingTop: 0, marginBottom: 3 }}>
+              <Card
+                sx={{
+                  padding: 3,
+                  paddingTop: 0,
+                  marginBottom: 3,
+                  backgroundColor: theme.palette.background.paper,
+                  color: theme.palette.text.primary
+                }}
+              >
                 {/* Title */}
                 {article?.title && (
                   <Typography variant="h4" sx={{ marginBottom: 2 }}>
@@ -274,7 +327,8 @@ const ArticleScreen = () => {
                         component="span"
                         sx={{
                           display: "inline-block",
-                          backgroundColor: "#e0e0e0",
+                          backgroundColor: theme.palette.background.paper,
+                          color: theme.palette.text.primary,
                           borderRadius: "20px",
                           px: 2,
                           py: 0.5,
@@ -292,6 +346,7 @@ const ArticleScreen = () => {
                 {/* Markdown Content */}
                 <ReactMarkdown
                   components={{
+                    a: MarkdownLink,
                     img: MarkdownImage,
                     code: MarkdownCode,
                     blockquote: MarkdownBlockquote
@@ -300,6 +355,7 @@ const ArticleScreen = () => {
                   {article?.content || ""}
                 </ReactMarkdown>
               </Card>
+
               {!adminMode && connectedArticles.length !== 0 && (
                 <Box sx={{ marginBottom: 3 }}>
                   <Typography variant="h5" sx={{ marginLeft: 3, marginBottom: 3 }}>
@@ -313,7 +369,7 @@ const ArticleScreen = () => {
                 </Box>
               )}
               <Grid container spacing={1.5} sx={{ marginBottom: 3 }}>
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <BackButton styles={{ padding: "6px" }} />
                 </Grid>
               </Grid>

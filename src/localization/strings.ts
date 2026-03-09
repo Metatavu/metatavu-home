@@ -26,6 +26,7 @@ export interface Localized extends LocalizedStringsMethods {
     hello: string;
     logout: string;
     home: string;
+    employee: string;
     settings: string;
     timebank: string;
     vacations: string;
@@ -295,6 +296,7 @@ export interface Localized extends LocalizedStringsMethods {
     noVacationRequestsStatusFound: string;
     tooManyDaysRequestedUser: string;
     tooManyDaysRequestedAdmin: string;
+    noVacationDaysAvailable: string;
     failedToLoad: string;
   };
 
@@ -568,6 +570,7 @@ export interface Localized extends LocalizedStringsMethods {
     labelTags: string;
     labelImage: string;
     labelDescription: string;
+    coverImageAlt: string;
     labelLink: string;
     labelLinkPlaceholder: string;
     draft: string;
@@ -598,6 +601,13 @@ export interface Localized extends LocalizedStringsMethods {
     close: string;
     pleaseUploadImageFile: string;
     startTypingToSearch: string;
+    selectFromExistingFiles: string;
+    selectImageFromS3: string;
+    noFilesFound: string;
+    cancel: string;
+    failedToLoadMediaFiles: string;
+    errorLoadingMediaFiles: string;
+    articleContentRequired: string;
   };
   snackbar: {
     articleSubmitted: string;
@@ -614,6 +624,9 @@ export interface Localized extends LocalizedStringsMethods {
     accept: string;
     decline: string;
     consentToDataProcessing: string;
+    lightOrDarkMode: string;
+    light: string;
+    dark: string;
   };
   /**
    * Translations related to if user is not Severa Opt in
@@ -707,6 +720,36 @@ export interface Localized extends LocalizedStringsMethods {
     createArticleContent: string;
     listOfArticlesTitle: string;
     listOfArticlesContent: string;
+  };
+  /**
+   * Translations related to Onboarding Wiki Create Article Form
+   */
+  onboardingWikiCreate: {
+    prev: string;
+    next: string;
+    close: string;
+    welcomeTitle: string;
+    welcomeContent: string;
+    titleFieldTitle: string;
+    titleFieldContent: string;
+    pathFieldTitle: string;
+    pathFieldContent: string;
+    tagsFieldTitle: string;
+    tagsFieldContent: string;
+    imageFieldTitle: string;
+    imageFieldContent: string;
+    descriptionFieldTitle: string;
+    descriptionFieldContent: string;
+    editorTitle: string;
+    editorContent: string;
+    editorLinksTitle: string;
+    editorLinksContent: string;
+    editorArticleLinksTitle: string;
+    editorArticleLinksContent: string;
+    editorImagesTitle: string;
+    editorImagesContent: string;
+    actionButtonTitle: string;
+    actionButtonContent: string;
   };
   /**
    * Translations related to On Call

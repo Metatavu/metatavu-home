@@ -13,6 +13,7 @@
     "hello": "Hei",
     "logout": "Kirjaudu ulos",
     "home": "Koti",
+    "employee": "Työntekijä",
     "settings": "Asetukset",
     "timebank": "Timebank",
     "vacations": "Lomat",
@@ -262,6 +263,7 @@
     "noVacationRequestsStatusFound": "Tiloja ei löytynyt",
     "tooManyDaysRequestedUser": "Et voi pyytää {requestedDays} päivää. Sinulla on käytettävissä vain {unspentDays} lomapäivää.",
     "tooManyDaysRequestedAdmin": "Ei tarpeeksi lomapäiviä. Pyydetty: {requestedDays} päivää, Käytettävissä: {unspentDays} päivää.",
+    "noVacationDaysAvailable": "Sinulla ei ole lomapäiviä tälle lomavuodelle. Ota yhteyttä järjestelmänvalvojaan.",
     "failedToLoad": "Käyttäjien lataaminen epäonnistui"
   },
   "sprintRequestError": {
@@ -454,6 +456,7 @@
     "labelTags": "Tunnisteet",
     "labelImage": "Kuvan URL-osoite",
     "labelDescription": "Kuvaus",
+    "coverImageAlt": "Kansikuva",
     "labelLink": "Linkki",
     "labelLinkPlaceholder": "Syötä URL-osoite tähän, esim. https://example.com",
     "draft": "luonnos",
@@ -483,7 +486,14 @@
     "add": "Lisää",
     "close": "Sulje",
     "pleaseUploadImageFile": "Ole hyvä ja lataa kuvatiedosto",
-    "startTypingToSearch": "Aloita kirjoittaminen hakeaksesi..."
+    "startTypingToSearch": "Aloita kirjoittaminen hakeaksesi...",
+    "selectFromExistingFiles": "Valitse olemassa olevista tiedostoista",
+    "selectImageFromS3": "Valitse kuva S3:sta",
+    "noFilesFound": "Tiedostoja ei löytynyt",
+    "cancel": "Peruuta",
+    "failedToLoadMediaFiles": "Mediatiedostojen lataus epäonnistui",
+    "errorLoadingMediaFiles": "Virhe mediatiedostojen latauksessa:",
+    "articleContentRequired": "Artikkelin sisältö on pakollinen"
   },
   "snackbar": {
     "articleSubmitted": "Artikkeli lähetetty arvioitavaksi onnistuneesti!",
@@ -494,12 +504,15 @@
   },
   "settingsScreen": {
     "saveSettings": "Tallenna asetukset",
-    "accept": "Hyväksy",
-    "decline": "En hyväksy",
-    "consentToDataProcessing": "Suostumus tietojen käsittelyyn"
+    "accept": "Kyllä",
+    "decline": "Ei",
+    "consentToDataProcessing": "Aktivoi tilisi",
+    "lightOrDarkMode": "Teema",
+    "light": "Vaalea",
+    "dark": "Tumma"
   },
   "notOptedInDescription": {
-    "description": "Hyväksy käyttäjätietojen käsittely nähdäksesi tämä osio"
+    "description": "Aktivoi tilisi, jotta voit nähdä tämän osion"
   },
   "adminVacationManagement": {
     "heading": "Ylläpitäjän lomien hallinta",
@@ -510,7 +523,7 @@
     "totalDays": "Kokonaispäivät",
     "remainingDays": "Jäljellä olevat päivät",
     "selectYear": "Valitse vuosi",
-    "currentYear": "Kuluvan vuoden",
+    "currentYear": "Lomavuosi",
     "vacationFor": "Lomapäivät vuodelle"
   },
   "userSearch": {
@@ -587,6 +600,33 @@
     "createArticleContent": "Tästä voit luoda uuden artikkelin.",
     "listOfArticlesTitle": "Artikkelit",
     "listOfArticlesContent": "Selaa kaikkia artikkeleita täällä."
+  },
+  "onboardingWikiCreate": {
+    "prev": "Edellinen",
+    "next": "Seuraava",
+    "close": "Sulje",
+    "welcomeTitle": "Luo wikiartikkeli",
+    "welcomeContent": "Käydään läpi, kuinka luodaan uusi wikiartikkeli.",
+    "titleFieldTitle": "Artikkelin otsikko",
+    "titleFieldContent": "Syötä kuvaava otsikko artikkelillesi. Otsikko näytetään artikkelin yläosassa ja artikkeliluetteloissa.",
+    "pathFieldTitle": "Artikkelin polku",
+    "pathFieldContent": "Tämä on URL-polku artikkelillesi. Se luodaan automaattisesti otsikosta, mutta sitä voi muokata.",
+    "tagsFieldTitle": "Artikkelitunnisteet",
+    "tagsFieldContent": "Lisää tunnisteita artikkelisi luokitteluun. Voit valita olemassa olevia tunnisteita tai luoda uusia kirjoittamalla ja painamalla Enter.",
+    "imageFieldTitle": "Kansikuva",
+    "imageFieldContent": "Lisää kansikuvan URL tai lataa kuvatiedosto. Tämä näytetään artikkelin pikkukuvana.",
+    "descriptionFieldTitle": "Artikkelin kuvaus",
+    "descriptionFieldContent": "Kirjoita lyhyt yhteenveto artikkelistasi. Tämä auttaa käyttäjiä ymmärtämään, mistä artikkelissa on kyse ennen lukemista.",
+    "editorTitle": "Sisältöeditori",
+    "editorContent": "Käytä tätä rikastekstieditoria artikkelisisällön kirjoittamiseen. Se tukee markdown-muotoilua, kuvia, linkkejä ja paljon muuta.",
+    "editorLinksTitle": "Linkkien lisääminen",
+    "editorLinksContent": "Valitse artikkeli listasta ja paina Enter luodaksesi linkki artikkeliin. Tämä muodostaa sisäisen linkin wikissä.",
+    "editorArticleLinksTitle": "Linkitys artikkeleihin",
+    "editorArticleLinksContent": "Linkittääksesi muihin wiki-artikkeleihin, käytä artikkelipolun muotoa: [Artikkelin otsikko](/articles/artikkeli_polku). Tämä luo sisäisen navigoinnin liittyvien artikkelien välille.",
+    "editorImagesTitle": "Kuvien lisääminen",
+    "editorImagesContent": "Klikkaa editorin työkalupalkin kuvapainiketta lisätäksesi kuvia. Voit liittää kuvan URL:n tai ladata kuvatiedoston. Kuvat auttavat havainnollistamaan sisältöäsi.",
+    "actionButtonTitle": "Luo artikkeli",
+    "actionButtonContent": "Kun kaikki pakolliset kentät on täytetty, klikkaa tästä artikkelin luomiseksi. Se lähetetään tarkistettavaksi tai julkaistaan suoraan käyttöoikeuksistasi riippuen."
   },
   "employeeFlextime": {
     "title": "Työntekijöiden joustotunnit",

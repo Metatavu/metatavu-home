@@ -1,5 +1,5 @@
 import ScheduleIcon from "@mui/icons-material/Schedule";
-import { Card, CardContent, Grid, Skeleton, Typography } from "@mui/material";
+import { Card, CardContent, Grid, Skeleton, Typography, useTheme } from "@mui/material";
 import { useAtomValue, useSetAtom } from "jotai";
 import { DateTime } from "luxon";
 import { useEffect, useState } from "react";
@@ -37,6 +37,7 @@ const BalanceCard = () => {
   const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
   const severaUserId = getSeveraUserId(loggedInUser);
   const navigate = useNavigate();
+  const theme = useTheme();
 
   /**
    * Effect hook that fetches flextime data for the logged-in user.
@@ -88,7 +89,8 @@ const BalanceCard = () => {
       return <Typography variant="body1">{strings.error.noFlextimeData}</Typography>;
     }
     const totalFlextimeBalance = usersFlextime.totalFlextimeBalance;
-    const textColor = totalFlextimeBalance >= 0 ? "green" : "red";
+    const textColor =
+      totalFlextimeBalance >= 0 ? theme.palette.success.main : theme.palette.error.main;
     const hourLabel =
       totalFlextimeBalance === 1 ? strings.timeExpressions.hour : strings.timeExpressions.hours;
     return (
@@ -103,11 +105,6 @@ const BalanceCard = () => {
     return (
       <Card
         sx={{
-          "&:hover": {
-            background: "#efefef",
-            transform: "translateY(-2px)",
-            boxShadow: 3
-          },
           minHeight: 150,
           cursor: "pointer",
           transition: "all 0.2s ease-in-out"
@@ -125,12 +122,9 @@ const BalanceCard = () => {
   }
 
   return (
-    <Link to="/balance" style={{ textDecoration: "none" }}>
+    <Link to="/balance" style={{ textDecoration: "none", color: "inherit" }}>
       <Card
         sx={{
-          "&:hover": {
-            background: "#efefef"
-          },
           minHeight: 150
         }}
       >
@@ -139,13 +133,13 @@ const BalanceCard = () => {
             {strings.balanceCard.balance}
           </Typography>
           <Grid container>
-            <Grid item xs={12}>
+            <Grid size={12}>
               {strings.formatString(strings.balanceCard.atTheEndOf, yesterday.toLocaleString())}
             </Grid>
-            <Grid style={{ marginBottom: 1 }} item xs={1}>
+            <Grid style={{ marginBottom: 1 }} size={1}>
               <ScheduleIcon style={{ marginTop: 1 }} />
             </Grid>
-            <Grid item xs={11}>
+            <Grid size={11}>
               {loading ? <Skeleton /> : renderUserFlextime()}
             </Grid>
           </Grid>

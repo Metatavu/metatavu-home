@@ -1,4 +1,4 @@
-import { Box, Button, Card, Chip, Grid, Typography } from "@mui/material";
+import { Box, Button, Card, Chip, Grid, Typography, useTheme } from "@mui/material";
 import { useAtomValue } from "jotai";
 import { DateTime } from "luxon";
 import { Link } from "react-router-dom";
@@ -22,29 +22,37 @@ interface Props {
  * @param onDeleteClick - Optional callback function to open the delete confirmation dialog.
  */
 const ArticleListItem = ({ article, adminMode = false, onDeleteClick }: Props) => {
+  const theme = useTheme();
   const users = useAtomValue(usersAtom);
 
   if (!article?.createdBy) return null;
 
   const lastActivityData = getLastActivityString(article, users);
   return (
-    <Link to={article.path} style={{ textDecoration: "none" }}>
+    <Link to={article.path} style={{ textDecoration: "none", color: "inherit" }}>
       <Card
         key={`article-card-${article.id}`}
         sx={{
           padding: "20px",
           position: "relative",
           borderRadius: "20px",
-          backgroundColor: "#fff",
+          backgroundColor: theme.palette.background.paper,
+          color: theme.palette.text.primary,
           width: "100%",
           ":hover": {
-            boxShadow: "0px 6px 14px rgba(0, 0, 0, 0.3)",
-            backgroundColor: "rgba(0, 0, 0, 0.04)"
+            boxShadow: theme.shadows[6],
+            backgroundColor: theme.palette.action.hover
           }
         }}
       >
         <Grid container spacing={3}>
-          <Grid item lg={2.7} md={3.5} sm={5} xs={12}>
+          <Grid
+            size={{
+              lg: 2.7,
+              md: 3.5,
+              sm: 5,
+              xs: 12
+            }}>
             <Box
               component="img"
               sx={{
@@ -59,7 +67,13 @@ const ArticleListItem = ({ article, adminMode = false, onDeleteClick }: Props) =
               src={article.coverImage}
             />
           </Grid>
-          <Grid item lg={8.6} md={8} sm={6} xs={12}>
+          <Grid
+            size={{
+              lg: 8.6,
+              md: 8,
+              sm: 6,
+              xs: 12
+            }}>
             <Typography
               variant="h6"
               sx={{
@@ -98,7 +112,7 @@ const ArticleListItem = ({ article, adminMode = false, onDeleteClick }: Props) =
               sx={{ marginTop: { lg: 1.5, md: 2, sm: 1.5 } }}
               direction={{ xs: "column", md: "row" }}
             >
-              <Grid item sx={{ order: { xs: 2, md: 1 } }}>
+              <Grid sx={{ order: { xs: 2, md: 1 } }}>
                 <Box
                   sx={{
                     textAlign: "left",
@@ -115,7 +129,7 @@ const ArticleListItem = ({ article, adminMode = false, onDeleteClick }: Props) =
                   ))}
                 </Box>
               </Grid>
-              <Grid item sx={{ order: { xs: 1, md: 2 } }}>
+              <Grid sx={{ order: { xs: 1, md: 2 } }}>
                 <Typography
                   variant="body1"
                   sx={{ paddingLeft: "5px", textAlign: "left", paddingTop: 0.5 }}
