@@ -381,6 +381,14 @@ export interface Localized extends LocalizedStringsMethods {
     noAccess: string;
   };
   /**
+   * Translation related to role-based route access
+   */
+  routeAccess: {
+    noAccess: string;
+    requiresDeveloper: string;
+    requiresTester: string;
+  };
+  /**
    * Translation related to vacations screen
    */
   vacationsScreen: {};

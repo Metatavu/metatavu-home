@@ -50,7 +50,6 @@ const App = () => {
 
   const router = createBrowserRouter([
     {
-      path: "/",
       element: <Layout />,
       errorElement: <ErrorScreen />,
       children: [
@@ -58,6 +57,25 @@ const App = () => {
           path: "/",
           element: <HomeScreen />
         },
+        {
+          path: "/settings",
+          element: (
+            <SettingsScreen
+              screenColorMode={screenColorMode}
+              setScreenColorMode={setScreenColorMode}
+            />
+          )
+        }
+      ]
+    },
+    {
+      element: (
+        <RestrictedContentProvider requiredRole="developer">
+          <Layout />
+        </RestrictedContentProvider>
+      ),
+      errorElement: <ErrorScreen />,
+      children: [
         {
           path: "/vacations",
           element: <VacationRequestsScreen />
@@ -95,32 +113,33 @@ const App = () => {
           element: <QuestionnaireManager mode={QuestionnairePreviewMode.FILL} />
         },
         {
-          path: "/wiki-documentation",
-          element: <WikiDocumentationScreen />
-        },
-        {
-          path: "/wiki-documentation/*",
-          element: <ArticleScreen />
-        },
-        {
-          path: "/settings",
-          element: (
-            <SettingsScreen
-              screenColorMode={screenColorMode}
-              setScreenColorMode={setScreenColorMode}
-            />
-          )
-        },
-        {
           path: "/oncall",
           element: <OnCallCalendarScreen />
         }
       ]
     },
     {
+      element: (
+        <RestrictedContentProvider requiredRole="tester">
+          <Layout />
+        </RestrictedContentProvider>
+      ),
+      errorElement: <ErrorScreen />,
+      children: [
+        {
+          path: "/wiki-documentation",
+          element: <WikiDocumentationScreen />
+        },
+        {
+          path: "/wiki-documentation/*",
+          element: <ArticleScreen />
+        }
+      ]
+    },
+    {
       path: "/admin",
       element: (
-        <RestrictedContentProvider>
+        <RestrictedContentProvider requiredRole="admin">
           <Layout />
         </RestrictedContentProvider>
       ),

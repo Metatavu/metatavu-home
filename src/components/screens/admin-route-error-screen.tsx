@@ -4,9 +4,21 @@ import strings from "src/localization/strings";
 import ErrorScreen from "./error-screen";
 
 /**
- * Admin route error screen component
+ * Component properties
  */
-const AdminRouteErrorScreen = () => {
+interface Props {
+  title?: string;
+  message?: string;
+}
+
+/**
+ * Route access error screen component.
+ * Redirects to home after 4 seconds.
+ */
+const AdminRouteErrorScreen = ({
+  title = strings.adminRouteAccess.noAccess,
+  message = strings.adminRouteAccess.notAdmin
+}: Props) => {
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -16,12 +28,7 @@ const AdminRouteErrorScreen = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  return (
-    <ErrorScreen
-      message={strings.adminRouteAccess.notAdmin}
-      title={strings.adminRouteAccess.noAccess}
-    />
-  );
+  return <ErrorScreen message={message} title={title} />;
 };
 
 export default AdminRouteErrorScreen;
