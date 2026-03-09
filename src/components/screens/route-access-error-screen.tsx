@@ -15,7 +15,7 @@ interface Props {
  * Route access error screen component.
  * Redirects to home after 4 seconds.
  */
-const AdminRouteErrorScreen = ({
+const RouteAccessErrorScreen = ({
   title = strings.adminRouteAccess.noAccess,
   message = strings.adminRouteAccess.notAdmin
 }: Props) => {
@@ -31,4 +31,4 @@ const AdminRouteErrorScreen = ({
   return <ErrorScreen message={message} title={title} />;
 };
 
-export default AdminRouteErrorScreen;
+export default RouteAccessErrorScreen;

@@ -1,7 +1,7 @@
-import { type ReactNode, useEffect, useState } from "react";
+import type { ReactNode } from "react";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
-import AdminRouteErrorScreen from "../screens/admin-route-error-screen";
+import RouteAccessErrorScreen from "../screens/route-access-error-screen";
 
 /**
  * Supported role types for route restriction
@@ -15,6 +15,19 @@ interface Props {
   children: ReactNode;
   requiredRole?: RequiredRole;
 }
+
+/**
+ * Maps a required role to its corresponding error title string.
+ */
+const getErrorTitle = (role: RequiredRole): string => {
+  switch (role) {
+    case "admin":
+      return strings.adminRouteAccess.noAccess;
+    case "developer":
+    case "tester":
+      return strings.routeAccess.noAccess;
+  }
+};
 
 /**
  * Maps a required role to its corresponding error message string.
@@ -51,16 +64,10 @@ const RestrictedContentProvider = ({ children, requiredRole = "admin" }: Props) 
     }
   })();
 
-  const [restricted, setRestricted] = useState(!hasAccess);
-
-  useEffect(() => {
-    setRestricted(!hasAccess);
-  }, [hasAccess]);
-
-  if (restricted) {
+  if (!hasAccess) {
     return (
-      <AdminRouteErrorScreen
-        title={strings.routeAccess.noAccess}
+      <RouteAccessErrorScreen
+        title={getErrorTitle(requiredRole)}
         message={getErrorMessage(requiredRole)}
       />
     );
