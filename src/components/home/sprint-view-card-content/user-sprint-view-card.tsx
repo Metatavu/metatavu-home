@@ -6,7 +6,6 @@ import { errorAtom } from "src/atoms/error";
 import { usersAtom } from "src/atoms/user";
 import SprintViewBarChart from "src/components/charts/sprint-view-bar-chart";
 import SprintViewLegend from "src/components/charts/sprint-view-legend";
-//import type { ResourceAllocations, User } from "src/generated/homeLambdasClient";
 import type { ResourceAllocations, User, WorkHours } from "src/generated/homeLambdasClient";
 import useSprintViewHandlers from "src/hooks/sprint-custom-hooks";
 import { useLambdasApi } from "src/hooks/use-api";
@@ -28,7 +27,6 @@ const SprintViewCardContent = () => {
   const [resourceAllocations, setResourceAllocations] = useState<ResourceAllocations[]>([]);
   const [workHours, setWorkHours] = useState<WorkHours[]>([]);
 
-  //const { resourceAllocationsApi } = useLambdasApi();
   const { resourceAllocationsApi, workHoursApi } = useLambdasApi();
   const setError = useSetAtom(errorAtom);
   const filteredAllocations = filterAllocations(resourceAllocations, adminMode);
@@ -45,10 +43,6 @@ const SprintViewCardContent = () => {
     if (loggedInUser && !resourceAllocations.length) {
       try {
         const severaUserId = getSeveraUserId(loggedInUser);
-        //const fetchedResourceAllocations = adminMode
-        //? await resourceAllocationsApi.getAllResourceAllocations()
-        //: await resourceAllocationsApi.getAllResourceAllocations({ severaUserId });
-        ///setResourceAllocations(fetchedResourceAllocations);
         const [fetchedResourceAllocations, fetchedWorkHours] = await Promise.all([
           adminMode
             ? resourceAllocationsApi.getAllResourceAllocations()
@@ -81,7 +75,6 @@ const SprintViewCardContent = () => {
       return {
         severaResourceAllocationId: allocation.severaResourceAllocationId || "",
         projectName: allocation.project?.name || "",
-        //actualWorkHours: allocation.calculatedAllocationHours || "",
         actualWorkHours: project ? getTotalActualWorkHours(project.severaProjectId || "") : 0,
         estimatedWorkHour: estimateHours || ""
       };
