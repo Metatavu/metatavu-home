@@ -509,7 +509,18 @@
     "consentToDataProcessing": "Aktivoi tilisi",
     "lightOrDarkMode": "Teema",
     "light": "Vaalea",
-    "dark": "Tumma"
+    "dark": "Tumma",
+    "jobDescriptionTitle": "Työnkuvaus",
+    "jobDescriptionSubtitle": "Valitse roolit, jotka parhaiten kuvaavat tehtävääsi. Ne auttavat mukauttamaan suosituksia, kuten wiki-artikkeleita.",
+    "saveRoles": "Tallenna roolit",
+    "jobDescriptionSaved": "Työnkuvauksen roolit tallennettu onnistuneesti.",
+    "jobDescriptionError": "Työnkuvauksen roolien tallennus epäonnistui:",
+    "roleDeveloper": "Kehittäjä",
+    "roleDesigner": "Suunnittelija",
+    "roleArchitect": "Arkkitehti",
+    "roleAdmin": "Ylläpitäjä",
+    "roleManagement": "Johto",
+    "roleTrainee": "Harjoittelija"
   },
   "notOptedInDescription": {
     "description": "Aktivoi tilisi, jotta voit nähdä tämän osion"
