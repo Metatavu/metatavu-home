@@ -3,14 +3,12 @@ import strings from "src/localization/strings";
 
 /**
  * Displays legend for the sprint view chart.
- * Shows Estimated and Actual hours on separate lines.
  */
 const SprintViewLegend = () => {
   const theme = useTheme();
 
   return (
     <Box display="flex" flexDirection="column" alignItems="flex-start" mt={1.5} gap={1}>
-      {/* Estimated Hours */}
       <Box display="flex" alignItems="center">
         <Box
           sx={{
@@ -26,7 +24,6 @@ const SprintViewLegend = () => {
         </Typography>
       </Box>
 
-      {/* Actual Hours */}
       <Box display="flex" alignItems="center">
         <Box
           sx={{
