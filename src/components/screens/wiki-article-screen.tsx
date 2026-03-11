@@ -268,12 +268,12 @@ const ArticleScreen = () => {
             <>
               {adminMode && (
                 <Grid container spacing={1.5} sx={{ marginBottom: 3, marginTop: 0.5 }}>
-                  <Grid item xs={6}>
+                  <Grid size={6}>
                     <ActionButton onClick={() => setFormOpen(true)}>
                       {strings.wikiDocumentation.edit}
                     </ActionButton>
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid size={6}>
                     <ActionButton onClick={handleApprove}>
                       {strings.wikiDocumentation.approve}
                     </ActionButton>
@@ -369,7 +369,7 @@ const ArticleScreen = () => {
                 </Box>
               )}
               <Grid container spacing={1.5} sx={{ marginBottom: 3 }}>
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <BackButton styles={{ padding: "6px" }} />
                 </Grid>
               </Grid>

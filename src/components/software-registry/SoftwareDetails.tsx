@@ -248,7 +248,11 @@ const SoftwareDetails = () => {
         </Link>
       </Box>
       <Grid container spacing={4} mb={4}>
-        <Grid item xs={12} md={6}>
+        <Grid
+          size={{
+            xs: 12,
+            md: 6
+          }}>
           <Typography variant="h4" gutterBottom>
             {strings.softwareRegistry.description}
           </Typography>
@@ -265,7 +269,11 @@ const SoftwareDetails = () => {
             {software.description}
           </Typography>
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid
+          size={{
+            xs: 12,
+            md: 6
+          }}>
           <Typography variant="h4" gutterBottom>
             {strings.softwareRegistry.review}
           </Typography>

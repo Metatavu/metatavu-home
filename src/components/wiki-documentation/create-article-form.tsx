@@ -1,13 +1,24 @@
 /** biome-ignore-all lint/correctness/useUniqueElementIds: used for onboarding */
 import ClearIcon from "@mui/icons-material/Clear";
+import FileUploadIcon from "@mui/icons-material/FileUpload";
+import ImageIcon from "@mui/icons-material/Image";
 import {
   Autocomplete,
   Box,
   Button,
   Card,
   Checkbox,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Grid,
   IconButton,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
   Popper,
   type PopperProps,
   styled,
@@ -25,7 +36,7 @@ import type { Article, User } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
 import { OnboardingScreen } from "src/types/index";
-import { uploadFile } from "src/utils/s3-file-utils";
+import { getHttpsUrlFromS3, listMediaFiles, uploadFile } from "src/utils/s3-file-utils";
 import BackButton from "../generics/back-button";
 import Onboarding from "../onboarding/Onboarding";
 import ActionButton from "./action-button";
@@ -72,6 +83,9 @@ const CreateOrEditArticleForm = ({
   const [imagePreview, setImagePreview] = useState(false);
   const [selectedTags, setSelectedTags] = useState<string[]>(article ? article.tags || [] : []);
   const [tag, setTag] = useState("");
+  const [mediaFiles, setMediaFiles] = useState<string[]>([]);
+  const [showMediaSelector, setShowMediaSelector] = useState(false);
+  const [loadingMedia, setLoadingMedia] = useState(false);
   const users = useAtomValue(usersAtom);
   const userProfile = useAtomValue(userProfileAtom);
   const loggedInUser = users.find((users: User) => users.id === userProfile?.id);
@@ -208,12 +222,19 @@ const CreateOrEditArticleForm = ({
     setPath(newInput);
   };
 
+  const [isUploadingCover, setIsUploadingCover] = useState(false);
+
   const handleFileChange = async (event: any) => {
     const file = event.target.files[0];
     if (file.type?.includes("image/")) {
-      const imageUrl = await uploadFile(file, articleApi);
-      setCoverImage(imageUrl || "");
-      setImagePreview(true);
+      setIsUploadingCover(true);
+      try {
+        const imageUrl = await uploadFile(file, articleApi);
+        setCoverImage(imageUrl || "");
+        setImagePreview(true);
+      } finally {
+        setIsUploadingCover(false);
+      }
     }
   };
 
@@ -230,6 +251,81 @@ const CreateOrEditArticleForm = ({
   const handleImageLinkChange = (event: ChangeEvent<HTMLInputElement>) => {
     const newInput = event.target.value;
     setCoverImage(newInput);
+  };
+
+  /**
+   * Opens the media selector dialog and fetches the list of available media files from S3.
+   * Shows a snackbar error if the files fail to load.
+   */
+  const handleOpenMediaSelector = async () => {
+    setShowMediaSelector(true);
+    setLoadingMedia(true);
+    try {
+      const files = await listMediaFiles(articleApi);
+      setMediaFiles(files || []);
+    } catch (error) {
+      console.error(strings.wikiDocumentation.errorLoadingMediaFiles, error);
+      setSnackbar({
+        open: true,
+        message: strings.wikiDocumentation.failedToLoadMediaFiles,
+        severity: "error"
+      });
+    } finally {
+      setLoadingMedia(false);
+    }
+  };
+
+  /**
+   * Handles selecting a media file from the S3 media selector dialog.
+   * Converts the S3 file name to an HTTPS URL, sets it as the cover image,
+   * enables the image preview, and closes the media selector dialog.
+   *
+   * @param fileName - The S3 file name of the selected media file.
+   */
+  const handleSelectMediaFile = (fileName: string) => {
+    const httpsUrl = getHttpsUrlFromS3(fileName);
+    setCoverImage(httpsUrl);
+    setImagePreview(true);
+    setShowMediaSelector(false);
+  };
+
+  /**
+   * Renders the content of the media file selector dialog.
+   * Shows a loading spinner while files are being fetched,
+   * a "no files found" message if the list is empty,
+   * or a list of selectable media files.
+   */
+  const renderMediaFiles = () => {
+    if (loadingMedia) {
+      return (
+        <Box display="flex" justifyContent="center" p={3}>
+          <CircularProgress />
+        </Box>
+      );
+    }
+
+    if (mediaFiles.length === 0) {
+      return (
+        <List>
+          <ListItem>
+            <ListItemText primary={strings.wikiDocumentation.noFilesFound} />
+          </ListItem>
+        </List>
+      );
+    }
+
+    return (
+      <List>
+        {mediaFiles.map((fileName) => (
+          <ListItem key={fileName} disablePadding>
+            <ListItemButton onClick={() => handleSelectMediaFile(fileName)}>
+              <ImageIcon sx={{ mr: 2 }} />
+              <ListItemText primary={fileName} secondary={getHttpsUrlFromS3(fileName)} />
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
+    );
   };
 
   const handleEnter = (event: KeyboardEvent<HTMLImageElement>) => {
@@ -256,10 +352,10 @@ const CreateOrEditArticleForm = ({
       <Onboarding screen={OnboardingScreen.WikiCreate} />
       <Box id="wiki-create-form-container">
         <Grid container spacing={1.5} sx={{ marginBottom: 3, marginTop: 0.5 }}>
-          <Grid item xs={6}>
+          <Grid size={6}>
             <BackButton onClick={handleClose} styles={{ padding: "6px" }} />
           </Grid>
-          <Grid item xs={6}>
+          <Grid size={6}>
             {action === "create" ? (
               <ActionButton
                 id="wiki-article-action-button"
@@ -288,7 +384,12 @@ const CreateOrEditArticleForm = ({
             required
           />
           <Grid container spacing={1.5}>
-            <Grid item md={6} xs={12}>
+            <Grid
+              size={{
+                md: 6,
+                xs: 12
+              }}
+            >
               <TextField
                 id="wiki-article-path-field"
                 sx={{ width: "100%", marginTop: 3 }}
@@ -299,7 +400,12 @@ const CreateOrEditArticleForm = ({
                 required
               />
             </Grid>
-            <Grid item md={6} xs={12}>
+            <Grid
+              size={{
+                md: 6,
+                xs: 12
+              }}
+            >
               <Autocomplete
                 id="wiki-article-tags-field"
                 multiple
@@ -352,7 +458,12 @@ const CreateOrEditArticleForm = ({
             </Grid>
           </Grid>
           <Grid container spacing={1.5}>
-            <Grid item md={6} xs={12}>
+            <Grid
+              size={{
+                md: 6,
+                xs: 12
+              }}
+            >
               <TextField
                 id="wiki-article-image-field"
                 sx={{ width: "100%", marginTop: 3 }}
@@ -374,7 +485,7 @@ const CreateOrEditArticleForm = ({
                     src={coverImage}
                     alt={strings.wikiDocumentation.coverImageAlt}
                   />
-                  <Grid item sx={{ position: "relative" }}>
+                  <Grid sx={{ position: "relative" }}>
                     <IconButton
                       sx={{
                         position: "absolute",
@@ -392,14 +503,41 @@ const CreateOrEditArticleForm = ({
                 </Grid>
               )}
               {!coverImage && (
-                <Button
-                  variant="outlined"
-                  component="label"
-                  sx={{ marginTop: 1.5, marginBottom: 1, width: "100%" }}
-                >
-                  {strings.wikiDocumentation.uploadImage}
-                  <input style={{ width: "100%" }} type="file" hidden onChange={handleFileChange} />
-                </Button>
+                <>
+                  <Button
+                    variant="outlined"
+                    component="label"
+                    startIcon={
+                      isUploadingCover ? (
+                        <CircularProgress size={16} thickness={4} />
+                      ) : (
+                        <FileUploadIcon />
+                      )
+                    }
+                    sx={{
+                      marginTop: 1.5,
+                      marginBottom: 1,
+                      width: "100%",
+                      pointerEvents: isUploadingCover ? "none" : "auto"
+                    }}
+                  >
+                    {strings.wikiDocumentation.uploadImage}
+                    <input
+                      style={{ width: "100%" }}
+                      type="file"
+                      hidden
+                      onChange={handleFileChange}
+                    />
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    startIcon={<ImageIcon />}
+                    sx={{ marginTop: 0.5, marginBottom: 1, width: "100%" }}
+                    onClick={handleOpenMediaSelector}
+                  >
+                    {strings.wikiDocumentation.selectFromExistingFiles}
+                  </Button>
+                </>
               )}
               {coverImage && !imagePreview && (
                 <Button
@@ -411,7 +549,12 @@ const CreateOrEditArticleForm = ({
                 </Button>
               )}
             </Grid>
-            <Grid item md={6} xs={12}>
+            <Grid
+              size={{
+                md: 6,
+                xs: 12
+              }}
+            >
               <TextField
                 id="wiki-article-description-field"
                 sx={{ width: "100%", marginTop: 3 }}
@@ -429,11 +572,28 @@ const CreateOrEditArticleForm = ({
           <Box id="wiki-article-content-editor">
             <RichTextEditorLexical
               ref={editorRef}
-              markdownContent={article?.content || "Article content is required"}
+              markdownContent={article?.content || strings.wikiDocumentation.articleContentRequired}
             />
           </Box>
         </Card>
       </Box>
+
+      {/* Media File Selector Dialog */}
+      <Dialog
+        open={showMediaSelector}
+        onClose={() => setShowMediaSelector(false)}
+        maxWidth="sm"
+        fullWidth
+        disableRestoreFocus
+      >
+        <DialogTitle>{strings.wikiDocumentation.selectImageFromS3}</DialogTitle>
+        <DialogContent>{renderMediaFiles()}</DialogContent>
+        <DialogActions>
+          <Button onClick={() => setShowMediaSelector(false)}>
+            {strings.wikiDocumentation.cancel}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };

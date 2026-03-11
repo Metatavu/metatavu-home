@@ -55,7 +55,7 @@ const SoftwareRegistryCard = () => {
   const renderSoftwareDetails = () => {
     if (loading) {
       return (
-        <Grid item container xs={12}>
+        <Grid container size={12}>
           <Skeleton width="100%" />
         </Grid>
       );
@@ -70,7 +70,7 @@ const SoftwareRegistryCard = () => {
             </Typography>
             <Grid display="flex" container alignItems="center" m={1}>
               {recommendedSoftware.map((app) => (
-                <Grid item key={app.id}>
+                <Grid key={app.id}>
                   <CardMedia
                     component="img"
                     height="60"
@@ -89,7 +89,6 @@ const SoftwareRegistryCard = () => {
             </Grid>
           </>
         )}
-
         {adminMode && pendingSoftware.length > 0 && (
           <>
             <Typography fontWeight="bold" gutterBottom>
@@ -97,7 +96,7 @@ const SoftwareRegistryCard = () => {
             </Typography>
             <Grid display="flex" container alignItems="center" m={1}>
               {pendingSoftware.map((app) => (
-                <Grid item key={app.id}>
+                <Grid key={app.id}>
                   <CardMedia
                     component="img"
                     height="60"
