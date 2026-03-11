@@ -322,6 +322,11 @@
     "notAdmin": "Sinulla ei ole hallintaoikeuksia",
     "noAccess": "Ei pääsyä"
   },
+  "routeAccess": {
+    "noAccess": "Ei pääsyä",
+    "requiresDeveloper": "Tarvitset kehittäjäroolin päästäksesi tälle sivulle",
+    "requiresTester": "Tarvitset testaajan roolin päästäksesi tälle sivulle"
+  },
   "vacationsScreen": {},
   "viewAll": {
     "startDate": "Aloituspäivä: ",

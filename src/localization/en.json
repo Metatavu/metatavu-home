@@ -322,6 +322,11 @@
     "notAdmin": "You don't have an admin role",
     "noAccess": "Access denied"
   },
+  "routeAccess": {
+    "noAccess": "Access denied",
+    "requiresDeveloper": "You need a developer role to access this page",
+    "requiresTester": "You need a tester role to access this page"
+  },
   "vacationsScreen": {},
   "viewAll": {
     "startDate": "Start Date: ",
