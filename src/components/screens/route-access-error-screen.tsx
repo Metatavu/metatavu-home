@@ -14,6 +14,9 @@ interface Props {
 /**
  * Route access error screen component.
  * Redirects to home after 4 seconds.
+ *
+ * @param title - Title of the error screen.
+ * @param message - Message of the error screen.
  */
 const RouteAccessErrorScreen = ({
   title = strings.adminRouteAccess.noAccess,

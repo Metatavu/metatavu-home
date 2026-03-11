@@ -53,16 +53,13 @@ const getErrorMessage = (role: RequiredRole): string => {
 const RestrictedContentProvider = ({ children, requiredRole = "admin" }: Props) => {
   const { isAdmin, isDeveloper, isTester } = useUserRole();
 
-  const hasAccess = (() => {
-    switch (requiredRole) {
-      case "admin":
-        return isAdmin;
-      case "developer":
-        return isDeveloper;
-      case "tester":
-        return isTester;
-    }
-  })();
+  const roleMap = {
+    admin: isAdmin,
+    developer: isDeveloper,
+    tester: isTester
+  };
+
+  const hasAccess = roleMap[requiredRole];
 
   if (!hasAccess) {
     return (
