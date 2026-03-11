@@ -25,7 +25,7 @@
       "src/generated/*": ["src/generated/*"],
       "src/utils/*": ["src/utils/*"],
       "src/types/*": ["src/types/*"],
-      "src/theme/*": ["src/theme/*"],
+      "src/theme/*": ["src/theme/*"]
     }
   },
   "include": ["src"],
