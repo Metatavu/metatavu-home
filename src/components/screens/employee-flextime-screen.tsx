@@ -52,7 +52,6 @@ const EmployeeFlextimeScreen = () => {
 
     try {
       const data = await resourceAllocationsApi.listUsersFlextime();
-      console.log("Flextime API response:", data);
       setUsersFlextime(data);
     } catch (err) {
       setError(`${strings.error.fetchFailedFlextime}, ${err}`);
