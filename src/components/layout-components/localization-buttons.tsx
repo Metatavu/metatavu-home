@@ -11,13 +11,7 @@ const LocalizationButton = () => {
   const [tooltipOpen, setTooltipOpen] = useState(false);
 
   return (
-    <Tooltip
-      title={strings.header.changeLanguage}
-      open={tooltipOpen && !menuOpen}
-      disableFocusListener
-      disableHoverListener
-      disableTouchListener
-    >
+    <Tooltip title={strings.header.changeLanguage} open={tooltipOpen && !menuOpen}>
       <FormControl
         size="small"
         onMouseEnter={() => setTooltipOpen(true)}
@@ -27,7 +21,10 @@ const LocalizationButton = () => {
           value={language}
           onChange={(event) => setLanguage(event.target.value as Language)}
           onOpen={() => setMenuOpen(true)}
-          onClose={() => { setMenuOpen(false); setTooltipOpen(false); }}
+          onClose={() => {
+            setMenuOpen(false);
+            setTooltipOpen(false);
+          }}
           variant="outlined"
           sx={{
             borderRadius: 2,
