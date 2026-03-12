@@ -27,7 +27,7 @@ const LocalizationButton = () => {
           value={language}
           onChange={(event) => setLanguage(event.target.value as Language)}
           onOpen={() => setMenuOpen(true)}
-          onClose={() => setMenuOpen(false)}
+          onClose={() => { setMenuOpen(false); setTooltipOpen(false); }}
           variant="outlined"
           sx={{
             borderRadius: 2,
