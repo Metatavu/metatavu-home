@@ -251,8 +251,16 @@ const EmployeeFlextimeScreen = () => {
                             ? strings.employeeFlextime.active
                             : strings.employeeFlextime.inactive
                         }
-                        color={userData.user.attributes?.isActive ? "success" : "warning"}
+                        color={userData.user.attributes?.isActive ? "success" : "default"}
                         variant="outlined"
+                        sx={
+                          userData.user.attributes?.isActive
+                            ? {}
+                            : {
+                                borderColor: theme.palette.action.disabled,
+                                color: theme.palette.text.disabled
+                              }
+                        }
                       />
                     </TableCell>
                   </TableRow>
