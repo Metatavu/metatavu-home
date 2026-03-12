@@ -8,10 +8,21 @@ import type { Language } from "src/types";
 const LocalizationButton = () => {
   const [language, setLanguage] = useAtom(languageAtom);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [tooltipOpen, setTooltipOpen] = useState(false);
 
   return (
-    <Tooltip title={strings.header.changeLanguage} leaveDelay={0} disableHoverListener={menuOpen}>
-      <FormControl size="small">
+    <Tooltip
+      title={strings.header.changeLanguage}
+      open={tooltipOpen && !menuOpen}
+      disableFocusListener
+      disableHoverListener
+      disableTouchListener
+    >
+      <FormControl
+        size="small"
+        onMouseEnter={() => setTooltipOpen(true)}
+        onMouseLeave={() => setTooltipOpen(false)}
+      >
         <Select
           value={language}
           onChange={(event) => setLanguage(event.target.value as Language)}
