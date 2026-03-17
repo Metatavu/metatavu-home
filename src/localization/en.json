@@ -514,7 +514,18 @@
     "consentToDataProcessing": "Activate account",
     "lightOrDarkMode": "Mode",
     "light": "Light",
-    "dark": "Dark"
+    "dark": "Dark",
+    "jobDescriptionTitle": "Job Description",
+    "jobDescriptionSubtitle": "Select the roles that best describe your position. These help personalise recommendations such as wiki articles.",
+    "saveRoles": "Save roles",
+    "jobDescriptionSaved": "Job description roles saved successfully.",
+    "jobDescriptionError": "Failed to save job description roles:",
+    "roleDeveloper": "Developer",
+    "roleDesigner": "Designer",
+    "roleArchitect": "Architect",
+    "roleAdmin": "Admin",
+    "roleManagement": "Management",
+    "roleTrainee": "Trainee"
   },
   "notOptedInDescription": {
     "description": "Activate your account to view this section."
