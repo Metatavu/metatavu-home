@@ -42,7 +42,7 @@ const VacationsCard = () => {
   const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
 
   /**
-   * Fetch vacations request
+   * Fetch vacation requests
    */
   const fetchVacationsRequests = async () => {
     if (!loggedInUser) return;
