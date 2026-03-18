@@ -1,5 +1,6 @@
-import { VacationRequestStatuses } from "../generated/client";
-import { theme } from "../theme";
+import type { Theme } from "@mui/material";
+import type { VacationRequestStatus } from "../generated/homeLambdasClient";
+import { VacationRequestStatuses } from "../generated/homeLambdasClient";
 
 /**
  * Get color code corresponding to the vacation request status
@@ -7,9 +8,28 @@ import { theme } from "../theme";
  * @param vacationRequestStatus vacation request status
  * @returns color code as string
  */
-export const getVacationRequestStatusColor = (vacationRequestStatus: VacationRequestStatuses) =>
+export const getVacationRequestStatusColor = (
+  vacationRequestStatus: VacationRequestStatuses,
+  theme: Theme
+) =>
   ({
     [VacationRequestStatuses.APPROVED]: theme.palette.success.main,
     [VacationRequestStatuses.DECLINED]: theme.palette.error.main,
-    [VacationRequestStatuses.PENDING]: theme.palette.info.main
+    [VacationRequestStatuses.PENDING]: theme.palette.warning.light
   })[vacationRequestStatus];
+
+/**
+ * Get color code corresponding to the vacation request status
+ *
+ * @param statuses array of vacation request statuses
+ * @returns final status of the vacation request
+ */
+export const getTotalVacationRequestStatus = (statuses: VacationRequestStatus[]) => {
+  if (statuses.some((status) => status.status === VacationRequestStatuses.APPROVED)) {
+    return VacationRequestStatuses.APPROVED;
+  } else if (statuses.some((status) => status.status === VacationRequestStatuses.DECLINED)) {
+    return VacationRequestStatuses.DECLINED;
+  } else {
+    return VacationRequestStatuses.PENDING;
+  }
+};

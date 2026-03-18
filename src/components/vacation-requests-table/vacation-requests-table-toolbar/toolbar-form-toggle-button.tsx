@@ -1,7 +1,6 @@
-import type { Variant } from "@mui/material/styles/createTypography";
+import { Button, type ButtonOwnProps, Typography, type TypographyProps } from "@mui/material";
 import type { ComponentType, ReactNode } from "react";
 import type { ButtonIconProps } from "src/types";
-import { Button, type ButtonOwnProps, Typography } from "@mui/material";
 
 /**
  * Component properties
@@ -9,7 +8,7 @@ import { Button, type ButtonOwnProps, Typography } from "@mui/material";
 interface Props {
   children?: ReactNode;
   buttonVariant?: ButtonOwnProps["variant"];
-  titleVariant?: Variant;
+  titleVariant?: TypographyProps["variant"];
   value: boolean;
   setValue: (value: boolean) => void;
   ButtonIcon?: ComponentType<ButtonIconProps>;

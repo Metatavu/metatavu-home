@@ -1,11 +1,11 @@
+import type { Theme } from "@mui/material";
 import { Box, Typography } from "@mui/material";
 import type { TooltipProps } from "recharts";
-import type { ValueType, NameType } from "recharts/types/component/DefaultTooltipContent";
-import type { DailyEntry, PersonTotalTime } from "../generated/client";
+import type { NameType, ValueType } from "recharts/types/component/DefaultTooltipContent";
+//import type { DailyEntry, PersonTotalTime } from "../generated/client";
 import strings from "../localization/strings";
-import { theme } from "../theme";
-import { getHoursAndMinutes } from "./time-utils";
 import type { CustomLabel } from "../types";
+import { getHoursAndMinutes } from "./time-utils";
 
 /**
  * Reformats inputted daily entry to be presented in the pie chart
@@ -13,11 +13,12 @@ import type { CustomLabel } from "../types";
  * @param dailyEntry
  * @returns an array of elements each representing a section in the pie chart
  */
-export const dailyEntryToChart = (dailyEntry: DailyEntry) => [
-  { name: strings.timebank.billableProjectTime, dataKey: dailyEntry.billableProjectTime },
-  { name: strings.timebank.nonBillableProjectTime, dataKey: dailyEntry.nonBillableProjectTime },
-  { name: strings.timebank.internalTime, dataKey: dailyEntry.internalTime }
-];
+// NOTE: The method below is commented out because it uses timebank client which is removed for restoring.
+// export const dailyEntryToChart = (dailyEntry: DailyEntry) => [
+//   { name: strings.timebank.billableProjectTime, dataKey: dailyEntry.billableProjectTime },
+//   { name: strings.timebank.nonBillableProjectTime, dataKey: dailyEntry.nonBillableProjectTime },
+//   { name: strings.timebank.internalTime, dataKey: dailyEntry.internalTime }
+// ];
 
 /**
  * Reformats inputted person total time object to be presented in the bar chart
@@ -25,15 +26,16 @@ export const dailyEntryToChart = (dailyEntry: DailyEntry) => [
  * @param personTotalTime
  * @returns an array of objects, each object representing a bar in the bar chart
  */
-export const totalTimeToChart = (personTotalTime: PersonTotalTime) => [
-  {
-    name: strings.timebank.logged,
-    internal: personTotalTime.internalTime,
-    billableProject: personTotalTime.billableProjectTime,
-    nonBillableProject: personTotalTime.nonBillableProjectTime
-  },
-  { name: strings.timebank.expected, expected: personTotalTime.expected }
-];
+// NOTE: The method below is commented out because it uses timebank client which is removed for restoring.
+// export const totalTimeToChart = (personTotalTime: PersonTotalTime) => [
+//   {
+//     name: strings.timebank.logged,
+//     internal: personTotalTime.internalTime,
+//     billableProject: personTotalTime.billableProjectTime,
+//     nonBillableProject: personTotalTime.nonBillableProjectTime
+//   },
+//   { name: strings.timebank.expected, expected: personTotalTime.expected }
+// ];
 
 /**
  * Renders custom labels in the pie chart
@@ -76,7 +78,7 @@ export const renderCustomizedTooltipPieChart = ({
         variant="h6"
         style={{
           color: "#fff",
-          padding: theme.spacing(1)
+          padding: 8
         }}
       >
         {`${sectionName}: ${getHoursAndMinutes(selectedData.value as number)}`}
@@ -93,7 +95,7 @@ export const renderCustomizedTooltipPieChart = ({
  * @param color Font color of the line
  * @returns MUI Typography line inside the tooltip containing data name and value.
  */
-const renderCustomizedTooltipRow = (name: string, time: number, color: string) => (
+const renderCustomizedTooltipRow = (name: string, time: number, color: string, theme: Theme) => (
   <Typography
     variant="h6"
     style={{
@@ -111,10 +113,10 @@ const renderCustomizedTooltipRow = (name: string, time: number, color: string) =
  * @param props props, such as chart values, passed from the parent (chart)
  * @returns JSX element as a tooltip
  */
-export const renderCustomizedTooltipBarChart = ({
-  active,
-  payload
-}: TooltipProps<ValueType, NameType>) => {
+export const renderCustomizedTooltipBarChart = (
+  { active, payload }: TooltipProps<ValueType, NameType>,
+  theme: Theme
+) => {
   if (!active || !payload || !payload.length || !payload[0].payload) {
     return null;
   }
@@ -141,28 +143,32 @@ export const renderCustomizedTooltipBarChart = ({
         ? renderCustomizedTooltipRow(
             strings.timebank.billableProjectTime,
             billableProject as number,
-            theme.palette.success.main
+            theme.palette.success.main,
+            theme
           )
         : ""}
       {nonBillableProject
         ? renderCustomizedTooltipRow(
             strings.timebank.nonBillableProjectTime,
             nonBillableProject as number,
-            theme.palette.success.main
+            theme.palette.success.main,
+            theme
           )
         : ""}
       {internal
         ? renderCustomizedTooltipRow(
             strings.timebank.internalTime,
             internal as number,
-            theme.palette.warning.main
+            theme.palette.warning.main,
+            theme
           )
         : ""}
       {expected
         ? renderCustomizedTooltipRow(
             strings.timebank.expected,
             expected as number,
-            theme.palette.info.main
+            theme.palette.info.main,
+            theme
           )
         : ""}
     </Box>

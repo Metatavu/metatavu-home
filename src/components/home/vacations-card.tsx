@@ -1,197 +1,102 @@
-import { Grid, Card, CardContent, Skeleton, Typography, Box } from "@mui/material";
-import strings from "src/localization/strings";
-import { Link } from "react-router-dom";
+import { Check, Pending } from "@mui/icons-material";
 import LuggageIcon from "@mui/icons-material/Luggage";
-import { useAtomValue, useSetAtom, useAtom } from "jotai";
-import { useState, useMemo } from "react";
+import { Box, Card, CardContent, Grid, Skeleton, Typography, useTheme } from "@mui/material";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { DateTime } from "luxon";
+import { useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import { userProfileAtom } from "src/atoms/auth";
 import { errorAtom } from "src/atoms/error";
-import {
-  type VacationRequest,
-  type VacationRequestStatus,
-  VacationRequestStatuses,
-  type Person
-} from "src/generated/client";
-import { useApi } from "src/hooks/use-api";
-import { DateTime } from "luxon";
-import LocalizationUtils from "src/utils/localization-utils";
-import {
-  allVacationRequestsAtom,
-  allVacationRequestStatusesAtom,
-  vacationRequestsAtom,
-  vacationRequestStatusesAtom
-} from "src/atoms/vacation";
-import { getVacationRequestStatusColor } from "src/utils/vacation-status-utils";
-import UserRoleUtils from "src/utils/user-role-utils";
-import { Check, Pending } from "@mui/icons-material";
-import { personsAtom } from "src/atoms/person";
-import { getVacationRequestPersonFullName } from "src/utils/vacation-request-utils";
-import { validateValueIsNotUndefinedNorNull } from "src/utils/check-utils";
+import { usersAtom } from "src/atoms/user.ts";
+import { allVacationRequestsAtom, vacationRequestsAtom } from "src/atoms/vacation";
+import type { User } from "src/generated/homeLambdasClient";
+import { type VacationRequest, VacationRequestStatuses } from "src/generated/homeLambdasClient";
+import { useLambdasApi } from "src/hooks/use-api";
+import useUserRole from "src/hooks/use-user-role";
+import strings from "src/localization/strings";
 import type { VacationInfoListItem } from "src/types";
+import { validateValueIsNotUndefinedNorNull } from "src/utils/check-utils";
+import LocalizationUtils from "src/utils/localization-utils";
 import { formatDate } from "src/utils/time-utils";
-import config from "src/app/config";
-// TODO: Component is commented out due backend calculations about vacation days being incorrect. Once the error is fixed, introduce the text components back in the code.
-// import { renderVacationDaysTextForCard } from "../../utils/vacation-days-utils";
+import { renderVacationDaysTextForCard } from "src/utils/vacation-days-utils";
+import { getVacationRequestPersonFullName } from "src/utils/vacation-request-utils";
+import {
+  getTotalVacationRequestStatus,
+  getVacationRequestStatusColor
+} from "src/utils/vacation-status-utils";
 
 /**
  * Vacations card component
  */
 const VacationsCard = () => {
-  const adminMode = UserRoleUtils.adminMode();
-  const { vacationRequestsApi, vacationRequestStatusApi } = useApi();
+  const theme = useTheme();
+  const { adminMode } = useUserRole();
+  const { vacationRequestsApi } = useLambdasApi();
   const userProfile = useAtomValue(userProfileAtom);
   const setError = useSetAtom(errorAtom);
   const [vacationRequests, setVacationRequests] = useAtom(
     adminMode ? allVacationRequestsAtom : vacationRequestsAtom
   );
-  const [latestVacationRequestStatuses, setLatestVacationRequestStatuses] = useAtom(
-    adminMode ? allVacationRequestStatusesAtom : vacationRequestStatusesAtom
-  );
   const [loading, setLoading] = useState(false);
-  const [persons] = useAtom(personsAtom);
-  const loggedInPerson = persons.find(
-    (person: Person) =>
-      person.id === config.person.forecastUserIdOverride || person.keycloakId === userProfile?.id
-  );
-
-  /**
-   * Fetch vacation request statuses
-   */
-  const fetchVacationRequestStatuses = async () => {
-    if (vacationRequests.length && !latestVacationRequestStatuses.length) {
-      try {
-        setLoading(true);
-        const vacationRequestStatuses: VacationRequestStatus[] = [];
-
-        await Promise.all(
-          vacationRequests.map(async (vacationRequest) => {
-            let createdStatuses: VacationRequestStatus[] = [];
-            if (vacationRequest.id) {
-              createdStatuses = await vacationRequestStatusApi.listVacationRequestStatuses({
-                id: vacationRequest.id
-              });
-            }
-            createdStatuses.forEach((createdStatus) => {
-              vacationRequestStatuses.push(createdStatus);
-            });
-          })
-        );
-        await filterLatestVacationRequestStatuses(vacationRequestStatuses);
-      } catch (error) {
-        setError(`${strings.vacationRequestError.fetchStatusError}, ${error}`);
-      }
-    }
-  };
-
-  useMemo(() => {
-    fetchVacationRequestStatuses();
-  }, [vacationRequests]);
-
-  /**
-   * Filter latest vacation request statuses, so there would be only one status(the latest one) for each request showed on the UI
-   */
-  const filterLatestVacationRequestStatuses = async (
-    vacationRequestStatuses: VacationRequestStatus[]
-  ) => {
-    if (vacationRequests.length && vacationRequestStatuses.length) {
-      const selectedLatestVacationRequestStatuses: VacationRequestStatus[] = [];
-
-      vacationRequests.forEach((vacationRequest) => {
-        const selectedVacationRequestStatuses: VacationRequestStatus[] = [];
-
-        vacationRequestStatuses.forEach((vacationRequestStatus) => {
-          if (vacationRequest.id === vacationRequestStatus.vacationRequestId) {
-            selectedVacationRequestStatuses.push(vacationRequestStatus);
-          }
-        });
-
-        if (selectedVacationRequestStatuses.length) {
-          const latestStatus = selectedVacationRequestStatuses.reduce((a, b) => {
-            if (a.updatedAt && b.updatedAt) {
-              return a.updatedAt > b.updatedAt ? a : b;
-            }
-            if (a.updatedAt) {
-              return a;
-            }
-            return b;
-          });
-          selectedLatestVacationRequestStatuses.push(latestStatus);
-        }
-      });
-      setLatestVacationRequestStatuses(selectedLatestVacationRequestStatuses);
-    }
-    setLoading(false);
-  };
+  const [users] = useAtom(usersAtom);
+  const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
 
   /**
    * Fetch vacation requests
    */
   const fetchVacationsRequests = async () => {
+    if (!loggedInUser) return;
     setLoading(true);
-    if (!loggedInPerson) return;
-
-    if (!vacationRequests.length) {
-      try {
-        let fetchedVacationRequests: VacationRequest[] = [];
-        if (adminMode) {
-          fetchedVacationRequests = await vacationRequestsApi.listVacationRequests({});
-        } else {
-          fetchedVacationRequests = await vacationRequestsApi.listVacationRequests({
-            personId: loggedInPerson.keycloakId
-          });
-        }
-        setVacationRequests(fetchedVacationRequests);
-      } catch (error) {
-        setError(`${strings.vacationRequestError.fetchRequestError}, ${error}`);
-      }
+    try {
+      const fetchedVacationRequests: VacationRequest[] = adminMode
+        ? await vacationRequestsApi.listVacationRequests({})
+        : await vacationRequestsApi.listVacationRequests({ userId: loggedInUser.id });
+      setVacationRequests(fetchedVacationRequests);
+    } catch (error) {
+      setError(`${strings.vacationRequestError.fetchRequestError}, ${error}`);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
-
   useMemo(() => {
     fetchVacationsRequests();
-  }, [loggedInPerson]);
+  }, [loggedInUser]);
 
   /**
-   * Get pending vacation requests by checking wether it has a status or not
+   * Get pending vacation requests by checking whether any of its statuses are approved, declined or draft
    *
    * @returns pending vacation requests
    */
   const getPendingVacationRequests = () => {
-    const pendingVacationRequests = vacationRequests
+    return vacationRequests
       .filter(
         (vacationRequest) =>
-          vacationRequest &&
-          !latestVacationRequestStatuses.find(
-            (latestVacationRequestStatus) =>
-              latestVacationRequestStatus.vacationRequestId === vacationRequest.id
+          vacationRequest.draft !== true &&
+          vacationRequest.status?.every(
+            (status) =>
+              status.status !== VacationRequestStatuses.APPROVED &&
+              status.status !== VacationRequestStatuses.DECLINED
           )
       )
       .filter(validateValueIsNotUndefinedNorNull);
-
-    return pendingVacationRequests;
   };
 
   /**
-   * Get upcoming vacation requests and filter out declined vacation requests
+   * Get upcoming vacation requests and filter out declined/draft vacation requests
    *
    * @returns upcoming vacation requests
    */
   const getUpcomingVacationRequests = () => {
-    const upcomingVacationRequests = vacationRequests
+    return vacationRequests
       .filter(
         (vacationRequest) =>
-          vacationRequest &&
+          vacationRequest.draft !== true &&
           DateTime.fromJSDate(vacationRequest.startDate) > DateTime.now() &&
-          !latestVacationRequestStatuses.find(
-            (latestVacationRequestStatus) =>
-              latestVacationRequestStatus.vacationRequestId === vacationRequest.id &&
-              latestVacationRequestStatus.status === VacationRequestStatuses.DECLINED
+          !vacationRequest.status?.some(
+            (status) => status.status === VacationRequestStatuses.DECLINED
           )
       )
       .filter(validateValueIsNotUndefinedNorNull);
-
-    return upcomingVacationRequests;
   };
 
   /**
@@ -201,7 +106,7 @@ const VacationsCard = () => {
    * @param index index
    */
   const renderVacationInfoItem = (vacationInfoListItem: VacationInfoListItem, index: number) => (
-    <Grid item xs={12} key={`vacations-info-list-item-${index}`}>
+    <Grid key={`vacations-info-list-item-${index}`} size={12}>
       <Box sx={{ display: "flex" }}>
         <Typography sx={{ flex: 1 }}>{vacationInfoListItem.name}</Typography>
         <Typography sx={{ flex: 1 }}>{vacationInfoListItem.value}</Typography>
@@ -213,8 +118,7 @@ const VacationsCard = () => {
    * Render the earliest upcoming vacation request
    */
   const renderEarliestUpcomingVacationRequest = () => {
-    let earliestUpcomingVacationRequest: VacationRequest | undefined = undefined;
-    let earliestUpcomingVacationRequestStatus: VacationRequestStatuses | undefined;
+    let earliestUpcomingVacationRequest: VacationRequest | undefined;
     let upcomingVacationRequests = getUpcomingVacationRequests();
 
     if (upcomingVacationRequests.length) {
@@ -228,12 +132,6 @@ const VacationsCard = () => {
           : vacationA
       );
 
-      earliestUpcomingVacationRequestStatus = latestVacationRequestStatuses.find(
-        (vacationRequestStatus) =>
-          earliestUpcomingVacationRequest &&
-          earliestUpcomingVacationRequest.id === vacationRequestStatus.vacationRequestId
-      )?.status;
-
       const vacationInfoListItems: VacationInfoListItem[] = [
         {
           name: strings.vacationsCard.vacationType,
@@ -245,7 +143,7 @@ const VacationsCard = () => {
           name: strings.vacationsCard.applicant,
           value: getVacationRequestPersonFullName(
             earliestUpcomingVacationRequest,
-            persons,
+            users,
             userProfile
           )
         },
@@ -257,20 +155,23 @@ const VacationsCard = () => {
         },
         {
           name: strings.vacationsCard.status,
-          value: earliestUpcomingVacationRequestStatus ? (
+          value: earliestUpcomingVacationRequest.status ? (
             <span
               style={{
-                color: getVacationRequestStatusColor(earliestUpcomingVacationRequestStatus)
+                color: getVacationRequestStatusColor(
+                  getTotalVacationRequestStatus(earliestUpcomingVacationRequest?.status),
+                  theme
+                )
               }}
             >
               {LocalizationUtils.getLocalizedVacationRequestStatus(
-                earliestUpcomingVacationRequestStatus
+                getTotalVacationRequestStatus(earliestUpcomingVacationRequest?.status)
               )}
             </span>
           ) : (
             <span
               style={{
-                color: getVacationRequestStatusColor(VacationRequestStatuses.PENDING)
+                color: getVacationRequestStatusColor(VacationRequestStatuses.PENDING, theme)
               }}
             >
               {strings.vacationRequest.pending}
@@ -281,10 +182,10 @@ const VacationsCard = () => {
 
       return (
         <>
-          <Grid item xs={1}>
+          <Grid size={1}>
             <LuggageIcon />
           </Grid>
-          <Grid item xs={11}>
+          <Grid size={11}>
             <Box>
               {earliestUpcomingVacationRequest &&
                 DateTime.fromJSDate(earliestUpcomingVacationRequest.startDate) > DateTime.now() && (
@@ -336,10 +237,10 @@ const VacationsCard = () => {
     if (loading) {
       return (
         <>
-          <Grid item xs={1}>
+          <Grid size={1}>
             <Pending />
           </Grid>
-          <Grid item xs={11}>
+          <Grid size={11}>
             <Skeleton />
           </Grid>
         </>
@@ -349,13 +250,11 @@ const VacationsCard = () => {
     return (
       <>
         {adminMode || vacationRequestsCount ? (
-          <Grid item xs={1}>
+          <Grid size={1}>
             {vacationRequestsCount ? <Pending /> : <Check />}
           </Grid>
-        ) : (
-          <></>
-        )}
-        <Grid item xs={adminMode || vacationRequestsCount ? 11 : 12}>
+        ) : null}
+        <Grid size={adminMode || vacationRequestsCount ? 11 : 12}>
           {message}
         </Grid>
       </>
@@ -364,21 +263,14 @@ const VacationsCard = () => {
 
   return (
     <Link to={adminMode ? "/admin/vacations" : "/vacations"} style={{ textDecoration: "none" }}>
-      <Card
-        sx={{
-          "&:hover": {
-            background: "#efefef"
-          }
-        }}
-      >
+      <Card>
         <CardContent>
           <Typography variant="h6" fontWeight={"bold"} style={{ marginTop: 6, marginBottom: 3 }}>
             {adminMode ? strings.tableToolbar.manageRequests : strings.tableToolbar.myRequests}
           </Typography>
           <Grid container>
             <Box sx={{ width: "100%", display: "flex", flexDirection: "column", mb: 2 }}>
-              {/* TODO: Component is commented out due backend calculations about vacation days being incorrect. Once the error is fixed, introduce the text components back in the code. */}
-              {/* {loggedInPerson && renderVacationDaysTextForCard(loggedInPerson)} */}
+              {loggedInUser && renderVacationDaysTextForCard(loggedInUser, theme)}
             </Box>
             {renderUpcomingOrPendingVacationRequestsCount()}
             {renderEarliestUpcomingVacationRequest()}

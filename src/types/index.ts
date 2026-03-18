@@ -1,6 +1,7 @@
 import type { DateTime } from "luxon";
-import type { Person, PersonTotalTime, VacationType, DailyEntry } from "../generated/client";
 import type { ReactNode } from "react";
+//import type { Person, PersonTotalTime, DailyEntry } from "../generated/client";
+import type { VacationRequest, VacationType } from "../generated/homeLambdasClient";
 
 /**
  * Enum describing table form modes
@@ -28,12 +29,15 @@ export interface VacationsDataGridRow {
   id: string | undefined;
   type: VacationType | string;
   personFullName: string;
+  userId?: string;
   updatedAt: string | DateTime;
   startDate: string | DateTime;
   endDate: string | DateTime;
   days: number;
   message: string;
   status: string;
+  draft: boolean;
+  vacationRequest?: VacationRequest;
 }
 
 /**
@@ -57,17 +61,6 @@ export interface SkeletonTableRow {
 }
 
 /**
- * Type describing data for vacation request
- */
-export interface VacationData {
-  startDate: DateTime;
-  endDate: DateTime;
-  type: VacationType;
-  message: string;
-  days: number;
-}
-
-/**
  * Interface for custom label used in the pie chart.
  */
 export interface CustomLabel {
@@ -88,10 +81,11 @@ export enum Worktime {
 /**
  * Interface for person with total time
  */
-export interface PersonWithTotalTime {
-  person: Person;
-  personTotalTime?: PersonTotalTime;
-}
+// NOTE: This interface was only used in timebank screens and is now commented out due to the removal of the timebank client.
+// export interface PersonWithTotalTime {
+//   person: Person;
+//   personTotalTime?: PersonTotalTime;
+// }
 
 /**
  * Enum for work time category
@@ -126,9 +120,10 @@ export interface VacationInfoListItem {
 /**
  * Type describing daily entry with index signature
  */
-export interface DailyEntryWithIndexSignature extends DailyEntry {
-  [key: string]: any;
-}
+// NOTE: This interface was only used in timebank screens and is now commented out due to the removal of the timebank client.
+// export interface DailyEntryWithIndexSignature extends DailyEntry {
+//   [key: string]: any;
+// }
 
 /**
  * Type describing chart data
@@ -150,12 +145,118 @@ export interface DateRange {
 }
 
 /**
- * Type describing chart data for sprint view
+ * Type describing chart data
  */
 export interface SprintViewChartData {
-  id: number,
-  projectName: string,
-  timeAllocated: number,
-  timeEntries: number,
-  color: string
+  severaResourceAllocationId: string;
+  projectName: string;
+  actualWorkHours: string | number;
+  estimatedWorkHour: string | number;
 }
+
+/**
+ * Type describing option for a question in New Questionnaire Screen
+ */
+export interface QuestionOption {
+  label: string;
+  value: boolean;
+}
+
+/**
+ * Enum describing questionnaire preview modes
+ */
+export enum QuestionnairePreviewMode {
+  FILL = "FILL",
+  EDIT = "EDIT",
+  PREVIEW = "PREVIEW"
+}
+
+/**
+ * Type describing row for phases data grid table
+ */
+export interface PhaseRow {
+  id: string;
+  title: string;
+  estimateWorkHours: string | number;
+  startDate: Date | string;
+  deadline: Date | string;
+  actualWorkHours: string | number;
+  assignee: string;
+}
+
+/**
+ * Enum describing the filter types for the sprint view.
+ */
+export const SprintViewFilterTypes = {
+  clear: "clear",
+  project: "project",
+  user: "user"
+} as const;
+
+/**
+ * Type describing the filter type values for sprint view.
+ */
+export type SprintViewFilterType =
+  (typeof SprintViewFilterTypes)[keyof typeof SprintViewFilterTypes];
+
+/**
+ * Type describing on call data for a week
+ */
+export interface OnCallWeek {
+  date: string | null;
+  username: string;
+  paid: boolean;
+  badgeColor: string;
+}
+/**
+ * Enum for the different screens in the onboarding flow
+ */
+export enum OnboardingScreen {
+  Home = "home",
+  Wiki = "wiki",
+  WikiCreate = "wikiCreate"
+}
+
+/**
+ * Type definition for an onboarding step
+ */
+export type OnboardingStep = {
+  selector: string;
+  position?:
+    | "top-left"
+    | "top-center"
+    | "top-right"
+    | "bottom-left"
+    | "bottom-right"
+    | "bottom-center"
+    | "center";
+  title: string;
+  content: string;
+};
+/**
+ * Interface describing Slack user avatars
+ */
+export interface SlackAvatar {
+  image_original: string | undefined;
+}
+
+/**
+ * Type describing delete item types
+ */
+export enum DeleteItemType {
+  VACATION = "vacation",
+  QUESTIONNAIRE = "questionnaire",
+  SOFTWARE = "software",
+  ARTICLE = "article"
+}
+/**
+ * Type describing light or dark mode
+ */
+export const ThemeModes = {
+  LIGHT: "light",
+  DARK: "dark"
+} as const;
+/**
+ * Type to be used in state and props
+ */
+export type ThemeMode = (typeof ThemeModes)[keyof typeof ThemeModes];

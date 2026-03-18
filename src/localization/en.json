@@ -4,12 +4,17 @@
     "pleaseWait": "Please wait, this could take a moment..."
   },
   "label": {
-    "currentLocaleLabel": "Current Locale:"
+    "currentLocaleLabel": "Current Locale:",
+    "cancel": "Cancel",
+    "save": "Save",
+    "back": "Back"
   },
   "header": {
     "hello": "Hi",
     "logout": "Log out",
     "home": "Home",
+    "employee": "Employee",
+    "settings": "Settings",
     "timebank": "Timebank",
     "vacations": "Vacations",
     "onCall": "On Call",
@@ -29,7 +34,19 @@
     "dailyEntriesNotFound": "Could not find daily entries",
     "fetchFailedGeneral": "There was an error fetching data",
     "fetchFailedNoEntriesGeneral": "No time entries found",
-    "fetchSlackAvatarsFailed": "Error while fetching Slack avatars"
+    "fetchSlackAvatarsFailed": "Error while fetching Slack avatars",
+    "questionnaireLoadFailed": "Error while loading questionnaires",
+    "questionnaireDeleteFailed": "Error while deleting questionnaire",
+    "questionnaireSaveFailed": "Error while saving questionnaire",
+    "questionnaireUpdateFailed": "Error while updating questionnaire",
+    "fetchFailedFlextime": "Error while fetching flextime data",
+    "missingUserId": "Missing user ID",
+    "noSeveraUserId": "One of your users is missing severaUserId, please contact a member of the metatavu home development team for more information.",
+    "noFlextimeData": "Something went wrong while fetching your flextime data",
+    "noArticleId": "Article ID is missing",
+    "fetchWorkDaysFailed": "Fetching work days data has failed",
+    "fetchWorkWeekFailed": "Error while fetching work week data, five day week will be used.",
+    "fetchFailedSevera": "Failed to update Severa opt-in."
   },
   "localization": {
     "en": "EN",
@@ -56,32 +73,101 @@
     "viewAllTimeEntries": "View all employees time totals and balances",
     "selectTimespan": "Select time span",
     "searchPlaceholder": "Search for a person...",
-    "employeeBalances": "Employee time totals and balances"
+    "employeeBalances": "Employee time totals and balances",
+    "numberOfWeeks": "Number of weeks:",
+    "enteredHours": "Logged hours",
+    "expectedHours": "Expected hours",
+    "holidayName": "Holiday:"
   },
   "sprint": {
     "sprintview": "Sprint view",
     "myAllocation": "My allocations",
     "allocation": "Allocation",
-    "timeAllocated": "Time allocated",
+    "timeAllocated": "Calculated Hours",
     "timeEntries": "Time Entries",
     "allocationLeft": "Allocations Left",
     "noAllocation": "No allocation found",
     "assigned": "Assignee",
     "taskStatus": "Status",
     "taskPriority": "Priority",
-    "estimatedTime": "Estimate",
+    "estimatedTime": "Estimate Hours",
     "taskName": "Tasks",
     "showMyTasks": "My tasks",
     "toDo": "To do",
     "inProgress": "In progress",
-    "allTasks" : "All tasks",
-    "notFound" : "No result found",
+    "allTasks": "All tasks",
+    "notFound": "No result found",
     "projectName": "Project",
     "search": "Search for a task, project or assignee",
     "unAllocated": "Unallocated Time:",
     "sprintDate": "Sprint",
-    "completed": "Done", 
-    "current": "Current: {0}-{1}"
+    "completed": "Done",
+    "current": "Current: {0}-{1}",
+    "startDate": "Start Date",
+    "deadLine": "Deadline",
+    "actualWorkHours": "Actual Work Hours",
+    "filter": "Filter by",
+    "filterType": "Filter type",
+    "project": "Project",
+    "user": "User",
+    "clear": "Clear",
+    "searchBy": "Search by {0}"
+  },
+  "softwareRegistry": {
+    "softwareRegistry": "Software registry",
+    "softwareRegistryAdmin": "Software registry admin",
+    "applications": "Applications",
+    "application": "Application",
+    "myApplications": "My applications",
+    "recommendations": "Recommendations",
+    "noRecommendations": "No recommendations",
+    "recommendationMessage": "There are {recommendationCount} new recommendations for you!",
+    "allApplications": "All applications",
+    "addApplication": "Add application",
+    "tags": "Tags",
+    "filter": "Filter",
+    "results": "Results",
+    "searchBy": "Search by tags or name",
+    "clearSearch": "Clear search",
+    "description": "Description",
+    "review": "Review",
+    "remove": "Remove from my applications",
+    "addToMyApps": "Add to my applications",
+    "editApp": "Edit application",
+    "addSoftware": "Add software",
+    "deleteSoftwareDescription": "Are you sure you want to delete this software? This action cannot be undone.",
+    "confirmDeletion": "Confirm deletion",
+    "added": "Added",
+    "name": "Name",
+    "nameRequired": "Name is required",
+    "imageURL": "Image URL",
+    "imageURLRequired": "Image is required",
+    "URLAddress": "URL address",
+    "URLExample": "https://www.example.com",
+    "ownReview": "Own review",
+    "recommend": "Recommend",
+    "cancel": "Cancel",
+    "submit": "Submit for approval",
+    "addedSuccessfully": "Added successfully",
+    "showMore": "Show more",
+    "showLess": "Show less",
+    "noPending": "No new software",
+    "newSoftware": "New software",
+    "alreadyExists": "Name already exists",
+    "delete": "Delete",
+    "searchPlaceholder": "Search and select users",
+    "loading": "Loading...",
+    "errorUnknownUser": "Unknown user",
+    "errorCreatingSoftware": "Error creating software:",
+    "errorFetchingSoftwareToList": "Error fetching software to list:"
+  },
+  "softwareStatus": {
+    "all": "All",
+    "pending": "Pending",
+    "under_review": "Under review",
+    "accepted": "Accepted",
+    "deprecated": "Deprecated",
+    "declined": "Declined"
   },
   "errors": {
     "fetchFailedGeneral": "There was an error fetching data",
@@ -112,13 +198,26 @@
     "year": "Year",
     "allTime": "All time",
     "startDate": "Start date",
-    "endDate": "End date"
+    "endDate": "End date",
+    "hour": "hour",
+    "hours": "hours",
+    "period": "period"
   },
   "confirmationHandler": {
     "confirmButtonText": "Yes",
     "cancelButtonText": "No",
     "title": "Are you sure?",
-    "message": "Delete selected vacation request(s)?"
+    "delete": {
+      "vacation": "Delete selected vacation request(s)?",
+      "questionnaire": "Delete questionnaire: \"{0}\"?",
+      "software": "Delete software: \"{0}\"?",
+      "article": "Delete article: \"{0}\"?"
+    },
+    "edit": {
+      "draft": "This draft request will be sent for approval if you save changes. Do you want to proceed?",
+      "reviewed": "This reviewed request will go back to pending if you save changes. Do you want to proceed?"
+    },
+    "update": "Are you sure you want to update?"
   },
   "errorHandler": {
     "cancelButtonText": "Close",
@@ -135,6 +234,7 @@
     "pending": "Pending",
     "approved": "Approved",
     "declined": "Declined",
+    "draft": "Draft",
     "vacation": "Vacation",
     "maternityPaternityLeave": "Parental leave",
     "unpaidTimeOff": "Unpaid time off",
@@ -145,7 +245,9 @@
     "noMessage": "No message",
     "noStatus": "No status",
     "person": "Person",
-    "noPersonFullName": "No name"
+    "noPersonFullName": "No name",
+    "noReview": "Not reviewed yet",
+    "reviewedBy": "by:"
   },
   "vacationRequestError": {
     "fetchRequestError": "Fetching vacation requests has failed",
@@ -157,18 +259,21 @@
     "updateRequestError": "Updating vacation request has failed",
     "updateStatusError": "Updating vacation request status has failed",
     "noVacationRequestsFound": "No vacation requests found",
-    "nameNotFound": "Name not found"
+    "nameNotFound": "Name not found",
+    "noVacationRequestsStatusFound": "Statuses not found",
+    "tooManyDaysRequestedUser": "You cannot request {requestedDays} days. You only have {unspentDays} unspent vacation days.",
+    "tooManyDaysRequestedAdmin": "Not enough vacation days. Requested: {requestedDays} days, Available: {unspentDays} days.",
+    "noVacationDaysAvailable": "You don't have any vacation days available for the current vacation year. Please contact your administrator.",
+    "failedToLoad": "Failed to load users"
   },
   "sprintRequestError": {
-    "fetchError": "Fetching sprint data requests has failed",
-    "fetchTimeEntriesError": "Error fetching time entries",
-    "fetchAllocationError": "Error fetching time entries for allocation {0}: {1}",
-    "fetchTasksError": "Error fetching time entries for task {0}: {1}",
-    "fetchTaskIdError": "Task id not found"
+    "fetchResourceAllocationsError": "Fetching sprint data for resourceAllocations has failed",
+    "fetchWorkHoursAndTasksError": "Error fetching workHours and tasks"
   },
   "form": {
     "submit": "Submit",
-    "update": "Update"
+    "update": "Update",
+    "restoreDefault": "Restore default holiday days consumed"
   },
   "tableToolbar": {
     "delete": "Delete",
@@ -176,11 +281,16 @@
     "createRequests": "New vacation request",
     "editRequests": "Edit a vacation request",
     "edit": "Edit",
+    "submitforApproval": "Submit for approval",
     "cancel": "Cancel",
     "create": "Request vacation",
     "manageRequests": "Manage vacation requests",
     "future": "Upcoming",
-    "past": "Past"
+    "past": "Past",
+    "saveAsDraft": "Save as Draft",
+    "all": "All",
+    "draft": "Draft",
+    "saveAsDraftTooltip": "Saving the vacation request as a draft will not submit it for approval"
   },
   "dataGrid": {
     "noRows": "No Rows"
@@ -196,8 +306,10 @@
     "applicant": "Applicant:",
     "timeOfVacation": "Time of Vacation:",
     "status": "Status:",
-    "spentVacations": "Spent vacation days: ",
-    "unspentVacations": "Unspent vacation days: "
+    "vacationDays": "Total vacation days: ",
+    "unspentVacationDays": "Unspent vacation days: ",
+    "vacationDaysNotFound": "Vacation days not found",
+    "unspentVacationDaysNotFound": "Unspent vacation days not found"
   },
   "personSelectDropdown": {
     "label": "Filter by Person"
@@ -210,14 +322,333 @@
     "notAdmin": "You don't have an admin role",
     "noAccess": "Access denied"
   },
-  "vacationsScreen": {
-    "back": "Back"
+  "routeAccess": {
+    "noAccess": "Access denied",
+    "requiresDeveloper": "You need a developer role to access this page",
+    "requiresTester": "You need a tester role to access this page"
   },
+  "vacationsScreen": {},
   "viewAll": {
     "startDate": "Start Date: ",
     "balance": "Balance: "
   },
   "employeeSelect": {
     "employeeSelectlabel": "Select employee"
+  },
+  "questionnaireCard": {
+    "questionnairesBuilder": "Questionnaires builder",
+    "questionnaires": "Questionnaires",
+    "progressBar": "Progress Bar"
+  },
+  "questionnaireScreen": {
+    "currentQuestionnaires": "Current Questionnaires",
+    "buildNewQuestionnaire": "Build New Questionnaire",
+    "status": "Status:",
+    "edit": "Edit",
+    "delete": "Delete"
+  },
+  "newQuestionnaireBuilder": {
+    "makeNewQuestionnaire": "Make a New Questionnaire",
+    "title": "Title",
+    "insertTitle": "Insert title",
+    "saveButton": "Save Questionnaire",
+    "preview": "Questionnaire preview",
+    "is": "is",
+    "removeFromPreview": "Delete Question",
+    "description": "Description",
+    "insertDescription": "Insert description",
+    "countedAnswers": "Cumulative amount of true values in this Questionnaire:",
+    "requiredAnswers": "Set required correct answers:",
+    "tooltipEmptyTitle": "Title is required",
+    "tooltipEmptyDescription": "Description is required",
+    "tooltipBothEmpty": "Title and description are required"
+  },
+  "newQuestionnaireCard": {
+    "newQuestion": "Add a new question.",
+    "questionLabel": "Question",
+    "correctAnswer": "Check the correct answer(s).",
+    "answerLabel": "Answer option",
+    "insertAnswerLabel": "Insert answer option",
+    "addAnswer": "+ Add new answer option",
+    "saveAnswer": "Add question",
+    "tooltipBothEmpty": "Question and answer options cannot be empty",
+    "tooltipEmptyQuestion": "Question cannot be empty",
+    "tooltipEmptyAnswers": "Answer options cannot be empty"
+  },
+  "questionnaireTable": {
+    "title": "Title",
+    "description": "Description",
+    "actions": "Actions",
+    "edit": "Edit",
+    "delete": "Delete",
+    "status": "Status",
+    "confirmDeleteTitle": "Delete {0}?",
+    "cancel": "Cancel",
+    "confirm": "Confirm Delete"
+  },
+  "questionnaireManager": {
+    "passed": "You have passed the questionnaire with {0} correct answers out of {1}.",
+    "failed": "You have failed the questionnaire with {0} correct answers out of {1}.",
+    "goBack": "Go back",
+    "submit": "Submit"
+  },
+  "questionnairePreview": {
+    "save": "Save changes",
+    "edit": "Edit question",
+    "remove": "Remove from preview",
+    "saveAlert": "Question is missing required fields"
+  },
+  "questionnaireEdit": {
+    "title": "Edit Questionnaire",
+    "titleLabel": "Title",
+    "descriptionLabel": "Description",
+    "question": "Question",
+    "deleteQuestion": "Delete question",
+    "answerOption": "Answer option",
+    "addAnswerOption": "Add Answer Option",
+    "passScoreLabel": "Pass score",
+    "passScoreMax": "Max pass score:",
+    "update": "Update Questionnaire",
+    "clearPassedUsers": "Remove all passed users from this questionnaire",
+    "snackbarMessageSuccess": "Updated questionnaire successfully"
+  },
+  "questionnaireTags": {
+    "title": "Tags",
+    "searchPlaceholder": "Search by title or tags...",
+    "allTags": "All Tags",
+    "emptyTagError": "Tag cannot be empty",
+    "duplicateTagError": "Tag already exists!",
+    "tagTooLongError": "Tag cannot be longer than {max} characters",
+    "maxTagsError": "Maximum of 10 tags allowed",
+    "addTag": "Add tag",
+    "addTagPlaceholder": "Add a tag...",
+    "noTags": "No tags added yet",
+    "moreCount": "+{0} more"
+  },
+  "questionnaireProgress": {
+    "title": "Questionnaires",
+    "progressText": "You have passed {0} out of {1} questionnaires",
+    "allCompleted": "Congratulations! You've completed all questionnaires!",
+    "loading": "Loading questionnaires..."
+  },
+  "balanceCard": {
+    "totalFlextimeBalance": "Total flextime balance:",
+    "employeeBalances": "Employee time totals and balances",
+    "viewAllTimeEntries": "View all employees time totals and balances",
+    "balance": "Balance",
+    "atTheEndOf": "At the end of {0}"
+  },
+  "wikiDocumentation": {
+    "cardTitle": "Wiki Documentation",
+    "article": "article:",
+    "lastUpdated": "Last updated",
+    "created": "Created",
+    "lastRead": "Last read",
+    "pendingArticles": "You have {0} articles pending review.",
+    "noPendingArticles": "No articles pending review.",
+    "noArticlesFound": "No articles found.",
+    "create": "create",
+    "save": "save",
+    "edit": "edit",
+    "approve": "approve",
+    "confirm": "confirm",
+    "searchArticle": "Search for an article...",
+    "createArticle": "Create article",
+    "uploadImage": "Upload image",
+    "imagePreview": "Preview",
+    "labelTitle": "Title",
+    "labelPath": "Path",
+    "labelTags": "Tags",
+    "labelImage": "Image URL",
+    "labelDescription": "Description",
+    "coverImageAlt": "Cover image",
+    "labelLink": "Link",
+    "labelLinkPlaceholder": "Enter URL here, e.g. https://example.com",
+    "draft": "draft",
+    "allArticles": "all",
+    "approvedArticles": "approved",
+    "connectedArticles": "Connected articles",
+    "linkToArticle": "Link to Article",
+    "searchAndSelectArticle": "Search and select an article to create a link",
+    "linkText": "Link text",
+    "linkTextPlaceholder": "Enter text to display for the link",
+    "linkTextHelper": "This text will appear as the clickable link",
+    "selectedArticle": "SELECTED ARTICLE",
+    "noDescriptionAvailable": "No description available",
+    "insertLink": "Insert Link",
+    "insertImage": "Insert Image",
+    "imageLinkPlaceholder": "https://example.com/image.jpg",
+    "size": "Size",
+    "alignment": "Alignment",
+    "sizeSmall": "Small (300px)",
+    "sizeMedium": "Medium (500px)",
+    "sizeLarge": "Large (700px)",
+    "sizeFull": "Full Width",
+    "alignLeft": "Left",
+    "alignCenter": "Center",
+    "alignRight": "Right",
+    "upload": "Upload",
+    "add": "Add",
+    "close": "Close",
+    "pleaseUploadImageFile": "Please upload image file",
+    "startTypingToSearch": "Start typing to search...",
+    "selectFromExistingFiles": "Select from existing files",
+    "selectImageFromS3": "Select from existing images",
+    "noFilesFound": "No files found",
+    "cancel": "Cancel",
+    "failedToLoadMediaFiles": "Failed to load media files",
+    "errorLoadingMediaFiles": "Error loading media files:",
+    "articleContentRequired": "Article content is required"
+  },
+  "snackbar": {
+    "articleSubmitted": "Article submitted for review successfully!",
+    "articleCreated": "Article created successfully!",
+    "articleUpdated": "Article updated successfully!",
+    "articleApproved": "Article approved successfully!",
+    "changesSaved": "Changes saved successfully!"
+  },
+  "settingsScreen": {
+    "saveSettings": "Save settings",
+    "accept": "Yes",
+    "decline": "No",
+    "consentToDataProcessing": "Activate account",
+    "lightOrDarkMode": "Mode",
+    "light": "Light",
+    "dark": "Dark"
+  },
+  "notOptedInDescription": {
+    "description": "Activate your account to view this section."
+  },
+  "adminVacationManagement": {
+    "heading": "Admin Vacation Management",
+    "title": "User Vacation Management",
+    "description": "View and update individual user vacation day allocations and remaining days.",
+    "buttonLabel": "Manage User Vacation Days",
+    "editTitle": "Edit Vacation Days",
+    "totalDays": "Total Days",
+    "remainingDays": "Remaining Days",
+    "selectYear": "Select Year",
+    "currentYear": "Vacation Year",
+    "vacationFor": "Vacation Days for"
+  },
+  "userSearch": {
+    "placeholder": "Search users by name or email"
+  },
+  "userRow": {
+    "day": "Day"
+  },
+  "userTable": {
+    "name": "Name",
+    "username": "Username",
+    "email": "Email",
+    "currentYearTotal": "Current Year Total",
+    "remainingDays": "Remaining Days",
+    "actions": "Actions",
+    "noUsersFound": "No users found"
+  },
+  "pagination": {
+    "ariaLabel": "Page navigation"
+  },
+  "oncall": {
+    "title": "On call calendar",
+    "previousYear": "Previous year",
+    "nextYear": "Next year",
+    "oncallShifts": "On call weeks",
+    "paid": "Paid",
+    "notPaid": "Not paid",
+    "calendar": "Calendar",
+    "list": "List",
+    "selectView": "Select calendar view",
+    "noOnCallPerson": "No on call person this week",
+    "onCallPersonExists": "Current on-call person:",
+    "fetchFailed": "Fetching on call data has failed",
+    "updatePaidStatusForWeek": "Update paid status for week",
+    "person": "Person",
+    "paidStatus": "Paid Status",
+    "date": "Date",
+    "noUsernameOnCall": "-",
+    "errorUpdatingPaidStatus": "Failed to update on-call shift paid status",
+    "noDataForYear": "No data available for this year"
+  },
+  "onboarding": {
+    "prev": "Previous",
+    "next": "Next",
+    "close": "Close",
+    "welcomeTitle": "Welcome to the Home Screen",
+    "welcomeContent": "This is your dashboard where you can see your balance, sprints, and more.",
+    "balanceTitle": "Balance",
+    "balanceContent": "Check your total flextime balance here.",
+    "sprintTitle": "Sprint view",
+    "sprintContent": "See your allocation and time entries.",
+    "vacationsTitle": "Vacation requests",
+    "vacationsContent": "Track upcoming vacations and statuses.",
+    "questionnaireTitle": "Questionnaires",
+    "questionnaireContent": "Build and answer questionnaires.",
+    "softwareTitle": "Software registry",
+    "softwareContent": "Find and manage company software.",
+    "wikiTitle": "Wiki Documentation",
+    "wikiContent": "Read or create documentation.",
+    "doneTitle": "Complete the Onboarding",
+    "doneContent": "You're all set! You can restart from Settings."
+  },
+  "onboardingWikiDocumentation": {
+    "prev": "Previous",
+    "next": "Next",
+    "close": "Close",
+    "welcomeWikiTitle": "Wiki Documentation",
+    "welcomeWikiContent": "Find, read and create articles here.",
+    "latestUpdatedArticlesTitle": "Latest article",
+    "latestUpdatedArticlesContent": "Here you can see the most recently created or updated article.",
+    "wikiSearchBarTitle": "Search",
+    "wikiSearchBarContent": "Search for articles here.",
+    "createArticleTitle": "Create",
+    "createArticleContent": "Here you can create a new article.",
+    "listOfArticlesTitle": "Articles",
+    "listOfArticlesContent": "Browse all articles here."
+  },
+  "onboardingWikiCreate": {
+    "prev": "Previous",
+    "next": "Next",
+    "close": "Close",
+    "welcomeTitle": "Create Wiki Article",
+    "welcomeContent": "Let's walk through how to create a new wiki article.",
+    "titleFieldTitle": "Article Title",
+    "titleFieldContent": "Enter a descriptive title for your article. The title will be displayed at the top of the article and in article lists.",
+    "pathFieldTitle": "Article Path",
+    "pathFieldContent": "This is the URL path for your article. It's automatically generated from the title but can be customized.",
+    "tagsFieldTitle": "Article Tags",
+    "tagsFieldContent": "Add tags to categorize your article. You can select existing tags or create new ones by typing and pressing Enter.",
+    "imageFieldTitle": "Cover Image",
+    "imageFieldContent": "Add a cover image URL or upload an image file. This will be displayed as the article's thumbnail.",
+    "descriptionFieldTitle": "Article Description",
+    "descriptionFieldContent": "Write a brief summary of your article. This helps users understand what the article is about before reading it.",
+    "editorTitle": "Content Editor",
+    "editorContent": "Use this rich text editor to write your article content. It supports markdown formatting, images, links, and more.",
+    "editorLinksTitle": "Adding Links",
+    "editorLinksContent": "Select text and use the link button in the toolbar to add external links. You can link to websites, documentation, or resources.",
+    "editorArticleLinksTitle": "Linking to Articles",
+    "editorArticleLinksContent": "To link to other wiki articles, select the article and press enter. This creates an internal link within the wiki.",
+    "editorImagesTitle": "Adding Images",
+    "editorImagesContent": "Click the image button in the editor toolbar to insert images. You can paste an image URL or upload an image file.",
+    "actionButtonTitle": "Create Article",
+    "actionButtonContent": "Once all required fields (*) are filled, click here to create your article. It will be submitted for review or published based on your permissions."
+  },
+  "employeeFlextime": {
+    "title": "Employee Time Totals and Balances",
+    "subtitle": "Overview of flextime balances for all opted-in employees",
+    "lastUpdated": "Last updated: {0}",
+    "totalEmployees": "Total Employees",
+    "combinedBalance": "Combined Balance",
+    "loading": "Loading employee time data...",
+    "noDataFound": "No employee time data found",
+    "employee": "Employee",
+    "email": "Email",
+    "totalFlextimeBalance": "Total Flextime Balance",
+    "currentMonthBalance": "Current Month Balance",
+    "status": "Status",
+    "active": "Active",
+    "inactive": "Inactive",
+    "employeeId": "ID: {0}",
+    "notAvailable": "N/A"
   }
 }

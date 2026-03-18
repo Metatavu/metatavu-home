@@ -1,130 +1,149 @@
-import { getHoursAndMinutes } from "src/utils/time-utils";
-import { Grid, Typography, Card, CardContent, Skeleton } from "@mui/material";
-import strings from "src/localization/strings";
 import ScheduleIcon from "@mui/icons-material/Schedule";
-import { errorAtom } from "src/atoms/error";
-import { useAtom, useAtomValue, useSetAtom } from "jotai";
-import { useEffect, useState } from "react";
-import { useApi } from "src/hooks/use-api";
-import { type Person, type PersonTotalTime, Timespan } from "src/generated/client";
-import { personsAtom, personTotalTimeAtom } from "src/atoms/person";
-import { Link } from "react-router-dom";
-import { userProfileAtom } from "src/atoms/auth";
-import config from "src/app/config";
-import UserRoleUtils from "src/utils/user-role-utils";
-import { theme } from "src/theme";
+import { Card, CardContent, Grid, Skeleton, Typography, useTheme } from "@mui/material";
+import { useAtomValue, useSetAtom } from "jotai";
 import { DateTime } from "luxon";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { userProfileAtom } from "src/atoms/auth";
+import { errorAtom } from "src/atoms/error";
+import { usersAtom } from "src/atoms/user";
+import type { Flextime, User } from "src/generated/homeLambdasClient";
+import { useLambdasApi } from "src/hooks/use-api";
+import useUserRole from "src/hooks/use-user-role";
+import strings from "src/localization/strings";
+import { getSeveraUserId } from "src/utils/user-utils";
 
 /**
- * Component for displaying user's balance
+ * Card component that displays either personal flextime balance for regular users
+ * or provides admin access to view all employees' flextime data in the same tab.
+ *
+ * @component
+ * @returns React functional component that renders a balance card
+ *
+ * @description
+ * - For regular users: Shows personal flextime balance with link to timebank
+ * - For admin users: Shows clickable card that navigates to employee flextime page
+ * - Handles loading states and error management for flextime data fetching
  */
 const BalanceCard = () => {
-  const persons = useAtomValue(personsAtom);
+  const users = useAtomValue(usersAtom);
   const userProfile = useAtomValue(userProfileAtom);
-  const { personsApi } = useApi();
   const setError = useSetAtom(errorAtom);
   const [loading, setLoading] = useState(false);
-  const [personTotalTime, setPersonTotalTime] = useAtom(personTotalTimeAtom);
-  const adminMode = UserRoleUtils.adminMode();
+  const { adminMode } = useUserRole();
+  const [usersFlextime, setUsersFlextime] = useState<Flextime>();
   const yesterday = DateTime.now().minus({ days: 1 });
+  const { flexTimeApi } = useLambdasApi();
+  const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
+  const severaUserId = getSeveraUserId(loggedInUser);
+  const navigate = useNavigate();
+  const theme = useTheme();
 
   /**
-   * Initialize logged in person's time data.
-   */
-  const getPersons = async () => {
-    setLoading(true);
-    const loggedInPerson = persons.find(
-      (person: Person) =>
-        person.id === config.person.forecastUserIdOverride || person.keycloakId === userProfile?.id
-    );
-    if (loggedInPerson) {
-      try {
-        const fetchedPerson = await personsApi.listPersonTotalTime({
-          personId: loggedInPerson?.id,
-          timespan: Timespan.ALL_TIME,
-          before: yesterday.toJSDate()
-        });
-        setPersonTotalTime(fetchedPerson[0]);
-      } catch (error) {
-        setError(`${strings.error.fetchFailedGeneral}, ${error}`);
-      }
-    }
-    setLoading(false);
-  };
-
-  /**
-   * Get person total time if it is undefined or set to "all time"
+   * Effect hook that fetches flextime data for the logged-in user.
+   * Only executes for non-admin users when flextime data is not yet available.
    */
   useEffect(() => {
-    if (!personTotalTime) {
-      getPersons();
+    if (!adminMode && !usersFlextime) {
+      getUsersFlextimes();
     }
-  }, [persons]);
+  }, [users, userProfile, adminMode, usersFlextime]);
 
   /**
-   * Renders person's total time
+   * Asynchronously retrieves flextime balance data for the currently logged-in user.
    *
-   * @param personTotalTime PersonTotalTime
+   * @async
+   * @returns Promise<void> Resolves when flextime data is fetched and state is updated
    */
-  const renderPersonTotalTime = (personTotalTime: PersonTotalTime | undefined) => {
-    const balanceColor =
-      personTotalTime && personTotalTime.balance > 0
-        ? theme.palette.success.main
-        : theme.palette.error.main;
+  const getUsersFlextimes = async () => {
+    if (!loggedInUser || !severaUserId) return;
 
-    if (adminMode) {
-      return <Typography>{strings.placeHolder.notYetImplemented}</Typography>;
+    setLoading(true);
+    try {
+      const fetchedUsersFlextime = await flexTimeApi.getFlextimeBySeveraUserId({
+        userId: severaUserId
+      });
+      setUsersFlextime(fetchedUsersFlextime);
+    } catch (error) {
+      setError(`${strings.error.fetchFailedFlextime}, ${error}`);
+    } finally {
+      setLoading(false);
     }
-    if (!personTotalTime && !loading && persons.length) {
-      return (
-        <Typography color={balanceColor}>{strings.error.fetchFailedNoEntriesGeneral}</Typography>
-      );
-    }
-    if (personTotalTime) {
-      return (
-        <Typography color={balanceColor}>{getHoursAndMinutes(personTotalTime.balance)}</Typography>
-      );
-    }
-    return <Skeleton />;
   };
 
-  return (
-    <Link
-      to={adminMode ? "/admin/timebank/viewall" : "/timebank"}
-      style={{ textDecoration: "none" }}
-    >
+  /**
+   * Event handler that navigates to the employee flextime page in the same tab.
+   * Used when admin users click the balance card.
+   */
+  const handleAdminCardClick = () => {
+    navigate("/admin/severa/employee-flextime");
+  };
+
+  /**
+   * Renders the user's personal flextime balance with appropriate styling.
+   *
+   * @returns JSX.Element Typography component displaying balance or error message
+   */
+  const renderUserFlextime = () => {
+    if (!usersFlextime?.totalFlextimeBalance) {
+      return <Typography variant="body1">{strings.error.noFlextimeData}</Typography>;
+    }
+    const totalFlextimeBalance = usersFlextime.totalFlextimeBalance;
+    const textColor =
+      totalFlextimeBalance >= 0 ? theme.palette.success.main : theme.palette.error.main;
+    const hourLabel =
+      totalFlextimeBalance === 1 ? strings.timeExpressions.hour : strings.timeExpressions.hours;
+    return (
+      <Typography variant="body1">
+        {strings.balanceCard.totalFlextimeBalance}{" "}
+        <span style={{ color: textColor }}>{totalFlextimeBalance}</span> {hourLabel}
+      </Typography>
+    );
+  };
+
+  if (adminMode) {
+    return (
       <Card
         sx={{
-          "&:hover": {
-            background: "#efefef"
-          }
+          minHeight: 150,
+          cursor: "pointer",
+          transition: "all 0.2s ease-in-out"
+        }}
+        onClick={handleAdminCardClick}
+      >
+        <CardContent>
+          <Typography variant="h6" fontWeight={"bold"} style={{ marginTop: 6, marginBottom: 3 }}>
+            {strings.balanceCard.employeeBalances}
+          </Typography>
+          <Typography variant="body1">{strings.balanceCard.viewAllTimeEntries}</Typography>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  return (
+    <Link to="/balance" style={{ textDecoration: "none", color: "inherit" }}>
+      <Card
+        sx={{
+          minHeight: 150
         }}
       >
-        {adminMode ? (
-          <CardContent>
-            <Typography variant="h6" fontWeight={"bold"} style={{ marginTop: 6, marginBottom: 3 }}>
-              {strings.timebank.employeeBalances}
-            </Typography>
-            <Typography variant="body1">{strings.timebank.viewAllTimeEntries}</Typography>
-          </CardContent>
-        ) : (
-          <CardContent>
-            <Typography variant="h6" fontWeight={"bold"} style={{ marginTop: 6, marginBottom: 3 }}>
-              {strings.timebank.balance}
-            </Typography>
-            <Grid container>
-              <Grid item xs={12}>
-                {strings.formatString(strings.timebank.atTheEndOf, yesterday.toLocaleString())}
-              </Grid>
-              <Grid style={{ marginBottom: 1 }} item xs={1}>
-                <ScheduleIcon style={{ marginTop: 1 }} />
-              </Grid>
-              <Grid item xs={11}>
-                {loading ? <Skeleton /> : renderPersonTotalTime(personTotalTime)}
-              </Grid>
+        <CardContent>
+          <Typography variant="h6" fontWeight={"bold"} style={{ marginTop: 6, marginBottom: 3 }}>
+            {strings.balanceCard.balance}
+          </Typography>
+          <Grid container>
+            <Grid size={12}>
+              {strings.formatString(strings.balanceCard.atTheEndOf, yesterday.toLocaleString())}
             </Grid>
-          </CardContent>
-        )}
+            <Grid style={{ marginBottom: 1 }} size={1}>
+              <ScheduleIcon style={{ marginTop: 1 }} />
+            </Grid>
+            <Grid size={11}>
+              {loading ? <Skeleton /> : renderUserFlextime()}
+            </Grid>
+          </Grid>
+        </CardContent>
       </Card>
     </Link>
   );

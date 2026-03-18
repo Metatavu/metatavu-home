@@ -1,4 +1,6 @@
+import type { Theme } from "@mui/material";
 import { DateTime, Duration } from "luxon";
+import type { User } from "src/generated/homeLambdasClient";
 
 /**
  * Format date
@@ -19,11 +21,13 @@ export const formatDate = (date: DateTime, dateWithTime?: boolean) => {
  * @param minutes value in minutes
  * @returns inputted minute value in X h Y min format as string
  */
-export const getHoursAndMinutes = (minutes: number) => {
-  if (minutes < 0) {
-    return `-${Duration.fromObject({ minutes: minutes }).negate().toFormat("h 'h' m 'min'")}`;
-  }
-  return Duration.fromObject({ minutes: minutes }).toFormat("h 'h' m 'min'");
+export const getHoursAndMinutes = (hours: number): string => {
+  const isNegative = hours < 0;
+  const totalMinutes = Math.round(Math.abs(hours) * 60);
+  const duration = Duration.fromObject({ minutes: totalMinutes });
+  const formatted = duration.toFormat("h 'h' m 'min'");
+
+  return isNegative ? `-${formatted}` : formatted;
 };
 
 /**
@@ -71,8 +75,8 @@ export const formatTimePeriod = (timespan: string[] | undefined) => {
 /**
  * Calculates vacation days
  *
- * @param vacationDayStart DateTime vacation start date
- * @param vacationDayEnd DateTime vacation end date
+ * @param vacationStartDate DateTime vacation start date
+ * @param vacationEndDate DateTime vacation end date
  * @param workingWeek list of booleans representing which days are working days
  */
 export const calculateTotalVacationDays = (
@@ -97,6 +101,43 @@ export const calculateTotalVacationDays = (
     endWeek,
     weeks
   );
+};
+
+/**
+ * Calculates new endDate for vacation request after admin has updated the days count
+ *
+ * @param startDate - The starting date as a Luxon `DateTime`.
+ * @param totalDays - The total number of vacation days to count.
+ * @param workWeek - An array of 7 booleans (index 0 = Monday, index 6 = Sunday)
+ *                   indicating which days are considered working days.
+ * @returns A Luxon `DateTime` representing the calculated end date.
+ */
+export const calculateEndDateFromDays = (
+  startDate: DateTime,
+  totalDays: number,
+  workWeek: boolean[]
+) => {
+  const workDaysInWeek = workWeek.filter(Boolean).length;
+  let daysAdded = 0;
+  let currentDate = startDate;
+  const [startWeek, endWeek] = getIndexDaysWorking(workWeek);
+  if (!startWeek || !endWeek) return startDate;
+  while (daysAdded < totalDays) {
+    const weekdayIndex = currentDate.weekday;
+    const isWorkingDay = workWeek[weekdayIndex - 1];
+    const reachedTotal = daysAdded >= totalDays;
+    const endOfWorkWeek = daysAdded % workDaysInWeek === 0;
+    if (isWorkingDay) {
+      daysAdded++;
+    }
+    if (!reachedTotal && endOfWorkWeek && isWorkingDay) {
+      daysAdded++;
+    }
+    if (!reachedTotal) {
+      currentDate = currentDate.plus({ days: 1 });
+    }
+  }
+  return currentDate;
 };
 
 /**
@@ -214,7 +255,7 @@ export const getSprintStart = (date: string) => {
   const weekIndex = DateTime.fromISO(date).localWeekNumber;
   const weekDay = DateTime.fromISO(date).weekday;
   const days = (weekIndex % 2 === 1 ? 0 : 7) + weekDay;
-  
+
   return DateTime.fromISO(date).minus({ days: days - 1 });
 };
 
@@ -225,4 +266,66 @@ export const getSprintStart = (date: string) => {
  */
 export const getSprintEnd = (date: string) => {
   return getSprintStart(date).plus({ days: 11 });
+};
+
+/**
+ * Calculate color for vacation days from vacation days
+ *
+ * @param user Keycloak user
+ */
+export const getVacationColors = (user: User, theme: Theme) => {
+  let vacationDaysByYearColor = theme.palette.error.main;
+  let unspentVacationDaysByYearColor = theme.palette.error.main;
+  const currentYear = new Date().getFullYear();
+
+  if (
+    user.attributes?.vacationDaysByYear &&
+    parseVacationDays(user.attributes?.vacationDaysByYear)[currentYear] > 0
+  ) {
+    vacationDaysByYearColor = theme.palette.success.main;
+  }
+  if (
+    user.attributes?.unspentVacationDaysByYear &&
+    parseVacationDays(user.attributes?.unspentVacationDaysByYear)[currentYear] > 0
+  ) {
+    unspentVacationDaysByYearColor = theme.palette.success.main;
+  }
+  return {
+    vacationDaysByYearColor,
+    unspentVacationDaysByYearColor
+  };
+};
+
+/**
+ * Parsing vacationDaysByYear from format ("YYYY:DDD") to object {[year: string]: [days: number]}
+ *
+ * @param vacationDaysByYear A list of strings with years and corresponding number of vacation days
+ */
+export const parseVacationDays = (vacationDaysByYear: string[]): { [year: string]: number } => {
+  return vacationDaysByYear.reduce(
+    (acc, entry) => {
+      const [year, days] = entry.split(":");
+      acc[year] = Number.parseInt(days, 10);
+      return acc;
+    },
+    {} as { [year: string]: number }
+  );
+};
+
+/**
+ * Convert numeric contracted week (1-7 = Mon-Sun) to a boolean[7] array.
+ *
+ * @param week numeric array of working days
+ * @returns boolean array of full week
+ */
+export const contractedWeekToBoolean = (week: number[]): boolean[] => {
+  const result = new Array(7).fill(false);
+
+  week.forEach((dayNumber) => {
+    if (dayNumber >= 1 && dayNumber <= 7) {
+      result[dayNumber - 1] = true;
+    }
+  });
+
+  return result;
 };

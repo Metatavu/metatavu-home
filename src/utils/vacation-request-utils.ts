@@ -1,27 +1,23 @@
-import type { Person, VacationRequest } from "../generated/client";
 import type { KeycloakProfile } from "keycloak-js";
-import strings from "../localization/strings";
+import type { User } from "src/generated/homeLambdasClient";
+import type { VacationRequest } from "../generated/homeLambdasClient";
+import { getFullUserName } from "./user-name-utils";
 
 /**
  * Get vacation request person full name
- * Match keycloak id from persons with vacationrequest id or user profile id
+ * Match keycloak id from persons with vacation request id or user profile id
  *
- * @param props component properties
  * @returns person full name as string
+ * @param vacationRequest vacation request
+ * @param users an array of users
+ * @param userProfile user`s profile from Keycloak
  */
 export const getVacationRequestPersonFullName = (
   vacationRequest: VacationRequest,
-  persons: Person[],
+  users: User[],
   userProfile?: KeycloakProfile | undefined
 ) => {
-  let personFullName = strings.vacationRequestError.nameNotFound;
-  const foundPerson = persons.find((person) => person.keycloakId === vacationRequest?.personId);
+  const user = users.find((user) => user.id === vacationRequest?.userId);
 
-  if (foundPerson) {
-    personFullName = `${foundPerson.firstName} ${foundPerson.lastName}`;
-  } else if (userProfile && userProfile.id === vacationRequest.personId) {
-    personFullName = `${userProfile.firstName} ${userProfile.lastName}`;
-  }
-
-  return personFullName;
+  return getFullUserName(user);
 };

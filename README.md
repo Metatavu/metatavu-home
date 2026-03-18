@@ -1,27 +1,36 @@
-# React + TypeScript + Vite
+# Web UI for Metatavu Home SPA
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Running the project
+Change to correct node version (found in .nvmrc)
+NOTE: If you're using nvm for managing node versions
+-`nvm use`
 
-Currently, two official plugins are available:
+For instructions on setting up automatic node version switching see [here](https://github.com/nvm-sh/nvm#deeper-shell-integration)
+-`npm i`
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+See [Environment variables](#environment-variables)
+ variables for setting up hashicorp vault for managing environment variables
+After setting up hashicorp vault you can run the project with withhcv npm run dev
 
-## Expanding the ESLint configuration
+## To update spec
+Run git submodule update --init
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Linting / formatting
+This project uses Biome.js. Please install Biome's VS Code plugin to get automatic linting + formatting on save, suggestions and refactoring. For formatting... (Recommended settings for VS Code to follow later)
 
-- Configure the top-level `parserOptions` property like this:
+## Environment variables
+add .env file with VAULT_PATH secret. Contact project team to acquire the HCV credentials and secret value.
+Clone repo recursively from github and follow instructions in hcv/withhcv.sh file
 
-```js
-   parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-   },
+## Other requirements
+You will need to recursively clone [Backend](https://github.com/Metatavu/home-lambdas), 
+and also [Spec](https://github.com/Metatavu/home-lambdas-api-spec)
+
+## Running local development environment
+In order to run the local development environment you can use the following command to start the development environment:
+
+```bash
+withhcv npm run dev
 ```
-
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+This opens the login screen in your default browser, the application is waiting for keycloak verification running on http://localhost:5173/
+Using the google SSO service you should be able to authenticate and then login with your metatavu work account and interact with the application

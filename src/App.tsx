@@ -1,23 +1,35 @@
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import AuthenticationProvider from "./components/providers/authentication-provider";
 import { CssBaseline, ThemeProvider } from "@mui/material";
-import { theme } from "./theme";
-import VacationRequestsScreen from "./components/screens/vacation-requests-screen";
-import TimebankScreen from "./components/screens/timebank-screen";
-import { useAtomValue } from "jotai";
-import { languageAtom } from "./atoms/language";
-import HomeScreen from "./components/screens/home-screen";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
-import Layout from "./components/layout/layout";
-import ErrorHandler from "./components/contexts/error-handler";
-import ErrorScreen from "./components/screens/error-screen";
-import TimebankViewAllScreen from "./components/screens/timebank-view-all-screen";
-import AdminScreen from "./components/screens/admin-screen";
+import { useAtomValue } from "jotai";
 import { Settings } from "luxon";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { languageAtom } from "./atoms/language";
+import ErrorHandler from "./components/contexts/error-handler";
+import Layout from "./components/layout/layout";
+import AuthenticationProvider from "./components/providers/authentication-provider";
 import RestrictedContentProvider from "./components/providers/restricted-content-provider";
+import NewQuestionnaireBuilder from "./components/questionnaire/new-questionnaire-builder";
+import QuestionnaireManager from "./components/questionnaire/questionnaire-manager";
+import AdminScreen from "./components/screens/admin-screen";
+import AdminVacationManagementScreen from "./components/screens/admin-vacation-management/admin-vacation-management-screen";
+import AllSoftwareScreen from "./components/screens/all-software-screen";
+import BalanceScreen from "./components/screens/balance-screen";
+import EmployeeFlextimeScreen from "./components/screens/employee-flextime-screen";
+import ErrorScreen from "./components/screens/error-screen";
+import HomeScreen from "./components/screens/home-screen";
+import OnCallCalendarScreen from "./components/screens/on-call-calendar-screen";
+import QuestionnaireScreen from "./components/screens/questionnaire-screen";
+import SettingsScreen from "./components/screens/settings-screen";
+import SoftwareRegistryScreen from "./components/screens/software-registry-screen";
 import SprintViewScreen from "./components/screens/sprint-view-screen";
+import VacationRequestsScreen from "./components/screens/vacation-requests-screen";
+import ArticleScreen from "./components/screens/wiki-article-screen";
+import WikiDocumentationScreen from "./components/screens/wiki-documentation-screen";
+import SoftwareDetails from "./components/software-registry/SoftwareDetails";
+import { createAppTheme } from "./theme";
+import { QuestionnairePreviewMode, type ThemeMode, ThemeModes } from "./types";
 
 /**
  * Application component
@@ -29,9 +41,15 @@ const App = () => {
     Settings.defaultLocale = language;
   }, [language]);
 
+  const [screenColorMode, setScreenColorMode] = useState<ThemeMode>(() => {
+    const savedScreenColorMode = localStorage.getItem("screenColorMode") as ThemeMode | null;
+    return savedScreenColorMode ?? ThemeModes.LIGHT;
+  });
+
+  const appTheme = useMemo(() => createAppTheme(screenColorMode), [screenColorMode]);
+
   const router = createBrowserRouter([
     {
-      path: "/",
       element: <Layout />,
       errorElement: <ErrorScreen />,
       children: [
@@ -40,23 +58,88 @@ const App = () => {
           element: <HomeScreen />
         },
         {
+          path: "/settings",
+          element: (
+            <SettingsScreen
+              screenColorMode={screenColorMode}
+              setScreenColorMode={setScreenColorMode}
+            />
+          )
+        }
+      ]
+    },
+    {
+      element: (
+        <RestrictedContentProvider requiredRole="developer">
+          <Layout />
+        </RestrictedContentProvider>
+      ),
+      errorElement: <ErrorScreen />,
+      children: [
+        {
           path: "/vacations",
           element: <VacationRequestsScreen />
         },
         {
-          path: "/timebank",
-          element: <TimebankScreen />
+          path: "/balance",
+          element: <BalanceScreen />
         },
         {
           path: "/sprintview",
           element: <SprintViewScreen />
+        },
+        {
+          path: "/softwareregistry",
+          element: <SoftwareRegistryScreen />
+        },
+        {
+          path: "/softwareregistry/:id",
+          element: <SoftwareDetails />
+        },
+        {
+          path: "/softwareregistry/allsoftware",
+          element: <AllSoftwareScreen />
+        },
+        {
+          path: "/softwareregistry/allsoftware/:id",
+          element: <SoftwareDetails />
+        },
+        {
+          path: "/questionnaire",
+          element: <QuestionnaireScreen />
+        },
+        {
+          path: "/questionnaire/:id",
+          element: <QuestionnaireManager mode={QuestionnairePreviewMode.FILL} />
+        },
+        {
+          path: "/oncall",
+          element: <OnCallCalendarScreen />
+        }
+      ]
+    },
+    {
+      element: (
+        <RestrictedContentProvider requiredRole="tester">
+          <Layout />
+        </RestrictedContentProvider>
+      ),
+      errorElement: <ErrorScreen />,
+      children: [
+        {
+          path: "/wiki-documentation",
+          element: <WikiDocumentationScreen />
+        },
+        {
+          path: "/wiki-documentation/*",
+          element: <ArticleScreen />
         }
       ]
     },
     {
       path: "/admin",
       element: (
-        <RestrictedContentProvider>
+        <RestrictedContentProvider requiredRole="admin">
           <Layout />
         </RestrictedContentProvider>
       ),
@@ -71,25 +154,68 @@ const App = () => {
           element: <VacationRequestsScreen />
         },
         {
-          path: "/admin/timebank/viewall",
-          element: <TimebankViewAllScreen />
+          path: "/admin/vacation-management",
+          element: <AdminVacationManagementScreen />
+        },
+        {
+          path: "/admin/severa/employee-flextime",
+          element: <EmployeeFlextimeScreen />
         },
         {
           path: "/admin/sprintview",
           element: <SprintViewScreen />
+        },
+        {
+          path: "/admin/allsoftware",
+          element: <AllSoftwareScreen />
+        },
+        {
+          path: "/admin/allsoftware/:id",
+          element: <SoftwareDetails />
+        },
+        {
+          path: "/admin/questionnaire",
+          element: <QuestionnaireScreen />
+        },
+        {
+          path: "/admin/newQuestionnaire",
+          element: <NewQuestionnaireBuilder />
+        },
+        {
+          path: "/admin/questionnaire/:id/edit",
+          element: <QuestionnaireManager mode={QuestionnairePreviewMode.EDIT} />
+        },
+        {
+          path: "/admin/allsoftware",
+          element: <AllSoftwareScreen />
+        },
+        {
+          path: "/admin/allsoftware/:id",
+          element: <SoftwareDetails />
+        },
+        {
+          path: "/admin/wiki-documentation",
+          element: <WikiDocumentationScreen />
+        },
+        {
+          path: "/admin/wiki-documentation/*",
+          element: <ArticleScreen />
+        },
+        {
+          path: "/admin/oncall",
+          element: <OnCallCalendarScreen />
         }
       ]
     }
   ]);
   return (
     <div className="App">
-      <ThemeProvider theme={theme}>
+      <ThemeProvider theme={appTheme}>
+        <CssBaseline />
         <ErrorHandler>
           <AuthenticationProvider>
             <LocalizationProvider dateAdapter={AdapterLuxon} adapterLocale={language}>
-              <CssBaseline>
-                <RouterProvider router={router} />
-              </CssBaseline>
+              <RouterProvider router={router} />
             </LocalizationProvider>
           </AuthenticationProvider>
         </ErrorHandler>

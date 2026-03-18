@@ -1,21 +1,16 @@
 import config from "../app/config";
 import {
-  Configuration,
+  ArticleApi,
   type ConfigurationParameters,
-  DailyEntriesApi,
-  PersonsApi,
-  SynchronizeApi,
-  UsersApi,
-  VacationRequestsApi,
-  VacationRequestStatusApi
-} from "../generated/client";
-import {
-  AllocationsApi,
+  FlexTimeApi,
   Configuration as LambdaConfiguration,
-  ProjectsApi,
-  SlackAvatarsApi,
-  TasksApi,
-  TimeEntriesApi
+  OnCallApi,
+  QuestionnairesApi,
+  SeveraApi,
+  SlackApi,
+  SoftwareApi,
+  UsersApi,
+  VacationRequestsApi
 } from "../generated/homeLambdasClient";
 
 /**
@@ -29,6 +24,7 @@ type ConfigConstructor<T> = new (_params: ConfigurationParameters) => T;
  * @param ConfigConstructor ConfigConstructor class instance
  * @param basePath API base URL
  * @param accessToken Access token for request
+ *
  * @returns ConfigConstructor instance set up with params
  */
 const getConfigurationFactory =
@@ -41,28 +37,10 @@ const getConfigurationFactory =
   };
 
 /**
- * API client with request functions to several endpoints
- *
- * @param accessToken Access token required for authentication
- * @returns Configured API request functions
- */
-export const getApiClient = (accessToken?: string) => {
-  const getConfiguration = getConfigurationFactory(Configuration, config.api.baseUrl, accessToken);
-
-  return {
-    dailyEntriesApi: new DailyEntriesApi(getConfiguration()),
-    personsApi: new PersonsApi(getConfiguration()),
-    usersApi: new UsersApi(getConfiguration()),
-    synchronizeApi: new SynchronizeApi(getConfiguration()),
-    vacationRequestsApi: new VacationRequestsApi(getConfiguration()),
-    vacationRequestStatusApi: new VacationRequestStatusApi(getConfiguration())
-  };
-};
-
-/**
  * Metatavu Home Lambda API client with request functions to several endpoints
  *
  * @param accessToken Access token required for authentication
+ *
  * @returns Configured API request functions
  */
 export const getLambdasApiClient = (accessToken?: string) => {
@@ -71,12 +49,19 @@ export const getLambdasApiClient = (accessToken?: string) => {
     config.lambdas.baseUrl,
     accessToken
   );
-
+  const severaApi = new SeveraApi(getConfiguration());
   return {
-    allocationsApi: new AllocationsApi(getConfiguration()),
-    projectsApi: new ProjectsApi(getConfiguration()),
-    tasksApi: new TasksApi(getConfiguration()),
-    timeEntriesApi: new TimeEntriesApi(getConfiguration()),
-    slackAvatarsApi: new SlackAvatarsApi(getConfiguration())
+    resourceAllocationsApi: severaApi,
+    phaseApi: severaApi,
+    slackAvatarsApi: new SlackApi(getConfiguration()),
+    softwareApi: new SoftwareApi(getConfiguration()),
+    usersApi: new UsersApi(getConfiguration()),
+    flexTimeApi: new FlexTimeApi(getConfiguration()),
+    workHoursApi: severaApi,
+    questionnairesApi: new QuestionnairesApi(getConfiguration()),
+    vacationRequestsApi: new VacationRequestsApi(getConfiguration()),
+    articleApi: new ArticleApi(getConfiguration()),
+    onCallApi: new OnCallApi(getConfiguration()),
+    workDaysApi: severaApi
   };
 };

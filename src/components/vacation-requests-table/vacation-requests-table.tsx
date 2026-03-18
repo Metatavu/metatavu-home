@@ -1,49 +1,83 @@
-import { DataGrid, type GridRowId, type GridRowSelectionModel } from "@mui/x-data-grid";
-import { useMemo, useRef, useState } from "react";
-import { Box, styled } from "@mui/material";
-import TableToolbar from "./vacation-requests-table-toolbar/vacation-requests-table-toolbar";
-import type { VacationsDataGridRow, VacationData } from "src/types";
-import SkeletonTableRows from "./skeleton-table-rows/skeleton-table-rows";
-import { languageAtom } from "src/atoms/language";
-import { useAtomValue } from "jotai";
-import VacationRequestsTableColumns from "./vacation-requests-table-columns";
-import strings from "src/localization/strings";
 import { Inventory } from "@mui/icons-material";
-import {
-  allVacationRequestStatusesAtom,
-  displayedVacationRequestsAtom,
-  vacationRequestStatusesAtom
-} from "src/atoms/vacation";
-import {
-  type VacationRequest,
-  type VacationRequestStatus,
-  VacationRequestStatuses
-} from "src/generated/client";
-import { getVacationRequestStatusColor } from "src/utils/vacation-status-utils";
-import UserRoleUtils from "src/utils/user-role-utils";
+import { Box, styled, useTheme } from "@mui/material";
+import { DataGrid, type GridRowId, type GridRowSelectionModel } from "@mui/x-data-grid";
+import { useAtomValue } from "jotai";
 import { DateTime } from "luxon";
-import LocalizationUtils from "src/utils/localization-utils";
-import { getVacationRequestPersonFullName } from "src/utils/vacation-request-utils";
-import { personsAtom } from "src/atoms/person";
+import { useMemo, useRef, useState } from "react";
 import { userProfileAtom } from "src/atoms/auth";
+import { usersAtom } from "src/atoms/user";
+import { displayedVacationRequestsAtom } from "src/atoms/vacation";
+import { type VacationRequest, VacationRequestStatuses } from "src/generated/homeLambdasClient";
+import strings from "src/localization/strings";
+import type { VacationsDataGridRow } from "src/types";
+import LocalizationUtils from "src/utils/localization-utils";
+import type { FilterType } from "src/utils/vacation-filter-type";
+import { getVacationRequestPersonFullName } from "src/utils/vacation-request-utils";
+import {
+  getTotalVacationRequestStatus,
+  getVacationRequestStatusColor
+} from "src/utils/vacation-status-utils";
+import SkeletonTableRows from "./skeleton-table-rows/skeleton-table-rows";
+import VacationRequestsTableColumns from "./vacation-requests-table-columns";
+import TableToolbar from "./vacation-requests-table-toolbar/vacation-requests-table-toolbar";
+
+const StyledGridOverlay = styled("div")(() => ({
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  justifyContent: "center",
+  height: "100%"
+}));
+
+const CustomNoRowsOverlay = () => (
+  <StyledGridOverlay>
+    <Inventory />
+    <Box sx={{ mt: 1 }}>{strings.dataGrid.noRows}</Box>
+  </StyledGridOverlay>
+);
+
+interface CustomSkeletonTableRowsProps {
+  dataGridHeight: number;
+  dataGridRowHeight: number;
+  dataGridColumnHeaderHeight: number;
+}
+
+const CustomSkeletonTableRows = ({
+  dataGridHeight,
+  dataGridRowHeight,
+  dataGridColumnHeaderHeight
+}: CustomSkeletonTableRowsProps) => (
+  <SkeletonTableRows
+    dataGridHeight={dataGridHeight}
+    dataGridRowHeight={dataGridRowHeight}
+    dataGridColumnHeaderHeight={dataGridColumnHeaderHeight}
+  />
+);
 
 /**
  * Component properties
  */
 interface Props {
-  isUpcoming: boolean
+  isUpcoming: boolean;
   toggleIsUpcoming: () => void;
   deleteVacationRequests: (
     selectedRowIds: GridRowId[],
     rows: VacationsDataGridRow[]
   ) => Promise<void>;
-  createVacationRequest: (vacationData: VacationData) => Promise<void>;
-  updateVacationRequest: (vacationData: VacationData, vacationRequestId: string) => Promise<void>;
-  loading: boolean;
-  updateVacationRequestStatuses: (
-    buttonType: VacationRequestStatuses,
+  createVacationRequest: (vacationRequestData: VacationRequest) => Promise<void>;
+  createDraftVacationRequest: (vacationRequestData: VacationRequest) => Promise<void>;
+  updateVacationRequest: (
+    vacationRequestData: VacationRequest,
+    vacationRequestId: string
+  ) => Promise<void>;
+  updateVacationRequestStatus: (
+    updatedVacationRequestStatus: VacationRequestStatuses,
     selectedRowIds: GridRowId[]
   ) => Promise<void>;
+  fetchVacationRequestById: (vacationRequestId: string) => Promise<VacationRequest | null>;
+  loading: boolean;
+  filter: FilterType;
+  setFilter: React.Dispatch<React.SetStateAction<FilterType>>;
 }
 
 /**
@@ -56,26 +90,42 @@ const VacationRequestsTable = ({
   toggleIsUpcoming,
   deleteVacationRequests,
   createVacationRequest,
+  createDraftVacationRequest,
   updateVacationRequest,
-  updateVacationRequestStatuses,
-  loading
+  updateVacationRequestStatus,
+  fetchVacationRequestById,
+  loading,
+  filter,
+  setFilter
 }: Props) => {
-  const adminMode = UserRoleUtils.adminMode();
-  const vacationRequests = useAtomValue(displayedVacationRequestsAtom);
-  const vacationRequestStatuses = useAtomValue(
-    adminMode ? allVacationRequestStatusesAtom : vacationRequestStatusesAtom
-  );
+  const vacationRequests = useAtomValue(displayedVacationRequestsAtom) || [];
   const containerRef = useRef(null);
   const [formOpen, setFormOpen] = useState(false);
-  const [selectedRowIds, setSelectedRowIds] = useState<GridRowSelectionModel>([]);
+  const [selectedRowIds, setSelectedRowIds] = useState<GridRowSelectionModel>({
+    type: "include",
+    ids: new Set([])
+  });
   const [rows, setRows] = useState<VacationsDataGridRow[]>([]);
-  const language = useAtomValue(languageAtom);
   const columns = VacationRequestsTableColumns();
-  const persons = useAtomValue(personsAtom);
+  const users = useAtomValue(usersAtom) || [];
   const userProfile = useAtomValue(userProfileAtom);
   const dataGridHeight = 700;
   const dataGridRowHeight = 52;
   const dataGridColumnHeaderHeight = 56;
+
+  /**
+   * Loading overlay component for DataGrid
+   */
+  const LoadingOverlay = useMemo(
+    () => () => (
+      <CustomSkeletonTableRows
+        dataGridHeight={dataGridHeight}
+        dataGridRowHeight={dataGridRowHeight}
+        dataGridColumnHeaderHeight={dataGridColumnHeaderHeight}
+      />
+    ),
+    [dataGridHeight, dataGridRowHeight, dataGridColumnHeaderHeight]
+  );
 
   /**
    * Create a single vacation request data grid row
@@ -84,114 +134,98 @@ const VacationRequestsTable = ({
    * @returns dataGridRow
    */
   const createDataGridRow = (vacationRequest: VacationRequest) => {
+    const user = users.find((user) => user.id === vacationRequest.userId);
+    const usersFullName = user
+      ? `${user.firstName} ${user.lastName}`
+      : strings.vacationRequest.noPersonFullName;
+
     const row: VacationsDataGridRow = {
       id: vacationRequest.id,
       type: LocalizationUtils.getLocalizedVacationRequestType(vacationRequest.type),
-      personFullName: vacationRequest.personId ?? strings.vacationRequest.noPersonFullName,
+      personFullName: usersFullName,
+      userId: vacationRequest.userId,
       updatedAt: DateTime.fromJSDate(vacationRequest.updatedAt),
       startDate: DateTime.fromJSDate(vacationRequest.startDate),
       endDate: DateTime.fromJSDate(vacationRequest.endDate),
       days: vacationRequest.days,
-      message: strings.vacationRequest.noMessage,
-      status: VacationRequestStatuses.PENDING
+      message: vacationRequest.message || strings.vacationRequest.noMessage,
+      status: VacationRequestStatuses.PENDING,
+      draft: vacationRequest.draft || false,
+      vacationRequest: vacationRequest
     };
-
     return row;
+  };
+
+  /**
+   * Get row status
+   * @param vacationRequest vacation request
+   * @returns status string
+   */
+  const getRowStatus = (vacationRequest: VacationRequest): string => {
+    const { status, draft } = vacationRequest;
+
+    if (Array.isArray(status) && status.length > 0) {
+      return getTotalVacationRequestStatus(status);
+    }
+
+    return draft ? strings.vacationRequest.draft : VacationRequestStatuses.PENDING;
   };
 
   /**
    * Create vacation requests data grid rows
    *
-   * @param vacationRequest vacation request
-   * @param vacationRequestStatuses vacation request statuses
+   * @param vacationRequests vacation requests
    */
-  const createDataGridRows = (
-    vacationRequests: VacationRequest[],
-    vacationRequestStatuses: VacationRequestStatus[]
-  ) => {
+  const createDataGridRows = (vacationRequests: VacationRequest[]) => {
     const rows: VacationsDataGridRow[] = [];
-    if (vacationRequests.length) {
+    if (Array.isArray(vacationRequests) && vacationRequests.length > 0) {
       vacationRequests.forEach((vacationRequest) => {
+        if (!vacationRequest) return;
         const row = createDataGridRow(vacationRequest);
-
-        vacationRequestStatuses.forEach((vacationRequestStatus) => {
-          if (vacationRequest.id === vacationRequestStatus.vacationRequestId) {
-            row.status = vacationRequestStatus.status;
-          }
-        });
-
-        if (vacationRequest.message.length) {
+        row.status = getRowStatus(vacationRequest);
+        if (vacationRequest.message?.length) {
           row.message = vacationRequest.message;
         }
-
-        if (vacationRequest.personId) {
+        if (vacationRequest.userId) {
           row.personFullName = getVacationRequestPersonFullName(
             vacationRequest,
-            persons,
+            users,
             userProfile
           );
         }
-
         rows.push(row);
       });
     }
     return rows;
   };
 
+  // Reset selection after deletion
   useMemo(() => {
-    setSelectedRowIds([]);
-  }, [updateVacationRequestStatuses, deleteVacationRequests]);
+    setSelectedRowIds({ type: "include", ids: new Set([]) });
+  }, [deleteVacationRequests]);
 
-  /**
-   * Set data grid rows
-   */
   useMemo(() => {
-    setRows(createDataGridRows(vacationRequests, vacationRequestStatuses));
-  }, [vacationRequests, vacationRequestStatuses, formOpen, language]);
+    try {
+      setRows(createDataGridRows(vacationRequests));
+    } catch (error) {
+      console.error("Error creating data grid rows:", error);
+      setRows([]);
+    }
+  }, [vacationRequests, formOpen]);
 
-  /**
-   * Styled grid overlay component
-   */
-  const StyledGridOverlay = styled("div")(() => ({
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    height: "100%"
-  }));
-
-  /**
-   * Custom no rows overlay component
-   */
-  const CustomNoRowsOverlay = () => (
-    <StyledGridOverlay>
-      <Inventory />
-      <Box sx={{ mt: 1 }}>{strings.dataGrid.noRows}</Box>
-    </StyledGridOverlay>
-  );
-
-  /**
-   * Custom skeleton table rows component
-   */
-  const CustomSkeletonTableRows = () => (
-    <SkeletonTableRows
-      dataGridHeight={dataGridHeight}
-      dataGridRowHeight={dataGridRowHeight}
-      dataGridColumnHeaderHeight={dataGridColumnHeaderHeight}
-    />
-  );
+  const theme = useTheme();
 
   return (
     <Box
       sx={{
         "& .APPROVED": {
-          color: `${getVacationRequestStatusColor(VacationRequestStatuses.APPROVED)}`
+          color: `${getVacationRequestStatusColor(VacationRequestStatuses.APPROVED, theme)}`
         },
         "& .DECLINED": {
-          color: `${getVacationRequestStatusColor(VacationRequestStatuses.DECLINED)}`
+          color: `${getVacationRequestStatusColor(VacationRequestStatuses.DECLINED, theme)}`
         },
         "& .PENDING": {
-          color: `${getVacationRequestStatusColor(VacationRequestStatuses.PENDING)}`
+          color: `${getVacationRequestStatusColor(VacationRequestStatuses.PENDING, theme)}`
         }
       }}
       ref={containerRef}
@@ -201,26 +235,30 @@ const VacationRequestsTable = ({
         toggleIsUpcoming={toggleIsUpcoming}
         deleteVacationRequests={deleteVacationRequests}
         createVacationRequest={createVacationRequest}
+        createDraftVacationRequest={createDraftVacationRequest}
         updateVacationRequest={updateVacationRequest}
-        updateVacationRequestStatuses={updateVacationRequestStatuses}
+        updateVacationRequestStatus={updateVacationRequestStatus}
+        fetchVacationRequestById={fetchVacationRequestById}
         setFormOpen={setFormOpen}
         formOpen={formOpen}
         selectedRowIds={selectedRowIds}
         rows={rows}
         setSelectedRowIds={setSelectedRowIds}
+        filter={filter}
+        setFilter={setFilter}
       />
       <DataGrid
         sx={{ height: dataGridHeight }}
         rowHeight={dataGridRowHeight}
         columnHeaderHeight={dataGridColumnHeaderHeight}
         autoPageSize
-        onRowSelectionModelChange={(index: GridRowSelectionModel) => {
-          setSelectedRowIds(index);
+        onRowSelectionModelChange={(model: GridRowSelectionModel) => {
+          setSelectedRowIds(model);
         }}
         rows={rows}
-        loading={loading && !rows.length ? true : false}
+        loading={loading && !rows.length}
         slots={{
-          loadingOverlay: CustomSkeletonTableRows,
+          loadingOverlay: LoadingOverlay,
           noRowsOverlay: CustomNoRowsOverlay
         }}
         columns={columns}
@@ -230,14 +268,7 @@ const VacationRequestsTable = ({
         initialState={{
           sorting: {
             sortModel: [{ field: "updatedAt", sort: "asc" }]
-          },
-          filter: adminMode
-            ? {
-                filterModel: {
-                  items: [{ field: "status", operator: "contains", value: "pending" }]
-                }
-              }
-            : {}
+          }
         }}
       />
     </Box>

@@ -1,12 +1,13 @@
-import Typography from "@mui/material/Typography";
 import MenuIcon from "@mui/icons-material/Menu";
-import { Link } from "react-router-dom";
-import Logo from "../../../resources/img/Metatavu-icon.svg";
-import Button from "@mui/material/Button";
-import { type MouseEvent, useState } from "react";
 import { Box, IconButton, Menu, MenuItem } from "@mui/material";
+import Button from "@mui/material/Button";
+import { useTheme } from "@mui/material/styles";
+import Typography from "@mui/material/Typography";
+import { type MouseEvent, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
-import UserRoleUtils from "src/utils/user-role-utils";
+import Logo from "../../../resources/img/Metatavu-icon.svg";
 
 /**
  * Navigation Items component
@@ -14,7 +15,11 @@ import UserRoleUtils from "src/utils/user-role-utils";
 const NavItems = () => {
   const [currentPage, setCurrentPage] = useState("");
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
-  const admin = UserRoleUtils.isAdmin();
+  const { isAdmin } = useUserRole();
+  const location = useLocation();
+  const theme = useTheme();
+  const isAdminRoute = location.pathname.startsWith("/admin");
+
 
   /**
    * Handles opening navigation menu
@@ -45,7 +50,10 @@ const NavItems = () => {
           <img
             src={Logo}
             alt={strings.header.logoAlt}
-            style={{ height: 40, filter: "invert(100%)" }}
+            style={{
+              height: 40,
+              filter: theme.palette.mode === "dark" ? "invert(0)" : "invert(1)"
+            }}
           />
         </Button>
       </Link>
@@ -85,9 +93,9 @@ const NavItems = () => {
             key={`${strings.header.timebank}mobile`}
             onClick={handleNavItemClick}
           >
-            {strings.header.home}
+            {strings.header.employee}
           </MenuItem>
-          {admin && (
+          {isAdmin && (
             <MenuItem
               component={Link}
               to={"/admin"}
@@ -107,19 +115,35 @@ const NavItems = () => {
         <Link
           key={strings.header.timebank}
           to={"/"}
-          style={{ margin: 2, display: "block" }}
+          style={{ margin: 2, display: "block", textDecoration: "none" }}
           onClick={handleNavItemClick}
         >
-          <Button>{strings.header.home}</Button>
+          <Button
+            variant={isAdminRoute ? "text" : "contained"}
+            sx={{
+              borderRadius: 20,
+              px: 2
+            }}
+          >
+            {strings.header.employee}
+          </Button>
         </Link>
-        {admin && (
-          <Link to={"/admin"} style={{ margin: 2, display: "block" }}>
-            <Button>{strings.header.admin}</Button>
+
+        {isAdmin && (
+          <Link to={"/admin"} style={{ margin: 2, display: "block", textDecoration: "none" }}>
+            <Button
+              variant={location.pathname.startsWith("/admin") ? "contained" : "text"}
+              sx={{
+                borderRadius: 20,
+                px: 2
+              }}
+            >
+              {strings.header.admin}
+            </Button>
           </Link>
         )}
       </Box>
     </>
   );
 };
-
 export default NavItems;

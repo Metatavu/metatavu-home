@@ -1,0 +1,218 @@
+import {
+  Box,
+  Card,
+  CardActionArea,
+  CardContent,
+  CardMedia,
+  Chip,
+  Link as MuiLink,
+  Typography,
+  useTheme
+} from "@mui/material";
+import { Link } from "react-router-dom";
+import type { SoftwareRegistry } from "src/generated/homeLambdasClient";
+
+interface AppCardProps extends SoftwareRegistry {
+  isGridView: boolean;
+}
+
+const AppCard = ({ id, image, name, description, tags = [], isGridView }: AppCardProps) => {
+  const theme = useTheme();
+  return (
+    <MuiLink component={Link} to={`${id}`} underline="none" color="inherit">
+      {isGridView ? (
+        <Card
+          sx={(theme) => ({
+            height: 320,
+            width: 240,
+            backgroundColor: theme.palette.background.paper,
+            borderRadius: "10px",
+            boxShadow: theme.shadows[1],
+            overflow: "hidden",
+            ":hover": {
+              boxShadow: theme.shadows[4],
+              backgroundColor: theme.palette.action.hover
+            }
+          })}
+        >
+          <CardActionArea
+            sx={{
+              padding: "16px",
+              backgroundColor: theme.palette.background.paper,
+              "&:hover": { backgroundColor: theme.palette.action.hover }
+            }}
+          >
+            <CardMedia
+              component="img"
+              height="100px"
+              width="240"
+              image={image}
+              alt={name}
+              sx={{
+                objectFit: "contain",
+                marginBottom: "16px",
+                borderRadius: "8px"
+              }}
+            />
+            <CardContent sx={{ padding: 0 }}>
+              <Typography
+                gutterBottom
+                variant="h6"
+                overflow={"hidden"}
+                textOverflow={"ellipsis"}
+                whiteSpace={"nowrap"}
+              >
+                {name}
+              </Typography>
+              <Box sx={{ minHeight: "90px" }} marginBottom={2}>
+                <Typography
+                  variant="body1"
+                  sx={{
+                    display: "-webkit-box",
+                    WebkitLineClamp: 4,
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis"
+                  }}
+                >
+                  {description}
+                </Typography>
+              </Box>
+              <Box
+                display="flex"
+                alignItems="center"
+                justifyContent="flex-start"
+                flexWrap="nowrap"
+                width="100%"
+                sx={{
+                  height: "30px",
+                  gap: 2,
+                  marginTop: "-8px"
+                }}
+              >
+                {tags.slice(0, 3).map((tag) => (
+                  <Chip
+                    key={tag}
+                    label={tag}
+                    sx={{
+                      borderRadius: "5px",
+                      margin: "-5px",
+                      backgroundColor:
+                        theme.palette.mode === "dark"
+                          ? theme.palette.error.dark
+                          : theme.palette.error.main,
+                      color: theme.palette.getContrastText(theme.palette.error.main),
+                      fontSize: "14px",
+                      whiteSpace: "nowrap",
+                      maxWidth: "70px",
+                      minWidth: "60px"
+                    }}
+                  />
+                ))}
+              </Box>
+            </CardContent>
+          </CardActionArea>
+        </Card>
+      ) : (
+        <Card
+          sx={{
+            width: "100%",
+            display: "flex",
+            backgroundColor: theme.palette.background.paper,
+            borderRadius: "10px",
+            boxShadow: theme.shadows[1],
+            overflow: "hidden",
+            ":hover": {
+              boxShadow: theme.shadows[4]
+            }
+          }}
+        >
+          <CardActionArea
+            sx={{
+              padding: "8px",
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              height: "150px",
+              backgroundColor: theme.palette.background.paper,
+              "&:hover": {
+                backgroundColor: theme.palette.action.hover
+              }
+            }}
+          >
+            <Box
+              sx={{
+                width: "80px",
+                height: "130px",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                marginRight: "16px",
+                marginLeft: "8px"
+              }}
+            >
+              <CardMedia
+                component="img"
+                image={image}
+                alt={name}
+                sx={{
+                  maxWidth: "100%",
+                  maxHeight: "100%",
+                  objectFit: "cover",
+                  borderRadius: "8px"
+                }}
+              />
+            </Box>
+            <CardContent sx={{ flexGrow: 1, paddingLeft: "16px" }}>
+              <Typography
+                gutterBottom
+                variant="h6"
+                sx={{
+                  marginBottom: "4px"
+                }}
+              >
+                {name}
+              </Typography>
+              <Box>
+                <Typography
+                  sx={{
+                    display: "-webkit-box",
+                    WebkitLineClamp: 3,
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    maxWidth: "200px",
+                    maxHeight: "80px"
+                  }}
+                >
+                  {description}
+                </Typography>
+              </Box>
+              <Box
+                display="flex"
+                alignItems="center"
+                gap={0.5}
+                sx={{ flexWrap: "wrap", marginTop: "8px" }}
+              >
+                {tags.slice(0, 3).map((tag) => (
+                  <Chip
+                    key={tag}
+                    label={tag}
+                    sx={{
+                      borderRadius: "5px",
+                      backgroundColor: theme.palette.error.main,
+                      color: theme.palette.getContrastText(theme.palette.error.main),
+                      padding: "5px"
+                    }}
+                  />
+                ))}
+              </Box>
+            </CardContent>
+          </CardActionArea>
+        </Card>
+      )}
+    </MuiLink>
+  );
+};
+
+export default AppCard;

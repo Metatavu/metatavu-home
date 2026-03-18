@@ -1,0 +1,141 @@
+import { Card, CardContent, CardMedia, Grid, Skeleton, Typography } from "@mui/material";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
+import { authAtom } from "src/atoms/auth";
+import { errorAtom } from "src/atoms/error";
+import { softwareAtom } from "src/atoms/software";
+import { useLambdasApi } from "src/hooks/use-api";
+import useUserRole from "../../hooks/use-user-role";
+import strings from "../../localization/strings";
+
+/**
+ * SoftwareRegistry card component
+ */
+const SoftwareRegistryCard = () => {
+  const { adminMode } = useUserRole();
+  const { softwareApi } = useLambdasApi();
+  const auth = useAtomValue(authAtom);
+  const loggedUserId = auth?.token?.sub ?? "";
+  const setError = useSetAtom(errorAtom);
+  const [applications, setApplications] = useAtom(softwareAtom);
+
+  const [loading, setLoading] = useState(false);
+
+  const fetchSoftware = async () => {
+    setLoading(true);
+    try {
+      const fetchedApplications = await softwareApi.listSoftware();
+      setApplications(fetchedApplications);
+    } catch (error) {
+      setError(`Error fetching software data: ${error}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchSoftware();
+  }, []);
+
+  /**
+   * Filter pending software (admin mode) or recommended software (user mode)
+   */
+  const pendingSoftware = useMemo(() => {
+    return applications.filter((app) => app.status === "PENDING");
+  }, [applications]);
+
+  const recommendedSoftware = useMemo(() => {
+    return applications.filter((app) => app.recommend?.includes(loggedUserId));
+  }, [applications]);
+
+  /**
+   * Render the card content, showing different details based on admin/user mode
+   */
+  const renderSoftwareDetails = () => {
+    if (loading) {
+      return (
+        <Grid container size={12}>
+          <Skeleton width="100%" />
+        </Grid>
+      );
+    }
+
+    return (
+      <>
+        {!adminMode && recommendedSoftware.length > 0 && (
+          <>
+            <Typography fontWeight="bold" gutterBottom>
+              {strings.softwareRegistry.recommendations}
+            </Typography>
+            <Grid display="flex" container alignItems="center" m={1}>
+              {recommendedSoftware.map((app) => (
+                <Grid key={app.id}>
+                  <CardMedia
+                    component="img"
+                    height="60"
+                    image={app.image}
+                    alt={app.name}
+                    sx={{
+                      width: "60px",
+                      objectFit: "contain",
+                      margin: "6px",
+                      borderRadius: "8px",
+                      overflow: "hidden"
+                    }}
+                  />
+                </Grid>
+              ))}
+            </Grid>
+          </>
+        )}
+        {adminMode && pendingSoftware.length > 0 && (
+          <>
+            <Typography fontWeight="bold" gutterBottom>
+              {strings.softwareRegistry.newSoftware}
+            </Typography>
+            <Grid display="flex" container alignItems="center" m={1}>
+              {pendingSoftware.map((app) => (
+                <Grid key={app.id}>
+                  <CardMedia
+                    component="img"
+                    height="60"
+                    image={app.image}
+                    alt={app.name}
+                    sx={{
+                      width: "60px",
+                      objectFit: "contain",
+                      margin: "6px",
+                      borderRadius: "8px",
+                      overflow: "hidden"
+                    }}
+                  />
+                </Grid>
+              ))}
+            </Grid>
+          </>
+        )}
+      </>
+    );
+  };
+
+  return (
+    <Link
+      to={adminMode ? "/admin/allsoftware" : "/softwareregistry"}
+      style={{ textDecoration: "none" }}
+    >
+      <Card>
+        <CardContent>
+          <Typography variant="h6" fontWeight={"bold"} style={{ marginTop: 6, marginBottom: 3 }}>
+            {adminMode
+              ? strings.softwareRegistry.softwareRegistryAdmin
+              : strings.softwareRegistry.softwareRegistry}
+          </Typography>
+          <Grid container>{renderSoftwareDetails()}</Grid>
+        </CardContent>
+      </Card>
+    </Link>
+  );
+};
+
+export default SoftwareRegistryCard;

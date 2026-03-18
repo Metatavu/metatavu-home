@@ -1,20 +1,21 @@
-import { Add, Cancel, Edit, FilterAlt } from "@mui/icons-material";
-import { Box, Button, Collapse, Grid, Typography, styled } from "@mui/material";
-import { useEffect, useState } from "react";
-import ToolbarForm from "./toolbar-form/toolbar-form";
-import type { GridRowId } from "@mui/x-data-grid";
-import { type VacationsDataGridRow, ToolbarFormModes, type VacationData } from "src/types";
-import ToolbarDeleteButton from "./toolbar-delete-button";
-import FormToggleButton from "./toolbar-form-toggle-button";
-import ConfirmationHandler from "../../contexts/confirmation-handler";
-import strings from "src/localization/strings";
-import { getToolbarTitle } from "src/utils/toolbar-utils";
+import { Box, Collapse } from "@mui/material";
+import type { GridRowId, GridRowSelectionModel } from "@mui/x-data-grid";
 import { useAtomValue } from "jotai";
-import { languageAtom } from "src/atoms/language";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { VacationRequestStatuses } from "src/generated/client";
-import UpdateStatusButton from "./toolbar-update-status-button";
-import UserRoleUtils from "src/utils/user-role-utils";
+import { languageAtom } from "src/atoms/language";
+import EditConfirmationDialog from "src/components/contexts/edit-confirmation-dialog";
+import type { VacationRequest } from "src/generated/homeLambdasClient";
+import { VacationRequestStatuses } from "src/generated/homeLambdasClient";
+import useUserRole from "src/hooks/use-user-role";
+import strings from "src/localization/strings";
+import { DeleteItemType, ToolbarFormModes, type VacationsDataGridRow } from "src/types";
+import { getToolbarTitle } from "src/utils/toolbar-utils";
+import type { FilterType } from "src/utils/vacation-filter-type";
+import DeleteConfirmationDialog from "../../contexts/delete-confirmation-dialog";
+import DefaultToolbar from "./DefaultToolbar";
+import SelectionToolbar from "./SelectionToolbar";
+import ToolbarForm from "./toolbar-form/toolbar-form";
 
 /**
  * Component properties
@@ -26,17 +27,24 @@ interface Props {
     selectedRowIds: GridRowId[],
     rows: VacationsDataGridRow[]
   ) => Promise<void>;
-  createVacationRequest: (vacationData: VacationData) => Promise<void>;
-  updateVacationRequest: (vacationData: VacationData, vacationRequestId: string) => Promise<void>;
-  setFormOpen: (formOpen: boolean) => void;
-  formOpen: boolean;
-  selectedRowIds: GridRowId[];
-  rows: VacationsDataGridRow[];
-  setSelectedRowIds: (selectedRowIds: GridRowId[]) => void;
-  updateVacationRequestStatuses: (
-    newStatus: VacationRequestStatuses,
+  createVacationRequest: (VacationRequest: VacationRequest) => Promise<void>;
+  createDraftVacationRequest: (vacationRequestData: VacationRequest) => Promise<void>;
+  updateVacationRequest: (
+    VacationRequest: VacationRequest,
+    vacationRequestId: string
+  ) => Promise<void>;
+  updateVacationRequestStatus: (
+    vacationRequestStatus: VacationRequestStatuses,
     selectedRowIds: GridRowId[]
   ) => Promise<void>;
+  fetchVacationRequestById: (vacationRequestId: string) => Promise<VacationRequest | null>;
+  setFormOpen: (formOpen: boolean) => void;
+  formOpen: boolean;
+  selectedRowIds: GridRowSelectionModel;
+  rows: VacationsDataGridRow[];
+  setSelectedRowIds: (selectedRowIds: GridRowSelectionModel) => void;
+  filter: FilterType;
+  setFilter: React.Dispatch<React.SetStateAction<FilterType>>;
 }
 
 /**
@@ -44,36 +52,47 @@ interface Props {
  *
  * @param props component properties
  */
+const EMPTY_SELECTION: GridRowSelectionModel = { type: "include", ids: new Set([]) };
+
 const TableToolbar = ({
   isUpcoming,
   toggleIsUpcoming,
   deleteVacationRequests,
   createVacationRequest,
+  createDraftVacationRequest,
   updateVacationRequest,
+  updateVacationRequestStatus,
+  fetchVacationRequestById,
   setFormOpen,
   formOpen,
   selectedRowIds,
   rows,
   setSelectedRowIds,
-  updateVacationRequestStatuses
+  filter,
+  setFilter
 }: Props) => {
   const [toolbarOpen, setToolbarOpen] = useState(false);
   const [toolbarFormMode, setToolbarFormMode] = useState<ToolbarFormModes>(ToolbarFormModes.NONE);
   const [confirmationHandlerOpen, setConfirmationHandlerOpen] = useState(false);
+  const [editConfirmationHandlerOpen, setEditConfirmationHandlerOpen] = useState(false);
+  const [editVacationsData, setEditVacationsData] = useState<VacationRequest | null>(null);
   const [title, setTitle] = useState(strings.tableToolbar.myRequests);
+  const [wasDraftBeforeEdit, setWasDraftBeforeEdit] = useState(false);
   const language = useAtomValue(languageAtom);
-  const adminMode = UserRoleUtils.adminMode();
+  const { adminMode } = useUserRole();
   const { pathname } = useLocation();
-  const isToolbarVisible = toolbarOpen && !formOpen && selectedRowIds?.length;
-  const buttonLabel = isUpcoming ? strings.tableToolbar.future : strings.tableToolbar.past;
-  const singleSelectionSize = adminMode ? 3 : 6
-  const multiSelectionSize = adminMode ? 6 : 12
-  const gridItemSize = selectedRowIds?.length === 1
-  ? (singleSelectionSize)
-  : (multiSelectionSize);
-  const disableEditButton =
-    rows.find((request: VacationsDataGridRow) => request.id === selectedRowIds[0])?.status !==
-    VacationRequestStatuses.PENDING;
+
+  const selectedIdsSize = selectedRowIds?.ids?.size ?? 0;
+  const firstId: GridRowId | undefined = selectedRowIds?.ids
+    ? [...selectedRowIds.ids][0]
+    : undefined;
+
+  const isToolbarVisible = toolbarOpen && !formOpen && selectedIdsSize > 0;
+  const singleSelectionSize = adminMode ? 3 : 4;
+  const multiSelectionSize = adminMode ? 6 : 12;
+  const gridItemSize = selectedIdsSize === 1 ? singleSelectionSize : multiSelectionSize;
+  const selectedRow = rows.find((row) => String(row.id) === String(firstId));
+  const isDraftSelected = selectedRow ? selectedRow.draft : false;
 
   useEffect(() => {
     setTitle(getToolbarTitle(toolbarFormMode));
@@ -83,137 +102,131 @@ const TableToolbar = ({
   }, [toolbarFormMode, language, pathname]);
 
   useEffect(() => {
-    toggleToolbarOpenOnSelectedRowIds(selectedRowIds);
+    setToolbarOpen((selectedRowIds?.ids?.size ?? 0) > 0);
   }, [selectedRowIds]);
-
-  /**
-   * Toggle toolbar open on selected row ids
-   *
-   * @param selectedRowIds selected row ids
-   */
-  const toggleToolbarOpenOnSelectedRowIds = (selectedRowIds: GridRowId[]) => {
-    if (selectedRowIds) {
-      setToolbarOpen(true);
-    } else {
-      setToolbarOpen(false);
-    }
-  };
 
   /**
    * Delete vacation requests and statuses
    */
   const deleteVacationsData = async () => {
-    await deleteVacationRequests(selectedRowIds, rows);
+    const ids: GridRowId[] = selectedRowIds?.ids ? [...selectedRowIds.ids] : [];
+    await deleteVacationRequests(ids, rows);
   };
 
   /**
-   * Toolbar grid item component
+   * Handler for saving updated vacation request data
+   *
+   * @param data vacation request data
    */
-  const ToolbarGridItem = styled(Grid)({
-    padding: "10px"
-  });
+  const handleSaveClick = (data: VacationRequest) => {
+    setEditVacationsData(data);
+    setEditConfirmationHandlerOpen(true);
+  };
 
   /**
-   * Toolbar grid container component
+   * Handler for confirming edit to vacation request
    */
-  const ToolbarGridContainer = styled(Grid)({
-    alignContent: "space-around",
-    alignItems: "center"
-  });
+  const handleEditConfirm = async () => {
+    if (!editVacationsData?.id) return;
+
+    await updateVacationRequest(editVacationsData, editVacationsData.id);
+    setSelectedRowIds(EMPTY_SELECTION);
+    setFormOpen(false);
+  };
+
+  /**
+   * Submit a draft vacation request for approval
+   *
+   * @param vacationRequestId - The ID of the vacation request to submit for approval
+   */
+  const handleSubmitForApproval = async (vacationRequestId: string) => {
+    if (!vacationRequestId) return;
+
+    const vacationRequest = await fetchVacationRequestById(vacationRequestId);
+    if (!vacationRequest) return;
+
+    const updatedRequest: VacationRequest = {
+      ...vacationRequest,
+      draft: false,
+      updatedAt: new Date(),
+      status: [
+        {
+          status: VacationRequestStatuses.PENDING,
+          createdBy: vacationRequest.userId,
+          updatedAt: new Date()
+        }
+      ]
+    };
+    await updateVacationRequest(updatedRequest, updatedRequest.id as string);
+    setSelectedRowIds(EMPTY_SELECTION);
+    setFormOpen(false);
+  };
+
+  /**
+   * Handler for edit button click
+   */
+  const handleEditButtonClick = () => {
+    setToolbarFormMode(ToolbarFormModes.EDIT);
+    setFormOpen(true);
+    setWasDraftBeforeEdit(isDraftSelected);
+  };
 
   return (
     <Box>
-      <ConfirmationHandler
+      <DeleteConfirmationDialog
         open={confirmationHandlerOpen}
         setOpen={setConfirmationHandlerOpen}
-        deleteVacationsData={deleteVacationsData}
+        onConfirm={deleteVacationsData}
+        deleteType={DeleteItemType.VACATION}
+      />
+      <EditConfirmationDialog
+        open={editConfirmationHandlerOpen}
+        setOpen={setEditConfirmationHandlerOpen}
+        isDraft={wasDraftBeforeEdit}
+        isAdmin={adminMode}
+        onConfirm={handleEditConfirm}
+        setFormOpen={setFormOpen}
       />
       {isToolbarVisible ? (
-        <ToolbarGridContainer container>
-          <ToolbarGridItem
-            item
-            sm={gridItemSize}
-            xs={6}
-          >
-            <ToolbarDeleteButton setConfirmationHandlerOpen={setConfirmationHandlerOpen} />
-          </ToolbarGridItem>
-          {selectedRowIds?.length === 1 && (
-            <ToolbarGridItem item sm={adminMode ? 3 : 6} xs={6}>
-              <FormToggleButton
-                title={strings.tableToolbar.edit}
-                ButtonIcon={Edit}
-                value={formOpen}
-                setValue={setFormOpen}
-                disabled={disableEditButton}
-              />
-            </ToolbarGridItem>
-          )}
-          {adminMode && (
-            <>
-              <ToolbarGridItem item sm={3} xs={6}>
-                <UpdateStatusButton
-                  buttonType={VacationRequestStatuses.APPROVED}
-                  updateVacationRequestStatuses={updateVacationRequestStatuses}
-                  selectedRowIds={selectedRowIds}
-                />
-              </ToolbarGridItem>
-              <ToolbarGridItem item sm={3} xs={6}>
-                <UpdateStatusButton
-                  buttonType={VacationRequestStatuses.DECLINED}
-                  updateVacationRequestStatuses={updateVacationRequestStatuses}
-                  selectedRowIds={selectedRowIds}
-                />
-              </ToolbarGridItem>
-            </>
-          )}
-        </ToolbarGridContainer>
+        <SelectionToolbar
+          selectedIdsSize={selectedIdsSize}
+          gridItemSize={gridItemSize}
+          adminMode={adminMode}
+          isDraftSelected={isDraftSelected}
+          firstId={firstId}
+          selectedRowIds={selectedRowIds}
+          setConfirmationHandlerOpen={setConfirmationHandlerOpen}
+          handleEditButtonClick={handleEditButtonClick}
+          handleSubmitForApproval={handleSubmitForApproval}
+          updateVacationRequestStatus={updateVacationRequestStatus}
+        />
       ) : (
-        <ToolbarGridContainer container>
-          <ToolbarGridItem item xs={3}>
-            <Typography variant="h6">{title}</Typography>
-          </ToolbarGridItem>
-          <ToolbarGridItem item xs={3}>
-            <Button
-              sx={{ backgroundColor: "#eeeeee", p: 1, "&:hover": { backgroundColor: "#e0e0e0" } }}
-              onClick={toggleIsUpcoming}
-            >
-              <FilterAlt />
-              {buttonLabel}
-            </Button>
-          </ToolbarGridItem>
-          <ToolbarGridItem item xs={6}>
-            {formOpen ? (
-              <FormToggleButton
-                title={strings.tableToolbar.cancel}
-                ButtonIcon={Cancel}
-                value={formOpen}
-                setValue={setFormOpen}
-                buttonVariant="outlined"
-              />
-            ) : (
-              !adminMode && (
-                <FormToggleButton
-                  value={formOpen}
-                  setValue={setFormOpen}
-                  title={strings.tableToolbar.create}
-                  ButtonIcon={Add}
-                />
-              )
-            )}
-          </ToolbarGridItem>
-        </ToolbarGridContainer>
+        <DefaultToolbar
+          title={title}
+          isUpcoming={isUpcoming}
+          formOpen={formOpen}
+          adminMode={adminMode}
+          filter={filter}
+          setFilter={setFilter}
+          toggleIsUpcoming={toggleIsUpcoming}
+          setFormOpen={setFormOpen}
+        />
       )}
       <Collapse in={formOpen}>
         <ToolbarForm
           formOpen={formOpen}
           setFormOpen={setFormOpen}
           createVacationRequest={createVacationRequest}
-          updateVacationRequest={updateVacationRequest}
-          selectedRowIds={selectedRowIds}
+          createDraftVacationRequest={createDraftVacationRequest}
+          selectedRowIds={selectedRowIds?.ids ? [...selectedRowIds.ids] : []}
           rows={rows}
+          updateVacationRequest={updateVacationRequest}
+          setSelectedRowIds={(ids: GridRowId[]) =>
+            setSelectedRowIds({ type: "include", ids: new Set(ids) })
+          }
           toolbarFormMode={toolbarFormMode}
           setToolbarFormMode={setToolbarFormMode}
-          setSelectedRowIds={setSelectedRowIds}
+          onSaveClick={handleSaveClick}
         />
       </Collapse>
     </Box>
