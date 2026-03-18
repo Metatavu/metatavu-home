@@ -5,6 +5,7 @@ import { userProfileAtom } from "src/atoms/auth";
 import { errorAtom } from "src/atoms/error";
 import { usersAtom } from "src/atoms/user";
 import { useLambdasApi } from "src/hooks/use-api";
+import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import { type ThemeMode, ThemeModes } from "src/types/index";
 
@@ -18,6 +19,7 @@ type SettingsScreenProps = {
  */
 const SettingsScreen = ({ screenColorMode, setScreenColorMode }: SettingsScreenProps) => {
   const theme = useTheme();
+  const { isDeveloper } = useUserRole();
   const [userProfile, setUserProfile] = useAtom(userProfileAtom);
   const { usersApi } = useLambdasApi();
   const setUsers = useSetAtom(usersAtom);
@@ -36,6 +38,10 @@ const SettingsScreen = ({ screenColorMode, setScreenColorMode }: SettingsScreenP
    * Handles toggle change event
    */
   const handleToggleChange = () => {
+    if (!isDeveloper) {
+      return;
+    }
+
     if (isConsentGiven) {
       revokeSeveraOptIn();
     } else {
@@ -138,7 +144,7 @@ const SettingsScreen = ({ screenColorMode, setScreenColorMode }: SettingsScreenP
               checked={isConsentGiven}
               onChange={handleToggleChange}
               inputProps={{ "aria-label": "severa-opt-in" }}
-              disabled={loading}
+              disabled={loading || !isDeveloper}
             />
             {loading && (
               <Box ml={1}>
