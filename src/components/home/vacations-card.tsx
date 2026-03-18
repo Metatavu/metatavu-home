@@ -250,13 +250,9 @@ const VacationsCard = () => {
     return (
       <>
         {adminMode || vacationRequestsCount ? (
-          <Grid size={1}>
-            {vacationRequestsCount ? <Pending /> : <Check />}
-          </Grid>
+          <Grid size={1}>{vacationRequestsCount ? <Pending /> : <Check />}</Grid>
         ) : null}
-        <Grid size={adminMode || vacationRequestsCount ? 11 : 12}>
-          {message}
-        </Grid>
+        <Grid size={adminMode || vacationRequestsCount ? 11 : 12}>{message}</Grid>
       </>
     );
   };
