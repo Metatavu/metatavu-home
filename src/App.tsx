@@ -56,6 +56,15 @@ const App = () => {
         {
           path: "/",
           element: <HomeScreen />
+        },
+        {
+          path: "/settings",
+          element: (
+            <SettingsScreen
+              screenColorMode={screenColorMode}
+              setScreenColorMode={setScreenColorMode}
+            />
+          )
         }
       ]
     },
@@ -67,15 +76,6 @@ const App = () => {
       ),
       errorElement: <ErrorScreen />,
       children: [
-        {
-          path: "/settings",
-          element: (
-            <SettingsScreen
-              screenColorMode={screenColorMode}
-              setScreenColorMode={setScreenColorMode}
-            />
-          )
-        },
         {
           path: "/vacations",
           element: <VacationRequestsScreen />
