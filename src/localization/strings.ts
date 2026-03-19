@@ -640,7 +640,9 @@ export interface Localized extends LocalizedStringsMethods {
    * Translations related to if user is not Severa Opt in
    */
   notOptedInDescription: {
+    title: string;
     description: string;
+    redirectingMessage: string;
   };
   /**
    * Translations for Admin Vacation Management Card
