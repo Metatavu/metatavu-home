@@ -488,7 +488,7 @@ const QuestionnaireTable = () => {
 
         <DataGrid
           ref={dataGridRef}
-          getRowHeight={() => "auto"}
+          rowHeight={60}
           sx={{
             margin: 0,
             "& .MuiDataGrid-cell": {
