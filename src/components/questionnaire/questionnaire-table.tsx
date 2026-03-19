@@ -20,6 +20,7 @@ import {
 } from "@mui/material";
 import { DataGrid, type GridRenderCellParams, type GridRowParams } from "@mui/x-data-grid";
 import { useAtomValue, useSetAtom } from "jotai";
+import { min } from "lodash";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import { userProfileAtom } from "src/atoms/auth";
@@ -295,12 +296,12 @@ const QuestionnaireTable = () => {
   };
 
   const columns = [
-    { field: "title", headerName: `${strings.questionnaireTable.title}`, flex: 3 },
+    { field: "title", headerName: `${strings.questionnaireTable.title}`, flex: 2 },
     { field: "description", headerName: `${strings.questionnaireTable.description}`, flex: 5 },
     {
       field: "tags",
       headerName: strings.questionnaireTags.title || "Tags",
-      flex: 3,
+      flex: 2,
       minWidth: 180,
       renderCell: renderTagsCell,
       sortable: false,
@@ -320,7 +321,14 @@ const QuestionnaireTable = () => {
           headerName: `${strings.questionnaireTable.actions}`,
           flex: 2.5,
           renderCell: (params: GridRenderCellParams) => (
-            <>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                width: "100%"
+              }}
+            >
               <Button
                 name="edit"
                 variant="outlined"
@@ -359,7 +367,7 @@ const QuestionnaireTable = () => {
                 />
                 {strings.questionnaireTable.delete}
               </Button>
-            </>
+            </Box>
           )
         }
       : {
@@ -480,11 +488,13 @@ const QuestionnaireTable = () => {
 
         <DataGrid
           ref={dataGridRef}
+          getRowHeight={() => "auto"}
           sx={{
             margin: 0,
             "& .MuiDataGrid-cell": {
               padding: "8px",
               cursor: "pointer",
+              maxHeight: "60px",
               color: theme.palette.text.primary
             },
             "& .MuiDataGrid-columnHeader": {
