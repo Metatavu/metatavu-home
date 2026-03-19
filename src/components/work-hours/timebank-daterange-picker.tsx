@@ -77,6 +77,11 @@ export const CustomDatePicker = ({
       onClose={() => setOpen(false)}
       slotProps={{
         textField: {
+          onClick: () => {
+            setOpen(true);
+          }
+        },
+        openPickerButton: {
           onClick: () => setOpen(true)
         }
       }}
