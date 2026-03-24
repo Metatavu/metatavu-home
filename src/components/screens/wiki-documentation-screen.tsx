@@ -40,6 +40,7 @@ import { getArticlesToFilter, sortArticlesByDate } from "src/utils/wiki-utils";
 import DeleteConfirmationDialog from "../contexts/delete-confirmation-dialog";
 import BackButton from "../generics/back-button";
 import CreateButton from "../generics/create-button";
+import SearchBar from "../generics/search-bar";
 import Onboarding from "../onboarding/Onboarding";
 import ArticleCard from "../wiki-documentation/article-card";
 import ArticleListItem from "../wiki-documentation/article-list-item";
@@ -320,120 +321,6 @@ const WikiDocumentationScreen = () => {
     setPageNumber(1);
   };
 
-  const CustomPopper = styled((props: PopperProps) => <Popper {...props} placement="bottom" />)({
-    "& .MuiAutocomplete-noOptions": {
-      display: "none"
-    },
-    "& .MuiAutocomplete-paper": {
-      marginTop: "10px",
-      backgroundColor: colors.button.main,
-      color: colors.button.text
-    }
-  });
-
-  /**
-   * Renders the search bar component with autocomplete and tag selection.
-   * Allows filtering articles based on input text and selected tags.
-   */
-  const renderSearch = () => (
-    // biome-ignore lint/correctness/useUniqueElementIds: keeping static id
-    <Card
-      id="wiki-article-search-bar"
-      sx={{
-        width: {
-          lg: adminMode ? "55%" : "73%",
-          md: adminMode ? "55%" : "calc(100% - 80px)",
-          xs: adminMode ? "100%" : "calc(100% - 80px);"
-        },
-        boxShadow: 2,
-        marginBottom: { xs: 2 }
-      }}
-    >
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          backgroundColor: colors.button.main
-        }}
-      >
-        <Autocomplete
-          PopperComponent={CustomPopper}
-          multiple
-          disableCloseOnSelect
-          id={autoCompleteId}
-          options={tags}
-          sx={{ width: "100%" }}
-          clearOnBlur={false}
-          inputValue={searchInput}
-          onInputChange={handleSearchInputChange}
-          onChange={(_event, values) => {
-            handleSelectedTagChange(values);
-          }}
-          size="small"
-          renderOption={(props, option, { selected }) => (
-            <li
-              {...props}
-              style={{ display: "flex", alignItems: "center" }}
-              key={`tags-option-${option}`}
-            >
-              <Checkbox
-                sx={{
-                  color: colors.button.text,
-                  marginRight: 2
-                }}
-                checked={selected}
-              />
-              <Box
-                minWidth="5px"
-                style={{ marginRight: "10px" }}
-                component="span"
-                sx={{
-                  height: 40,
-                  borderRadius: "5px"
-                }}
-              />
-              {option}
-            </li>
-          )}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              placeholder={strings.wikiDocumentation.searchArticle}
-              sx={{
-                "& fieldset": {
-                  border: "none",
-                  marginBottom: "20px"
-                }
-              }}
-              InputProps={{
-                ...params.InputProps,
-                endAdornment: null,
-                startAdornment: (
-                  <>
-                    <IconButton>
-                      <Search />
-                    </IconButton>
-                    {params.InputProps.startAdornment}
-                  </>
-                )
-              }}
-            />
-          )}
-          ListboxProps={{
-            sx: {
-              display: "grid",
-              columnGap: 3,
-              rowGap: 1,
-              gridTemplateColumns: {
-                xs: "repeat(2, 1fr)",
-                md: adminMode ? "repeat(2, 1fr)" : "repeat(3, 1fr)"
-              }
-            }
-          }}
-        />
-      </Box>
-    </Card>
-  );
   const renderListViewButton = () => (
     <Button
       variant="contained"
@@ -561,7 +448,16 @@ const WikiDocumentationScreen = () => {
         marginBottom: 2
       }}
     >
-      {renderSearch()}
+      {
+        <SearchBar
+          searchInput={searchInput}
+          handleSearchInputChange={handleSearchInputChange}
+          tags={tags}
+          handleSelectedTagChange={handleSelectedTagChange}
+          autoCompleteId={autoCompleteId}
+        />
+      }
+      {/*{renderSearch()}*/}
       {adminMode && renderDropdownMenu()}
       {renderListViewButton()}
       {/* biome-ignore lint/correctness/useUniqueElementIds: keeping static id */}

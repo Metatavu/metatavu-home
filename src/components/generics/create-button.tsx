@@ -8,7 +8,13 @@ interface CreateButtonProps {
   styles?: SxProps<Theme>;
   text?: string;
 }
-
+/**
+ * Generic create button component.
+ * @param props.id - Optional HTML id for the button.
+ * @param props.onClick - Optional click handler. If not provided, no action is executed.
+ * @param props.styles - Optional MUI sx styles to extend or override default styles.
+ * @param props.text - Optional text label. If not provided, a localized default string ("Create") is used.
+ */
 const CreateButton = (props: CreateButtonProps): JSX.Element => {
   const { id, onClick, styles, text } = props;
   const theme = useTheme();

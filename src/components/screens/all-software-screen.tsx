@@ -34,6 +34,7 @@ import { DeleteItemType } from "src/types/index";
 import DeleteConfirmationDialog from "../contexts/delete-confirmation-dialog";
 import BackButton from "../generics/back-button";
 import CreateButton from "../generics/create-button";
+import SearchBar from "../generics/search-bar";
 import AddSoftwareModal from "../software-registry/AddSoftwareModal";
 import Content from "../software-registry/allContent";
 
@@ -336,41 +337,14 @@ const AllSoftwareScreen = () => {
               </Select>
             </FormControl>
 
-            <OutlinedInput
-              placeholder={strings.softwareRegistry.searchBy}
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              onKeyDown={handleKeyDown}
-              startAdornment={searchTerms.map((term) => (
-                <Chip
-                  key={term}
-                  label={term}
-                  onDelete={() => handleDeleteChip(term)}
-                  sx={{
-                    marginRight: "5px",
-                    backgroundColor: theme.palette.action.selected,
-                    color: theme.palette.text.primary
-                  }}
-                />
-              ))}
-              endAdornment={
-                <InputAdornment position="end">
-                  <SearchIcon sx={{ color: theme.palette.text.secondary }} />
-                </InputAdornment>
-              }
-              sx={{
-                marginLeft: "15px",
-                borderRadius: "10px",
-                height: "45px",
-                width: "50%",
-                padding: "10px",
-                backgroundColor: theme.palette.background.paper,
-                boxShadow:
-                  theme.palette.mode === "light"
-                    ? `inset 0px 2px 4px ${theme.palette.action.disabledBackground}`
-                    : "none"
-              }}
+            <SearchBar
+              searchInput={inputValue}
+              handleSearchInputChange={(_event, newInputValue) => setInputValue(newInputValue)}
+              tags={Array.from(new Set(software.flatMap((app) => app.tags ?? [])))}
+              handleSelectedTagChange={(newSelectedTags) => setSearchTerms(newSelectedTags)}
+              autoCompleteId="software-registry-search-tags"
             />
+
             <Box sx={{ display: "flex", marginLeft: "auto" }}>
               <IconButton
                 onClick={() => setIsGridView(true)}
