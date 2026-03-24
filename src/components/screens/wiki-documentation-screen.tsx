@@ -39,6 +39,7 @@ import { DeleteItemType, OnboardingScreen } from "src/types/index";
 import { getArticlesToFilter, sortArticlesByDate } from "src/utils/wiki-utils";
 import DeleteConfirmationDialog from "../contexts/delete-confirmation-dialog";
 import BackButton from "../generics/back-button";
+import CreateButton from "../generics/create-button";
 import Onboarding from "../onboarding/Onboarding";
 import ArticleCard from "../wiki-documentation/article-card";
 import ArticleListItem from "../wiki-documentation/article-list-item";
@@ -433,30 +434,6 @@ const WikiDocumentationScreen = () => {
       </Box>
     </Card>
   );
-  const renderCreateButton = () => (
-    // biome-ignore lint/correctness/useUniqueElementIds: keeping static id
-    <Button
-      id="wiki-create-article-button"
-      onClick={() => setFormOpen(true)}
-      variant="contained"
-      sx={{
-        width: {
-          lg: "17%",
-          md: adminMode ? "17%" : "100%",
-          xs: adminMode ? "40%" : "100%"
-        },
-        height: "55px",
-        backgroundColor: colors.button.main,
-        color: colors.button.text,
-        "&:hover": { backgroundColor: colors.button.hover }
-      }}
-    >
-      <Typography variant={"body1"} marginLeft={1} sx={{ fontWeight: "bold" }}>
-        {strings.wikiDocumentation.create}
-      </Typography>
-    </Button>
-  );
-
   const renderListViewButton = () => (
     <Button
       variant="contained"
@@ -587,7 +564,8 @@ const WikiDocumentationScreen = () => {
       {renderSearch()}
       {adminMode && renderDropdownMenu()}
       {renderListViewButton()}
-      {renderCreateButton()}
+      {/* biome-ignore lint/correctness/useUniqueElementIds: keeping static id */}
+      <CreateButton id="wiki-create-article-button" onClick={() => setFormOpen(true)} />
     </Grid>
   );
 

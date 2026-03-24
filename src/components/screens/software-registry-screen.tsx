@@ -1,3 +1,4 @@
+import { Create } from "@mui/icons-material";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import GridViewIcon from "@mui/icons-material/GridView";
 import ListViewIcon from "@mui/icons-material/List";
@@ -23,6 +24,7 @@ import { useLambdasApi } from "src/hooks/use-api";
 import useCreateSoftware from "src/hooks/use-create-software";
 import strings from "src/localization/strings";
 import BackButton from "../generics/back-button";
+import CreateButton from "../generics/create-button";
 import AddSoftwareModal from "../software-registry/AddSoftwareModal";
 import Content from "../software-registry/myContent";
 import Recommendations from "../software-registry/Recommendations";
@@ -230,19 +232,10 @@ const SoftwareScreen = () => {
         )}
         <Grid container justifyContent="space-between" alignItems="center">
           <Typography variant="h3">{strings.softwareRegistry.myApplications}</Typography>
-          <Button
-            variant="contained"
-            color="secondary"
+          <CreateButton
             onClick={() => setIsModalOpen(true)}
-            sx={{
-              textTransform: "none",
-              color: theme.palette.common.white,
-              fontSize: "18px",
-              borderRadius: "100px"
-            }}
-          >
-            {strings.softwareRegistry.addApplication}
-          </Button>
+            text={strings.softwareRegistry.addApplication}
+          />
         </Grid>
         <Grid container justifyContent="right" mt={2}>
           <Box>

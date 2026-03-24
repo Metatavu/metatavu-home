@@ -33,6 +33,7 @@ import strings from "src/localization/strings";
 import { DeleteItemType } from "src/types/index";
 import DeleteConfirmationDialog from "../contexts/delete-confirmation-dialog";
 import BackButton from "../generics/back-button";
+import CreateButton from "../generics/create-button";
 import AddSoftwareModal from "../software-registry/AddSoftwareModal";
 import Content from "../software-registry/allContent";
 
@@ -297,20 +298,10 @@ const AllSoftwareScreen = () => {
       <Grid container direction="column" alignItems="stretch" mt={4}>
         <Grid container justifyContent="space-between" alignItems="center" mb={2} mt={4}>
           <Typography variant="h3">{strings.softwareRegistry.allApplications}</Typography>
-          <Button
-            variant="contained"
-            color="secondary"
+          <CreateButton
             onClick={() => setIsModalOpen(true)}
-            sx={{
-              textTransform: "none",
-              color: theme.palette.secondary.contrastText,
-              fontSize: "18px",
-              borderRadius: "100px",
-              "&:hover": { background: theme.palette.secondary.dark }
-            }}
-          >
-            {strings.softwareRegistry.addApplication}
-          </Button>
+            text={strings.softwareRegistry.addApplication}
+          />
         </Grid>
 
         <Grid container justifyContent="space-between" alignItems="center" mb={2}>
