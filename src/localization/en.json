@@ -322,6 +322,11 @@
     "notAdmin": "You don't have an admin role",
     "noAccess": "Access denied"
   },
+  "routeAccess": {
+    "noAccess": "Access denied",
+    "requiresDeveloper": "You need a developer role to access this page",
+    "requiresTester": "You need a tester role to access this page"
+  },
   "vacationsScreen": {},
   "viewAll": {
     "startDate": "Start Date: ",
@@ -488,7 +493,7 @@
     "pleaseUploadImageFile": "Please upload image file",
     "startTypingToSearch": "Start typing to search...",
     "selectFromExistingFiles": "Select from existing files",
-    "selectImageFromS3": "Select Image from S3",
+    "selectImageFromS3": "Select from existing images",
     "noFilesFound": "No files found",
     "cancel": "Cancel",
     "failedToLoadMediaFiles": "Failed to load media files",
