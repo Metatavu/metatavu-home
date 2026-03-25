@@ -437,6 +437,13 @@ const WikiDocumentationScreen = () => {
           tags={tags}
           handleSelectedTagChange={handleSelectedTagChange}
           autoCompleteId={autoCompleteId}
+          styles={
+            adminMode
+              ? {
+                  width: { lg: "55%", md: "55%", xs: "100%" }
+                }
+              : undefined
+          }
         />
       }
       {adminMode && renderDropdownMenu()}

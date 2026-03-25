@@ -13,7 +13,6 @@ import {
   TextField,
   useTheme
 } from "@mui/material";
-import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 
 const CustomPopper = styled((props: PopperProps) => <Popper {...props} placement="bottom" />)(
@@ -65,7 +64,6 @@ const SearchBar = (props: SearchBarProps): JSX.Element => {
     autoCompleteId,
     styles
   } = props;
-  const { adminMode } = useUserRole();
   const theme = useTheme();
 
   return (
@@ -74,9 +72,9 @@ const SearchBar = (props: SearchBarProps): JSX.Element => {
       id="wiki-article-search-bar"
       sx={{
         width: {
-          lg: adminMode ? "55%" : "73%",
-          md: adminMode ? "55%" : "calc(100% - 80px)",
-          xs: adminMode ? "100%" : "calc(100% - 80px);"
+          lg: "73%",
+          md: "calc(100% - 80px)",
+          xs: "calc(100% - 80px);"
         },
         boxShadow: 2,
         marginBottom: { xs: 2 },
@@ -160,7 +158,7 @@ const SearchBar = (props: SearchBarProps): JSX.Element => {
               rowGap: 1,
               gridTemplateColumns: {
                 xs: "repeat(2, 1fr)",
-                md: adminMode ? "repeat(2, 1fr)" : "repeat(3, 1fr)"
+                md: "repeat(3, 1fr)"
               }
             }
           }}

@@ -17,7 +17,6 @@ interface CreateButtonProps {
  */
 const CreateButton = (props: CreateButtonProps): JSX.Element => {
   const { id, onClick, styles, text } = props;
-  const theme = useTheme();
   const { adminMode } = useUserRole();
 
   return (
@@ -32,9 +31,6 @@ const CreateButton = (props: CreateButtonProps): JSX.Element => {
           xs: adminMode ? "40%" : "100%"
         },
         height: "55px",
-        backgroundColor: theme.palette.background.paper,
-        color: theme.palette.text.primary,
-        "&:hover": { backgroundColor: theme.palette.action.hover },
         ...styles
       }}
     >
