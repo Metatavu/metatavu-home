@@ -250,10 +250,8 @@ const VacationsCard = () => {
     return (
       <>
         {adminMode || vacationRequestsCount ? (
-feature/5-UI-meaningful-icon-change
           <Grid size={1}>{vacationRequestsCount ? <PriorityHighIcon /> : null}</Grid>
           <Grid size={1}>{vacationRequestsCount ? <Pending /> : <Check />}</Grid>
-         develop
         ) : null}
         <Grid size={adminMode || vacationRequestsCount ? 11 : 12}>{message}</Grid>
       </>
