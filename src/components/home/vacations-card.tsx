@@ -1,5 +1,5 @@
-import { Check, Pending } from "@mui/icons-material";
-import LuggageIcon from "@mui/icons-material/Luggage";
+import EventAvailableIcon from "@mui/icons-material/EventAvailable";
+import PriorityHighIcon from "@mui/icons-material/PriorityHigh";
 import { Box, Card, CardContent, Grid, Skeleton, Typography, useTheme } from "@mui/material";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { DateTime } from "luxon";
@@ -183,7 +183,7 @@ const VacationsCard = () => {
       return (
         <>
           <Grid size={1}>
-            <LuggageIcon />
+            <EventAvailableIcon />
           </Grid>
           <Grid size={11}>
             <Box>
@@ -238,7 +238,7 @@ const VacationsCard = () => {
       return (
         <>
           <Grid size={1}>
-            <Pending />
+            <PriorityHighIcon />
           </Grid>
           <Grid size={11}>
             <Skeleton />
@@ -250,7 +250,7 @@ const VacationsCard = () => {
     return (
       <>
         {adminMode || vacationRequestsCount ? (
-          <Grid size={1}>{vacationRequestsCount ? <Pending /> : <Check />}</Grid>
+          <Grid size={1}>{vacationRequestsCount ? <PriorityHighIcon /> : null}</Grid>
         ) : null}
         <Grid size={adminMode || vacationRequestsCount ? 11 : 12}>{message}</Grid>
       </>

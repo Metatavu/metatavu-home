@@ -1,6 +1,6 @@
 import CloseIcon from "@mui/icons-material/Close";
+import FilterListIcon from "@mui/icons-material/FilterList";
 import SearchIcon from "@mui/icons-material/Search";
-import SortIcon from "@mui/icons-material/Sort";
 import {
   Box,
   Button,
@@ -108,7 +108,7 @@ const Sidebar = ({
     <>
       {!isSidebarOpen && (
         <IconButton onClick={toggleSidebar}>
-          <SortIcon />
+          <FilterListIcon />
         </IconButton>
       )}
       {isSidebarOpen && (
