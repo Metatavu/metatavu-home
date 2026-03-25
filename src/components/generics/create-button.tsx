@@ -1,4 +1,4 @@
-import { Button, type SxProps, type Theme, Typography, useTheme } from "@mui/material";
+import { Button, type SxProps, type Theme, Typography } from "@mui/material";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 

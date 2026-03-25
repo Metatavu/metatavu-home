@@ -41,6 +41,7 @@ import { getArticlesToFilter, sortArticlesByDate } from "src/utils/wiki-utils";
 import DeleteConfirmationDialog from "../contexts/delete-confirmation-dialog";
 import BackButton from "../generics/back-button";
 import CreateButton from "../generics/create-button";
+import Dropdown from "../generics/dropdown";
 import ListViewButton from "../generics/list-view-button";
 import SearchBar from "../generics/search-bar";
 import Onboarding from "../onboarding/Onboarding";
@@ -323,91 +324,74 @@ const WikiDocumentationScreen = () => {
     setPageNumber(1);
   };
 
-  const renderDropdownMenu = () => (
-    <FormControl
-      sx={{
-        width: {
-          md: "17%",
-          sm: "40%",
-          xs: "35%"
-        },
-        color: colors.button.text,
-        "& fieldset": { border: "none" }
-      }}
-      size="medium"
-    >
-      <Select
-        value={displayOption}
-        onChange={handleDisplayOptionChange}
-        displayEmpty
-        inputProps={{ "aria-label": "Without label" }}
+  const renderDropdownMenu = () => {
+    const displayOptions = [
+      { value: "all", label: strings.wikiDocumentation.allArticles },
+      { value: "approved", label: strings.wikiDocumentation.approvedArticles },
+      { value: "draft", label: strings.wikiDocumentation.draft }
+    ];
+
+    return (
+      <FormControl
         sx={{
-          backgroundColor: colors.button.main,
-          boxShadow: 2,
-          textAlign: "center",
+          width: {
+            md: "17%",
+            sm: "40%",
+            xs: "35%"
+          },
           color: colors.button.text,
-          fontWeight: "bold",
-          textTransform: "uppercase",
-          "&:hover": {
-            backgroundColor: colors.button.hover
-          }
+          "& fieldset": { border: "none" }
         }}
-        MenuProps={{
-          PaperProps: {
-            sx: {
-              marginTop: "10px",
-              borderTopLeftRadius: "0px",
-              borderTopRightRadius: "0px",
-              backgroundColor: colors.button.main
-            }
-          }
-        }}
+        size="medium"
       >
-        <MenuItem
+        <Select
+          value={displayOption}
+          onChange={handleDisplayOptionChange}
+          displayEmpty
+          inputProps={{ "aria-label": "Without label" }}
           sx={{
-            textTransform: "uppercase",
-            paddingLeft: 3,
-            color: colors.button.text,
             backgroundColor: colors.button.main,
+            boxShadow: 2,
+            textAlign: "center",
+            color: colors.button.text,
+            fontWeight: "bold",
+            textTransform: "uppercase",
             "&:hover": {
               backgroundColor: colors.button.hover
             }
           }}
-          value="all"
-        >
-          {strings.wikiDocumentation.allArticles}
-        </MenuItem>
-        <MenuItem
-          sx={{
-            textTransform: "uppercase",
-            paddingLeft: 3,
-            color: colors.button.text,
-            backgroundColor: colors.button.main,
-            "&:hover": {
-              backgroundColor: colors.button.hover
+          MenuProps={{
+            PaperProps: {
+              sx: {
+                marginTop: "10px",
+                borderTopLeftRadius: "0px",
+                borderTopRightRadius: "0px",
+                backgroundColor: colors.button.main
+              }
             }
           }}
-          value="approved"
         >
-          {strings.wikiDocumentation.approvedArticles}
-        </MenuItem>
-        <MenuItem
-          sx={{
-            textTransform: "uppercase",
-            paddingLeft: 3,
-            color: colors.button.text,
-            backgroundColor: colors.button.main,
-            "&:hover": {
-              backgroundColor: colors.button.hover
-            }
-          }}
-          value="draft"
-        >
-          {strings.wikiDocumentation.draft}
-        </MenuItem>
-      </Select>
-    </FormControl>
-  );
+          {displayOptions.map((option) => (
+            <MenuItem
+              key={option.value}
+              value={option.value}
+              sx={{
+                textTransform: "uppercase",
+                paddingLeft: 3,
+                color: colors.button.text,
+                backgroundColor: colors.button.main,
+                "&:hover": {
+                  backgroundColor: colors.button.hover
+                }
+              }}
+            >
+              {option.label}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+    );
+  };
 
   const renderTitle = (text: string) => (
     <Typography
@@ -446,9 +430,18 @@ const WikiDocumentationScreen = () => {
           }
         />
       }
-      {adminMode && renderDropdownMenu()}
+      {adminMode && (
+        <Dropdown
+          displayOption={displayOption}
+          handleDisplayOptionChange={handleDisplayOptionChange}
+          displayOptions={[
+            { value: "all", label: strings.wikiDocumentation.allArticles },
+            { value: "approved", label: strings.wikiDocumentation.approvedArticles },
+            { value: "draft", label: strings.wikiDocumentation.draft }
+          ]}
+        />
+      )}
       <ListViewButton listView={listView} setListView={setListView} />
-      {/*{renderListViewButton()}*/}
       {/* biome-ignore lint/correctness/useUniqueElementIds: keeping static id */}
       <CreateButton id="wiki-create-article-button" onClick={() => setFormOpen(true)} />
     </Grid>
