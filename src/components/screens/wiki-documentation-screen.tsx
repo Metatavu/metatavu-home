@@ -13,6 +13,7 @@ import {
   FormControl,
   Grid,
   IconButton,
+  List,
   MenuItem,
   Pagination,
   Popper,
@@ -40,6 +41,7 @@ import { getArticlesToFilter, sortArticlesByDate } from "src/utils/wiki-utils";
 import DeleteConfirmationDialog from "../contexts/delete-confirmation-dialog";
 import BackButton from "../generics/back-button";
 import CreateButton from "../generics/create-button";
+import ListViewButton from "../generics/list-view-button";
 import SearchBar from "../generics/search-bar";
 import Onboarding from "../onboarding/Onboarding";
 import ArticleCard from "../wiki-documentation/article-card";
@@ -321,26 +323,6 @@ const WikiDocumentationScreen = () => {
     setPageNumber(1);
   };
 
-  const renderListViewButton = () => (
-    <Button
-      variant="contained"
-      sx={{
-        maxWidth: "32px",
-        height: "55px",
-        backgroundColor: colors.button.main,
-        "&:hover": { backgroundColor: colors.button.hover }
-      }}
-      size="small"
-      onClick={() => setListView(!listView)}
-    >
-      {listView ? (
-        <FormatListBulletedOutlinedIcon sx={{ color: colors.button.text }} />
-      ) : (
-        <GridViewIcon sx={{ color: colors.button.text }} />
-      )}
-    </Button>
-  );
-
   const renderDropdownMenu = () => (
     <FormControl
       sx={{
@@ -457,9 +439,9 @@ const WikiDocumentationScreen = () => {
           autoCompleteId={autoCompleteId}
         />
       }
-      {/*{renderSearch()}*/}
       {adminMode && renderDropdownMenu()}
-      {renderListViewButton()}
+      <ListViewButton listView={listView} setListView={setListView} />
+      {/*{renderListViewButton()}*/}
       {/* biome-ignore lint/correctness/useUniqueElementIds: keeping static id */}
       <CreateButton id="wiki-create-article-button" onClick={() => setFormOpen(true)} />
     </Grid>

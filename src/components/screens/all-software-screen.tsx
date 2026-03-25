@@ -1,27 +1,23 @@
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import GridViewIcon from "@mui/icons-material/GridView";
 import ListViewIcon from "@mui/icons-material/List";
-import SearchIcon from "@mui/icons-material/Search";
 import {
   Alert,
   Box,
   Button,
   Card,
-  Chip,
   CircularProgress,
   Container,
   FormControl,
   Grid,
   IconButton,
-  InputAdornment,
+  List,
   MenuItem,
-  OutlinedInput,
   Select,
   Typography,
   useTheme
 } from "@mui/material";
 import { useAtomValue } from "jotai";
-import type React from "react";
 import { useEffect, useMemo, useState } from "react";
 import { authAtom } from "src/atoms/auth";
 import type { SoftwareRegistry } from "src/generated/homeLambdasClient";
@@ -34,6 +30,7 @@ import { DeleteItemType } from "src/types/index";
 import DeleteConfirmationDialog from "../contexts/delete-confirmation-dialog";
 import BackButton from "../generics/back-button";
 import CreateButton from "../generics/create-button";
+import ListViewButton from "../generics/list-view-button";
 import SearchBar from "../generics/search-bar";
 import AddSoftwareModal from "../software-registry/AddSoftwareModal";
 import Content from "../software-registry/allContent";
@@ -55,7 +52,7 @@ const AllSoftwareScreen = () => {
   const [error, setError] = useState<string | null>(null);
   const [searchTerms, setSearchTerms] = useState<string[]>([]);
   const [inputValue, setInputValue] = useState("");
-  const [isGridView, setIsGridView] = useState(true);
+  const [listView, setListView] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showAll, setShowAll] = useState(false);
   const { createSoftware } = useCreateSoftware(loggedUserId, setApplications);
@@ -135,30 +132,6 @@ const AllSoftwareScreen = () => {
       return matchesSearch && matchesStatus;
     });
   }, [software, inputValue, searchTerms, selectedStatus]);
-
-  /**
-   * Handles the input for search terms.
-   * Adds new search terms when the "Enter" key is pressed.
-   * @param event - The keyboard event triggered by the user pressing a key inside the input field.
-   */
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter" && inputValue.trim() !== "") {
-      event.preventDefault();
-
-      if (!searchTerms.includes(inputValue.trim())) {
-        setSearchTerms([...searchTerms, inputValue.trim()]);
-        setInputValue("");
-      }
-    }
-  };
-
-  /**
-   * Deletes a search term chip.
-   * @param chipToDelete - The search term (chip) to remove from the list.
-   */
-  const handleDeleteChip = (chipToDelete: string) => {
-    setSearchTerms((prevChips) => prevChips.filter((chip) => chip !== chipToDelete));
-  };
 
   /**
    * Updates the status of application.
@@ -269,8 +242,6 @@ const AllSoftwareScreen = () => {
     }
   };
 
-  const isListView = !isGridView;
-
   if (loading) {
     return (
       <Card
@@ -336,7 +307,7 @@ const AllSoftwareScreen = () => {
                 ))}
               </Select>
             </FormControl>
-
+            {/*The logic behind how the software is managed sholud be changed to be similar to hte wiki one*/}
             <SearchBar
               searchInput={inputValue}
               handleSearchInputChange={(_event, newInputValue) => setInputValue(newInputValue)}
@@ -345,50 +316,7 @@ const AllSoftwareScreen = () => {
               autoCompleteId="software-registry-search-tags"
             />
 
-            <Box sx={{ display: "flex", marginLeft: "auto" }}>
-              <IconButton
-                onClick={() => setIsGridView(true)}
-                sx={{
-                  backgroundColor: isGridView
-                    ? theme.palette.primary.main
-                    : theme.palette.background.paper,
-                  color: theme.palette.getContrastText(
-                    isGridView ? theme.palette.primary.main : theme.palette.background.paper
-                  ),
-                  borderRadius: "8px",
-                  padding: "10px",
-                  marginRight: "4px",
-                  marginLeft: "10px",
-                  transition: "background-color 0.3s ease",
-                  "&:hover": {
-                    backgroundColor: theme.palette.primary.dark,
-                    color: theme.palette.getContrastText(theme.palette.primary.dark)
-                  }
-                }}
-              >
-                <GridViewIcon />
-              </IconButton>
-              <IconButton
-                onClick={() => setIsGridView(false)}
-                sx={{
-                  backgroundColor: isListView
-                    ? theme.palette.primary.main
-                    : theme.palette.background.paper,
-                  color: theme.palette.getContrastText(
-                    isListView ? theme.palette.primary.main : theme.palette.background.paper
-                  ),
-                  borderRadius: "8px",
-                  padding: "10px",
-                  transition: "background-color 0.3s ease",
-                  "&:hover": {
-                    backgroundColor: theme.palette.primary.dark,
-                    color: theme.palette.getContrastText(theme.palette.primary.dark)
-                  }
-                }}
-              >
-                <ListViewIcon />
-              </IconButton>
-            </Box>
+            <ListViewButton listView={listView} setListView={setListView} />
           </Box>
         </Grid>
 
@@ -401,7 +329,7 @@ const AllSoftwareScreen = () => {
             )}
             <Content
               applications={showAll ? filteredApplications : filteredApplications.slice(0, 8)}
-              isGridView={isGridView}
+              isGridView={!listView}
               onStatusChange={handleStatusChange}
               adminMode={adminMode}
               onSave={handleSave}

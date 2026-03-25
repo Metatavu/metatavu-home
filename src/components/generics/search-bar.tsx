@@ -1,3 +1,4 @@
+import type { Theme } from "@emotion/react";
 import { Search } from "@mui/icons-material";
 import {
   Autocomplete,
@@ -7,6 +8,7 @@ import {
   IconButton,
   Popper,
   type PopperProps,
+  type SxProps,
   styled,
   TextField,
   useTheme
@@ -42,6 +44,7 @@ interface SearchBarProps {
   tags: string[];
   handleSelectedTagChange: (values: string[]) => void;
   autoCompleteId?: string;
+  styles?: SxProps<Theme>;
 }
 
 /**
@@ -54,8 +57,14 @@ interface SearchBarProps {
  * @returns JSX.Element containing the search bar Card
  */
 const SearchBar = (props: SearchBarProps): JSX.Element => {
-  const { searchInput, handleSearchInputChange, tags, handleSelectedTagChange, autoCompleteId } =
-    props;
+  const {
+    searchInput,
+    handleSearchInputChange,
+    tags,
+    handleSelectedTagChange,
+    autoCompleteId,
+    styles
+  } = props;
   const { adminMode } = useUserRole();
   const theme = useTheme();
 
@@ -70,7 +79,8 @@ const SearchBar = (props: SearchBarProps): JSX.Element => {
           xs: adminMode ? "100%" : "calc(100% - 80px);"
         },
         boxShadow: 2,
-        marginBottom: { xs: 2 }
+        marginBottom: { xs: 2 },
+        ...styles
       }}
     >
       <Box
