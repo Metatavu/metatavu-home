@@ -30,6 +30,7 @@ import { DeleteItemType } from "src/types/index";
 import DeleteConfirmationDialog from "../contexts/delete-confirmation-dialog";
 import BackButton from "../generics/back-button";
 import CreateButton from "../generics/create-button";
+import Dropdown from "../generics/dropdown";
 import ListViewButton from "../generics/list-view-button";
 import SearchBar from "../generics/search-bar";
 import AddSoftwareModal from "../software-registry/AddSoftwareModal";
@@ -285,7 +286,14 @@ const AllSoftwareScreen = () => {
               width: "100%"
             }}
           >
-            <FormControl sx={{ minWidth: "120px" }}>
+            <Dropdown
+              displayOption={selectedStatus}
+              handleDisplayOptionChange={(e) =>
+                setSelectedStatus(e.target.value as SoftwareStatusFilterOptions)
+              }
+              displayOptions={statusOptions}
+            />
+            {/*<FormControl sx={{ minWidth: "120px" }}>
               <Select
                 value={selectedStatus}
                 onChange={(e) => setSelectedStatus(e.target.value as SoftwareStatusFilterOptions)}
@@ -306,8 +314,8 @@ const AllSoftwareScreen = () => {
                   </MenuItem>
                 ))}
               </Select>
-            </FormControl>
-            {/*The logic behind how the software is managed sholud be changed to be similar to hte wiki one*/}
+            </FormControl>*/}
+            {/*The logic behind how the software is managed sholud be changed to be similar to the wiki one*/}
             <SearchBar
               searchInput={inputValue}
               handleSearchInputChange={(_event, newInputValue) => setInputValue(newInputValue)}

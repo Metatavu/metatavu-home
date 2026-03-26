@@ -16,7 +16,9 @@ const Dropdown = ({ displayOption, handleDisplayOptionChange, displayOptions }: 
           md: "17%",
           sm: "40%",
           xs: "35%"
-        }
+        },
+        color: theme.palette.text.primary,
+        "& fieldset": { border: "none" }
       }}
       size="medium"
     >
@@ -26,10 +28,10 @@ const Dropdown = ({ displayOption, handleDisplayOptionChange, displayOptions }: 
         displayEmpty
         inputProps={{ "aria-label": "Without label" }}
         sx={{
-          backgroundColor: theme.palette.primary.main,
+          backgroundColor: theme.palette.background.paper,
           boxShadow: 2,
           textAlign: "center",
-          color: theme.palette.primary.contrastText,
+          color: theme.palette.text.primary,
           fontWeight: "bold",
           textTransform: "uppercase",
           "&:hover": {
@@ -43,7 +45,7 @@ const Dropdown = ({ displayOption, handleDisplayOptionChange, displayOptions }: 
               marginTop: "10px",
               borderTopLeftRadius: "0px",
               borderTopRightRadius: "0px",
-              backgroundColor: theme.palette.primary.main
+              backgroundColor: theme.palette.background.paper
             }
           }
         }}
@@ -55,10 +57,16 @@ const Dropdown = ({ displayOption, handleDisplayOptionChange, displayOptions }: 
             sx={{
               textTransform: "uppercase",
               paddingLeft: 3,
-              color: theme.palette.primary.contrastText,
-              backgroundColor: theme.palette.primary.main,
+              color: theme.palette.text.primary,
+              backgroundColor: theme.palette.background.paper,
               "&:hover": {
                 backgroundColor: theme.palette.action.hover
+              },
+              "&.Mui-selected": {
+                backgroundColor: theme.palette.background.paper,
+                "&:hover": {
+                  backgroundColor: theme.palette.action.hover
+                }
               }
             }}
           >
