@@ -109,7 +109,8 @@ const CarouselArticleCards = ({ articles }: { articles: ArticleMetadata[] }) => 
                   size={{
                     sm: 6,
                     xs: 12
-                  }}>
+                  }}
+                >
                   <Box
                     component="img"
                     sx={{
@@ -128,7 +129,8 @@ const CarouselArticleCards = ({ articles }: { articles: ArticleMetadata[] }) => 
                   size={{
                     sm: 6,
                     xs: 12
-                  }}>
+                  }}
+                >
                   <Typography
                     variant="h5"
                     sx={{
