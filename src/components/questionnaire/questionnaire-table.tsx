@@ -3,7 +3,7 @@ import ClearIcon from "@mui/icons-material/Clear";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import EditIcon from "@mui/icons-material/Edit";
 import LabelIcon from "@mui/icons-material/Label";
-import PendingIcon from "@mui/icons-material/Pending";
+import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
 import SearchIcon from "@mui/icons-material/Search";
 import {
   Box,
@@ -214,7 +214,7 @@ const QuestionnaireTable = () => {
     return userHasPassed ? (
       <CheckCircleIcon sx={{ color: theme.palette.success.main }} />
     ) : (
-      <PendingIcon sx={{ color: theme.palette.text.secondary }} />
+      <RadioButtonUncheckedIcon sx={{ color: theme.palette.text.secondary }} />
     );
   };
 
