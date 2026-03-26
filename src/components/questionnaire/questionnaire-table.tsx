@@ -20,7 +20,6 @@ import {
 } from "@mui/material";
 import { DataGrid, type GridRenderCellParams, type GridRowParams } from "@mui/x-data-grid";
 import { useAtomValue, useSetAtom } from "jotai";
-import { min } from "lodash";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import { userProfileAtom } from "src/atoms/auth";
