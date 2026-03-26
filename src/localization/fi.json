@@ -111,7 +111,8 @@
     "project": "Projekti",
     "user": "Tekijä",
     "clear": "Tyhjennä",
-    "searchBy": "Hae nimellä {0}"
+    "searchBy": "Hae nimellä {0}",
+    "estimateHours": "Arvioida Tunteja"
   },
   "softwareRegistry": {
     "softwareRegistry": "Ohjelmistorekisteri",

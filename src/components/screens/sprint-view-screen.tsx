@@ -19,7 +19,7 @@ import {
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { useAtomValue, useSetAtom } from "jotai";
-import { useEffect, useId, useState } from "react";
+import { useCallback, useEffect, useId, useState } from "react";
 import { userProfileAtom } from "src/atoms/auth";
 import { errorAtom } from "src/atoms/error";
 import { usersAtom } from "src/atoms/user";
@@ -89,11 +89,7 @@ const SprintViewScreen = () => {
   });
   const filteredAllocations = filterAllocations(resourceAllocations, adminMode);
 
-  useEffect(() => {
-    fetchProjectDetails();
-  }, [loggedInUser]);
-
-  const fetchProjectDetails = async () => {
+  const fetchProjectDetails = useCallback(async () => {
     if (!loggedInUser) return;
 
     setLoading(true);
@@ -101,13 +97,21 @@ const SprintViewScreen = () => {
       const severaUserId = getSeveraUserId(loggedInUser);
       const fetchedResourceAllocations = adminMode
         ? await resourceAllocationsApi.getAllResourceAllocations()
-        : await resourceAllocationsApi.getAllResourceAllocations({ severaUserId });
+        : await resourceAllocationsApi.getAllResourceAllocations({
+            severaUserId
+          });
       setResourceAllocations(fetchedResourceAllocations);
     } catch (error) {
       setError(`${strings.sprintRequestError.fetchResourceAllocationsError}, ${error}`);
     }
     setLoading(false);
-  };
+  }, [loggedInUser, adminMode, resourceAllocationsApi, setError]);
+
+  useEffect(() => {
+    if (loggedInUser) {
+      fetchProjectDetails();
+    }
+  }, [loggedInUser, fetchProjectDetails]);
 
   const filterLabel = getFilterLabel(filterType);
 
@@ -204,7 +208,9 @@ const SprintViewScreen = () => {
                       color: theme.palette.text.primary
                     },
 
-                    "& .MuiDataGrid-cell": { color: theme.palette.text.primary },
+                    "& .MuiDataGrid-cell": {
+                      color: theme.palette.text.primary
+                    },
                     "& .MuiDataGrid-row:hover": {
                       backgroundColor: theme.palette.action.hover
                     },
@@ -216,7 +222,9 @@ const SprintViewScreen = () => {
                     }
                   }}
                   autoHeight
-                  localeText={{ noResultsOverlayLabel: strings.sprint.notFound }}
+                  localeText={{
+                    noResultsOverlayLabel: strings.sprint.notFound
+                  }}
                   disableColumnFilter
                   hideFooter
                   rows={filteredAllocations}
