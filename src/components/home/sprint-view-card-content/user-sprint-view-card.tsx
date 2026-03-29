@@ -58,6 +58,10 @@ const SprintViewCardContent = () => {
     }
     setLoading(false);
   };
+
+  /**
+   *Calculates total actual work hours for a given project.
+   */
   const getTotalActualWorkHours = (projectId: string) => {
     return workHours
       .filter((workHour) => workHour.project?.severaProjectId === projectId)
