@@ -29,8 +29,6 @@ const HomeScreen = () => {
 
   const hasSeveraUserId = !!loggedInUser?.attributes?.severaUserId;
 
-  const isPrivilegedUser = isDeveloper || isTester;
-
   /**
    * Renders a card with a skeleton loader
    *
@@ -75,7 +73,7 @@ const HomeScreen = () => {
   );
 
   const cards: ReactNode[] = [
-    isPrivilegedUser && (
+    isDeveloper && (
       <Box key="balance" id="balance-card">
         {!hasSeveraUserId ? (
           renderCardWithSkeleton(strings.balanceCard.balance, <></>)
@@ -84,7 +82,7 @@ const HomeScreen = () => {
         )}
       </Box>
     ),
-    isPrivilegedUser && (
+    isDeveloper && (
       <Box key="sprint" id="sprint-view-card" sx={{ minHeight: 270 }}>
         {!hasSeveraUserId ? (
           renderCardWithSkeleton(strings.sprint.sprintview, <></>)
@@ -93,27 +91,27 @@ const HomeScreen = () => {
         )}
       </Box>
     ),
-    isPrivilegedUser && (
+    isDeveloper && (
       <Box key="vacations" id="vacations-card">
         <VacationsCard />
       </Box>
     ),
-    isPrivilegedUser && (
+    isDeveloper && (
       <Box key="questionnaires" id="questionnaires-card">
         <QuestionnaireCard />
       </Box>
     ),
-    isPrivilegedUser && (
+    isDeveloper && (
       <Box key="software" id="software-registry-card">
         <SoftwareRegistryCard />
       </Box>
     ),
-    isPrivilegedUser && (
+    isTester && (
       <Box key="wiki" id="wiki-documentation-card">
         <WikiDocumentationCard />
       </Box>
     ),
-    isPrivilegedUser && (
+    isDeveloper && (
       <Box key="oncall" id="oncall-card">
         <OnCallCard />
       </Box>

@@ -3,7 +3,7 @@ import ClearIcon from "@mui/icons-material/Clear";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import EditIcon from "@mui/icons-material/Edit";
 import LabelIcon from "@mui/icons-material/Label";
-import PendingIcon from "@mui/icons-material/Pending";
+import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
 import SearchIcon from "@mui/icons-material/Search";
 import {
   Box,
@@ -214,7 +214,7 @@ const QuestionnaireTable = () => {
     return userHasPassed ? (
       <CheckCircleIcon sx={{ color: theme.palette.success.main }} />
     ) : (
-      <PendingIcon sx={{ color: theme.palette.text.secondary }} />
+      <RadioButtonUncheckedIcon sx={{ color: theme.palette.text.secondary }} />
     );
   };
 
@@ -295,12 +295,12 @@ const QuestionnaireTable = () => {
   };
 
   const columns = [
-    { field: "title", headerName: `${strings.questionnaireTable.title}`, flex: 3 },
+    { field: "title", headerName: `${strings.questionnaireTable.title}`, flex: 2 },
     { field: "description", headerName: `${strings.questionnaireTable.description}`, flex: 5 },
     {
       field: "tags",
       headerName: strings.questionnaireTags.title || "Tags",
-      flex: 3,
+      flex: 2,
       minWidth: 180,
       renderCell: renderTagsCell,
       sortable: false,
@@ -320,7 +320,14 @@ const QuestionnaireTable = () => {
           headerName: `${strings.questionnaireTable.actions}`,
           flex: 2.5,
           renderCell: (params: GridRenderCellParams) => (
-            <>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                width: "100%"
+              }}
+            >
               <Button
                 name="edit"
                 variant="outlined"
@@ -359,7 +366,7 @@ const QuestionnaireTable = () => {
                 />
                 {strings.questionnaireTable.delete}
               </Button>
-            </>
+            </Box>
           )
         }
       : {
@@ -480,11 +487,13 @@ const QuestionnaireTable = () => {
 
         <DataGrid
           ref={dataGridRef}
+          rowHeight={60}
           sx={{
             margin: 0,
             "& .MuiDataGrid-cell": {
               padding: "8px",
               cursor: "pointer",
+              maxHeight: "60px",
               color: theme.palette.text.primary
             },
             "& .MuiDataGrid-columnHeader": {

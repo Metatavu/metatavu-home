@@ -1,10 +1,10 @@
-import { defineConfig, loadEnv, type UserConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import Vault from "node-vault";
+import { defineConfig, loadEnv, type UserConfig } from "vite";
 
 /**
  * Fetch secrets from Hashicorp Vault
- * 
+ *
  * @param param.token - Vault token
  * @param param.endpoint - Vault endpoint
  * @param param.path - Path to the secrets
@@ -12,7 +12,7 @@ import Vault from "node-vault";
  */
 const fetchSecrets = async ({ token, endpoint, path }) => {
   const vault = Vault({
-    apiVersion: 'v1',
+    apiVersion: "v1",
     endpoint: endpoint,
     token: token
   });
@@ -23,12 +23,12 @@ const fetchSecrets = async ({ token, endpoint, path }) => {
 
 /**
  * Returns define object for Vite
- * 
+ *
  * @param userConfig user configuration
  * @returns define object
  */
 const getDefine = async ({ mode }: UserConfig) => {
-  const env = loadEnv(mode, process.cwd(), '');
+  const env = loadEnv(mode, process.cwd(), "");
   const { VAULT_TOKEN, VAULT_ADDR, VAULT_PATH } = env;
 
   if (!VAULT_PATH) {
@@ -36,7 +36,9 @@ const getDefine = async ({ mode }: UserConfig) => {
   }
 
   if (!VAULT_ADDR || !VAULT_TOKEN) {
-    throw new Error("You must be logged in to the HCV (use withhcv -command). See https://github.com/Metatavu/development-scripts/blob/master/hcv/withhcv.sh for more information.");
+    throw new Error(
+      "You must be logged in to the HCV (use withhcv -command). See https://github.com/Metatavu/development-scripts/blob/master/hcv/withhcv.sh for more information."
+    );
   }
 
   const secrets = await fetchSecrets({
@@ -49,7 +51,7 @@ const getDefine = async ({ mode }: UserConfig) => {
     if (key.startsWith("VITE_")) {
       acc[`import.meta.env.${key}`] = JSON.stringify(value);
     }
-    
+
     return acc;
   }, {});
 };
@@ -75,7 +77,7 @@ export default defineConfig(async (userConfig: UserConfig) => {
         "src/generated": "/src/generated",
         "src/utils": "/src/utils",
         "src/types": "/src/types",
-        "src/theme": "/src/theme",
+        "src/theme": "/src/theme"
       }
     }
   };

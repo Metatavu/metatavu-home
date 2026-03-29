@@ -382,6 +382,14 @@ export interface Localized extends LocalizedStringsMethods {
     noAccess: string;
   };
   /**
+   * Translation related to role-based route access
+   */
+  routeAccess: {
+    noAccess: string;
+    requiresDeveloper: string;
+    requiresTester: string;
+  };
+  /**
    * Translation related to vacations screen
    */
   vacationsScreen: {};
@@ -602,6 +610,13 @@ export interface Localized extends LocalizedStringsMethods {
     close: string;
     pleaseUploadImageFile: string;
     startTypingToSearch: string;
+    selectFromExistingFiles: string;
+    selectImageFromS3: string;
+    noFilesFound: string;
+    cancel: string;
+    failedToLoadMediaFiles: string;
+    errorLoadingMediaFiles: string;
+    articleContentRequired: string;
   };
   snackbar: {
     articleSubmitted: string;

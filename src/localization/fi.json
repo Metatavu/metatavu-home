@@ -323,6 +323,11 @@
     "notAdmin": "Sinulla ei ole hallintaoikeuksia",
     "noAccess": "Ei pääsyä"
   },
+  "routeAccess": {
+    "noAccess": "Ei pääsyä",
+    "requiresDeveloper": "Tarvitset kehittäjäroolin päästäksesi tälle sivulle",
+    "requiresTester": "Tarvitset testaajan roolin päästäksesi tälle sivulle"
+  },
   "vacationsScreen": {},
   "viewAll": {
     "startDate": "Aloituspäivä: ",
@@ -487,7 +492,14 @@
     "add": "Lisää",
     "close": "Sulje",
     "pleaseUploadImageFile": "Ole hyvä ja lataa kuvatiedosto",
-    "startTypingToSearch": "Aloita kirjoittaminen hakeaksesi..."
+    "startTypingToSearch": "Aloita kirjoittaminen hakeaksesi...",
+    "selectFromExistingFiles": "Valitse olemassa olevista tiedostoista",
+    "selectImageFromS3": "Valitse olemassa olevista kuvista",
+    "noFilesFound": "Tiedostoja ei löytynyt",
+    "cancel": "Peruuta",
+    "failedToLoadMediaFiles": "Mediatiedostojen lataus epäonnistui",
+    "errorLoadingMediaFiles": "Virhe mediatiedostojen latauksessa:",
+    "articleContentRequired": "Artikkelin sisältö on pakollinen"
   },
   "snackbar": {
     "articleSubmitted": "Artikkeli lähetetty arvioitavaksi onnistuneesti!",
