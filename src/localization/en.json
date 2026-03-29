@@ -111,7 +111,8 @@
     "project": "Project",
     "user": "User",
     "clear": "Clear",
-    "searchBy": "Search by {0}"
+    "searchBy": "Search by {0}",
+    "estimateHours": "Estimate Hours"
   },
   "softwareRegistry": {
     "softwareRegistry": "Software registry",
