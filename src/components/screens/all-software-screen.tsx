@@ -1,6 +1,3 @@
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import GridViewIcon from "@mui/icons-material/GridView";
-import ListViewIcon from "@mui/icons-material/List";
 import {
   Alert,
   Box,
@@ -8,12 +5,7 @@ import {
   Card,
   CircularProgress,
   Container,
-  FormControl,
   Grid,
-  IconButton,
-  List,
-  MenuItem,
-  Select,
   Typography,
   useTheme
 } from "@mui/material";
@@ -271,62 +263,39 @@ const AllSoftwareScreen = () => {
       <Grid container direction="column" alignItems="stretch" mt={4}>
         <Grid container justifyContent="space-between" alignItems="center" mb={2} mt={4}>
           <Typography variant="h3">{strings.softwareRegistry.allApplications}</Typography>
+        </Grid>
+
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "flex-start",
+            gap: 2,
+            width: "100%",
+            mt: 2
+          }}
+        >
+          {/*The logic behind how the software is managed sholud be changed to be similar to the wiki one*/}
+          <SearchBar
+            searchInput={inputValue}
+            handleSearchInputChange={(_event, newInputValue) => setInputValue(newInputValue)}
+            tags={Array.from(new Set(software.flatMap((app) => app.tags ?? [])))}
+            handleSelectedTagChange={(newSelectedTags) => setSearchTerms(newSelectedTags)}
+            autoCompleteId="software-registry-search-tags"
+            styles={{ width: { lg: "55%", md: "55%", xs: "100%" } }}
+          />
+          <Dropdown
+            displayOption={selectedStatus}
+            handleDisplayOptionChange={(e) =>
+              setSelectedStatus(e.target.value as SoftwareStatusFilterOptions)
+            }
+            displayOptions={statusOptions}
+          />
+          <ListViewButton listView={listView} setListView={setListView} />
           <CreateButton
             onClick={() => setIsModalOpen(true)}
             text={strings.softwareRegistry.addApplication}
           />
-        </Grid>
-
-        <Grid container justifyContent="space-between" alignItems="center" mb={2}>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              width: "100%"
-            }}
-          >
-            <Dropdown
-              displayOption={selectedStatus}
-              handleDisplayOptionChange={(e) =>
-                setSelectedStatus(e.target.value as SoftwareStatusFilterOptions)
-              }
-              displayOptions={statusOptions}
-            />
-            {/*<FormControl sx={{ minWidth: "120px" }}>
-              <Select
-                value={selectedStatus}
-                onChange={(e) => setSelectedStatus(e.target.value as SoftwareStatusFilterOptions)}
-                variant="outlined"
-                IconComponent={ExpandMoreIcon}
-                sx={{
-                  borderRadius: "10px",
-                  height: "45px",
-                  padding: "0 15px",
-                  "& .MuiSvgIcon-root": {
-                    color: theme.palette.text.primary
-                  }
-                }}
-              >
-                {statusOptions.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.label}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>*/}
-            {/*The logic behind how the software is managed sholud be changed to be similar to the wiki one*/}
-            <SearchBar
-              searchInput={inputValue}
-              handleSearchInputChange={(_event, newInputValue) => setInputValue(newInputValue)}
-              tags={Array.from(new Set(software.flatMap((app) => app.tags ?? [])))}
-              handleSelectedTagChange={(newSelectedTags) => setSearchTerms(newSelectedTags)}
-              autoCompleteId="software-registry-search-tags"
-            />
-
-            <ListViewButton listView={listView} setListView={setListView} />
-          </Box>
-        </Grid>
+        </Box>
 
         <Grid container justifyContent="flex-start" mt={2} mb={6} width="100%">
           <Grid size="grow">

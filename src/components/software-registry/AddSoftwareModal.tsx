@@ -4,17 +4,22 @@ import {
   Autocomplete,
   Box,
   Button,
+  Checkbox,
   Chip,
   Grid,
   IconButton,
   Modal,
+  Popper,
+  type PopperProps,
   Snackbar,
+  styled,
   TextField,
   Typography,
   useTheme
 } from "@mui/material";
-import { useSetAtom } from "jotai";
-import { useEffect, useState } from "react";
+import { useAtomValue, useSetAtom } from "jotai";
+import { useEffect, useId, useState } from "react";
+import { tagsAtom } from "src/atoms/article";
 import { errorAtom } from "src/atoms/error";
 import type { SoftwareRegistry, User } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
@@ -48,6 +53,7 @@ const AddSoftwareModal = ({
   softwareData,
   existingSoftwareList
 }: AddSoftwareModalProps) => {
+  const tagsFieldId = useId();
   const initialSoftwareState: SoftwareRegistry = {
     id: "",
     name: "",
@@ -63,9 +69,11 @@ const AddSoftwareModal = ({
   };
   const { usersApi } = useLambdasApi();
   const setError = useSetAtom(errorAtom);
+  const [tags, setTags] = useState<string[]>([]);
   const [userList, setUserList] = useState<User[]>([]);
   const [software, setSoftware] = useState<SoftwareRegistry>(softwareData || initialSoftwareState);
-  const [tags, setTags] = useState("");
+  const [tag, setTag] = useState("");
+  const [selectedTags, setSelectedTags] = useState<string[]>(softwareData?.tags || []);
   const [nameExists, setNameExists] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const theme = useTheme();
@@ -99,12 +107,18 @@ const AddSoftwareModal = ({
     setNameExists(nameAlreadyExists);
   }, [software.name, existingSoftwareList]);
 
+  useEffect(() => {
+    const allTags = existingSoftwareList.flatMap((s) => s.tags || []);
+    setTags([...new Set(allTags)]);
+  }, [existingSoftwareList]);
+
   /**
    * Handle form field reset to initial values.
    */
   const resetForm = () => {
     setSoftware(initialSoftwareState);
-    setTags("");
+    setSelectedTags([]);
+    setTag("");
     setNameExists(false);
   };
 
@@ -118,27 +132,24 @@ const AddSoftwareModal = ({
     setSoftware({ ...software, [name]: value });
   };
 
-  /**
-   * Handle adding a tag to the software entry. Prevents duplicates.
-   */
-  const handleAddTag = () => {
-    if (tags.trim() !== "") {
-      setSoftware((prev) => ({
-        ...prev,
-        tags: [...new Set([...(prev.tags || []), tags.trim()])]
-      }));
-      setTags("");
-    }
-  };
+  const handleTagChange = (_event: any, value: string) => setTag(value);
 
-  /**
-   * Handle deleting a tag.
-   */
-  const handleDeleteTag = (tagToDelete: string) => {
+  const handleSelectedTagChange = (_event: any, value: string[]) => {
+    setSelectedTags(value);
     setSoftware((prev) => ({
       ...prev,
-      tags: (prev.tags || []).filter((tag) => tag !== tagToDelete)
+      tags: value
     }));
+  };
+
+  const handleEnter = (event: any) => {
+    if (event.key !== "Enter") return;
+    if (tag && !selectedTags.includes(tag)) {
+      const newTags = [...selectedTags, tag];
+      setSelectedTags(newTags);
+      setSoftware((prev) => ({ ...prev, tags: newTags }));
+    }
+    setTag("");
   };
 
   /**
@@ -154,8 +165,11 @@ const AddSoftwareModal = ({
   };
 
   const isFormValid = Boolean(software.name.trim() && software.image.trim() && software.url.trim());
-
-  const hiddenTagsCount = Math.max(0, (software?.tags?.length ?? 0) - 3);
+  const CustomPopper = styled((props: PopperProps) => <Popper {...props} placement="bottom" />)({
+    "& .MuiAutocomplete-paper": {
+      marginTop: "10px"
+    }
+  });
 
   return (
     <>
@@ -191,7 +205,8 @@ const AddSoftwareModal = ({
               size={{
                 xs: 12,
                 md: 6
-              }}>
+              }}
+            >
               <TextField
                 fullWidth
                 label={strings.softwareRegistry.name}
@@ -211,7 +226,8 @@ const AddSoftwareModal = ({
               size={{
                 xs: 12,
                 md: 6
-              }}>
+              }}
+            >
               <TextField
                 fullWidth
                 label={strings.softwareRegistry.imageURL}
@@ -226,7 +242,8 @@ const AddSoftwareModal = ({
               size={{
                 xs: 12,
                 md: 6
-              }}>
+              }}
+            >
               <TextField
                 fullWidth
                 label={strings.softwareRegistry.URLAddress}
@@ -237,70 +254,59 @@ const AddSoftwareModal = ({
                 helperText={strings.softwareRegistry.URLExample}
               />
             </Grid>
-            <Grid size={6}>
-              <TextField
-                fullWidth
-                label={strings.softwareRegistry.tags}
-                value={tags}
-                onChange={(e) => setTags(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleAddTag()}
-              />
-              <Box
-                mt={1}
-                display="flex"
-                justifyContent="space-between"
-                alignItems="flex-start"
-                flexWrap="wrap"
-                gap={1}
-              >
-                <Box
-                  display="flex"
-                  alignItems="center"
-                  flexWrap="wrap"
-                  gap={1}
-                  maxWidth="calc(100% - 100px)"
-                >
-                  {(software.tags || []).slice(0, 3).map((tag) => (
-                    <Chip key={tag} label={tag} onDelete={() => handleDeleteTag(tag)} />
-                  ))}
-                  {hiddenTagsCount > 0 && (
-                    <Chip
-                      size="small"
-                      label={strings.formatString(
-                        strings.questionnaireTags.moreCount,
-                        hiddenTagsCount
-                      )}
+            <Grid
+              size={{
+                xs: 12,
+                md: 6
+              }}
+            >
+              <Autocomplete
+                id={tagsFieldId}
+                multiple
+                disableClearable
+                freeSolo
+                PopperComponent={CustomPopper}
+                options={tags}
+                sx={{ width: "100%" }}
+                inputValue={tag}
+                size="small"
+                value={selectedTags}
+                onInputChange={handleTagChange}
+                onChange={handleSelectedTagChange}
+                renderInput={(tagProps) => (
+                  <TextField
+                    {...tagProps}
+                    sx={{ width: "100%" }}
+                    size="small"
+                    onKeyDown={handleEnter}
+                    label={strings.softwareRegistry.tags}
+                  />
+                )}
+                renderOption={(props, option, { selected }) => (
+                  <li
+                    {...props}
+                    style={{ display: "flex", alignItems: "center" }}
+                    key={`tags-option-${option}`}
+                  >
+                    <Checkbox
                       sx={{
-                        flexShrink: 0,
-                        backgroundColor: theme.palette.action.selected,
-                        "&:hover": {
-                          backgroundColor: theme.palette.action.hover
-                        }
+                        marginRight: 2
+                      }}
+                      checked={selected}
+                    />
+                    <Box
+                      minWidth="5px"
+                      style={{ marginRight: "10px" }}
+                      component="span"
+                      sx={{
+                        height: 40,
+                        borderRadius: "5px"
                       }}
                     />
-                  )}
-                </Box>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={handleAddTag}
-                  size="small"
-                  sx={{
-                    height: "40px",
-                    minWidth: "90px",
-                    flexShrink: 0,
-                    marginTop: "8px",
-                    display: "block",
-                    fontSize: "16px",
-                    backgroundColor: theme.palette.primary.main,
-                    "&:hover": {
-                      backgroundColor: theme.palette.primary.dark
-                    }
-                  }}
-                >
-                  {strings.questionnaireTags.addTag}
-                </Button>
-              </Box>
+                    {option}
+                  </li>
+                )}
+              />
             </Grid>
             <Grid size={12}>
               <TextField

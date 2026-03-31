@@ -1,28 +1,13 @@
-import { Search } from "@mui/icons-material";
-import FormatListBulletedOutlinedIcon from "@mui/icons-material/FormatListBulletedOutlined";
-import GridViewIcon from "@mui/icons-material/GridView";
 import SearchOffIcon from "@mui/icons-material/SearchOff";
 import {
   Alert,
-  Autocomplete,
   Box,
-  Button,
   Card,
-  Checkbox,
   CircularProgress,
-  FormControl,
   Grid,
-  IconButton,
-  List,
-  MenuItem,
   Pagination,
-  Popper,
-  type PopperProps,
-  Select,
   type SelectChangeEvent,
   Snackbar,
-  styled,
-  TextField,
   Typography,
   useTheme
 } from "@mui/material";

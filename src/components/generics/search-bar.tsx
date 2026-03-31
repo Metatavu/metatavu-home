@@ -74,7 +74,7 @@ const SearchBar = (props: SearchBarProps): JSX.Element => {
         width: {
           lg: "73%",
           md: "calc(100% - 80px)",
-          xs: "calc(100% - 80px);"
+          xs: "calc(100% - 80px)"
         },
         boxShadow: 2,
         marginBottom: { xs: 2 },
