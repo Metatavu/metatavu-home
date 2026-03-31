@@ -76,6 +76,11 @@ const SprintViewScatterChart = ({ chartData }: Props) => {
     x: item.estimatedWorkHour
   }));
 
+  const actualData = chartData.map((item) => ({
+    projectName: item.projectName,
+    x: item.actualWorkHours
+  }));
+
   return (
     <ResponsiveContainer width="100%" height={chartHeight}>
       <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
@@ -102,6 +107,11 @@ const SprintViewScatterChart = ({ chartData }: Props) => {
           name={strings.sprint.timeEntries}
           data={estimatedData}
           fill={theme.palette.info.main}
+        />
+        <Scatter
+          name={strings.sprint.timeAllocated}
+          data={actualData}
+          fill={theme.palette.success.main}
         />
       </ScatterChart>
     </ResponsiveContainer>
