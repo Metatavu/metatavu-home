@@ -36,7 +36,12 @@ import type { Article, User } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
 import { OnboardingScreen } from "src/types/index";
-import { getHttpsUrlFromS3, listMediaFiles, uploadFile } from "src/utils/s3-file-utils";
+import {
+  getHttpsUrlFromS3,
+  importPlaybook,
+  listMediaFiles,
+  uploadFile
+} from "src/utils/s3-file-utils";
 import BackButton from "../generics/back-button";
 import Onboarding from "../onboarding/Onboarding";
 import ActionButton from "./action-button";
@@ -235,6 +240,21 @@ const CreateOrEditArticleForm = ({
       } finally {
         setIsUploadingCover(false);
       }
+    }
+  };
+
+  const handleImport = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
+    setIsUploadingCover(true);
+    try {
+      const { articlePath } = await importPlaybook(file, title, articleApi);
+      navigate(`/wiki${articlePath.replace(/^\/wiki/, "")}`);
+    } catch (error) {
+      console.error("Error importing playbook:", error);
+    } finally {
+      setIsUploadingCover(false);
     }
   };
 
@@ -528,6 +548,21 @@ const CreateOrEditArticleForm = ({
                       hidden
                       onChange={handleFileChange}
                     />
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    component="label"
+                    startIcon={
+                      isUploadingCover ? (
+                        <CircularProgress size={16} thickness={4} />
+                      ) : (
+                        <FileUploadIcon />
+                      )
+                    }
+                    sx={{ marginBottom: 1, width: "100%" }}
+                  >
+                    {strings.wikiDocumentation.uploadPlayBook}
+                    <input style={{ width: "100%" }} type="file" hidden onChange={handleImport} />
                   </Button>
                   <Button
                     variant="outlined"

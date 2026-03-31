@@ -617,6 +617,7 @@ export interface Localized extends LocalizedStringsMethods {
     failedToLoadMediaFiles: string;
     errorLoadingMediaFiles: string;
     articleContentRequired: string;
+    uploadPlayBook: string;
   };
   snackbar: {
     articleSubmitted: string;
