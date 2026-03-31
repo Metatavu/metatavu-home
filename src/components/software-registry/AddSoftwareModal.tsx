@@ -17,9 +17,8 @@ import {
   Typography,
   useTheme
 } from "@mui/material";
-import { useAtomValue, useSetAtom } from "jotai";
-import { useEffect, useId, useState } from "react";
-import { tagsAtom } from "src/atoms/article";
+import { useSetAtom } from "jotai";
+import { useEffect, useState } from "react";
 import { errorAtom } from "src/atoms/error";
 import type { SoftwareRegistry, User } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
@@ -53,7 +52,6 @@ const AddSoftwareModal = ({
   softwareData,
   existingSoftwareList
 }: AddSoftwareModalProps) => {
-  const tagsFieldId = useId();
   const initialSoftwareState: SoftwareRegistry = {
     id: "",
     name: "",
@@ -106,7 +104,9 @@ const AddSoftwareModal = ({
     );
     setNameExists(nameAlreadyExists);
   }, [software.name, existingSoftwareList]);
-
+  /**
+   * Extract unique tags from the existing software list and set them in the state for the autocomplete options.
+   */
   useEffect(() => {
     const allTags = existingSoftwareList.flatMap((s) => s.tags || []);
     setTags([...new Set(allTags)]);
@@ -261,7 +261,6 @@ const AddSoftwareModal = ({
               }}
             >
               <Autocomplete
-                id={tagsFieldId}
                 multiple
                 disableClearable
                 freeSolo
@@ -269,7 +268,6 @@ const AddSoftwareModal = ({
                 options={tags}
                 sx={{ width: "100%" }}
                 inputValue={tag}
-                size="small"
                 value={selectedTags}
                 onInputChange={handleTagChange}
                 onChange={handleSelectedTagChange}
@@ -277,7 +275,6 @@ const AddSoftwareModal = ({
                   <TextField
                     {...tagProps}
                     sx={{ width: "100%" }}
-                    size="small"
                     onKeyDown={handleEnter}
                     label={strings.softwareRegistry.tags}
                   />

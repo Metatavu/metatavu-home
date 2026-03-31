@@ -24,6 +24,7 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import { userProfileAtom } from "src/atoms/auth";
 import { errorAtom } from "src/atoms/error";
+import { questionnaireTagsAtom } from "src/atoms/questionnaire";
 import { usersAtom } from "src/atoms/user";
 import type { Questionnaire, User } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
@@ -52,6 +53,7 @@ const QuestionnaireTable = () => {
   const [tagPopoverAnchor, setTagPopoverAnchor] = useState<HTMLElement | null>(null);
   const [currentTags, setCurrentTags] = useState<string[]>([]);
   const setError = useSetAtom(errorAtom);
+  const setQuestionnaireTagsAtom = useSetAtom(questionnaireTagsAtom);
   const users = useAtomValue(usersAtom);
   const userProfile = useAtomValue(userProfileAtom);
   const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
@@ -71,13 +73,16 @@ const QuestionnaireTable = () => {
 
         setQuestionnaires(processedQuestionnaires);
         setFilteredQuestionnaires(processedQuestionnaires);
+        const allTags = processedQuestionnaires.flatMap((q) => q.tags || []);
+        const uniqueTags = [...new Set<string>(allTags)];
+        setQuestionnaireTagsAtom(uniqueTags);
       } catch (error) {
         setError(`${strings.error.questionnaireLoadFailed}, ${error}`);
       }
       setLoading(false);
     };
     fetchQuestionnaires();
-  }, []);
+  }, [setQuestionnaireTagsAtom, setError, questionnairesApi]);
 
   useEffect(() => {
     if (!searchTerm.trim()) {
@@ -171,9 +176,16 @@ const QuestionnaireTable = () => {
     setLoading(true);
     try {
       await questionnairesApi.deleteQuestionnaires({ id: deleteId });
-      setQuestionnaires((prevQuestionnaires) =>
-        prevQuestionnaires.filter((questionnaire) => questionnaire.id !== deleteId)
+      const updatedQuestionnaires = questionnaires.filter(
+        (questionnaire) => questionnaire.id !== deleteId
       );
+      setQuestionnaires(updatedQuestionnaires);
+
+      // Update tags atom after deletion
+      const allTags = updatedQuestionnaires.flatMap((q) => q.tags || []);
+      const uniqueTags = [...new Set<string>(allTags)];
+      setQuestionnaireTagsAtom(uniqueTags);
+
       handleCloseDialog();
     } catch (error) {
       setError(`${strings.error.questionnaireDeleteFailed}, ${error}`);
