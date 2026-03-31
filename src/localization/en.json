@@ -111,8 +111,7 @@
     "project": "Project",
     "user": "User",
     "clear": "Clear",
-    "searchBy": "Search by {0}",
-    "estimateHours": "Estimate Hours"
+    "searchBy": "Search by {0}"
   },
   "softwareRegistry": {
     "softwareRegistry": "Software registry",
@@ -499,7 +498,8 @@
     "cancel": "Cancel",
     "failedToLoadMediaFiles": "Failed to load media files",
     "errorLoadingMediaFiles": "Error loading media files:",
-    "articleContentRequired": "Article content is required"
+    "articleContentRequired": "Article content is required",
+    "uploadPlayBook": "Upload Playbook PDF"
   },
   "snackbar": {
     "articleSubmitted": "Article submitted for review successfully!",
