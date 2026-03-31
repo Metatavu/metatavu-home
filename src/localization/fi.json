@@ -499,7 +499,8 @@
     "cancel": "Peruuta",
     "failedToLoadMediaFiles": "Mediatiedostojen lataus epäonnistui",
     "errorLoadingMediaFiles": "Virhe mediatiedostojen latauksessa:",
-    "articleContentRequired": "Artikkelin sisältö on pakollinen"
+    "articleContentRequired": "Artikkelin sisältö on pakollinen",
+    "uploadPlayBook": "Lataa Playbook PDF"
   },
   "snackbar": {
     "articleSubmitted": "Artikkeli lähetetty arvioitavaksi onnistuneesti!",
