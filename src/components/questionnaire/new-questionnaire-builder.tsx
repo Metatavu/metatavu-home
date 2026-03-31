@@ -274,44 +274,6 @@ const NewQuestionnaireBuilder = () => {
                   </li>
                 )}
               />
-
-              {/*<TextField
-                value={tagInput}
-                onChange={handleTagInputChange}
-                onKeyDown={handleTagKeyDown}
-                placeholder={strings.questionnaireTags.addTagPlaceholder}
-                variant="outlined"
-                size="small"
-                fullWidth
-                error={!!tagError}
-                helperText={tagError}
-                sx={{ mr: 1 }}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <LabelIcon />
-                    </InputAdornment>
-                  )
-                }}
-              />
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={handleAddTag}
-                size="small"
-                sx={{
-                  height: "40px",
-                  minWidth: "90px",
-                  textTransform: "lowercase",
-                  backgroundColor: theme.palette.primary.main,
-                  color: theme.palette.primary.contrastText,
-                  "&:hover": {
-                    backgroundColor: theme.palette.primary.dark
-                  }
-                }}
-              >
-                {strings.questionnaireTags.addTag}
-              </Button>*/}
             </Box>
           </Box>
 
