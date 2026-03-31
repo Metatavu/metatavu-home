@@ -1,12 +1,12 @@
-import { useState, useEffect } from "react";
 import { Container, Typography } from "@mui/material";
-import strings from "src/localization/strings";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import strings from "src/localization/strings";
 
 /**
-  * Component that redirects users who have not opted in
-  * to home page after countdown timer 
-  * if they try to access a page that requires opt in
+ * Component that redirects users who have not opted in
+ * to home page after countdown timer
+ * if they try to access a page that requires opt in
  */
 const OptInRedirect = () => {
   const navigate = useNavigate();
@@ -28,7 +28,9 @@ const OptInRedirect = () => {
   return (
     <Container>
       <Typography variant="h3">{strings.notOptedInDescription.title}</Typography>
-      <Typography>{strings.notOptedInDescription.redirectingMessage} {countdown}</Typography>
+      <Typography>
+        {strings.notOptedInDescription.redirectingMessage} {countdown}
+      </Typography>
     </Container>
   );
 };
