@@ -72,14 +72,14 @@ const EmployeeFlextimeScreen = () => {
 			});
 			setUsersFlextime((prev) =>
 				prev.map((u) =>
-					u.user.attributes?.severaUserId === userId
+					u.user.id === userId
 						? {
 								...u,
 								user: {
 									...u.user,
 									attributes: {
 										...u.user.attributes,
-										isActive: true,
+										isActive: active,
 									},
 								},
 							}
@@ -296,8 +296,7 @@ const EmployeeFlextimeScreen = () => {
 												<Select
 													value={isActive ? "active" : "inactive"}
 													onChange={(e) => {
-														const userId =
-															userData.user.attributes?.severaUserId;
+														const userId = userData.user.id;
 														if (!userId) return;
 
 														handleStatusChange(
