@@ -63,6 +63,8 @@ export interface Localized extends LocalizedStringsMethods {
     fetchWorkDaysFailed: string;
     fetchWorkWeekFailed: string;
     fetchFailedSevera: string;
+    fetchFailedQuestionnaires: string;
+    fetchFailedSoftwareData: string;
   };
   /**
    * Translations related to localization
@@ -297,7 +299,8 @@ export interface Localized extends LocalizedStringsMethods {
     noVacationRequestsStatusFound: string;
     tooManyDaysRequestedUser: string;
     tooManyDaysRequestedAdmin: string;
-    invalidNumberOfDays: string;
+    invalidNumberOfDaysUser: string;
+    invalidNumberOfDaysAdmin: string;
     noVacationDaysAvailable: string;
     failedToLoad: string;
   };

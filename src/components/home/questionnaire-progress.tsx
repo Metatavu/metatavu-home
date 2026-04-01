@@ -25,8 +25,9 @@ const QuestionnaireProgress = () => {
       try {
         const response = await questionnairesApi.listQuestionnaires();
         setQuestionnaires(response);
-      } catch (error) {
-        console.error("Failed to fetch questionnaires:", error);
+      } catch (error: any) {
+        const errorMessage = await error.response.json();
+        setError(`${strings.error.fetchFailedQuestionnaires}: ${errorMessage.message}`);
       } finally {
         setLoading(false);
       }
@@ -63,3 +64,6 @@ const QuestionnaireProgress = () => {
 };
 
 export default QuestionnaireProgress;
+function setError(arg0: string) {
+  throw new Error("Function not implemented.");
+}

@@ -121,9 +121,12 @@ export const validateVacationRequestDays = (
     };
   }
   if (requestedDays <= 0) {
+    const errorMessage = isUserAdmin
+      ? strings.vacationRequestError.invalidNumberOfDaysAdmin
+      : strings.vacationRequestError.invalidNumberOfDaysUser;
     return {
       valid: false,
-      errorMessage: strings.vacationRequestError.invalidNumberOfDays
+      errorMessage: errorMessage
     };
   }
   return { valid: true };

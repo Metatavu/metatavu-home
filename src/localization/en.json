@@ -46,7 +46,9 @@
     "noArticleId": "Article ID is missing",
     "fetchWorkDaysFailed": "Fetching work days data has failed",
     "fetchWorkWeekFailed": "Error while fetching work week data, five day week will be used.",
-    "fetchFailedSevera": "Failed to update Severa opt-in."
+    "fetchFailedSevera": "Failed to update Severa opt-in.",
+    "fetchFailedQuestionnaires": "Failed to fetch questionnaires.",
+    "fetchFailedSoftwareData": "Failed to fetch software registry data."
   },
   "localization": {
     "en": "EN",
@@ -262,7 +264,8 @@
     "noVacationRequestsFound": "No vacation requests found",
     "nameNotFound": "Name not found",
     "noVacationRequestsStatusFound": "Statuses not found",
-    "invalidNumberOfDays": "You cannot set a vacation request to 0 days",
+    "invalidNumberOfDaysUser": "You cannot request a 0 days vacation",
+    "invalidNumberOfDaysAdmin": "You cannot set a vacation request to 0 days",
     "tooManyDaysRequestedUser": "You cannot request {requestedDays} days. You only have {unspentDays} unspent vacation days.",
     "tooManyDaysRequestedAdmin": "Not enough vacation days. Requested: {requestedDays} days, Available: {unspentDays} days.",
     "noVacationDaysAvailable": "You don't have any vacation days available for the current vacation year. Please contact your administrator.",

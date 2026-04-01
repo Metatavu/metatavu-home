@@ -27,8 +27,9 @@ const SoftwareRegistryCard = () => {
     try {
       const fetchedApplications = await softwareApi.listSoftware();
       setApplications(fetchedApplications);
-    } catch (error) {
-      setError(`Error fetching software data: ${error}`);
+    } catch (error: any) {
+      const errorMessage = await error.response.json();
+      setError(`${strings.error.fetchFailedSoftwareData}: ${errorMessage}`);
     } finally {
       setLoading(false);
     }

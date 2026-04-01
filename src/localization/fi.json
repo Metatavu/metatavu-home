@@ -46,7 +46,9 @@
     "noArticleId": "Artikkelin ID puuttuu",
     "fetchWorkDaysFailed": "Työpäivätietojen haku epäonnistui",
     "fetchFailedSevera": "Severa-opt-in päivitys epäonnistui.",
-    "fetchWorkWeekFailed": "Virhe työviikon tietoja haettaessa, käytetään oletuksena viiden päivän viikkoa"
+    "fetchWorkWeekFailed": "Virhe työviikon tietoja haettaessa, käytetään oletuksena viiden päivän viikkoa",
+    "fetchFailedQuestionnaires": "Kyselylomakkeiden lataaminen epäonnistui",
+    "fetchFailedSoftwareData": "Ohjelmistorekisterin tietojen haku epäonnistui"
   },
   "localization": {
     "en": "EN",
@@ -260,7 +262,8 @@
     "updateRequestError": "Lomahakemuksen päivittäminen epäonnistui",
     "updateStatusError": "Lomahakemuksen tilan päivittäminen epäonnistui",
     "noVacationRequestsFound": "Lomahakemuksia ei löydetty",
-    "invalidNumberOfDays": "Et voi asettaa lomahakemusta 0 päivään",
+    "invalidNumberOfDaysUser": "Et voi pyytää 0 päivän lomaa",
+    "invalidNumberOfDaysAdmin": "Et voi asettaa lomahakemusta 0 päiväksi",
     "nameNotFound": "Nimeä ei löydetty",
     "noVacationRequestsStatusFound": "Tiloja ei löytynyt",
     "tooManyDaysRequestedUser": "Et voi pyytää {requestedDays} päivää. Sinulla on käytettävissä vain {unspentDays} lomapäivää.",
