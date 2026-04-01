@@ -40,10 +40,11 @@ const CustomPopper = styled((props: PopperProps) => <Popper {...props} placement
 interface SearchBarProps {
   searchInput: string;
   handleSearchInputChange: (event: React.SyntheticEvent, value: string) => void;
-  tags: string[];
-  handleSelectedTagChange: (values: string[]) => void;
+  tags?: string[];
+  handleSelectedTagChange?: (values: string[]) => void;
   autoCompleteId?: string;
   styles?: SxProps<Theme>;
+  placeholder?: string;
 }
 
 /**
@@ -62,7 +63,8 @@ const SearchBar = (props: SearchBarProps): JSX.Element => {
     tags,
     handleSelectedTagChange,
     autoCompleteId,
-    styles
+    styles,
+    placeholder
   } = props;
   const theme = useTheme();
 
@@ -93,13 +95,13 @@ const SearchBar = (props: SearchBarProps): JSX.Element => {
           multiple
           disableCloseOnSelect
           id={autoCompleteId}
-          options={tags}
+          options={tags || []}
           sx={{ width: "100%" }}
           clearOnBlur={false}
           inputValue={searchInput}
           onInputChange={handleSearchInputChange}
           onChange={(_event, values) => {
-            handleSelectedTagChange(values);
+            handleSelectedTagChange?.(values);
           }}
           size="small"
           renderOption={(props, option, { selected }) => (
@@ -130,7 +132,7 @@ const SearchBar = (props: SearchBarProps): JSX.Element => {
           renderInput={(params) => (
             <TextField
               {...params}
-              placeholder={strings.wikiDocumentation.searchArticle}
+              placeholder={placeholder || strings.wikiDocumentation.searchArticle}
               sx={{
                 "& fieldset": {
                   border: "none",

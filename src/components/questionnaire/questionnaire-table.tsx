@@ -1,20 +1,15 @@
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import ClearIcon from "@mui/icons-material/Clear";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import EditIcon from "@mui/icons-material/Edit";
 import LabelIcon from "@mui/icons-material/Label";
 import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
-import SearchIcon from "@mui/icons-material/Search";
 import {
   Box,
   Button,
   Chip,
   CircularProgress,
-  IconButton,
-  InputAdornment,
   Paper,
   Popover,
-  TextField,
   Typography,
   useTheme
 } from "@mui/material";
@@ -32,6 +27,7 @@ import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import { DeleteItemType, QuestionnairePreviewMode } from "src/types/index";
 import DeleteConfirmationDialog from "../contexts/delete-confirmation-dialog";
+import SearchBar from "../generics/search-bar";
 
 /**
  * Questionnaire Table Component
@@ -93,10 +89,11 @@ const QuestionnaireTable = () => {
     const lowerCaseSearchTerm = searchTerm.toLowerCase().trim();
     const filtered = questionnaires.filter((questionnaire) => {
       const titleMatch = questionnaire.title?.toLowerCase().includes(lowerCaseSearchTerm);
-      const tagMatch = questionnaire.tags?.some((tag) =>
+      const textTagMatch = questionnaire.tags?.some((tag) =>
         tag.toLowerCase().includes(lowerCaseSearchTerm)
       );
-      return titleMatch || tagMatch;
+
+      return titleMatch || textTagMatch;
     });
 
     setFilteredQuestionnaires(filtered);
@@ -107,15 +104,8 @@ const QuestionnaireTable = () => {
    *
    * @param event input change event
    */
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(event.target.value);
-  };
-
-  /**
-   * Handler for clearing the search term
-   */
-  const handleClearSearch = () => {
-    setSearchTerm("");
+  const handleSearchChange = (_event: React.SyntheticEvent, value: string) => {
+    setSearchTerm(value);
   };
 
   /**
@@ -471,29 +461,12 @@ const QuestionnaireTable = () => {
         </Typography>
 
         <Box sx={{ px: 2, pb: 2 }}>
-          <TextField
-            fullWidth
-            value={searchTerm}
-            onChange={handleSearchChange}
+          <SearchBar
+            searchInput={searchTerm}
+            handleSearchInputChange={handleSearchChange}
+            autoCompleteId="questionnaire-search-tags"
+            styles={{ width: "100%" }}
             placeholder={strings.questionnaireTags.searchPlaceholder}
-            variant="outlined"
-            size="small"
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon sx={{ color: theme.palette.text.primary }} />
-                </InputAdornment>
-              ),
-              endAdornment: searchTerm && (
-                <InputAdornment position="end">
-                  <IconButton size="small" onClick={handleClearSearch}>
-                    <ClearIcon sx={{ color: theme.palette.text.primary }} />
-                  </IconButton>
-                </InputAdornment>
-              ),
-              sx: { color: theme.palette.text.primary }
-            }}
-            InputLabelProps={{ style: { color: theme.palette.text.primary } }}
           />
         </Box>
 
