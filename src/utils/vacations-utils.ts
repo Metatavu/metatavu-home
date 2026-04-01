@@ -120,6 +120,12 @@ export const validateVacationRequestDays = (
       errorMessage: errorString
     };
   }
+  if (requestedDays <= 0) {
+    return {
+      valid: false,
+      errorMessage: strings.vacationRequestError.invalidNumberOfDays
+    };
+  }
   return { valid: true };
 };
 

@@ -260,6 +260,7 @@
     "updateRequestError": "Lomahakemuksen päivittäminen epäonnistui",
     "updateStatusError": "Lomahakemuksen tilan päivittäminen epäonnistui",
     "noVacationRequestsFound": "Lomahakemuksia ei löydetty",
+    "invalidNumberOfDays": "Et voi asettaa lomahakemusta 0 päivään",
     "nameNotFound": "Nimeä ei löydetty",
     "noVacationRequestsStatusFound": "Tiloja ei löytynyt",
     "tooManyDaysRequestedUser": "Et voi pyytää {requestedDays} päivää. Sinulla on käytettävissä vain {unspentDays} lomapäivää.",
