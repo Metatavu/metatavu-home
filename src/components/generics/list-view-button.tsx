@@ -8,6 +8,12 @@ interface ListViewButtonProps {
   setListView: (value: boolean) => void;
   styles?: SxProps<Theme>;
 }
+/**
+ * Button component for toggling between list and grid view
+ * @param props.listView - Current view state (true for list view, false for grid view)
+ * @param props.setListView - Function to update the view state
+ * @param props.styles - Optional MUI sx styles to extend or override default styles
+ */
 
 const ListViewButton = (props: ListViewButtonProps) => {
   const { listView, setListView, styles } = props;

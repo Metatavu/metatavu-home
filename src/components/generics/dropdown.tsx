@@ -5,7 +5,12 @@ interface DropdownProps {
   handleDisplayOptionChange: (event: SelectChangeEvent<string>) => void;
   displayOptions: { value: string; label: string }[];
 }
-
+/**
+ * Dropdown component for selecting display options
+ * @param props.displayOption - The currently selected display option
+ * @param props.handleDisplayOptionChange - Event handler for when the display option changes
+ * @param props.displayOptions - Array of available display options with value and label
+ */
 const Dropdown = ({ displayOption, handleDisplayOptionChange, displayOptions }: DropdownProps) => {
   const theme = useTheme();
 
