@@ -1,4 +1,3 @@
-import { Close, Search } from "@mui/icons-material";
 import {
   Box,
   Card,
@@ -6,14 +5,11 @@ import {
   Container,
   Divider,
   FormControl,
-  IconButton,
-  InputAdornment,
   InputLabel,
   MenuItem,
   Paper,
   Select,
   Stack,
-  TextField,
   Typography,
   useTheme
 } from "@mui/material";
@@ -37,6 +33,7 @@ import { type SprintViewFilterType, SprintViewFilterTypes } from "src/types/inde
 import { getSeveraUserId } from "src/utils/sprint-utils";
 import { getSprintEnd, getSprintStart } from "src/utils/time-utils";
 import BackButton from "../generics/back-button";
+import SearchBar from "../generics/search-bar";
 import createSprintViewProjectsColumns from "../sprint-view-table/sprint-projects-columns";
 
 /**
@@ -172,31 +169,10 @@ const SprintViewScreen = () => {
                       </Select>
                     </FormControl>
                   </Box>
-                  <TextField
-                    label={strings.formatString(strings.sprint.searchBy, filterLabel)}
-                    variant="outlined"
-                    fullWidth
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <Search color="action" />
-                        </InputAdornment>
-                      ),
-                      endAdornment: searchQuery && (
-                        <InputAdornment position="end">
-                          <IconButton onClick={handleClearSearch} size="small">
-                            <Close fontSize="small" />
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                      sx: {
-                        borderRadius: 2,
-                        backgroundColor: theme.palette.background.default,
-                        color: theme.palette.text.primary
-                      }
-                    }}
+                  <SearchBar
+                    searchInput={searchQuery}
+                    handleSearchInputChange={(_, value) => setSearchQuery(value)}
+                    styles={{ width: "100%" }}
                   />
                 </>
               )}
