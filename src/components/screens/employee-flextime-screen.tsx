@@ -25,6 +25,9 @@ import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
 import BackButton from "../generics/back-button";
 
+type UserWithId = {
+	id: string;
+};
 /**
  * Full-screen view for displaying flextime data for all employees.
  */
@@ -72,7 +75,7 @@ const EmployeeFlextimeScreen = () => {
 			});
 			setUsersFlextime((prev) =>
 				prev.map((u) =>
-					u.user.id === userId
+					(u.user as unknown as UserWithId).id === userId
 						? {
 								...u,
 								user: {
@@ -296,7 +299,9 @@ const EmployeeFlextimeScreen = () => {
 												<Select
 													value={isActive ? "active" : "inactive"}
 													onChange={(e) => {
-														const userId = userData.user.id;
+														const userId = (
+															userData.user as unknown as UserWithId
+														).id;
 														if (!userId) return;
 
 														handleStatusChange(
