@@ -46,7 +46,17 @@
     "noArticleId": "Artikkelin ID puuttuu",
     "fetchWorkDaysFailed": "Työpäivätietojen haku epäonnistui",
     "fetchFailedSevera": "Severa-opt-in päivitys epäonnistui.",
-    "fetchWorkWeekFailed": "Virhe työviikon tietoja haettaessa, käytetään oletuksena viiden päivän viikkoa"
+    "fetchWorkWeekFailed": "Virhe työviikon tietoja haettaessa, käytetään oletuksena viiden päivän viikkoa",
+    "fetchFailedQuestionnaires": "Kyselylomakkeiden lataaminen epäonnistui",
+    "fetchFailedWikiArticles": "Wiki-artikkelien lataaminen epäonnistui",
+    "fetchFailedSoftwareData": "Ohjelmistorekisterin tietojen haku epäonnistui",
+    "loadUserProfileFailed": "Käyttäjäprofiilin lataaminen epäonnistui",
+    "softwareFetchFailed": "Ohjelmistojen haku epäonnistui.",
+    "softwareStatusUpdateFailed": "Ohjelmiston tilan päivittäminen epäonnistui.",
+    "softwareSaveFailed": "Ohjelmiston tallentaminen epäonnistui.",
+    "softwareDeleteFailed": "Ohjelmiston poistaminen epäonnistui.",
+    "softwareRegistryFetchFailed": "Ohjelmistorekisterin tietojen hakeminen epäonnistui",
+    "softwareRegistryUpdateFailed": "Ohjelmistorekisterin päivittäminen epäonnistui"
   },
   "localization": {
     "en": "EN",
@@ -160,7 +170,12 @@
     "loading": "Ladataan...",
     "errorUnknownUser": "Tuntematon käyttäjä",
     "errorCreatingSoftware": "Virhe ohjelmiston luomisessa",
-    "errorFetchingSoftwareToList": "Virhe ohjelmistojen hakemisessa listattavaksi"
+    "errorFetchingSoftwareToList": "Virhe ohjelmistojen hakemisessa listattavaksi",
+    "softwareDetailsFetchFailed": "Virhe sovelluksen yksityiskohtien hakemisessa",
+    "softwareDetailsRemoveUserFailed": "Virhe käyttäjän poistamisessa sovelluksesta",
+    "softwareDetailsAddUserFailed": "Virhe käyttäjän lisäämisessä sovellukseen",
+    "softwareDetailsUpdateFailed": "Virhe sovelluksen päivittämisessä",
+    "recommendationsFetchUserFailed": "Virhe käyttäjätietojen hakemisessa"
   },
   "softwareStatus": {
     "all": "Kaikki",
@@ -257,9 +272,12 @@
     "createStatusError": "Lomahakemuksen tilan luominen epäonnistui",
     "deleteRequestError": "Lomahakemuksen poistaminen epäonnistui",
     "deleteStatusError": "Lomahakemuksen tilan poistaminen epäonnistui",
+    "dataGridRowsCreationError": "Virhe lomahakemuksen rivien luomisessa",
     "updateRequestError": "Lomahakemuksen päivittäminen epäonnistui",
     "updateStatusError": "Lomahakemuksen tilan päivittäminen epäonnistui",
     "noVacationRequestsFound": "Lomahakemuksia ei löydetty",
+    "invalidNumberOfDaysUser": "Et voi pyytää 0 päivän lomaa",
+    "invalidNumberOfDaysAdmin": "Et voi asettaa lomahakemusta 0 päiväksi",
     "nameNotFound": "Nimeä ei löydetty",
     "noVacationRequestsStatusFound": "Tiloja ei löytynyt",
     "tooManyDaysRequestedUser": "Et voi pyytää {requestedDays} päivää. Sinulla on käytettävissä vain {unspentDays} lomapäivää.",

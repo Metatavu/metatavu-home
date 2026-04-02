@@ -72,8 +72,9 @@ const QuestionnaireManager = ({ mode }: Props) => {
       try {
         const fetchedQuestionnaire = await questionnairesApi.getQuestionnairesById({ id });
         setQuestionnaire(fetchedQuestionnaire);
-      } catch (error) {
-        setError(`${strings.error.questionnaireLoadFailed}, ${error}`);
+      } catch (error: any) {
+        const errorMessage = await error?.response?.json();
+        setError(`${strings.error.questionnaireLoadFailed}: ${errorMessage?.message || error}`);
       }
       setLoading(false);
     };
@@ -171,8 +172,9 @@ const QuestionnaireManager = ({ mode }: Props) => {
         );
         setQuestionnaireFeedbackDialogOpen(true);
         return passedQuestionnaire;
-      } catch (error) {
-        setError(`${strings.error.questionnaireSaveFailed}, ${error}`);
+      } catch (error: any) {
+        const errorMessage = await error?.response?.json();
+        setError(`${strings.error.questionnaireSaveFailed}: ${errorMessage?.message || error}`);
       }
     } else {
       setQuestionnaireFeedbackMessage(

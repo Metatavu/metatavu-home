@@ -68,7 +68,10 @@ const SoftwareDetails = () => {
       const data = await softwareApi.getSoftwareById({ id });
       setSoftware(data);
     } catch (error) {
-      setError((error as Error).message || "Error fetching software details");
+      const errorMessage = await (error as any)?.response?.json();
+      setError(
+        `${strings.softwareRegistry.softwareDetailsFetchFailed}: ${errorMessage?.message || (error as Error).message}`
+      );
     } finally {
       setLoading(false);
     }
@@ -83,7 +86,10 @@ const SoftwareDetails = () => {
       const fetchedSoftware = await softwareApi.listSoftware();
       setSoftwareList(fetchedSoftware);
     } catch (error) {
-      setError((error as Error).message || strings.softwareRegistry.errorFetchingSoftwareToList);
+      const errorMessage = await (error as any)?.response?.json();
+      setError(
+        `${strings.softwareRegistry.errorFetchingSoftwareToList}: ${errorMessage?.message || (error as Error).message}`
+      );
     } finally {
       setLoading(false);
     }
@@ -103,7 +109,10 @@ const SoftwareDetails = () => {
       });
       setSoftware({ ...software, users: updatedUsers });
     } catch (error) {
-      setError((error as Error).message || "Error removing user from software");
+      const errorMessage = await (error as any)?.response?.json();
+      setError(
+        `${strings.softwareRegistry.softwareDetailsRemoveUserFailed}: ${errorMessage?.message || (error as Error).message}`
+      );
     }
   };
 
@@ -135,7 +144,10 @@ const SoftwareDetails = () => {
       });
       setSoftware({ ...software, users: updatedUsers });
     } catch (error) {
-      setError((error as Error).message || "Error adding user to software");
+      const errorMessage = await (error as any)?.response?.json();
+      setError(
+        `${strings.softwareRegistry.softwareDetailsAddUserFailed}: ${errorMessage?.message || (error as Error).message}`
+      );
     }
   };
 
@@ -153,7 +165,10 @@ const SoftwareDetails = () => {
       setSoftware(updatedSoftware);
       setIsEditModalOpen(false);
     } catch (error) {
-      setError((error as Error).message || "Error updating software");
+      const errorMessage = await (error as any)?.response?.json();
+      setError(
+        `${strings.softwareRegistry.softwareDetailsUpdateFailed}: ${errorMessage?.message || (error as Error).message}`
+      );
     }
   };
 
@@ -252,7 +267,8 @@ const SoftwareDetails = () => {
           size={{
             xs: 12,
             md: 6
-          }}>
+          }}
+        >
           <Typography variant="h4" gutterBottom>
             {strings.softwareRegistry.description}
           </Typography>
@@ -273,7 +289,8 @@ const SoftwareDetails = () => {
           size={{
             xs: 12,
             md: 6
-          }}>
+          }}
+        >
           <Typography variant="h4" gutterBottom>
             {strings.softwareRegistry.review}
           </Typography>

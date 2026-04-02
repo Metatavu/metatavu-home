@@ -113,7 +113,10 @@ const VacationRequestsScreen = () => {
       }
       setVacationRequests(fetchedVacationRequests);
     } catch (error) {
-      setError(`${strings.vacationRequestError.fetchRequestError}, ${error}`);
+      const errorMessage = await (error as any)?.response?.json();
+      setError(
+        `${strings.vacationRequestError.fetchRequestError}: ${errorMessage?.message || error}`
+      );
     }
     setLoading(false);
   };
@@ -156,7 +159,10 @@ const VacationRequestsScreen = () => {
 
       return vacationRequest;
     } catch (error) {
-      setError(`${strings.vacationRequestError.fetchRequestError}, ${error}`);
+      const errorMessage = await (error as any)?.response?.json();
+      setError(
+        `${strings.vacationRequestError.fetchRequestError}: ${errorMessage?.message || error}`
+      );
       return null;
     } finally {
       setLoading(false);
@@ -182,7 +188,10 @@ const VacationRequestsScreen = () => {
               (vacationRequest) => vacationRequest.id !== selectedRowId
             );
           } catch (error) {
-            setError(`${strings.vacationRequestError.deleteRequestError}, ${error}`);
+            const errorMessage = await (error as any)?.response?.json();
+            setError(
+              `${strings.vacationRequestError.deleteRequestError}: ${errorMessage?.message || error}`
+            );
           }
           setLoading(false);
         })
@@ -234,7 +243,10 @@ const VacationRequestsScreen = () => {
       });
       setVacationRequests([createdRequest, ...vacationRequests]);
     } catch (error) {
-      setError(`${strings.vacationRequestError.createRequestError}, ${error}`);
+      const errorMessage = await (error as any)?.response?.json();
+      setError(
+        `${strings.vacationRequestError.createRequestError}: ${errorMessage?.message || error}`
+      );
     }
     setLoading(false);
   };
@@ -276,7 +288,10 @@ const VacationRequestsScreen = () => {
       });
       setVacationRequests([createdRequest, ...vacationRequests]);
     } catch (error) {
-      setError(`${strings.vacationRequestError.createRequestError}, ${error}`);
+      const errorMessage = await (error as any)?.response?.json();
+      setError(
+        `${strings.vacationRequestError.createRequestError}: ${errorMessage?.message || error}`
+      );
     }
     setLoading(false);
   };
@@ -346,7 +361,10 @@ const VacationRequestsScreen = () => {
       );
       setVacationRequests(updatedVacationRequests);
     } catch (error) {
-      setError(`${strings.vacationRequestError.updateRequestError}, ${error}`);
+      const errorMessage = await (error as any)?.response?.json();
+      setError(
+        `${strings.vacationRequestError.updateRequestError}: ${errorMessage?.message || error}`
+      );
     }
     setLoading(false);
   };
@@ -422,7 +440,10 @@ const VacationRequestsScreen = () => {
       const updatedUser = await usersApi.findUser({ userId: loggedInUser.id });
       setUsers((prevUsers) => prevUsers.map((u) => (u.id === updatedUser.id ? updatedUser : u)));
     } catch (error) {
-      setError(`${strings.vacationRequestError.updateRequestError}, ${error}`);
+      const errorMessage = await (error as any)?.response?.json();
+      setError(
+        `${strings.vacationRequestError.updateRequestError}: ${errorMessage?.message || error}`
+      );
     }
     setLoading(false);
   };

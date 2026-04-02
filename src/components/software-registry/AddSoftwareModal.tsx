@@ -79,7 +79,8 @@ const AddSoftwareModal = ({
         const users = await usersApi.listUsers();
         setUserList(users);
       } catch (error) {
-        setError(`${strings.error.fetchFailedGeneral}: ${error}`);
+        const errorMessage = await (error as any)?.response?.json();
+        setError(`${strings.error.fetchFailedGeneral}: ${errorMessage?.message || error}`);
       }
     };
 
@@ -191,7 +192,8 @@ const AddSoftwareModal = ({
               size={{
                 xs: 12,
                 md: 6
-              }}>
+              }}
+            >
               <TextField
                 fullWidth
                 label={strings.softwareRegistry.name}
@@ -211,7 +213,8 @@ const AddSoftwareModal = ({
               size={{
                 xs: 12,
                 md: 6
-              }}>
+              }}
+            >
               <TextField
                 fullWidth
                 label={strings.softwareRegistry.imageURL}
@@ -226,7 +229,8 @@ const AddSoftwareModal = ({
               size={{
                 xs: 12,
                 md: 6
-              }}>
+              }}
+            >
               <TextField
                 fullWidth
                 label={strings.softwareRegistry.URLAddress}
