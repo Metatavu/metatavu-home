@@ -2,7 +2,6 @@ import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import GridViewIcon from "@mui/icons-material/GridView";
 import ListViewIcon from "@mui/icons-material/List";
 import {
-  Alert,
   Box,
   Button,
   Card,
@@ -13,9 +12,10 @@ import {
   Typography,
   useTheme
 } from "@mui/material";
-import { useAtom, useAtomValue } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { authAtom } from "src/atoms/auth";
+import { errorAtom } from "src/atoms/error";
 import { softwareAtom } from "src/atoms/software";
 import type { SoftwareRegistry } from "src/generated/homeLambdasClient";
 import { SoftwareStatus } from "src/generated/homeLambdasClient";
@@ -34,11 +34,11 @@ import Sidebar from "../software-registry/Sidebar";
 const SoftwareScreen = () => {
   const { softwareApi } = useLambdasApi();
   const auth = useAtomValue(authAtom);
+  const setError = useSetAtom(errorAtom);
   const loggedUserId = auth?.token?.sub ?? "";
   const [isGridView, setIsGridView] = useState(true);
   const [software, setApplications] = useAtom(softwareAtom);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [searchValue, setSearchValue] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -126,7 +126,8 @@ const SoftwareScreen = () => {
       const fetchedSoftware = await softwareApi.listSoftware();
       setApplications(fetchedSoftware);
     } catch (error) {
-      setError(`Error fetching software data: ${error}`);
+      const errorMessage = await (error as any)?.response?.json();
+      setError(`${strings.error.softwareRegistryFetchFailed}: ${errorMessage?.message || error}`);
     } finally {
       setLoading(false);
     }
@@ -158,7 +159,8 @@ const SoftwareScreen = () => {
         setApplications((prevApps) => prevApps.map((a) => (a.id === appId ? updatedApp : a)));
       }
     } catch (error) {
-      setError(`Error updating software: ${error}`);
+      const errorMessage = await (error as any)?.response?.json();
+      setError(`${strings.error.softwareRegistryUpdateFailed}: ${errorMessage?.message || error}`);
     } finally {
       setLoading(false);
     }
@@ -298,11 +300,6 @@ const SoftwareScreen = () => {
             />
           </Grid>
           <Grid size="grow">
-            {error && (
-              <Box mb={2} width="100%">
-                <Alert severity="error">{error}</Alert>
-              </Box>
-            )}
             {loading ? (
               <Box textAlign="center">
                 <CircularProgress size={50} sx={{ mt: 2 }} />

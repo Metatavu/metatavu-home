@@ -3,8 +3,10 @@ import Keycloak from "keycloak-js";
 import { type ReactNode, useCallback, useEffect } from "react";
 import config from "src/app/config";
 import { authAtom, userProfileAtom } from "src/atoms/auth";
+import { errorAtom } from "src/atoms/error";
 import { usersAtom } from "src/atoms/user";
 import { useLambdasApi } from "src/hooks/use-api";
+import strings from "src/localization/strings";
 
 interface Props {
   children: ReactNode;
@@ -19,6 +21,7 @@ const AuthenticationProvider = ({ children }: Props) => {
   const [auth, setAuth] = useAtom(authAtom);
   const setUserProfile = useSetAtom(userProfileAtom);
   const setUsers = useSetAtom(usersAtom);
+  const setError = useSetAtom(errorAtom);
   const { usersApi } = useLambdasApi();
 
   const updateAuthData = useCallback(() => {
@@ -51,8 +54,9 @@ const AuthenticationProvider = ({ children }: Props) => {
       keycloak.onAuthSuccess = async () => {
         try {
           await keycloak.loadUserProfile();
-        } catch (error) {
-          console.error("Could not load user profile", error);
+        } catch (error: any) {
+          const errorMessage = await error?.response?.json();
+          setError(`${strings.error.loadUserProfileFailed}: ${errorMessage?.message || error}`);
         }
 
         updateAuthData();

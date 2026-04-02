@@ -87,7 +87,10 @@ const Recommendations = ({ applications, onAddUser }: RecommendationsProps) => {
         console.warn(`User with ID ${userId} not found`);
       }
     } catch (error) {
-      console.error("Error fetching user data:", error);
+      const errorMessage = await (error as any)?.response?.json();
+      console.error(
+        `${strings.softwareRegistry.recommendationsFetchUserFailed}: ${errorMessage?.message || error}`
+      );
     } finally {
       setLoadingStates((prev) => ({
         ...prev,

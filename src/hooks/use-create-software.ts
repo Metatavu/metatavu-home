@@ -24,8 +24,9 @@ const useCreateSoftware = (
         softwareRegistry: newSoftware
       });
       setApplications((prev) => [createdSoftware, ...prev]);
-    } catch (error) {
-      setError(`${strings.softwareRegistry.errorCreatingSoftware} ${error}`);
+    } catch (error:any) {
+      const errorMessage = (error as any)?.response?.json();
+      setError(`${strings.softwareRegistry.errorCreatingSoftware} ${errorMessage?.message || error}`);
     } finally {
       setLoading(false);
     }

@@ -77,9 +77,10 @@ const OnCallCalendarScreen = () => {
     try {
       const fetchedData = await onCallApi.listOnCallData({ year: year.toString() });
       setOnCallData(fetchedData);
-    } catch (error) {
+    } catch (error: any) {
       if (!(error instanceof SyntaxError)) {
-        setError(`${strings.oncall.fetchFailed} ${error}`);
+        const errorMessage = await error?.response?.json();
+        setError(`${strings.oncall.fetchFailed}: ${errorMessage?.message || error}`);
       }
       setOnCallData([]);
     } finally {
@@ -97,8 +98,9 @@ const OnCallCalendarScreen = () => {
       const fetchedData = await onCallApi.listOnCallData({ year: currentYear.toString() });
       const currentOnCallPerson = fetchedData.find((item) => item.week === currentWeek)?.username;
       setOnCallPerson(currentOnCallPerson ?? undefined);
-    } catch (error) {
-      setError(`${strings.oncall.fetchFailed} ${error}`);
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
+      setError(`${strings.oncall.fetchFailed}: ${errorMessage?.message || error}`);
     }
   };
 
@@ -122,8 +124,9 @@ const OnCallCalendarScreen = () => {
           item.year === year && item.week === weekNumber ? { ...item, paid: !paid } : item
         )
       );
-    } catch (error) {
-      setError(`${strings.oncall.errorUpdatingPaidStatus}, ${error}`);
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
+      setError(`${strings.oncall.errorUpdatingPaidStatus}: ${errorMessage?.message || error}`);
     }
   };
   const theme = useTheme();

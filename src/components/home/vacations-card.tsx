@@ -52,8 +52,9 @@ const VacationsCard = () => {
         ? await vacationRequestsApi.listVacationRequests({})
         : await vacationRequestsApi.listVacationRequests({ userId: loggedInUser.id });
       setVacationRequests(fetchedVacationRequests);
-    } catch (error) {
-      setError(`${strings.vacationRequestError.fetchRequestError}, ${error}`);
+    } catch (error: any) {
+      const errorMessage = await error.response.json();
+      setError(`${strings.vacationRequestError.fetchRequestError}, ${errorMessage.message}`);
     } finally {
       setLoading(false);
     }

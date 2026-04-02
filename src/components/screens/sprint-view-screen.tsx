@@ -102,7 +102,10 @@ const SprintViewScreen = () => {
           });
       setResourceAllocations(fetchedResourceAllocations);
     } catch (error) {
-      setError(`${strings.sprintRequestError.fetchResourceAllocationsError}, ${error}`);
+      const errorMessage = await (error as any)?.response?.json();
+      setError(
+        `${strings.sprintRequestError.fetchResourceAllocationsError}: ${errorMessage?.message || error}`
+      );
     }
     setLoading(false);
   }, [loggedInUser, adminMode, resourceAllocationsApi, setError]);

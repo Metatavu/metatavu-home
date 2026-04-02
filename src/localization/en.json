@@ -48,7 +48,15 @@
     "fetchWorkWeekFailed": "Error while fetching work week data, five day week will be used.",
     "fetchFailedSevera": "Failed to update Severa opt-in.",
     "fetchFailedQuestionnaires": "Failed to fetch questionnaires.",
-    "fetchFailedSoftwareData": "Failed to fetch software registry data."
+    "fetchFailedWikiArticles": "Failed to fetch wiki articles.",
+    "fetchFailedSoftwareData": "Failed to fetch software registry data.",
+    "loadUserProfileFailed": "Failed to load user profile.",
+    "softwareFetchFailed": "Error fetching software data.",
+    "softwareStatusUpdateFailed": "Error updating software status.",
+    "softwareSaveFailed": "Error saving the software.",
+    "softwareDeleteFailed": "Error deleting the software.",
+    "softwareRegistryFetchFailed": "Error while fetching software registry data",
+    "softwareRegistryUpdateFailed": "Error while updating software registry"
   },
   "localization": {
     "en": "EN",
@@ -162,7 +170,12 @@
     "loading": "Loading...",
     "errorUnknownUser": "Unknown user",
     "errorCreatingSoftware": "Error creating software:",
-    "errorFetchingSoftwareToList": "Error fetching software to list:"
+    "errorFetchingSoftwareToList": "Error fetching software to list:",
+    "softwareDetailsFetchFailed": "Error fetching software details",
+    "softwareDetailsRemoveUserFailed": "Error removing user from software",
+    "softwareDetailsAddUserFailed": "Error adding user to software",
+    "softwareDetailsUpdateFailed": "Error updating software",
+    "recommendationsFetchUserFailed": "Error fetching user data"
   },
   "softwareStatus": {
     "all": "All",
@@ -259,6 +272,7 @@
     "createStatusError": "Creating vacation request status has failed ",
     "deleteRequestError": "Deleting vacation requests has failed",
     "deleteStatusError": "Deleting vacation request statuses has failed",
+    "dataGridRowsCreationError": "Error creating vacation request rows",
     "updateRequestError": "Updating vacation request has failed",
     "updateStatusError": "Updating vacation request status has failed",
     "noVacationRequestsFound": "No vacation requests found",
