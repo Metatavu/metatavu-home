@@ -29,7 +29,7 @@ import useSprintViewHandlers from "src/hooks/sprint-custom-hooks";
 import { useLambdasApi } from "src/hooks/use-api";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
-import { type SprintViewFilterType, SprintViewFilterTypes } from "src/types/index";
+import { SprintViewFilterTypes } from "src/types/index";
 import { getSeveraUserId } from "src/utils/sprint-utils";
 import { getSprintEnd, getSprintStart } from "src/utils/time-utils";
 import BackButton from "../generics/back-button";
@@ -152,6 +152,7 @@ const SprintViewScreen = () => {
                     searchInput={searchQuery}
                     handleSearchInputChange={(_, value) => setSearchQuery(value)}
                     styles={{ width: "100%" }}
+                    placeholder={strings.sprint.searchBy}
                   />
                 </>
               )}

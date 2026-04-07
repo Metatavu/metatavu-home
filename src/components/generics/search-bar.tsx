@@ -132,7 +132,7 @@ const SearchBar = (props: SearchBarProps): JSX.Element => {
           renderInput={(params) => (
             <TextField
               {...params}
-              placeholder={placeholder || strings.wikiDocumentation.searchArticle}
+              placeholder={placeholder || strings.placeHolder.search}
               sx={{
                 "& fieldset": {
                   border: "none",

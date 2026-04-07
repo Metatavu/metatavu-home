@@ -241,6 +241,7 @@ const SoftwareScreen = () => {
               setSearchValue(newInputValue)
             }
             handleSelectedTagChange={(newSelectedTags) => setSelectedTags(newSelectedTags)}
+            placeholder={strings.softwareRegistry.searchBy}
           />
           <ListViewButton listView={listView} setListView={setListView} />
           <CreateButton

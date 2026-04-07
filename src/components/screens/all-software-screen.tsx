@@ -282,6 +282,7 @@ const AllSoftwareScreen = () => {
             handleSelectedTagChange={(newSelectedTags) => setSearchTerms(newSelectedTags)}
             autoCompleteId="software-registry-search-tags"
             styles={{ width: { lg: "55%", md: "55%", xs: "100%" } }}
+            placeholder={strings.softwareRegistry.searchBy}
           />
           <Dropdown
             displayOption={selectedStatus}

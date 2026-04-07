@@ -344,6 +344,7 @@ const WikiDocumentationScreen = () => {
                 }
               : undefined
           }
+          placeholder={strings.wikiDocumentation.searchArticle}
         />
       }
       {adminMode && (
