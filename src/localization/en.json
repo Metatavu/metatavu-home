@@ -1,7 +1,8 @@
 {
   "placeHolder": {
     "notYetImplemented": "Not yet implemented",
-    "pleaseWait": "Please wait, this could take a moment..."
+    "pleaseWait": "Please wait, this could take a moment...",
+    "search": "Search..."
   },
   "label": {
     "currentLocaleLabel": "Current Locale:",
@@ -111,7 +112,7 @@
     "project": "Project",
     "user": "User",
     "clear": "Clear",
-    "searchBy": "Search by {0}",
+    "searchBy": "Search by project or user",
     "estimateHours": "Estimate Hours"
   },
   "softwareRegistry": {

@@ -13,7 +13,7 @@ export const createAppTheme = (mode: "light" | "dark"): Theme =>
         main: mode === "dark" ? "#fff" : "#222"
       },
       secondary: {
-        main: "#F47D38"
+        main: "#fff"
       },
       info: {
         main: "#1976d2"

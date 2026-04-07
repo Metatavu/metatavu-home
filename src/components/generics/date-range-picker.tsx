@@ -20,7 +20,6 @@ interface Props {
 const DateRangePicker = ({ dateTimeTomorrow, dateRange, setDateRange }: Props) => {
   /**
    * Handle date change and calculate days
-   *
    * @param props startDate, endDate, days
    */
   const handleDateChange = (startDate: DateTime, endDate: DateTime) => {
