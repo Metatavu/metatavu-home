@@ -1,16 +1,11 @@
 import {
-  Autocomplete,
   Box,
   Button,
   Card,
   CardActions,
   CardContent,
-  Checkbox,
   CircularProgress,
-  Popper,
-  type PopperProps,
   Slider,
-  styled,
   TextField,
   Tooltip,
   Typography
@@ -35,6 +30,7 @@ import {
   updatePassScore
 } from "src/utils/questionnaireBuilderUtils";
 import BackButton from "../generics/back-button";
+import TagsAutocomplete from "../generics/tags-autocomplete";
 import NewQuestionCard from "./new-question-card";
 import QuestionnairePreview from "./questionnaire-preview";
 
@@ -179,11 +175,6 @@ const NewQuestionnaireBuilder = () => {
       setLoading(false);
     }
   };
-  const CustomPopper = styled((props: PopperProps) => <Popper {...props} placement="bottom" />)({
-    "& .MuiAutocomplete-paper": {
-      marginTop: "10px"
-    }
-  });
 
   return (
     <>
@@ -228,51 +219,13 @@ const NewQuestionnaireBuilder = () => {
               {strings.questionnaireTags.title}
             </Typography>
             <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-              <Autocomplete
-                multiple
-                disableClearable
-                freeSolo
-                PopperComponent={CustomPopper}
-                options={existingTags}
-                sx={{ width: "100%" }}
-                inputValue={tag}
-                value={questionnaire.tags || []}
-                onInputChange={handleTagChange}
-                onChange={handleSelectedTagChange}
-                renderInput={(params) => {
-                  return (
-                    <TextField
-                      {...params}
-                      sx={{ width: "100%" }}
-                      onKeyDown={handleEnter}
-                      label={strings.questionnaireTags.title}
-                    />
-                  );
-                }}
-                renderOption={(props, option, { selected }) => (
-                  <li
-                    {...props}
-                    style={{ display: "flex", alignItems: "center" }}
-                    key={`tags-option-${option}`}
-                  >
-                    <Checkbox
-                      sx={{
-                        marginRight: 2
-                      }}
-                      checked={selected}
-                    />
-                    <Box
-                      minWidth="5px"
-                      style={{ marginRight: "10px" }}
-                      component="span"
-                      sx={{
-                        height: 40,
-                        borderRadius: "5px"
-                      }}
-                    />
-                    {option}
-                  </li>
-                )}
+              <TagsAutocomplete
+                tags={existingTags}
+                tag={tag}
+                selectedTags={questionnaire.tags || []}
+                handleTagChange={handleTagChange}
+                handleSelectedTagChange={handleSelectedTagChange}
+                handleEnter={handleEnter}
               />
             </Box>
           </Box>

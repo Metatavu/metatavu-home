@@ -9,10 +9,7 @@ import {
   Grid,
   IconButton,
   Modal,
-  Popper,
-  type PopperProps,
   Snackbar,
-  styled,
   TextField,
   Typography,
   useTheme
@@ -23,6 +20,7 @@ import { errorAtom } from "src/atoms/error";
 import type { SoftwareRegistry, User } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
+import TagsAutocomplete from "../generics/tags-autocomplete";
 
 /**
  * AddSoftwareModal component props
@@ -165,11 +163,6 @@ const AddSoftwareModal = ({
   };
 
   const isFormValid = Boolean(software.name.trim() && software.image.trim() && software.url.trim());
-  const CustomPopper = styled((props: PopperProps) => <Popper {...props} placement="bottom" />)({
-    "& .MuiAutocomplete-paper": {
-      marginTop: "10px"
-    }
-  });
 
   return (
     <>
@@ -260,49 +253,13 @@ const AddSoftwareModal = ({
                 md: 6
               }}
             >
-              <Autocomplete
-                multiple
-                disableClearable
-                freeSolo
-                PopperComponent={CustomPopper}
-                options={tags}
-                sx={{ width: "100%" }}
-                inputValue={tag}
-                value={selectedTags}
-                onInputChange={handleTagChange}
-                onChange={handleSelectedTagChange}
-                renderInput={(tagProps) => (
-                  <TextField
-                    {...tagProps}
-                    sx={{ width: "100%" }}
-                    onKeyDown={handleEnter}
-                    label={strings.softwareRegistry.tags}
-                  />
-                )}
-                renderOption={(props, option, { selected }) => (
-                  <li
-                    {...props}
-                    style={{ display: "flex", alignItems: "center" }}
-                    key={`tags-option-${option}`}
-                  >
-                    <Checkbox
-                      sx={{
-                        marginRight: 2
-                      }}
-                      checked={selected}
-                    />
-                    <Box
-                      minWidth="5px"
-                      style={{ marginRight: "10px" }}
-                      component="span"
-                      sx={{
-                        height: 40,
-                        borderRadius: "5px"
-                      }}
-                    />
-                    {option}
-                  </li>
-                )}
+              <TagsAutocomplete
+                tags={tags}
+                tag={tag}
+                selectedTags={selectedTags}
+                handleTagChange={handleTagChange}
+                handleSelectedTagChange={handleSelectedTagChange}
+                handleEnter={handleEnter}
               />
             </Grid>
             <Grid size={12}>

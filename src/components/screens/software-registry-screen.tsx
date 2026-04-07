@@ -1,7 +1,4 @@
-import { Create } from "@mui/icons-material";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
-import GridViewIcon from "@mui/icons-material/GridView";
-import ListViewIcon from "@mui/icons-material/List";
 import {
   Alert,
   Box,
@@ -30,7 +27,6 @@ import SearchBar from "../generics/search-bar";
 import AddSoftwareModal from "../software-registry/AddSoftwareModal";
 import Content from "../software-registry/myContent";
 import Recommendations from "../software-registry/Recommendations";
-import Sidebar from "../software-registry/Sidebar";
 
 /**
  * Software registry screen component

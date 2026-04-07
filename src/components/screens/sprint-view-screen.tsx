@@ -37,24 +37,6 @@ import SearchBar from "../generics/search-bar";
 import createSprintViewProjectsColumns from "../sprint-view-table/sprint-projects-columns";
 
 /**
- * Gets the filter label based on the filter type
- *
- * @param filterType - The current filter type
- * @returns The appropriate label string
- */
-const getFilterLabel = (filterType: SprintViewFilterType): string => {
-  if (filterType === SprintViewFilterTypes.project) {
-    return strings.sprint.project;
-  }
-  if (filterType === SprintViewFilterTypes.user) {
-    return strings.sprint.user;
-  }
-  if (filterType === SprintViewFilterTypes.clear) {
-    return `${strings.sprint.project} / ${strings.sprint.user}`;
-  }
-  return "";
-};
-/**
  * Sprint view screen component
  */
 const SprintViewScreen = () => {
@@ -67,7 +49,6 @@ const SprintViewScreen = () => {
     selectedProject,
     handleFilterChange,
     handleRowClick,
-    handleClearSearch,
     setSearchQuery,
     filterAllocations
   } = useSprintViewHandlers();
@@ -109,8 +90,6 @@ const SprintViewScreen = () => {
       fetchProjectDetails();
     }
   }, [loggedInUser, fetchProjectDetails]);
-
-  const filterLabel = getFilterLabel(filterType);
 
   return (
     <>
