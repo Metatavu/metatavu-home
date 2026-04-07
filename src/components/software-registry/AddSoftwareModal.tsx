@@ -4,7 +4,6 @@ import {
   Autocomplete,
   Box,
   Button,
-  Checkbox,
   Chip,
   Grid,
   IconButton,

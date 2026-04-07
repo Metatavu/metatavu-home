@@ -215,9 +215,6 @@ const NewQuestionnaireBuilder = () => {
           />
 
           <Box sx={{ mb: 4 }}>
-            <Typography variant="h6" gutterBottom>
-              {strings.questionnaireTags.title}
-            </Typography>
             <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
               <TagsAutocomplete
                 tags={existingTags}
