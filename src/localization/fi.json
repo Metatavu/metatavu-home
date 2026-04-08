@@ -160,7 +160,10 @@
     "loading": "Ladataan...",
     "errorUnknownUser": "Tuntematon käyttäjä",
     "errorCreatingSoftware": "Virhe ohjelmiston luomisessa",
-    "errorFetchingSoftwareToList": "Virhe ohjelmistojen hakemisessa listattavaksi"
+    "errorFetchingSoftwareToList": "Virhe ohjelmistojen hakemisessa listattavaksi",
+    "editApplication": "Muokkaa sovellusta",
+    "submitApplication": "Lähetä sovellus",
+    "updateApplication": "Päivitä sovellus"
   },
   "softwareStatus": {
     "all": "Kaikki",

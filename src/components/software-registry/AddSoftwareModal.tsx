@@ -194,7 +194,9 @@ const AddSoftwareModal = ({
             <CloseIcon />
           </IconButton>
           <Typography variant="h6" marginBottom={4}>
-            {softwareData ? "Edit Software" : strings.softwareRegistry.addSoftware}
+            {softwareData
+              ? strings.softwareRegistry.editApplication
+              : strings.softwareRegistry.addApplication}
           </Typography>
           <Grid container spacing={2} sx={{ flexGrow: 1 }}>
             <Grid
@@ -411,7 +413,9 @@ const AddSoftwareModal = ({
                 }}
                 disabled={disabled || nameExists || !isFormValid}
               >
-                {softwareData ? "update" : "Submit"}
+                {softwareData
+                  ? strings.softwareRegistry.updateApplication
+                  : strings.softwareRegistry.submitApplication}
               </Button>
             </Grid>
           </Grid>
