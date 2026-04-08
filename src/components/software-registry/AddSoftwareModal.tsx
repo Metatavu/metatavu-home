@@ -64,7 +64,7 @@ const AddSoftwareModal = ({
   const { usersApi } = useLambdasApi();
   const setError = useSetAtom(errorAtom);
   const [userList, setUserList] = useState<User[]>([]);
-  const [software, setSoftware] = useState<SoftwareRegistry>(softwareData || initialSoftwareState);
+  const [software, setSoftware] = useState(initialSoftwareState);
   const [tags, setTags] = useState("");
   const [nameExists, setNameExists] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -73,6 +73,14 @@ const AddSoftwareModal = ({
   /**
    * Fetch the list of users when the modal opens.
    */
+  useEffect(() => {
+    if (softwareData) {
+      setSoftware(softwareData);
+    } else {
+      setSoftware(initialSoftwareState);
+    }
+  }, [softwareData]);
+
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -103,7 +111,9 @@ const AddSoftwareModal = ({
    * Handle form field reset to initial values.
    */
   const resetForm = () => {
-    setSoftware(initialSoftwareState);
+    if (!softwareData) {
+      setSoftware(initialSoftwareState);
+    }
     setTags("");
     setNameExists(false);
   };
@@ -184,14 +194,15 @@ const AddSoftwareModal = ({
             <CloseIcon />
           </IconButton>
           <Typography variant="h6" marginBottom={4}>
-            {strings.softwareRegistry.addSoftware}
+            {softwareData ? "Edit Software" : strings.softwareRegistry.addSoftware}
           </Typography>
           <Grid container spacing={2} sx={{ flexGrow: 1 }}>
             <Grid
               size={{
                 xs: 12,
                 md: 6
-              }}>
+              }}
+            >
               <TextField
                 fullWidth
                 label={strings.softwareRegistry.name}
@@ -211,7 +222,8 @@ const AddSoftwareModal = ({
               size={{
                 xs: 12,
                 md: 6
-              }}>
+              }}
+            >
               <TextField
                 fullWidth
                 label={strings.softwareRegistry.imageURL}
@@ -226,7 +238,8 @@ const AddSoftwareModal = ({
               size={{
                 xs: 12,
                 md: 6
-              }}>
+              }}
+            >
               <TextField
                 fullWidth
                 label={strings.softwareRegistry.URLAddress}
@@ -398,7 +411,7 @@ const AddSoftwareModal = ({
                 }}
                 disabled={disabled || nameExists || !isFormValid}
               >
-                {strings.softwareRegistry.submit}
+                {softwareData ? "update" : "Submit"}
               </Button>
             </Grid>
           </Grid>
