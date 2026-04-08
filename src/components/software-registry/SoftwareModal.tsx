@@ -23,7 +23,7 @@ import strings from "src/localization/strings";
 /**
  * AddSoftwareModal component props
  */
-interface AddSoftwareModalProps {
+interface SoftwareModalProps {
   open: boolean;
   handleClose: () => void;
   handleSave: (software: SoftwareRegistry) => void;
@@ -37,17 +37,17 @@ interface AddSoftwareModalProps {
  * This component renders a modal dialog for adding or editing a software entry.
  * It provides form fields for software entry.
  *
- * @param {AddSoftwareModalProps} props - The props for the AddSoftwareModal component.
+ * @param {SoftwareModalProps} props - The props for the AddSoftwareModal component.
  * @returns The rendered modal component.
  */
-const AddSoftwareModal = ({
+const SoftwareModal = ({
   open,
   handleClose,
   handleSave,
   disabled,
   softwareData,
   existingSoftwareList
-}: AddSoftwareModalProps) => {
+}: SoftwareModalProps) => {
   const initialSoftwareState: SoftwareRegistry = {
     id: "",
     name: "",
@@ -453,4 +453,4 @@ const AddSoftwareModal = ({
   );
 };
 
-export default AddSoftwareModal;
+export default SoftwareModal;

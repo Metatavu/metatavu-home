@@ -23,7 +23,7 @@ import strings from "src/localization/strings";
 import { formatDate } from "src/utils/time-utils";
 import { getFullUserName } from "src/utils/user-name-utils";
 import BackButton from "../generics/back-button";
-import AddSoftwareModal from "./AddSoftwareModal";
+import AddSoftwareModal from "./SoftwareModal";
 
 /**
  * Component for displaying detailed information about a specific software entry.
@@ -252,7 +252,8 @@ const SoftwareDetails = () => {
           size={{
             xs: 12,
             md: 6
-          }}>
+          }}
+        >
           <Typography variant="h4" gutterBottom>
             {strings.softwareRegistry.description}
           </Typography>
@@ -273,7 +274,8 @@ const SoftwareDetails = () => {
           size={{
             xs: 12,
             md: 6
-          }}>
+          }}
+        >
           <Typography variant="h4" gutterBottom>
             {strings.softwareRegistry.review}
           </Typography>

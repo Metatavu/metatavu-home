@@ -23,10 +23,10 @@ import { useLambdasApi } from "src/hooks/use-api";
 import useCreateSoftware from "src/hooks/use-create-software";
 import strings from "src/localization/strings";
 import BackButton from "../generics/back-button";
-import AddSoftwareModal from "../software-registry/AddSoftwareModal";
 import Content from "../software-registry/myContent";
 import Recommendations from "../software-registry/Recommendations";
 import Sidebar from "../software-registry/Sidebar";
+import AddSoftwareModal from "../software-registry/SoftwareModal";
 
 /**
  * Software registry screen component
