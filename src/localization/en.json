@@ -160,7 +160,10 @@
     "loading": "Loading...",
     "errorUnknownUser": "Unknown user",
     "errorCreatingSoftware": "Error creating software:",
-    "errorFetchingSoftwareToList": "Error fetching software to list:"
+    "errorFetchingSoftwareToList": "Error fetching software to list:",
+    "editApplication": "Edit application",
+    "submitApplication": "Submit Application",
+    "updateApplication": "Update Application"
   },
   "softwareStatus": {
     "all": "All",

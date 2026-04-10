@@ -190,6 +190,9 @@ export interface Localized extends LocalizedStringsMethods {
     errorUnknownUser: string;
     errorCreatingSoftware: string;
     errorFetchingSoftwareToList: string;
+    editApplication: string;
+    submitApplication: string;
+    updateApplication: string;
   };
 
   /**
