@@ -25,6 +25,11 @@ import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
 import BackButton from "../generics/back-button";
 
+/**
+ * Extracts the user d from a UserFlextime user object.
+ * @param user- The user object from UserFlextime
+ * @returns The user ID if available
+ */
 const getUserId = (user: UserFlextime["user"]): string | undefined => {
   return (user as any).id;
 };
@@ -36,6 +41,7 @@ const EmployeeFlextimeScreen = () => {
   const { usersApi, resourceAllocationsApi } = useLambdasApi();
   const [usersFlextime, setUsersFlextime] = useState<UserFlextime[]>([]);
   const [loading, setLoading] = useState(false);
+  const [updatingUserId, setUpdatingUserId] = useState<string | null>(null);
   const setError = useSetAtom(errorAtom);
   const currentDate = DateTime.now().toLocaleString(DateTime.DATE_FULL);
   const theme = useTheme();
@@ -64,35 +70,28 @@ const EmployeeFlextimeScreen = () => {
       setLoading(false);
     }
   };
-
+  /**
+   * update the active status of a user.
+   * @param userId The ID of the user to update
+   * @param active Whether the user should be active or inactive
+   * @returns
+   */
   const handleStatusChange = async (userId: string, active: boolean) => {
     try {
       if (!usersApi) return;
+      setUpdatingUserId(userId);
       await usersApi.updateUserStatus({
         userId,
         updateUserStatusRequest: {
           isActive: active
         }
       });
-      setUsersFlextime((prev) =>
-        prev.map((u) =>
-          getUserId(u.user) === userId
-            ? {
-                ...u,
-                user: {
-                  ...u.user,
-                  attributes: {
-                    ...u.user.attributes,
-                    isActive: active
-                  }
-                }
-              }
-            : u
-        )
-      );
+      await loadFlextimeData();
     } catch {
       setError("Failed to update user status");
-      loadFlextimeData();
+      await loadFlextimeData();
+    } finally {
+      setUpdatingUserId(null);
     }
   };
   /**
@@ -233,31 +232,15 @@ const EmployeeFlextimeScreen = () => {
                   )
                 )
                 .map((userData, index) => {
-                  const isActive = userData.user.attributes?.isActive !== false;
+                  const isActive = !!userData.user.attributes?.isActive;
                   return (
-                    <TableRow
-                      key={userData.user.attributes?.severaUserId || index}
-                      hover
-                      sx={{
-                        backgroundColor:
-                          index % 2 === 0
-                            ? theme.palette.background.default
-                            : theme.palette.background.paper,
-                        borderBottom: `3px solid ${theme.palette.divider}`
-                      }}
-                    >
+                    <TableRow key={userData.user.attributes?.severaUserId || index}>
                       <TableCell>
-                        <Box>
-                          <Typography variant="body1" fontWeight="medium">
-                            {userData.user.firstName} {userData.user.lastName}
-                          </Typography>
-                        </Box>
+                        {userData.user.firstName} {userData.user.lastName}
                       </TableCell>
 
                       <TableCell>
-                        <Typography variant="body2">
-                          {userData.user.email || strings.employeeFlextime.notAvailable}
-                        </Typography>
+                        {userData.user.email || strings.employeeFlextime.notAvailable}
                       </TableCell>
 
                       <TableCell align="right">
@@ -285,6 +268,7 @@ const EmployeeFlextimeScreen = () => {
                       <TableCell align="center">
                         <Select
                           value={isActive ? "active" : "inactive"}
+                          disabled={updatingUserId === getUserId(userData.user)}
                           onChange={(e) => {
                             const userId = getUserId(userData.user);
                             if (!userId) return;
