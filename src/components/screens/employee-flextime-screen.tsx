@@ -2,10 +2,11 @@ import {
   Box,
   Card,
   CardContent,
-  Chip,
   CircularProgress,
   Container,
+  MenuItem,
   Paper,
+  Select,
   Table,
   TableBody,
   TableCell,
@@ -25,12 +26,22 @@ import strings from "src/localization/strings";
 import BackButton from "../generics/back-button";
 
 /**
+ * Extracts the user d from a UserFlextime user object.
+ * @param user- The user object from UserFlextime
+ * @returns The user ID if available
+ */
+const getUserId = (user: UserFlextime["user"]): string | undefined => {
+  return (user as any).id;
+};
+
+/**
  * Full-screen view for displaying flextime data for all employees.
  */
 const EmployeeFlextimeScreen = () => {
-  const { resourceAllocationsApi } = useLambdasApi();
+  const { usersApi, resourceAllocationsApi } = useLambdasApi();
   const [usersFlextime, setUsersFlextime] = useState<UserFlextime[]>([]);
   const [loading, setLoading] = useState(false);
+  const [updatingUserId, setUpdatingUserId] = useState<string | null>(null);
   const setError = useSetAtom(errorAtom);
   const currentDate = DateTime.now().toLocaleString(DateTime.DATE_FULL);
   const theme = useTheme();
@@ -59,12 +70,34 @@ const EmployeeFlextimeScreen = () => {
       setLoading(false);
     }
   };
-
   /**
-   * Formats a flextime balance in hours with appropriate sign.
-   * @param hours - The number of hours.
+   * update the active status of a user.
+   * @param userId The ID of the user to update
+   * @param active Whether the user should be active or inactive
+   * @returns
+   */
+  const handleStatusChange = async (userId: string, active: boolean) => {
+    try {
+      if (!usersApi) return;
+      setUpdatingUserId(userId);
+      await usersApi.updateUserStatus({
+        userId,
+        updateUserStatusRequest: {
+          isActive: active
+        }
+      });
+      await loadFlextimeData();
+    } catch {
+      setError("Failed to update user status");
+      await loadFlextimeData();
+    } finally {
+      setUpdatingUserId(null);
+    }
+  };
+  /**
    * @returns A string representation of the formatted balance.
    */
+
   const formatFlextimeHours = (hours: number | null | undefined): string => {
     if (hours === null || hours === undefined) return strings.employeeFlextime.notAvailable;
     const sign = hours >= 0 ? "+" : "";
@@ -198,73 +231,67 @@ const EmployeeFlextimeScreen = () => {
                     `${b.user.lastName} ${b.user.firstName}`
                   )
                 )
-                .map((userData, index) => (
-                  <TableRow
-                    key={userData.user.attributes?.severaUserId || index}
-                    hover
-                    sx={{
-                      backgroundColor:
-                        index % 2 === 0
-                          ? theme.palette.background.default
-                          : theme.palette.background.paper,
-                      borderBottom: `3px solid ${theme.palette.divider}`
-                    }}
-                  >
-                    <TableCell>
-                      <Box>
-                        <Typography variant="body1" fontWeight="medium">
-                          {userData.user.firstName} {userData.user.lastName}
-                        </Typography>
-                      </Box>
-                    </TableCell>
-                    <TableCell>
-                      <Typography variant="body2">
+                .map((userData, index) => {
+                  const isActive = !!userData.user.attributes?.isActive;
+                  return (
+                    <TableRow key={userData.user.attributes?.severaUserId || index}>
+                      <TableCell>
+                        {userData.user.firstName} {userData.user.lastName}
+                      </TableCell>
+
+                      <TableCell>
                         {userData.user.email || strings.employeeFlextime.notAvailable}
-                      </Typography>
-                    </TableCell>
-                    <TableCell align="right">
-                      <Typography
-                        variant="h6"
-                        sx={{
-                          color: getFlextimeColor(userData.flextime?.totalFlextimeBalance),
-                          fontWeight: "bold"
-                        }}
-                      >
-                        {formatFlextimeHours(userData.flextime?.totalFlextimeBalance)}
-                      </Typography>
-                    </TableCell>
-                    <TableCell align="right">
-                      <Typography
-                        variant="h6"
-                        sx={{
-                          color: getFlextimeColor(userData.flextime?.monthFlextimeBalance),
-                          fontWeight: "bold"
-                        }}
-                      >
-                        {formatFlextimeHours(userData.flextime?.monthFlextimeBalance)}
-                      </Typography>
-                    </TableCell>
-                    <TableCell align="center">
-                      <Chip
-                        label={
-                          userData.user.attributes?.isActive
-                            ? strings.employeeFlextime.active
-                            : strings.employeeFlextime.inactive
-                        }
-                        color={userData.user.attributes?.isActive ? "success" : "default"}
-                        variant="outlined"
-                        sx={
-                          userData.user.attributes?.isActive
-                            ? {}
-                            : {
-                                borderColor: theme.palette.action.disabled,
-                                color: theme.palette.text.disabled
-                              }
-                        }
-                      />
-                    </TableCell>
-                  </TableRow>
-                ))}
+                      </TableCell>
+
+                      <TableCell align="right">
+                        <Typography
+                          variant="h6"
+                          sx={{
+                            color: getFlextimeColor(userData.flextime?.totalFlextimeBalance),
+                            fontWeight: "bold"
+                          }}
+                        >
+                          {formatFlextimeHours(userData.flextime?.totalFlextimeBalance)}
+                        </Typography>
+                      </TableCell>
+                      <TableCell align="right">
+                        <Typography
+                          variant="h6"
+                          sx={{
+                            color: getFlextimeColor(userData.flextime?.monthFlextimeBalance),
+                            fontWeight: "bold"
+                          }}
+                        >
+                          {formatFlextimeHours(userData.flextime?.monthFlextimeBalance)}
+                        </Typography>
+                      </TableCell>
+                      <TableCell align="center">
+                        <Select
+                          value={isActive ? "active" : "inactive"}
+                          disabled={updatingUserId === getUserId(userData.user)}
+                          onChange={(e) => {
+                            const userId = getUserId(userData.user);
+                            if (!userId) return;
+
+                            handleStatusChange(userId, e.target.value === "active");
+                          }}
+                          size="small"
+                          sx={{
+                            minWidth: 120,
+                            "& .MuiSelect-select": {
+                              color: isActive
+                                ? theme.palette.success.main
+                                : theme.palette.text.disabled
+                            }
+                          }}
+                        >
+                          <MenuItem value="active">{strings.employeeFlextime.active}</MenuItem>
+                          <MenuItem value="inactive">{strings.employeeFlextime.inactive}</MenuItem>
+                        </Select>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
             </TableBody>
           </Table>
         </TableContainer>
