@@ -28,6 +28,7 @@ import BackButton from "../generics/back-button";
 const getUserId = (user: UserFlextime["user"]): string | undefined => {
   return (user as any).id;
 };
+
 /**
  * Full-screen view for displaying flextime data for all employees.
  */
