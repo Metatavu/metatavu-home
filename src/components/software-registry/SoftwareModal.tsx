@@ -23,7 +23,7 @@ import strings from "src/localization/strings";
 /**
  * AddSoftwareModal component props
  */
-interface AddSoftwareModalProps {
+interface SoftwareModalProps {
   open: boolean;
   handleClose: () => void;
   handleSave: (software: SoftwareRegistry) => void;
@@ -37,17 +37,17 @@ interface AddSoftwareModalProps {
  * This component renders a modal dialog for adding or editing a software entry.
  * It provides form fields for software entry.
  *
- * @param {AddSoftwareModalProps} props - The props for the AddSoftwareModal component.
+ * @param {SoftwareModalProps} props - The props for the AddSoftwareModal component.
  * @returns The rendered modal component.
  */
-const AddSoftwareModal = ({
+const SoftwareModal = ({
   open,
   handleClose,
   handleSave,
   disabled,
   softwareData,
   existingSoftwareList
-}: AddSoftwareModalProps) => {
+}: SoftwareModalProps) => {
   const initialSoftwareState: SoftwareRegistry = {
     id: "",
     name: "",
@@ -64,7 +64,7 @@ const AddSoftwareModal = ({
   const { usersApi } = useLambdasApi();
   const setError = useSetAtom(errorAtom);
   const [userList, setUserList] = useState<User[]>([]);
-  const [software, setSoftware] = useState<SoftwareRegistry>(softwareData || initialSoftwareState);
+  const [software, setSoftware] = useState<SoftwareRegistry>(initialSoftwareState);
   const [tags, setTags] = useState("");
   const [nameExists, setNameExists] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -73,6 +73,14 @@ const AddSoftwareModal = ({
   /**
    * Fetch the list of users when the modal opens.
    */
+  useEffect(() => {
+    if (softwareData) {
+      setSoftware(softwareData);
+    } else {
+      setSoftware(initialSoftwareState);
+    }
+  }, [softwareData]);
+
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -104,7 +112,9 @@ const AddSoftwareModal = ({
    * Handle form field reset to initial values.
    */
   const resetForm = () => {
-    setSoftware(initialSoftwareState);
+    if (!softwareData) {
+      setSoftware(initialSoftwareState);
+    }
     setTags("");
     setNameExists(false);
   };
@@ -185,7 +195,9 @@ const AddSoftwareModal = ({
             <CloseIcon />
           </IconButton>
           <Typography variant="h6" marginBottom={4}>
-            {strings.softwareRegistry.addSoftware}
+            {softwareData
+              ? strings.softwareRegistry.editApplication
+              : strings.softwareRegistry.addApplication}
           </Typography>
           <Grid container spacing={2} sx={{ flexGrow: 1 }}>
             <Grid
@@ -402,7 +414,9 @@ const AddSoftwareModal = ({
                 }}
                 disabled={disabled || nameExists || !isFormValid}
               >
-                {strings.softwareRegistry.submit}
+                {softwareData
+                  ? strings.softwareRegistry.updateApplication
+                  : strings.softwareRegistry.submitApplication}
               </Button>
             </Grid>
           </Grid>
@@ -440,4 +454,4 @@ const AddSoftwareModal = ({
   );
 };
 
-export default AddSoftwareModal;
+export default SoftwareModal;

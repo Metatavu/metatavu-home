@@ -23,7 +23,7 @@ import strings from "src/localization/strings";
 import { formatDate } from "src/utils/time-utils";
 import { getFullUserName } from "src/utils/user-name-utils";
 import BackButton from "../generics/back-button";
-import AddSoftwareModal from "./AddSoftwareModal";
+import AddSoftwareModal from "./SoftwareModal";
 
 /**
  * Component for displaying detailed information about a specific software entry.

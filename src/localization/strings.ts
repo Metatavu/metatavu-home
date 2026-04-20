@@ -205,6 +205,9 @@ export interface Localized extends LocalizedStringsMethods {
     softwareDetailsAddUserFailed: string;
     softwareDetailsUpdateFailed: string;
     recommendationsFetchUserFailed: string;
+    editApplication: string;
+    submitApplication: string;
+    updateApplication: string;
   };
 
   /**

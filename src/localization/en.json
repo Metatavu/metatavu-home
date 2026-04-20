@@ -175,7 +175,10 @@
     "softwareDetailsRemoveUserFailed": "Error removing user from software",
     "softwareDetailsAddUserFailed": "Error adding user to software",
     "softwareDetailsUpdateFailed": "Error updating software",
-    "recommendationsFetchUserFailed": "Error fetching user data"
+    "recommendationsFetchUserFailed": "Error fetching user data",
+    "editApplication": "Edit application",
+    "submitApplication": "Submit Application",
+    "updateApplication": "Update Application"
   },
   "softwareStatus": {
     "all": "All",

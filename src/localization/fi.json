@@ -175,7 +175,10 @@
     "softwareDetailsRemoveUserFailed": "Virhe käyttäjän poistamisessa sovelluksesta",
     "softwareDetailsAddUserFailed": "Virhe käyttäjän lisäämisessä sovellukseen",
     "softwareDetailsUpdateFailed": "Virhe sovelluksen päivittämisessä",
-    "recommendationsFetchUserFailed": "Virhe käyttäjätietojen hakemisessa"
+    "recommendationsFetchUserFailed": "Virhe käyttäjätietojen hakemisessa",
+    "editApplication": "Muokkaa sovellusta",
+    "submitApplication": "Lähetä sovellus",
+    "updateApplication": "Päivitä sovellus"
   },
   "softwareStatus": {
     "all": "Kaikki",

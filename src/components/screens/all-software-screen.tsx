@@ -33,8 +33,8 @@ import strings from "src/localization/strings";
 import { DeleteItemType } from "src/types/index";
 import DeleteConfirmationDialog from "../contexts/delete-confirmation-dialog";
 import BackButton from "../generics/back-button";
-import AddSoftwareModal from "../software-registry/AddSoftwareModal";
 import Content from "../software-registry/allContent";
+import AddSoftwareModal from "../software-registry/SoftwareModal";
 
 /**
  * All software screen component
