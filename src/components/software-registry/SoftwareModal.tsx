@@ -86,8 +86,9 @@ const SoftwareModal = ({
       try {
         const users = await usersApi.listUsers();
         setUserList(users);
-      } catch (error) {
-        setError(`${strings.error.fetchFailedGeneral}: ${error}`);
+      } catch (error: any) {
+        const errorMessage = await error?.response?.json();
+        setError(`${strings.error.fetchFailedGeneral}: ${errorMessage?.message || error}`);
       }
     };
 

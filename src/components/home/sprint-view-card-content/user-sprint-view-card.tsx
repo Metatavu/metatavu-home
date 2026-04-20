@@ -52,8 +52,11 @@ const SprintViewCardContent = () => {
 
         setResourceAllocations(fetchedResourceAllocations);
         setWorkHours(fetchedWorkHours);
-      } catch (error) {
-        setError(`${strings.sprintRequestError.fetchResourceAllocationsError}, ${error}`);
+      } catch (error: any) {
+        const errorMessage = await error.response.json();
+        setError(
+          `${strings.sprintRequestError.fetchResourceAllocationsError}, ${errorMessage.message}`
+        );
       }
     }
     setLoading(false);

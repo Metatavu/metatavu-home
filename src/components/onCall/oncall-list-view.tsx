@@ -52,8 +52,9 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
   const handleCheckboxChange = async (week: number, currentPaid: boolean) => {
     try {
       await updatePaidStatus(selectedDate.year, week, currentPaid);
-    } catch {
-      setError(strings.oncall.errorUpdatingPaidStatus);
+    } catch (error: any) {
+      const errorMessage = await error.response?.json();
+      setError(`${strings.oncall.errorUpdatingPaidStatus}: ${errorMessage?.message}`);
     }
   };
 
