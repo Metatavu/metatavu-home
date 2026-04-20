@@ -479,7 +479,7 @@
     "uploadImage": "Upload image",
     "imagePreview": "Preview",
     "labelTitle": "Title",
-    "labelPath": "Path",
+    "labelPath": "Custom path",
     "labelTags": "Tags",
     "labelImage": "Image URL",
     "labelDescription": "Description",
