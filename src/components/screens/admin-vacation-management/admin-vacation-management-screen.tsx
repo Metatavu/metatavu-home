@@ -69,8 +69,8 @@ const AdminVacationManagementScreen = () => {
         setLoadingUsers(true);
         const fetchedUsers = await usersApi.listUsers();
         setUsers(fetchedUsers);
-      } catch (error) {
-        const errorMessage = await (error as any)?.response?.json();
+      } catch (error:any) {
+        const errorMessage = await error?.response?.json();
         setError(`${strings.vacationRequestError.failedToLoad}: ${errorMessage?.message || error}`);
       } finally {
         setLoadingUsers(false);
@@ -195,8 +195,8 @@ const AdminVacationManagementScreen = () => {
       );
 
       handleCloseDialog();
-    } catch (error) {
-      const errorMessage = await (error as any)?.response?.json();
+    } catch (error:any) {
+      const errorMessage = await error?.response?.json();
       setError(`${strings.vacationRequestError.failedToLoad}: ${errorMessage?.message || error}`);
     } finally {
       setSaving(false);

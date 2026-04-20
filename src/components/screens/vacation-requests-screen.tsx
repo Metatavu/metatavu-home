@@ -112,8 +112,8 @@ const VacationRequestsScreen = () => {
         });
       }
       setVacationRequests(fetchedVacationRequests);
-    } catch (error) {
-      const errorMessage = await (error as any)?.response?.json();
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
       setError(
         `${strings.vacationRequestError.fetchRequestError}: ${errorMessage?.message || error}`
       );
@@ -158,8 +158,8 @@ const VacationRequestsScreen = () => {
       }
 
       return vacationRequest;
-    } catch (error) {
-      const errorMessage = await (error as any)?.response?.json();
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
       setError(
         `${strings.vacationRequestError.fetchRequestError}: ${errorMessage?.message || error}`
       );
@@ -187,8 +187,8 @@ const VacationRequestsScreen = () => {
             updatedVacationRequests = updatedVacationRequests.filter(
               (vacationRequest) => vacationRequest.id !== selectedRowId
             );
-          } catch (error) {
-            const errorMessage = await (error as any)?.response?.json();
+          } catch (error: any) {
+            const errorMessage = await error?.response?.json();
             setError(
               `${strings.vacationRequestError.deleteRequestError}: ${errorMessage?.message || error}`
             );
@@ -242,8 +242,8 @@ const VacationRequestsScreen = () => {
         }
       });
       setVacationRequests([createdRequest, ...vacationRequests]);
-    } catch (error) {
-      const errorMessage = await (error as any)?.response?.json();
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
       setError(
         `${strings.vacationRequestError.createRequestError}: ${errorMessage?.message || error}`
       );
@@ -287,8 +287,8 @@ const VacationRequestsScreen = () => {
         }
       });
       setVacationRequests([createdRequest, ...vacationRequests]);
-    } catch (error) {
-      const errorMessage = await (error as any)?.response?.json();
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
       setError(
         `${strings.vacationRequestError.createRequestError}: ${errorMessage?.message || error}`
       );
@@ -360,8 +360,8 @@ const VacationRequestsScreen = () => {
         vacationRequest.id === updatedRequest.id ? updatedRequest : vacationRequest
       );
       setVacationRequests(updatedVacationRequests);
-    } catch (error) {
-      const errorMessage = await (error as any)?.response?.json();
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
       setError(
         `${strings.vacationRequestError.updateRequestError}: ${errorMessage?.message || error}`
       );
@@ -439,8 +439,8 @@ const VacationRequestsScreen = () => {
       // Refresh user data to get updated remaining vacation days.
       const updatedUser = await usersApi.findUser({ userId: loggedInUser.id });
       setUsers((prevUsers) => prevUsers.map((u) => (u.id === updatedUser.id ? updatedUser : u)));
-    } catch (error) {
-      const errorMessage = await (error as any)?.response?.json();
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
       setError(
         `${strings.vacationRequestError.updateRequestError}: ${errorMessage?.message || error}`
       );

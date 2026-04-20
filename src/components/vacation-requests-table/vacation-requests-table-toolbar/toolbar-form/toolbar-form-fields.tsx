@@ -78,8 +78,8 @@ const ToolbarFormFields = ({
         });
         setWorkWeek(contractedWeekToBoolean(data.contractedWeek));
         setError(null);
-      } catch (error:any) {
-        const errorMessage = (error as any)?.response?.json();
+      } catch (error: any) {
+        const errorMessage = await error?.response?.json();
         setError(`${strings.error.fetchWorkWeekFailed}: ${errorMessage?.message || error}`);
         setWorkWeek([true, true, true, true, true, false, false]);
       }

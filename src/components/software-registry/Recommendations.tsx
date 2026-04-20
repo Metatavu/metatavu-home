@@ -86,8 +86,8 @@ const Recommendations = ({ applications, onAddUser }: RecommendationsProps) => {
       } else {
         console.warn(`User with ID ${userId} not found`);
       }
-    } catch (error) {
-      const errorMessage = await (error as any)?.response?.json();
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
       console.error(
         `${strings.softwareRegistry.recommendationsFetchUserFailed}: ${errorMessage?.message || error}`
       );

@@ -208,7 +208,7 @@ const VacationRequestsTable = ({
     try {
       setRows(createDataGridRows(vacationRequests));
     } catch (error: any) {
-      const errorMessage = (error as any)?.response?.json();
+      const errorMessage = error?.response?.json();
       console.error(
         ` ${strings.vacationRequestError.failedToLoad}: ${errorMessage?.message || error}`
       );

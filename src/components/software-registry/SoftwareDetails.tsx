@@ -67,8 +67,8 @@ const SoftwareDetails = () => {
     try {
       const data = await softwareApi.getSoftwareById({ id });
       setSoftware(data);
-    } catch (error) {
-      const errorMessage = await (error as any)?.response?.json();
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
       setError(
         `${strings.softwareRegistry.softwareDetailsFetchFailed}: ${errorMessage?.message || (error as Error).message}`
       );
@@ -85,8 +85,8 @@ const SoftwareDetails = () => {
     try {
       const fetchedSoftware = await softwareApi.listSoftware();
       setSoftwareList(fetchedSoftware);
-    } catch (error) {
-      const errorMessage = await (error as any)?.response?.json();
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
       setError(
         `${strings.softwareRegistry.errorFetchingSoftwareToList}: ${errorMessage?.message || (error as Error).message}`
       );
@@ -108,8 +108,8 @@ const SoftwareDetails = () => {
         softwareRegistry: { ...software, users: updatedUsers }
       });
       setSoftware({ ...software, users: updatedUsers });
-    } catch (error) {
-      const errorMessage = await (error as any)?.response?.json();
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
       setError(
         `${strings.softwareRegistry.softwareDetailsRemoveUserFailed}: ${errorMessage?.message || (error as Error).message}`
       );
@@ -143,8 +143,8 @@ const SoftwareDetails = () => {
         softwareRegistry: { ...software, users: updatedUsers }
       });
       setSoftware({ ...software, users: updatedUsers });
-    } catch (error) {
-      const errorMessage = await (error as any)?.response?.json();
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
       setError(
         `${strings.softwareRegistry.softwareDetailsAddUserFailed}: ${errorMessage?.message || (error as Error).message}`
       );
@@ -164,8 +164,8 @@ const SoftwareDetails = () => {
       });
       setSoftware(updatedSoftware);
       setIsEditModalOpen(false);
-    } catch (error) {
-      const errorMessage = await (error as any)?.response?.json();
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
       setError(
         `${strings.softwareRegistry.softwareDetailsUpdateFailed}: ${errorMessage?.message || (error as Error).message}`
       );

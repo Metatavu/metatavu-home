@@ -125,8 +125,8 @@ const SoftwareScreen = () => {
     try {
       const fetchedSoftware = await softwareApi.listSoftware();
       setApplications(fetchedSoftware);
-    } catch (error) {
-      const errorMessage = await (error as any)?.response?.json();
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
       setError(`${strings.error.softwareRegistryFetchFailed}: ${errorMessage?.message || error}`);
     } finally {
       setLoading(false);
@@ -158,8 +158,8 @@ const SoftwareScreen = () => {
 
         setApplications((prevApps) => prevApps.map((a) => (a.id === appId ? updatedApp : a)));
       }
-    } catch (error) {
-      const errorMessage = await (error as any)?.response?.json();
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
       setError(`${strings.error.softwareRegistryUpdateFailed}: ${errorMessage?.message || error}`);
     } finally {
       setLoading(false);

@@ -124,6 +124,7 @@ export const validateVacationRequestDays = (
     const errorMessage = isUserAdmin
       ? strings.vacationRequestError.invalidNumberOfDaysAdmin
       : strings.vacationRequestError.invalidNumberOfDaysUser;
+
     return {
       valid: false,
       errorMessage: errorMessage

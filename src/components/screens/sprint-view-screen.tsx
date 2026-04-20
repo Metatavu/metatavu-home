@@ -101,8 +101,8 @@ const SprintViewScreen = () => {
             severaUserId
           });
       setResourceAllocations(fetchedResourceAllocations);
-    } catch (error) {
-      const errorMessage = await (error as any)?.response?.json();
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
       setError(
         `${strings.sprintRequestError.fetchResourceAllocationsError}: ${errorMessage?.message || error}`
       );

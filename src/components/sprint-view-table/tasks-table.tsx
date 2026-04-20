@@ -76,8 +76,8 @@ const TaskTable = ({ filter, project }: Props) => {
         setResourceAllocations(fetchedResourceAllocations);
         setWorkHours(fetchedWorkHours);
         setPhase(fetchedPhases);
-      } catch (error) {
-        const errorMessage = await (error as any)?.response?.json();
+      } catch (error: any) {
+        const errorMessage = await error?.response?.json();
         setError(
           `${strings.sprintRequestError.fetchWorkHoursAndTasksError}: ${errorMessage?.message || error}`
         );
