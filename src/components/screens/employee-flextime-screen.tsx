@@ -30,10 +30,9 @@ import BackButton from "../generics/back-button";
  * @param user- The user object from UserFlextime
  * @returns The user ID if available
  */
-type UserWithId = UserFlextime["user"] & { id: string };
 
-const getUserId = (user: UserFlextime["user"]): string => {
-  return (user as UserWithId).id;
+const getUserId = (user: UserFlextime["user"]): string | undefined => {
+  return (user as any).id ?? user.attributes?.severaUserId;
 };
 
 /**
@@ -75,15 +74,16 @@ const EmployeeFlextimeScreen = () => {
   };
   /**
    * Update the active status of a user.
-   * 
+   *
    * @param userId The ID of the user to update
    * @param active Whether the user should be active or inactive
    */
   const handleStatusChange = async (userId: string, active: boolean) => {
     try {
       if (!usersApi) return;
-      
+
       setUpdatingUserId(userId);
+
       await usersApi.updateUserStatus({
         userId,
         updateUserStatusRequest: {
@@ -107,7 +107,8 @@ const EmployeeFlextimeScreen = () => {
             : user
         )
       );
-    } catch {
+    } catch (error) {
+      console.error(error);
       setError("Failed to update user status");
     } finally {
       setUpdatingUserId(null);
@@ -251,9 +252,10 @@ const EmployeeFlextimeScreen = () => {
                   )
                 )
                 .map((userData, index) => {
-                  const isActive = userData.user.attributes?.isActive ?? true;
+                  const userId = getUserId(userData.user);
+                  const isActive = userData.user.attributes?.isActive ?? false;
                   return (
-                    <TableRow key={userData.user.attributes?.severaUserId || index}>
+                    <TableRow key={userId || index}>
                       <TableCell>
                         {userData.user.firstName} {userData.user.lastName}
                       </TableCell>
@@ -286,10 +288,12 @@ const EmployeeFlextimeScreen = () => {
                       <TableCell align="center">
                         <Select
                           value={isActive ? "active" : "inactive"}
-                          disabled={updatingUserId === getUserId(userData.user)}
+                          disabled={updatingUserId !== null && updatingUserId === userId}
                           onChange={(e) => {
-                            const userId = getUserId(userData.user);
-                            if (!userId) return;
+                            if (!userId) {
+                              console.error("UserID missing", userData.user);
+                              return;
+                            }
 
                             handleStatusChange(userId, e.target.value === "active");
                           }}
