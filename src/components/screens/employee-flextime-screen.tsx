@@ -80,6 +80,7 @@ const EmployeeFlextimeScreen = () => {
   const handleStatusChange = async (userId: string, active: boolean) => {
     try {
       if (!usersApi) return;
+      
       setUpdatingUserId(userId);
       await usersApi.updateUserStatus({
         userId,
