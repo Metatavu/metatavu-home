@@ -75,7 +75,6 @@ const EmployeeFlextimeScreen = () => {
    * 
    * @param userId The ID of the user to update
    * @param active Whether the user should be active or inactive
-   * @returns
    */
   const handleStatusChange = async (userId: string, active: boolean) => {
     try {
