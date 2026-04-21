@@ -243,7 +243,6 @@ const EmployeeFlextimeScreen = () => {
                       <TableCell>
                         {userData.user.email || strings.employeeFlextime.notAvailable}
                       </TableCell>
-
                       <TableCell align="right">
                         <Typography
                           variant="h6"
