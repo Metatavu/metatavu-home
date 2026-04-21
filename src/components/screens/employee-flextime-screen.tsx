@@ -71,7 +71,8 @@ const EmployeeFlextimeScreen = () => {
     }
   };
   /**
-   * update the active status of a user.
+   * Update the active status of a user.
+   * 
    * @param userId The ID of the user to update
    * @param active Whether the user should be active or inactive
    * @returns
