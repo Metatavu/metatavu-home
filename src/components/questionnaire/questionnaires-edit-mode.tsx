@@ -300,8 +300,9 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
       });
       setSnackbarOpen(true);
       return updatedQuestionnaire;
-    } catch (error) {
-      setError(`${strings.error.questionnaireUpdateFailed}, ${error}`);
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
+      setError(`${strings.error.questionnaireUpdateFailed}: ${errorMessage?.message || error}`);
     }
     setLoading(false);
   };

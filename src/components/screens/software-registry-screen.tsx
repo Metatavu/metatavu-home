@@ -1,6 +1,5 @@
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import {
-  Alert,
   Box,
   Button,
   Card,
@@ -11,9 +10,10 @@ import {
   Typography,
   useTheme
 } from "@mui/material";
-import { useAtom, useAtomValue } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { authAtom } from "src/atoms/auth";
+import { errorAtom } from "src/atoms/error";
 import { softwareAtom } from "src/atoms/software";
 import type { SoftwareRegistry } from "src/generated/homeLambdasClient";
 import { SoftwareStatus } from "src/generated/homeLambdasClient";
@@ -24,9 +24,9 @@ import BackButton from "../generics/back-button";
 import CreateButton from "../generics/create-button";
 import ListViewButton from "../generics/list-view-button";
 import SearchBar from "../generics/search-bar";
-import AddSoftwareModal from "../software-registry/AddSoftwareModal";
 import Content from "../software-registry/myContent";
 import Recommendations from "../software-registry/Recommendations";
+import AddSoftwareModal from "../software-registry/SoftwareModal";
 
 /**
  * Software registry screen component
@@ -34,11 +34,11 @@ import Recommendations from "../software-registry/Recommendations";
 const SoftwareScreen = () => {
   const { softwareApi } = useLambdasApi();
   const auth = useAtomValue(authAtom);
+  const setError = useSetAtom(errorAtom);
   const loggedUserId = auth?.token?.sub ?? "";
   const [listView, setListView] = useState(false);
   const [software, setApplications] = useAtom(softwareAtom);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [searchValue, setSearchValue] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -125,8 +125,9 @@ const SoftwareScreen = () => {
     try {
       const fetchedSoftware = await softwareApi.listSoftware();
       setApplications(fetchedSoftware);
-    } catch (error) {
-      setError(`Error fetching software data: ${error}`);
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
+      setError(`${strings.error.softwareRegistryFetchFailed}: ${errorMessage?.message || error}`);
     } finally {
       setLoading(false);
     }
@@ -157,8 +158,9 @@ const SoftwareScreen = () => {
 
         setApplications((prevApps) => prevApps.map((a) => (a.id === appId ? updatedApp : a)));
       }
-    } catch (error) {
-      setError(`Error updating software: ${error}`);
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
+      setError(`${strings.error.softwareRegistryUpdateFailed}: ${errorMessage?.message || error}`);
     } finally {
       setLoading(false);
     }
@@ -252,11 +254,6 @@ const SoftwareScreen = () => {
 
         <Grid container justifyContent="flex-start" mt={2}>
           <Grid size="grow">
-            {error && (
-              <Box mb={2} width="100%">
-                <Alert severity="error">{error}</Alert>
-              </Box>
-            )}
             {loading ? (
               <Box textAlign="center">
                 <CircularProgress size={50} sx={{ mt: 2 }} />

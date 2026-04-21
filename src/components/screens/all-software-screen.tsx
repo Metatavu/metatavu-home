@@ -25,8 +25,8 @@ import CreateButton from "../generics/create-button";
 import Dropdown from "../generics/dropdown";
 import ListViewButton from "../generics/list-view-button";
 import SearchBar from "../generics/search-bar";
-import AddSoftwareModal from "../software-registry/AddSoftwareModal";
 import Content from "../software-registry/allContent";
+import AddSoftwareModal from "../software-registry/SoftwareModal";
 
 /**
  * All software screen component
@@ -78,8 +78,9 @@ const AllSoftwareScreen = () => {
     try {
       const fetchedApplications = await softwareApi.listSoftware();
       setApplications(fetchedApplications);
-    } catch (error) {
-      setError(`Error fetching software data: ${error}`);
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
+      setError(`${strings.error.softwareFetchFailed} ${errorMessage?.message || error}`);
     } finally {
       setLoading(false);
     }
@@ -152,8 +153,9 @@ const AllSoftwareScreen = () => {
           softwareRegistry: updatedApp
         });
       }
-    } catch (error) {
-      setError(`Error updating status: ${error}`);
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
+      setError(`${strings.error.softwareStatusUpdateFailed} ${errorMessage?.message || error}`);
     }
   };
 
@@ -187,8 +189,9 @@ const AllSoftwareScreen = () => {
           users: updatedUsers
         }
       });
-    } catch (error) {
-      setError(`Error saving the app: ${error}`);
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
+      setError(`${strings.error.softwareSaveFailed} ${errorMessage?.message || error}`);
     }
   };
 
@@ -228,8 +231,9 @@ const AllSoftwareScreen = () => {
       setApplications(updatedApplications);
 
       await softwareApi.deleteSoftwareById({ id: selectedApplicationId });
-    } catch (error) {
-      setError(`Error deleting the app: ${error}`);
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
+      setError(`${strings.error.softwareDeleteFailed} ${errorMessage?.message || error}`);
     } finally {
       closeDeleteDialog();
     }

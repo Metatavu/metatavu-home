@@ -217,7 +217,9 @@ const CreateOrEditArticleForm = ({
   const handleTitleChange = (event: any) => {
     const newInput = event.target.value;
     setTitle(newInput);
-    setPath(`${newInput.replace(/\s+/g, "_").replace(/[^a-zA-Z0-9\-_]/g, "")}`);
+    if (action === "create") {
+      setPath(`${newInput.replace(/\s+/g, "_").replace(/[^a-zA-Z0-9\-_]/g, "")}`);
+    }
   };
 
   const handlePathChange = (event: ChangeEvent<HTMLInputElement>) => {
