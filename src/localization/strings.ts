@@ -12,6 +12,7 @@ export interface Localized extends LocalizedStringsMethods {
   placeHolder: {
     notYetImplemented: string;
     pleaseWait: string;
+    search: string;
   };
   label: {
     currentLocaleLabel: string;

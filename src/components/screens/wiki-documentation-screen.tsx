@@ -1,27 +1,13 @@
-import { Search } from "@mui/icons-material";
-import FormatListBulletedOutlinedIcon from "@mui/icons-material/FormatListBulletedOutlined";
-import GridViewIcon from "@mui/icons-material/GridView";
 import SearchOffIcon from "@mui/icons-material/SearchOff";
 import {
   Alert,
-  Autocomplete,
   Box,
-  Button,
   Card,
-  Checkbox,
   CircularProgress,
-  FormControl,
   Grid,
-  IconButton,
-  MenuItem,
   Pagination,
-  Popper,
-  type PopperProps,
-  Select,
   type SelectChangeEvent,
   Snackbar,
-  styled,
-  TextField,
   Typography,
   useTheme
 } from "@mui/material";
@@ -39,6 +25,10 @@ import { DeleteItemType, OnboardingScreen } from "src/types/index";
 import { getArticlesToFilter, sortArticlesByDate } from "src/utils/wiki-utils";
 import DeleteConfirmationDialog from "../contexts/delete-confirmation-dialog";
 import BackButton from "../generics/back-button";
+import CreateButton from "../generics/create-button";
+import Dropdown from "../generics/dropdown";
+import ListViewButton from "../generics/list-view-button";
+import SearchBar from "../generics/search-bar";
 import Onboarding from "../onboarding/Onboarding";
 import ArticleCard from "../wiki-documentation/article-card";
 import ArticleListItem from "../wiki-documentation/article-list-item";
@@ -319,250 +309,6 @@ const WikiDocumentationScreen = () => {
     setPageNumber(1);
   };
 
-  const CustomPopper = styled((props: PopperProps) => <Popper {...props} placement="bottom" />)({
-    "& .MuiAutocomplete-noOptions": {
-      display: "none"
-    },
-    "& .MuiAutocomplete-paper": {
-      marginTop: "10px",
-      backgroundColor: colors.button.main,
-      color: colors.button.text
-    }
-  });
-
-  /**
-   * Renders the search bar component with autocomplete and tag selection.
-   * Allows filtering articles based on input text and selected tags.
-   */
-  const renderSearch = () => (
-    // biome-ignore lint/correctness/useUniqueElementIds: keeping static id
-    <Card
-      id="wiki-article-search-bar"
-      sx={{
-        width: {
-          lg: adminMode ? "55%" : "73%",
-          md: adminMode ? "55%" : "calc(100% - 80px)",
-          xs: adminMode ? "100%" : "calc(100% - 80px);"
-        },
-        boxShadow: 2,
-        marginBottom: { xs: 2 }
-      }}
-    >
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          backgroundColor: colors.button.main
-        }}
-      >
-        <Autocomplete
-          PopperComponent={CustomPopper}
-          multiple
-          disableCloseOnSelect
-          id={autoCompleteId}
-          options={tags}
-          sx={{ width: "100%" }}
-          clearOnBlur={false}
-          inputValue={searchInput}
-          onInputChange={handleSearchInputChange}
-          onChange={(_event, values) => {
-            handleSelectedTagChange(values);
-          }}
-          size="small"
-          renderOption={(props, option, { selected }) => (
-            <li
-              {...props}
-              style={{ display: "flex", alignItems: "center" }}
-              key={`tags-option-${option}`}
-            >
-              <Checkbox
-                sx={{
-                  color: colors.button.text,
-                  marginRight: 2
-                }}
-                checked={selected}
-              />
-              <Box
-                minWidth="5px"
-                style={{ marginRight: "10px" }}
-                component="span"
-                sx={{
-                  height: 40,
-                  borderRadius: "5px"
-                }}
-              />
-              {option}
-            </li>
-          )}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              placeholder={strings.wikiDocumentation.searchArticle}
-              sx={{
-                "& fieldset": {
-                  border: "none",
-                  marginBottom: "20px"
-                }
-              }}
-              InputProps={{
-                ...params.InputProps,
-                endAdornment: null,
-                startAdornment: (
-                  <>
-                    <IconButton>
-                      <Search />
-                    </IconButton>
-                    {params.InputProps.startAdornment}
-                  </>
-                )
-              }}
-            />
-          )}
-          ListboxProps={{
-            sx: {
-              display: "grid",
-              columnGap: 3,
-              rowGap: 1,
-              gridTemplateColumns: {
-                xs: "repeat(2, 1fr)",
-                md: adminMode ? "repeat(2, 1fr)" : "repeat(3, 1fr)"
-              }
-            }
-          }}
-        />
-      </Box>
-    </Card>
-  );
-  const renderCreateButton = () => (
-    // biome-ignore lint/correctness/useUniqueElementIds: keeping static id
-    <Button
-      id="wiki-create-article-button"
-      onClick={() => setFormOpen(true)}
-      variant="contained"
-      sx={{
-        width: {
-          lg: "17%",
-          md: adminMode ? "17%" : "100%",
-          xs: adminMode ? "40%" : "100%"
-        },
-        height: "55px",
-        backgroundColor: colors.button.main,
-        color: colors.button.text,
-        "&:hover": { backgroundColor: colors.button.hover }
-      }}
-    >
-      <Typography variant={"body1"} marginLeft={1} sx={{ fontWeight: "bold" }}>
-        {strings.wikiDocumentation.create}
-      </Typography>
-    </Button>
-  );
-
-  const renderListViewButton = () => (
-    <Button
-      variant="contained"
-      sx={{
-        maxWidth: "32px",
-        height: "55px",
-        backgroundColor: colors.button.main,
-        "&:hover": { backgroundColor: colors.button.hover }
-      }}
-      size="small"
-      onClick={() => setListView(!listView)}
-    >
-      {listView ? (
-        <FormatListBulletedOutlinedIcon sx={{ color: colors.button.text }} />
-      ) : (
-        <GridViewIcon sx={{ color: colors.button.text }} />
-      )}
-    </Button>
-  );
-
-  const renderDropdownMenu = () => (
-    <FormControl
-      sx={{
-        width: {
-          md: "17%",
-          sm: "40%",
-          xs: "35%"
-        },
-        color: colors.button.text,
-        "& fieldset": { border: "none" }
-      }}
-      size="medium"
-    >
-      <Select
-        value={displayOption}
-        onChange={handleDisplayOptionChange}
-        displayEmpty
-        inputProps={{ "aria-label": "Without label" }}
-        sx={{
-          backgroundColor: colors.button.main,
-          boxShadow: 2,
-          textAlign: "center",
-          color: colors.button.text,
-          fontWeight: "bold",
-          textTransform: "uppercase",
-          "&:hover": {
-            backgroundColor: colors.button.hover
-          }
-        }}
-        MenuProps={{
-          PaperProps: {
-            sx: {
-              marginTop: "10px",
-              borderTopLeftRadius: "0px",
-              borderTopRightRadius: "0px",
-              backgroundColor: colors.button.main
-            }
-          }
-        }}
-      >
-        <MenuItem
-          sx={{
-            textTransform: "uppercase",
-            paddingLeft: 3,
-            color: colors.button.text,
-            backgroundColor: colors.button.main,
-            "&:hover": {
-              backgroundColor: colors.button.hover
-            }
-          }}
-          value="all"
-        >
-          {strings.wikiDocumentation.allArticles}
-        </MenuItem>
-        <MenuItem
-          sx={{
-            textTransform: "uppercase",
-            paddingLeft: 3,
-            color: colors.button.text,
-            backgroundColor: colors.button.main,
-            "&:hover": {
-              backgroundColor: colors.button.hover
-            }
-          }}
-          value="approved"
-        >
-          {strings.wikiDocumentation.approvedArticles}
-        </MenuItem>
-        <MenuItem
-          sx={{
-            textTransform: "uppercase",
-            paddingLeft: 3,
-            color: colors.button.text,
-            backgroundColor: colors.button.main,
-            "&:hover": {
-              backgroundColor: colors.button.hover
-            }
-          }}
-          value="draft"
-        >
-          {strings.wikiDocumentation.draft}
-        </MenuItem>
-      </Select>
-    </FormControl>
-  );
-
   const renderTitle = (text: string) => (
     <Typography
       variant="h3"
@@ -584,10 +330,37 @@ const WikiDocumentationScreen = () => {
         marginBottom: 2
       }}
     >
-      {renderSearch()}
-      {adminMode && renderDropdownMenu()}
-      {renderListViewButton()}
-      {renderCreateButton()}
+      {
+        <SearchBar
+          searchInput={searchInput}
+          handleSearchInputChange={handleSearchInputChange}
+          tags={tags}
+          handleSelectedTagChange={handleSelectedTagChange}
+          autoCompleteId={autoCompleteId}
+          styles={
+            adminMode
+              ? {
+                  width: { lg: "55%", md: "55%", xs: "100%" }
+                }
+              : undefined
+          }
+          placeholder={strings.wikiDocumentation.searchArticle}
+        />
+      }
+      {adminMode && (
+        <Dropdown
+          displayOption={displayOption}
+          handleDisplayOptionChange={handleDisplayOptionChange}
+          displayOptions={[
+            { value: "all", label: strings.wikiDocumentation.allArticles },
+            { value: "approved", label: strings.wikiDocumentation.approvedArticles },
+            { value: "draft", label: strings.wikiDocumentation.draft }
+          ]}
+        />
+      )}
+      <ListViewButton listView={listView} setListView={setListView} />
+      {/* biome-ignore lint/correctness/useUniqueElementIds: keeping static id */}
+      <CreateButton id="wiki-create-article-button" onClick={() => setFormOpen(true)} />
     </Grid>
   );
 

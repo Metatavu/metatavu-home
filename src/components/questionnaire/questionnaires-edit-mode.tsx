@@ -5,7 +5,6 @@ import {
   CardActions,
   CardContent,
   Checkbox,
-  Chip,
   FormControlLabel,
   Snackbar,
   SnackbarContent,
@@ -13,16 +12,18 @@ import {
   Typography,
   useTheme
 } from "@mui/material";
-import { useSetAtom } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import isEqual from "lodash/isEqual";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { errorAtom } from "src/atoms/error";
+import { questionnaireTagsAtom } from "src/atoms/questionnaire";
 import type { AnswerOption, Question, Questionnaire } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
 import { v4 as uuidv4 } from "uuid";
 import BackButton from "../generics/back-button";
+import TagsAutocomplete from "../generics/tags-autocomplete";
 import NewQuestionCard from "./new-question-card";
 
 /**
@@ -47,8 +48,8 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
   const [clearPassedUsers, setClearPassedUsers] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [saveEnabled, setSaveEnabled] = useState(false);
-  const [newTag, setNewTag] = useState("");
-  const [tagError, setTagError] = useState<string | null>(null);
+  const [tag, setTag] = useState("");
+  const existingTags = useAtomValue(questionnaireTagsAtom);
   const theme = useTheme();
 
   useEffect(() => {
@@ -113,50 +114,42 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
   };
 
   /**
-   * Function to add a new tag with validation
+   * Function to handle tag input change from Autocomplete
+   * @param _event - The event object
+   * @param value - The new input value
    */
-  const handleAddTag = () => {
-    if (!newTag.trim()) {
-      setTagError(strings.questionnaireTags.emptyTagError);
-      return;
-    }
-
-    const trimmedTag = newTag.trim();
-    if (editedQuestionnaire.tags?.some((tag) => tag.toLowerCase() === trimmedTag.toLowerCase())) {
-      setTagError(strings.questionnaireTags.duplicateTagError);
-      return;
-    }
-
-    setEditedQuestionnaire((prev) => ({
-      ...prev,
-      tags: [...(prev.tags || []), trimmedTag]
-    }));
-    setNewTag("");
-    setTagError(null);
+  const handleTagChange = (_event: React.SyntheticEvent<Element, Event>, value: string) => {
+    setTag(value);
   };
 
   /**
-   * Function to remove a tag
-   *
-   * @param tagToRemove - type string
+   * Function to handle selected tags change from Autocomplete
+   * @param _event - The event object
+   * @param value - Array of selected tags
    */
-  const handleRemoveTag = (tagToRemove: string) => {
+  const handleSelectedTagChange = (
+    _event: React.SyntheticEvent<Element, Event>,
+    value: string[]
+  ) => {
     setEditedQuestionnaire((prev) => ({
       ...prev,
-      tags: prev.tags?.filter((tag) => tag !== tagToRemove) || []
+      tags: value
     }));
   };
 
   /**
-   * Handle key press event for tag input
-   *
-   * @param event - Key press event
+   * Function to handle Enter key press in tag input
+   * @param event - The keyboard event
    */
-  const handleTagKeyDown = (event: React.KeyboardEvent) => {
-    if (event.key === "Enter") {
-      event.preventDefault();
-      handleAddTag();
+  const handleEnter = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key !== "Enter") return;
+    if (tag && !editedQuestionnaire.tags?.includes(tag)) {
+      setEditedQuestionnaire((prev) => ({
+        ...prev,
+        tags: [...(prev.tags || []), tag]
+      }));
     }
+    setTag("");
   };
 
   /**
@@ -350,61 +343,15 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
 
           {/* Tags Section */}
           <Box sx={{ mb: 4 }}>
-            <Typography variant="subtitle1" sx={{ mb: 1 }}>
-              {strings.questionnaireTags?.title || "Tags"}
-            </Typography>
-            <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", mb: 2 }}>
-              {editedQuestionnaire.tags?.map((tag) => (
-                <Chip
-                  key={tag}
-                  label={tag}
-                  onDelete={() => handleRemoveTag(tag)}
-                  color="primary"
-                  variant="outlined"
-                />
-              ))}
-              {(!editedQuestionnaire.tags || editedQuestionnaire.tags.length === 0) && (
-                <Typography variant="body2" color="text.secondary">
-                  {strings.questionnaireTags.noTags}
-                </Typography>
-              )}
-            </Box>
-            <Box
-              sx={{ display: "flex", gap: 1, alignItems: "flex-start", flexDirection: "column" }}
-            >
-              <Box sx={{ display: "flex", gap: 1, width: "100%" }}>
-                <TextField
-                  label={strings.questionnaireTags.addTagPlaceholder}
-                  value={newTag}
-                  onChange={(e) => {
-                    setNewTag(e.target.value);
-                    if (tagError) setTagError(null);
-                  }}
-                  onKeyDown={handleTagKeyDown}
-                  size="small"
-                  fullWidth
-                  error={!!tagError}
-                  helperText={tagError}
-                  InputLabelProps={{ style: { color: theme.palette.text.secondary } }}
-                />
-                <Button
-                  variant="contained"
-                  onClick={handleAddTag}
-                  size="small"
-                  sx={{
-                    height: "48px",
-                    minWidth: "90px",
-                    textTransform: "uppercase",
-                    backgroundColor: theme.palette.primary.main,
-                    color: theme.palette.primary.contrastText,
-                    "&:hover": {
-                      backgroundColor: theme.palette.primary.dark
-                    }
-                  }}
-                >
-                  {strings.questionnaireTags.addTag}
-                </Button>
-              </Box>
+            <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+              <TagsAutocomplete
+                tags={existingTags}
+                tag={tag}
+                selectedTags={editedQuestionnaire.tags || []}
+                handleTagChange={handleTagChange}
+                handleSelectedTagChange={handleSelectedTagChange}
+                handleEnter={handleEnter}
+              />
             </Box>
           </Box>
 

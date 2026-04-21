@@ -1,7 +1,8 @@
 {
   "placeHolder": {
     "notYetImplemented": "Ei vielä toteutettu",
-    "pleaseWait": "Odota, tässä voi mennä hetki..."
+    "pleaseWait": "Odota, tässä voi mennä hetki...",
+    "search": "Hae..."
   },
   "label": {
     "currentLocaleLabel": "Nykyinen kieli:",
@@ -121,7 +122,7 @@
     "project": "Projekti",
     "user": "Tekijä",
     "clear": "Tyhjennä",
-    "searchBy": "Hae nimellä {0}",
+    "searchBy": "Hae projektilla tai käyttäjällä",
     "estimateHours": "Arvioida Tunteja"
   },
   "softwareRegistry": {

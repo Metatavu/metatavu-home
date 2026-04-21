@@ -82,114 +82,112 @@ const NewQuestionCard = ({ handleAddQuestion }: Props) => {
   };
 
   return (
-    <>
-      <Card
-        className="new-question"
-        sx={{
-          p: 2,
-          width: "100%",
-          display: "flex",
-          flexDirection: "column",
-          height: "100%"
-        }}
-      >
-        <CardContent sx={{ width: "100%", p: 2 }}>
-          <Typography variant="body1" sx={{ mb: 2 }}>
-            {strings.newQuestionnaireCard.newQuestion}
-          </Typography>
-          <TextField
-            id="textfield-question-body"
-            label={strings.newQuestionnaireCard.questionLabel}
-            multiline
-            rows={6}
-            value={questionText}
-            required
-            onChange={(e) => setQuestionText(e.target.value)}
-            fullWidth
-          />
-          <Typography variant="body1" sx={{ mt: 2 }}>
-            {strings.newQuestionnaireCard.correctAnswer}
-          </Typography>
-          {answerOptions.map((option, index) => (
+    <Card
+      className="new-question"
+      sx={{
+        p: 2,
+        width: "100%",
+        display: "flex",
+        flexDirection: "column",
+        height: "100%"
+      }}
+    >
+      <CardContent sx={{ width: "100%", p: 2 }}>
+        <Typography variant="body1" sx={{ mb: 2 }}>
+          {strings.newQuestionnaireCard.newQuestion}
+        </Typography>
+        <TextField
+          id="textfield-question-body"
+          label={strings.newQuestionnaireCard.questionLabel}
+          multiline
+          rows={6}
+          value={questionText}
+          required
+          onChange={(e) => setQuestionText(e.target.value)}
+          fullWidth
+        />
+        <Typography variant="body1" sx={{ mt: 2 }}>
+          {strings.newQuestionnaireCard.correctAnswer}
+        </Typography>
+        {answerOptions.map((option, index) => (
+          <Box
+            key={index}
+            sx={{
+              width: "100%",
+              display: "flex",
+              flexDirection: { xs: "column", sm: "row" },
+              alignItems: "center"
+            }}
+          >
+            <Box sx={{ flexShrink: 0, display: "flex", alignItems: "center" }}>
+              <Checkbox
+                checked={option.isCorrect}
+                onChange={() => handleCheckboxChange(index)}
+                name={`option-${index + 1}`}
+                color="success"
+                sx={{ width: "auto", mt: 2 }}
+              />
+            </Box>
             <Box
-              key={index}
               sx={{
                 width: "100%",
+                ml: 2,
                 display: "flex",
-                flexDirection: { xs: "column", sm: "row" },
                 alignItems: "center"
               }}
             >
-              <Box sx={{ flexShrink: 0, display: "flex", alignItems: "center" }}>
-                <Checkbox
-                  checked={option.isCorrect}
-                  onChange={() => handleCheckboxChange(index)}
-                  name={`option-${index + 1}`}
-                  color="success"
-                  sx={{ width: "auto", mt: 2 }}
-                />
-              </Box>
-              <Box
-                sx={{
-                  width: "100%",
-                  ml: 2,
-                  display: "flex",
-                  alignItems: "center"
-                }}
-              >
-                <TextField
-                  id="textfield-answer-option"
-                  variant="outlined"
-                  label={strings.newQuestionnaireCard.answerLabel}
-                  placeholder={strings.newQuestionnaireCard.insertAnswerLabel}
-                  value={option.label}
-                  required
-                  onChange={(e) => handleAnswerLabelChange(index, e)}
-                  fullWidth
-                  sx={{ mt: 2 }}
-                />
-              </Box>
+              <TextField
+                id="textfield-answer-option"
+                variant="outlined"
+                label={strings.newQuestionnaireCard.answerLabel}
+                placeholder={strings.newQuestionnaireCard.insertAnswerLabel}
+                value={option.label}
+                required
+                onChange={(e) => handleAnswerLabelChange(index, e)}
+                fullWidth
+                sx={{ mt: 2 }}
+              />
             </Box>
-          ))}
-          <CardActions
-            sx={{
-              display: "flex",
-              width: "100%",
-              mt: 4,
-              justifyContent: "space-between"
-            }}
+          </Box>
+        ))}
+        <CardActions
+          sx={{
+            display: "flex",
+            width: "100%",
+            mt: 4,
+            justifyContent: "space-between"
+          }}
+        >
+          <Button
+            sx={{ alignItems: "center" }}
+            size="large"
+            variant="text"
+            onClick={handleAddNewOption}
           >
-            <Button
-              sx={{ alignItems: "center" }}
-              size="large"
-              variant="text"
-              onClick={handleAddNewOption}
-            >
-              <Typography sx={{ fontWeight: "bold" }}>
-                {strings.newQuestionnaireCard.addAnswer}
-              </Typography>
-            </Button>
-            <Tooltip
-              title={getQuestionValidationTooltipMessage({ questionText, answerOptions }, strings)}
-              placement="bottom"
-              disableHoverListener={isQuestionValid({ questionText, answerOptions })}
-            >
-              <Box>
-                <Button
-                  sx={{ alignItems: "center" }}
-                  size="large"
-                  variant="contained"
-                  onClick={handleAddNewQuestion}
-                  disabled={isDisabled}
-                >
-                  {strings.newQuestionnaireCard.saveAnswer}
-                </Button>
-              </Box>
-            </Tooltip>
-          </CardActions>
-        </CardContent>
-      </Card>
-    </>
+            <Typography sx={{ fontWeight: "bold" }}>
+              {strings.newQuestionnaireCard.addAnswer}
+            </Typography>
+          </Button>
+          <Tooltip
+            title={getQuestionValidationTooltipMessage({ questionText, answerOptions }, strings)}
+            placement="bottom"
+            disableHoverListener={isQuestionValid({ questionText, answerOptions })}
+          >
+            <Box>
+              <Button
+                sx={{ alignItems: "center" }}
+                size="large"
+                variant="contained"
+                onClick={handleAddNewQuestion}
+                disabled={isDisabled}
+              >
+                {strings.newQuestionnaireCard.saveAnswer}
+              </Button>
+            </Box>
+          </Tooltip>
+        </CardActions>
+      </CardContent>
+    </Card>
   );
 };
 
