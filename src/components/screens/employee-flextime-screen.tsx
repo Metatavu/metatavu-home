@@ -30,8 +30,10 @@ import BackButton from "../generics/back-button";
  * @param user- The user object from UserFlextime
  * @returns The user ID if available
  */
-const getUserId = (user: UserFlextime["user"]): string | undefined => {
-  return (user as any).id;
+type UserWithId = UserFlextime["user"] & { id: string };
+
+const getUserId = (user: UserFlextime["user"]): string => {
+  return (user as UserWithId).id;
 };
 
 /**
@@ -62,6 +64,7 @@ const EmployeeFlextimeScreen = () => {
     setLoading(true);
 
     try {
+      //Note: this API returns user info+flextime+active status
       const data = await resourceAllocationsApi.listUsersFlextime();
       setUsersFlextime(data);
     } catch (err) {
@@ -87,10 +90,25 @@ const EmployeeFlextimeScreen = () => {
           isActive: active
         }
       });
-      await loadFlextimeData();
+
+      setUsersFlextime((prev) =>
+        prev.map((user) =>
+          getUserId(user.user) === userId
+            ? {
+                ...user,
+                user: {
+                  ...user.user,
+                  attributes: {
+                    ...user.user.attributes,
+                    isActive: active
+                  }
+                }
+              }
+            : user
+        )
+      );
     } catch {
       setError("Failed to update user status");
-      await loadFlextimeData();
     } finally {
       setUpdatingUserId(null);
     }
@@ -233,7 +251,7 @@ const EmployeeFlextimeScreen = () => {
                   )
                 )
                 .map((userData, index) => {
-                  const isActive = !!userData.user.attributes?.isActive;
+                  const isActive = userData.user.attributes?.isActive ?? true;
                   return (
                     <TableRow key={userData.user.attributes?.severaUserId || index}>
                       <TableCell>
