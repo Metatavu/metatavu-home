@@ -5,6 +5,7 @@ import { useAtomValue } from "jotai";
 import { Settings } from "luxon";
 import { useMemo, useState } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import AdminUsersSkillsManagementScreen from "src/components/screens/admin-users-skills-management/admin-users-skills-management-screen.tsx";
 import { languageAtom } from "./atoms/language";
 import ErrorHandler from "./components/contexts/error-handler";
 import Layout from "./components/layout/layout";
@@ -156,6 +157,10 @@ const App = () => {
         {
           path: "/admin/vacation-management",
           element: <AdminVacationManagementScreen />
+        },
+        {
+          path: "/admin/users-skills-management",
+          element: <AdminUsersSkillsManagementScreen />
         },
         {
           path: "/admin/severa/employee-flextime",
