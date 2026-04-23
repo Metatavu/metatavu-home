@@ -10,6 +10,7 @@ import {
   SlackApi,
   SoftwareApi,
   UsersApi,
+  UsersSkillsApi,
   VacationRequestsApi
 } from "../generated/homeLambdasClient";
 
@@ -60,6 +61,7 @@ export const getLambdasApiClient = (accessToken?: string) => {
     workHoursApi: severaApi,
     questionnairesApi: new QuestionnairesApi(getConfiguration()),
     vacationRequestsApi: new VacationRequestsApi(getConfiguration()),
+    usersSkillsApi: new UsersSkillsApi(getConfiguration()),
     articleApi: new ArticleApi(getConfiguration()),
     onCallApi: new OnCallApi(getConfiguration()),
     workDaysApi: severaApi

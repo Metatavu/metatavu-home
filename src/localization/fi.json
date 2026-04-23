@@ -288,6 +288,12 @@
     "noVacationDaysAvailable": "Sinulla ei ole lomapäiviä tälle lomavuodelle. Ota yhteyttä järjestelmänvalvojaan.",
     "failedToLoad": "Käyttäjien lataaminen epäonnistui"
   },
+  "usersSkills": {
+    "heading": "Käyttäjien taidot"
+  },
+  "usersSkillsError": {
+    "fetchUsersSkillsError": "Käyttäjien taitotietojen hakeminen epäonnistui"
+  },
   "sprintRequestError": {
     "fetchResourceAllocationsError": "Sprintin tietopyyntöjen hakeminen epäonnistui",
     "fetchWorkHoursAndTasksError": "Virhe aikamerkintöjen hakemisessa"

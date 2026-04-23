@@ -1,15 +1,33 @@
-import { Box, Container, TablePagination, Typography } from "@mui/material";
-import { useAtom, useSetAtom } from "jotai";
+import {
+  Box,
+  Chip,
+  Container,
+  Paper,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TablePagination,
+  TableRow,
+  Typography
+} from "@mui/material";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { useEffect, useMemo, useState } from "react";
+import { userProfileAtom } from "src/atoms/auth.ts";
 import { errorAtom } from "src/atoms/error";
 import { usersAtom } from "src/atoms/user";
+import { displayedUsersSkillsAtom, usersSkillsAtom } from "src/atoms/usersSkills.ts";
 import BackButton from "src/components/generics/back-button.tsx";
 import EditVacationDialog from "src/components/screens/admin-vacation-management/EditVacationDialog.tsx";
 import UserSearchBar from "src/components/screens/admin-vacation-management/UserSearchBar.tsx";
 import UserTable from "src/components/screens/admin-vacation-management/UsersTable.tsx";
-import { User } from "src/generated/homeLambdasClient";
+import { User, UsersSkills, type VacationRequest } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
+import useUserRole from "src/hooks/use-user-role.ts";
 import strings from "src/localization/strings";
+import type { FilterType } from "src/utils/vacation-filter-type.tsx";
 
 const PAGINATION_THRESHOLD = 20;
 const DEFAULT_ROWS_PER_PAGE = 20;
@@ -28,44 +46,95 @@ const DEFAULT_ROWS_PER_PAGE = 20;
  * @returns React component for admin users skills management
  */
 const AdminUsersSkillsManagementSkills = () => {
-  const { usersApi } = useLambdasApi();
-  const [users, setUsers] = useAtom(usersAtom);
+  // const { adminMode } = useUserRole();
+  const { usersSkillsApi } = useLambdasApi();
+  const [usersSkills, setUsersSkills] = useAtom(usersSkillsAtom);
+  const userProfile = useAtomValue(userProfileAtom);
   const setError = useSetAtom(errorAtom);
   const [searchKeyword, setSearchKeyword] = useState("");
-
-  // Edit dialog state
-  // const [editDialogOpen, setEditDialogOpen] = useState(false);
-  // const [currentUser, setCurrentUser] = useState<User | null>(null);
-  // const [saving, setSaving] = useState(false);
-  // const [isValid, setIsValid] = useState(true);
-
-  // Pagination state
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(DEFAULT_ROWS_PER_PAGE);
-  const [loadingUsers, setLoadingUsers] = useState(false);
+  const [users, setUsers] = useAtom(usersAtom);
+  const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
+  const [filter, setFilter] = useState<FilterType>("ALL");
+  const [loading, setLoading] = useState(false);
+  const params = new URLSearchParams(location.search);
+  const selectedId = params.get("selectedId");
+  const setDisplayedUsersSkills = useSetAtom(displayedUsersSkillsAtom);
 
   /**
-   * Fetches users on component mount if not already available in the atom.
+   * Create a vacation request
+   *
+   * @param vacationRequestData vacation data from the create form
    */
-  useEffect(() => {
-    const fetchUsers = async () => {
-      if (users.length > 0) {
-        return;
-      }
+  // const createUsersSkills = async () => {
+  //   if (!loggedInUser) return;
+  //   try {
+  //     setLoading(true);
+  //     const newId = "12345678";
+  //     const createdUsersSkills = await usersSkillsApi.createUsersSkills({
+  //       usersSkills: {
+  //         id: newId,
+  //         name: "Stepan",
+  //         skills: [
+  //           {
+  //             name: "TypeScript",
+  //             category: "Programming",
+  //             months: 12
+  //           },
+  //           {
+  //             name: "Python",
+  //             category: "Programming",
+  //             months: 10
+  //           },
+  //           {
+  //             name: "C++",
+  //             category: "Programming",
+  //             months: 20
+  //           },
+  //           {
+  //             name: "Guitar",
+  //             category: "Hobby",
+  //             months: 20
+  //           }
+  //         ]
+  //       }
+  //     });
+  //     setUsersSkills([createdUsersSkills, ...usersSkills]);
+  //   } catch (error: any) {
+  //     const errorMessage = await error?.response?.json();
+  //     setError(
+  //       `${strings.vacationRequestError.createRequestError}: ${errorMessage?.message || error}`
+  //     );
+  //   }
+  //   setLoading(false);
+  // };
 
-      try {
-        setLoadingUsers(true);
-        const fetchedUsers = await usersApi.listUsers();
-        setUsers(fetchedUsers);
-      } catch (error) {
-        setError(`${strings.vacationRequestError.failedToLoad}, ${error}`);
-      } finally {
-        setLoadingUsers(false);
-      }
+  /**
+   * Fetch users skills
+   */
+  const fetchUsersSkills = async () => {
+    if (!loggedInUser) return;
+    setLoading(true);
+    try {
+      const fetchedUsersSkills = await usersSkillsApi.listUsersSkills({});
+      setUsersSkills(fetchedUsersSkills);
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
+      setError(
+        `${strings.usersSkillsError.fetchUsersSkillsError}: ${errorMessage?.message || error}`
+      );
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    const init = async () => {
+      // console.log("Trying to create a users skills");
+      // await createUsersSkills();
+      await fetchUsersSkills();
     };
 
-    fetchUsers();
-  }, []);
+    init();
+  }, [loggedInUser]);
 
   /**
    * Filters users based on search keyword.
@@ -74,122 +143,64 @@ const AdminUsersSkillsManagementSkills = () => {
    *
    * @returns Array of users matching the search criteria
    */
-  const filteredUsers = useMemo(() => {
+  const filterUsersSkills = useMemo(() => {
     const keyword = searchKeyword.toLowerCase().trim();
 
-    if (!keyword) return users;
+    if (!keyword) return usersSkills;
 
-    return users.filter((user) => {
-      const fullName = `${user.firstName} ${user.lastName}`.toLowerCase();
-      const email = user.email?.toLowerCase() ?? "";
-      return fullName.includes(keyword) || email.includes(keyword);
+    return usersSkills.filter((user) => {
+      const fullName = `${user.name}`.toLowerCase();
+      return fullName.includes(keyword);
     });
-  }, [users, searchKeyword]);
-
-  const shouldPaginate = filteredUsers.length > PAGINATION_THRESHOLD;
-
-  /**
-   * Computes the subset of users to display on the current page.
-   * @returns Array of users for the current page view
-   */
-  const paginatedUsers = useMemo(() => {
-    if (!shouldPaginate) return filteredUsers;
-    if (rowsPerPage === -1) return filteredUsers;
-
-    const startIndex = page * rowsPerPage;
-    const endIndex = startIndex + rowsPerPage;
-    return filteredUsers.slice(startIndex, endIndex);
-  }, [filteredUsers, page, rowsPerPage, shouldPaginate]);
-
-  /**
-   * Resets pagination to first page when search results change.
-   * Prevents displaying an empty page when search results decrease.
-   */
-  useEffect(() => {
-    setPage(0);
-  }, [searchKeyword]);
-
-  /**
-   * Opens the edit users skills dialog for a specific user
-   *
-   * @param user The user whose vacation days will be edited.
-   */
-  // const handleEditUser = (user: User) => {
-  //   setCurrentUser(user);
-  //   setEditDialogOpen(true);
-  // };
-
-  /**
-   * Closes the edit users skills dialog and resets local state.
-   */
-  // const handleCloseDialog = () => {
-  //   setEditDialogOpen(false);
-  //   setCurrentUser(null);
-  //   setSaving(false);
-  //   setIsValid(true);
-  // };
-
-  /**
-   * Handles pagination page change.
-   *
-   * @param _event - Mouse event from pagination button
-   * @param newPage - The new page index
-   */
-  const handleChangePage = (
-    _event: React.MouseEvent<HTMLButtonElement> | null,
-    newPage: number
-  ): void => {
-    setPage(newPage);
-  };
-
-  /**
-   * Handles change in rows per page selection.
-   * Resets to first page when rows per page changes.
-   *
-   * @param event - Change event from the select dropdown
-   */
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ): void => {
-    setRowsPerPage(Number.parseInt(event.target.value, 10));
-    setPage(0);
-  };
+  }, [usersSkills, searchKeyword]);
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4 }}>
       <Typography variant="h4" gutterBottom>
-        {strings.adminVacationManagement.heading}
+        {strings.usersSkills.heading}
       </Typography>
       <Box sx={{ mb: 3 }}>
         <UserSearchBar value={searchKeyword} onChange={setSearchKeyword} />
       </Box>
-      {/*<UserTable users={paginatedUsers} loading={loadingUsers} onEdit={handleEditUser} />*/}
-      {/*/!* Only shows pagination after loading of users *!/*/}
-      {/*{shouldPaginate && !loadingUsers && (*/}
-      {/*  <Box display="flex" justifyContent="center" mt={2}>*/}
-      {/*    <TablePagination*/}
-      {/*      component="div"*/}
-      {/*      count={filteredUsers.length}*/}
-      {/*      page={page}*/}
-      {/*      onPageChange={handleChangePage}*/}
-      {/*      rowsPerPage={rowsPerPage}*/}
-      {/*      onRowsPerPageChange={handleChangeRowsPerPage}*/}
-      {/*      rowsPerPageOptions={[20, 50, { label: "All", value: -1 }]}*/}
-      {/*      labelRowsPerPage="Rows per page:"*/}
-      {/*    />*/}
-      {/*  </Box>*/}
-      {/*)}*/}
+
+      {loading ? (
+        <Typography>Loading...</Typography>
+      ) : filterUsersSkills.length === 0 ? (
+        <Typography>No users found</Typography>
+      ) : (
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Name</TableCell>
+                <TableCell>Skills</TableCell>
+              </TableRow>
+            </TableHead>
+
+            <TableBody>
+              {filterUsersSkills.map((user: UsersSkills) => (
+                <TableRow key={user.id}>
+                  <TableCell>{user.name}</TableCell>
+
+                  <TableCell>
+                    {user.skills?.length ? (
+                      <Stack direction="row" spacing={1} flexWrap="wrap">
+                        {user.skills.map((skill, index) => (
+                          <Chip key={index} label={`${skill.name} (${skill.months})`} />
+                        ))}
+                      </Stack>
+                    ) : (
+                      "—"
+                    )}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
+
       <BackButton styles={{ mt: 3, marginBottom: 2 }} />
-      {/*<EditVacationDialog*/}
-      {/*  open={editDialogOpen}*/}
-      {/*  user={currentUser}*/}
-      {/*  vacationDays={vacationDays}*/}
-      {/*  loading={saving}*/}
-      {/*  onClose={handleCloseDialog}*/}
-      {/*  onVacationDaysChange={handleVacationChange}*/}
-      {/*  onSave={handleSaveVacationDays}*/}
-      {/*  disableSave={!isValid || saving}*/}
-      {/*/>*/}
     </Container>
   );
 };

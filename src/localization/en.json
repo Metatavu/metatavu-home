@@ -288,6 +288,12 @@
     "noVacationDaysAvailable": "You don't have any vacation days available for the current vacation year. Please contact your administrator.",
     "failedToLoad": "Failed to load users"
   },
+  "usersSkills": {
+    "heading": "Users Skills"
+  },
+  "usersSkillsError": {
+    "fetchUsersSkillsError": "Fetching users skills has failed"
+  },
   "sprintRequestError": {
     "fetchResourceAllocationsError": "Fetching sprint data for resourceAllocations has failed",
     "fetchWorkHoursAndTasksError": "Error fetching workHours and tasks"

@@ -321,6 +321,18 @@ export interface Localized extends LocalizedStringsMethods {
     noVacationDaysAvailable: string;
     failedToLoad: string;
   };
+  /**
+   * Translations related to users skills
+   */
+  usersSkills: {
+    heading: string;
+  };
+  /**
+   * Translations related to users skills errors
+   */
+  usersSkillsError: {
+    fetchUsersSkillsError: string;
+  };
 
   /**
    * Translations related to sprint requests errors
