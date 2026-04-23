@@ -314,9 +314,9 @@ const ArticleScreen = () => {
                 {/* Created / Updated Dates */}
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                   {article?.createdAt &&
-                    `Created: ${formatDate(DateTime.fromJSDate(article.createdAt))}`}
+                    `${strings.wikiDocumentation.created}: ${formatDate(DateTime.fromJSDate(article.createdAt))}`}
                   {article?.lastUpdatedAt &&
-                    ` | Updated: ${formatDate(DateTime.fromJSDate(article.lastUpdatedAt))}`}
+                    ` | ${strings.wikiDocumentation.lastUpdated}: ${formatDate(DateTime.fromJSDate(article.lastUpdatedAt))}`}
                 </Typography>
                 {/* Tags */}
                 {article?.tags && article.tags.length > 0 && (

@@ -220,7 +220,7 @@ const Onboarding = ({ screen }: OnboardingProps) => {
       case "top-left":
         return {
           left: pageLeft,
-          top: pageTop - POPUP_HEIGHT - 12
+          top: pageTop + height + 12
         };
       case "top-center":
         return {
@@ -230,7 +230,7 @@ const Onboarding = ({ screen }: OnboardingProps) => {
       case "top-right":
         return {
           left: pageLeft + width - POPUP_WIDTH,
-          top: pageTop - POPUP_HEIGHT - 12
+          top: pageTop + height + 12
         };
       case "bottom-left":
         return {
