@@ -63,6 +63,16 @@ export interface Localized extends LocalizedStringsMethods {
     fetchWorkDaysFailed: string;
     fetchWorkWeekFailed: string;
     fetchFailedSevera: string;
+    fetchFailedQuestionnaires: string;
+    fetchFailedWikiArticles: string;
+    fetchFailedSoftwareData: string;
+    loadUserProfileFailed: string;
+    softwareFetchFailed: string;
+    softwareStatusUpdateFailed: string;
+    softwareSaveFailed: string;
+    softwareDeleteFailed: string;
+    softwareRegistryFetchFailed: string;
+    softwareRegistryUpdateFailed: string;
   };
   /**
    * Translations related to localization
@@ -190,6 +200,11 @@ export interface Localized extends LocalizedStringsMethods {
     errorUnknownUser: string;
     errorCreatingSoftware: string;
     errorFetchingSoftwareToList: string;
+    softwareDetailsFetchFailed: string;
+    softwareDetailsRemoveUserFailed: string;
+    softwareDetailsAddUserFailed: string;
+    softwareDetailsUpdateFailed: string;
+    recommendationsFetchUserFailed: string;
     editApplication: string;
     submitApplication: string;
     updateApplication: string;
@@ -293,6 +308,7 @@ export interface Localized extends LocalizedStringsMethods {
     createStatusError: string;
     deleteRequestError: string;
     deleteStatusError: string;
+    dataGridRowsCreationError: string;
     updateRequestError: string;
     updateStatusError: string;
     noVacationRequestsFound: string;
@@ -300,6 +316,8 @@ export interface Localized extends LocalizedStringsMethods {
     noVacationRequestsStatusFound: string;
     tooManyDaysRequestedUser: string;
     tooManyDaysRequestedAdmin: string;
+    invalidNumberOfDaysUser: string;
+    invalidNumberOfDaysAdmin: string;
     noVacationDaysAvailable: string;
     failedToLoad: string;
   };

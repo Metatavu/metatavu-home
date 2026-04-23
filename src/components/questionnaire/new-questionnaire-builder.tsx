@@ -176,8 +176,9 @@ const NewQuestionnaireBuilder = () => {
       closeAndClear();
       navigate(-1);
       return createdQuestionnaire;
-    } catch (error) {
-      setError(`${strings.error.questionnaireSaveFailed}, ${error}`);
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
+      setError(`${strings.error.questionnaireSaveFailed}: ${errorMessage?.message || error}`);
     } finally {
       setLoading(false);
     }
@@ -347,7 +348,6 @@ const NewQuestionnaireBuilder = () => {
                 <Box>
                   <Button
                     sx={{ display: "flex", alignItems: "center", mt: 6, mr: 4 }}
-                    id="save-submit"
                     size="large"
                     variant="contained"
                     color="success"

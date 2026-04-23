@@ -64,8 +64,9 @@ const BalanceCard = () => {
         userId: severaUserId
       });
       setUsersFlextime(fetchedUsersFlextime);
-    } catch (error) {
-      setError(`${strings.error.fetchFailedFlextime}, ${error}`);
+    } catch (error: any) {
+      const errorMessage = await error.response.json();
+      setError(`${strings.error.fetchFailedFlextime}: ${errorMessage.message}`);
     } finally {
       setLoading(false);
     }
@@ -139,9 +140,7 @@ const BalanceCard = () => {
             <Grid style={{ marginBottom: 1 }} size={1}>
               <ScheduleIcon style={{ marginTop: 1 }} />
             </Grid>
-            <Grid size={11}>
-              {loading ? <Skeleton /> : renderUserFlextime()}
-            </Grid>
+            <Grid size={11}>{loading ? <Skeleton /> : renderUserFlextime()}</Grid>
           </Grid>
         </CardContent>
       </Card>

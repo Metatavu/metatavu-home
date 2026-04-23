@@ -116,8 +116,9 @@ const WorkDaysChart = ({ selectedEmployee }: { selectedEmployee?: User }) => {
         holidayName: w.holidayName ?? null
       }));
       setWorkdays(mapped);
-    } catch (err) {
-      setError(`${strings.error.fetchWorkDaysFailed}, ${err}`);
+    } catch (error: any) {
+      const errorMessage = await error.response.json();
+      setError(`${strings.error.fetchFailedFlextime}: ${errorMessage.message}`);
     }
   };
 

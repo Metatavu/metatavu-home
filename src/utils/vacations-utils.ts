@@ -120,6 +120,16 @@ export const validateVacationRequestDays = (
       errorMessage: errorString
     };
   }
+  if (requestedDays <= 0) {
+    const errorMessage = isUserAdmin
+      ? strings.vacationRequestError.invalidNumberOfDaysAdmin
+      : strings.vacationRequestError.invalidNumberOfDaysUser;
+
+    return {
+      valid: false,
+      errorMessage: errorMessage
+    };
+  }
   return { valid: true };
 };
 

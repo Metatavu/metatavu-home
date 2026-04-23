@@ -67,8 +67,11 @@ const SoftwareDetails = () => {
     try {
       const data = await softwareApi.getSoftwareById({ id });
       setSoftware(data);
-    } catch (error) {
-      setError((error as Error).message || "Error fetching software details");
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
+      setError(
+        `${strings.softwareRegistry.softwareDetailsFetchFailed}: ${errorMessage?.message || (error as Error).message}`
+      );
     } finally {
       setLoading(false);
     }
@@ -82,8 +85,11 @@ const SoftwareDetails = () => {
     try {
       const fetchedSoftware = await softwareApi.listSoftware();
       setSoftwareList(fetchedSoftware);
-    } catch (error) {
-      setError((error as Error).message || strings.softwareRegistry.errorFetchingSoftwareToList);
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
+      setError(
+        `${strings.softwareRegistry.errorFetchingSoftwareToList}: ${errorMessage?.message || (error as Error).message}`
+      );
     } finally {
       setLoading(false);
     }
@@ -102,8 +108,11 @@ const SoftwareDetails = () => {
         softwareRegistry: { ...software, users: updatedUsers }
       });
       setSoftware({ ...software, users: updatedUsers });
-    } catch (error) {
-      setError((error as Error).message || "Error removing user from software");
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
+      setError(
+        `${strings.softwareRegistry.softwareDetailsRemoveUserFailed}: ${errorMessage?.message || (error as Error).message}`
+      );
     }
   };
 
@@ -134,8 +143,11 @@ const SoftwareDetails = () => {
         softwareRegistry: { ...software, users: updatedUsers }
       });
       setSoftware({ ...software, users: updatedUsers });
-    } catch (error) {
-      setError((error as Error).message || "Error adding user to software");
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
+      setError(
+        `${strings.softwareRegistry.softwareDetailsAddUserFailed}: ${errorMessage?.message || (error as Error).message}`
+      );
     }
   };
 
@@ -152,8 +164,11 @@ const SoftwareDetails = () => {
       });
       setSoftware(updatedSoftware);
       setIsEditModalOpen(false);
-    } catch (error) {
-      setError((error as Error).message || "Error updating software");
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
+      setError(
+        `${strings.softwareRegistry.softwareDetailsUpdateFailed}: ${errorMessage?.message || (error as Error).message}`
+      );
     }
   };
 

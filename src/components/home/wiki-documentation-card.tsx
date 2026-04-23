@@ -51,8 +51,8 @@ const WikiDocumentationCard = () => {
       setLastUpdatedArticle(fetchedArticles[0]);
       setArticlesAtom(fetchedArticles);
     } catch (error: any) {
-      const message = (await error.response.json()).message;
-      setError(message);
+      const errorMessage = await error.response.json();
+      setError(`${strings.error.fetchFailedWikiArticles}: ${errorMessage.message}`);
     }
     setLoading(false);
   };
@@ -92,7 +92,8 @@ const WikiDocumentationCard = () => {
               sm: 12,
               md: 5,
               lg: 4
-            }}>
+            }}
+          >
             <Box
               component="img"
               sx={{
@@ -123,7 +124,8 @@ const WikiDocumentationCard = () => {
               sm: 12,
               md: 7,
               lg: 8
-            }}>
+            }}
+          >
             <Typography
               variant="h6"
               sx={{

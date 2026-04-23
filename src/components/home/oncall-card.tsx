@@ -30,8 +30,9 @@ const OnCallCard = () => {
     try {
       const fetchedData = await onCallApi.listOnCallData({ year: year.toString() });
       setOnCallData(fetchedData);
-    } catch (error) {
-      setError(`${strings.oncall.fetchFailed}, ${error}`);
+    } catch (error: any) {
+      const errorMessage = await error.response.json();
+      setError(`${strings.oncall.fetchFailed}: ${errorMessage.message}`);
     }
   };
 

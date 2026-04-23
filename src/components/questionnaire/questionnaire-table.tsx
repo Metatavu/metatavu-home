@@ -71,8 +71,9 @@ const QuestionnaireTable = () => {
 
         setQuestionnaires(processedQuestionnaires);
         setFilteredQuestionnaires(processedQuestionnaires);
-      } catch (error) {
-        setError(`${strings.error.questionnaireLoadFailed}, ${error}`);
+      } catch (error: any) {
+        const errorMessage = await error?.response?.json();
+        setError(`${strings.error.questionnaireLoadFailed}: ${errorMessage?.message || error}`);
       }
       setLoading(false);
     };
@@ -175,8 +176,9 @@ const QuestionnaireTable = () => {
         prevQuestionnaires.filter((questionnaire) => questionnaire.id !== deleteId)
       );
       handleCloseDialog();
-    } catch (error) {
-      setError(`${strings.error.questionnaireDeleteFailed}, ${error}`);
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
+      setError(`${strings.error.questionnaireDeleteFailed}: ${errorMessage?.message || error}`);
     }
     setLoading(false);
   };

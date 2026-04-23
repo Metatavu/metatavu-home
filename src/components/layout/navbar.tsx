@@ -85,8 +85,9 @@ const NavBar = () => {
         email: encodedEmail
       });
       setAvatars({ image_original: fetchedAvatars.imageOriginal });
-    } catch (error) {
-      setError(`${strings.error.fetchSlackAvatarsFailed}: ${error}`);
+    } catch (error: any) {
+      const errorMessage = await error.response?.json();
+      setError(`${strings.error.fetchSlackAvatarsFailed}: ${errorMessage?.message}`);
     }
   };
 

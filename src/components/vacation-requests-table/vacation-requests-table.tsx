@@ -207,8 +207,11 @@ const VacationRequestsTable = ({
   useMemo(() => {
     try {
       setRows(createDataGridRows(vacationRequests));
-    } catch (error) {
-      console.error("Error creating data grid rows:", error);
+    } catch (error: any) {
+      const errorMessage = error?.response?.json();
+      console.error(
+        ` ${strings.vacationRequestError.failedToLoad}: ${errorMessage?.message || error}`
+      );
       setRows([]);
     }
   }, [vacationRequests, formOpen]);
