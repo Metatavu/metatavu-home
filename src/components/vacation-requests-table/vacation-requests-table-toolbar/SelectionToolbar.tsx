@@ -1,6 +1,7 @@
 import { Grid, styled } from "@mui/material";
 import type { GridRowId, GridRowSelectionModel } from "@mui/x-data-grid";
 import { VacationRequestStatuses } from "src/generated/homeLambdasClient";
+import strings from "src/localization/strings";
 import ToolbarDeleteButton from "./toolbar-delete-button";
 import FormToggleButton from "./toolbar-form-toggle-button";
 import ToolbarSubmitButton from "./toolbar-submit-button";
@@ -53,7 +54,7 @@ const SelectionToolbar = ({
       <>
         <ToolbarGridItem size={{ sm: adminMode ? 3 : 4 }}>
           <FormToggleButton
-            title={"Edit"}
+            title={strings.tableToolbar.edit}
             ButtonIcon={undefined}
             value={false}
             setValue={handleEditButtonClick}
