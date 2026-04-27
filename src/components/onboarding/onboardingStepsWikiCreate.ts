@@ -54,19 +54,19 @@ export function getWikiCreateOnboardingSteps(): OnboardingStep[] {
       title: strings.onboardingWikiCreate.editorLinksTitle,
       content: strings.onboardingWikiCreate.editorLinksContent,
       selector: "#wiki-editor-link-button",
-      position: "bottom-center"
+      position: "bottom-right"
     },
     {
       title: strings.onboardingWikiCreate.editorArticleLinksTitle,
       content: strings.onboardingWikiCreate.editorArticleLinksContent,
       selector: "#wiki-editor-article-link-button",
-      position: "bottom-center"
+      position: "bottom-right"
     },
     {
       title: strings.onboardingWikiCreate.editorImagesTitle,
       content: strings.onboardingWikiCreate.editorImagesContent,
       selector: "#wiki-editor-image-button",
-      position: "bottom-center"
+      position: "bottom-right"
     },
     {
       title: strings.onboardingWikiCreate.actionButtonTitle,
