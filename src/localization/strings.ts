@@ -334,6 +334,7 @@ export interface Localized extends LocalizedStringsMethods {
    * Translations related to form
    */
   form: {
+    create: string;
     submit: string;
     update: string;
     restoreDefault: string;

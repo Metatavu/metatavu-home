@@ -69,7 +69,9 @@ const QuestionnaireTable = () => {
 
         setQuestionnaires(processedQuestionnaires);
         setFilteredQuestionnaires(processedQuestionnaires);
-        const allTags = processedQuestionnaires.flatMap((q) => q.tags || []);
+        const allTags = processedQuestionnaires.flatMap(
+          (questionnaire) => questionnaire.tags || []
+        );
         const uniqueTags = [...new Set<string>(allTags)];
         setQuestionnaireTagsAtom(uniqueTags);
       } catch (error: any) {
@@ -104,6 +106,7 @@ const QuestionnaireTable = () => {
    * Handler for search term change
    *
    * @param event input change event
+   * @param value new input value
    */
   const handleSearchChange = (_event: React.SyntheticEvent, value: string) => {
     setSearchTerm(value);
@@ -173,7 +176,7 @@ const QuestionnaireTable = () => {
       setQuestionnaires(updatedQuestionnaires);
 
       // Update tags atom after deletion
-      const allTags = updatedQuestionnaires.flatMap((q) => q.tags || []);
+      const allTags = updatedQuestionnaires.flatMap((questionnaire) => questionnaire.tags || []);
       const uniqueTags = [...new Set<string>(allTags)];
       setQuestionnaireTagsAtom(uniqueTags);
 

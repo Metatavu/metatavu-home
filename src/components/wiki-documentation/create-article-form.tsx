@@ -1,15 +1,12 @@
 /** biome-ignore-all lint/correctness/useUniqueElementIds: used for onboarding */
 
-import { Height, Tag } from "@mui/icons-material";
 import ClearIcon from "@mui/icons-material/Clear";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import ImageIcon from "@mui/icons-material/Image";
 import {
-  Autocomplete,
   Box,
   Button,
   Card,
-  Checkbox,
   CircularProgress,
   Dialog,
   DialogActions,
@@ -21,9 +18,6 @@ import {
   ListItem,
   ListItemButton,
   ListItemText,
-  Popper,
-  type PopperProps,
-  styled,
   TextField
 } from "@mui/material";
 import { useAtomValue, useSetAtom } from "jotai";
@@ -332,7 +326,11 @@ const CreateOrEditArticleForm = ({
       </List>
     );
   };
-
+  /**
+   * Handles the "Enter" key press in the tag input.
+   * Adds the current tag to the list if it is not empty and not already selected,
+   * then clears the input value.
+   */
   const handleEnter = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key !== "Enter") return;
     if (tag && !selectedTags.includes(tag)) setSelectedTags([...selectedTags, tag]);

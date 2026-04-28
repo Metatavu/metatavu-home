@@ -330,23 +330,21 @@ const WikiDocumentationScreen = () => {
         marginBottom: 2
       }}
     >
-      {
-        <SearchBar
-          searchInput={searchInput}
-          handleSearchInputChange={handleSearchInputChange}
-          tags={tags}
-          handleSelectedTagChange={handleSelectedTagChange}
-          autoCompleteId={autoCompleteId}
-          styles={
-            adminMode
-              ? {
-                  width: { lg: "55%", md: "55%", xs: "100%" }
-                }
-              : undefined
-          }
-          placeholder={strings.wikiDocumentation.searchArticle}
-        />
-      }
+      <SearchBar
+        searchInput={searchInput}
+        handleSearchInputChange={handleSearchInputChange}
+        tags={tags}
+        handleSelectedTagChange={handleSelectedTagChange}
+        autoCompleteId={autoCompleteId}
+        styles={
+          adminMode
+            ? {
+                width: { lg: "55%", md: "55%", xs: "100%" }
+              }
+            : undefined
+        }
+        placeholder={strings.wikiDocumentation.searchArticle}
+      />
       {adminMode && (
         <Dropdown
           displayOption={displayOption}

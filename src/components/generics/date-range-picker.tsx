@@ -6,12 +6,17 @@ import { CustomDatePicker } from "../work-hours/timebank-daterange-picker";
 
 /**
  * Component properties
+ *
+ * @param props.dateTimeTomorrow  The minimum date for the date picker, set to tomorrow's date
+ * @param props.dateRange  The currently selected date range with start and end dates
+ * @param props.setDateRange  Function to update the selected date range
  */
 interface Props {
   dateTimeTomorrow: DateTime;
   dateRange: DateRange;
   setDateRange: (dateRange: DateRange) => void;
 }
+
 /**
  * Date range picker component
  *

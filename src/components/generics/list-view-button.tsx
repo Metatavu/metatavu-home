@@ -1,8 +1,14 @@
 import FormatListBulletedOutlinedIcon from "@mui/icons-material/FormatListBulletedOutlined";
-
 import GridViewIcon from "@mui/icons-material/GridView";
 import { Button, type SxProps, type Theme, useTheme } from "@mui/material";
 
+/**
+ * ListViewButton properties
+ *
+ * @param props.listView - Current view state (true for list view, false for grid view)
+ * @param props.setListView - Function to update the view state
+ * @param props.styles - Optional MUI sx styles to extend or override default styles
+ */
 interface ListViewButtonProps {
   listView: boolean;
   setListView: (value: boolean) => void;
@@ -14,9 +20,7 @@ interface ListViewButtonProps {
  * @param props.setListView - Function to update the view state
  * @param props.styles - Optional MUI sx styles to extend or override default styles
  */
-
-const ListViewButton = (props: ListViewButtonProps) => {
-  const { listView, setListView, styles } = props;
+const ListViewButton = ({ listView, setListView, styles }: ListViewButtonProps) => {
   const theme = useTheme();
 
   return (

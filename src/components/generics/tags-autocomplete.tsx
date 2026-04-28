@@ -43,10 +43,10 @@ const CustomPopper = styled((props: PopperProps) => <Popper {...props} placement
 
 /**
  * TagsAutocomplete component for selecting multiple tags with autocomplete functionality
+ *
  * @param props - TagsAutocompleteProps configuration object
  * @returns JSX.Element containing the Autocomplete component for tags selection
  */
-
 const TagsAutocomplete = ({
   tags,
   tag,

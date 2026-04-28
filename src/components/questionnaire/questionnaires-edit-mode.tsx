@@ -115,6 +115,7 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
 
   /**
    * Function to handle tag input change from Autocomplete
+   *
    * @param _event - The event object
    * @param value - The new input value
    */
@@ -139,6 +140,7 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
 
   /**
    * Function to handle Enter key press in tag input
+   *
    * @param event - The keyboard event
    */
   const handleEnter = (event: React.KeyboardEvent<HTMLInputElement>) => {

@@ -1,12 +1,22 @@
 import { FormControl, MenuItem, Select, type SelectChangeEvent, useTheme } from "@mui/material";
 
+/**
+ * Dropdown properties
+ *
+ * @param props.displayOption  The currently selected display option
+ * @param props.handleDisplayOptionChange  Event handler for when the display option changes
+ * @param props.displayOptions  Array of available display options with value and label
+ */
+
 interface DropdownProps {
   displayOption: string;
   handleDisplayOptionChange: (event: SelectChangeEvent<string>) => void;
   displayOptions: { value: string; label: string }[];
 }
+
 /**
  * Dropdown component for selecting display options
+ *
  * @param props.displayOption - The currently selected display option
  * @param props.handleDisplayOptionChange - Event handler for when the display option changes
  * @param props.displayOptions - Array of available display options with value and label

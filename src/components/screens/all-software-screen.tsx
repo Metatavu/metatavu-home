@@ -278,7 +278,7 @@ const AllSoftwareScreen = () => {
             mt: 2
           }}
         >
-          {/*The logic behind how the software is managed sholud be changed to be similar to the wiki one*/}
+          {/*TODO: The logic behind how the software is managed should be changed to be similar to the wiki one*/}
           <SearchBar
             searchInput={inputValue}
             handleSearchInputChange={(_event, newInputValue) => setInputValue(newInputValue)}

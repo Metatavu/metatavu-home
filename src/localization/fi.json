@@ -294,6 +294,7 @@
     "fetchWorkHoursAndTasksError": "Virhe työtuntien ja tehtävien hakemisessa"
   },
   "form": {
+    "create": "Luo",
     "submit": "Lähetä",
     "update": "Päivitä",
     "restoreDefault": "Palauta alkuperäiset päivät"

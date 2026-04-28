@@ -56,16 +56,15 @@ interface SearchBarProps {
  * @param props - SearchBarProps configuration object
  * @returns JSX.Element containing the search bar Card
  */
-const SearchBar = (props: SearchBarProps): JSX.Element => {
-  const {
-    searchInput,
-    handleSearchInputChange,
-    tags,
-    handleSelectedTagChange,
-    autoCompleteId,
-    styles,
-    placeholder
-  } = props;
+const SearchBar = ({
+  searchInput,
+  handleSearchInputChange,
+  tags,
+  handleSelectedTagChange,
+  autoCompleteId,
+  styles,
+  placeholder
+}: SearchBarProps): JSX.Element => {
   const theme = useTheme();
 
   return (

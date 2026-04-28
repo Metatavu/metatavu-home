@@ -66,7 +66,6 @@ const SoftwareModal = ({
   const setError = useSetAtom(errorAtom);
   const [tags, setTags] = useState<string[]>([]);
   const [userList, setUserList] = useState<User[]>([]);
-  //const [software, setSoftware] = useState<SoftwareRegistry>(softwareData || initialSoftwareState);
   const [tag, setTag] = useState("");
   const [selectedTags, setSelectedTags] = useState<string[]>(softwareData?.tags || []);
   const [software, setSoftware] = useState<SoftwareRegistry>(initialSoftwareState);
@@ -152,8 +151,12 @@ const SoftwareModal = ({
       tags: value
     }));
   };
-
-  const handleEnter = (event: any) => {
+  /**
+   * Handles the Enter key press event for adding tags.
+   *
+   * @param event - The keyboard event.
+   */
+  const handleEnter = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key !== "Enter") return;
     if (tag && !selectedTags.includes(tag)) {
       const newTags = [...selectedTags, tag];
