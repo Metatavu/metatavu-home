@@ -90,7 +90,7 @@ const WikiDocumentationScreen = () => {
         setDisplayedArticles(articles);
       }
     }
-  }, [articles, draftArticles]);
+  }, [articles, draftArticles, formOpen]);
 
   useEffect(() => {
     setDisplayedArticlesOnPage(
@@ -234,10 +234,12 @@ const WikiDocumentationScreen = () => {
    * Handles changes in the search input field.
    * Filters articles based on the search query and selected tags.
    *
-   * @param {any} event - The input change event containing the search query.
+   * @param {React.SyntheticEvent} _event - The input change event containing the search query.
+   * @param {string} value - Search query
+   *
    */
-  const handleSearchInputChange = (event: any) => {
-    const newSearchInput = event.target.value;
+  const handleSearchInputChange = (_event: React.SyntheticEvent, value: string) => {
+    const newSearchInput = value;
     setSearchInput(newSearchInput ?? "");
 
     const articlesToFilter = getArticlesToFilter(
@@ -247,14 +249,9 @@ const WikiDocumentationScreen = () => {
       draftArticles ?? []
     );
 
-    if (!newSearchInput || newSearchInput === "") {
-      setDisplayedArticles(articlesToFilter);
-      return;
-    }
-
     const filteredArticles = articlesToFilter.filter(
       (article) =>
-        article.title.toLowerCase().includes(newSearchInput.toLowerCase()) &&
+        article.title.toLowerCase().includes(newSearchInput.toLowerCase().trim()) &&
         selectedTags.every((tag) => article.tags?.includes(tag))
     );
     setDisplayedArticles(filteredArticles);
