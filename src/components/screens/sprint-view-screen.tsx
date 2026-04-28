@@ -1,4 +1,3 @@
-import { Close, Search } from "@mui/icons-material";
 import {
   Box,
   Card,
@@ -6,14 +5,11 @@ import {
   Container,
   Divider,
   FormControl,
-  IconButton,
-  InputAdornment,
   InputLabel,
   MenuItem,
   Paper,
   Select,
   Stack,
-  TextField,
   Typography,
   useTheme
 } from "@mui/material";
@@ -33,30 +29,13 @@ import useSprintViewHandlers from "src/hooks/sprint-custom-hooks";
 import { useLambdasApi } from "src/hooks/use-api";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
-import { type SprintViewFilterType, SprintViewFilterTypes } from "src/types/index";
+import { SprintViewFilterTypes } from "src/types/index";
 import { getSeveraUserId } from "src/utils/sprint-utils";
 import { getSprintEnd, getSprintStart } from "src/utils/time-utils";
 import BackButton from "../generics/back-button";
+import SearchBar from "../generics/search-bar";
 import createSprintViewProjectsColumns from "../sprint-view-table/sprint-projects-columns";
 
-/**
- * Gets the filter label based on the filter type
- *
- * @param filterType - The current filter type
- * @returns The appropriate label string
- */
-const getFilterLabel = (filterType: SprintViewFilterType): string => {
-  if (filterType === SprintViewFilterTypes.project) {
-    return strings.sprint.project;
-  }
-  if (filterType === SprintViewFilterTypes.user) {
-    return strings.sprint.user;
-  }
-  if (filterType === SprintViewFilterTypes.clear) {
-    return `${strings.sprint.project} / ${strings.sprint.user}`;
-  }
-  return "";
-};
 /**
  * Sprint view screen component
  */
@@ -70,7 +49,6 @@ const SprintViewScreen = () => {
     selectedProject,
     handleFilterChange,
     handleRowClick,
-    handleClearSearch,
     setSearchQuery,
     filterAllocations
   } = useSprintViewHandlers();
@@ -115,8 +93,6 @@ const SprintViewScreen = () => {
       fetchProjectDetails();
     }
   }, [loggedInUser, fetchProjectDetails]);
-
-  const filterLabel = getFilterLabel(filterType);
 
   return (
     <>
@@ -175,31 +151,11 @@ const SprintViewScreen = () => {
                       </Select>
                     </FormControl>
                   </Box>
-                  <TextField
-                    label={strings.formatString(strings.sprint.searchBy, filterLabel)}
-                    variant="outlined"
-                    fullWidth
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <Search color="action" />
-                        </InputAdornment>
-                      ),
-                      endAdornment: searchQuery && (
-                        <InputAdornment position="end">
-                          <IconButton onClick={handleClearSearch} size="small">
-                            <Close fontSize="small" />
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                      sx: {
-                        borderRadius: 2,
-                        backgroundColor: theme.palette.background.default,
-                        color: theme.palette.text.primary
-                      }
-                    }}
+                  <SearchBar
+                    searchInput={searchQuery}
+                    handleSearchInputChange={(_, value) => setSearchQuery(value)}
+                    styles={{ width: "100%" }}
+                    placeholder={strings.sprint.searchBy}
                   />
                 </>
               )}

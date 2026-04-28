@@ -1,7 +1,8 @@
 {
   "placeHolder": {
     "notYetImplemented": "Ei vielä toteutettu",
-    "pleaseWait": "Odota, tämä voi kestää hetken..."
+    "pleaseWait": "Odota, tämä voi kestää hetken...",
+    "search": "Hae..."
   },
   "label": {
     "currentLocaleLabel": "Nykyinen kieli:",
@@ -293,6 +294,7 @@
     "fetchWorkHoursAndTasksError": "Virhe työtuntien ja tehtävien hakemisessa"
   },
   "form": {
+    "create": "Luo",
     "submit": "Lähetä",
     "update": "Päivitä",
     "restoreDefault": "Palauta alkuperäiset päivät"

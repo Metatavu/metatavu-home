@@ -12,6 +12,7 @@ export interface Localized extends LocalizedStringsMethods {
   placeHolder: {
     notYetImplemented: string;
     pleaseWait: string;
+    search: string;
   };
   label: {
     currentLocaleLabel: string;
@@ -333,6 +334,7 @@ export interface Localized extends LocalizedStringsMethods {
    * Translations related to form
    */
   form: {
+    create: string;
     submit: string;
     update: string;
     restoreDefault: string;
