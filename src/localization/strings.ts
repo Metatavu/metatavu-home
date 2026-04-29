@@ -334,6 +334,9 @@ export interface Localized extends LocalizedStringsMethods {
     skillCategory: string;
     skillMonths: string;
     addSkill: string;
+    noUsersFound: string;
+    skills: string;
+    deleteEntry: string;
   };
   /**
    * Translations related to users skills search component
@@ -346,6 +349,9 @@ export interface Localized extends LocalizedStringsMethods {
    */
   usersSkillsError: {
     fetchUsersSkillsError: string;
+    updateUsersSkillsError: string;
+    createUsersSkillsError: string;
+    deleteUsersSkillsError: string;
   };
 
   /**

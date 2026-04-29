@@ -297,13 +297,19 @@
     "skillName": "Skill name",
     "skillCategory": "Category",
     "skillMonths": "Months of experience",
-    "addSkill": "Add skill"
+    "addSkill": "Add skill",
+    "noUsersFound": "No users found",
+    "skills": "Skills",
+    "deleteEntry": "Delete users skills entry"
   },
   "usersSkillsSearchBar": {
     "placeholder": "Search users by name or skill"
   },
   "usersSkillsError": {
-    "fetchUsersSkillsError": "Fetching users skills has failed"
+    "fetchUsersSkillsError": "Fetching users skills has failed",
+    "updateUsersSkillsError": "Failed to update user skills",
+    "createUsersSkillsError": "Failed to create users skills entry",
+    "deleteUsersSkillsError": "Failed to delete user skills entry"
   },
   "sprintRequestError": {
     "fetchResourceAllocationsError": "Fetching sprint data for resourceAllocations has failed",

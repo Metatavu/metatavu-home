@@ -11,12 +11,15 @@ import {
   Typography
 } from "@mui/material";
 import type { UsersSkills } from "src/generated/homeLambdasClient";
+import strings from "../../../localization/strings";
 import UsersSkillsRow from "./UsersSkillsRow";
 
 /** Props for the UsersSkillsTable component */
 interface UsersSkillsTableProps {
   usersSkills: UsersSkills[];
   loading: boolean;
+  onEdit: (user: UsersSkills) => void;
+  onDelete: (user: UsersSkills) => void;
 }
 
 /**
@@ -27,9 +30,11 @@ interface UsersSkillsTableProps {
  *
  * @param usersSkills - Array of user skill records to display.
  * @param loading - Whether data is currently loading.
+ * @param onEdit - Callback to edit a user's skills.
+ * @param onDelete - Callback to delete a user's skills entry.
  * @returns User skills table, or a loading/empty state UI.
  */
-const UsersSkillsTable = ({ usersSkills, loading }: UsersSkillsTableProps) => {
+const UsersSkillsTable = ({ usersSkills, loading, onEdit, onDelete }: UsersSkillsTableProps) => {
   if (loading) {
     return (
       <Box sx={{ display: "flex", justifyContent: "center", p: 3 }}>
@@ -41,7 +46,7 @@ const UsersSkillsTable = ({ usersSkills, loading }: UsersSkillsTableProps) => {
   if (usersSkills.length === 0) {
     return (
       <Typography align="center" sx={{ p: 3 }}>
-        No users found
+        {strings.usersSkills.noUsersFound}
       </Typography>
     );
   }
@@ -51,13 +56,14 @@ const UsersSkillsTable = ({ usersSkills, loading }: UsersSkillsTableProps) => {
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>Name</TableCell>
-            <TableCell>Skills</TableCell>
+            <TableCell>{strings.userTable.name}</TableCell>
+            <TableCell>{strings.usersSkills.skills}</TableCell>
+            <TableCell align="center">{strings.userTable.actions}</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {usersSkills.map((user) => (
-            <UsersSkillsRow key={user.id} user={user} />
+            <UsersSkillsRow key={user.id} user={user} onEdit={onEdit} onDelete={onDelete} />
           ))}
         </TableBody>
       </Table>

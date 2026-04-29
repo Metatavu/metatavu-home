@@ -297,13 +297,19 @@
     "skillName": "Taidon nimi",
     "skillCategory": "Kategoria",
     "skillMonths": "Kokemus kuukausina",
-    "addSkill": "Lisää taito"
+    "addSkill": "Lisää taito",
+    "noUsersFound": "Käyttäjiä ei löytynyt",
+    "skills": "Taidot",
+    "deleteEntry": "Poista merkintä"
   },
   "usersSkillsSearchBar": {
     "placeholder": "Hae käyttäjiä nimen tai taidon perusteella"
   },
   "usersSkillsError": {
-    "fetchUsersSkillsError": "Käyttäjien taitotietojen hakeminen epäonnistui"
+    "fetchUsersSkillsError": "Käyttäjien taitotietojen hakeminen epäonnistui",
+    "updateUsersSkillsError": "Käyttäjän taitojen päivitys epäonnistui",
+    "createUsersSkillsError": "Käyttäjän taitomerkinnän luonti epäonnistui",
+    "deleteUsersSkillsError": "Käyttäjän taitomerkinnän poisto epäonnistui"
   },
   "sprintRequestError": {
     "fetchResourceAllocationsError": "Sprintin tietopyyntöjen hakeminen epäonnistui",
