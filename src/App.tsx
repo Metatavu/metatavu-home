@@ -3,7 +3,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { useAtomValue } from "jotai";
 import { Settings } from "luxon";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { languageAtom } from "./atoms/language";
 import ErrorHandler from "./components/contexts/error-handler";
@@ -28,8 +28,8 @@ import VacationRequestsScreen from "./components/screens/vacation-requests-scree
 import ArticleScreen from "./components/screens/wiki-article-screen";
 import WikiDocumentationScreen from "./components/screens/wiki-documentation-screen";
 import SoftwareDetails from "./components/software-registry/SoftwareDetails";
-import { theme } from "./theme";
-import { QuestionnairePreviewMode } from "./types";
+import { createAppTheme } from "./theme";
+import { QuestionnairePreviewMode, type ThemeMode, ThemeModes } from "./types";
 
 /**
  * Application component
@@ -41,9 +41,15 @@ const App = () => {
     Settings.defaultLocale = language;
   }, [language]);
 
+  const [screenColorMode, setScreenColorMode] = useState<ThemeMode>(() => {
+    const savedScreenColorMode = localStorage.getItem("screenColorMode") as ThemeMode | null;
+    return savedScreenColorMode ?? ThemeModes.LIGHT;
+  });
+
+  const appTheme = useMemo(() => createAppTheme(screenColorMode), [screenColorMode]);
+
   const router = createBrowserRouter([
     {
-      path: "/",
       element: <Layout />,
       errorElement: <ErrorScreen />,
       children: [
@@ -51,6 +57,25 @@ const App = () => {
           path: "/",
           element: <HomeScreen />
         },
+        {
+          path: "/settings",
+          element: (
+            <SettingsScreen
+              screenColorMode={screenColorMode}
+              setScreenColorMode={setScreenColorMode}
+            />
+          )
+        }
+      ]
+    },
+    {
+      element: (
+        <RestrictedContentProvider requiredRole="developer">
+          <Layout />
+        </RestrictedContentProvider>
+      ),
+      errorElement: <ErrorScreen />,
+      children: [
         {
           path: "/vacations",
           element: <VacationRequestsScreen />
@@ -88,27 +113,33 @@ const App = () => {
           element: <QuestionnaireManager mode={QuestionnairePreviewMode.FILL} />
         },
         {
-          path: "/wiki-documentation",
-          element: <WikiDocumentationScreen />
-        },
-        {
-          path: "/wiki-documentation/*",
-          element: <ArticleScreen />
-        },
-        {
-          path: "/settings",
-          element: <SettingsScreen />
-        },
-        {
           path: "/oncall",
           element: <OnCallCalendarScreen />
         }
       ]
     },
     {
+      element: (
+        <RestrictedContentProvider requiredRole="tester">
+          <Layout />
+        </RestrictedContentProvider>
+      ),
+      errorElement: <ErrorScreen />,
+      children: [
+        {
+          path: "/wiki-documentation",
+          element: <WikiDocumentationScreen />
+        },
+        {
+          path: "/wiki-documentation/*",
+          element: <ArticleScreen />
+        }
+      ]
+    },
+    {
       path: "/admin",
       element: (
-        <RestrictedContentProvider>
+        <RestrictedContentProvider requiredRole="admin">
           <Layout />
         </RestrictedContentProvider>
       ),
@@ -179,13 +210,12 @@ const App = () => {
   ]);
   return (
     <div className="App">
-      <ThemeProvider theme={theme}>
+      <ThemeProvider theme={appTheme}>
+        <CssBaseline />
         <ErrorHandler>
           <AuthenticationProvider>
             <LocalizationProvider dateAdapter={AdapterLuxon} adapterLocale={language}>
-              <CssBaseline>
-                <RouterProvider router={router} />
-              </CssBaseline>
+              <RouterProvider router={router} />
             </LocalizationProvider>
           </AuthenticationProvider>
         </ErrorHandler>

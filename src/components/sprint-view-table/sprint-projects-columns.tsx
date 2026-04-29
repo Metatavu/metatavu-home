@@ -10,10 +10,9 @@ import strings from "../../localization/strings";
 interface Props {
   resourceAllocations: ResourceAllocations[];
 }
+
 /**
  * Sprint view projects table columns component
- *
- * @param props component properties
  */
 const createSprintViewProjectsColumns = ({ resourceAllocations }: Props) => {
   const columns: GridColDef[] = [
@@ -21,51 +20,57 @@ const createSprintViewProjectsColumns = ({ resourceAllocations }: Props) => {
       field: "project",
       headerClassName: "header-color",
       filterable: false,
+      sortable: true,
       headerName: strings.sprint.myAllocation,
       flex: 2,
-      valueGetter: (params) => {
-        getProjectName(params.row.project, resourceAllocations);
-      },
+
+      valueGetter: (_value, row) =>
+        row?.project ? getProjectName(row.project, resourceAllocations) : "",
+
       renderCell: (params) => (
-        <>
-          <Box display="flex" alignItems="center" justifyContent="center" />
-          {getProjectName(params.row.project, resourceAllocations)}{" "}
-        </>
+        <Box display="flex" alignItems="center" justifyContent="left">
+          {params.row?.project ? getProjectName(params.row.project, resourceAllocations) : ""}
+        </Box>
       )
     },
     {
       field: "allocationHours",
       headerClassName: "header-color",
       filterable: false,
+      sortable: true,
       headerName: strings.sprint.estimatedTime,
       flex: 2,
-      valueGetter: (param) => {
-        getTotalEstimatedHours(resourceAllocations, param.row.project);
-      },
-      renderCell: (param) => (
-        <>
-          <Box marginLeft={"50px"} display="flex" alignItems="center" justifyContent="center" />
-          {getTotalEstimatedHours(resourceAllocations, param.row.project)}{" "}
-        </>
+
+      valueGetter: (_value, row) =>
+        row?.project ? getTotalEstimatedHours(resourceAllocations, row.project) : "",
+
+      renderCell: (params) => (
+        <Box display="flex" alignItems="center" justifyContent="left" ml={5}>
+          {params.row?.project
+            ? getTotalEstimatedHours(resourceAllocations, params.row.project)
+            : ""}
+        </Box>
       )
     },
     {
       field: "user",
       headerClassName: "header-color",
       filterable: false,
+      sortable: true,
       headerName: strings.sprint.assigned,
       flex: 4,
-      valueGetter: (params) => {
-        getAssigneName(resourceAllocations, params.row.project);
-      },
+
+      valueGetter: (_value, row) =>
+        row?.project ? getAssigneName(resourceAllocations, row.project) : "",
+
       renderCell: (params) => (
-        <>
-          <Box display="flex" alignItems="center" justifyContent="center" />
-          {getAssigneName(resourceAllocations, params.row.project)}{" "}
-        </>
+        <Box display="flex" alignItems="center" justifyContent="left">
+          {params.row?.project ? getAssigneName(resourceAllocations, params.row.project) : ""}
+        </Box>
       )
     }
   ];
+
   return columns;
 };
 

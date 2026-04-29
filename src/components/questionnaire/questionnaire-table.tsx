@@ -1,24 +1,17 @@
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import ClearIcon from "@mui/icons-material/Clear";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import EditIcon from "@mui/icons-material/Edit";
 import LabelIcon from "@mui/icons-material/Label";
-import PendingIcon from "@mui/icons-material/Pending";
-import SearchIcon from "@mui/icons-material/Search";
+import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
 import {
   Box,
   Button,
   Chip,
   CircularProgress,
-  Dialog,
-  DialogActions,
-  DialogTitle,
-  IconButton,
-  InputAdornment,
   Paper,
   Popover,
-  TextField,
-  Typography
+  Typography,
+  useTheme
 } from "@mui/material";
 import { DataGrid, type GridRenderCellParams, type GridRowParams } from "@mui/x-data-grid";
 import { useAtomValue, useSetAtom } from "jotai";
@@ -26,13 +19,16 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import { userProfileAtom } from "src/atoms/auth";
 import { errorAtom } from "src/atoms/error";
+import { questionnaireTagsAtom } from "src/atoms/questionnaire";
 import { usersAtom } from "src/atoms/user";
 import type { Questionnaire, User } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
 import { useSnackbar } from "src/hooks/use-snackbar";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
-import { QuestionnairePreviewMode } from "src/types/index";
+import { DeleteItemType, QuestionnairePreviewMode } from "src/types/index";
+import DeleteConfirmationDialog from "../contexts/delete-confirmation-dialog";
+import SearchBar from "../generics/search-bar";
 
 /**
  * Questionnaire Table Component
@@ -50,16 +46,18 @@ const QuestionnaireTable = () => {
   const [loading, setLoading] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
-  const [deleteTitle, setDeleteTitle] = useState<string | null>(null);
   const [selectedQuestionnaire, setSelectedQuestionnaire] = useState<Questionnaire | null>(null);
   const [tagPopoverAnchor, setTagPopoverAnchor] = useState<HTMLElement | null>(null);
   const [currentTags, setCurrentTags] = useState<string[]>([]);
   const setError = useSetAtom(errorAtom);
+  const setQuestionnaireTagsAtom = useSetAtom(questionnaireTagsAtom);
   const users = useAtomValue(usersAtom);
   const userProfile = useAtomValue(userProfileAtom);
   const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
   const dataGridRef = useRef(null);
   const showSnackbar = useSnackbar();
+  const [deleteTitle, setDeleteTitle] = useState<string | undefined>(undefined);
+  const theme = useTheme();
 
   useEffect(() => {
     const fetchQuestionnaires = async () => {
@@ -73,13 +71,19 @@ const QuestionnaireTable = () => {
 
         setQuestionnaires(processedQuestionnaires);
         setFilteredQuestionnaires(processedQuestionnaires);
-      } catch (error) {
-        setError(`${strings.error.questionnaireLoadFailed}, ${error}`);
+        const allTags = processedQuestionnaires.flatMap(
+          (questionnaire) => questionnaire.tags || []
+        );
+        const uniqueTags = [...new Set<string>(allTags)];
+        setQuestionnaireTagsAtom(uniqueTags);
+      } catch (error: any) {
+        const errorMessage = await error?.response?.json();
+        setError(`${strings.error.questionnaireLoadFailed}: ${errorMessage?.message || error}`);
       }
       setLoading(false);
     };
     fetchQuestionnaires();
-  }, []);
+  }, [setQuestionnaireTagsAtom, setError, questionnairesApi]);
 
   useEffect(() => {
     if (!searchTerm.trim()) {
@@ -90,85 +94,136 @@ const QuestionnaireTable = () => {
     const lowerCaseSearchTerm = searchTerm.toLowerCase().trim();
     const filtered = questionnaires.filter((questionnaire) => {
       const titleMatch = questionnaire.title?.toLowerCase().includes(lowerCaseSearchTerm);
-      const tagMatch = questionnaire.tags?.some((tag) =>
+      const textTagMatch = questionnaire.tags?.some((tag) =>
         tag.toLowerCase().includes(lowerCaseSearchTerm)
       );
-      return titleMatch || tagMatch;
+
+      return titleMatch || textTagMatch;
     });
 
     setFilteredQuestionnaires(filtered);
   }, [searchTerm, questionnaires]);
 
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(event.target.value);
+  /**
+   * Handler for search term change
+   *
+   * @param event input change event
+   * @param value new input value
+   */
+  const handleSearchChange = (_event: React.SyntheticEvent, value: string) => {
+    setSearchTerm(value);
   };
 
-  const handleClearSearch = () => {
-    setSearchTerm("");
-  };
-
+  /**
+   * Handler for tag "more" click to open popover
+   *
+   * @param event mouse event
+   * @param tags all tags
+   */
   const handleTagMoreClick = (event: React.MouseEvent<HTMLElement>, tags: string[]) => {
     event.stopPropagation();
     setTagPopoverAnchor(event.currentTarget);
     setCurrentTags(tags);
   };
 
+  /**
+   * Handler for closing the tag popover
+   */
   const handleCloseTagPopover = () => {
     setTagPopoverAnchor(null);
   };
 
+  /**
+   * Handler for clicking a tag in the popover
+   *
+   * @param tag string
+   */
   const handleTagClick = (tag: string) => {
     setSearchTerm(tag);
     handleCloseTagPopover();
   };
 
+  /**
+   * Handler for opening the delete confirmation dialog
+   *
+   * @param id questionnaire id to delete
+   * @param title questionnaire title
+   */
   const handleOpenDialog = (id: string, title: string) => {
-    setDeleteId(id);
     setDeleteTitle(title);
+    setDeleteId(id);
     setDialogOpen(true);
   };
 
+  /**
+   * Handler for closing the delete confirmation dialog
+   */
   const handleCloseDialog = () => {
     setDialogOpen(false);
     setDeleteId(null);
-    setDeleteTitle(null);
     setSelectedQuestionnaire(null);
   };
 
+  /**
+   * Handler for confirming deletion
+   */
   const handleConfirmDelete = async () => {
     if (!deleteId) return;
     setLoading(true);
     try {
       await questionnairesApi.deleteQuestionnaires({ id: deleteId });
-      setQuestionnaires((prevQuestionnaires) =>
-        prevQuestionnaires.filter((questionnaire) => questionnaire.id !== deleteId)
+      const updatedQuestionnaires = questionnaires.filter(
+        (questionnaire) => questionnaire.id !== deleteId
       );
+
       showSnackbar(strings.snackbar.questionnaireDeleted);
+      setQuestionnaires(updatedQuestionnaires);
+      // Update tags atom after deletion
+      const allTags = updatedQuestionnaires.flatMap((questionnaire) => questionnaire.tags || []);
+      const uniqueTags = [...new Set<string>(allTags)];
+      setQuestionnaireTagsAtom(uniqueTags);
       handleCloseDialog();
-    } catch (error) {
-      setError(`${strings.error.questionnaireDeleteFailed}, ${error}`);
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
+      setError(`${strings.error.questionnaireDeleteFailed}: ${errorMessage?.message || error}`);
     }
     setLoading(false);
   };
 
+  /**
+   * Handler for row click in non-admin mode
+   *
+   * @param params row parameters
+   */
   const handleRowClick = (params: GridRowParams) => {
     setSelectedQuestionnaire(params.row as Questionnaire);
     setMode(QuestionnairePreviewMode.FILL);
     navigate(`/questionnaire/${params.row.id}`);
   };
 
+  /**
+   * Handler for edit button click in admin mode
+   *
+   * @param questionnaire questionnaire to edit
+   */
   const handleEditClick = (questionnaire: Questionnaire) => {
     setSelectedQuestionnaire(questionnaire);
     setMode(QuestionnairePreviewMode.EDIT);
     navigate(`${questionnaire.id}/edit`);
   };
 
+  /**
+   * Function to render the status cell with appropriate icon
+   *
+   * @param params cell parameters
+   * @returns JSX element representing the status
+   */
   const renderStatusCell = (params: GridRenderCellParams) => {
     const userHasPassed = params.row.passedUsers?.includes(loggedInUser?.id);
     return userHasPassed ? (
-      <CheckCircleIcon sx={{ color: "green" }} />
+      <CheckCircleIcon sx={{ color: theme.palette.success.main }} />
     ) : (
-      <PendingIcon sx={{ color: "gray" }} />
+      <RadioButtonUncheckedIcon sx={{ color: theme.palette.text.secondary }} />
     );
   };
 
@@ -208,6 +263,8 @@ const QuestionnaireTable = () => {
                 sx={{
                   margin: "1px",
                   maxWidth: "120px",
+                  color: theme.palette.text.primary,
+                  borderColor: theme.palette.divider,
                   "& .MuiChip-label": {
                     overflow: "hidden",
                     textOverflow: "ellipsis",
@@ -227,9 +284,10 @@ const QuestionnaireTable = () => {
                 label={strings.formatString(strings.questionnaireTags.moreCount, hiddenTagsCount)}
                 sx={{
                   flexShrink: 0,
-                  backgroundColor: "rgba(0, 0, 0, 0.08)",
+                  backgroundColor: theme.palette.action.selected,
+                  color: theme.palette.text.primary,
                   "&:hover": {
-                    backgroundColor: "rgba(0, 0, 0, 0.12)"
+                    backgroundColor: theme.palette.action.hover
                   }
                 }}
                 onClick={(e) => handleTagMoreClick(e, tags)}
@@ -237,7 +295,7 @@ const QuestionnaireTable = () => {
             )}
           </>
         ) : (
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="body2" color={theme.palette.text.secondary}>
             {strings.questionnaireTags.noTags}
           </Typography>
         )}
@@ -246,20 +304,22 @@ const QuestionnaireTable = () => {
   };
 
   const columns = [
-    { field: "title", headerName: `${strings.questionnaireTable.title}`, flex: 3 },
+    { field: "title", headerName: `${strings.questionnaireTable.title}`, flex: 2 },
     { field: "description", headerName: `${strings.questionnaireTable.description}`, flex: 5 },
     {
       field: "tags",
       headerName: strings.questionnaireTags.title || "Tags",
-      flex: 3,
+      flex: 2,
       minWidth: 180,
       renderCell: renderTagsCell,
       sortable: false,
       filterable: true,
       renderHeader: () => (
         <Box sx={{ display: "flex", alignItems: "center" }}>
-          <LabelIcon sx={{ mr: 0.5, fontSize: "1.25rem" }} />
-          <Typography variant="subtitle2">{strings.questionnaireTags.title}</Typography>
+          <LabelIcon sx={{ mr: 0.5, fontSize: "1.25rem", color: theme.palette.text.primary }} />
+          <Typography variant="subtitle2" color={theme.palette.text.primary}>
+            {strings.questionnaireTags.title}
+          </Typography>
         </Box>
       )
     },
@@ -269,7 +329,14 @@ const QuestionnaireTable = () => {
           headerName: `${strings.questionnaireTable.actions}`,
           flex: 2.5,
           renderCell: (params: GridRenderCellParams) => (
-            <>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                width: "100%"
+              }}
+            >
               <Button
                 name="edit"
                 variant="outlined"
@@ -280,28 +347,35 @@ const QuestionnaireTable = () => {
                   minWidth: "100px",
                   width: "auto",
                   height: "auto",
-                  fontSize: "0.80rem"
+                  fontSize: "0.80rem",
+                  color: theme.palette.success.main,
+                  borderColor: theme.palette.success.main,
+                  "&:hover": { backgroundColor: theme.palette.action.hover }
                 }}
               >
-                <EditIcon sx={{ color: "success.main", mr: 0.3 }} />
+                <EditIcon sx={{ color: theme.palette.success.main, mr: 0.3 }} />
                 {strings.questionnaireTable.edit}
               </Button>
               <Button
                 name="delete"
                 variant="contained"
-                color="secondary"
                 onClick={() => handleOpenDialog(params.row.id, params.row.title)}
                 sx={{
                   minWidth: "85px",
                   width: "auto",
                   height: "auto",
-                  fontSize: "0.80rem"
+                  fontSize: "0.80rem",
+                  backgroundColor: theme.palette.error.main,
+                  color: theme.palette.getContrastText(theme.palette.error.main),
+                  "&:hover": { backgroundColor: theme.palette.error.dark }
                 }}
               >
-                <DeleteForeverIcon sx={{ color: "red", mr: 0.3 }} />
+                <DeleteForeverIcon
+                  sx={{ color: theme.palette.getContrastText(theme.palette.error.main), mr: 0.3 }}
+                />
                 {strings.questionnaireTable.delete}
               </Button>
-            </>
+            </Box>
           )
         }
       : {
@@ -311,22 +385,6 @@ const QuestionnaireTable = () => {
           renderCell: renderStatusCell
         }
   ];
-
-  const renderConfirmDeleteDialog = () => (
-    <Dialog open={dialogOpen} onClose={handleCloseDialog}>
-      <DialogTitle>
-        {strings.formatString(strings.questionnaireTable.confirmDeleteTitle, deleteTitle ?? "")}
-      </DialogTitle>
-      <DialogActions>
-        <Button onClick={handleCloseDialog} color="primary">
-          {strings.questionnaireTable.cancel}
-        </Button>
-        <Button onClick={handleConfirmDelete} color="secondary" variant="contained">
-          {strings.questionnaireTable.confirm}
-        </Button>
-      </DialogActions>
-    </Dialog>
-  );
 
   const renderTagPopover = () => (
     <Popover
@@ -343,7 +401,12 @@ const QuestionnaireTable = () => {
       }}
       slotProps={{
         paper: {
-          sx: { maxWidth: "400px", p: 2 }
+          sx: {
+            maxWidth: "400px",
+            p: 2,
+            backgroundColor: theme.palette.background.paper,
+            color: theme.palette.text.primary
+          }
         }
       }}
     >
@@ -361,8 +424,10 @@ const QuestionnaireTable = () => {
             onClick={() => handleTagClick(tag)}
             sx={{
               cursor: "pointer",
+              color: theme.palette.text.primary,
+              borderColor: theme.palette.divider,
               "&:hover": {
-                backgroundColor: "rgba(0, 0, 0, 0.08)"
+                backgroundColor: theme.palette.action.hover
               }
             }}
           />
@@ -373,7 +438,17 @@ const QuestionnaireTable = () => {
 
   return (
     <>
-      <Paper style={{ minHeight: 500, maxHeight: "auto", width: "100%", overflow: "auto" }}>
+      <Paper
+        style={{
+          minHeight: 500,
+          maxHeight: "auto",
+          width: "100%",
+          overflow: "auto",
+          backgroundColor: theme.palette.background.default,
+          color: theme.palette.text.primary,
+          position: "relative"
+        }}
+      >
         {loading && (
           <CircularProgress
             size={50}
@@ -381,7 +456,8 @@ const QuestionnaireTable = () => {
               position: "absolute",
               top: "50%",
               left: "50%",
-              transform: "translate(-50%, -50%)"
+              transform: "translate(-50%, -50%)",
+              color: theme.palette.primary.main
             }}
           />
         )}
@@ -392,42 +468,36 @@ const QuestionnaireTable = () => {
         </Typography>
 
         <Box sx={{ px: 2, pb: 2 }}>
-          <TextField
-            fullWidth
-            value={searchTerm}
-            onChange={handleSearchChange}
+          <SearchBar
+            searchInput={searchTerm}
+            handleSearchInputChange={handleSearchChange}
+            autoCompleteId="questionnaire-search-tags"
+            styles={{ width: "100%" }}
             placeholder={strings.questionnaireTags.searchPlaceholder}
-            variant="outlined"
-            size="small"
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-              endAdornment: searchTerm && (
-                <InputAdornment position="end">
-                  <IconButton size="small" onClick={handleClearSearch}>
-                    <ClearIcon />
-                  </IconButton>
-                </InputAdornment>
-              )
-            }}
           />
         </Box>
 
         <DataGrid
           ref={dataGridRef}
+          rowHeight={60}
           sx={{
             margin: 0,
             "& .MuiDataGrid-cell": {
               padding: "8px",
-              cursor: "pointer"
+              cursor: "pointer",
+              maxHeight: "60px",
+              color: theme.palette.text.primary
             },
             "& .MuiDataGrid-columnHeader": {
               padding: "0 8px",
-              cursor: "pointer"
-            }
+              cursor: "pointer",
+              color: theme.palette.text.primary
+            },
+            "& .MuiDataGrid-footerContainer": {
+              color: theme.palette.text.primary,
+              borderTop: `1px solid ${theme.palette.divider}`
+            },
+            backgroundColor: theme.palette.background.paper
           }}
           rows={filteredQuestionnaires}
           columns={columns}
@@ -444,7 +514,13 @@ const QuestionnaireTable = () => {
         />
       </Paper>
       {renderTagPopover()}
-      {renderConfirmDeleteDialog()}
+      <DeleteConfirmationDialog
+        open={dialogOpen}
+        setOpen={setDialogOpen}
+        onConfirm={handleConfirmDelete}
+        deleteType={DeleteItemType.QUESTIONNAIRE}
+        deleteTitle={deleteTitle}
+      />
     </>
   );
 };

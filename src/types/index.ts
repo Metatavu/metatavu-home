@@ -188,9 +188,16 @@ export interface PhaseRow {
  * Enum describing the filter types for the sprint view.
  */
 export const SprintViewFilterTypes = {
+  clear: "clear",
   project: "project",
   user: "user"
-};
+} as const;
+
+/**
+ * Type describing the filter type values for sprint view.
+ */
+export type SprintViewFilterType =
+  (typeof SprintViewFilterTypes)[keyof typeof SprintViewFilterTypes];
 
 /**
  * Type describing on call data for a week
@@ -201,3 +208,55 @@ export interface OnCallWeek {
   paid: boolean;
   badgeColor: string;
 }
+/**
+ * Enum for the different screens in the onboarding flow
+ */
+export enum OnboardingScreen {
+  Home = "home",
+  Wiki = "wiki",
+  WikiCreate = "wikiCreate"
+}
+
+/**
+ * Type definition for an onboarding step
+ */
+export type OnboardingStep = {
+  selector: string;
+  position?:
+    | "top-left"
+    | "top-center"
+    | "top-right"
+    | "bottom-left"
+    | "bottom-right"
+    | "bottom-center"
+    | "center";
+  title: string;
+  content: string;
+};
+/**
+ * Interface describing Slack user avatars
+ */
+export interface SlackAvatar {
+  image_original: string | undefined;
+}
+
+/**
+ * Type describing delete item types
+ */
+export enum DeleteItemType {
+  VACATION = "vacation",
+  QUESTIONNAIRE = "questionnaire",
+  SOFTWARE = "software",
+  ARTICLE = "article"
+}
+/**
+ * Type describing light or dark mode
+ */
+export const ThemeModes = {
+  LIGHT: "light",
+  DARK: "dark"
+} as const;
+/**
+ * Type to be used in state and props
+ */
+export type ThemeMode = (typeof ThemeModes)[keyof typeof ThemeModes];

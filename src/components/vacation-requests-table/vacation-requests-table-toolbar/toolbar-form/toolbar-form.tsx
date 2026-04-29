@@ -184,7 +184,7 @@ const ToolbarForm = ({
   return (
     <Box sx={{ padding: "10px", width: "100%" }}>
       <Grid container>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <ToolbarFormFields
             dateTimeTomorrow={dateTimeTomorrow}
             setVacationRequestData={setVacationRequestData}

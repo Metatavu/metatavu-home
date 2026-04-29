@@ -6,7 +6,8 @@ import {
   CardMedia,
   Chip,
   Link as MuiLink,
-  Typography
+  Typography,
+  useTheme
 } from "@mui/material";
 import { Link } from "react-router-dom";
 import type { SoftwareRegistry } from "src/generated/homeLambdasClient";
@@ -16,23 +17,31 @@ interface AppCardProps extends SoftwareRegistry {
 }
 
 const AppCard = ({ id, image, name, description, tags = [], isGridView }: AppCardProps) => {
+  const theme = useTheme();
   return (
     <MuiLink component={Link} to={`${id}`} underline="none" color="inherit">
       {isGridView ? (
         <Card
-          sx={{
+          sx={(theme) => ({
             height: 320,
             width: 240,
-            backgroundColor: "#fff",
+            backgroundColor: theme.palette.background.paper,
             borderRadius: "10px",
-            boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.25)",
+            boxShadow: theme.shadows[1],
             overflow: "hidden",
             ":hover": {
-              boxShadow: "0px 6px 14px rgba(0, 0, 0, 0.3)"
+              boxShadow: theme.shadows[4],
+              backgroundColor: theme.palette.action.hover
             }
-          }}
+          })}
         >
-          <CardActionArea sx={{ padding: "16px" }}>
+          <CardActionArea
+            sx={{
+              padding: "16px",
+              backgroundColor: theme.palette.background.paper,
+              "&:hover": { backgroundColor: theme.palette.action.hover }
+            }}
+          >
             <CardMedia
               component="img"
               height="100px"
@@ -88,8 +97,11 @@ const AppCard = ({ id, image, name, description, tags = [], isGridView }: AppCar
                     sx={{
                       borderRadius: "5px",
                       margin: "-5px",
-                      backgroundColor: "#F9473B",
-                      color: "#fff",
+                      backgroundColor:
+                        theme.palette.mode === "dark"
+                          ? theme.palette.error.dark
+                          : theme.palette.error.main,
+                      color: theme.palette.getContrastText(theme.palette.error.main),
                       fontSize: "14px",
                       whiteSpace: "nowrap",
                       maxWidth: "70px",
@@ -106,12 +118,12 @@ const AppCard = ({ id, image, name, description, tags = [], isGridView }: AppCar
           sx={{
             width: "100%",
             display: "flex",
-            backgroundColor: "#fff",
+            backgroundColor: theme.palette.background.paper,
             borderRadius: "10px",
-            boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.25)",
+            boxShadow: theme.shadows[1],
             overflow: "hidden",
             ":hover": {
-              boxShadow: "0px 6px 14px rgba(0, 0, 0, 0.3)"
+              boxShadow: theme.shadows[4]
             }
           }}
         >
@@ -121,7 +133,11 @@ const AppCard = ({ id, image, name, description, tags = [], isGridView }: AppCar
               display: "flex",
               flexDirection: "row",
               alignItems: "center",
-              height: "150px"
+              height: "150px",
+              backgroundColor: theme.palette.background.paper,
+              "&:hover": {
+                backgroundColor: theme.palette.action.hover
+              }
             }}
           >
             <Box
@@ -184,8 +200,8 @@ const AppCard = ({ id, image, name, description, tags = [], isGridView }: AppCar
                     label={tag}
                     sx={{
                       borderRadius: "5px",
-                      backgroundColor: "#ff4d4f",
-                      color: "#fff",
+                      backgroundColor: theme.palette.error.main,
+                      color: theme.palette.getContrastText(theme.palette.error.main),
                       padding: "5px"
                     }}
                   />

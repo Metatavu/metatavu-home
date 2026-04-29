@@ -26,9 +26,13 @@ const useCreateSoftware = (
         softwareRegistry: newSoftware
       });
       setApplications((prev) => [createdSoftware, ...prev]);
+
       showSnackbar(strings.snackbar.softwareAdded);
-    } catch (error) {
-      setError(`${strings.softwareRegistry.errorCreatingSoftware} ${error}`);
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
+      setError(
+        `${strings.softwareRegistry.errorCreatingSoftware} ${errorMessage?.message || error}`
+      );
     } finally {
       setLoading(false);
     }

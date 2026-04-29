@@ -1,6 +1,6 @@
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import { Box, Button, Grid, IconButton, Typography } from "@mui/material";
+import { Box, Button, Grid, IconButton, Typography, useTheme } from "@mui/material";
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import type { SoftwareRegistry } from "src/generated/homeLambdasClient";
@@ -31,6 +31,7 @@ const Recommendations = ({ applications, onAddUser }: RecommendationsProps) => {
   const swiperRef = useRef<any>(null); // Reference to Swiper
   const navigate = useNavigate();
   const { usersApi } = useLambdasApi();
+  const theme = useTheme();
 
   // Combined state for app loading and user name loading
   const [loadingStates, setLoadingStates] = useState<{
@@ -85,8 +86,11 @@ const Recommendations = ({ applications, onAddUser }: RecommendationsProps) => {
       } else {
         console.warn(`User with ID ${userId} not found`);
       }
-    } catch (error) {
-      console.error("Error fetching user data:", error);
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
+      console.error(
+        `${strings.softwareRegistry.recommendationsFetchUserFailed}: ${errorMessage?.message || error}`
+      );
     } finally {
       setLoadingStates((prev) => ({
         ...prev,
@@ -99,7 +103,7 @@ const Recommendations = ({ applications, onAddUser }: RecommendationsProps) => {
     <Box
       sx={{
         width: "100%",
-        backgroundColor: "#f5f5f5",
+        backgroundColor: theme.palette.background.default,
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -109,7 +113,7 @@ const Recommendations = ({ applications, onAddUser }: RecommendationsProps) => {
         gap: { xs: "15px", sm: "30px" },
         textAlign: "left",
         fontSize: { xs: "18px", sm: "30px" },
-        color: "#000",
+        color: theme.palette.text.primary,
         fontFamily: "Poppins",
         marginBottom: "30px"
       }}
@@ -123,16 +127,16 @@ const Recommendations = ({ applications, onAddUser }: RecommendationsProps) => {
           <IconButton
             onClick={handleScrollLeft}
             sx={{
-              backgroundColor: "#f9473b",
+              backgroundColor: theme.palette.primary.main,
               marginLeft: "4px",
-              color: "#fff",
+              color: theme.palette.getContrastText(theme.palette.primary.main),
               position: "absolute",
               left: "-50px",
               zIndex: 1,
               top: "50%",
               transform: "translateY(-50%)",
               "&:hover": {
-                backgroundColor: "#d63b31"
+                backgroundColor: theme.palette.primary.dark
               }
             }}
           >
@@ -158,16 +162,16 @@ const Recommendations = ({ applications, onAddUser }: RecommendationsProps) => {
           <IconButton
             onClick={handleScrollRight}
             sx={{
-              backgroundColor: "#f9473b",
+              backgroundColor: theme.palette.primary.main,
               marginRight: "4px",
-              color: "#fff",
+              color: theme.palette.getContrastText(theme.palette.primary.main),
               position: "absolute",
               right: "-50px",
               zIndex: 1,
               top: "50%",
               transform: "translateY(-50%)",
               "&:hover": {
-                backgroundColor: "#d63b31"
+                backgroundColor: theme.palette.primary.dark
               }
             }}
           >
@@ -175,7 +179,7 @@ const Recommendations = ({ applications, onAddUser }: RecommendationsProps) => {
           </IconButton>
         </Grid>
       ) : (
-        <Typography variant="h6" sx={{ color: "#000", mt: 3 }}>
+        <Typography variant="h6" sx={{ color: theme.palette.text.primary, mt: 3 }}>
           {strings.softwareRegistry.noRecommendations}
         </Typography>
       )}
@@ -186,10 +190,11 @@ const Recommendations = ({ applications, onAddUser }: RecommendationsProps) => {
           onClick={() => navigate("/softwareregistry/allsoftware")}
           sx={{
             textTransform: "none",
-            color: "#fff",
+            color: theme.palette.getContrastText(theme.palette.secondary.main),
+            backgroundColor: theme.palette.secondary.main,
             fontSize: "18px",
             borderRadius: "25px",
-            "&:hover": { background: "#000" }
+            "&:hover": { background: theme.palette.secondary.dark }
           }}
         >
           {strings.softwareRegistry.allApplications}

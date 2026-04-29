@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import { useAtomValue } from "jotai";
 import type { DateTime } from "luxon";
-import { type ChangeEvent, useEffect, useState } from "react";
+import { type ChangeEvent, useEffect, useRef, useState } from "react";
 import { userProfileAtom } from "src/atoms/auth";
 import type { VacationRequest } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
@@ -62,6 +62,7 @@ const ToolbarFormFields = ({
   const [workWeek, setWorkWeek] = useState<boolean[]>(new Array(7).fill(false));
   const { workHoursApi } = useLambdasApi();
   const [error, setError] = useState<string | null>(null);
+  const originalEndDateRef = useRef<DateTime | null>(null);
 
   /**
    * Fetch contracted work week, defaults to 5 day if it fails
@@ -77,8 +78,9 @@ const ToolbarFormFields = ({
         });
         setWorkWeek(contractedWeekToBoolean(data.contractedWeek));
         setError(null);
-      } catch {
-        setError(strings.error.fetchWorkWeekFailed);
+      } catch (error: any) {
+        const errorMessage = await error?.response?.json();
+        setError(`${strings.error.fetchWorkWeekFailed}: ${errorMessage?.message || error}`);
         setWorkWeek([true, true, true, true, true, false, false]);
       }
     };
@@ -86,9 +88,20 @@ const ToolbarFormFields = ({
     fetchWorkWeek();
   }, [userProfile?.attributes?.severaUserId]);
 
+  /**
+   * Reset original end date when form mode changes
+   */
+  useEffect(() => {
+    originalEndDateRef.current = null;
+  }, [toolbarFormMode]);
+
   // Update vacation request whenever date range changes
   useEffect(() => {
     if (!dateRange.start || !dateRange.end) return;
+    // Store original end date on first load
+    if (originalEndDateRef.current === null) {
+      originalEndDateRef.current = dateRange.end;
+    }
 
     const days = calculateTotalVacationDays(dateRange.start, dateRange.end, workWeek);
 
@@ -146,11 +159,19 @@ const ToolbarFormFields = ({
    * restore default days (admin)
    */
   const handleRestoreDefaultDays = () => {
-    if (!dateRange.start || !dateRange.end) return;
-    const defaultDays = calculateTotalVacationDays(dateRange.start, dateRange.end, workWeek);
+    if (!dateRange.start || !originalEndDateRef.current) return;
+
+    // Calculate days based on original end date
+    const defaultDays = calculateTotalVacationDays(
+      dateRange.start,
+      originalEndDateRef.current,
+      workWeek
+    );
+
     setVacationRequestData({
       ...vacationRequestData,
-      days: defaultDays
+      days: defaultDays,
+      endDate: originalEndDateRef.current.toJSDate()
     });
   };
 
@@ -175,7 +196,6 @@ const ToolbarFormFields = ({
           />
         </>
       )}
-
       {adminMode ? (
         <>
           <FormLabel>{strings.vacationRequest.days}</FormLabel>
@@ -204,10 +224,9 @@ const ToolbarFormFields = ({
           />
         </>
       )}
-
       {toolbarFormMode === ToolbarFormModes.CREATE && (
         <Grid container spacing={2}>
-          <Grid item xs={6}>
+          <Grid size={6}>
             <Button
               disabled={
                 !adminMode &&
@@ -223,7 +242,7 @@ const ToolbarFormFields = ({
             </Button>
           </Grid>
           <Tooltip title={strings.tableToolbar.saveAsDraftTooltip} placement="bottom">
-            <Grid item xs={6}>
+            <Grid size={6}>
               <Button
                 disabled={
                   !adminMode &&
@@ -241,7 +260,6 @@ const ToolbarFormFields = ({
           </Tooltip>
         </Grid>
       )}
-
       {toolbarFormMode === ToolbarFormModes.EDIT && (
         <Button
           disabled={

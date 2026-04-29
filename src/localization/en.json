@@ -1,7 +1,8 @@
 {
   "placeHolder": {
     "notYetImplemented": "Not yet implemented",
-    "pleaseWait": "Please wait, this could take a moment..."
+    "pleaseWait": "Please wait, this could take a moment...",
+    "search": "Search..."
   },
   "label": {
     "currentLocaleLabel": "Current Locale:",
@@ -13,6 +14,7 @@
     "hello": "Hi",
     "logout": "Log out",
     "home": "Home",
+    "employee": "Employee",
     "settings": "Settings",
     "timebank": "Timebank",
     "vacations": "Vacations",
@@ -39,13 +41,23 @@
     "questionnaireSaveFailed": "Error while saving questionnaire",
     "questionnaireUpdateFailed": "Error while updating questionnaire",
     "fetchFailedFlextime": "Error while fetching flextime data",
-    "missingEmailOrId": "Missing email or ID",
+    "missingUserId": "Missing user ID",
     "noSeveraUserId": "One of your users is missing severaUserId, please contact a member of the metatavu home development team for more information.",
     "noFlextimeData": "Something went wrong while fetching your flextime data",
     "noArticleId": "Article ID is missing",
     "fetchWorkDaysFailed": "Fetching work days data has failed",
     "fetchWorkWeekFailed": "Error while fetching work week data, five day week will be used.",
-    "fetchFailedSevera": "Failed to update Severa opt-in."
+    "fetchFailedSevera": "Failed to update Severa opt-in.",
+    "fetchFailedQuestionnaires": "Failed to fetch questionnaires.",
+    "fetchFailedWikiArticles": "Failed to fetch wiki articles.",
+    "fetchFailedSoftwareData": "Failed to fetch software registry data.",
+    "loadUserProfileFailed": "Failed to load user profile.",
+    "softwareFetchFailed": "Error fetching software data.",
+    "softwareStatusUpdateFailed": "Error updating software status.",
+    "softwareSaveFailed": "Error saving the software.",
+    "softwareDeleteFailed": "Error deleting the software.",
+    "softwareRegistryFetchFailed": "Error while fetching software registry data",
+    "softwareRegistryUpdateFailed": "Error while updating software registry"
   },
   "localization": {
     "en": "EN",
@@ -109,7 +121,9 @@
     "filterType": "Filter type",
     "project": "Project",
     "user": "User",
-    "searchBy": "Search by {0}"
+    "clear": "Clear",
+    "searchBy": "Search by project or user",
+    "estimateHours": "Estimate Hours"
   },
   "softwareRegistry": {
     "softwareRegistry": "Software registry",
@@ -157,7 +171,15 @@
     "loading": "Loading...",
     "errorUnknownUser": "Unknown user",
     "errorCreatingSoftware": "Error creating software:",
-    "errorFetchingSoftwareToList": "Error fetching software to list:"
+    "errorFetchingSoftwareToList": "Error fetching software to list:",
+    "softwareDetailsFetchFailed": "Error fetching software details",
+    "softwareDetailsRemoveUserFailed": "Error removing user from software",
+    "softwareDetailsAddUserFailed": "Error adding user to software",
+    "softwareDetailsUpdateFailed": "Error updating software",
+    "recommendationsFetchUserFailed": "Error fetching user data",
+    "editApplication": "Edit application",
+    "submitApplication": "Submit Application",
+    "updateApplication": "Update Application"
   },
   "softwareStatus": {
     "all": "All",
@@ -205,10 +227,17 @@
     "confirmButtonText": "Yes",
     "cancelButtonText": "No",
     "title": "Are you sure?",
-    "message": "Delete selected vacation request(s)?",
-    "editMessage": "This reviewed request will go back to pending if you save changes. Do you want to proceed?",
-    "editDraftMessage": "This draft request will be sent for approval if you save changes. Do you want to proceed?",
-    "updateMessage": "Are you sure you want to update?"
+    "delete": {
+      "vacation": "Delete selected vacation request(s)?",
+      "questionnaire": "Delete questionnaire: \"{0}\"?",
+      "software": "Delete software: \"{0}\"?",
+      "article": "Delete article: \"{0}\"?"
+    },
+    "edit": {
+      "draft": "This draft request will be sent for approval if you save changes. Do you want to proceed?",
+      "reviewed": "This reviewed request will go back to pending if you save changes. Do you want to proceed?"
+    },
+    "update": "Are you sure you want to update?"
   },
   "errorHandler": {
     "cancelButtonText": "Close",
@@ -247,13 +276,17 @@
     "createStatusError": "Creating vacation request status has failed ",
     "deleteRequestError": "Deleting vacation requests has failed",
     "deleteStatusError": "Deleting vacation request statuses has failed",
+    "dataGridRowsCreationError": "Error creating vacation request rows",
     "updateRequestError": "Updating vacation request has failed",
     "updateStatusError": "Updating vacation request status has failed",
     "noVacationRequestsFound": "No vacation requests found",
     "nameNotFound": "Name not found",
     "noVacationRequestsStatusFound": "Statuses not found",
+    "invalidNumberOfDaysUser": "You cannot request a 0 days vacation",
+    "invalidNumberOfDaysAdmin": "You cannot set a vacation request to 0 days",
     "tooManyDaysRequestedUser": "You cannot request {requestedDays} days. You only have {unspentDays} unspent vacation days.",
     "tooManyDaysRequestedAdmin": "Not enough vacation days. Requested: {requestedDays} days, Available: {unspentDays} days.",
+    "noVacationDaysAvailable": "You don't have any vacation days available for the current vacation year. Please contact your administrator.",
     "failedToLoad": "Failed to load users"
   },
   "sprintRequestError": {
@@ -261,6 +294,7 @@
     "fetchWorkHoursAndTasksError": "Error fetching workHours and tasks"
   },
   "form": {
+    "create": "Create",
     "submit": "Submit",
     "update": "Update",
     "restoreDefault": "Restore default holiday days consumed"
@@ -311,6 +345,11 @@
   "adminRouteAccess": {
     "notAdmin": "You don't have an admin role",
     "noAccess": "Access denied"
+  },
+  "routeAccess": {
+    "noAccess": "Access denied",
+    "requiresDeveloper": "You need a developer role to access this page",
+    "requiresTester": "You need a tester role to access this page"
   },
   "vacationsScreen": {},
   "viewAll": {
@@ -442,16 +481,48 @@
     "uploadImage": "Upload image",
     "imagePreview": "Preview",
     "labelTitle": "Title",
-    "labelPath": "Path",
+    "labelPath": "Custom path",
     "labelTags": "Tags",
     "labelImage": "Image URL",
     "labelDescription": "Description",
+    "coverImageAlt": "Cover image",
     "labelLink": "Link",
     "labelLinkPlaceholder": "Enter URL here, e.g. https://example.com",
     "draft": "draft",
     "allArticles": "all",
     "approvedArticles": "approved",
-    "connectedArticles": "Connected articles"
+    "connectedArticles": "Connected articles",
+    "linkToArticle": "Link to Article",
+    "searchAndSelectArticle": "Search and select an article to create a link",
+    "linkText": "Link text",
+    "linkTextPlaceholder": "Enter text to display for the link",
+    "linkTextHelper": "This text will appear as the clickable link",
+    "selectedArticle": "SELECTED ARTICLE",
+    "noDescriptionAvailable": "No description available",
+    "insertLink": "Insert Link",
+    "insertImage": "Insert Image",
+    "imageLinkPlaceholder": "https://example.com/image.jpg",
+    "size": "Size",
+    "alignment": "Alignment",
+    "sizeSmall": "Small (300px)",
+    "sizeMedium": "Medium (500px)",
+    "sizeLarge": "Large (700px)",
+    "sizeFull": "Full Width",
+    "alignLeft": "Left",
+    "alignCenter": "Center",
+    "alignRight": "Right",
+    "upload": "Upload",
+    "add": "Add",
+    "close": "Close",
+    "pleaseUploadImageFile": "Please upload image file",
+    "startTypingToSearch": "Start typing to search...",
+    "selectFromExistingFiles": "Select from existing files",
+    "selectImageFromS3": "Select from existing images",
+    "noFilesFound": "No files found",
+    "cancel": "Cancel",
+    "failedToLoadMediaFiles": "Failed to load media files",
+    "errorLoadingMediaFiles": "Error loading media files:",
+    "articleContentRequired": "Article content is required"
   },
   "snackbar": {
     "articleSubmitted": "Article submitted for review successfully!",
@@ -477,12 +548,15 @@
   },
   "settingsScreen": {
     "saveSettings": "Save settings",
-    "accept": "Accept",
-    "decline": "Decline",
-    "consentToDataProcessing": "Grant permissions for processing your Severa data to gain additional Home features."
+    "accept": "Yes",
+    "decline": "No",
+    "consentToDataProcessing": "Activate account",
+    "lightOrDarkMode": "Mode",
+    "light": "Light",
+    "dark": "Dark"
   },
   "notOptedInDescription": {
-    "description": "Accept the processing of user data to view this section."
+    "description": "Activate your account to view this section."
   },
   "adminVacationManagement": {
     "heading": "Admin Vacation Management",
@@ -493,7 +567,7 @@
     "totalDays": "Total Days",
     "remainingDays": "Remaining Days",
     "selectYear": "Select Year",
-    "currentYear": "Current Year",
+    "currentYear": "Vacation Year",
     "vacationFor": "Vacation Days for"
   },
   "userSearch": {
@@ -555,6 +629,48 @@
     "wikiContent": "Read or create documentation.",
     "doneTitle": "Complete the Onboarding",
     "doneContent": "You're all set! You can restart from Settings."
+  },
+  "onboardingWikiDocumentation": {
+    "prev": "Previous",
+    "next": "Next",
+    "close": "Close",
+    "welcomeWikiTitle": "Wiki Documentation",
+    "welcomeWikiContent": "Find, read and create articles here.",
+    "latestUpdatedArticlesTitle": "Latest article",
+    "latestUpdatedArticlesContent": "Here you can see the most recently created or updated article.",
+    "wikiSearchBarTitle": "Search",
+    "wikiSearchBarContent": "Search for articles here.",
+    "createArticleTitle": "Create",
+    "createArticleContent": "Here you can create a new article.",
+    "listOfArticlesTitle": "Articles",
+    "listOfArticlesContent": "Browse all articles here."
+  },
+  "onboardingWikiCreate": {
+    "prev": "Previous",
+    "next": "Next",
+    "close": "Close",
+    "welcomeTitle": "Create Wiki Article",
+    "welcomeContent": "Let's walk through how to create a new wiki article.",
+    "titleFieldTitle": "Article Title",
+    "titleFieldContent": "Enter a descriptive title for your article. The title will be displayed at the top of the article and in article lists.",
+    "pathFieldTitle": "Article Path",
+    "pathFieldContent": "This is the URL path for your article. It's automatically generated from the title but can be customized.",
+    "tagsFieldTitle": "Article Tags",
+    "tagsFieldContent": "Add tags to categorize your article. You can select existing tags or create new ones by typing and pressing Enter.",
+    "imageFieldTitle": "Cover Image",
+    "imageFieldContent": "Add a cover image URL or upload an image file. This will be displayed as the article's thumbnail.",
+    "descriptionFieldTitle": "Article Description",
+    "descriptionFieldContent": "Write a brief summary of your article. This helps users understand what the article is about before reading it.",
+    "editorTitle": "Content Editor",
+    "editorContent": "Use this rich text editor to write your article content. It supports markdown formatting, images, links, and more.",
+    "editorLinksTitle": "Adding Links",
+    "editorLinksContent": "Select text and use the link button in the toolbar to add external links. You can link to websites, documentation, or resources.",
+    "editorArticleLinksTitle": "Linking to Articles",
+    "editorArticleLinksContent": "To link to other wiki articles, select the article and press enter. This creates an internal link within the wiki.",
+    "editorImagesTitle": "Adding Images",
+    "editorImagesContent": "Click the image button in the editor toolbar to insert images. You can paste an image URL or upload an image file.",
+    "actionButtonTitle": "Create Article",
+    "actionButtonContent": "Once all required fields (*) are filled, click here to create your article. It will be submitted for review or published based on your permissions."
   },
   "employeeFlextime": {
     "title": "Employee Time Totals and Balances",

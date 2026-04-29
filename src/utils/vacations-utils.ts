@@ -9,6 +9,22 @@ import strings from "src/localization/strings";
 export type VacationDays = Record<string, YearlyVacationDays>;
 
 /**
+ * Gets the correct vacation year based on the vacation requested month.
+ * January-March(Previous year), April-December(Current year)
+ * @param date - Optional date to check. Defaults to current date.
+ * @returns The vacation year as a number.
+ */
+export const getVacationYear = (date: Date = new Date()): number => {
+  const year = date.getFullYear();
+  const month = date.getMonth();
+  if (month < 3) {
+    return year - 1;
+  }
+
+  return year;
+};
+
+/**
  * Parses vacation day data from a User object into a structured VacationDays object.
  *
  * @param user - The user object containing encoded vacation day data.
@@ -41,7 +57,7 @@ export function parseVacationDays(user: User): VacationDays {
     };
   });
 
-  const currentYear = new Date().getFullYear().toString();
+  const currentYear = getVacationYear().toString();
   if (!vacationData[currentYear]) {
     vacationData[currentYear] = { total: 0, remaining: 0 };
   }
@@ -69,7 +85,7 @@ export function formatVacationDaysPayload(vacationDays: VacationDays): VacationD
 }
 
 /**
- * Validates if the vacation request uses more days than the user has.
+ * Checks if there is enough vacation time available for a requested number of days.
  * @param requestedDays Number of days the user is trying to request
  * @param unspentDays Number of unspent vacation days the user has
  * @returns { valid: boolean, errorMessage?: string }
@@ -79,6 +95,13 @@ export const validateVacationRequestDays = (
   unspentDays: number,
   isUserAdmin?: boolean
 ): { valid: boolean; errorMessage?: string } => {
+  if (unspentDays === 0 && requestedDays > 0) {
+    return {
+      valid: false,
+      errorMessage: strings.vacationRequestError.noVacationDaysAvailable
+    };
+  }
+
   if (requestedDays > unspentDays) {
     const formatted = strings.formatString(
       isUserAdmin
@@ -95,6 +118,16 @@ export const validateVacationRequestDays = (
     return {
       valid: false,
       errorMessage: errorString
+    };
+  }
+  if (requestedDays <= 0) {
+    const errorMessage = isUserAdmin
+      ? strings.vacationRequestError.invalidNumberOfDaysAdmin
+      : strings.vacationRequestError.invalidNumberOfDaysUser;
+
+    return {
+      valid: false,
+      errorMessage: errorMessage
     };
   }
   return { valid: true };

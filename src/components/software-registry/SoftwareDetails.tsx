@@ -6,7 +6,8 @@ import {
   Container,
   Grid,
   Link,
-  Typography
+  Typography,
+  useTheme
 } from "@mui/material";
 import { useAtom, useAtomValue } from "jotai";
 import { DateTime } from "luxon";
@@ -23,7 +24,7 @@ import strings from "src/localization/strings";
 import { formatDate } from "src/utils/time-utils";
 import { getFullUserName } from "src/utils/user-name-utils";
 import BackButton from "../generics/back-button";
-import AddSoftwareModal from "./AddSoftwareModal";
+import AddSoftwareModal from "./SoftwareModal";
 
 /**
  * Component for displaying detailed information about a specific software entry.
@@ -45,6 +46,7 @@ const SoftwareDetails = () => {
   const { adminMode } = useUserRole();
   const users = useAtomValue(usersAtom) || [];
   const showSnackbar = useSnackbar();
+  const theme = useTheme();
 
   /**
    * Fetches software details.
@@ -67,8 +69,11 @@ const SoftwareDetails = () => {
     try {
       const data = await softwareApi.getSoftwareById({ id });
       setSoftware(data);
-    } catch (error) {
-      setError((error as Error).message || "Error fetching software details");
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
+      setError(
+        `${strings.softwareRegistry.softwareDetailsFetchFailed}: ${errorMessage?.message || (error as Error).message}`
+      );
     } finally {
       setLoading(false);
     }
@@ -82,8 +87,11 @@ const SoftwareDetails = () => {
     try {
       const fetchedSoftware = await softwareApi.listSoftware();
       setSoftwareList(fetchedSoftware);
-    } catch (error) {
-      setError((error as Error).message || strings.softwareRegistry.errorFetchingSoftwareToList);
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
+      setError(
+        `${strings.softwareRegistry.errorFetchingSoftwareToList}: ${errorMessage?.message || (error as Error).message}`
+      );
     } finally {
       setLoading(false);
     }
@@ -103,8 +111,11 @@ const SoftwareDetails = () => {
       });
       setSoftware({ ...software, users: updatedUsers });
       showSnackbar(strings.snackbar.softwareRemoved);
-    } catch (error) {
-      setError((error as Error).message || "Error removing user from software");
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
+      setError(
+        `${strings.softwareRegistry.softwareDetailsRemoveUserFailed}: ${errorMessage?.message || (error as Error).message}`
+      );
     }
   };
 
@@ -136,8 +147,11 @@ const SoftwareDetails = () => {
       });
       setSoftware({ ...software, users: updatedUsers });
       showSnackbar(strings.snackbar.softwareAdded);
-    } catch (error) {
-      setError((error as Error).message || "Error adding user to software");
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
+      setError(
+        `${strings.softwareRegistry.softwareDetailsAddUserFailed}: ${errorMessage?.message || (error as Error).message}`
+      );
     }
   };
 
@@ -155,8 +169,11 @@ const SoftwareDetails = () => {
       setSoftware(updatedSoftware);
       setIsEditModalOpen(false);
       showSnackbar(strings.snackbar.softwareUpdated);
-    } catch (error) {
-      setError((error as Error).message || "Error updating software");
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
+      setError(
+        `${strings.softwareRegistry.softwareDetailsUpdateFailed}: ${errorMessage?.message || (error as Error).message}`
+      );
     }
   };
 
@@ -225,8 +242,8 @@ const SoftwareDetails = () => {
               key={tag}
               component="span"
               sx={{
-                backgroundColor: "#F9473B",
-                color: "#fff",
+                backgroundColor: theme.palette.secondary.main,
+                color: theme.palette.getContrastText(theme.palette.secondary.main),
                 padding: "6px 8px",
                 borderRadius: "5px",
                 fontSize: "14px",
@@ -237,16 +254,26 @@ const SoftwareDetails = () => {
             </Box>
           ))}
         </Box>
-        <Typography gutterBottom sx={{ color: "#000", fontWeight: "bold" }}>
+        <Typography gutterBottom sx={{ color: theme.palette.text.primary, fontWeight: "bold" }}>
           {getFullUserName(users.find((u) => u.id === software.createdBy))} -{" "}
           {formatDate(DateTime.fromJSDate(new Date(software.createdAt || "")))}
         </Typography>
-        <Link href={software.url} target="_blank" rel="noopener" sx={{ color: "#F9473B" }}>
+        <Link
+          href={software.url}
+          target="_blank"
+          rel="noopener"
+          sx={{ color: theme.palette.secondary.main, fontWeight: "bold" }}
+        >
           {software.url}
         </Link>
       </Box>
       <Grid container spacing={4} mb={4}>
-        <Grid item xs={12} md={6}>
+        <Grid
+          size={{
+            xs: 12,
+            md: 6
+          }}
+        >
           <Typography variant="h4" gutterBottom>
             {strings.softwareRegistry.description}
           </Typography>
@@ -263,7 +290,12 @@ const SoftwareDetails = () => {
             {software.description}
           </Typography>
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid
+          size={{
+            xs: 12,
+            md: 6
+          }}
+        >
           <Typography variant="h4" gutterBottom>
             {strings.softwareRegistry.review}
           </Typography>
@@ -291,11 +323,11 @@ const SoftwareDetails = () => {
               padding: "7px 10px",
               fontSize: "17px",
               fontWeight: "bold",
-              color: "#000",
-              borderColor: "#000",
+              color: theme.palette.text.primary,
+              borderColor: theme.palette.text.primary,
               "&:hover": {
-                borderColor: "#000",
-                backgroundColor: "#f0f0f0"
+                borderColor: theme.palette.text.primary,
+                backgroundColor: theme.palette.action.hover
               }
             }}
             onClick={handleRemoveSoftware}
@@ -312,9 +344,10 @@ const SoftwareDetails = () => {
               borderRadius: "25px",
               fontSize: "16px",
               fontWeight: "bold",
-              color: "#fff",
+              color: theme.palette.getContrastText(theme.palette.secondary.main),
+              backgroundColor: theme.palette.secondary.main,
               "&:hover": {
-                backgroundColor: "#000"
+                backgroundColor: theme.palette.secondary.dark
               }
             }}
             onClick={handleAddSoftware}
@@ -328,12 +361,12 @@ const SoftwareDetails = () => {
             color="secondary"
             sx={{
               textTransform: "none",
-              color: "#fff",
+              color: theme.palette.getContrastText(theme.palette.secondary.main),
               marginLeft: "20px",
               fontSize: "18px",
-              background: "#000",
+              backgroundColor: theme.palette.secondary.main,
               borderRadius: "25px",
-              "&:hover": { background: "grey" }
+              "&:hover": { background: theme.palette.secondary.dark }
             }}
             onClick={() => setIsEditModalOpen(true)}
           >

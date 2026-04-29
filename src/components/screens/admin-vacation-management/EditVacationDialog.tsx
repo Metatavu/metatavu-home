@@ -15,6 +15,7 @@ import {
 } from "@mui/material";
 import { useId, useState } from "react";
 import type { User } from "src/generated/homeLambdasClient/models/User";
+import { getVacationYear } from "src/utils/vacations-utils";
 import type { YearlyVacationDays } from "../../../generated/homeLambdasClient/models/YearlyVacationDays";
 import strings from "../../../localization/strings";
 
@@ -34,7 +35,7 @@ interface EditVacationDialogProps {
  * Generates a list of years: last year, current year and next year.
  */
 const generateYearOptions = (): string[] => {
-  const currentYear = new Date().getFullYear();
+  const currentYear = getVacationYear();
   return [(currentYear - 1).toString(), currentYear.toString(), (currentYear + 1).toString()];
 };
 
@@ -80,7 +81,7 @@ const EditVacationDialog = ({
   onSave,
   disableSave
 }: EditVacationDialogProps) => {
-  const currentYear = new Date().getFullYear().toString();
+  const currentYear = getVacationYear().toString();
   const [selectedYear, setSelectedYear] = useState(currentYear);
   const availableYears = generateYearOptions();
   const yearSelectedYear = useId();

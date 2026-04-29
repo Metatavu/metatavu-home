@@ -1,5 +1,5 @@
 import { CancelOutlined, CheckCircleOutline } from "@mui/icons-material";
-import { alpha, Box, Button, Checkbox, Typography } from "@mui/material";
+import { alpha, Box, Button, Checkbox, Typography, useTheme } from "@mui/material";
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
 import { useAtomValue, useSetAtom } from "jotai";
 import { DateTime } from "luxon";
@@ -31,6 +31,7 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
   const userProfile = useAtomValue(userProfileAtom);
   const loggedInEmail = userProfile?.email;
   const setError = useSetAtom(errorAtom);
+  const theme = useTheme();
 
   /**
    * Identify rows that belong to the logged in user
@@ -51,8 +52,9 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
   const handleCheckboxChange = async (week: number, currentPaid: boolean) => {
     try {
       await updatePaidStatus(selectedDate.year, week, currentPaid);
-    } catch {
-      setError(strings.oncall.errorUpdatingPaidStatus);
+    } catch (error: any) {
+      const errorMessage = await error.response?.json();
+      setError(`${strings.oncall.errorUpdatingPaidStatus}: ${errorMessage?.message}`);
     }
   };
 
@@ -63,7 +65,10 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
       flex: 1,
       headerAlign: "center",
       align: "center",
-      sortable: true
+      sortable: true,
+      renderCell: (params) => (
+        <Typography sx={{ color: theme.palette.text.primary }}>{params.value}</Typography>
+      )
     },
     {
       field: "person",
@@ -76,9 +81,12 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
         <Typography
           sx={{
             fontWeight: isLoggedInUser(params.row.email) ? "bold" : "normal",
-            border: isLoggedInUser(params.row.email) ? "2px solid black" : "none",
+            border: isLoggedInUser(params.row.email)
+              ? `2px solid ${theme.palette.primary.main}`
+              : "none",
             borderRadius: 2,
-            px: 1
+            px: 1,
+            color: theme.palette.text.primary
           }}
         >
           {formatUsername(params.value)}
@@ -95,7 +103,8 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
       renderCell: (params) => (
         <Typography
           sx={{
-            fontWeight: isLoggedInUser(params.value) ? "bold" : "normal"
+            fontWeight: isLoggedInUser(params.value) ? "bold" : "normal",
+            color: theme.palette.text.primary
           }}
         >
           {params.value}
@@ -118,10 +127,10 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
               checked={params.value}
               sx={{
                 "&.Mui-checked": {
-                  color: alpha(customTheme.colors.paidGreen, 0.8)
+                  color: alpha(customTheme(theme).colors.paidGreen, 0.8)
                 },
                 "&:not(.Mui-checked)": {
-                  color: alpha("#ff6384", 0.8)
+                  color: alpha(customTheme(theme).colors.unpaidRed, 0.8)
                 }
               }}
             />
@@ -130,8 +139,8 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
 
         const Icon = params.value ? CheckCircleOutline : CancelOutlined;
         const iconColor = params.value
-          ? alpha(customTheme.colors.paidGreen, 0.8)
-          : alpha("#ff6384", 0.8);
+          ? alpha(customTheme(theme).colors.paidGreen, 0.8)
+          : alpha(customTheme(theme).colors.unpaidRed, 0.8);
 
         return <Icon sx={{ color: iconColor, cursor: "default" }} />;
       }
@@ -161,7 +170,7 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
         <Typography
           variant="h4"
           className="button-text"
-          sx={customTheme.customStyles.listViewTypography}
+          sx={customTheme(theme).customStyles.listViewTypography}
         >
           {strings.oncall.oncallShifts} {selectedDate.year}
         </Typography>
@@ -170,18 +179,18 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
           <Button
             onClick={() => setSelectedDate(selectedDate.minus({ year: 1 }))}
             disabled={selectedDate.year === 2020}
-            sx={customTheme.customStyles.listViewButton}
+            sx={customTheme(theme).customStyles.listViewButton}
           >
-            <Typography variant="h4" sx={customTheme.customStyles.listViewTypography}>
+            <Typography variant="h4" sx={customTheme(theme).customStyles.listViewTypography}>
               {strings.oncall.previousYear}
             </Typography>
           </Button>
           <Button
             onClick={() => setSelectedDate(selectedDate.plus({ year: 1 }))}
             disabled={selectedDate.year === DateTime.now().year}
-            sx={customTheme.customStyles.listViewButton}
+            sx={customTheme(theme).customStyles.listViewButton}
           >
-            <Typography variant="h4" sx={customTheme.customStyles.listViewTypography}>
+            <Typography variant="h4" sx={customTheme(theme).customStyles.listViewTypography}>
               {strings.oncall.nextYear}
             </Typography>
           </Button>
@@ -196,10 +205,10 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
             py: 6,
             fontSize: 24,
             fontWeight: "bold",
-            color: "#bdbdbd",
-            border: "1px solid #eee",
-            borderRadius: 4,
-            background: "#fafafa",
+            color: theme.palette.text.secondary,
+            border: `1px solid ${theme.palette.divider}`,
+            borderRadius: theme.shape.borderRadius,
+            backgroundColor: theme.palette.background.paper,
             mt: 2
           }}
         >
@@ -213,18 +222,25 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
           hideFooter
           sx={{
             marginBottom: "30px",
+            border: `1px solid ${alpha(theme.palette.text.primary, 0.3)}`,
             "& .MuiDataGrid-row:hover": {
-              backgroundColor: "#eeeeee"
+              backgroundColor: theme.palette.action.hover
             },
-            "& .MuiDataGrid-cell": { fontSize: 16, color: "black" },
+            "& .MuiDataGrid-cell": {
+              fontSize: 16,
+              color: theme.palette.text.primary,
+              borderBottom: `1px solid ${alpha(theme.palette.text.primary, 0.15)}`
+            },
             "& .MuiDataGrid-columnHeaders": {
-              backgroundColor: "#cfc7c7"
+              backgroundColor: theme.palette.background.paper,
+              color: theme.palette.text.primary,
+              borderBottom: `1px solid ${alpha(theme.palette.text.primary, 0.3)}`
             },
             "& .MuiDataGrid-columnHeaderTitle": {
               fontWeight: "bold"
             },
             "& .default-row": {
-              backgroundColor: "#f5f5f5"
+              backgroundColor: alpha(theme.palette.primary.main, 0.1)
             }
           }}
           initialState={{

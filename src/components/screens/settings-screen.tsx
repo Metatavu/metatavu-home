@@ -1,16 +1,25 @@
-import { Box, CircularProgress, Switch, Typography } from "@mui/material";
+import { Box, CircularProgress, Switch, Typography, useTheme } from "@mui/material";
 import { useAtom, useSetAtom } from "jotai";
 import { useEffect, useState } from "react";
 import { userProfileAtom } from "src/atoms/auth";
 import { errorAtom } from "src/atoms/error";
 import { usersAtom } from "src/atoms/user";
 import { useLambdasApi } from "src/hooks/use-api";
+import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
+import { type ThemeMode, ThemeModes } from "src/types/index";
+
+type SettingsScreenProps = {
+  screenColorMode: ThemeMode;
+  setScreenColorMode: (screenColorMode: ThemeMode) => void;
+};
 
 /**
  * Settings screen component
  */
-const SettingsScreen = () => {
+const SettingsScreen = ({ screenColorMode, setScreenColorMode }: SettingsScreenProps) => {
+  const theme = useTheme();
+  const { isDeveloper } = useUserRole();
   const [userProfile, setUserProfile] = useAtom(userProfileAtom);
   const { usersApi } = useLambdasApi();
   const setUsers = useSetAtom(usersAtom);
@@ -29,6 +38,10 @@ const SettingsScreen = () => {
    * Handles toggle change event
    */
   const handleToggleChange = () => {
+    if (!isDeveloper) {
+      return;
+    }
+
     if (isConsentGiven) {
       revokeSeveraOptIn();
     } else {
@@ -42,35 +55,27 @@ const SettingsScreen = () => {
   const grantSeveraOptInConsent = async () => {
     setLoading(true);
     try {
-      if (!userProfile?.email || !userProfile?.id) {
-        setError(strings.error.missingEmailOrId);
+      if (!userProfile?.id) {
+        setError(strings.error.missingUserId);
         return;
       }
 
-      const response = await usersApi.updateUserAttribute({
-        updateUserAttributeRequest: { email: userProfile.email },
-        id: userProfile.id,
-        attributeName: "isSeveraOptIn"
-      });
-
-      const severaUserIdRaw = response?.updatedKeycloakAttributes?.severaUserId;
-      const severaUserId = Array.isArray(severaUserIdRaw) ? severaUserIdRaw[0] : severaUserIdRaw;
+      await usersApi.addSeveraOptIn({ userId: userProfile.id });
+      const fetchedUser = await usersApi.findUser({ userId: userProfile.id });
+      const severaUserId = fetchedUser?.attributes?.severaUserId?.[0];
 
       setIsConsentGiven(Boolean(severaUserId));
       if (severaUserId) {
-        const updatedAttributes = {
-          ...(userProfile.attributes || {}),
-          severaUserId
-        } as Record<string, string[] | string | undefined>;
-
+        const updatedAttributes = { ...userProfile.attributes, severaUserId };
         const updatedProfile = { ...userProfile, attributes: updatedAttributes };
         setUserProfile(updatedProfile);
         setUsers((prev) =>
           prev.map((u) => (u.id === userProfile.id ? { ...u, attributes: updatedAttributes } : u))
         );
       }
-    } catch (error) {
-      setError(`${strings.error.fetchFailedSevera}, ${String(error)}`);
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
+      setError(`${strings.error.fetchFailedSevera}: ${errorMessage?.message || error}`);
     } finally {
       setLoading(false);
     }
@@ -83,15 +88,12 @@ const SettingsScreen = () => {
     setLoading(true);
     try {
       if (!userProfile?.id) {
-        setError(strings.error.missingEmailOrId);
+        setError(strings.error.missingUserId);
         return;
       }
 
       await usersApi.removeSeveraOptIn({ userId: userProfile.id });
-      const updatedAttributes = { ...(userProfile.attributes || {}) } as Record<
-        string,
-        string[] | string | undefined
-      >;
+      const updatedAttributes = { ...userProfile.attributes };
       delete updatedAttributes.severaUserId;
       delete updatedAttributes.isSeveraOptIn;
 
@@ -101,38 +103,96 @@ const SettingsScreen = () => {
         prev.map((u) => (u.id === userProfile.id ? { ...u, attributes: updatedAttributes } : u))
       );
       setIsConsentGiven(false);
-    } catch (error) {
-      setError(`${strings.error.fetchFailedSevera}, ${String(error)}`);
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
+      setError(`${strings.error.fetchFailedSevera}: ${errorMessage?.message || error}`);
     } finally {
       setLoading(false);
     }
   };
 
+  /**
+   * Toggles the screen color mode between light and dark. Updates the screenColorMode state and saves the new value in localStorage.
+   */
+  const handleModeToggle = () => {
+    const newScreenColorMode: ThemeMode =
+      screenColorMode === ThemeModes.LIGHT ? ThemeModes.DARK : ThemeModes.LIGHT;
+    setScreenColorMode(newScreenColorMode);
+    localStorage.setItem("screenColorMode", newScreenColorMode);
+  };
+
   return (
-    <Box p={2} bgcolor="grey.100" borderRadius={2}>
-      <Typography variant="h5" gutterBottom>
-        {strings.settingsScreen.consentToDataProcessing}
-      </Typography>
-      <Box display="flex" alignItems="center" mt={2}>
-        <Typography variant="body1" sx={{ marginRight: 2 }}>
-          {strings.settingsScreen.decline}
+    <Box p={2}>
+      <Box
+        p={2}
+        borderRadius={2}
+        sx={{
+          bgcolor: theme.palette.background.paper,
+          "&:hover": {
+            bgcolor: theme.palette.action.hover
+          },
+          transition: "background-color 0.2s ease"
+        }}
+      >
+        <Typography variant="h5" gutterBottom>
+          {strings.settingsScreen.consentToDataProcessing}
         </Typography>
-        <Box display="flex" alignItems="center">
-          <Switch
-            checked={isConsentGiven}
-            onChange={handleToggleChange}
-            inputProps={{ "aria-label": "severa-opt-in" }}
-            disabled={loading}
-          />
-          {loading && (
-            <Box ml={1}>
-              <CircularProgress size={20} />
-            </Box>
-          )}
+        <Box display="flex" alignItems="center" mt={2}>
+          <Typography variant="body1" sx={{ marginRight: 2 }}>
+            {strings.settingsScreen.decline}
+          </Typography>
+          <Box display="flex" alignItems="center">
+            <Switch
+              checked={isConsentGiven}
+              onChange={handleToggleChange}
+              inputProps={{ "aria-label": "severa-opt-in" }}
+              disabled={loading || !isDeveloper}
+            />
+            {loading && (
+              <Box ml={1}>
+                <CircularProgress size={20} />
+              </Box>
+            )}
+          </Box>
+          <Typography variant="body1" sx={{ marginLeft: 2 }}>
+            {strings.settingsScreen.accept}
+          </Typography>
         </Box>
-        <Typography variant="body1" sx={{ marginLeft: 2 }}>
-          {strings.settingsScreen.accept}
+      </Box>
+      <Box
+        p={2}
+        borderRadius={2}
+        sx={{
+          bgcolor: theme.palette.background.paper,
+          "&:hover": {
+            bgcolor: theme.palette.action.hover
+          },
+          transition: "background-color 0.2s ease"
+        }}
+      >
+        <Typography variant="h5" gutterBottom>
+          {strings.settingsScreen.lightOrDarkMode}
         </Typography>
+        <Box display="flex" alignItems="center" mt={2}>
+          <Typography variant="body1" sx={{ marginRight: 2 }}>
+            {strings.settingsScreen.light}
+          </Typography>
+          <Box display="flex" alignItems="center">
+            <Switch
+              checked={screenColorMode === ThemeModes.DARK}
+              onChange={handleModeToggle}
+              inputProps={{ "aria-label": "dark-mode-toggle" }}
+            />
+            {loading && (
+              <Box ml={1}>
+                <CircularProgress size={20} />
+              </Box>
+            )}
+          </Box>
+          <Typography variant="body1" sx={{ marginLeft: 2 }}>
+            {strings.settingsScreen.dark}
+          </Typography>
+        </Box>
       </Box>
     </Box>
   );

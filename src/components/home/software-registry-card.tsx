@@ -27,8 +27,9 @@ const SoftwareRegistryCard = () => {
     try {
       const fetchedApplications = await softwareApi.listSoftware();
       setApplications(fetchedApplications);
-    } catch (error) {
-      setError(`Error fetching software data: ${error}`);
+    } catch (error: any) {
+      const errorMessage = await error.response.json();
+      setError(`${strings.error.fetchFailedSoftwareData}: ${errorMessage}`);
     } finally {
       setLoading(false);
     }
@@ -55,7 +56,7 @@ const SoftwareRegistryCard = () => {
   const renderSoftwareDetails = () => {
     if (loading) {
       return (
-        <Grid item container xs={12}>
+        <Grid container size={12}>
           <Skeleton width="100%" />
         </Grid>
       );
@@ -70,7 +71,7 @@ const SoftwareRegistryCard = () => {
             </Typography>
             <Grid display="flex" container alignItems="center" m={1}>
               {recommendedSoftware.map((app) => (
-                <Grid item key={app.id}>
+                <Grid key={app.id}>
                   <CardMedia
                     component="img"
                     height="60"
@@ -89,7 +90,6 @@ const SoftwareRegistryCard = () => {
             </Grid>
           </>
         )}
-
         {adminMode && pendingSoftware.length > 0 && (
           <>
             <Typography fontWeight="bold" gutterBottom>
@@ -97,7 +97,7 @@ const SoftwareRegistryCard = () => {
             </Typography>
             <Grid display="flex" container alignItems="center" m={1}>
               {pendingSoftware.map((app) => (
-                <Grid item key={app.id}>
+                <Grid key={app.id}>
                   <CardMedia
                     component="img"
                     height="60"
@@ -125,13 +125,7 @@ const SoftwareRegistryCard = () => {
       to={adminMode ? "/admin/allsoftware" : "/softwareregistry"}
       style={{ textDecoration: "none" }}
     >
-      <Card
-        sx={{
-          "&:hover": {
-            background: "#efefef"
-          }
-        }}
-      >
+      <Card>
         <CardContent>
           <Typography variant="h6" fontWeight={"bold"} style={{ marginTop: 6, marginBottom: 3 }}>
             {adminMode

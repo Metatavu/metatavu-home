@@ -12,6 +12,7 @@ export interface Localized extends LocalizedStringsMethods {
   placeHolder: {
     notYetImplemented: string;
     pleaseWait: string;
+    search: string;
   };
   label: {
     currentLocaleLabel: string;
@@ -26,6 +27,7 @@ export interface Localized extends LocalizedStringsMethods {
     hello: string;
     logout: string;
     home: string;
+    employee: string;
     settings: string;
     timebank: string;
     vacations: string;
@@ -55,13 +57,23 @@ export interface Localized extends LocalizedStringsMethods {
     questionnaireDeleteFailed: string;
     questionnaireUpdateFailed: string;
     fetchFailedFlextime: string;
-    missingEmailOrId: string;
+    missingUserId: string;
     noSeveraUserId: string;
     noFlextimeData: string;
     noArticleId: string;
     fetchWorkDaysFailed: string;
     fetchWorkWeekFailed: string;
     fetchFailedSevera: string;
+    fetchFailedQuestionnaires: string;
+    fetchFailedWikiArticles: string;
+    fetchFailedSoftwareData: string;
+    loadUserProfileFailed: string;
+    softwareFetchFailed: string;
+    softwareStatusUpdateFailed: string;
+    softwareSaveFailed: string;
+    softwareDeleteFailed: string;
+    softwareRegistryFetchFailed: string;
+    softwareRegistryUpdateFailed: string;
   };
   /**
    * Translations related to localization
@@ -135,7 +147,9 @@ export interface Localized extends LocalizedStringsMethods {
     filterType: string;
     project: string;
     user: string;
+    clear: string;
     searchBy: string;
+    estimateHours: string;
   };
   /**
    * Translations related to software registry
@@ -187,6 +201,14 @@ export interface Localized extends LocalizedStringsMethods {
     errorUnknownUser: string;
     errorCreatingSoftware: string;
     errorFetchingSoftwareToList: string;
+    softwareDetailsFetchFailed: string;
+    softwareDetailsRemoveUserFailed: string;
+    softwareDetailsAddUserFailed: string;
+    softwareDetailsUpdateFailed: string;
+    recommendationsFetchUserFailed: string;
+    editApplication: string;
+    submitApplication: string;
+    updateApplication: string;
   };
 
   /**
@@ -230,10 +252,17 @@ export interface Localized extends LocalizedStringsMethods {
     confirmButtonText: string;
     cancelButtonText: string;
     title: string;
-    message: string;
-    editMessage: string;
-    editDraftMessage: string;
-    updateMessage: string;
+    delete: {
+      vacation: string;
+      questionnaire: string;
+      software: string;
+      article: string;
+    };
+    edit: {
+      draft: string;
+      reviewed: string;
+    };
+    update: string;
   };
   /**
    * Translations related to error handler
@@ -280,6 +309,7 @@ export interface Localized extends LocalizedStringsMethods {
     createStatusError: string;
     deleteRequestError: string;
     deleteStatusError: string;
+    dataGridRowsCreationError: string;
     updateRequestError: string;
     updateStatusError: string;
     noVacationRequestsFound: string;
@@ -287,6 +317,9 @@ export interface Localized extends LocalizedStringsMethods {
     noVacationRequestsStatusFound: string;
     tooManyDaysRequestedUser: string;
     tooManyDaysRequestedAdmin: string;
+    invalidNumberOfDaysUser: string;
+    invalidNumberOfDaysAdmin: string;
+    noVacationDaysAvailable: string;
     failedToLoad: string;
   };
 
@@ -301,6 +334,7 @@ export interface Localized extends LocalizedStringsMethods {
    * Translations related to form
    */
   form: {
+    create: string;
     submit: string;
     update: string;
     restoreDefault: string;
@@ -369,6 +403,14 @@ export interface Localized extends LocalizedStringsMethods {
   adminRouteAccess: {
     notAdmin: string;
     noAccess: string;
+  };
+  /**
+   * Translation related to role-based route access
+   */
+  routeAccess: {
+    noAccess: string;
+    requiresDeveloper: string;
+    requiresTester: string;
   };
   /**
    * Translation related to vacations screen
@@ -560,12 +602,44 @@ export interface Localized extends LocalizedStringsMethods {
     labelTags: string;
     labelImage: string;
     labelDescription: string;
+    coverImageAlt: string;
     labelLink: string;
     labelLinkPlaceholder: string;
     draft: string;
     allArticles: string;
     approvedArticles: string;
     connectedArticles: string;
+    linkToArticle: string;
+    searchAndSelectArticle: string;
+    linkText: string;
+    linkTextPlaceholder: string;
+    linkTextHelper: string;
+    selectedArticle: string;
+    noDescriptionAvailable: string;
+    insertLink: string;
+    insertImage: string;
+    imageLinkPlaceholder: string;
+    size: string;
+    alignment: string;
+    sizeSmall: string;
+    sizeMedium: string;
+    sizeLarge: string;
+    sizeFull: string;
+    alignLeft: string;
+    alignCenter: string;
+    alignRight: string;
+    upload: string;
+    add: string;
+    close: string;
+    pleaseUploadImageFile: string;
+    startTypingToSearch: string;
+    selectFromExistingFiles: string;
+    selectImageFromS3: string;
+    noFilesFound: string;
+    cancel: string;
+    failedToLoadMediaFiles: string;
+    errorLoadingMediaFiles: string;
+    articleContentRequired: string;
   };
   /**
    * Translations related to Snackbar notifications
@@ -600,6 +674,9 @@ export interface Localized extends LocalizedStringsMethods {
     accept: string;
     decline: string;
     consentToDataProcessing: string;
+    lightOrDarkMode: string;
+    light: string;
+    dark: string;
   };
   /**
    * Translations related to if user is not Severa Opt in
@@ -676,7 +753,54 @@ export interface Localized extends LocalizedStringsMethods {
     doneTitle: string;
     doneContent: string;
   };
-
+  /**
+   * Translations related to Onboarding Wiki Documentation Screen
+   */
+  onboardingWikiDocumentation: {
+    prev: string;
+    next: string;
+    close: string;
+    welcomeWikiTitle: string;
+    welcomeWikiContent: string;
+    latestUpdatedArticlesTitle: string;
+    latestUpdatedArticlesContent: string;
+    wikiSearchBarTitle: string;
+    wikiSearchBarContent: string;
+    createArticleTitle: string;
+    createArticleContent: string;
+    listOfArticlesTitle: string;
+    listOfArticlesContent: string;
+  };
+  /**
+   * Translations related to Onboarding Wiki Create Article Form
+   */
+  onboardingWikiCreate: {
+    prev: string;
+    next: string;
+    close: string;
+    welcomeTitle: string;
+    welcomeContent: string;
+    titleFieldTitle: string;
+    titleFieldContent: string;
+    pathFieldTitle: string;
+    pathFieldContent: string;
+    tagsFieldTitle: string;
+    tagsFieldContent: string;
+    imageFieldTitle: string;
+    imageFieldContent: string;
+    descriptionFieldTitle: string;
+    descriptionFieldContent: string;
+    editorTitle: string;
+    editorContent: string;
+    editorLinksTitle: string;
+    editorLinksContent: string;
+    editorArticleLinksTitle: string;
+    editorArticleLinksContent: string;
+    editorImagesTitle: string;
+    editorImagesContent: string;
+    actionButtonTitle: string;
+    actionButtonContent: string;
+  };
   /**
    * Translations related to On Call
    */

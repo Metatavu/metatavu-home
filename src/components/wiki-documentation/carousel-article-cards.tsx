@@ -1,6 +1,6 @@
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
-import { Box, Card, Chip, Grid, IconButton, Typography } from "@mui/material";
+import { Box, Card, Chip, Grid, IconButton, Typography, useTheme } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import type { ArticleMetadata } from "src/generated/homeLambdasClient";
@@ -9,6 +9,7 @@ import type { ArticleMetadata } from "src/generated/homeLambdasClient";
  * Carousel component displaying article cards.
  */
 const CarouselArticleCards = ({ articles }: { articles: ArticleMetadata[] }) => {
+  const theme = useTheme();
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [jumping, setJumping] = useState(false);
 
@@ -59,7 +60,6 @@ const CarouselArticleCards = ({ articles }: { articles: ArticleMetadata[] }) => 
       >
         <NavigateBeforeIcon />
       </IconButton>
-
       <IconButton
         onClick={handleNextPage}
         sx={{
@@ -98,11 +98,19 @@ const CarouselArticleCards = ({ articles }: { articles: ArticleMetadata[] }) => 
                 width: "100%",
                 height: "100%",
                 padding: { md: "40px", xs: "40px" },
-                backgroundColor: "#F7F7F7"
+                backgroundColor: theme.palette.background.paper,
+                borderRadius: 3,
+                boxShadow: 3,
+                border: `2px solid ${theme.palette.divider}`
               }}
             >
               <Grid container spacing={3}>
-                <Grid item sm={6} xs={12}>
+                <Grid
+                  size={{
+                    sm: 6,
+                    xs: 12
+                  }}
+                >
                   <Box
                     component="img"
                     sx={{
@@ -117,7 +125,12 @@ const CarouselArticleCards = ({ articles }: { articles: ArticleMetadata[] }) => 
                     src={article.coverImage}
                   />
                 </Grid>
-                <Grid item sm={6} xs={12}>
+                <Grid
+                  size={{
+                    sm: 6,
+                    xs: 12
+                  }}
+                >
                   <Typography
                     variant="h5"
                     sx={{

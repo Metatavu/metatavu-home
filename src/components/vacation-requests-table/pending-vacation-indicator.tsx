@@ -1,4 +1,4 @@
-import { Box, Tooltip } from "@mui/material";
+import { Box, Tooltip, useTheme } from "@mui/material";
 import { VacationRequestStatuses } from "src/generated/homeLambdasClient";
 import strings from "src/localization/strings";
 import { getVacationRequestStatusColor } from "src/utils/vacation-status-utils";
@@ -9,13 +9,15 @@ import { getVacationRequestStatusColor } from "src/utils/vacation-status-utils";
  */
 
 const PendingVacationStatusIndicator = () => {
+  const theme = useTheme();
+
   return (
     <Tooltip title={strings.vacationRequest.noReview} arrow placement="top">
       <Box
         sx={{
           width: 8,
           height: 8,
-          backgroundColor: getVacationRequestStatusColor(VacationRequestStatuses.PENDING),
+          backgroundColor: getVacationRequestStatusColor(VacationRequestStatuses.PENDING, theme),
           borderRadius: "50%",
           animation: "pulse 2s infinite",
           "@keyframes pulse": {

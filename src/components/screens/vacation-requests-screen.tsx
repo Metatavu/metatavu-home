@@ -1,4 +1,4 @@
-import { Card } from "@mui/material";
+import { Card, useTheme } from "@mui/material";
 import type { GridRowId } from "@mui/x-data-grid";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { useEffect, useMemo, useState } from "react";
@@ -19,7 +19,7 @@ import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import { renderVacationDaysTextForScreen } from "src/utils/vacation-days-utils";
 import type { FilterType } from "src/utils/vacation-filter-type";
-import { validateUserVacationRequest } from "src/utils/vacations-utils";
+import { getVacationYear, validateUserVacationRequest } from "src/utils/vacations-utils";
 import BackButton from "../generics/back-button";
 import VacationRequestsTable from "../vacation-requests-table/vacation-requests-table";
 
@@ -55,7 +55,8 @@ const VacationRequestsScreen = () => {
   const [users, setUsers] = useAtom(usersAtom);
   const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
   const [filter, setFilter] = useState<FilterType>("ALL");
-  const currentYear = new Date().getFullYear().toString();
+  const currentYear = getVacationYear().toString();
+  const theme = useTheme();
 
   /**
    * Filters a list of vacation requests based on the given filter.
@@ -113,8 +114,11 @@ const VacationRequestsScreen = () => {
         });
       }
       setVacationRequests(fetchedVacationRequests);
-    } catch (error) {
-      setError(`${strings.vacationRequestError.fetchRequestError}, ${error}`);
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
+      setError(
+        `${strings.vacationRequestError.fetchRequestError}: ${errorMessage?.message || error}`
+      );
     }
     setLoading(false);
   };
@@ -156,8 +160,11 @@ const VacationRequestsScreen = () => {
       }
 
       return vacationRequest;
-    } catch (error) {
-      setError(`${strings.vacationRequestError.fetchRequestError}, ${error}`);
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
+      setError(
+        `${strings.vacationRequestError.fetchRequestError}: ${errorMessage?.message || error}`
+      );
       return null;
     } finally {
       setLoading(false);
@@ -182,8 +189,11 @@ const VacationRequestsScreen = () => {
             updatedVacationRequests = updatedVacationRequests.filter(
               (vacationRequest) => vacationRequest.id !== selectedRowId
             );
-          } catch (error) {
-            setError(`${strings.vacationRequestError.deleteRequestError}, ${error}`);
+          } catch (error: any) {
+            const errorMessage = await error?.response?.json();
+            setError(
+              `${strings.vacationRequestError.deleteRequestError}: ${errorMessage?.message || error}`
+            );
           }
           setLoading(false);
         })
@@ -237,8 +247,11 @@ const VacationRequestsScreen = () => {
       });
       setVacationRequests([createdRequest, ...vacationRequests]);
       showSnackbar(strings.snackbar.vacationRequestCreated);
-    } catch (error) {
-      setError(`${strings.vacationRequestError.createRequestError}, ${error}`);
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
+      setError(
+        `${strings.vacationRequestError.createRequestError}: ${errorMessage?.message || error}`
+      );
     }
     setLoading(false);
   };
@@ -280,8 +293,11 @@ const VacationRequestsScreen = () => {
       });
       setVacationRequests([createdRequest, ...vacationRequests]);
       showSnackbar(strings.snackbar.vacationDraftSaved);
-    } catch (error) {
-      setError(`${strings.vacationRequestError.createRequestError}, ${error}`);
+    }  catch (error: any) {
+      const errorMessage = await error?.response?.json();
+      setError(
+        `${strings.vacationRequestError.createRequestError}: ${errorMessage?.message || error}`
+      );
     }
     setLoading(false);
   };
@@ -351,8 +367,11 @@ const VacationRequestsScreen = () => {
       );
       setVacationRequests(updatedVacationRequests);
       showSnackbar(strings.snackbar.vacationRequestUpdated);
-    } catch (error) {
-      setError(`${strings.vacationRequestError.updateRequestError}, ${error}`);
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
+      setError(
+        `${strings.vacationRequestError.updateRequestError}: ${errorMessage?.message || error}`
+      );
     }
     setLoading(false);
   };
@@ -428,15 +447,18 @@ const VacationRequestsScreen = () => {
       const updatedUser = await usersApi.findUser({ userId: loggedInUser.id });
       setUsers((prevUsers) => prevUsers.map((u) => (u.id === updatedUser.id ? updatedUser : u)));
       showSnackbar(strings.snackbar.vacationRequestStatusUpdated);
-    } catch (error) {
-      setError(`${strings.vacationRequestError.updateRequestError}, ${error}`);
+    }  catch (error: any) {
+      const errorMessage = await error?.response?.json();
+      setError(
+        `${strings.vacationRequestError.updateRequestError}: ${errorMessage?.message || error}`
+      );
     }
     setLoading(false);
   };
 
   return (
     <>
-      {loggedInUser && renderVacationDaysTextForScreen(loggedInUser)}
+      {loggedInUser && renderVacationDaysTextForScreen(loggedInUser, theme)}
       <Card sx={{ margin: 0, padding: "10px", width: "100%", height: "100", marginBottom: "16px" }}>
         <VacationRequestsTable
           isUpcoming={isUpcoming}

@@ -1,31 +1,15 @@
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import GridViewIcon from "@mui/icons-material/GridView";
-import ListViewIcon from "@mui/icons-material/List";
-import SearchIcon from "@mui/icons-material/Search";
 import {
   Alert,
   Box,
   Button,
   Card,
-  Chip,
   CircularProgress,
   Container,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  FormControl,
   Grid,
-  IconButton,
-  InputAdornment,
-  MenuItem,
-  OutlinedInput,
-  Select,
-  Typography
+  Typography,
+  useTheme
 } from "@mui/material";
 import { useAtomValue } from "jotai";
-import type React from "react";
 import { useEffect, useMemo, useState } from "react";
 import { authAtom } from "src/atoms/auth";
 import type { SoftwareRegistry } from "src/generated/homeLambdasClient";
@@ -35,9 +19,15 @@ import useCreateSoftware from "src/hooks/use-create-software";
 import { useSnackbar } from "src/hooks/use-snackbar";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
+import { DeleteItemType } from "src/types/index";
+import DeleteConfirmationDialog from "../contexts/delete-confirmation-dialog";
 import BackButton from "../generics/back-button";
-import AddSoftwareModal from "../software-registry/AddSoftwareModal";
+import CreateButton from "../generics/create-button";
+import Dropdown from "../generics/dropdown";
+import ListViewButton from "../generics/list-view-button";
+import SearchBar from "../generics/search-bar";
 import Content from "../software-registry/allContent";
+import AddSoftwareModal from "../software-registry/SoftwareModal";
 
 /**
  * All software screen component
@@ -56,13 +46,15 @@ const AllSoftwareScreen = () => {
   const [error, setError] = useState<string | null>(null);
   const [searchTerms, setSearchTerms] = useState<string[]>([]);
   const [inputValue, setInputValue] = useState("");
-  const [isGridView, setIsGridView] = useState(true);
+  const [listView, setListView] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showAll, setShowAll] = useState(false);
   const { createSoftware } = useCreateSoftware(loggedUserId, setApplications);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedApplicationId, setSelectedApplicationId] = useState<string | null>(null);
   const showSnackbar = useSnackbar();
+  const [deleteTitle, setDeleteTitle] = useState<string | undefined>(undefined);
+  const theme = useTheme();
 
   type SoftwareStatusFilterOptions = (typeof allStatusValues)[number];
 
@@ -88,8 +80,9 @@ const AllSoftwareScreen = () => {
     try {
       const fetchedApplications = await softwareApi.listSoftware();
       setApplications(fetchedApplications);
-    } catch (error) {
-      setError(`Error fetching software data: ${error}`);
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
+      setError(`${strings.error.softwareFetchFailed} ${errorMessage?.message || error}`);
     } finally {
       setLoading(false);
     }
@@ -137,30 +130,6 @@ const AllSoftwareScreen = () => {
   }, [software, inputValue, searchTerms, selectedStatus]);
 
   /**
-   * Handles the input for search terms.
-   * Adds new search terms when the "Enter" key is pressed.
-   * @param event - The keyboard event triggered by the user pressing a key inside the input field.
-   */
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter" && inputValue.trim() !== "") {
-      event.preventDefault();
-
-      if (!searchTerms.includes(inputValue.trim())) {
-        setSearchTerms([...searchTerms, inputValue.trim()]);
-        setInputValue("");
-      }
-    }
-  };
-
-  /**
-   * Deletes a search term chip.
-   * @param chipToDelete - The search term (chip) to remove from the list.
-   */
-  const handleDeleteChip = (chipToDelete: string) => {
-    setSearchTerms((prevChips) => prevChips.filter((chip) => chip !== chipToDelete));
-  };
-
-  /**
    * Updates the status of application.
    *
    * @param {string} id - The id of the application to update.
@@ -187,8 +156,9 @@ const AllSoftwareScreen = () => {
         });
         showSnackbar(strings.snackbar.softwareStatusChanged);
       }
-    } catch (error) {
-      setError(`Error updating status: ${error}`);
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
+      setError(`${strings.error.softwareStatusUpdateFailed} ${errorMessage?.message || error}`);
     }
   };
 
@@ -223,8 +193,9 @@ const AllSoftwareScreen = () => {
         }
       });
       showSnackbar(strings.snackbar.softwareAdded);
-    } catch (error) {
-      setError(`Error saving the app: ${error}`);
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
+      setError(`${strings.error.softwareSaveFailed} ${errorMessage?.message || error}`);
     }
   };
 
@@ -232,9 +203,11 @@ const AllSoftwareScreen = () => {
    * Opens the delete confirmation dialog.
    *
    * @param id - The ID of the application to delete.
+   * @param title - The title of the application to delete.
    */
-  const openDeleteDialog = (id: string) => {
+  const openDeleteDialog = (id: string, title: string) => {
     setSelectedApplicationId(id);
+    setDeleteTitle(title);
     setDeleteDialogOpen(true);
   };
 
@@ -263,8 +236,9 @@ const AllSoftwareScreen = () => {
 
       await softwareApi.deleteSoftwareById({ id: selectedApplicationId });
       showSnackbar(strings.snackbar.softwareDeleted);
-    } catch (error) {
-      setError(`Error deleting the app: ${error}`);
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
+      setError(`${strings.error.softwareDeleteFailed} ${errorMessage?.message || error}`);
     } finally {
       closeDeleteDialog();
     }
@@ -295,130 +269,46 @@ const AllSoftwareScreen = () => {
 
   return (
     <Container>
-      <Grid container direction="column" alignItems="center" mt={4}>
-        <Grid item container justifyContent="space-between" alignItems="center" mb={2} mt={4}>
+      <Grid container direction="column" alignItems="stretch" mt={4}>
+        <Grid container justifyContent="space-between" alignItems="center" mb={2} mt={4}>
           <Typography variant="h3">{strings.softwareRegistry.allApplications}</Typography>
-          <Button
-            variant="contained"
-            color="secondary"
+        </Grid>
+
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "flex-start",
+            gap: 2,
+            width: "100%",
+            mt: 2
+          }}
+        >
+          {/*TODO: The logic behind how the software is managed should be changed to be similar to the wiki one*/}
+          <SearchBar
+            searchInput={inputValue}
+            handleSearchInputChange={(_event, newInputValue) => setInputValue(newInputValue)}
+            tags={Array.from(new Set(software.flatMap((app) => app.tags ?? [])))}
+            handleSelectedTagChange={(newSelectedTags) => setSearchTerms(newSelectedTags)}
+            autoCompleteId="software-registry-search-tags"
+            styles={{ width: { lg: "55%", md: "55%", xs: "100%" } }}
+            placeholder={strings.softwareRegistry.searchBy}
+          />
+          <Dropdown
+            displayOption={selectedStatus}
+            handleDisplayOptionChange={(e) =>
+              setSelectedStatus(e.target.value as SoftwareStatusFilterOptions)
+            }
+            displayOptions={statusOptions}
+          />
+          <ListViewButton listView={listView} setListView={setListView} />
+          <CreateButton
             onClick={() => setIsModalOpen(true)}
-            sx={{
-              textTransform: "none",
-              color: "#fff",
-              fontSize: "18px",
-              borderRadius: "100px",
-              "&:hover": { background: "#000" }
-            }}
-          >
-            {strings.softwareRegistry.addApplication}
-          </Button>
-        </Grid>
-
-        <Grid container justifyContent="space-between" alignItems="center" mb={2}>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              width: "100%"
-            }}
-          >
-            <FormControl sx={{ minWidth: "120px" }}>
-              <Select
-                value={selectedStatus}
-                onChange={(e) => setSelectedStatus(e.target.value as SoftwareStatusFilterOptions)}
-                variant="outlined"
-                IconComponent={ExpandMoreIcon}
-                sx={{
-                  borderRadius: "10px",
-                  height: "45px",
-                  padding: "0 15px",
-                  "& .MuiSvgIcon-root": {
-                    color: "#121212"
-                  }
-                }}
-              >
-                {statusOptions.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.label}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-
-            <OutlinedInput
-              placeholder={strings.softwareRegistry.searchBy}
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              onKeyDown={handleKeyDown}
-              startAdornment={searchTerms.map((term) => (
-                <Chip
-                  key={term}
-                  label={term}
-                  onDelete={() => handleDeleteChip(term)}
-                  sx={{
-                    marginRight: "5px",
-                    backgroundColor: "#BDBDBD",
-                    color: "#fff"
-                  }}
-                />
-              ))}
-              endAdornment={
-                <InputAdornment position="end">
-                  <SearchIcon sx={{ color: "gray" }} />
-                </InputAdornment>
-              }
-              sx={{
-                marginLeft: "15px",
-                borderRadius: "10px",
-                height: "45px",
-                width: "50%",
-                padding: "10px",
-                backgroundColor: "#f1f1f1",
-                boxShadow: "inset 0px 4px 6px rgba(0, 0, 0, 0.1)"
-              }}
-            />
-            <Box sx={{ display: "flex", marginLeft: "auto" }}>
-              <IconButton
-                onClick={() => setIsGridView(true)}
-                sx={{
-                  backgroundColor: isGridView ? "#F9473B" : "#f2f2f2",
-                  color: isGridView ? "#fff" : "#000",
-                  borderRadius: "8px",
-                  padding: "10px",
-                  marginRight: "4px",
-                  marginLeft: "10px",
-                  transition: "background-color 0.3s ease",
-                  "&:hover": {
-                    backgroundColor: "#000",
-                    color: "#fff"
-                  }
-                }}
-              >
-                <GridViewIcon />
-              </IconButton>
-              <IconButton
-                onClick={() => setIsGridView(false)}
-                sx={{
-                  backgroundColor: !isGridView ? "#F9473B" : "#f2f2f2",
-                  color: !isGridView ? "#fff" : "#000",
-                  borderRadius: "8px",
-                  padding: "10px",
-                  transition: "background-color 0.3s ease",
-                  "&:hover": {
-                    backgroundColor: "#000",
-                    color: "#fff"
-                  }
-                }}
-              >
-                <ListViewIcon />
-              </IconButton>
-            </Box>
-          </Box>
-        </Grid>
+            text={strings.softwareRegistry.addApplication}
+          />
+        </Box>
 
         <Grid container justifyContent="flex-start" mt={2} mb={6} width="100%">
-          <Grid item xs>
+          <Grid size="grow">
             {error && (
               <Box mb={2} width="100%">
                 <Alert severity="error">{error}</Alert>
@@ -426,7 +316,7 @@ const AllSoftwareScreen = () => {
             )}
             <Content
               applications={showAll ? filteredApplications : filteredApplications.slice(0, 8)}
-              isGridView={isGridView}
+              isGridView={!listView}
               onStatusChange={handleStatusChange}
               adminMode={adminMode}
               onSave={handleSave}
@@ -441,10 +331,11 @@ const AllSoftwareScreen = () => {
                   onClick={() => setShowAll(!showAll)}
                   sx={{
                     textTransform: "none",
-                    color: "#fff",
+                    color: theme.palette.secondary.contrastText,
                     fontSize: "18px",
                     borderRadius: "100px",
-                    "&:hover": { background: "#000" }
+                    backgroundColor: theme.palette.secondary.main,
+                    "&:hover": { backgroundColor: theme.palette.secondary.dark }
                   }}
                 >
                   {showAll ? strings.softwareRegistry.showLess : strings.softwareRegistry.showMore}
@@ -455,7 +346,6 @@ const AllSoftwareScreen = () => {
         </Grid>
       </Grid>
       <BackButton styles={{ marginBottom: 2 }} />
-
       <AddSoftwareModal
         open={isModalOpen}
         handleClose={() => setIsModalOpen(false)}
@@ -463,31 +353,13 @@ const AllSoftwareScreen = () => {
         disabled={loading}
         existingSoftwareList={software}
       />
-
-      {/* Delete Confirmation Dialog */}
-      <Dialog
+      <DeleteConfirmationDialog
         open={deleteDialogOpen}
-        onClose={closeDeleteDialog}
-        aria-labelledby="delete-dialog-title"
-        aria-describedby="delete-dialog-description"
-      >
-        <DialogTitle id="delete-dialog-title">
-          {strings.softwareRegistry.confirmDeletion}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="delete-dialog-description">
-            {strings.softwareRegistry.deleteSoftwareDescription}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={closeDeleteDialog} color="primary">
-            {strings.softwareRegistry.cancel}
-          </Button>
-          <Button onClick={handleRemove} color="secondary" autoFocus>
-            {strings.softwareRegistry.delete}
-          </Button>
-        </DialogActions>
-      </Dialog>
+        setOpen={setDeleteDialogOpen}
+        onConfirm={handleRemove}
+        deleteType={DeleteItemType.SOFTWARE}
+        deleteTitle={deleteTitle}
+      />
     </Container>
   );
 };

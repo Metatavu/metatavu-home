@@ -9,9 +9,10 @@ import {
   Select,
   styled,
   Tooltip,
-  Typography
+  Typography,
+  useTheme
 } from "@mui/material";
-import { red } from "@mui/material/colors";
+
 import { DateCalendar, PickersDay, type PickersDayProps } from "@mui/x-date-pickers";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { DateTime } from "luxon";
@@ -76,9 +77,10 @@ const OnCallCalendarScreen = () => {
     try {
       const fetchedData = await onCallApi.listOnCallData({ year: year.toString() });
       setOnCallData(fetchedData);
-    } catch (error) {
+    } catch (error: any) {
       if (!(error instanceof SyntaxError)) {
-        setError(`${strings.oncall.fetchFailed} ${error}`);
+        const errorMessage = await error?.response?.json();
+        setError(`${strings.oncall.fetchFailed}: ${errorMessage?.message || error}`);
       }
       setOnCallData([]);
     } finally {
@@ -96,8 +98,9 @@ const OnCallCalendarScreen = () => {
       const fetchedData = await onCallApi.listOnCallData({ year: currentYear.toString() });
       const currentOnCallPerson = fetchedData.find((item) => item.week === currentWeek)?.username;
       setOnCallPerson(currentOnCallPerson ?? undefined);
-    } catch (error) {
-      setError(`${strings.oncall.fetchFailed} ${error}`);
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
+      setError(`${strings.oncall.fetchFailed}: ${errorMessage?.message || error}`);
     }
   };
 
@@ -121,33 +124,37 @@ const OnCallCalendarScreen = () => {
           item.year === year && item.week === weekNumber ? { ...item, paid: !paid } : item
         )
       );
-    } catch (error) {
-      setError(`${strings.oncall.errorUpdatingPaidStatus}, ${error}`);
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
+      setError(`${strings.oncall.errorUpdatingPaidStatus}: ${errorMessage?.message || error}`);
     }
   };
-
+  const theme = useTheme();
   /**
    * Renders the current week's on call person if they exist
    */
   const renderCurrentOnCall = () => {
     if (onCallPerson === undefined) {
       return (
-        <Box sx={customTheme.customStyles.onCallBox}>
-          <CircularProgress sx={{ color: "black" }} />
+        <Box sx={customTheme(theme).customStyles.onCallBox}>
+          <CircularProgress sx={{ color: theme.palette.text.primary }} />
         </Box>
       );
     }
 
     if (onCallPerson) {
       return (
-        <Box sx={customTheme.customStyles.onCallBox}>
+        <Box sx={customTheme(theme).customStyles.onCallBox}>
           <Typography
             variant="h5"
-            sx={{ display: "block", mb: 1, fontWeight: "bold", color: "black" }}
+            sx={{ display: "block", mb: 1, fontWeight: "bold", color: theme.palette.text.primary }}
           >
             {strings.oncall.onCallPersonExists}
           </Typography>
-          <Typography variant="h5" sx={{ display: "block", color: "black", fontWeight: "bold" }}>
+          <Typography
+            variant="h5"
+            sx={{ display: "block", color: theme.palette.text.primary, fontWeight: "bold" }}
+          >
             {formatUsername(onCallPerson)}
           </Typography>
         </Box>
@@ -155,8 +162,11 @@ const OnCallCalendarScreen = () => {
     }
 
     return (
-      <Box sx={customTheme.customStyles.onCallBox}>
-        <Typography variant="h5" sx={{ display: "block", color: red[700], fontWeight: "bold" }}>
+      <Box sx={customTheme(theme).customStyles.onCallBox}>
+        <Typography
+          variant="h5"
+          sx={{ display: "block", color: theme.palette.error.main, fontWeight: "bold" }}
+        >
           {strings.oncall.noOnCallPerson}
         </Typography>
       </Box>
@@ -229,7 +239,7 @@ const OnCallCalendarScreen = () => {
    *
    * @param props - Properties for rendering a calendar day
    */
-  const fillCalendarDays = (props: PickersDayProps<DateTime>) => {
+  const fillCalendarDays = (props: PickersDayProps) => {
     const { day, outsideCurrentMonth, ...other } = props;
     const weekNumber = day.weekNumber;
     const onCallDayData = onCallByWeek.get(weekNumber);
@@ -248,7 +258,9 @@ const OnCallCalendarScreen = () => {
           .toUpperCase()
       : "!";
 
-    const badgeColor = hasUsername ? stringToColor(onCallDayData.username) : "#d32f2f"; //Red color if there is no username
+    const badgeColor = hasUsername
+      ? stringToColor(onCallDayData.username)
+      : theme.palette.error.main; //Red color if there is no username
 
     const handleDayClick = () => {
       if (onCallDayData && isAccountant) {
@@ -272,9 +284,11 @@ const OnCallCalendarScreen = () => {
               sx={{
                 ".MuiBadge-badge": {
                   backgroundColor: whenUserIsOnCall
-                    ? customTheme.colors.onCallHighlight
+                    ? customTheme(theme).colors.onCallHighlight
                     : badgeColor,
-                  color: "#fff",
+                  color: theme.palette.getContrastText(
+                    whenUserIsOnCall ? customTheme(theme).colors.onCallHighlight : badgeColor
+                  ),
                   right: 60,
                   top: 10,
                   minWidth: 24,
@@ -309,11 +323,18 @@ const OnCallCalendarScreen = () => {
                 {...other}
                 day={day}
                 outsideCurrentMonth={outsideCurrentMonth}
+                selected={false}
                 sx={{
                   ...(onCallDayData?.paid
-                    ? { color: "#000", fontWeight: "bold", border: "2px solid #7bd15c" }
+                    ? {
+                        color: theme.palette.text.primary,
+                        fontWeight: "bold",
+                        border: `2px solid ${customTheme(theme).colors.paidGreen}`
+                      }
                     : {}),
-                  background: outsideCurrentMonth ? "#cfc7c7" : "#fff",
+                  background: outsideCurrentMonth
+                    ? theme.palette.action.disabledBackground
+                    : theme.palette.background.paper,
                   cursor: "pointer"
                 }}
                 onClick={handleDayClick}
@@ -326,11 +347,18 @@ const OnCallCalendarScreen = () => {
             {...other}
             day={day}
             outsideCurrentMonth={outsideCurrentMonth}
+            selected={false}
             sx={{
               ...(onCallDayData?.paid
-                ? { color: "#000", fontWeight: "bold", border: "2px solid #7bd15c" }
+                ? {
+                    color: theme.palette.text.primary,
+                    fontWeight: "bold",
+                    border: `2px solid ${customTheme(theme).colors.paidGreen}`
+                  }
                 : {}),
-              background: outsideCurrentMonth ? "#cfc7c7" : "#fff",
+              background: outsideCurrentMonth
+                ? theme.palette.action.disabledBackground
+                : theme.palette.background.paper,
               cursor: onCallDayData ? "pointer" : "default"
             }}
             onClick={handleDayClick}
@@ -344,18 +372,17 @@ const OnCallCalendarScreen = () => {
 
   const DAY_WIDTH = 56; // width of each day cell in the calendar
 
-  const StyledPickersDay = styled(PickersDay<DateTime>)(({ theme }) => ({
+  const StyledPickersDay = styled(PickersDay)(({ theme }) => ({
     width: DAY_WIDTH,
     height: DAY_WIDTH,
     fontSize: 18,
     border: `1px solid ${theme.palette.divider}`,
     borderRadius: 8,
     margin: 2,
-    "&.Mui-selected": {
-      border: `2px solid ${theme.palette.primary.main}`
-    },
+    color: theme.palette.text.primary,
+    backgroundColor: theme.palette.background.paper,
     "&:hover": {
-      border: `2px solid ${theme.palette.primary.light}`,
+      border: `2px solid ${theme.palette.primary.main}`,
       background: theme.palette.action.hover
     }
   }));
@@ -441,9 +468,22 @@ const OnCallCalendarScreen = () => {
           }
         }}
       />
-      <FormControl sx={{ width: "50%", textAlign: "center", margin: "auto" }}>
+      <FormControl
+        sx={{
+          width: "50%",
+          textAlign: "center",
+          margin: "auto",
+          "& .MuiInputLabel-root": { color: theme.palette.text.primary }
+        }}
+      >
         <InputLabel id={calendarSelectId}>{strings.oncall.selectView}</InputLabel>
         <Select
+          sx={{
+            color: theme.palette.text.primary,
+            ".MuiOutlinedInput-notchedOutline": {
+              borderColor: theme.palette.divider
+            }
+          }}
           labelId={calendarSelectId}
           id={`${calendarSelectId}-select`}
           label={strings.oncall.selectView}

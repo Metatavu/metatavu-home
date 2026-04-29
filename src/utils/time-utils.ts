@@ -1,6 +1,6 @@
+import type { Theme } from "@mui/material";
 import { DateTime, Duration } from "luxon";
 import type { User } from "src/generated/homeLambdasClient";
-import { theme } from "../theme.tsx";
 
 /**
  * Format date
@@ -273,7 +273,7 @@ export const getSprintEnd = (date: string) => {
  *
  * @param user Keycloak user
  */
-export const getVacationColors = (user: User) => {
+export const getVacationColors = (user: User, theme: Theme) => {
   let vacationDaysByYearColor = theme.palette.error.main;
   let unspentVacationDaysByYearColor = theme.palette.error.main;
   const currentYear = new Date().getFullYear();

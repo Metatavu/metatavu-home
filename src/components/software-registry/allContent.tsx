@@ -11,7 +11,7 @@ interface ContentProps {
   onStatusChange: (id: string, newStatus: SoftwareStatus) => void;
   adminMode: boolean;
   onSave: (id: string) => void;
-  onRemove: (id: string) => void;
+  onRemove: (id: string, title: string) => void;
   loggedUserId: string;
 }
 
@@ -35,13 +35,15 @@ const Content = ({
   onSave,
   loggedUserId
 }: ContentProps) => {
+  const getOnRemove = (app: SoftwareRegistry) =>
+    adminMode ? () => onRemove(app.id || "", app.name || "") : undefined;
   return isGridView ? (
     <Grid container spacing={2}>
       {applications.map((app) => {
         const isInMyApplications = app.users?.includes(loggedUserId) || false;
 
         return (
-          <Grid item key={app.id}>
+          <Grid key={app.id}>
             <MainCard
               id={app.id || ""}
               image={app.image}
@@ -55,7 +57,7 @@ const Content = ({
                 adminMode ? (newStatus) => onStatusChange(app.id || "", newStatus) : undefined
               }
               onSave={() => onSave(app.id || "")}
-              onRemove={adminMode ? () => onRemove(app.id || "") : undefined}
+              onRemove={getOnRemove(app)}
               isInMyApplications={isInMyApplications}
               url={""}
               createdBy={""}
@@ -84,7 +86,7 @@ const Content = ({
               adminMode ? (newStatus) => onStatusChange(app.id || "", newStatus) : undefined
             }
             onSave={() => onSave(app.id || "")}
-            onRemove={adminMode ? () => onRemove(app.id || "") : undefined}
+            onRemove={getOnRemove(app)}
             isInMyApplications={isInMyApplications}
             url={""}
             createdBy={""}

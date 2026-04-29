@@ -1,4 +1,4 @@
-import { Box, Grid, Skeleton } from "@mui/material";
+import { Box, Grid, Skeleton, useTheme } from "@mui/material";
 import { useAtomValue } from "jotai";
 import type { ReactNode } from "react";
 import { userProfileAtom } from "src/atoms/auth";
@@ -6,6 +6,7 @@ import { usersAtom } from "src/atoms/user";
 import type { User } from "src/generated/homeLambdasClient";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
+import { OnboardingScreen } from "src/types/index";
 import BalanceCard from "../home/balance-card";
 import CardGridWrapper from "../home/common/card-grid-wrapper";
 import OnCallCard from "../home/oncall-card";
@@ -20,14 +21,13 @@ import Onboarding from "../onboarding/Onboarding";
  * Home screen component
  */
 const HomeScreen = () => {
+  const theme = useTheme();
   const { isDeveloper, isTester } = useUserRole();
   const users = useAtomValue(usersAtom);
   const userProfile = useAtomValue(userProfileAtom);
   const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
 
   const hasSeveraUserId = !!loggedInUser?.attributes?.severaUserId;
-
-  const isPrivilegedUser = isDeveloper || isTester;
 
   /**
    * Renders a card with a skeleton loader
@@ -39,20 +39,24 @@ const HomeScreen = () => {
   const renderCardWithSkeleton = (title: string, content: ReactNode) => (
     <Box
       sx={{
-        background: "#ffffff",
+        background: theme.palette.background.paper,
         borderRadius: 1,
-        boxShadow: "0px 2px 8px rgba(0,0,0,0.05)",
+        boxShadow: theme.shadows[1],
         minHeight: title === strings.sprint.sprintview ? 270 : 120,
         display: "flex",
         flexDirection: "column",
-        justifyContent: "flex-start"
+        justifyContent: "flex-start",
+        transition: "background-color 0.2s ease",
+        "&:hover": {
+          backgroundColor: theme.palette.action.hover
+        }
       }}
     >
       <Grid sx={{ padding: 2 }}>
         <Box sx={{ fontWeight: "bold", fontSize: 22 }}>{title}</Box>
         {!hasSeveraUserId ? (
           <>
-            <div style={{ color: "#888", fontSize: 15, padding: "12px 0" }}>
+            <div style={{ color: theme.palette.text.secondary, fontSize: 15, padding: "12px 0" }}>
               {strings.notOptedInDescription.description}
             </div>
             <Skeleton
@@ -69,7 +73,7 @@ const HomeScreen = () => {
   );
 
   const cards: ReactNode[] = [
-    isPrivilegedUser && (
+    isDeveloper && (
       <Box key="balance" id="balance-card">
         {!hasSeveraUserId ? (
           renderCardWithSkeleton(strings.balanceCard.balance, <></>)
@@ -78,7 +82,7 @@ const HomeScreen = () => {
         )}
       </Box>
     ),
-    isPrivilegedUser && (
+    isDeveloper && (
       <Box key="sprint" id="sprint-view-card" sx={{ minHeight: 270 }}>
         {!hasSeveraUserId ? (
           renderCardWithSkeleton(strings.sprint.sprintview, <></>)
@@ -87,27 +91,27 @@ const HomeScreen = () => {
         )}
       </Box>
     ),
-    isPrivilegedUser && (
+    isDeveloper && (
       <Box key="vacations" id="vacations-card">
         <VacationsCard />
       </Box>
     ),
-    isPrivilegedUser && (
+    isDeveloper && (
       <Box key="questionnaires" id="questionnaires-card">
         <QuestionnaireCard />
       </Box>
     ),
-    isPrivilegedUser && (
+    isDeveloper && (
       <Box key="software" id="software-registry-card">
         <SoftwareRegistryCard />
       </Box>
     ),
-    isPrivilegedUser && (
+    isTester && (
       <Box key="wiki" id="wiki-documentation-card">
         <WikiDocumentationCard />
       </Box>
     ),
-    isPrivilegedUser && (
+    isDeveloper && (
       <Box key="oncall" id="oncall-card">
         <OnCallCard />
       </Box>
@@ -122,7 +126,7 @@ const HomeScreen = () => {
 
       <Box id="onboarding-complete" sx={{ display: "none" }} />
 
-      <Onboarding />
+      <Onboarding screen={OnboardingScreen.Home} />
     </>
   );
 };

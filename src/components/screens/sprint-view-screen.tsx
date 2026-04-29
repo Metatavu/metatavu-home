@@ -1,4 +1,3 @@
-import { Close, Search } from "@mui/icons-material";
 import {
   Box,
   Card,
@@ -6,19 +5,17 @@ import {
   Container,
   Divider,
   FormControl,
-  IconButton,
-  InputAdornment,
   InputLabel,
   MenuItem,
   Paper,
   Select,
   Stack,
-  TextField,
-  Typography
+  Typography,
+  useTheme
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { useAtomValue, useSetAtom } from "jotai";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useId, useState } from "react";
 import { userProfileAtom } from "src/atoms/auth";
 import { errorAtom } from "src/atoms/error";
 import { usersAtom } from "src/atoms/user";
@@ -32,15 +29,19 @@ import useSprintViewHandlers from "src/hooks/sprint-custom-hooks";
 import { useLambdasApi } from "src/hooks/use-api";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
+import { SprintViewFilterTypes } from "src/types/index";
 import { getSeveraUserId } from "src/utils/sprint-utils";
 import { getSprintEnd, getSprintStart } from "src/utils/time-utils";
 import BackButton from "../generics/back-button";
+import SearchBar from "../generics/search-bar";
 import createSprintViewProjectsColumns from "../sprint-view-table/sprint-projects-columns";
 
 /**
  * Sprint view screen component
  */
 const SprintViewScreen = () => {
+  const theme = useTheme();
+  const filterSelectId = useId();
   const { resourceAllocationsApi } = useLambdasApi();
   const {
     filterType,
@@ -48,7 +49,6 @@ const SprintViewScreen = () => {
     selectedProject,
     handleFilterChange,
     handleRowClick,
-    handleClearSearch,
     setSearchQuery,
     filterAllocations
   } = useSprintViewHandlers();
@@ -67,11 +67,7 @@ const SprintViewScreen = () => {
   });
   const filteredAllocations = filterAllocations(resourceAllocations, adminMode);
 
-  useEffect(() => {
-    fetchProjectDetails();
-  }, [loggedInUser]);
-
-  const fetchProjectDetails = async () => {
+  const fetchProjectDetails = useCallback(async () => {
     if (!loggedInUser) return;
 
     setLoading(true);
@@ -79,13 +75,24 @@ const SprintViewScreen = () => {
       const severaUserId = getSeveraUserId(loggedInUser);
       const fetchedResourceAllocations = adminMode
         ? await resourceAllocationsApi.getAllResourceAllocations()
-        : await resourceAllocationsApi.getAllResourceAllocations({ severaUserId });
+        : await resourceAllocationsApi.getAllResourceAllocations({
+            severaUserId
+          });
       setResourceAllocations(fetchedResourceAllocations);
-    } catch (error) {
-      setError(`${strings.sprintRequestError.fetchResourceAllocationsError}, ${error}`);
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
+      setError(
+        `${strings.sprintRequestError.fetchResourceAllocationsError}: ${errorMessage?.message || error}`
+      );
     }
     setLoading(false);
-  };
+  }, [loggedInUser, adminMode, resourceAllocationsApi, setError]);
+
+  useEffect(() => {
+    if (loggedInUser) {
+      fetchProjectDetails();
+    }
+  }, [loggedInUser, fetchProjectDetails]);
 
   return (
     <>
@@ -94,7 +101,8 @@ const SprintViewScreen = () => {
           sx={{
             p: "25%",
             display: "flex",
-            justifyContent: "center"
+            justifyContent: "center",
+            backgroundColor: theme.palette.background.paper
           }}
         >
           <Box sx={{ textAlign: "center" }}>
@@ -124,57 +132,58 @@ const SprintViewScreen = () => {
                       {strings.sprint.filter}
                     </Typography>
                     <FormControl sx={{ minWidth: 140 }}>
-                      <InputLabel id="filter-select-label">{strings.sprint.filterType}</InputLabel>
+                      <InputLabel id={filterSelectId}>{strings.sprint.filterType}</InputLabel>
                       <Select
-                        labelId="filter-select-label"
+                        labelId={filterSelectId}
                         value={filterType}
                         onChange={handleFilterChange}
-                        label="Filter Type"
+                        label={strings.sprint.filterType}
                       >
-                        <MenuItem value="project">{strings.sprint.project}</MenuItem>
-                        <MenuItem value="user">{strings.sprint.user}</MenuItem>
+                        <MenuItem value={SprintViewFilterTypes.clear}>
+                          {strings.sprint.clear}
+                        </MenuItem>
+                        <MenuItem value={SprintViewFilterTypes.project}>
+                          {strings.sprint.project}
+                        </MenuItem>
+                        <MenuItem value={SprintViewFilterTypes.user}>
+                          {strings.sprint.user}
+                        </MenuItem>
                       </Select>
                     </FormControl>
                   </Box>
-                  <TextField
-                    label={strings.formatString(
-                      strings.sprint.searchBy,
-                      filterType === "project" ? strings.sprint.project : strings.sprint.user
-                    )}
-                    variant="outlined"
-                    fullWidth
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <Search color="action" />
-                        </InputAdornment>
-                      ),
-                      endAdornment: searchQuery && (
-                        <InputAdornment position="end">
-                          <IconButton onClick={handleClearSearch} size="small">
-                            <Close fontSize="small" />
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                      sx: {
-                        borderRadius: 2,
-                        backgroundColor: "background.paper"
-                      }
-                    }}
+                  <SearchBar
+                    searchInput={searchQuery}
+                    handleSearchInputChange={(_, value) => setSearchQuery(value)}
+                    styles={{ width: "100%" }}
+                    placeholder={strings.sprint.searchBy}
                   />
                 </>
               )}
-              <Card>
+              <Card sx={{ bgcolor: theme.palette.background.paper }}>
                 <DataGrid
                   sx={{
-                    "& .MuiDataGrid-columnHeaders": { backgroundColor: "#e9ecef" },
-                    "& .MuiDataGrid-row:nth-of-type(even)": { backgroundColor: "#dee2e6" },
-                    "& .MuiDataGrid-row:hover": { cursor: "pointer", backgroundColor: "#ced4da" }
+                    "& .MuiDataGrid-columnHeaders": {
+                      backgroundColor: theme.palette.background.default,
+                      color: theme.palette.text.primary
+                    },
+
+                    "& .MuiDataGrid-cell": {
+                      color: theme.palette.text.primary
+                    },
+                    "& .MuiDataGrid-row:hover": {
+                      backgroundColor: theme.palette.action.hover
+                    },
+                    "& .MuiDataGrid-row.Mui-selected": {
+                      backgroundColor: theme.palette.action.selected
+                    },
+                    "& .MuiDataGrid-row.Mui-selected:hover": {
+                      backgroundColor: theme.palette.action.selected
+                    }
                   }}
                   autoHeight
-                  localeText={{ noResultsOverlayLabel: strings.sprint.notFound }}
+                  localeText={{
+                    noResultsOverlayLabel: strings.sprint.notFound
+                  }}
                   disableColumnFilter
                   hideFooter
                   rows={filteredAllocations}
@@ -182,7 +191,13 @@ const SprintViewScreen = () => {
                   getRowId={(row) => row.severaResourceAllocationId}
                   onRowClick={(params) => handleRowClick(params.row)}
                 />
-                <Box sx={{ backgroundColor: "#e9ecef", p: 1.5, textAlign: "right" }}>
+                <Box
+                  sx={{
+                    backgroundColor: theme.palette.background.default,
+                    p: 1.5,
+                    textAlign: "right"
+                  }}
+                >
                   <Typography variant="body2" color="text.primary">
                     {strings.formatString(
                       strings.sprint.current,
@@ -192,7 +207,7 @@ const SprintViewScreen = () => {
                   </Typography>
                 </Box>
               </Card>
-              <Divider />
+              <Divider sx={{ borderColor: theme.palette.divider }} />
               {selectedProject ? (
                 <TaskTable key={selectedProject.severaProjectId} project={selectedProject} />
               ) : (

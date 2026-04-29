@@ -1,29 +1,26 @@
-import LabelIcon from "@mui/icons-material/Label";
 import {
   Box,
   Button,
   Card,
   CardActions,
   CardContent,
-  Chip,
   CircularProgress,
-  InputAdornment,
   Slider,
   TextField,
   Tooltip,
   Typography
 } from "@mui/material";
-import { useSetAtom } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { type ChangeEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { errorAtom } from "src/atoms/error";
+import { questionnaireTagsAtom } from "src/atoms/questionnaire";
 import type { AnswerOption, Question, Questionnaire } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
 import { useSnackbar } from "src/hooks/use-snackbar";
 import strings from "src/localization/strings";
 import {
   addQuestion,
-  addTag,
   countCorrectAnswers,
   createEmptyQuestionnaire,
   editQuestion,
@@ -31,10 +28,10 @@ import {
   handleQuestionnaireInputChange,
   isFormValid,
   removeQuestion,
-  removeTag,
   updatePassScore
 } from "src/utils/questionnaireBuilderUtils";
 import BackButton from "../generics/back-button";
+import TagsAutocomplete from "../generics/tags-autocomplete";
 import NewQuestionCard from "./new-question-card";
 import QuestionnairePreview from "./questionnaire-preview";
 
@@ -46,9 +43,10 @@ const NewQuestionnaireBuilder = () => {
   const { questionnairesApi } = useLambdasApi();
   const [loading, setLoading] = useState(false);
   const setError = useSetAtom(errorAtom);
+  const setQuestionnaireTagsAtom = useSetAtom(questionnaireTagsAtom);
+  const existingTags = useAtomValue(questionnaireTagsAtom);
   const [questionnaire, setQuestionnaire] = useState<Questionnaire>(createEmptyQuestionnaire());
-  const [tagInput, setTagInput] = useState<string>("");
-  const [tagError, setTagError] = useState<string | null>(null);
+  const [tag, setTag] = useState<string>("");
   const isDisabled = !isFormValid(questionnaire);
   const showSnackbar = useSnackbar();
 
@@ -63,47 +61,42 @@ const NewQuestionnaireBuilder = () => {
   };
 
   /**
-   * Function to handle tag input change
-   * @param event - The change event from the input field that contains the new tag value
+   * Function to handle tag input change from Autocomplete
+   * @param _event - The event object
+   * @param value - The new input value
    */
-  const handleTagInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setTagInput(event.target.value);
-    if (tagError) setTagError(null);
+  const handleTagChange = (_event: React.SyntheticEvent<Element, Event>, value: string) => {
+    setTag(value);
   };
 
   /**
-   * Function to handle adding a tag
+   * Function to handle selected tags change from Autocomplete
+   * @param _event - The event object
+   * @param value - Array of selected tags
    */
-  const handleAddTag = () => {
-    const { updatedQuestionnaire, error } = addTag(tagInput, questionnaire, strings);
+  const handleSelectedTagChange = (
+    _event: React.SyntheticEvent<Element, Event>,
+    value: string[]
+  ) => {
+    setQuestionnaire((prevQuestionnaire) => ({
+      ...prevQuestionnaire,
+      tags: value
+    }));
+  };
 
-    if (error) {
-      setTagError(error);
-      return;
+  /**
+   * Function to handle Enter key press in tag input
+   * @param event - The keyboard event
+   */
+  const handleEnter = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key !== "Enter") return;
+    if (tag && !questionnaire.tags?.includes(tag)) {
+      setQuestionnaire((prevQuestionnaire) => ({
+        ...prevQuestionnaire,
+        tags: [...(prevQuestionnaire.tags || []), tag]
+      }));
     }
-
-    setQuestionnaire(updatedQuestionnaire);
-    setTagInput("");
-    setTagError(null);
-  };
-
-  /**
-   * Function to handle key press in tag input
-   */
-  const handleTagKeyDown = (event: React.KeyboardEvent) => {
-    if (event.key === "Enter") {
-      event.preventDefault();
-      handleAddTag();
-    }
-  };
-
-  /**
-   * Function to remove a tag from the questionnaire
-   *
-   * @param {string} tagToRemove - The tag to be removed from the questionnaire
-   */
-  const handleRemoveTag = (tagToRemove: string) => {
-    setQuestionnaire((prevQuestionnaire) => removeTag(tagToRemove, prevQuestionnaire));
+    setTag("");
   };
 
   /**
@@ -152,8 +145,7 @@ const NewQuestionnaireBuilder = () => {
    */
   const closeAndClear = async () => {
     setQuestionnaire(createEmptyQuestionnaire());
-    setTagInput("");
-    setTagError(null);
+    setTag("");
   };
 
   /**
@@ -174,11 +166,15 @@ const NewQuestionnaireBuilder = () => {
         }
       });
       showSnackbar(strings.snackbar.questionnaireCreated);
+      // Update tags in atom with new tags from the questionnaire
+      const updatedTags = [...new Set<string>(existingTags.concat(questionnaire.tags || []))];
+      setQuestionnaireTagsAtom(updatedTags);
       closeAndClear();
       navigate(-1);
       return createdQuestionnaire;
-    } catch (error) {
-      setError(`${strings.error.questionnaireSaveFailed}, ${error}`);
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
+      setError(`${strings.error.questionnaireSaveFailed}: ${errorMessage?.message || error}`);
     } finally {
       setLoading(false);
     }
@@ -223,65 +219,15 @@ const NewQuestionnaireBuilder = () => {
           />
 
           <Box sx={{ mb: 4 }}>
-            <Typography variant="h6" gutterBottom>
-              {strings.questionnaireTags.title}
-            </Typography>
             <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-              <TextField
-                value={tagInput}
-                onChange={handleTagInputChange}
-                onKeyDown={handleTagKeyDown}
-                placeholder={strings.questionnaireTags.addTagPlaceholder}
-                variant="outlined"
-                size="small"
-                fullWidth
-                error={!!tagError}
-                helperText={tagError}
-                sx={{ mr: 1 }}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <LabelIcon />
-                    </InputAdornment>
-                  )
-                }}
+              <TagsAutocomplete
+                tags={existingTags}
+                tag={tag}
+                selectedTags={questionnaire.tags || []}
+                handleTagChange={handleTagChange}
+                handleSelectedTagChange={handleSelectedTagChange}
+                handleEnter={handleEnter}
               />
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={handleAddTag}
-                size="small"
-                sx={{
-                  height: "40px",
-                  minWidth: "90px",
-                  textTransform: "lowercase",
-                  backgroundColor: "#212121",
-                  "&:hover": {
-                    backgroundColor: "#000000"
-                  }
-                }}
-              >
-                {strings.questionnaireTags.addTag}
-              </Button>
-            </Box>
-
-            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mt: 2 }}>
-              {questionnaire.tags && questionnaire.tags.length > 0 ? (
-                questionnaire.tags.map((tag) => (
-                  <Chip
-                    key={tag}
-                    label={tag}
-                    onDelete={() => handleRemoveTag(tag)}
-                    color="primary"
-                    variant="outlined"
-                    icon={<LabelIcon />}
-                  />
-                ))
-              ) : (
-                <Typography variant="body2" color="text.secondary">
-                  {strings.questionnaireTags.noTags}
-                </Typography>
-              )}
             </Box>
           </Box>
 
@@ -347,7 +293,6 @@ const NewQuestionnaireBuilder = () => {
                 <Box>
                   <Button
                     sx={{ display: "flex", alignItems: "center", mt: 6, mr: 4 }}
-                    id="save-submit"
                     size="large"
                     variant="contained"
                     color="success"

@@ -13,10 +13,11 @@ import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
 import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
 import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
+import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPlugin";
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { TabIndentationPlugin } from "@lexical/react/LexicalTabIndentationPlugin";
 import { HeadingNode, QuoteNode } from "@lexical/rich-text";
-import { Box, Card } from "@mui/material";
+import { Box, Card, useTheme } from "@mui/material";
 import type { EditorState } from "lexical";
 import { forwardRef, useImperativeHandle, useState } from "react";
 import lexicalTheme from "./config";
@@ -39,6 +40,7 @@ interface EditorRef {
 }
 
 const RichTextEditorLexical = forwardRef<EditorRef, Props>(({ markdownContent = "" }, ref) => {
+  const theme = useTheme();
   const [editorState, setEditorState] = useState<EditorState>();
   const setError = useSetAtom(errorAtom);
 
@@ -76,7 +78,34 @@ const RichTextEditorLexical = forwardRef<EditorRef, Props>(({ markdownContent = 
           paddingTop: 1,
           height: "auto",
           overflow: "visible",
-          position: "relative"
+          position: "relative",
+          backgroundColor: theme.palette.background.paper,
+          color: theme.palette.text.primary,
+          "& .editor-quote": {
+            color: theme.palette.text.secondary,
+            borderLeft: `4px solid ${theme.palette.divider}`,
+            paddingLeft: 2
+          },
+          "& .editor-code": {
+            backgroundColor:
+              theme.palette.mode === "dark" ? theme.palette.background.default : "#e9e8e8",
+            color: theme.palette.mode === "dark" ? theme.palette.text.primary : "#727272"
+          },
+          "& a": {
+            color: theme.palette.primary.main,
+            textDecoration: "underline",
+            textUnderlineOffset: 2,
+            transition: "color 0.2s ease"
+          },
+          "& a:hover": {
+            opacity: 0.8
+          },
+          "& .editor": {
+            minHeight: "400px"
+          },
+          "& .editor:focus": {
+            outline: "none"
+          }
         }}
       >
         <ToolBar />
@@ -85,7 +114,7 @@ const RichTextEditorLexical = forwardRef<EditorRef, Props>(({ markdownContent = 
             minHeight: "200px",
             padding: 1,
             paddingTop: 1,
-            borderTop: "1px solid #eee"
+            borderTop: `1px solid ${theme.palette.divider}`
           }}
         >
           <RichTextPlugin
@@ -98,6 +127,7 @@ const RichTextEditorLexical = forwardRef<EditorRef, Props>(({ markdownContent = 
           <LinkPlugin />
           <ListPlugin />
           <TabIndentationPlugin />
+          <MarkdownShortcutPlugin transformers={TRANSFORMERS_WITH_IMAGE} />
         </Box>
       </Card>
     </LexicalComposer>

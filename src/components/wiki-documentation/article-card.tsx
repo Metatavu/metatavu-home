@@ -1,4 +1,4 @@
-import { Box, Button, Card, Chip, Typography } from "@mui/material";
+import { Box, Button, Card, Chip, Typography, useTheme } from "@mui/material";
 import { useAtomValue } from "jotai";
 import { DateTime } from "luxon";
 import { Link } from "react-router-dom";
@@ -11,7 +11,7 @@ import { getLastActivityString } from "src/utils/wiki-utils";
 interface Props {
   article: ArticleMetadata;
   adminMode: boolean;
-  handleDelete: (articleId?: string) => void;
+  onDeleteClick?: () => void;
 }
 /**
  * Displays an article summary card with image, title, activity info, tags,
@@ -19,10 +19,11 @@ interface Props {
  *
  * @param article - Article metadata to display.
  * @param adminMode - Flag to show admin controls like delete button.
- * @param handleDelete - Callback function to delete the article.
+ * @param onDeleteClick - Callback function to open the delete confirmation dialog.
  */
-const ArticleCard = ({ article, adminMode, handleDelete }: Props) => {
+const ArticleCard = ({ article, adminMode, onDeleteClick }: Props) => {
   const users = useAtomValue(usersAtom);
+  const theme = useTheme();
 
   if (!article?.createdBy) return null;
 
@@ -32,15 +33,16 @@ const ArticleCard = ({ article, adminMode, handleDelete }: Props) => {
   const hiddenCount = tags.length - visibleTags.length;
 
   return (
-    <Link to={article.path} style={{ textDecoration: "none" }}>
+    <Link to={article.path} style={{ textDecoration: "none", color: "inherit" }}>
       <Card
         key={`article-card-${article.id}`}
         sx={{
           padding: "20px",
           position: "relative",
           borderRadius: "20px",
-          backgroundColor: "#fff",
-          boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.25)",
+          backgroundColor: theme.palette.background.paper,
+          color: theme.palette.text.primary,
+          boxShadow: theme.shadows[4],
           width: { lg: "260px" },
           maxWidth: { md: "360px", sm: "400px" },
           display: "flex",
@@ -49,8 +51,8 @@ const ArticleCard = ({ article, adminMode, handleDelete }: Props) => {
             ? { lg: "394px", md: "414px", sm: "420px", xs: "530px" }
             : { lg: "354px", md: "374px", sm: "380px", xs: "485px" },
           ":hover": {
-            boxShadow: "0px 6px 14px rgba(0, 0, 0, 0.3)",
-            backgroundColor: "rgba(0, 0, 0, 0.04)"
+            boxShadow: theme.shadows[6],
+            backgroundColor: theme.palette.action.hover
           }
         }}
       >
@@ -106,6 +108,7 @@ const ArticleCard = ({ article, adminMode, handleDelete }: Props) => {
           {visibleTags?.map((tag) => (
             <Chip
               label={tag}
+              color="default"
               sx={{
                 marginRight: 1,
                 marginTop: 0.5,
@@ -126,15 +129,16 @@ const ArticleCard = ({ article, adminMode, handleDelete }: Props) => {
             />
           )}
         </Box>
-        {adminMode && (
+        {adminMode && onDeleteClick && (
           <Button
             variant="outlined"
             size="small"
             sx={{ marginTop: "auto", zIndex: 10 }}
             fullWidth
-            onClick={(event) => {
-              event.preventDefault();
-              handleDelete(article.id);
+            onClick={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              onDeleteClick();
             }}
           >
             {strings.questionnaireTable.delete}

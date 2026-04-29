@@ -12,7 +12,7 @@ const SprintViewCard = () => {
 
   return (
     <Link to={adminMode ? "/admin/sprintview" : "/sprintview"} style={{ textDecoration: "none" }}>
-      <Card sx={{ "&:hover": { background: "#efefef" }, minHeight: 270 }}>
+      <Card>
         <CardContent>
           <Typography
             variant="h6"
