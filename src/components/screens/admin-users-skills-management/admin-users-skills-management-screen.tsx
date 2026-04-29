@@ -1,4 +1,4 @@
-import { Box, Container, Typography } from "@mui/material";
+import { Box, Container, TablePagination, Typography } from "@mui/material";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { useEffect, useMemo, useState } from "react";
 import { userProfileAtom } from "src/atoms/auth.ts";
@@ -24,6 +24,7 @@ import { saveSkills } from "src/utils/users-skills-utils";
  * - View users skills
  * - Search users by name or skill
  * - Edit users skills (add, modify, remove individual skills)
+ * - Delete users skills entries from the database
  *
  * @returns React component for admin users skills management
  */
@@ -37,7 +38,8 @@ const AdminUsersSkillsManagementSkills = () => {
   const [users, setUsers] = useAtom(usersAtom);
   const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
   const [loading, setLoading] = useState(false);
-  const [setLoadingUsers] = useState(false);
+  const [page, setPage] = useState(0);
+  const ROWS_PER_PAGE = 5;
 
   // Edit dialog state
   const [editDialogOpen, setEditDialogOpen] = useState(false);
@@ -72,14 +74,11 @@ const AdminUsersSkillsManagementSkills = () => {
     }
 
     try {
-      setLoadingUsers(true);
       const fetchedUsers = await usersApi.listUsers();
       setUsers(fetchedUsers);
     } catch (error: any) {
       const errorMessage = await error?.response?.json();
       setError(`${strings.vacationRequestError.failedToLoad}: ${errorMessage?.message || error}`);
-    } finally {
-      setLoadingUsers(false);
     }
   };
 
@@ -286,6 +285,25 @@ const AdminUsersSkillsManagementSkills = () => {
     return filtered;
   }, [usersSkills, searchKeyword]);
 
+  /**
+   * Slices the list of users skills entries for table pagination
+   */
+  const paginatedUsersSkills = useMemo(() => {
+    const startIndex = page * ROWS_PER_PAGE;
+    return filteredUsersSkills.slice(startIndex, startIndex + ROWS_PER_PAGE);
+  }, [filteredUsersSkills, page]);
+
+  useEffect(() => {
+    setPage(0);
+  }, [searchKeyword]);
+
+  const handleChangePage = (
+    _event: React.MouseEvent<HTMLButtonElement> | null,
+    newPage: number
+  ) => {
+    setPage(newPage);
+  };
+
   return (
     <Container maxWidth="lg" sx={{ mt: 4 }}>
       <Typography variant="h4" gutterBottom>
@@ -295,11 +313,22 @@ const AdminUsersSkillsManagementSkills = () => {
         <UsersSkillsSearchBar value={searchKeyword} onChange={setSearchKeyword} />
       </Box>
       <UsersSkillsTable
-        usersSkills={filteredUsersSkills}
+        usersSkills={paginatedUsersSkills}
         loading={loading}
         onEdit={handleEditUsersSkills}
         onDelete={handleDeleteUsersSkills}
       />
+      <Box display="flex" justifyContent="center" mt={2}>
+        <TablePagination
+          component="div"
+          count={filteredUsersSkills.length}
+          page={page}
+          onPageChange={handleChangePage}
+          rowsPerPage={ROWS_PER_PAGE}
+          rowsPerPageOptions={[ROWS_PER_PAGE]}
+          labelRowsPerPage=""
+        />
+      </Box>
       <BackButton styles={{ mt: 3, marginBottom: 2 }} />
       <EditUsersSkillsDialog
         open={editDialogOpen}

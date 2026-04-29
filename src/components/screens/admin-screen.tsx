@@ -1,4 +1,5 @@
 import { Box } from "@mui/material";
+import UsersSkillsCard from "src/components/home/users-skills-card.tsx";
 import useUserRole from "src/hooks/use-user-role";
 import BalanceCard from "../home/balance-card";
 import CardGridWrapper from "../home/common/card-grid-wrapper";
@@ -37,7 +38,8 @@ const AdminScreen = () => {
       </Box>
     ),
     isPrivilegedUser && <WikiDocumentationCard key="wiki" />,
-    isPrivilegedUser && <OnCallCard key="oncall" />
+    isPrivilegedUser && <OnCallCard key="oncall" />,
+    isPrivilegedUser && <UsersSkillsCard key="usersSkills" />
   ].filter(Boolean);
 
   return <CardGridWrapper>{cards}</CardGridWrapper>;

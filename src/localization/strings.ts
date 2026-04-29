@@ -337,6 +337,7 @@ export interface Localized extends LocalizedStringsMethods {
     noUsersFound: string;
     skills: string;
     deleteEntry: string;
+    cardDescription: string;
   };
   /**
    * Translations related to users skills search component

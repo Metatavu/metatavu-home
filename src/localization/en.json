@@ -300,7 +300,8 @@
     "addSkill": "Add skill",
     "noUsersFound": "No users found",
     "skills": "Skills",
-    "deleteEntry": "Delete users skills entry"
+    "deleteEntry": "Delete users skills entry",
+    "cardDescription": "View and manage employee skills"
   },
   "usersSkillsSearchBar": {
     "placeholder": "Search users by name or skill"

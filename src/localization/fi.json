@@ -300,7 +300,8 @@
     "addSkill": "Lisää taito",
     "noUsersFound": "Käyttäjiä ei löytynyt",
     "skills": "Taidot",
-    "deleteEntry": "Poista merkintä"
+    "deleteEntry": "Poista merkintä",
+    "cardDescription": "Tarkastele ja hallinnoi työntekijöiden taitoja"
   },
   "usersSkillsSearchBar": {
     "placeholder": "Hae käyttäjiä nimen tai taidon perusteella"
