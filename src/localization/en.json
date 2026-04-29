@@ -289,7 +289,18 @@
     "failedToLoad": "Failed to load users"
   },
   "usersSkills": {
-    "heading": "Users Skills"
+    "heading": "Users Skills",
+    "editTitle": "Edit Skills",
+    "noSkills": "No skills added yet",
+    "skillNumber": "Skill",
+    "removeSkill": "Remove skill",
+    "skillName": "Skill name",
+    "skillCategory": "Category",
+    "skillMonths": "Months of experience",
+    "addSkill": "Add skill"
+  },
+  "usersSkillsSearchBar": {
+    "placeholder": "Search users by name or skill"
   },
   "usersSkillsError": {
     "fetchUsersSkillsError": "Fetching users skills has failed"

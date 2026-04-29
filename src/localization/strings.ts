@@ -326,6 +326,20 @@ export interface Localized extends LocalizedStringsMethods {
    */
   usersSkills: {
     heading: string;
+    editTitle: string;
+    noSkills: string;
+    skillNumber: string;
+    removeSkill: string;
+    skillName: string;
+    skillCategory: string;
+    skillMonths: string;
+    addSkill: string;
+  };
+  /**
+   * Translations related to users skills search component
+   */
+  usersSkillsSearchBar: {
+    placeholder: string;
   };
   /**
    * Translations related to users skills errors

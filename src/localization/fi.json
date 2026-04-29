@@ -289,7 +289,18 @@
     "failedToLoad": "Käyttäjien lataaminen epäonnistui"
   },
   "usersSkills": {
-    "heading": "Käyttäjien taidot"
+    "heading": "Käyttäjien taidot",
+    "editTitle": "Muokkaa taitoja",
+    "noSkills": "Ei lisättyjä taitoja",
+    "skillNumber": "Taito",
+    "removeSkill": "Poista taito",
+    "skillName": "Taidon nimi",
+    "skillCategory": "Kategoria",
+    "skillMonths": "Kokemus kuukausina",
+    "addSkill": "Lisää taito"
+  },
+  "usersSkillsSearchBar": {
+    "placeholder": "Hae käyttäjiä nimen tai taidon perusteella"
   },
   "usersSkillsError": {
     "fetchUsersSkillsError": "Käyttäjien taitotietojen hakeminen epäonnistui"
