@@ -250,35 +250,36 @@ const AdminUsersSkillsManagementSkills = () => {
    */
   const filteredUsersSkills = useMemo(() => {
     const keyword = searchKeyword.toLowerCase().trim();
-
     if (!keyword) return usersSkills;
+
+    let hasNameMatch = false;
+    let hasSkillMatch = false;
 
     const filtered = usersSkills.filter((user) => {
       const matchesName = user.name.toLowerCase().includes(keyword);
+
       const matchesSkill = user.skills?.some((skill) => skill.name.toLowerCase().includes(keyword));
+
+      if (matchesName) hasNameMatch = true;
+      if (matchesSkill) hasSkillMatch = true;
+
       return matchesName || matchesSkill;
     });
 
-    const isNameSearch = filtered.some((user) => user.name.toLowerCase().includes(keyword));
-    const isSkillSearch = filtered.some((user) =>
-      user.skills?.some((skill) => skill.name.toLowerCase().includes(keyword))
-    );
-
-    if (isSkillSearch && !isNameSearch) {
+    if (hasSkillMatch && !hasNameMatch) {
       return [...filtered].sort((a, b) => {
-        const monthsA =
-          a.skills?.find((skill) => skill.name.toLowerCase().includes(keyword))?.months || 0;
-        const monthsB =
-          b.skills?.find((skill) => skill.name.toLowerCase().includes(keyword))?.months || 0;
-        return monthsB - monthsA;
+        const getMonths = (user) =>
+          user.skills?.find((s) => s.name.toLowerCase().includes(keyword))?.months || 0;
+
+        return getMonths(b) - getMonths(a);
       });
     }
 
-    if (isNameSearch) {
+    if (hasNameMatch) {
       return [...filtered].sort((a, b) => {
-        const totalA = a.skills?.reduce((sum, skill) => sum + (skill.months || 0), 0) || 0;
-        const totalB = b.skills?.reduce((sum, skill) => sum + (skill.months || 0), 0) || 0;
-        return totalB - totalA;
+        const total = (user) => user.skills?.reduce((sum, s) => sum + (s.months || 0), 0) || 0;
+
+        return total(b) - total(a);
       });
     }
 
