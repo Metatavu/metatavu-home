@@ -160,7 +160,7 @@ const AdminUsersSkillsManagementSkills = () => {
    * @param field - The skill field to update (name, category, months).
    * @param value - The new value.
    */
-  const handleSkillChange = (index: number, field: keyof Skill, value: string | number): void => {
+  const handleSkillChange = (index: number, field: keyof Skill, value: string | number) => {
     setEditedSkills((prev) =>
       prev.map((skill, i) => (i === index ? { ...skill, [field]: value } : skill))
     );
