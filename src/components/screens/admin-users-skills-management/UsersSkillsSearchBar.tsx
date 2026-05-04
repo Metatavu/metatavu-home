@@ -18,7 +18,7 @@ const UsersSkillsSearchBar = ({ value, onChange }: UsersSkillsSearchBarProps) =>
   return (
     <TextField
       fullWidth
-      placeholder={strings.userSearch.placeholder}
+      placeholder={strings.usersSkillsSearchBar.placeholder}
       variant="outlined"
       value={value}
       onChange={(e) => onChange(e.target.value)}
