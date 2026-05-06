@@ -16,6 +16,7 @@ import type { SoftwareRegistry } from "src/generated/homeLambdasClient";
 import { SoftwareStatus } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
 import useCreateSoftware from "src/hooks/use-create-software";
+import { useSnackbar } from "src/hooks/use-snackbar";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import { DeleteItemType } from "src/types/index";
@@ -51,6 +52,7 @@ const AllSoftwareScreen = () => {
   const { createSoftware } = useCreateSoftware(loggedUserId, setApplications);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedApplicationId, setSelectedApplicationId] = useState<string | null>(null);
+  const showSnackbar = useSnackbar();
   const [deleteTitle, setDeleteTitle] = useState<string | undefined>(undefined);
   const theme = useTheme();
 
@@ -152,6 +154,7 @@ const AllSoftwareScreen = () => {
           id,
           softwareRegistry: updatedApp
         });
+        showSnackbar(strings.snackbar.softwareStatusChanged);
       }
     } catch (error: any) {
       const errorMessage = await error?.response?.json();
@@ -189,6 +192,7 @@ const AllSoftwareScreen = () => {
           users: updatedUsers
         }
       });
+      showSnackbar(strings.snackbar.softwareAdded);
     } catch (error: any) {
       const errorMessage = await error?.response?.json();
       setError(`${strings.error.softwareSaveFailed} ${errorMessage?.message || error}`);
@@ -231,6 +235,7 @@ const AllSoftwareScreen = () => {
       setApplications(updatedApplications);
 
       await softwareApi.deleteSoftwareById({ id: selectedApplicationId });
+      showSnackbar(strings.snackbar.softwareDeleted);
     } catch (error: any) {
       const errorMessage = await error?.response?.json();
       setError(`${strings.error.softwareDeleteFailed} ${errorMessage?.message || error}`);

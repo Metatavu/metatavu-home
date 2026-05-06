@@ -26,10 +26,10 @@ import { useNavigate } from "react-router-dom";
 import { articleAtom, draftArticleAtom, tagsAtom } from "src/atoms/article";
 import { userProfileAtom } from "src/atoms/auth";
 import { errorAtom } from "src/atoms/error";
-import { snackbarAtom } from "src/atoms/snackbar";
 import { usersAtom } from "src/atoms/user";
 import type { Article, User } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
+import { useSnackbar } from "src/hooks/use-snackbar";
 import strings from "src/localization/strings";
 import { OnboardingScreen } from "src/types/index";
 import { getHttpsUrlFromS3, listMediaFiles, uploadFile } from "src/utils/s3-file-utils";
@@ -86,7 +86,7 @@ const CreateOrEditArticleForm = ({
   const users = useAtomValue(usersAtom);
   const userProfile = useAtomValue(userProfileAtom);
   const loggedInUser = users.find((users: User) => users.id === userProfile?.id);
-  const setSnackbar = useSetAtom(snackbarAtom);
+  const showSnackbar = useSnackbar();
 
   /**
    * Handles creating a new article using the editor content and form state.
@@ -118,11 +118,7 @@ const CreateOrEditArticleForm = ({
         "create-user": strings.snackbar.articleSubmitted,
         "create-admin": strings.snackbar.articleCreated
       };
-      setSnackbar({
-        open: true,
-        message: messages[key],
-        severity: "success"
-      });
+      showSnackbar(messages[key]);
 
       handleClose();
     } catch (error: any) {
@@ -130,37 +126,27 @@ const CreateOrEditArticleForm = ({
       setError(message);
     }
   };
+
   /**
    * Updates article atoms based on admin mode and draft status
    *
-   * @param updatedArticle - The updated article data
    * @param response - The response article from the API
    */
-  const updateArticleAtoms = (updatedArticle: Article, response: Article) => {
-    if (!adminMode) {
-      if (!updatedArticle.draft) {
-        setArticlesAtom((articles) =>
-          (articles || []).map((a) => (a.id === updatedArticle.id ? updatedArticle : a))
-        );
-      } else {
-        setDraftArticlesAtom((articles) =>
-          (articles || []).map((a) => (a.id === updatedArticle.id ? updatedArticle : a))
-        );
-      }
+  const updateArticleAtoms = (response: Article) => {
+    if (!article) return;
+
+    if (article?.draft) {
+      setDraftArticlesAtom((articles) => (articles || []).filter((a) => a.id !== article.id));
     } else {
-      if (article?.draft) {
-        setDraftArticlesAtom((articles) =>
-          (articles || []).filter((article) => article.id !== response.id)
-        );
-      } else {
-        setArticlesAtom((articles) =>
-          (articles || []).filter((article) => article.id !== response.id)
-        );
-      }
-      setArticlesAtom((articles) => [response, ...(articles || [])]);
-      setTags((tags) => [...new Set<string>(tags.concat(selectedTags))]);
-      if (setArticle) setArticle(updatedArticle);
+      setArticlesAtom((articles) => (articles || []).filter((a) => a.id !== article.id));
     }
+    if (response.draft) {
+      setDraftArticlesAtom((articles) => [response, ...(articles || [])]);
+    } else {
+      setArticlesAtom((articles) => [response, ...(articles || [])]);
+    }
+    setTags((tags) => [...new Set(tags.concat(selectedTags))]);
+    setArticle?.(response);
   };
 
   /**
@@ -169,8 +155,9 @@ const CreateOrEditArticleForm = ({
    * Closes the form on success or sets an error message on failure.
    */
   const handleEdit = async () => {
-    if (!editorRef.current || !article?.id) return;
+    if (!adminMode || !editorRef.current || !article?.id) return;
     const content = editorRef.current?.getMarkdownContent();
+
     const updatedArticle: Article = {
       path: path,
       title: title,
@@ -180,23 +167,13 @@ const CreateOrEditArticleForm = ({
       description: description,
       createdBy: article.createdBy,
       lastUpdatedBy: loggedInUser?.id || "",
-      draft: !adminMode
+      draft: article.draft
     };
 
     try {
       const response = await articleApi.updateArticle({ article: updatedArticle, id: article.id });
-      updateArticleAtoms(updatedArticle, response);
-
-      const key = `edit-${adminMode ? "admin" : "user"}`;
-      const messages: Record<string, string> = {
-        "edit-admin": strings.snackbar.articleUpdated,
-        "edit-user": strings.snackbar.changesSaved
-      };
-      setSnackbar({
-        open: true,
-        message: messages[key],
-        severity: "success"
-      });
+      updateArticleAtoms(response);
+      showSnackbar(strings.snackbar.articleUpdated);
       if (adminMode && action === "edit") {
         navigate("/admin/wiki-documentation");
       } else {
@@ -264,11 +241,6 @@ const CreateOrEditArticleForm = ({
       setMediaFiles(files || []);
     } catch (error) {
       console.error(strings.wikiDocumentation.errorLoadingMediaFiles, error);
-      setSnackbar({
-        open: true,
-        message: strings.wikiDocumentation.failedToLoadMediaFiles,
-        severity: "error"
-      });
     } finally {
       setLoadingMedia(false);
     }

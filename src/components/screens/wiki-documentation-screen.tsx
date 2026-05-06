@@ -1,23 +1,22 @@
 import SearchOffIcon from "@mui/icons-material/SearchOff";
 import {
-  Alert,
   Box,
   Card,
   CircularProgress,
   Grid,
   Pagination,
   type SelectChangeEvent,
-  Snackbar,
   Typography,
   useTheme
 } from "@mui/material";
-import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { useEffect, useId, useState } from "react";
 import { articleAtom, draftArticleAtom, tagsAtom } from "src/atoms/article";
 import { errorAtom } from "src/atoms/error";
 import { snackbarAtom } from "src/atoms/snackbar";
 import type { ArticleMetadata } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
+import { useSnackbar } from "src/hooks/use-snackbar";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import { wikiScreenColors } from "src/theme";
@@ -63,7 +62,7 @@ const WikiDocumentationScreen = () => {
   const [searchInput, setSearchInput] = useState("");
   const [displayOption, setDisplayOption] = useState("all");
   const [pageNumber, setPageNumber] = useState(1);
-  const [snackbar, setSnackbar] = useAtom(snackbarAtom);
+  const showSnackbar = useSnackbar();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const autoCompleteId = useId();
   const [selectedArticleId, setSelectedArticleId] = useState<string | undefined>(undefined);
@@ -224,6 +223,7 @@ const WikiDocumentationScreen = () => {
       setArticlesAtom((articles) =>
         (articles ?? []).filter((article) => article.id !== selectedArticleId)
       );
+      showSnackbar(strings.snackbar.articleDeleted);
     } catch (error: any) {
       const message = (await error.response.json()).message;
       setError(message);
@@ -459,34 +459,6 @@ const WikiDocumentationScreen = () => {
           <BackButton styles={{ marginBottom: 2 }} />
         </Box>
       )}
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={4000}
-        onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
-        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-        sx={{
-          "& .MuiSnackbarContent-root": {
-            minWidth: 400,
-            minHeight: 100,
-            fontSize: "1.5rem",
-            borderRadius: "16px"
-          }
-        }}
-      >
-        <Alert
-          onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
-          severity="success"
-          sx={{
-            width: "100%",
-            fontSize: "1.5rem",
-            py: 3,
-            px: 4,
-            borderRadius: "14px"
-          }}
-        >
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
       <DeleteConfirmationDialog
         open={deleteDialogOpen}
         setOpen={setDeleteDialogOpen}

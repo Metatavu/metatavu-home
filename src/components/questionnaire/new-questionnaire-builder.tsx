@@ -17,6 +17,7 @@ import { errorAtom } from "src/atoms/error";
 import { questionnaireTagsAtom } from "src/atoms/questionnaire";
 import type { AnswerOption, Question, Questionnaire } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
+import { useSnackbar } from "src/hooks/use-snackbar";
 import strings from "src/localization/strings";
 import {
   addQuestion,
@@ -47,6 +48,7 @@ const NewQuestionnaireBuilder = () => {
   const [questionnaire, setQuestionnaire] = useState<Questionnaire>(createEmptyQuestionnaire());
   const [tag, setTag] = useState<string>("");
   const isDisabled = !isFormValid(questionnaire);
+  const showSnackbar = useSnackbar();
 
   /**
    * Function to handle input change in the questionnaire title and description
@@ -163,6 +165,7 @@ const NewQuestionnaireBuilder = () => {
           passedUsers: []
         }
       });
+      showSnackbar(strings.snackbar.questionnaireCreated);
       // Update tags in atom with new tags from the questionnaire
       const updatedTags = [...new Set<string>(existingTags.concat(questionnaire.tags || []))];
       setQuestionnaireTagsAtom(updatedTags);

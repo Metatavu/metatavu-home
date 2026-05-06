@@ -6,8 +6,6 @@ import {
   CardContent,
   Checkbox,
   FormControlLabel,
-  Snackbar,
-  SnackbarContent,
   TextField,
   Typography,
   useTheme
@@ -20,6 +18,7 @@ import { errorAtom } from "src/atoms/error";
 import { questionnaireTagsAtom } from "src/atoms/questionnaire";
 import type { AnswerOption, Question, Questionnaire } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
+import { useSnackbar } from "src/hooks/use-snackbar";
 import strings from "src/localization/strings";
 import { v4 as uuidv4 } from "uuid";
 import BackButton from "../generics/back-button";
@@ -46,8 +45,8 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
   const setError = useSetAtom(errorAtom);
   const [editedQuestionnaire, setEditedQuestionnaire] = useState<Questionnaire>(questionnaire);
   const [clearPassedUsers, setClearPassedUsers] = useState(false);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [saveEnabled, setSaveEnabled] = useState(false);
+  const showSnackbar = useSnackbar();
   const [tag, setTag] = useState("");
   const existingTags = useAtomValue(questionnaireTagsAtom);
   const theme = useTheme();
@@ -300,21 +299,15 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
           passedUsers: clearPassedUsers ? [] : editedQuestionnaire.passedUsers
         }
       });
-      setSnackbarOpen(true);
+
+      showSnackbar(strings.snackbar.questionnaireUpdated);
+      navigate(-1);
       return updatedQuestionnaire;
     } catch (error: any) {
       const errorMessage = await error?.response?.json();
       setError(`${strings.error.questionnaireUpdateFailed}: ${errorMessage?.message || error}`);
     }
     setLoading(false);
-  };
-
-  /**
-   * Function to handle snackbar close event
-   */
-  const handleSnackbarClose = () => {
-    setSnackbarOpen(false);
-    navigate(-1);
   };
 
   return (
@@ -491,15 +484,7 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
         </CardContent>
       </Card>
       <BackButton styles={{ mt: 3, marginBottom: 2 }} />
-      <Snackbar open={snackbarOpen} autoHideDuration={2000} onClose={handleSnackbarClose}>
-        <SnackbarContent
-          message={strings.questionnaireEdit.snackbarMessageSuccess}
-          sx={{
-            backgroundColor: theme.palette.success.main,
-            color: theme.palette.success.contrastText
-          }}
-        />
-      </Snackbar>
+
     </>
   );
 };
