@@ -640,6 +640,7 @@ export interface Localized extends LocalizedStringsMethods {
     failedToLoadMediaFiles: string;
     errorLoadingMediaFiles: string;
     articleContentRequired: string;
+    uploadPlayBook: string;
   };
   /**
    * Translations related to Snackbar notifications

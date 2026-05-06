@@ -522,7 +522,8 @@
     "cancel": "Cancel",
     "failedToLoadMediaFiles": "Failed to load media files",
     "errorLoadingMediaFiles": "Error loading media files:",
-    "articleContentRequired": "Article content is required"
+    "articleContentRequired": "Article content is required",
+    "uploadPlayBook": "Upload Playbook PDF"
   },
   "snackbar": {
     "articleSubmitted": "Article submitted for review successfully!",
