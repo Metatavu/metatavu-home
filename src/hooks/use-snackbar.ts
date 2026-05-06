@@ -1,10 +1,10 @@
 import { useSetAtom } from "jotai";
-import { snackbarAtom } from "src/atoms/snackbar";
+import { type SnackbarSeverity, snackbarAtom } from "src/atoms/snackbar";
 
 export const useSnackbar = () => {
   const setSnackbar = useSetAtom(snackbarAtom);
 
-  return (message: string, severity: "success" | "error" = "success") => {
+  return (message: string, severity: SnackbarSeverity = "success") => {
     setSnackbar({ open: true, message, severity });
   };
 };
