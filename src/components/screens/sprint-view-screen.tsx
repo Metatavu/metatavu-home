@@ -162,6 +162,7 @@ const SprintViewScreen = () => {
               <Card sx={{ bgcolor: theme.palette.background.paper }}>
                 <DataGrid
                   sx={{
+                    minHeight: 200,
                     "& .MuiDataGrid-columnHeaders": {
                       backgroundColor: theme.palette.background.default,
                       color: theme.palette.text.primary
@@ -180,7 +181,6 @@ const SprintViewScreen = () => {
                       backgroundColor: theme.palette.action.selected
                     }
                   }}
-                  autoHeight
                   localeText={{
                     noResultsOverlayLabel: strings.sprint.notFound
                   }}
