@@ -1,7 +1,8 @@
 {
   "placeHolder": {
     "notYetImplemented": "Not yet implemented",
-    "pleaseWait": "Please wait, this could take a moment..."
+    "pleaseWait": "Please wait, this could take a moment...",
+    "search": "Search..."
   },
   "label": {
     "currentLocaleLabel": "Current Locale:",
@@ -46,7 +47,17 @@
     "noArticleId": "Article ID is missing",
     "fetchWorkDaysFailed": "Fetching work days data has failed",
     "fetchWorkWeekFailed": "Error while fetching work week data, five day week will be used.",
-    "fetchFailedSevera": "Failed to update Severa opt-in."
+    "fetchFailedSevera": "Failed to update Severa opt-in.",
+    "fetchFailedQuestionnaires": "Failed to fetch questionnaires.",
+    "fetchFailedWikiArticles": "Failed to fetch wiki articles.",
+    "fetchFailedSoftwareData": "Failed to fetch software registry data.",
+    "loadUserProfileFailed": "Failed to load user profile.",
+    "softwareFetchFailed": "Error fetching software data.",
+    "softwareStatusUpdateFailed": "Error updating software status.",
+    "softwareSaveFailed": "Error saving the software.",
+    "softwareDeleteFailed": "Error deleting the software.",
+    "softwareRegistryFetchFailed": "Error while fetching software registry data",
+    "softwareRegistryUpdateFailed": "Error while updating software registry"
   },
   "localization": {
     "en": "EN",
@@ -111,7 +122,7 @@
     "project": "Project",
     "user": "User",
     "clear": "Clear",
-    "searchBy": "Search by {0}",
+    "searchBy": "Search by project or user",
     "estimateHours": "Estimate Hours"
   },
   "softwareRegistry": {
@@ -160,7 +171,15 @@
     "loading": "Loading...",
     "errorUnknownUser": "Unknown user",
     "errorCreatingSoftware": "Error creating software:",
-    "errorFetchingSoftwareToList": "Error fetching software to list:"
+    "errorFetchingSoftwareToList": "Error fetching software to list:",
+    "softwareDetailsFetchFailed": "Error fetching software details",
+    "softwareDetailsRemoveUserFailed": "Error removing user from software",
+    "softwareDetailsAddUserFailed": "Error adding user to software",
+    "softwareDetailsUpdateFailed": "Error updating software",
+    "recommendationsFetchUserFailed": "Error fetching user data",
+    "editApplication": "Edit application",
+    "submitApplication": "Submit Application",
+    "updateApplication": "Update Application"
   },
   "softwareStatus": {
     "all": "All",
@@ -257,11 +276,14 @@
     "createStatusError": "Creating vacation request status has failed ",
     "deleteRequestError": "Deleting vacation requests has failed",
     "deleteStatusError": "Deleting vacation request statuses has failed",
+    "dataGridRowsCreationError": "Error creating vacation request rows",
     "updateRequestError": "Updating vacation request has failed",
     "updateStatusError": "Updating vacation request status has failed",
     "noVacationRequestsFound": "No vacation requests found",
     "nameNotFound": "Name not found",
     "noVacationRequestsStatusFound": "Statuses not found",
+    "invalidNumberOfDaysUser": "You cannot request a 0 days vacation",
+    "invalidNumberOfDaysAdmin": "You cannot set a vacation request to 0 days",
     "tooManyDaysRequestedUser": "You cannot request {requestedDays} days. You only have {unspentDays} unspent vacation days.",
     "tooManyDaysRequestedAdmin": "Not enough vacation days. Requested: {requestedDays} days, Available: {unspentDays} days.",
     "noVacationDaysAvailable": "You don't have any vacation days available for the current vacation year. Please contact your administrator.",
@@ -272,6 +294,7 @@
     "fetchWorkHoursAndTasksError": "Error fetching workHours and tasks"
   },
   "form": {
+    "create": "Create",
     "submit": "Submit",
     "update": "Update",
     "restoreDefault": "Restore default holiday days consumed"
@@ -458,7 +481,7 @@
     "uploadImage": "Upload image",
     "imagePreview": "Preview",
     "labelTitle": "Title",
-    "labelPath": "Path",
+    "labelPath": "Custom path",
     "labelTags": "Tags",
     "labelImage": "Image URL",
     "labelDescription": "Description",
@@ -507,7 +530,22 @@
     "articleCreated": "Article created successfully!",
     "articleUpdated": "Article updated successfully!",
     "articleApproved": "Article approved successfully!",
-    "changesSaved": "Changes saved successfully!"
+    "articleDeleted": "Article deleted successfully!",
+    "changesSaved": "Changes saved successfully!",
+    "questionnaireCreated": "Questionnaire created successfully!",
+    "questionnaireUpdated": "Questionnaire updated successfully!",
+    "questionnaireDeleted": "Questionnaire deleted successfully!",
+    "softwareAdded": "Application added successfully!",
+    "softwareSubmitted": "Application submitted successfully!",
+    "softwareRemoved": "Application removed successfully!",
+    "softwareUpdated": "Application updated successfully!",
+    "softwareDeleted": "Application deleted successfully!",
+    "softwareStatusChanged": "Application status changed successfully!",
+    "vacationDraftSaved": "Draft saved successfully!",
+    "vacationRequestCreated": "Vacation request created successfully!",
+    "vacationRequestUpdated": "Vacation request updated successfully!",
+    "vacationRequestDeleted": "Vacation request deleted successfully!",
+    "vacationRequestStatusUpdated": "Vacation request status updated successfully!"
   },
   "settingsScreen": {
     "saveSettings": "Save settings",

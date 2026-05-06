@@ -1,20 +1,15 @@
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import ClearIcon from "@mui/icons-material/Clear";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import EditIcon from "@mui/icons-material/Edit";
 import LabelIcon from "@mui/icons-material/Label";
 import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
-import SearchIcon from "@mui/icons-material/Search";
 import {
   Box,
   Button,
   Chip,
   CircularProgress,
-  IconButton,
-  InputAdornment,
   Paper,
   Popover,
-  TextField,
   Typography,
   useTheme
 } from "@mui/material";
@@ -24,13 +19,16 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import { userProfileAtom } from "src/atoms/auth";
 import { errorAtom } from "src/atoms/error";
+import { questionnaireTagsAtom } from "src/atoms/questionnaire";
 import { usersAtom } from "src/atoms/user";
 import type { Questionnaire, User } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
+import { useSnackbar } from "src/hooks/use-snackbar";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import { DeleteItemType, QuestionnairePreviewMode } from "src/types/index";
 import DeleteConfirmationDialog from "../contexts/delete-confirmation-dialog";
+import SearchBar from "../generics/search-bar";
 
 /**
  * Questionnaire Table Component
@@ -52,10 +50,12 @@ const QuestionnaireTable = () => {
   const [tagPopoverAnchor, setTagPopoverAnchor] = useState<HTMLElement | null>(null);
   const [currentTags, setCurrentTags] = useState<string[]>([]);
   const setError = useSetAtom(errorAtom);
+  const setQuestionnaireTagsAtom = useSetAtom(questionnaireTagsAtom);
   const users = useAtomValue(usersAtom);
   const userProfile = useAtomValue(userProfileAtom);
   const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
   const dataGridRef = useRef(null);
+  const showSnackbar = useSnackbar();
   const [deleteTitle, setDeleteTitle] = useState<string | undefined>(undefined);
   const theme = useTheme();
 
@@ -71,13 +71,19 @@ const QuestionnaireTable = () => {
 
         setQuestionnaires(processedQuestionnaires);
         setFilteredQuestionnaires(processedQuestionnaires);
-      } catch (error) {
-        setError(`${strings.error.questionnaireLoadFailed}, ${error}`);
+        const allTags = processedQuestionnaires.flatMap(
+          (questionnaire) => questionnaire.tags || []
+        );
+        const uniqueTags = [...new Set<string>(allTags)];
+        setQuestionnaireTagsAtom(uniqueTags);
+      } catch (error: any) {
+        const errorMessage = await error?.response?.json();
+        setError(`${strings.error.questionnaireLoadFailed}: ${errorMessage?.message || error}`);
       }
       setLoading(false);
     };
     fetchQuestionnaires();
-  }, []);
+  }, [setQuestionnaireTagsAtom, setError, questionnairesApi]);
 
   useEffect(() => {
     if (!searchTerm.trim()) {
@@ -88,10 +94,11 @@ const QuestionnaireTable = () => {
     const lowerCaseSearchTerm = searchTerm.toLowerCase().trim();
     const filtered = questionnaires.filter((questionnaire) => {
       const titleMatch = questionnaire.title?.toLowerCase().includes(lowerCaseSearchTerm);
-      const tagMatch = questionnaire.tags?.some((tag) =>
+      const textTagMatch = questionnaire.tags?.some((tag) =>
         tag.toLowerCase().includes(lowerCaseSearchTerm)
       );
-      return titleMatch || tagMatch;
+
+      return titleMatch || textTagMatch;
     });
 
     setFilteredQuestionnaires(filtered);
@@ -101,16 +108,10 @@ const QuestionnaireTable = () => {
    * Handler for search term change
    *
    * @param event input change event
+   * @param value new input value
    */
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(event.target.value);
-  };
-
-  /**
-   * Handler for clearing the search term
-   */
-  const handleClearSearch = () => {
-    setSearchTerm("");
+  const handleSearchChange = (_event: React.SyntheticEvent, value: string) => {
+    setSearchTerm(value);
   };
 
   /**
@@ -171,12 +172,20 @@ const QuestionnaireTable = () => {
     setLoading(true);
     try {
       await questionnairesApi.deleteQuestionnaires({ id: deleteId });
-      setQuestionnaires((prevQuestionnaires) =>
-        prevQuestionnaires.filter((questionnaire) => questionnaire.id !== deleteId)
+      const updatedQuestionnaires = questionnaires.filter(
+        (questionnaire) => questionnaire.id !== deleteId
       );
+
+      showSnackbar(strings.snackbar.questionnaireDeleted);
+      setQuestionnaires(updatedQuestionnaires);
+      // Update tags atom after deletion
+      const allTags = updatedQuestionnaires.flatMap((questionnaire) => questionnaire.tags || []);
+      const uniqueTags = [...new Set<string>(allTags)];
+      setQuestionnaireTagsAtom(uniqueTags);
       handleCloseDialog();
-    } catch (error) {
-      setError(`${strings.error.questionnaireDeleteFailed}, ${error}`);
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
+      setError(`${strings.error.questionnaireDeleteFailed}: ${errorMessage?.message || error}`);
     }
     setLoading(false);
   };
@@ -459,29 +468,12 @@ const QuestionnaireTable = () => {
         </Typography>
 
         <Box sx={{ px: 2, pb: 2 }}>
-          <TextField
-            fullWidth
-            value={searchTerm}
-            onChange={handleSearchChange}
+          <SearchBar
+            searchInput={searchTerm}
+            handleSearchInputChange={handleSearchChange}
+            autoCompleteId="questionnaire-search-tags"
+            styles={{ width: "100%" }}
             placeholder={strings.questionnaireTags.searchPlaceholder}
-            variant="outlined"
-            size="small"
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon sx={{ color: theme.palette.text.primary }} />
-                </InputAdornment>
-              ),
-              endAdornment: searchTerm && (
-                <InputAdornment position="end">
-                  <IconButton size="small" onClick={handleClearSearch}>
-                    <ClearIcon sx={{ color: theme.palette.text.primary }} />
-                  </IconButton>
-                </InputAdornment>
-              ),
-              sx: { color: theme.palette.text.primary }
-            }}
-            InputLabelProps={{ style: { color: theme.palette.text.primary } }}
           />
         </Box>
 

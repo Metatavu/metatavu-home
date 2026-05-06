@@ -1,8 +1,5 @@
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
-import GridViewIcon from "@mui/icons-material/GridView";
-import ListViewIcon from "@mui/icons-material/List";
 import {
-  Alert,
   Box,
   Button,
   Card,
@@ -13,9 +10,10 @@ import {
   Typography,
   useTheme
 } from "@mui/material";
-import { useAtom, useAtomValue } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { authAtom } from "src/atoms/auth";
+import { errorAtom } from "src/atoms/error";
 import { softwareAtom } from "src/atoms/software";
 import type { SoftwareRegistry } from "src/generated/homeLambdasClient";
 import { SoftwareStatus } from "src/generated/homeLambdasClient";
@@ -23,10 +21,12 @@ import { useLambdasApi } from "src/hooks/use-api";
 import useCreateSoftware from "src/hooks/use-create-software";
 import strings from "src/localization/strings";
 import BackButton from "../generics/back-button";
-import AddSoftwareModal from "../software-registry/AddSoftwareModal";
+import CreateButton from "../generics/create-button";
+import ListViewButton from "../generics/list-view-button";
+import SearchBar from "../generics/search-bar";
 import Content from "../software-registry/myContent";
 import Recommendations from "../software-registry/Recommendations";
-import Sidebar from "../software-registry/Sidebar";
+import AddSoftwareModal from "../software-registry/SoftwareModal";
 
 /**
  * Software registry screen component
@@ -34,11 +34,11 @@ import Sidebar from "../software-registry/Sidebar";
 const SoftwareScreen = () => {
   const { softwareApi } = useLambdasApi();
   const auth = useAtomValue(authAtom);
+  const setError = useSetAtom(errorAtom);
   const loggedUserId = auth?.token?.sub ?? "";
-  const [isGridView, setIsGridView] = useState(true);
+  const [listView, setListView] = useState(false);
   const [software, setApplications] = useAtom(softwareAtom);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [searchValue, setSearchValue] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -125,8 +125,9 @@ const SoftwareScreen = () => {
     try {
       const fetchedSoftware = await softwareApi.listSoftware();
       setApplications(fetchedSoftware);
-    } catch (error) {
-      setError(`Error fetching software data: ${error}`);
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
+      setError(`${strings.error.softwareRegistryFetchFailed}: ${errorMessage?.message || error}`);
     } finally {
       setLoading(false);
     }
@@ -157,8 +158,9 @@ const SoftwareScreen = () => {
 
         setApplications((prevApps) => prevApps.map((a) => (a.id === appId ? updatedApp : a)));
       }
-    } catch (error) {
-      setError(`Error updating software: ${error}`);
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
+      setError(`${strings.error.softwareRegistryUpdateFailed}: ${errorMessage?.message || error}`);
     } finally {
       setLoading(false);
     }
@@ -172,8 +174,6 @@ const SoftwareScreen = () => {
       fetchSoftwareData();
     }
   }, []);
-
-  const isListView = !isGridView;
 
   if (loading) {
     return (
@@ -202,9 +202,6 @@ const SoftwareScreen = () => {
   return (
     <Container>
       <Grid container direction="column" alignItems="stretch" mt={4}>
-        <Typography variant="h2" m={4} align="center">
-          {strings.softwareRegistry.applications}
-        </Typography>
         {recommendedApplications.length > 0 && (
           <Grid container justifyContent="center" alignItems="center" mb={4}>
             <Typography sx={{ fontWeight: 600, fontSize: 18, color: theme.palette.primary.main }}>
@@ -228,81 +225,35 @@ const SoftwareScreen = () => {
             </IconButton>
           </Grid>
         )}
-        <Grid container justifyContent="space-between" alignItems="center">
-          <Typography variant="h3">{strings.softwareRegistry.myApplications}</Typography>
-          <Button
-            variant="contained"
-            color="secondary"
-            onClick={() => setIsModalOpen(true)}
-            sx={{
-              textTransform: "none",
-              color: theme.palette.common.white,
-              fontSize: "18px",
-              borderRadius: "100px"
-            }}
-          >
-            {strings.softwareRegistry.addApplication}
-          </Button>
-        </Grid>
-        <Grid container justifyContent="right" mt={2}>
-          <Box>
-            <IconButton
-              onClick={() => setIsGridView(true)}
-              sx={{
-                backgroundColor: isGridView
-                  ? theme.palette.primary.main
-                  : theme.palette.background.paper,
-                color: isGridView
-                  ? theme.palette.getContrastText(theme.palette.primary.main)
-                  : theme.palette.text.primary,
-                borderRadius: "4px",
-                padding: "6px",
-                marginRight: "10px",
-                ":hover": {
-                  backgroundColor: theme.palette.primary.dark,
-                  color: theme.palette.getContrastText(theme.palette.primary.dark)
-                }
-              }}
-            >
-              <GridViewIcon />
-            </IconButton>
-            <IconButton
-              onClick={() => setIsGridView(false)}
-              sx={{
-                backgroundColor: isListView
-                  ? theme.palette.primary.main
-                  : theme.palette.background.paper,
+        <Typography variant="h3">{strings.softwareRegistry.myApplications}</Typography>
 
-                color: isListView
-                  ? theme.palette.getContrastText(theme.palette.primary.main)
-                  : theme.palette.text.primary,
-                borderRadius: "4px",
-                padding: "6px",
-                ":hover": {
-                  backgroundColor: theme.palette.primary.dark,
-                  color: theme.palette.getContrastText(theme.palette.primary.dark)
-                }
-              }}
-            >
-              <ListViewIcon />
-            </IconButton>
-          </Box>
-        </Grid>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "flex-start",
+            gap: 2,
+            width: "100%",
+            mt: 2
+          }}
+        >
+          <SearchBar
+            searchInput={searchValue}
+            tags={filteredTags}
+            handleSearchInputChange={(_event: any, newInputValue: string) =>
+              setSearchValue(newInputValue)
+            }
+            handleSelectedTagChange={(newSelectedTags) => setSelectedTags(newSelectedTags)}
+            placeholder={strings.softwareRegistry.searchBy}
+          />
+          <ListViewButton listView={listView} setListView={setListView} />
+          <CreateButton
+            onClick={() => setIsModalOpen(true)}
+            text={strings.softwareRegistry.addApplication}
+          />
+        </Box>
+
         <Grid container justifyContent="flex-start" mt={2}>
-          <Grid mr={2}>
-            <Sidebar
-              onTagSelection={setSelectedTags}
-              filteredApplicationsCount={filteredSoftware.length}
-              availableTags={filteredTags}
-              onSearch={setSearchValue}
-            />
-          </Grid>
           <Grid size="grow">
-            {error && (
-              <Box mb={2} width="100%">
-                <Alert severity="error">{error}</Alert>
-              </Box>
-            )}
             {loading ? (
               <Box textAlign="center">
                 <CircularProgress size={50} sx={{ mt: 2 }} />
@@ -310,7 +261,7 @@ const SoftwareScreen = () => {
             ) : (
               <Content
                 applications={showAll ? filteredSoftware : filteredSoftware.slice(0, 4)}
-                isGridView={isGridView}
+                isGridView={!listView}
               />
             )}
             {filteredSoftware.length > 4 && (

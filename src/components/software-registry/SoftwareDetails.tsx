@@ -18,12 +18,13 @@ import { softwareAtom } from "src/atoms/software";
 import { usersAtom } from "src/atoms/user";
 import type { SoftwareRegistry } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
+import { useSnackbar } from "src/hooks/use-snackbar";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import { formatDate } from "src/utils/time-utils";
 import { getFullUserName } from "src/utils/user-name-utils";
 import BackButton from "../generics/back-button";
-import AddSoftwareModal from "./AddSoftwareModal";
+import AddSoftwareModal from "./SoftwareModal";
 
 /**
  * Component for displaying detailed information about a specific software entry.
@@ -44,6 +45,7 @@ const SoftwareDetails = () => {
   const loggedUserId = auth?.token?.sub ?? "";
   const { adminMode } = useUserRole();
   const users = useAtomValue(usersAtom) || [];
+  const showSnackbar = useSnackbar();
   const theme = useTheme();
 
   /**
@@ -67,8 +69,11 @@ const SoftwareDetails = () => {
     try {
       const data = await softwareApi.getSoftwareById({ id });
       setSoftware(data);
-    } catch (error) {
-      setError((error as Error).message || "Error fetching software details");
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
+      setError(
+        `${strings.softwareRegistry.softwareDetailsFetchFailed}: ${errorMessage?.message || (error as Error).message}`
+      );
     } finally {
       setLoading(false);
     }
@@ -82,8 +87,11 @@ const SoftwareDetails = () => {
     try {
       const fetchedSoftware = await softwareApi.listSoftware();
       setSoftwareList(fetchedSoftware);
-    } catch (error) {
-      setError((error as Error).message || strings.softwareRegistry.errorFetchingSoftwareToList);
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
+      setError(
+        `${strings.softwareRegistry.errorFetchingSoftwareToList}: ${errorMessage?.message || (error as Error).message}`
+      );
     } finally {
       setLoading(false);
     }
@@ -102,8 +110,12 @@ const SoftwareDetails = () => {
         softwareRegistry: { ...software, users: updatedUsers }
       });
       setSoftware({ ...software, users: updatedUsers });
-    } catch (error) {
-      setError((error as Error).message || "Error removing user from software");
+      showSnackbar(strings.snackbar.softwareRemoved);
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
+      setError(
+        `${strings.softwareRegistry.softwareDetailsRemoveUserFailed}: ${errorMessage?.message || (error as Error).message}`
+      );
     }
   };
 
@@ -134,8 +146,12 @@ const SoftwareDetails = () => {
         softwareRegistry: { ...software, users: updatedUsers }
       });
       setSoftware({ ...software, users: updatedUsers });
-    } catch (error) {
-      setError((error as Error).message || "Error adding user to software");
+      showSnackbar(strings.snackbar.softwareAdded);
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
+      setError(
+        `${strings.softwareRegistry.softwareDetailsAddUserFailed}: ${errorMessage?.message || (error as Error).message}`
+      );
     }
   };
 
@@ -152,8 +168,12 @@ const SoftwareDetails = () => {
       });
       setSoftware(updatedSoftware);
       setIsEditModalOpen(false);
-    } catch (error) {
-      setError((error as Error).message || "Error updating software");
+      showSnackbar(strings.snackbar.softwareUpdated);
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
+      setError(
+        `${strings.softwareRegistry.softwareDetailsUpdateFailed}: ${errorMessage?.message || (error as Error).message}`
+      );
     }
   };
 
@@ -252,7 +272,8 @@ const SoftwareDetails = () => {
           size={{
             xs: 12,
             md: 6
-          }}>
+          }}
+        >
           <Typography variant="h4" gutterBottom>
             {strings.softwareRegistry.description}
           </Typography>
@@ -273,7 +294,8 @@ const SoftwareDetails = () => {
           size={{
             xs: 12,
             md: 6
-          }}>
+          }}
+        >
           <Typography variant="h4" gutterBottom>
             {strings.softwareRegistry.review}
           </Typography>

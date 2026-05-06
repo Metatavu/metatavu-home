@@ -14,8 +14,7 @@ interface BackButtonProps {
  * @param props.onClick Optional handler to override default navigation from forms
  * @param props.styles Optional override for styling/positioning button
  */
-const BackButton = (props: BackButtonProps): JSX.Element => {
-  const { onClick, styles } = props;
+const BackButton = ({ onClick, styles }: BackButtonProps): JSX.Element => {
   const navigate = useNavigate();
   const { adminMode } = useUserRole();
   const navType = useNavigationType();

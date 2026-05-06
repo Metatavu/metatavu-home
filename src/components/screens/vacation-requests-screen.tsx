@@ -14,6 +14,7 @@ import {
 import type { User } from "src/generated/homeLambdasClient";
 import { type VacationRequest, VacationRequestStatuses } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
+import { useSnackbar } from "src/hooks/use-snackbar";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import { renderVacationDaysTextForScreen } from "src/utils/vacation-days-utils";
@@ -38,6 +39,7 @@ const VacationRequestsScreen = () => {
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const selectedId = params.get("selectedId");
+  const showSnackbar = useSnackbar();
 
   const upcomingVacationRequests = useMemo(
     () => vacationRequests.filter((request) => request.endDate.getTime() > Date.now()),
@@ -112,8 +114,11 @@ const VacationRequestsScreen = () => {
         });
       }
       setVacationRequests(fetchedVacationRequests);
-    } catch (error) {
-      setError(`${strings.vacationRequestError.fetchRequestError}, ${error}`);
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
+      setError(
+        `${strings.vacationRequestError.fetchRequestError}: ${errorMessage?.message || error}`
+      );
     }
     setLoading(false);
   };
@@ -155,8 +160,11 @@ const VacationRequestsScreen = () => {
       }
 
       return vacationRequest;
-    } catch (error) {
-      setError(`${strings.vacationRequestError.fetchRequestError}, ${error}`);
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
+      setError(
+        `${strings.vacationRequestError.fetchRequestError}: ${errorMessage?.message || error}`
+      );
       return null;
     } finally {
       setLoading(false);
@@ -181,13 +189,18 @@ const VacationRequestsScreen = () => {
             updatedVacationRequests = updatedVacationRequests.filter(
               (vacationRequest) => vacationRequest.id !== selectedRowId
             );
-          } catch (error) {
-            setError(`${strings.vacationRequestError.deleteRequestError}, ${error}`);
+          } catch (error: any) {
+            const errorMessage = await error?.response?.json();
+            setError(
+              `${strings.vacationRequestError.deleteRequestError}: ${errorMessage?.message || error}`
+            );
           }
           setLoading(false);
         })
       );
       setVacationRequests(updatedVacationRequests);
+
+      showSnackbar(strings.snackbar.vacationRequestDeleted);
     }
   };
 
@@ -233,8 +246,12 @@ const VacationRequestsScreen = () => {
         }
       });
       setVacationRequests([createdRequest, ...vacationRequests]);
-    } catch (error) {
-      setError(`${strings.vacationRequestError.createRequestError}, ${error}`);
+      showSnackbar(strings.snackbar.vacationRequestCreated);
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
+      setError(
+        `${strings.vacationRequestError.createRequestError}: ${errorMessage?.message || error}`
+      );
     }
     setLoading(false);
   };
@@ -275,8 +292,12 @@ const VacationRequestsScreen = () => {
         }
       });
       setVacationRequests([createdRequest, ...vacationRequests]);
-    } catch (error) {
-      setError(`${strings.vacationRequestError.createRequestError}, ${error}`);
+      showSnackbar(strings.snackbar.vacationDraftSaved);
+    }  catch (error: any) {
+      const errorMessage = await error?.response?.json();
+      setError(
+        `${strings.vacationRequestError.createRequestError}: ${errorMessage?.message || error}`
+      );
     }
     setLoading(false);
   };
@@ -345,8 +366,12 @@ const VacationRequestsScreen = () => {
         vacationRequest.id === updatedRequest.id ? updatedRequest : vacationRequest
       );
       setVacationRequests(updatedVacationRequests);
-    } catch (error) {
-      setError(`${strings.vacationRequestError.updateRequestError}, ${error}`);
+      showSnackbar(strings.snackbar.vacationRequestUpdated);
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
+      setError(
+        `${strings.vacationRequestError.updateRequestError}: ${errorMessage?.message || error}`
+      );
     }
     setLoading(false);
   };
@@ -421,8 +446,12 @@ const VacationRequestsScreen = () => {
       // Refresh user data to get updated remaining vacation days.
       const updatedUser = await usersApi.findUser({ userId: loggedInUser.id });
       setUsers((prevUsers) => prevUsers.map((u) => (u.id === updatedUser.id ? updatedUser : u)));
-    } catch (error) {
-      setError(`${strings.vacationRequestError.updateRequestError}, ${error}`);
+      showSnackbar(strings.snackbar.vacationRequestStatusUpdated);
+    }  catch (error: any) {
+      const errorMessage = await error?.response?.json();
+      setError(
+        `${strings.vacationRequestError.updateRequestError}: ${errorMessage?.message || error}`
+      );
     }
     setLoading(false);
   };

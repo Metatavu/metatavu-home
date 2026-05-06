@@ -1,7 +1,8 @@
 import { Box, CircularProgress, Typography } from "@mui/material";
-import { useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { useEffect, useState } from "react";
 import { userProfileAtom } from "src/atoms/auth";
+import { errorAtom } from "src/atoms/error";
 import { usersAtom } from "src/atoms/user";
 import type { Questionnaire, User } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
@@ -19,14 +20,15 @@ const QuestionnaireProgress = () => {
   const [loading, setLoading] = useState(false);
 
   const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
-
+  const setError = useSetAtom(errorAtom);
   useEffect(() => {
     const fetchQuestionnaires = async () => {
       try {
         const response = await questionnairesApi.listQuestionnaires();
         setQuestionnaires(response);
-      } catch (error) {
-        console.error("Failed to fetch questionnaires:", error);
+      } catch (error: any) {
+        const errorMessage = await error.response.json();
+        setError(`${strings.error.fetchFailedQuestionnaires}: ${errorMessage.message}`);
       } finally {
         setLoading(false);
       }

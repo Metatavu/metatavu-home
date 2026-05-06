@@ -73,8 +73,9 @@ const SettingsScreen = ({ screenColorMode, setScreenColorMode }: SettingsScreenP
           prev.map((u) => (u.id === userProfile.id ? { ...u, attributes: updatedAttributes } : u))
         );
       }
-    } catch (error) {
-      setError(`${strings.error.fetchFailedSevera}, ${String(error)}`);
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
+      setError(`${strings.error.fetchFailedSevera}: ${errorMessage?.message || error}`);
     } finally {
       setLoading(false);
     }
@@ -102,8 +103,9 @@ const SettingsScreen = ({ screenColorMode, setScreenColorMode }: SettingsScreenP
         prev.map((u) => (u.id === userProfile.id ? { ...u, attributes: updatedAttributes } : u))
       );
       setIsConsentGiven(false);
-    } catch (error) {
-      setError(`${strings.error.fetchFailedSevera}, ${String(error)}`);
+    } catch (error: any) {
+      const errorMessage = await error?.response?.json();
+      setError(`${strings.error.fetchFailedSevera}: ${errorMessage?.message || error}`);
     } finally {
       setLoading(false);
     }
