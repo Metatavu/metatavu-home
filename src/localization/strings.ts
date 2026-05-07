@@ -677,6 +677,17 @@ export interface Localized extends LocalizedStringsMethods {
     lightOrDarkMode: string;
     light: string;
     dark: string;
+    jobDescriptionTitle: string;
+    jobDescriptionSubtitle: string;
+    saveRoles: string;
+    jobDescriptionSaved: string;
+    jobDescriptionError: string;
+    roleDeveloper: string;
+    roleDesigner: string;
+    roleArchitect: string;
+    roleAdmin: string;
+    roleManagement: string;
+    roleTrainee: string;
   };
   /**
    * Translations related to if user is not Severa Opt in
