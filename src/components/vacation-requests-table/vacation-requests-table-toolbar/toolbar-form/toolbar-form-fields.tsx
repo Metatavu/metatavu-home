@@ -18,11 +18,7 @@ import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import { type DateRange, ToolbarFormModes } from "src/types";
 import { hasAllPropsDefined } from "src/utils/check-utils";
-import {
-  calculateEndDateFromDays,
-  calculateTotalVacationDays,
-  contractedWeekToBoolean
-} from "src/utils/time-utils";
+import { calculateTotalVacationDays, contractedWeekToBoolean } from "src/utils/time-utils";
 import DateRangePicker from "../../../generics/date-range-picker";
 
 /**
@@ -141,17 +137,9 @@ const ToolbarFormFields = ({
    */
   const handleDaysChange = (value: string) => {
     const daysValue = Number.parseInt(value, 10) || 0;
-    if (!dateRange.start) return;
-
-    const newEndDate = calculateEndDateFromDays(dateRange.start, daysValue, workWeek);
-    setDateRange({
-      start: dateRange.start,
-      end: newEndDate
-    });
     setVacationRequestData({
       ...vacationRequestData,
-      days: daysValue,
-      endDate: newEndDate.toJSDate()
+      days: daysValue
     });
   };
 
@@ -196,7 +184,7 @@ const ToolbarFormFields = ({
           />
         </>
       )}
-      {adminMode ? (
+      {adminMode && (
         <>
           <FormLabel>{strings.vacationRequest.days}</FormLabel>
           <Box sx={{ display: "flex", alignItems: "flex-start", gap: 1, mb: 1 }}>
@@ -214,16 +202,13 @@ const ToolbarFormFields = ({
             </Button>
           </Box>
         </>
-      ) : (
-        <>
-          <FormLabel sx={{ marginBottom: "5px" }}>{strings.vacationRequest.days}</FormLabel>
-          <DateRangePicker
-            dateTimeTomorrow={dateTimeTomorrow}
-            dateRange={dateRange}
-            setDateRange={setDateRange}
-          />
-        </>
       )}
+      <FormLabel sx={{ marginBottom: "5px" }}>{strings.vacationRequest.days}</FormLabel>
+      <DateRangePicker
+        dateTimeTomorrow={dateTimeTomorrow}
+        dateRange={dateRange}
+        setDateRange={setDateRange}
+      />
       {toolbarFormMode === ToolbarFormModes.CREATE && (
         <Grid container spacing={2}>
           <Grid size={6}>
