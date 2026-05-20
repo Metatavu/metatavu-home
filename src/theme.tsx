@@ -5,6 +5,20 @@ import PoppinsMedium from "../resources/fonts/poppins/Poppins-Medium.ttf";
 import PoppinsRegular from "../resources/fonts/poppins/Poppins-Regular.ttf";
 import PoppinsSemiBold from "../resources/fonts/poppins/Poppins-SemiBold.ttf";
 
+/**
+ * Creates MUI theme for the application.
+ *
+ * Extends default MUI theme with:
+ * - Custom color palette, spacing, radius and border scale tokens
+ * - Typography system
+ * - Component-level style overrides (requires further work, not updated yet)
+ *
+ * Light mode is fully supported.
+ * Dark mode not implemented yet.
+ *
+ * @param mode - Theme mode ("light | "dark")
+ * @returns Configured MUI Theme object
+ */
 export const createAppTheme = (mode: "light" | "dark"): Theme =>
   createTheme({
     palette: {
@@ -246,6 +260,12 @@ export const createAppTheme = (mode: "light" | "dark"): Theme =>
     }
   });
 
+/**
+ * Color tokens for wiki screen UI.
+ *
+ * These values have not yet been updated to match UI changes
+ * and need further review.
+ */
 export const wikiScreenColors = (theme: Theme) => ({
   button: {
     main: theme.palette.background.paper,
@@ -255,6 +275,12 @@ export const wikiScreenColors = (theme: Theme) => ({
   }
 });
 
+/**
+ * Custom theme tokens and styles.
+ *
+ * These are yet to be aligned with UI changes and should
+ * be revisited.
+ */
 export const customTheme = (theme: Theme) => ({
   colors: {
     paidGreen: "#7bd15c",
