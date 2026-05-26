@@ -1,8 +1,6 @@
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import EditIcon from "@mui/icons-material/Edit";
 import LabelIcon from "@mui/icons-material/Label";
-import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
 import {
   Box,
   Button,
@@ -28,6 +26,7 @@ import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import { DeleteItemType, QuestionnairePreviewMode } from "src/types/index";
 import DeleteConfirmationDialog from "../contexts/delete-confirmation-dialog";
+import { IconBadge } from "../generics/badges";
 import SearchBar from "../generics/search-bar";
 
 /**
@@ -219,12 +218,8 @@ const QuestionnaireTable = () => {
    * @returns JSX element representing the status
    */
   const renderStatusCell = (params: GridRenderCellParams) => {
-    const userHasPassed = params.row.passedUsers?.includes(loggedInUser?.id);
-    return userHasPassed ? (
-      <CheckCircleIcon sx={{ color: theme.palette.success.main }} />
-    ) : (
-      <RadioButtonUncheckedIcon sx={{ color: theme.palette.text.secondary }} />
-    );
+    const userHasPassed = params.row.passedUsers?.includes(loggedInUser?.id) ? "success" : "empty";
+    return <IconBadge variant={userHasPassed} />;
   };
 
   /**

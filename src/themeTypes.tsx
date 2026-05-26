@@ -69,6 +69,7 @@ declare module "@mui/material/styles" {
       progressBg: string;
       progressBgStrong: string;
       progressAccent: string;
+      completedBg: string;
     };
   }
   interface TypeText {
@@ -135,6 +136,7 @@ declare module "@mui/material/styles" {
       progressBg?: string;
       progressBgStrong?: string;
       progressAccent?: string;
+      completedBg: string;
     };
   }
   interface Theme {

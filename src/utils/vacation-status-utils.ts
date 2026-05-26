@@ -1,22 +1,5 @@
-import type { Theme } from "@mui/material";
 import type { VacationRequestStatus } from "../generated/homeLambdasClient";
 import { VacationRequestStatuses } from "../generated/homeLambdasClient";
-
-/**
- * Get color code corresponding to the vacation request status
- *
- * @param vacationRequestStatus vacation request status
- * @returns color code as string
- */
-export const getVacationRequestStatusColor = (
-  vacationRequestStatus: VacationRequestStatuses,
-  theme: Theme
-) =>
-  ({
-    [VacationRequestStatuses.APPROVED]: theme.palette.success.main,
-    [VacationRequestStatuses.DECLINED]: theme.palette.error.main,
-    [VacationRequestStatuses.PENDING]: theme.palette.warning.light
-  })[vacationRequestStatus];
 
 /**
  * Get color code corresponding to the vacation request status

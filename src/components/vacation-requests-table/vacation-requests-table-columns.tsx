@@ -1,14 +1,13 @@
-import { Box, Tooltip, useTheme } from "@mui/material";
+import { Box, Tooltip } from "@mui/material";
 import type { GridColDef } from "@mui/x-data-grid";
 import { useAtomValue } from "jotai";
 import { usersAtom } from "src/atoms/user";
-import useUserRole from "src/hooks/use-user-role";
+import type { VacationRequestStatuses } from "src/generated/homeLambdasClient";
 import strings from "src/localization/strings";
 import LocalizationUtils from "src/utils/localization-utils";
 import { formatDate } from "src/utils/time-utils";
 import { getFullUserName } from "src/utils/user-name-utils";
-import { getVacationRequestStatusColor } from "src/utils/vacation-status-utils";
-import UnreviewedIndicator from "./pending-vacation-indicator";
+import { PillBadge } from "../generics/badges";
 import StatusToolTipContent from "./vacation-request-status-tooltip";
 
 /**
@@ -16,8 +15,6 @@ import StatusToolTipContent from "./vacation-request-status-tooltip";
  */
 const VacationRequestsTableColumns = (): GridColDef[] => {
   const users = useAtomValue(usersAtom) || [];
-  const { adminMode } = useUserRole();
-  const theme = useTheme();
 
   const columns: GridColDef[] = [
     {
@@ -78,24 +75,22 @@ const VacationRequestsTableColumns = (): GridColDef[] => {
         if (!params.value) return "";
         const vacationRequest = params.row.vacationRequest;
         const statuses = vacationRequest?.status || [];
-        const currentStatus = params.value;
-        const isUnreviewed = statuses.length === 1 && currentStatus === "PENDING";
+        const currentStatus: VacationRequestStatuses = params.value;
 
         return (
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            {adminMode && isUnreviewed && <UnreviewedIndicator />}
+          <PillBadge status={currentStatus} variant="approvalBadge">
             <Tooltip title={<StatusToolTipContent statuses={statuses} />} arrow placement="top">
               <Box
                 sx={{
-                  color: getVacationRequestStatusColor(currentStatus, theme),
-                  fontWeight: 600,
+                  fontWeight: 400,
+                  fontSize: "14px",
                   cursor: "help"
                 }}
               >
                 {LocalizationUtils.getLocalizedVacationRequestStatus(currentStatus)}
               </Box>
             </Tooltip>
-          </Box>
+          </PillBadge>
         );
       },
       cellClassName: (params) => {

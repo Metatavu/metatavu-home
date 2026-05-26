@@ -89,7 +89,8 @@ export const createAppTheme = (mode: "light" | "dark"): Theme =>
         deploymentAccent: "#5b21b6",
         progressBg: "#eaf5f5",
         progressBgStrong: "#abd8d5",
-        progressAccent: "#1a5f5a"
+        progressAccent: "#1a5f5a",
+        completedBg: "#cce4cc"
       }
     },
     spaces: {
@@ -237,17 +238,6 @@ export const createAppTheme = (mode: "light" | "dark"): Theme =>
             backgroundColor: theme.palette.background.paper,
             color: theme.palette.text.primary
           })
-        }
-      },
-      MuiChip: {
-        defaultProps: {
-          color: "default"
-        },
-        styleOverrides: {
-          root: {
-            fontWeight: "600",
-            borderRadius: "5px"
-          }
         }
       },
       MuiButton: {

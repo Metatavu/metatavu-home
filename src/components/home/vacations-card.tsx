@@ -20,10 +20,8 @@ import LocalizationUtils from "src/utils/localization-utils";
 import { formatDate } from "src/utils/time-utils";
 import { renderVacationDaysTextForCard } from "src/utils/vacation-days-utils";
 import { getVacationRequestPersonFullName } from "src/utils/vacation-request-utils";
-import {
-  getTotalVacationRequestStatus,
-  getVacationRequestStatusColor
-} from "src/utils/vacation-status-utils";
+import { getTotalVacationRequestStatus } from "src/utils/vacation-status-utils";
+import { PillBadge } from "../generics/badges";
 
 /**
  * Vacations card component
@@ -109,8 +107,12 @@ const VacationsCard = () => {
   const renderVacationInfoItem = (vacationInfoListItem: VacationInfoListItem, index: number) => (
     <Grid key={`vacations-info-list-item-${index}`} size={12}>
       <Box sx={{ display: "flex" }}>
-        <Typography sx={{ flex: 1 }}>{vacationInfoListItem.name}</Typography>
-        <Typography sx={{ flex: 1 }}>{vacationInfoListItem.value}</Typography>
+        <Typography component="div" sx={{ flex: 1 }}>
+          {vacationInfoListItem.name}
+        </Typography>
+        <Typography component="div" sx={{ flex: 1 }}>
+          {vacationInfoListItem.value}
+        </Typography>
       </Box>
     </Grid>
   );
@@ -156,28 +158,16 @@ const VacationsCard = () => {
         },
         {
           name: strings.vacationsCard.status,
-          value: earliestUpcomingVacationRequest.status ? (
-            <span
-              style={{
-                color: getVacationRequestStatusColor(
-                  getTotalVacationRequestStatus(earliestUpcomingVacationRequest?.status),
-                  theme
-                )
-              }}
+          value: earliestUpcomingVacationRequest?.status ? (
+            <PillBadge
+              variant="approvalBadge"
+              status={getTotalVacationRequestStatus(earliestUpcomingVacationRequest?.status)}
             >
               {LocalizationUtils.getLocalizedVacationRequestStatus(
                 getTotalVacationRequestStatus(earliestUpcomingVacationRequest?.status)
               )}
-            </span>
-          ) : (
-            <span
-              style={{
-                color: getVacationRequestStatusColor(VacationRequestStatuses.PENDING, theme)
-              }}
-            >
-              {strings.vacationRequest.pending}
-            </span>
-          )
+            </PillBadge>
+          ) : null
         }
       ];
 
