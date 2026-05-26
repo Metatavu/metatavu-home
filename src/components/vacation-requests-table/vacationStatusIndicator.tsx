@@ -9,7 +9,7 @@ import { getBadgeColor } from "src/utils/badgeColorUtils";
 interface StatusIndicatorProps {
   statusColor: VacationRequestStatuses;
 }
-const vacationStatusIndicator = ({ statusColor }: StatusIndicatorProps) => {
+const VacationStatusIndicator = ({ statusColor }: StatusIndicatorProps) => {
   const theme = useTheme();
   const colors = getBadgeColor(statusColor, theme);
 
@@ -36,4 +36,4 @@ const vacationStatusIndicator = ({ statusColor }: StatusIndicatorProps) => {
   );
 };
 
-export default vacationStatusIndicator;
+export default VacationStatusIndicator;
