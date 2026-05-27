@@ -1,95 +1,98 @@
-import { Button, type SxProps, type Theme } from "@mui/material";
-import useUserRole from "src/hooks/use-user-role";
+import { Button, type Theme, useTheme } from "@mui/material";
+import type { SystemStyleObject } from "@mui/system";
 import strings from "src/localization/strings";
 
 /**
- * Props for the AppButton component.
+ * Visual variants for the AppButton component.
+ *
+ * - primary: filled orange button, main call-to-action
+ * - secondary: light orange background, secondary actions
+ * - tertiary: ghost/transparent button, low-emphasis actions
  */
+export type AppButtonVariant = "primary" | "secondary" | "tertiary";
+
 interface AppButtonProps {
-  /**
-   * Optional HTML id attribute for the button.
-   */
   id?: string;
-
-  /**
-   * Function executed when the button is clicked.
-   */
   onClick?: () => void;
-
-  /**
-   * Custom MUI styles applied through the `sx` prop.
-   */
-  styles?: SxProps<Theme>;
-
-  /**
-   * Text displayed inside the button.
-   * If not provided, a default localized text is used.
-   */
+  sx?: SystemStyleObject<Theme>;
   text?: string;
-
-  /**
-   * Disables the button when set to true.
-   * @default false
-   */
   disabled?: boolean;
-
-  /**
-   * Native HTML button type.
-   * @default "button"
-   */
   type?: "button" | "submit" | "reset";
-  /**
-   * Makes the button take the full width of its container.
-   * @default false
-   */
   fullWidth?: boolean;
-
-  /**
-   * MUI button variant.
-   * @default "contained"
-   */
-  variant?: "contained" | "outlined" | "text";
-
-  /**
-   * MUI button color.
-   * @default "primary"
-   */
-  color?: "primary" | "secondary" | "error" | "warning" | "success";
+  /** @default "primary" */
+  variant?: AppButtonVariant;
 }
 
 /**
- * Reusable application button component based on MUI Button.
- *
- * Provides consistent styling, accessibility support,
- * localization fallback text, and customizable variants.
- *
- * @param props Component properties.
- * @returns Styled MUI button component.
+ * Maps AppButtonVariant to MUI sx styles using theme tokens.
  */
+const useVariantStyles = (variant: AppButtonVariant): SystemStyleObject<Theme> => {
+  const theme = useTheme();
+
+  const variants: Record<AppButtonVariant, SystemStyleObject<Theme>> = {
+    primary: {
+      bgcolor: theme.palette.buttons.primary,
+      color: theme.palette.text.primary,
+      border: "none",
+      "&:hover": { bgcolor: theme.palette.buttons.hover },
+      "&:disabled": {
+        bgcolor: theme.palette.buttons.disabledBg,
+        color: theme.palette.text.disabled
+      }
+    },
+    secondary: {
+      bgcolor: theme.palette.buttons.secondaryBg,
+      color: theme.palette.text.primary,
+      "&:hover": { bgcolor: theme.palette.buttons.secondaryHover },
+      "&:disabled": {
+        bgcolor: theme.palette.buttons.disabledBg,
+        color: theme.palette.text.disabled
+      }
+    },
+    tertiary: {
+      bgcolor: "transparent",
+      color: theme.palette.text.primary,
+      border: `${theme.borders.s} solid ${theme.palette.buttons.primary}`,
+      "&:hover": { bgcolor: theme.palette.buttons.secondaryHover },
+      "&:disabled": {
+        bgcolor: theme.palette.buttons.disabledBg,
+        color: theme.palette.text.disabled,
+        border: "none"
+      }
+    }
+  };
+
+  return variants[variant];
+};
+
 const AppButton = ({
   id,
   onClick,
-  styles,
+  sx,
   text,
   disabled = false,
   type = "button",
   fullWidth = false,
-  variant = "contained",
-  color = "primary"
+  variant = "primary"
 }: AppButtonProps): JSX.Element => {
+  const variantStyles = useVariantStyles(variant);
+
   return (
     <Button
       id={id}
       onClick={onClick}
-      variant={variant}
-      color={color}
       disabled={disabled}
       type={type}
       fullWidth={fullWidth}
+      variant="contained"
+      disableElevation
       sx={{
         height: "55px",
         fontWeight: "bold",
-        ...styles
+        textTransform: "none",
+        borderRadius: "8px",
+        ...variantStyles,
+        ...sx
       }}
     >
       {text ?? strings.form.create}
