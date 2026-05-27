@@ -23,6 +23,7 @@ import { questionnaireTagsAtom } from "src/atoms/questionnaire";
 import { usersAtom } from "src/atoms/user";
 import type { Questionnaire, User } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
+import { useSnackbar } from "src/hooks/use-snackbar";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import { DeleteItemType, QuestionnairePreviewMode } from "src/types/index";
@@ -54,6 +55,7 @@ const QuestionnaireTable = () => {
   const userProfile = useAtomValue(userProfileAtom);
   const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
   const dataGridRef = useRef(null);
+  const showSnackbar = useSnackbar();
   const [deleteTitle, setDeleteTitle] = useState<string | undefined>(undefined);
   const theme = useTheme();
 
@@ -173,13 +175,13 @@ const QuestionnaireTable = () => {
       const updatedQuestionnaires = questionnaires.filter(
         (questionnaire) => questionnaire.id !== deleteId
       );
-      setQuestionnaires(updatedQuestionnaires);
 
+      showSnackbar(strings.snackbar.questionnaireDeleted);
+      setQuestionnaires(updatedQuestionnaires);
       // Update tags atom after deletion
       const allTags = updatedQuestionnaires.flatMap((questionnaire) => questionnaire.tags || []);
       const uniqueTags = [...new Set<string>(allTags)];
       setQuestionnaireTagsAtom(uniqueTags);
-
       handleCloseDialog();
     } catch (error: any) {
       const errorMessage = await error?.response?.json();
