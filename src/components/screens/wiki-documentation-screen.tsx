@@ -12,7 +12,7 @@ import {
   useTheme
 } from "@mui/material";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
-import { useEffect, useId, useState } from "react";
+import { type SyntheticEvent, useEffect, useId, useState } from "react";
 import { articleAtom, draftArticleAtom, tagsAtom } from "src/atoms/article";
 import { errorAtom } from "src/atoms/error";
 import { snackbarAtom } from "src/atoms/snackbar";
@@ -234,11 +234,11 @@ const WikiDocumentationScreen = () => {
    * Handles changes in the search input field.
    * Filters articles based on the search query and selected tags.
    *
-   * @param {React.SyntheticEvent} _event - The input change event containing the search query.
+   * @param {SyntheticEvent} _event - The input change event containing the search query.
    * @param {string} value - Search query
    *
    */
-  const handleSearchInputChange = (_event: React.SyntheticEvent, value: string) => {
+  const handleSearchInputChange = (_event: SyntheticEvent, value: string) => {
     const newSearchInput = value;
     setSearchInput(newSearchInput ?? "");
 
