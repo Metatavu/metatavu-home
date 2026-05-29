@@ -481,6 +481,7 @@ const QuestionnaireTable = () => {
           ref={dataGridRef}
           rowHeight={60}
           sx={{
+            minHeight: 400,
             margin: 0,
             "& .MuiDataGrid-cell": {
               padding: "8px",

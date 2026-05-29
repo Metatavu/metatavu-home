@@ -147,6 +147,7 @@ const TaskTable = ({ filter, project }: Props) => {
         ) : (
           <DataGrid
             sx={{
+              minHeight: 300,
               backgroundColor: theme.palette.background.default,
               borderTop: 0,
               borderLeft: 0,

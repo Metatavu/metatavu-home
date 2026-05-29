@@ -10,10 +10,9 @@ import {
   useTheme
 } from "@mui/material";
 import { useAtomValue, useSetAtom } from "jotai";
-import { useEffect, useId, useState } from "react";
+import { type SyntheticEvent, useEffect, useId, useState } from "react";
 import { articleAtom, draftArticleAtom, tagsAtom } from "src/atoms/article";
 import { errorAtom } from "src/atoms/error";
-import { snackbarAtom } from "src/atoms/snackbar";
 import type { ArticleMetadata } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
 import { useSnackbar } from "src/hooks/use-snackbar";
@@ -89,7 +88,7 @@ const WikiDocumentationScreen = () => {
         setDisplayedArticles(articles);
       }
     }
-  }, [articles, draftArticles]);
+  }, [articles, draftArticles, formOpen]);
 
   useEffect(() => {
     setDisplayedArticlesOnPage(
@@ -234,10 +233,12 @@ const WikiDocumentationScreen = () => {
    * Handles changes in the search input field.
    * Filters articles based on the search query and selected tags.
    *
-   * @param {any} event - The input change event containing the search query.
+   * @param {SyntheticEvent} _event - The input change event containing the search query.
+   * @param {string} value - Search query
+   *
    */
-  const handleSearchInputChange = (event: any) => {
-    const newSearchInput = event.target.value;
+  const handleSearchInputChange = (_event: SyntheticEvent, value: string) => {
+    const newSearchInput = value;
     setSearchInput(newSearchInput ?? "");
 
     const articlesToFilter = getArticlesToFilter(
@@ -247,14 +248,9 @@ const WikiDocumentationScreen = () => {
       draftArticles ?? []
     );
 
-    if (!newSearchInput || newSearchInput === "") {
-      setDisplayedArticles(articlesToFilter);
-      return;
-    }
-
     const filteredArticles = articlesToFilter.filter(
       (article) =>
-        article.title.toLowerCase().includes(newSearchInput.toLowerCase()) &&
+        article.title.toLowerCase().includes(newSearchInput.toLowerCase().trim()) &&
         selectedTags.every((tag) => article.tags?.includes(tag))
     );
     setDisplayedArticles(filteredArticles);
