@@ -206,6 +206,30 @@ export const createAppTheme = (mode: "light" | "dark"): Theme =>
       MuiTooltip: {
         defaultProps: {
           arrow: true
+        },
+
+        styleOverrides: {
+          tooltip: ({ theme }) => ({
+            backgroundColor: "#002833",
+            color: theme.palette.foreground.inversed,
+
+            borderRadius: theme.radius.s,
+
+            padding: `${theme.spaces.s} ${theme.spaces.s}`,
+
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "flex-start",
+            gap: theme.spaces.s,
+
+            ...theme.typography.caption,
+            fontWeight: 400
+          }),
+
+          arrow: () => ({
+            color: "#002833"
+          })
         }
       },
       MuiAvatar: {
@@ -247,13 +271,6 @@ export const createAppTheme = (mode: "light" | "dark"): Theme =>
           root: {
             fontWeight: "600",
             borderRadius: "5px"
-          }
-        }
-      },
-      MuiButton: {
-        styleOverrides: {
-          root: {
-            fontWeight: "bold"
           }
         }
       }

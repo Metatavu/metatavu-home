@@ -1,5 +1,6 @@
 import { Button, type Theme, useTheme } from "@mui/material";
 import type { SystemStyleObject } from "@mui/system";
+import type { ReactNode } from "react";
 import strings from "src/localization/strings";
 
 /**
@@ -8,8 +9,9 @@ import strings from "src/localization/strings";
  * - primary: filled orange button, main call-to-action
  * - secondary: light orange background, secondary actions
  * - tertiary: ghost/transparent button, low-emphasis actions
+ * - borderless: button with no border, used for inline actions
  */
-export type AppButtonVariant = "primary" | "secondary" | "tertiary";
+export type AppButtonVariant = "primary" | "secondary" | "tertiary" | "borderless";
 
 interface AppButtonProps {
   id?: string;
@@ -19,6 +21,7 @@ interface AppButtonProps {
   disabled?: boolean;
   type?: "button" | "submit" | "reset";
   fullWidth?: boolean;
+  startIcon?: ReactNode;
   /** @default "primary" */
   variant?: AppButtonVariant;
 }
@@ -59,6 +62,15 @@ const useVariantStyles = (variant: AppButtonVariant): SystemStyleObject<Theme> =
         color: theme.palette.text.disabled,
         border: "none"
       }
+    },
+    borderless: {
+      bgcolor: "transparent",
+      color: theme.palette.text.primary,
+      border: "none",
+      "&:hover": {
+        textDecoration: "underline",
+        backgroundColor: "transparent"
+      }
     }
   };
 
@@ -73,10 +85,11 @@ const AppButton = ({
   disabled = false,
   type = "button",
   fullWidth = false,
+  startIcon,
   variant = "primary"
 }: AppButtonProps): JSX.Element => {
   const variantStyles = useVariantStyles(variant);
-
+  const theme = useTheme();
   return (
     <Button
       id={id}
@@ -86,11 +99,13 @@ const AppButton = ({
       fullWidth={fullWidth}
       variant="contained"
       disableElevation
+      startIcon={startIcon}
       sx={{
         height: "55px",
-        fontWeight: "bold",
+        padding: `${theme.spaces.s} ${theme.spaces.m}`,
         textTransform: "none",
-        borderRadius: "8px",
+        ...theme.typography.bodySmall,
+        borderRadius: theme.radius.s,
         ...variantStyles,
         ...sx
       }}
