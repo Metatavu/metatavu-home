@@ -114,7 +114,7 @@ const Recommendations = ({ applications, onAddUser }: RecommendationsProps) => {
         textAlign: "left",
         fontSize: { xs: "18px", sm: "30px" },
         color: theme.palette.text.primary,
-        fontFamily: "Poppins",
+        fontFamily: "Poppins, Arial, Helvetica, sans-serif",
         marginBottom: "30px"
       }}
     >
