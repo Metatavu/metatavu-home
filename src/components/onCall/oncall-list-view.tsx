@@ -1,4 +1,3 @@
-import { CancelOutlined, CheckCircleOutline } from "@mui/icons-material";
 import { alpha, Box, Button, Checkbox, Typography, useTheme } from "@mui/material";
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
 import { useAtomValue, useSetAtom } from "jotai";
@@ -10,6 +9,7 @@ import strings from "src/localization/strings";
 import { customTheme } from "src/theme";
 import { formatUsername } from "src/utils/oncall-utils";
 import { onCallAtom } from "../../atoms/oncall";
+import { IconBadge, type IconBadgeVariant } from "../generics/badges";
 
 /**
  * Component properties
@@ -27,7 +27,7 @@ interface Props {
  */
 const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Props) => {
   const onCallData = useAtomValue(onCallAtom);
-  const { isAccountant } = useUserRole();
+  const { isAccountant, adminMode } = useUserRole();
   const userProfile = useAtomValue(userProfileAtom);
   const loggedInEmail = userProfile?.email;
   const setError = useSetAtom(errorAtom);
@@ -56,6 +56,10 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
       const errorMessage = await error.response?.json();
       setError(`${strings.oncall.errorUpdatingPaidStatus}: ${errorMessage?.message}`);
     }
+  };
+
+  const columnVisibilityModel = {
+    paid: adminMode
   };
 
   const columns: GridColDef[] = [
@@ -136,13 +140,9 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
             />
           );
         }
+        const isPaid: IconBadgeVariant = params.value ? "success" : "failed";
 
-        const Icon = params.value ? CheckCircleOutline : CancelOutlined;
-        const iconColor = params.value
-          ? alpha(customTheme(theme).colors.paidGreen, 0.8)
-          : alpha(customTheme(theme).colors.unpaidRed, 0.8);
-
-        return <Icon sx={{ color: iconColor, cursor: "default" }} />;
+        return <IconBadge variant={isPaid} />;
       }
     }
   ];
@@ -218,6 +218,7 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
         <DataGrid
           rows={rows}
           columns={columns}
+          columnVisibilityModel={columnVisibilityModel}
           disableRowSelectionOnClick
           hideFooter
           sx={{
