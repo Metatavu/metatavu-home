@@ -44,7 +44,7 @@ export const createAppTheme = (mode: "light" | "dark"): Theme =>
       }
     },
     typography: {
-      fontFamily: "Poppins",
+      fontFamily: "Poppins, Arial, Helvetica, sans-serif",
       fontWeightRegular: 400,
       fontSize: 15,
       h2: {
