@@ -83,7 +83,7 @@ const VacationRequestsTableColumns = (): GridColDef[] => {
               <Box
                 sx={{
                   fontWeight: 400,
-                  fontSize: "14px",
+                  fontSize: 14,
                   cursor: "help"
                 }}
               >

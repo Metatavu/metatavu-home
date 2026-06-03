@@ -2,13 +2,21 @@ import { Box, Tooltip, useTheme } from "@mui/material";
 import type { VacationRequestStatuses } from "src/generated/homeLambdasClient";
 import { getBadgeColor } from "src/utils/badgeColorUtils";
 
-/**
- * VacationStatusIndicator
- * A small pulsing circular indicator representing a vacation request has not yet been reviewed.
- */
 interface StatusIndicatorProps {
   statusColor: VacationRequestStatuses;
 }
+
+/**
+ * Status indicator for vacations badges.
+ *
+ * A small indicator matching the color if vacation approval status.
+ * To indicate vacation request has not yet been reviewed, the indicator is pulsing.
+ *
+ * @param props - VacationStatusIndicator props
+ * @param props.statusColor - a VacataionRequestStatuses type to define colour
+ * of the indicator based on the status
+ * @returns Themed MUI ToolTip component
+ */
 const VacationStatusIndicator = ({ statusColor }: StatusIndicatorProps) => {
   const theme = useTheme();
   const colors = getBadgeColor(statusColor, theme);

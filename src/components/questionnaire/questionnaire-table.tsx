@@ -219,6 +219,7 @@ const QuestionnaireTable = () => {
    */
   const renderStatusCell = (params: GridRenderCellParams) => {
     const userHasPassed = params.row.passedUsers?.includes(loggedInUser?.id) ? "success" : "empty";
+
     return <IconBadge variant={userHasPassed} />;
   };
 

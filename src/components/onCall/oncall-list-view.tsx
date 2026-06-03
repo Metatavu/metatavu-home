@@ -140,7 +140,8 @@ const OnCallListView = ({ selectedDate, setSelectedDate, updatePaidStatus }: Pro
             />
           );
         }
-        const isPaid: IconBadgeVariant = params.value === true ? "success" : "failed";
+        const isPaid: IconBadgeVariant = params.value ? "success" : "failed";
+
         return <IconBadge variant={isPaid} />;
       }
     }

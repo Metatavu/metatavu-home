@@ -56,7 +56,7 @@ export const IconBadge = ({ variant }: IconBadgeProps) => {
 type PillBadgeVariant = "approvalBadge" | "statusBadge" | "wikiBadge";
 
 /**
- * NOTE: status for "statusBadge" and "wikiBadge" were set to "string" for
+ * TODO: status for "statusBadge" and "wikiBadge" were set to "string" for
  * testing purposes. As these variants are not yet fully implemented, type must
  * be changed once the screens are updated.
  */

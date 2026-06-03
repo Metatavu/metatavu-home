@@ -158,16 +158,16 @@ const VacationsCard = () => {
         },
         {
           name: strings.vacationsCard.status,
-          value: earliestUpcomingVacationRequest?.status ? (
+          value: earliestUpcomingVacationRequest?.status && (
             <PillBadge
               variant="approvalBadge"
-              status={getTotalVacationRequestStatus(earliestUpcomingVacationRequest?.status)}
+              status={getTotalVacationRequestStatus(earliestUpcomingVacationRequest.status)}
             >
               {LocalizationUtils.getLocalizedVacationRequestStatus(
-                getTotalVacationRequestStatus(earliestUpcomingVacationRequest?.status)
+                getTotalVacationRequestStatus(earliestUpcomingVacationRequest.status)
               )}
             </PillBadge>
-          ) : null
+          )
         }
       ];
 
