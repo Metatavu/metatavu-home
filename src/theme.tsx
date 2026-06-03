@@ -212,17 +212,13 @@ export const createAppTheme = (mode: "light" | "dark"): Theme =>
           tooltip: ({ theme }) => ({
             backgroundColor: "#002833",
             color: theme.palette.foreground.inversed,
-
             borderRadius: theme.radius.s,
-
             padding: `${theme.spaces.s} ${theme.spaces.s}`,
-
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
             alignItems: "flex-start",
             gap: theme.spaces.s,
-
             ...theme.typography.caption,
             fontWeight: 400
           }),

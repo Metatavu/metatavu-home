@@ -77,6 +77,11 @@ const useVariantStyles = (variant: AppButtonVariant): SystemStyleObject<Theme> =
   return variants[variant];
 };
 
+/**
+ * A themed button component that wraps MUI's Button with consistent
+ * sizing, typography, spacing and variant-based styling. Supports
+ * icons, full-width layout and custom styles through the sx prop.
+ */
 const AppButton = ({
   id,
   onClick,
@@ -90,6 +95,7 @@ const AppButton = ({
 }: AppButtonProps): JSX.Element => {
   const variantStyles = useVariantStyles(variant);
   const theme = useTheme();
+
   return (
     <Button
       id={id}

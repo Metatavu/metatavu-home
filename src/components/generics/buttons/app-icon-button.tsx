@@ -1,6 +1,7 @@
 import { IconButton, type Theme, Tooltip, useTheme } from "@mui/material";
 import type { SystemStyleObject } from "@mui/system";
 import type { ReactNode } from "react";
+
 /**
  * Visual variants for the AppIconButton component.
  *
@@ -70,6 +71,7 @@ const AppIconButton = ({
 }: AppIconButtonProps): JSX.Element => {
   const theme = useTheme();
   const variantStyles = useVariantStyles(variant);
+
   return (
     <Tooltip title={tooltip}>
       <IconButton
