@@ -59,6 +59,7 @@ const ToolbarFormFields = ({
   const { workHoursApi } = useLambdasApi();
   const [error, setError] = useState<string | null>(null);
   const originalEndDateRef = useRef<DateTime | null>(null);
+  const originalStartDateRef = useRef<DateTime | null>(null);
 
   /**
    * Fetch contracted work week, defaults to 5 day if it fails
@@ -89,17 +90,26 @@ const ToolbarFormFields = ({
    */
   useEffect(() => {
     originalEndDateRef.current = null;
+    originalStartDateRef.current = null;
   }, [toolbarFormMode]);
 
-  // Update vacation request whenever date range changes
+  // Update vacation request whenever date range changesei
   useEffect(() => {
     if (!dateRange.start || !dateRange.end) return;
     // Store original end date on first load
-    if (originalEndDateRef.current === null) {
+    if (!originalEndDateRef.current && !originalStartDateRef.current) {
       originalEndDateRef.current = dateRange.end;
+      originalStartDateRef.current = dateRange.start;
     }
 
+    const originalStart = originalStartDateRef.current;
+    const originalEnd = originalEndDateRef.current;
+
+    if (!originalStart || !originalEnd) return;
+
     const days = calculateTotalVacationDays(dateRange.start, dateRange.end, workWeek);
+    const isModified =
+      !dateRange.start.hasSame(originalStart, "day") || !dateRange.end.hasSame(originalEnd, "day");
 
     if (!adminMode) {
       setVacationRequestData({
@@ -109,11 +119,14 @@ const ToolbarFormFields = ({
         days
       });
     } else {
-      setVacationRequestData({
-        ...vacationRequestData,
-        startDate: dateRange.start.toJSDate(),
-        endDate: dateRange.end.toJSDate()
-      });
+      if (isModified) {
+        setVacationRequestData({
+          ...vacationRequestData,
+          startDate: dateRange.start.toJSDate(),
+          endDate: dateRange.end.toJSDate(),
+          days
+        });
+      }
     }
   }, [dateRange, workWeek, adminMode]);
 
