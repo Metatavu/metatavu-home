@@ -208,7 +208,6 @@ export const createAppTheme = (mode: "light" | "dark"): Theme =>
         defaultProps: {
           arrow: true
         },
-
         styleOverrides: {
           tooltip: ({ theme }) => ({
             backgroundColor: "#002833",
@@ -223,7 +222,6 @@ export const createAppTheme = (mode: "light" | "dark"): Theme =>
             ...theme.typography.caption,
             fontWeight: 400
           }),
-
           arrow: () => ({
             color: "#002833"
           })
@@ -273,6 +271,7 @@ export const createAppTheme = (mode: "light" | "dark"): Theme =>
 /**
  * Color tokens for wiki screen UI.
  *
+ * TODO:
  * These values have not yet been updated to match UI changes
  * and need further review.
  */
@@ -288,6 +287,7 @@ export const wikiScreenColors = (theme: Theme) => ({
 /**
  * Custom theme tokens and styles.
  *
+ * TODO:
  * These are yet to be aligned with UI changes and should
  * be revisited.
  */
