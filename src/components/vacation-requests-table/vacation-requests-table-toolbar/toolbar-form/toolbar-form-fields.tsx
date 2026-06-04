@@ -93,7 +93,7 @@ const ToolbarFormFields = ({
     originalStartDateRef.current = null;
   }, [toolbarFormMode]);
 
-  // Update vacation request whenever date range changesei
+  // Update vacation request whenever date range changes
   useEffect(() => {
     if (!dateRange.start || !dateRange.end) return;
     // Store original end date on first load
@@ -111,22 +111,13 @@ const ToolbarFormFields = ({
     const isModified =
       !dateRange.start.hasSame(originalStart, "day") || !dateRange.end.hasSame(originalEnd, "day");
 
-    if (!adminMode) {
+    if (isModified) {
       setVacationRequestData({
         ...vacationRequestData,
         startDate: dateRange.start.toJSDate(),
         endDate: dateRange.end.toJSDate(),
         days
       });
-    } else {
-      if (isModified) {
-        setVacationRequestData({
-          ...vacationRequestData,
-          startDate: dateRange.start.toJSDate(),
-          endDate: dateRange.end.toJSDate(),
-          days
-        });
-      }
     }
   }, [dateRange, workWeek, adminMode]);
 

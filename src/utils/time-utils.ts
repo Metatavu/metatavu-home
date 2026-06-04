@@ -104,46 +104,6 @@ export const calculateTotalVacationDays = (
 };
 
 /**
- * NOTE: This function is no longer in use, should it be removed, or is it
- * needed later on?
- *
- * Calculates new endDate for vacation request after admin has updated the days count
- *
- * @param startDate - The starting date as a Luxon `DateTime`.
- * @param totalDays - The total number of vacation days to count.
- * @param workWeek - An array of 7 booleans (index 0 = Monday, index 6 = Sunday)
- *                   indicating which days are considered working days.
- * @returns A Luxon `DateTime` representing the calculated end date.
- */
-export const calculateEndDateFromDays = (
-  startDate: DateTime,
-  totalDays: number,
-  workWeek: boolean[]
-) => {
-  const workDaysInWeek = workWeek.filter(Boolean).length;
-  let daysAdded = 0;
-  let currentDate = startDate;
-  const [startWeek, endWeek] = getIndexDaysWorking(workWeek);
-  if (!startWeek || !endWeek) return startDate;
-  while (daysAdded < totalDays) {
-    const weekdayIndex = currentDate.weekday;
-    const isWorkingDay = workWeek[weekdayIndex - 1];
-    const reachedTotal = daysAdded >= totalDays;
-    const endOfWorkWeek = daysAdded % workDaysInWeek === 0;
-    if (isWorkingDay) {
-      daysAdded++;
-    }
-    if (!reachedTotal && endOfWorkWeek && isWorkingDay) {
-      daysAdded++;
-    }
-    if (!reachedTotal) {
-      currentDate = currentDate.plus({ days: 1 });
-    }
-  }
-  return currentDate;
-};
-
-/**
  * Get indexes - start and end day of working week
  *
  * @param workingWeek list of booleans representing which days are working days
