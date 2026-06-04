@@ -5,71 +5,161 @@ import PoppinsMedium from "../resources/fonts/poppins/Poppins-Medium.ttf";
 import PoppinsRegular from "../resources/fonts/poppins/Poppins-Regular.ttf";
 import PoppinsSemiBold from "../resources/fonts/poppins/Poppins-SemiBold.ttf";
 
+/**
+ * Creates MUI theme for the application.
+ *
+ * Extends default MUI theme with:
+ * - Custom color palette, spacing, radius and border scale tokens
+ * - Typography system
+ * - Component-level style overrides (requires further work, not updated yet)
+ *
+ * Light mode is fully supported.
+ * Dark mode not implemented yet.
+ *
+ * @param mode - Theme mode ("light | "dark")
+ * @returns Configured MUI Theme object
+ */
 export const createAppTheme = (mode: "light" | "dark"): Theme =>
   createTheme({
     palette: {
       mode,
-      primary: {
-        main: mode === "dark" ? "#fff" : "#222"
-      },
-      secondary: {
-        main: "#fff"
-      },
-      info: {
-        main: "#1976d2"
+      foreground: {
+        inversed: "#ffffff",
+        positive: "#005e00",
+        negative: "#c60000"
       },
       background: {
-        default: mode === "dark" ? "#121212" : "#f5f5f5",
-        paper: mode === "dark" ? "#1e1e1e" : "#fff"
+        default: mode === "dark" ? "#121212" : "#ffffff",
+        secondary: "#dadada",
+        disabled: "#c2c2c2",
+        accent: "#00647f",
+        accentSecondary: "#e6eff2",
+        selected: "#99c1cc",
+        event: "#f2f2f2",
+        paper: mode === "dark" ? "#1e1e1e" : "#ffffff"
       },
       text: {
-        primary: mode === "dark" ? "#fff" : "#1a1a1a",
-        secondary: mode === "dark" ? "#bdbdbd" : "#555"
+        primary: mode === "dark" ? "#ffffff" : "#222222",
+        disabled: "#919191",
+        accent: "#005066",
+        accentSecondary: "#003c4c"
       },
-      success: {
-        main: "#4caf50",
-        dark: "#45a049",
-        contrastText: "#fff"
+      icons: {
+        primary: "#222222",
+        empty: "#494949",
+        disabled: "#c2c2c2"
       },
-      error: {
-        main: "#f44336",
-        dark: "#da190b",
-        contrastText: "#fff"
+      border: {
+        primary: "#c2c2c2",
+        accent: "#005066",
+        subtle: "#f2f2f2",
+        strong: "#181818",
+        disabled: "#dadada",
+        badgePrimary: "#494949"
       },
-      divider: mode === "dark" ? "#444" : "#e0e0e0",
-      action: {
-        hover: mode === "dark" ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.04)",
-        selected: mode === "dark" ? "rgba(255,255,255,0.16)" : "rgba(0,0,0,0.08)",
-        disabledBackground: mode === "dark" ? "rgba(255,255,255,0.12)" : "rgba(0,0,0,0.12)"
+      hover: {
+        primary: "#494949",
+        secondary: "#f2f2f2",
+        tag: "#99c1cc",
+        navigation: "#66a2b2"
+      },
+      chart: {
+        primary: "#66a2b2",
+        secondary: "#003c4c",
+        accent: "#e77f3a",
+        disabledPrimary: "#a9a9a9",
+        disabledAccent: "#797979",
+        disabledSecondary: "#494949"
+      },
+      buttons: {
+        primary: "#e77f3a",
+        hover: "#b9662e",
+        secondaryBg: "#fae5d8",
+        secondaryHover: "#f7ccb0",
+        accent: "#f1b289",
+        toggleThumb: "#ffffff",
+        disabledBg: "#f2f2f2"
+      },
+      badges: {
+        statusPending: "#ffca1a",
+        stuckBg: "#f9e6e6",
+        reviewBg: "#fff4d1",
+        reviewAccent: "#66510a",
+        deploymentBg: "#efe9f8",
+        deploymentAccent: "#5b21b6",
+        progressBg: "#eaf5f5",
+        progressBgStrong: "#abd8d5",
+        progressAccent: "#1a5f5a",
+        completedBg: "#cce4cc"
       }
+    },
+    spaces: {
+      none: "0px",
+      xxs: "2px",
+      xs: "4px",
+      s: "8px",
+      m: "16px",
+      l: "24px",
+      xl: "32px",
+      xxl: "40px",
+      xxxl: "56px",
+      negative: "-16px"
+    },
+    radius: {
+      xs: "4px",
+      s: "8px",
+      m: "16px",
+      full: "999px"
+    },
+    borders: {
+      xs: "0.5px",
+      s: "1px",
+      m: "3px"
     },
     typography: {
       fontFamily: "Poppins, Arial, Helvetica, sans-serif",
       fontWeightRegular: 400,
-      fontSize: 15,
+      fontSize: 16,
+      h1: {
+        fontWeight: 600,
+        fontSize: 40,
+        lineHeight: "115%"
+      },
       h2: {
-        fontWeight: 500,
-        fontSize: 45
+        fontWeight: 600,
+        fontSize: 32,
+        lineHeight: "120%"
       },
       h3: {
-        fontWeight: 700,
-        fontSize: 30
+        fontWeight: 600,
+        fontSize: 24,
+        lineHeight: "125%"
       },
       h4: {
         fontWeight: 600,
-        fontSize: 20
+        fontSize: 20,
+        lineHeight: "130%"
       },
-      h6: {
-        fontWeight: 700,
-        fontSize: 20
+      h5: {
+        fontWeight: 500,
+        fontSize: 20,
+        lineHeight: "130%"
       },
-      body1: {
-        fontWeight: 400,
-        fontSize: 16
+      body: {
+        fontSize: 16,
+        lineHeight: "160%"
       },
-      body2: {
-        fontWeight: 400,
-        fontSize: 16
+      bodySmall: {
+        fontSize: 14,
+        lineHeight: "160%"
+      },
+      caption: {
+        fontSize: 12,
+        lineHeight: "150%"
+      },
+      captionSmall: {
+        fontSize: 10,
+        lineHeight: "150%"
       }
     },
     components: {
@@ -117,6 +207,24 @@ export const createAppTheme = (mode: "light" | "dark"): Theme =>
       MuiTooltip: {
         defaultProps: {
           arrow: true
+        },
+        styleOverrides: {
+          tooltip: ({ theme }) => ({
+            backgroundColor: "#002833",
+            color: theme.palette.foreground.inversed,
+            borderRadius: theme.radius.s,
+            padding: `${theme.spaces.s} ${theme.spaces.s}`,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "flex-start",
+            gap: theme.spaces.s,
+            ...theme.typography.caption,
+            fontWeight: 400
+          }),
+          arrow: () => ({
+            color: "#002833"
+          })
         }
       },
       MuiAvatar: {
@@ -137,7 +245,7 @@ export const createAppTheme = (mode: "light" | "dark"): Theme =>
             color: theme.palette.text.primary,
             transition: "background-color 0.2s ease",
             "&:hover": {
-              backgroundColor: theme.palette.action.hover
+              backgroundColor: theme.palette.hover.secondary
             }
           })
         }
@@ -150,17 +258,6 @@ export const createAppTheme = (mode: "light" | "dark"): Theme =>
           })
         }
       },
-      MuiChip: {
-        defaultProps: {
-          color: "default"
-        },
-        styleOverrides: {
-          root: {
-            fontWeight: "600",
-            borderRadius: "5px"
-          }
-        }
-      },
       MuiButton: {
         styleOverrides: {
           root: {
@@ -171,15 +268,29 @@ export const createAppTheme = (mode: "light" | "dark"): Theme =>
     }
   });
 
+/**
+ * Color tokens for wiki screen UI.
+ *
+ * TODO:
+ * These values have not yet been updated to match UI changes
+ * and need further review.
+ */
 export const wikiScreenColors = (theme: Theme) => ({
   button: {
     main: theme.palette.background.paper,
-    hover: theme.palette.action.hover,
+    hover: theme.palette.buttons.hover,
     text: theme.palette.text.primary,
     border: theme.palette.divider
   }
 });
 
+/**
+ * Custom theme tokens and styles.
+ *
+ * TODO:
+ * These are yet to be aligned with UI changes and should
+ * be revisited.
+ */
 export const customTheme = (theme: Theme) => ({
   colors: {
     paidGreen: "#7bd15c",
@@ -221,7 +332,7 @@ export const customTheme = (theme: Theme) => ({
       transition: "box-shadow 0.2s ease",
       "&:hover": {
         boxShadow: `0 0 0 3px ${theme.palette.divider}`,
-        "& .MuiTypography-root": { backgroundColor: theme.palette.action.hover }
+        "& .MuiTypography-root": { backgroundColor: theme.palette.hover.secondary }
       },
       "&.Mui-disabled": {
         boxShadow: `0 0 0 2px ${theme.palette.action.disabled}`,

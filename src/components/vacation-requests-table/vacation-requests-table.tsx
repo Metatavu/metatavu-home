@@ -1,9 +1,9 @@
 import { Inventory } from "@mui/icons-material";
-import { Box, styled, useTheme } from "@mui/material";
+import { Box, styled } from "@mui/material";
 import { DataGrid, type GridRowId, type GridRowSelectionModel } from "@mui/x-data-grid";
 import { useAtomValue } from "jotai";
 import { DateTime } from "luxon";
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { userProfileAtom } from "src/atoms/auth";
 import { usersAtom } from "src/atoms/user";
 import { displayedVacationRequestsAtom } from "src/atoms/vacation";
@@ -13,10 +13,7 @@ import type { VacationsDataGridRow } from "src/types";
 import LocalizationUtils from "src/utils/localization-utils";
 import type { FilterType } from "src/utils/vacation-filter-type";
 import { getVacationRequestPersonFullName } from "src/utils/vacation-request-utils";
-import {
-  getTotalVacationRequestStatus,
-  getVacationRequestStatusColor
-} from "src/utils/vacation-status-utils";
+import { getTotalVacationRequestStatus } from "src/utils/vacation-status-utils";
 import SkeletonTableRows from "./skeleton-table-rows/skeleton-table-rows";
 import VacationRequestsTableColumns from "./vacation-requests-table-columns";
 import TableToolbar from "./vacation-requests-table-toolbar/vacation-requests-table-toolbar";
@@ -99,7 +96,6 @@ const VacationRequestsTable = ({
   setFilter
 }: Props) => {
   const vacationRequests = useAtomValue(displayedVacationRequestsAtom) || [];
-  const containerRef = useRef(null);
   const [formOpen, setFormOpen] = useState(false);
   const [selectedRowIds, setSelectedRowIds] = useState<GridRowSelectionModel>({
     type: "include",
@@ -216,23 +212,8 @@ const VacationRequestsTable = ({
     }
   }, [vacationRequests, formOpen]);
 
-  const theme = useTheme();
-
   return (
-    <Box
-      sx={{
-        "& .APPROVED": {
-          color: `${getVacationRequestStatusColor(VacationRequestStatuses.APPROVED, theme)}`
-        },
-        "& .DECLINED": {
-          color: `${getVacationRequestStatusColor(VacationRequestStatuses.DECLINED, theme)}`
-        },
-        "& .PENDING": {
-          color: `${getVacationRequestStatusColor(VacationRequestStatuses.PENDING, theme)}`
-        }
-      }}
-      ref={containerRef}
-    >
+    <Box>
       <TableToolbar
         isUpcoming={isUpcoming}
         toggleIsUpcoming={toggleIsUpcoming}
