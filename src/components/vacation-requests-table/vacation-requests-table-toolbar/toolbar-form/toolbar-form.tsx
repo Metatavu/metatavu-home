@@ -149,8 +149,8 @@ const ToolbarForm = ({
    * Handle create vacation request
    */
   const handleCreate = async () => {
-    await createVacationRequest(vacationRequestData);
     setFormOpen(false);
+    await createVacationRequest(vacationRequestData);
   };
 
   /**
@@ -177,8 +177,8 @@ const ToolbarForm = ({
    *  Handle draft vacation request creation
    */
   const handleDraft = async () => {
-    await createDraftVacationRequest(vacationRequestData);
     setFormOpen(false);
+    await createDraftVacationRequest(vacationRequestData);
   };
 
   return (
