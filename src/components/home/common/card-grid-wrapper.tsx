@@ -1,7 +1,82 @@
 import Masonry from "@mui/lab/Masonry";
 import { Box, Grid } from "@mui/material";
+import type { ReactNode } from "react";
 import type { HomepageCardType } from "src/components/screens/home-screen";
 import { DraggableCard, DroppableCard } from "src/utils/cardUtils";
+
+/**
+ * Renders card content.
+ *
+ * @param card - Card to render
+ * @param editmode - Boolean defining editmode.
+ * @returns Rendered card content.
+ */
+const renderCardContent = (card: HomepageCardType, editmode: boolean): JSX.Element | ReactNode => {
+  if (card.group) {
+    return (
+      <Box display="flex" flexDirection="row">
+        {editmode ? (
+          <>
+            <DraggableCard id={card.id} canGroup={card.canGroup}>
+              {card.element}
+            </DraggableCard>
+            <DraggableCard id={card.group.id} canGroup={card.group.canGroup}>
+              {card.group.element}
+            </DraggableCard>
+          </>
+        ) : (
+          <>
+            {card.element}
+            {card.group.element}
+          </>
+        )}
+      </Box>
+    );
+  }
+
+  if (editmode) {
+    return (
+      <DraggableCard id={card.id} canGroup={card.canGroup}>
+        {card.element}
+      </DraggableCard>
+    );
+  }
+
+  return card.element;
+};
+
+/**
+ * Renders cards to a column.
+ *
+ * @param column - column to render
+ * @param editmode - Boolean for editmode
+ * @param dragOverGroup - Boolean defining wheter a draggable can form a group
+ * @returns Array of rendered card elements.
+ */
+const renderColumn = (column: HomepageCardType[], editmode: boolean, dragOverGroup: boolean) => {
+  return column.map((card) => {
+    const content = renderCardContent(card, editmode);
+
+    if (!editmode) {
+      return (
+        <Grid key={card.id} id={card.id}>
+          {content}
+        </Grid>
+      );
+    }
+
+    return (
+      <DroppableCard
+        key={card.id}
+        id={card.id}
+        canGroup={card.canGroup}
+        dragOverGroup={dragOverGroup}
+      >
+        {content}
+      </DroppableCard>
+    );
+  });
+};
 
 interface CardGridWrapperProps {
   children: HomepageCardType[];
@@ -28,124 +103,24 @@ const CardGridWrapper = ({
   editmode,
   dragOverGroup
 }: CardGridWrapperProps) => {
-  const visible = children.filter((child: any) => !hiddenCards.includes(child.id));
-  const hidden = children.filter((child: any) => hiddenCards.includes(child.id));
-  const rows = {
-    firstRow: visible.slice(0, visible.length / 2),
-    secondRow: visible.slice(visible.length / 2, visible.length)
-  };
-  const firstRowContainer = [...rows.firstRow].map((item: any) => item.id);
-  const secondRowContainer = [...rows.secondRow].map((item: any) => item.id);
+  const visible = children.filter((item) => !hiddenCards.includes(item.id));
+  const hidden = children.filter((item) => hiddenCards.includes(item.id));
+  const firstColumn = visible.slice(0, visible.length / 2);
+  const secondColumn = visible.slice(visible.length / 2, visible.length);
 
   return (
     <Box>
-      {editmode && (
-        <Grid container spacing={{ xs: 1, sm: 2 }} columns={2}>
-          <Grid size={{ xs: 2, sm: 1 }}>
-            {firstRowContainer.map((item, index) => {
-              const card = rows.firstRow[index];
+      <Grid container spacing={{ xs: 1, sm: 2 }} columns={2}>
+        <Grid size={{ xs: 2, sm: 1 }}>{renderColumn(firstColumn, editmode, dragOverGroup)}</Grid>
 
-              return (
-                <DroppableCard
-                  key={item}
-                  id={item}
-                  canGroup={card.canGroup}
-                  dragOverGroup={dragOverGroup}
-                >
-                  {card?.group ? (
-                    <Box display="flex" flexDirection="row">
-                      <DraggableCard id={card.id} canGroup={card.canGroup}>
-                        {card.element}
-                      </DraggableCard>
-                      <DraggableCard id={card.group.id} canGroup={card.group.canGroup}>
-                        {card.group?.element}
-                      </DraggableCard>
-                    </Box>
-                  ) : (
-                    <DraggableCard id={card.id} canGroup={card.canGroup}>
-                      {card.element}
-                    </DraggableCard>
-                  )}
-                </DroppableCard>
-              );
-            })}
-          </Grid>
-
-          <Grid size={{ xs: 2, sm: 1 }}>
-            {secondRowContainer.map((item, index) => {
-              const card = rows.secondRow[index];
-
-              return (
-                <DroppableCard
-                  key={item}
-                  id={item}
-                  canGroup={card.canGroup}
-                  dragOverGroup={dragOverGroup}
-                >
-                  {card?.group ? (
-                    <Box display="flex" flexDirection="row">
-                      <DraggableCard id={card.id} canGroup={card.canGroup}>
-                        {card.element}
-                      </DraggableCard>
-                      <DraggableCard id={card.group.id} canGroup={card.group.canGroup}>
-                        {card.group?.element}
-                      </DraggableCard>
-                    </Box>
-                  ) : (
-                    <DraggableCard id={card.id} canGroup={card.canGroup}>
-                      {card.element}
-                    </DraggableCard>
-                  )}
-                </DroppableCard>
-              );
-            })}
-          </Grid>
-        </Grid>
-      )}
-
-      {!editmode && (
-        <Grid container spacing={{ xs: 1, sm: 2 }} columns={2}>
-          <Grid size={{ xs: 2, sm: 1 }}>
-            {rows.firstRow.map((child) => (
-              <Grid key={child.id} id={child.id}>
-                {child.group ? (
-                  <Box display="flex" flexDirection="row">
-                    {child.element}
-                    {child.group?.element}
-                  </Box>
-                ) : (
-                  <Grid key={child.id} id={child.id}>
-                    {child.element}
-                  </Grid>
-                )}
-              </Grid>
-            ))}
-          </Grid>
-
-          <Grid size={{ xs: 2, sm: 1 }}>
-            {rows.secondRow.map((child) => (
-              <Grid key={child.id} id={child.id}>
-                {child.group ? (
-                  <Box display="flex" flexDirection="row">
-                    {child.element}
-                    {child.group.element}
-                  </Box>
-                ) : (
-                  <Grid key={child.id} id={child.id}>
-                    {child.element}
-                  </Grid>
-                )}
-              </Grid>
-            ))}
-          </Grid>
-        </Grid>
-      )}
+        <Grid size={{ xs: 2, sm: 1 }}>{renderColumn(secondColumn, editmode, dragOverGroup)}</Grid>
+      </Grid>
 
       {editmode && hidden.length > 0 && (
         <Grid sx={{ mt: 3 }}>
           <Masonry columns={2} spacing={2}>
-            {hidden.map((child: any) => (
-              <Grid key={child.id}>{child.element}</Grid>
+            {hidden.map((card) => (
+              <Grid key={card.id}>{card.element}</Grid>
             ))}
           </Masonry>
         </Grid>
