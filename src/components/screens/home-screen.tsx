@@ -91,10 +91,10 @@ const HomeScreen = () => {
         id: "balance-card",
         element:
           isDeveloper &&
-          (!hasSeveraUserId ? (
-            renderCardWithSkeleton(strings.balanceCard.balance, hasSeveraUserId, theme)
-          ) : (
+          (hasSeveraUserId ? (
             <BalanceCard />
+          ) : (
+            renderCardWithSkeleton(strings.balanceCard.balance, hasSeveraUserId, theme)
           )),
         canGroup: true,
         group: undefined

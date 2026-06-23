@@ -30,7 +30,9 @@ interface DragDropProps {
   id: UniqueIdentifier;
   children: ReactNode;
   canGroup: boolean;
-  dragOverGroup?: boolean | undefined;
+}
+interface DroppableProps extends DragDropProps {
+  dragOverGroup: boolean;
 }
 
 /**
@@ -82,7 +84,7 @@ export const DroppableCard = ({
   children,
   canGroup,
   dragOverGroup
-}: DragDropProps): JSX.Element => {
+}: DroppableProps): JSX.Element => {
   const theme = useTheme();
   const group = dragOverGroup && canGroup;
   const { ref, isDropTarget } = useDroppable({
