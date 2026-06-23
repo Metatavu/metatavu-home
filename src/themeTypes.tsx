@@ -143,7 +143,7 @@ declare module "@mui/material/styles" {
     spaces: {
       none: string;
       xxs: string;
-      sx: string;
+      xs: string;
       s: string;
       m: string;
       l: string;

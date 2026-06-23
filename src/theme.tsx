@@ -264,6 +264,46 @@ export const createAppTheme = (mode: "light" | "dark"): Theme =>
             fontWeight: "bold"
           }
         }
+      },
+      MuiSwitch: {
+        styleOverrides: {
+          root: ({ theme }) => ({
+            width: 48,
+            height: 26,
+            padding: 0,
+            "& .MuiSwitch-switchBase": {
+              padding: theme.spaces.xxs,
+              margin: 0,
+              "&.Mui-checked": {
+                transform: "translateX(22px)",
+                color: theme.palette.background.default,
+                "& + .MuiSwitch-track": {
+                  backgroundColor: theme.palette.background.accent,
+                  opacity: 1,
+                  border: 0
+                },
+                "&.Mui-disabled + .MuiSwitch-track": {
+                  opacity: 0.5
+                }
+              },
+              "&.Mui-focusVisible .MuiSwitch-thumb": {
+                color: theme.palette.background.accent
+              },
+              "&.Mui-disabled + .MuiSwitch-track": {
+                opacity: 0.5
+              }
+            },
+            "& .MuiSwitch-thumb": {
+              width: 22,
+              height: 22
+            },
+            "& .MuiSwitch-track": {
+              borderRadius: theme.radius.m,
+              backgroundColor: theme.palette.background.disabled,
+              opacity: 1
+            }
+          })
+        }
       }
     }
   });

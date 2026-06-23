@@ -1,12 +1,17 @@
-import { Box, Grid, Skeleton, useTheme } from "@mui/material";
+/** biome-ignore-all lint/correctness/useUniqueElementIds: Keep static id */
+import { DragDropProvider } from "@dnd-kit/react";
+import { EditOutlined } from "@mui/icons-material";
+import { Box, useTheme } from "@mui/material";
 import { useAtomValue } from "jotai";
-import type { ReactNode } from "react";
+import { type ReactNode, useEffect, useMemo, useState } from "react";
 import { userProfileAtom } from "src/atoms/auth";
 import { usersAtom } from "src/atoms/user";
 import type { User } from "src/generated/homeLambdasClient";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import { OnboardingScreen } from "src/types/index";
+import { groupCard, moveCard, renderCardWithSkeleton } from "src/utils/cardUtils";
+import AppButton from "../generics/buttons/app-button";
 import BalanceCard from "../home/balance-card";
 import CardGridWrapper from "../home/common/card-grid-wrapper";
 import OnCallCard from "../home/oncall-card";
@@ -17,117 +22,219 @@ import VacationsCard from "../home/vacations-card";
 import WikiDocumentationCard from "../home/wiki-documentation-card";
 import Onboarding from "../onboarding/Onboarding";
 
-/**
- * Home screen component
+export type HomepageCardType = {
+  id: string;
+  element: ReactNode;
+  canGroup: boolean;
+  group: HomepageCardType | undefined;
+};
+/**TODO: cards array takes up space and makes this file confusing.
+ * Consider moving it for clarity.
+ *
+ * Home screen component.
+ * Defines homepage cards and their order.
+ * Saves user's layout to local storage.
+ * Handles drag and drop logic.
  */
 const HomeScreen = () => {
   const theme = useTheme();
   const { isDeveloper, isTester } = useUserRole();
   const users = useAtomValue(usersAtom);
   const userProfile = useAtomValue(userProfileAtom);
-  const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
 
+  const [editmode, setEditmode] = useState(false);
+  const [savedOrder, setSavedOrder] = useState<string[]>([]);
+  const [hiddenCards, setHiddenCards] = useState<string[]>([]);
+  const [dragOverGroup, setDragOverGroup] = useState(false);
+
+  const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
+  const HIDDEN_CARDS_KEY = "hiddenCards";
+  const ORDER_KEY = "order";
   const hasSeveraUserId = !!loggedInUser?.attributes?.severaUserId;
 
-  /**
-   * Renders a card with a skeleton loader
-   *
-   * @param title - Title of the card
-   * @param content - Content to render inside the card
-   * @returns ReactNode containing the card
-   */
-  const renderCardWithSkeleton = (title: string, content: ReactNode) => (
-    <Box
-      sx={{
-        background: theme.palette.background.paper,
-        borderRadius: 1,
-        boxShadow: theme.shadows[1],
-        minHeight: title === strings.sprint.sprintview ? 270 : 120,
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "flex-start",
-        transition: "background-color 0.2s ease",
-        "&:hover": {
-          backgroundColor: theme.palette.action.hover
-        }
-      }}
-    >
-      <Grid sx={{ padding: 2 }}>
-        <Box sx={{ fontWeight: "bold", fontSize: 22 }}>{title}</Box>
-        {!hasSeveraUserId ? (
-          <>
-            <div style={{ color: theme.palette.text.secondary, fontSize: 15, padding: "12px 0" }}>
-              {strings.notOptedInDescription.description}
-            </div>
-            <Skeleton
-              variant="rectangular"
-              height={20}
-              sx={{ borderRadius: 1, marginTop: 1, width: "100%" }}
-            />
-          </>
-        ) : (
-          content
-        )}
-      </Grid>
-    </Box>
-  );
+  useEffect(() => {
+    const previousOrder = localStorage.getItem(ORDER_KEY);
+    const previousHidden = localStorage.getItem(HIDDEN_CARDS_KEY);
 
-  const cards: ReactNode[] = [
-    isDeveloper && (
-      <Box key="balance" id="balance-card">
-        {!hasSeveraUserId ? (
-          renderCardWithSkeleton(strings.balanceCard.balance, <></>)
-        ) : (
-          <BalanceCard />
-        )}
-      </Box>
-    ),
-    isDeveloper && (
-      <Box key="sprint" id="sprint-view-card" sx={{ minHeight: 270 }}>
-        {!hasSeveraUserId ? (
-          renderCardWithSkeleton(strings.sprint.sprintview, <></>)
-        ) : (
-          <SprintViewCard />
-        )}
-      </Box>
-    ),
-    isDeveloper && (
-      <Box key="vacations" id="vacations-card">
-        <VacationsCard />
-      </Box>
-    ),
-    isDeveloper && (
-      <Box key="questionnaires" id="questionnaires-card">
-        <QuestionnaireCard />
-      </Box>
-    ),
-    isDeveloper && (
-      <Box key="software" id="software-registry-card">
-        <SoftwareRegistryCard />
-      </Box>
-    ),
-    isTester && (
-      <Box key="wiki" id="wiki-documentation-card">
-        <WikiDocumentationCard />
-      </Box>
-    ),
-    isDeveloper && (
-      <Box key="oncall" id="oncall-card">
-        <OnCallCard />
-      </Box>
-    )
-  ].filter(Boolean);
+    if (previousOrder) {
+      setSavedOrder(JSON.parse(previousOrder));
+    }
+    if (previousHidden) {
+      setHiddenCards(JSON.parse(previousHidden));
+    }
+  }, []);
+
+  const handleEdit = (action?: string) => {
+    setEditmode((prev) => !prev);
+    if (action === "save") {
+      localStorage.setItem(HIDDEN_CARDS_KEY, JSON.stringify(hiddenCards));
+      localStorage.setItem(
+        ORDER_KEY,
+        JSON.stringify(
+          orderedCards.map((item) => (item.group ? `${item.id}|${item.group?.id}` : item.id))
+        )
+      );
+      return;
+    }
+
+    const previousCards = localStorage.getItem(HIDDEN_CARDS_KEY);
+    const previousOrder = localStorage.getItem(ORDER_KEY);
+    previousCards && setHiddenCards(JSON.parse(previousCards));
+    previousOrder
+      ? setSavedOrder(JSON.parse(previousOrder))
+      : setSavedOrder(cards.map((item) => (item.group ? `${item.id}|${item.group?.id}` : item.id)));
+  };
+
+  const cards: HomepageCardType[] = useMemo(
+    () => [
+      {
+        id: "balance-card",
+        element:
+          isDeveloper &&
+          (!hasSeveraUserId ? (
+            renderCardWithSkeleton(strings.balanceCard.balance, hasSeveraUserId, theme)
+          ) : (
+            <BalanceCard />
+          )),
+        canGroup: true,
+        group: undefined
+      },
+      {
+        id: "sprint-view-card",
+        element: isDeveloper && <SprintViewCard />,
+        canGroup: false,
+        group: undefined
+      },
+      {
+        id: "vacations-card",
+        element: isDeveloper && <VacationsCard />,
+        canGroup: false,
+        group: undefined
+      },
+      {
+        id: "questionnaires-card",
+        element: isDeveloper && <QuestionnaireCard />,
+        canGroup: true,
+        group: undefined
+      },
+      {
+        id: "software-registry-card",
+        element: isDeveloper && <SoftwareRegistryCard />,
+        canGroup: false,
+        group: undefined
+      },
+      {
+        id: "wiki-documentation-card",
+        element: isTester && <WikiDocumentationCard />,
+        canGroup: false,
+        group: undefined
+      },
+      {
+        id: "on-call-card",
+        element: isDeveloper && <OnCallCard />,
+        canGroup: false,
+        group: undefined
+      }
+    ],
+    [editmode, isTester, isDeveloper, hiddenCards, hasSeveraUserId, savedOrder]
+  );
+  const orderedCards = useMemo(() => {
+    if (!savedOrder.length) {
+      return cards;
+    }
+
+    const cardMap = new Map(cards.map((card) => [card.id, card]));
+
+    const seen = new Set<string>();
+
+    const sorted = savedOrder
+      .map((item) => {
+        const [id, groupId] = item.split("|");
+
+        const card = cardMap.get(id);
+        if (!card) return null;
+
+        if (groupId) {
+          seen.add(groupId);
+        }
+
+        if (seen.has(id)) {
+          return null;
+        }
+
+        if (groupId) {
+          return {
+            ...card,
+            group: cardMap.get(groupId)
+          };
+        }
+
+        return card;
+      })
+      .filter(Boolean) as HomepageCardType[];
+
+    return sorted;
+  }, [cards, savedOrder]);
 
   return (
-    <>
-      <Box id="home-screen">
-        <CardGridWrapper>{cards}</CardGridWrapper>
+    <Box>
+      <Box id="home-screen" display="flex" flexDirection="column" alignItems="end">
+        <Box>
+          <AppButton
+            variant="secondary"
+            text={editmode ? strings.label.cancel : strings.label.customize}
+            startIcon={!editmode && <EditOutlined />}
+            onClick={() => handleEdit()}
+            sx={{
+              maxWidth: 132,
+              height: 38,
+              gap: theme.spaces.xs,
+              margin: theme.spaces.s,
+              marginInline: theme.spaces.m
+            }}
+          />
+          {editmode && (
+            <AppButton
+              variant="primary"
+              text={strings.label.save}
+              onClick={() => handleEdit("save")}
+              sx={{
+                width: 68,
+                height: 38,
+                gap: theme.spaces.xs,
+                margin: theme.spaces.s,
+                marginInline: theme.spaces.m
+              }}
+            />
+          )}
+        </Box>
       </Box>
-
+      <DragDropProvider
+        onDragEnd={(event) => {
+          const source = event.operation.source;
+          const target = event.operation.target;
+          if (source?.data.canGroup && target?.data.canGroup) {
+            groupCard(source?.id, target?.id, orderedCards, setSavedOrder);
+          } else {
+            moveCard(source?.id, target?.id, orderedCards, setSavedOrder, source?.data.canGroup);
+          }
+        }}
+        onDragOver={(event) => {
+          setDragOverGroup(event.operation.source?.data.canGroup);
+        }}
+      >
+        <CardGridWrapper
+          hiddenCards={hiddenCards}
+          editmode={editmode}
+          dragOverGroup={dragOverGroup}
+        >
+          {orderedCards}
+        </CardGridWrapper>
+      </DragDropProvider>
       <Box id="onboarding-complete" sx={{ display: "none" }} />
 
       <Onboarding screen={OnboardingScreen.Home} />
-    </>
+    </Box>
   );
 };
 

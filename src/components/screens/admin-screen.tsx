@@ -1,46 +1,13 @@
-import { Box } from "@mui/material";
-import useUserRole from "src/hooks/use-user-role";
-import BalanceCard from "../home/balance-card";
-import CardGridWrapper from "../home/common/card-grid-wrapper";
-import OnCallCard from "../home/oncall-card";
-import QuestionnaireCard from "../home/questionnaire-card";
-import SoftwareRegistryCard from "../home/software-registry-card";
-import SprintViewCard from "../home/sprint-view-card";
-import VacationManagementCard from "../home/vacation-management-card";
-import VacationsCard from "../home/vacations-card";
-import WikiDocumentationCard from "../home/wiki-documentation-card";
+import HomeScreen from "./home-screen";
 
 /**
  * Admin screen component
+ *
+ * TODO: Once sidebar is implemented this component will be unnessecary,
+ * and can be removed, as admin and employee will have identical homescreens.
  */
 const AdminScreen = () => {
-  const { isDeveloper, isTester } = useUserRole();
-
-  const isPrivilegedUser = isDeveloper || isTester;
-
-  /**
-   * Сard collection, new component cards should be added here
-   */
-  const cards = [
-    isPrivilegedUser && <BalanceCard key="balance" />,
-    isPrivilegedUser && (
-      <Box key="sprint" sx={{ minHeight: 260 }}>
-        <SprintViewCard />
-      </Box>
-    ),
-    isPrivilegedUser && <VacationsCard key="vacations" />,
-    isPrivilegedUser && <QuestionnaireCard key="questionnaire" />,
-    isPrivilegedUser && <SoftwareRegistryCard key="software" />,
-    isPrivilegedUser && (
-      <Box key="vacationManagement" sx={{ maxHeight: 420 }}>
-        <VacationManagementCard />
-      </Box>
-    ),
-    isPrivilegedUser && <WikiDocumentationCard key="wiki" />,
-    isPrivilegedUser && <OnCallCard key="oncall" />
-  ].filter(Boolean);
-
-  return <CardGridWrapper>{cards}</CardGridWrapper>;
+  return <HomeScreen />;
 };
 
 export default AdminScreen;

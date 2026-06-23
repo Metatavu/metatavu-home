@@ -19,6 +19,7 @@ export interface Localized extends LocalizedStringsMethods {
     cancel: string;
     save: string;
     back: string;
+    customize: string;
   };
   /**
    * Translations related to header
