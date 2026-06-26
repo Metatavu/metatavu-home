@@ -1,6 +1,5 @@
 <!---docs
-title: theme
-section: styles-->
+title: theme-->
 
 # Theme
 

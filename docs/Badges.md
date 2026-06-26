@@ -1,6 +1,5 @@
 <!--docs:
-title: Badges
-section: components-->
+title: Badges-->
 
 # Badges
 Badges indicate different statuses in the project. In this file we will go trough following components and their variants:
