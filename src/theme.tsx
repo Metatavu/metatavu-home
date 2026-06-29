@@ -265,6 +265,14 @@ export const createAppTheme = (mode: "light" | "dark"): Theme =>
           }
         }
       },
+      MuiMenu: {
+        styleOverrides: {
+          paper: ({ theme }) => ({
+            boxShadow: "0px 6px 24px rgba(0, 0, 0, 0.12)",
+            borderRadius: theme.radius.s
+          })
+        }
+      },
       MuiSwitch: {
         styleOverrides: {
           root: ({ theme }) => ({
