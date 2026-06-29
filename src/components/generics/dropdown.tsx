@@ -1,4 +1,5 @@
-import { FormControl, MenuItem, Select, type SelectChangeEvent, useTheme } from "@mui/material";
+import { KeyboardArrowDown } from "@mui/icons-material";
+import { MenuItem, Select, type SelectChangeEvent, useTheme } from "@mui/material";
 
 /**
  * Dropdown properties
@@ -25,71 +26,76 @@ const Dropdown = ({ displayOption, handleDisplayOptionChange, displayOptions }: 
   const theme = useTheme();
 
   return (
-    <FormControl
+    <Select
+      variant="outlined"
+      IconComponent={KeyboardArrowDown}
+      value={displayOption}
+      onChange={handleDisplayOptionChange}
+      displayEmpty
+      inputProps={{ "aria-label": "Without label" }}
       sx={{
-        width: {
-          md: "17%",
-          sm: "40%",
-          xs: "35%"
-        },
         color: theme.palette.text.primary,
-        "& fieldset": { border: "none" }
+        minWidth: 78,
+        maxWidth: 200,
+        maxHeight: 40,
+        paddingRight: theme.spaces.m,
+        typography: "bodySmall",
+        textTransform: "capitalize",
+        borderRadius: theme.radius.s,
+        borderWidth: theme.borders.s,
+        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+          borderColor: theme.palette.border.strong,
+          borderWidth: theme.borders.s
+        },
+        "& .MuiSelect-icon": {
+          color: theme.palette.icons.primary,
+          minHeight: 24,
+          minWidth: 24
+        }
       }}
-      size="medium"
-    >
-      <Select
-        value={displayOption}
-        onChange={handleDisplayOptionChange}
-        displayEmpty
-        inputProps={{ "aria-label": "Without label" }}
-        sx={{
-          backgroundColor: theme.palette.background.paper,
-          boxShadow: 2,
-          textAlign: "center",
-          color: theme.palette.text.primary,
-          fontWeight: "bold",
-          textTransform: "uppercase",
-          "&:hover": {
-            backgroundColor: theme.palette.action.hover
-          },
-          "& fieldset": { border: "none" }
-        }}
-        MenuProps={{
-          PaperProps: {
-            sx: {
-              marginTop: "10px",
-              borderTopLeftRadius: "0px",
-              borderTopRightRadius: "0px",
-              backgroundColor: theme.palette.background.paper
-            }
+      MenuProps={{
+        anchorOrigin: {
+          vertical: "bottom",
+          horizontal: "right"
+        },
+        transformOrigin: {
+          vertical: "top",
+          horizontal: "right"
+        },
+        PaperProps: {
+          variant: "outlined",
+          elevation: 0,
+          sx: {
+            marginTop: theme.spaces.xs
           }
-        }}
-      >
-        {displayOptions.map((option) => (
-          <MenuItem
-            key={option.value}
-            value={option.value}
-            sx={{
-              textTransform: "uppercase",
-              paddingLeft: 3,
-              color: theme.palette.text.primary,
-              backgroundColor: theme.palette.background.paper,
-              "&:hover": {
-                backgroundColor: theme.palette.action.hover
-              },
-              "&.Mui-selected": {
-                backgroundColor: theme.palette.background.paper,
-                "&:hover": {
-                  backgroundColor: theme.palette.action.hover
-                }
-              }
-            }}
-          >
-            {option.label}
-          </MenuItem>
-        ))}
-      </Select>
-    </FormControl>
+        }
+      }}
+    >
+      {displayOptions.map((option) => (
+        <MenuItem
+          key={option.value}
+          value={option.value}
+          sx={{
+            typography: "bodySmall",
+            textTransform: "capitalize",
+            "&.Mui-selected": {
+              backgroundColor: theme.palette.background.selected,
+              color: theme.palette.text.accent
+            },
+
+            "&.Mui-selected:hover": {
+              backgroundColor: theme.palette.background.selected
+            },
+
+            "&.Mui-selected.Mui-focusVisible": {
+              backgroundColor: theme.palette.background.selected
+            }
+          }}
+        >
+          {option.label}
+        </MenuItem>
+      ))}
+    </Select>
   );
 };
 
