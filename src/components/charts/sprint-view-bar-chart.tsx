@@ -26,7 +26,7 @@ interface CustomTooltipProps {
  *
  * @param props.active - Boolean indicating if tooltip is visible
  * @param props.payload - Array containing chart data
- * @param props.dataWithIndex - Array containing chart data with index
+ * @param props.dataWithIndex - Array containing chart data with indices
  *
  * @returns Customised tooltip
  */
