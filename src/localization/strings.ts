@@ -38,6 +38,7 @@ export interface Localized extends LocalizedStringsMethods {
     openSettings: string;
     openUserMenu: string;
     logoAlt: string;
+    welcomeBack: string;
   };
   /**
    * Translations related to errors
@@ -83,6 +84,8 @@ export interface Localized extends LocalizedStringsMethods {
     en: string;
     fi: string;
     time: string;
+    english: string;
+    finnish: string;
   };
   /**
    * Translations related to timebank

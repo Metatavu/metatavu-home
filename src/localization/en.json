@@ -62,6 +62,7 @@
     "softwareRegistryUpdateFailed": "Error while updating software registry"
   },
   "localization": {
+  "en": "EN",
   "fi": "FI",
   "time": "fi-FI",
   "english": "English",
