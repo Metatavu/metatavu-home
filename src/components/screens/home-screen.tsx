@@ -1,7 +1,7 @@
 /** biome-ignore-all lint/correctness/useUniqueElementIds: Keep static id */
 import { DragDropProvider } from "@dnd-kit/react";
 import { EditOutlined } from "@mui/icons-material";
-import { Box, useTheme } from "@mui/material";
+import { Box, Typography, useTheme } from "@mui/material";
 import { useAtomValue } from "jotai";
 import { type ReactNode, useEffect, useMemo, useState } from "react";
 import { userProfileAtom } from "src/atoms/auth";
@@ -21,6 +21,7 @@ import SprintViewCard from "../home/sprint-view-card";
 import VacationsCard from "../home/vacations-card";
 import WikiDocumentationCard from "../home/wiki-documentation-card";
 import Onboarding from "../onboarding/Onboarding";
+import { getDisplayName } from "src/utils/user-utils";
 
 export type HomepageCardType = {
   id: string;
@@ -51,6 +52,8 @@ const HomeScreen = () => {
   const HIDDEN_CARDS_KEY = "hiddenCards";
   const ORDER_KEY = "order";
   const hasSeveraUserId = !!loggedInUser?.attributes?.severaUserId;
+  const displayName = getDisplayName(loggedInUser);
+  const greetingString = `${strings.header.welcomeBack}, ${displayName}!`;
 
   useEffect(() => {
     const previousOrder = localStorage.getItem(ORDER_KEY);
@@ -178,6 +181,10 @@ const HomeScreen = () => {
 
   return (
     <Box>
+
+<Typography variant="h3" sx={{ px: theme.spaces.m, pt: theme.spaces.m }}>
+  {greetingString}
+</Typography>
       <Box id="home-screen" display="flex" flexDirection="column" alignItems="end">
         <Box>
           <AppButton

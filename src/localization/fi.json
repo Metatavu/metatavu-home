@@ -24,7 +24,8 @@
     "changeLanguage": "Vaihda kieltä",
     "openSettings": "Asetukset",
     "openUserMenu": "Käyttäjävalikko",
-    "logoAlt": "Metatavu logo"
+    "logoAlt": "Metatavu logo",
+    "welcomeBack": "Tervetuloa takaisin"
   },
   "error": {
     "oops": "Hups!",
@@ -63,8 +64,10 @@
   "localization": {
     "en": "EN",
     "fi": "FI",
-    "time": "fi-FI"
-  },
+    "time": "fi-FI",
+    "english": "English",
+    "finnish": "Suomi"
+},
   "timebank": {
     "balance": "Saldo",
     "yourBalanceIs": "Saldosi on",

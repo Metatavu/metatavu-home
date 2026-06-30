@@ -24,7 +24,8 @@
     "changeLanguage": "Change language",
     "openSettings": "Open settings",
     "openUserMenu": "Open user menu",
-    "logoAlt": "Metatavu logo"
+    "logoAlt": "Metatavu logo",
+    "welcomeBack": "Welcome back"
   },
   "error": {
     "oops": "Oops!",
@@ -61,10 +62,11 @@
     "softwareRegistryUpdateFailed": "Error while updating software registry"
   },
   "localization": {
-    "en": "EN",
-    "fi": "FI",
-    "time": "en-GB"
-  },
+  "fi": "FI",
+  "time": "fi-FI",
+  "english": "English",
+  "finnish": "Suomi"
+},
   "timebank": {
     "balance": "Balance",
     "yourBalanceIs": "Your balance is",
