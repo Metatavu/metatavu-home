@@ -1,13 +1,5 @@
 import { Box, Typography, useTheme } from "@mui/material";
-import {
-  CartesianGrid,
-  ResponsiveContainer,
-  Scatter,
-  ScatterChart,
-  Tooltip,
-  XAxis,
-  YAxis
-} from "recharts";
+import { Bar, BarChart, ResponsiveContainer, Text, Tooltip, XAxis, YAxis } from "recharts";
 import strings from "src/localization/strings";
 import type { SprintViewChartData } from "src/types";
 import { getHoursAndMinutes } from "src/utils/time-utils";
@@ -17,6 +9,7 @@ import { getHoursAndMinutes } from "src/utils/time-utils";
  */
 interface Props {
   chartData: SprintViewChartData[];
+  hidden: boolean;
 }
 
 /**
@@ -25,42 +18,66 @@ interface Props {
 interface CustomTooltipProps {
   active?: boolean;
   payload?: any[];
+  dataWithIndex: any[];
 }
 
 /**
- * CustomTooltip component
+ * Custom tooltip component for Sprintview bar chart.
  *
- * @param active boolean
- * @param payload any[]
+ * @param props.active - Boolean indicating if tooltip is visible
+ * @param props.payload - Array containing chart data
+ * @param props.dataWithIndex - Array containing chart data with index
  *
- * @returns JSX.Element
+ * @returns Customised tooltip
  */
-const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
+const CustomTooltip = ({ active, payload, dataWithIndex }: CustomTooltipProps) => {
+  const theme = useTheme();
   if (!active || !payload?.length) return null;
 
   const projectName = payload[0]?.payload?.projectName;
 
-  const estimatedEntry = payload.find((entry) => entry.name === strings.sprint.timeEntries);
-
-  const actualEntry = payload.find((entry) => entry.name === strings.sprint.timeAllocated);
+  const estimatedEntry = payload.find((entry) => entry.name === "estimatedWorkHour");
+  const actualEntry = payload.find((entry) => entry.name === "actualWorkHours");
+  const project = dataWithIndex.find((entry) => entry.projectName === projectName);
+  const index = project.index;
+  const isTop = dataWithIndex.length / 2 > index;
 
   return (
     <Box
       sx={{
-        bgcolor: "background.paper",
-        p: 1,
-        borderRadius: 1,
-        boxShadow: 3
+        bgcolor: theme.palette.background.tooltip,
+        borderRadius: theme.radius.s,
+        color: theme.palette.foreground.inversed,
+        maxWidth: 280,
+        "&::after": {
+          content: '""',
+          position: "absolute",
+          left: 10,
+          width: 0,
+          height: 0,
+          borderLeft: "6px solid transparent",
+          borderRight: "6px solid transparent",
+
+          ...(isTop
+            ? {
+                top: -5,
+                borderBottom: `6px solid ${theme.palette.background.tooltip}`
+              }
+            : {
+                bottom: -5,
+                borderTop: `6px solid ${theme.palette.background.tooltip}`
+              })
+        }
       }}
     >
-      <Typography variant="h6">{projectName}</Typography>
+      <Typography variant="caption">{projectName}</Typography>
       {actualEntry && (
-        <Typography variant="body1">
+        <Typography variant="caption">
           {strings.sprint.timeAllocated}: {getHoursAndMinutes(actualEntry.value)}
         </Typography>
       )}
       {estimatedEntry && (
-        <Typography variant="body1">
+        <Typography variant="caption">
           {strings.sprint.timeEntries}: {getHoursAndMinutes(estimatedEntry.value)}
         </Typography>
       )}
@@ -68,54 +85,88 @@ const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
   );
 };
 
-const SprintViewScatterChart = ({ chartData }: Props) => {
+/**TODO: Target hours are not in the chart yet. Where do they come from?
+ *
+ * Component for sprintview card bar chart
+ *
+ * @param props.chartData - Array containing chart data
+ * @param props.hidden - Boolean indicating if card is visible
+ *
+ * @returns Recharts bar chart containing worked and estimated hours for user.
+ */
+const SprintViewBarChart = ({ chartData, hidden }: Props) => {
   const theme = useTheme();
-  const chartHeight = chartData.length === 1 ? 100 : chartData.length * 60;
-  const estimatedData = chartData.map((item) => ({
-    projectName: item.projectName,
-    x: item.estimatedWorkHour
-  }));
 
-  const actualData = chartData.map((item) => ({
-    projectName: item.projectName,
-    x: item.actualWorkHours
+  const colors = hidden
+    ? {
+        text: theme.palette.text.disabled,
+        icons: theme.palette.icons.disabled,
+        primary: theme.palette.chart.disabledPrimary,
+        secondary: theme.palette.chart.disabledSecondary
+      }
+    : {
+        text: theme.palette.text.primary,
+        icons: theme.palette.icons.primary,
+        primary: theme.palette.chart.primary,
+        secondary: theme.palette.chart.secondary
+      };
+
+  const chartHeight = chartData.length === 1 ? 100 : chartData.length * 100;
+  const axisWidth = Math.max(...chartData.map((item) => item.projectName.length * 8));
+  const maxWidth = axisWidth > 200 ? 200 : axisWidth;
+  const dataWithIndex = chartData.map((item, index) => ({
+    ...item,
+    index
   }));
 
   return (
     <ResponsiveContainer width="100%" height={chartHeight}>
-      <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
-        <CartesianGrid stroke={theme.palette.divider} />
-        <XAxis
-          type="number"
-          dataKey="x"
-          name="Work Hours"
-          tick={{ fontSize: 14, fill: theme.palette.text.primary }}
-          axisLine={{ stroke: theme.palette.text.primary }}
-          padding={{ left: 0, right: 0 }}
-          domain={[0, (dataMax: number) => dataMax]}
-        />
+      <BarChart
+        data={chartData}
+        layout="vertical"
+        margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
+        barGap={-10}
+      >
+        <XAxis type="number" axisLine={{ stroke: colors.icons }} tickLine={false} />
         <YAxis
           type="category"
+          width={maxWidth}
           dataKey="projectName"
-          name="Project"
-          tick={{ fontSize: 14, fill: theme.palette.text.primary }}
-          width={150}
+          axisLine={{ stroke: colors.icons }}
+          tick={(props) => (
+            <Text
+              x={props.x}
+              y={props.y}
+              fontStyle="body"
+              width={maxWidth}
+              fill={colors.text}
+              textAnchor="end"
+              verticalAnchor="middle"
+              breakAll
+            >
+              {props.payload.value}
+            </Text>
+          )}
+          tickLine={false}
           interval={0}
+          tickMargin={15}
         />
-        <Tooltip content={<CustomTooltip />} />
-        <Scatter
-          name={strings.sprint.timeEntries}
-          data={estimatedData}
-          fill={theme.palette.info.main}
+        <Tooltip content={<CustomTooltip dataWithIndex={dataWithIndex} />} />
+        <Bar
+          dataKey="estimatedWorkHour"
+          fill={colors.primary}
+          radius={[0, 16, 16, 0]}
+          barSize={10}
         />
-        <Scatter
-          name={strings.sprint.timeAllocated}
-          data={actualData}
-          fill={theme.palette.success.main}
+        <Bar
+          dataKey="actualWorkHours"
+          fill={colors.secondary}
+          radius={[0, 16, 16, 0]}
+          barSize={10}
         />
-      </ScatterChart>
+      </BarChart>
     </ResponsiveContainer>
   );
 };
 
-export default SprintViewScatterChart;
+export default SprintViewBarChart;

@@ -10,7 +10,7 @@ import type { User } from "src/generated/homeLambdasClient";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import { OnboardingScreen } from "src/types/index";
-import { groupCard, moveCard, renderCardWithSkeleton } from "src/utils/cardUtils";
+import { groupCard, moveCard, renderCardWithSkeleton, toggleCard } from "src/utils/cardUtils";
 import AppButton from "../generics/buttons/app-button";
 import BalanceCard from "../home/balance-card";
 import CardGridWrapper from "../home/common/card-grid-wrapper";
@@ -28,6 +28,7 @@ export type HomepageCardType = {
   canGroup: boolean;
   group: HomepageCardType | undefined;
 };
+
 /**TODO: cards array takes up space and makes this file confusing.
  * Consider moving it for clarity.
  *
@@ -101,7 +102,15 @@ const HomeScreen = () => {
       },
       {
         id: "sprint-view-card",
-        element: isDeveloper && <SprintViewCard />,
+        element: isDeveloper && (
+          <SprintViewCard
+            hidden={hiddenCards.includes("sprint-view-card")}
+            onToggleHidden={(isVisible: boolean) =>
+              toggleCard("sprint-view-card", isVisible, setHiddenCards)
+            }
+            editmode={editmode}
+          />
+        ),
         canGroup: false,
         group: undefined
       },
@@ -190,7 +199,7 @@ const HomeScreen = () => {
               height: 38,
               gap: theme.spaces.xs,
               margin: theme.spaces.s,
-              marginInline: theme.spaces.m
+              marginInline: theme.spaces.s
             }}
           />
           {editmode && (
@@ -203,7 +212,7 @@ const HomeScreen = () => {
                 height: 38,
                 gap: theme.spaces.xs,
                 margin: theme.spaces.s,
-                marginInline: theme.spaces.m
+                marginInline: theme.spaces.s
               }}
             />
           )}

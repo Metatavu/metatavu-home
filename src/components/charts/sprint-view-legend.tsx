@@ -1,43 +1,65 @@
 import { Box, Typography, useTheme } from "@mui/material";
 import strings from "src/localization/strings";
+import type { SprintProps } from "../home/sprint-view-card-content/user-sprint-view-card";
 
 /**
- * Displays legend for the sprint view chart.
+ * Renders legend for sprint view bar chart
+
+ * @param props.hidden - Boolean indicating if card is hidden
+ * @returns Legend for sprint view bar chart
  */
-const SprintViewLegend = () => {
+const SprintViewLegend = ({ hidden }: SprintProps) => {
   const theme = useTheme();
 
-  return (
-    <Box display="flex" flexDirection="column" alignItems="flex-start" mt={1.5} gap={1}>
-      <Box display="flex" alignItems="center">
-        <Box
-          sx={{
-            width: 10,
-            height: 10,
-            borderRadius: "50%",
-            backgroundColor: theme.palette.info.main,
-            mr: 1
-          }}
-        />
-        <Typography variant="caption" sx={{ fontSize: 12 }}>
-          {strings.sprint.estimateHours}
-        </Typography>
-      </Box>
+  const colors = hidden
+    ? {
+        primary: theme.palette.chart.disabledPrimary,
+        secondary: theme.palette.chart.disabledSecondary,
+        target: theme.palette.chart.disabledAccent
+      }
+    : {
+        primary: theme.palette.chart.primary,
+        secondary: theme.palette.chart.secondary,
+        target: theme.palette.chart.accent
+      };
 
-      <Box display="flex" alignItems="center">
-        <Box
-          sx={{
-            width: 10,
-            height: 10,
-            borderRadius: "50%",
-            backgroundColor: theme.palette.success.main,
-            mr: 1
-          }}
-        />
-        <Typography variant="caption" sx={{ fontSize: 12 }}>
-          {strings.sprint.actualWorkHours}
-        </Typography>
-      </Box>
+  const legends = [
+    {
+      width: 3,
+      color: colors.target,
+      radius: theme.radius.xs,
+      label: strings.sprint.targetHours
+    },
+    {
+      width: 10,
+      color: colors.secondary,
+      radius: theme.radius.full,
+      label: strings.sprint.actualWorkHours
+    },
+    {
+      width: 10,
+      color: colors.primary,
+      radius: theme.radius.full,
+      label: strings.sprint.estimateHours
+    }
+  ];
+
+  return (
+    <Box display="flex" gap={1} flexWrap="wrap">
+      {legends.map((legend) => (
+        <Box key={legend.label} display="flex" alignItems="center">
+          <Box
+            sx={{
+              width: legend.width,
+              height: 10,
+              borderRadius: legend.radius,
+              backgroundColor: legend.color,
+              mr: 0.5
+            }}
+          />
+          <Typography variant="caption">= {legend.label}</Typography>
+        </Box>
+      ))}
     </Box>
   );
 };
