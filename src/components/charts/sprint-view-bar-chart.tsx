@@ -147,7 +147,7 @@ const SprintViewBarChart = ({ chartData, hidden }: Props) => {
 
   const chartHeight = chartData.length === 1 ? 100 : chartData.length * 100;
   const axisWidth = Math.max(...chartData.map((item) => item.projectName.length * 8));
-  const maxWidth = axisWidth > 200 ? 200 : axisWidth;
+  const maxWidth = Math.min(axisWidth, 200);
   const dataWithIndex = chartData.map((item, index) => ({
     ...item,
     index
