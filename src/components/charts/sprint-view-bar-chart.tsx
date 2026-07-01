@@ -1,5 +1,4 @@
 import { Box, Typography, useTheme } from "@mui/material";
-import type { ReactElement, SVGProps } from "react";
 import { Bar, BarChart, ResponsiveContainer, Text, Tooltip, XAxis, YAxis } from "recharts";
 import strings from "src/localization/strings";
 import type { SprintViewChartData } from "src/types";
@@ -89,15 +88,13 @@ const CustomTooltip = ({ active, payload, dataWithIndex }: CustomTooltipProps) =
 interface CustomTickProps {
   x: number;
   y: number;
-  maxWidth: number;
-  txtColor: string;
   payload: {
     value: string;
   };
 }
 
 /**
- * Custom tick component for bar chart.
+ * Custom tick for bar chart.
  *
  * @param props - Tick properties
  * @param maxWidth - Max width of the tick area
@@ -105,11 +102,11 @@ interface CustomTickProps {
  *
  * @returns Styled Tick labels for barchart
  */
-const CustomTick = ({ x, y, maxWidth, txtColor, payload }: CustomTickProps) => {
-  return (
+const createCustomTick = (maxWidth: number, txtColor: string) => {
+  return (props: CustomTickProps) => (
     <Text
-      x={x}
-      y={y}
+      x={props.x}
+      y={props.y}
       fontStyle="body"
       width={maxWidth}
       fill={txtColor}
@@ -117,7 +114,7 @@ const CustomTick = ({ x, y, maxWidth, txtColor, payload }: CustomTickProps) => {
       verticalAnchor="middle"
       breakAll
     >
-      {payload.value}
+      {props.payload.value}
     </Text>
   );
 };
@@ -170,7 +167,7 @@ const SprintViewBarChart = ({ chartData, hidden }: Props) => {
           width={maxWidth}
           dataKey="projectName"
           axisLine={{ stroke: colors.icons }}
-          tick={(props) => <CustomTick {...props} maxWidth={maxWidth} txtColor={colors.text} />}
+          tick={createCustomTick(maxWidth, colors.text)}
           tickLine={false}
           interval={0}
           tickMargin={15}
