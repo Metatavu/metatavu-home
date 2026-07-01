@@ -1,4 +1,5 @@
 import { Box, Typography, useTheme } from "@mui/material";
+import type { ReactElement, SVGProps } from "react";
 import { Bar, BarChart, ResponsiveContainer, Text, Tooltip, XAxis, YAxis } from "recharts";
 import strings from "src/localization/strings";
 import type { SprintViewChartData } from "src/types";
@@ -85,6 +86,42 @@ const CustomTooltip = ({ active, payload, dataWithIndex }: CustomTooltipProps) =
   );
 };
 
+interface CustomTickProps {
+  x: number;
+  y: number;
+  maxWidth: number;
+  txtColor: string;
+  payload: {
+    value: string;
+  };
+}
+
+/**
+ * Custom tick component for bar chart.
+ *
+ * @param props - Tick properties
+ * @param maxWidth - Max width of the tick area
+ * @param txtColor - Color of the tick label
+ *
+ * @returns Styled Tick labels for barchart
+ */
+const CustomTick = ({ x, y, maxWidth, txtColor, payload }: CustomTickProps) => {
+  return (
+    <Text
+      x={x}
+      y={y}
+      fontStyle="body"
+      width={maxWidth}
+      fill={txtColor}
+      textAnchor="end"
+      verticalAnchor="middle"
+      breakAll
+    >
+      {payload.value}
+    </Text>
+  );
+};
+
 /**TODO: Target hours are not in the chart yet. Where do they come from?
  *
  * Component for sprintview card bar chart
@@ -133,20 +170,7 @@ const SprintViewBarChart = ({ chartData, hidden }: Props) => {
           width={maxWidth}
           dataKey="projectName"
           axisLine={{ stroke: colors.icons }}
-          tick={(props) => (
-            <Text
-              x={props.x}
-              y={props.y}
-              fontStyle="body"
-              width={maxWidth}
-              fill={colors.text}
-              textAnchor="end"
-              verticalAnchor="middle"
-              breakAll
-            >
-              {props.payload.value}
-            </Text>
-          )}
+          tick={(props) => <CustomTick {...props} maxWidth={maxWidth} txtColor={colors.text} />}
           tickLine={false}
           interval={0}
           tickMargin={15}
