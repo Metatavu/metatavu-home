@@ -27,9 +27,9 @@
     "logoAlt": "Metatavu logo"
   },
   "home": {
-  "goodMorning": "Hyvää huomenta",
-  "goodDay": "Hyvää päivää",
-  "goodEvening": "Hyvää iltaa"
+  "goodMorning": "Huomenta",
+  "goodDay": "Iltapäivää",
+  "goodEvening": "Iltaa"
   },
   "error": {
     "oops": "Hups!",
