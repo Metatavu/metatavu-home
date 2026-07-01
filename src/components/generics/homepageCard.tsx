@@ -33,7 +33,9 @@ const HomepageCard = ({ title, content, path, hidden, onToggleHidden, editmode }
         borderWidth: theme.borders.s,
         borderColor: hidden ? theme.palette.border.disabled : theme.palette.border.primary,
         color: hidden ? theme.palette.text.disabled : theme.palette.text.primary,
-        marginBottom: theme.spaces.m
+        marginBottom: theme.spaces.m,
+        width: "100%",
+        mr: editmode ? theme.spaces.none : theme.spaces.m
       }}
       variant="outlined"
       elevation={0}
@@ -43,6 +45,9 @@ const HomepageCard = ({ title, content, path, hidden, onToggleHidden, editmode }
           href={editmode ? undefined : path}
           variant="h4"
           sx={{
+            ":hover": {
+              textDecoration: editmode ? "none" : "underline"
+            },
             textDecoration: "none",
             color: hidden ? theme.palette.text.disabled : theme.palette.text.primary
           }}
@@ -58,7 +63,6 @@ const HomepageCard = ({ title, content, path, hidden, onToggleHidden, editmode }
                   width: 22,
                   height: 22,
                   gap: 0,
-                  padding: "none",
                   transform: "scale(1.2)"
                 }}
               />

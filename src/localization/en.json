@@ -452,7 +452,7 @@
   },
   "questionnaireProgress": {
     "title": "Questionnaires",
-    "progressText": "You have passed {0} out of {1} questionnaires",
+    "progressText": "You have {0} open questionnaires",
     "allCompleted": "Congratulations! You've completed all questionnaires!",
     "loading": "Loading questionnaires..."
   },

@@ -1,9 +1,7 @@
-import ScheduleIcon from "@mui/icons-material/Schedule";
-import { Card, CardContent, Grid, Skeleton, Typography, useTheme } from "@mui/material";
+import { Box, Skeleton, Typography, useTheme } from "@mui/material";
 import { useAtomValue, useSetAtom } from "jotai";
 import { DateTime } from "luxon";
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
 import { userProfileAtom } from "src/atoms/auth";
 import { errorAtom } from "src/atoms/error";
 import { usersAtom } from "src/atoms/user";
@@ -12,6 +10,7 @@ import { useLambdasApi } from "src/hooks/use-api";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import { getSeveraUserId } from "src/utils/user-utils";
+import HomepageCard, { type CardProps } from "../generics/homepageCard";
 
 /**
  * Card component that displays either personal flextime balance for regular users
@@ -21,11 +20,10 @@ import { getSeveraUserId } from "src/utils/user-utils";
  * @returns React functional component that renders a balance card
  *
  * @description
- * - For regular users: Shows personal flextime balance with link to timebank
- * - For admin users: Shows clickable card that navigates to employee flextime page
+ * - Shows personal flextime balance with link to timebank
  * - Handles loading states and error management for flextime data fetching
  */
-const BalanceCard = () => {
+const BalanceCard = ({ hidden, onToggleHidden, editmode }: CardProps) => {
   const users = useAtomValue(usersAtom);
   const userProfile = useAtomValue(userProfileAtom);
   const setError = useSetAtom(errorAtom);
@@ -36,18 +34,16 @@ const BalanceCard = () => {
   const { flexTimeApi } = useLambdasApi();
   const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
   const severaUserId = getSeveraUserId(loggedInUser);
-  const navigate = useNavigate();
   const theme = useTheme();
+  const path = adminMode ? "/admin/severa/employee-flextime" : "/balance";
 
   /**
    * Effect hook that fetches flextime data for the logged-in user.
    * Only executes for non-admin users when flextime data is not yet available.
    */
   useEffect(() => {
-    if (!adminMode && !usersFlextime) {
-      getUsersFlextimes();
-    }
-  }, [users, userProfile, adminMode, usersFlextime]);
+    getUsersFlextimes();
+  }, [users, userProfile]);
 
   /**
    * Asynchronously retrieves flextime balance data for the currently logged-in user.
@@ -57,6 +53,7 @@ const BalanceCard = () => {
    */
   const getUsersFlextimes = async () => {
     if (!loggedInUser || !severaUserId) return;
+    console.log(userProfile, users);
 
     setLoading(true);
     try {
@@ -73,78 +70,43 @@ const BalanceCard = () => {
   };
 
   /**
-   * Event handler that navigates to the employee flextime page in the same tab.
-   * Used when admin users click the balance card.
-   */
-  const handleAdminCardClick = () => {
-    navigate("/admin/severa/employee-flextime");
-  };
-
-  /**
    * Renders the user's personal flextime balance with appropriate styling.
    *
    * @returns JSX.Element Typography component displaying balance or error message
    */
   const renderUserFlextime = () => {
     if (!usersFlextime?.totalFlextimeBalance) {
-      return <Typography variant="body1">{strings.error.noFlextimeData}</Typography>;
+      return <Typography fontStyle="body">{strings.error.noFlextimeData}</Typography>;
     }
     const totalFlextimeBalance = usersFlextime.totalFlextimeBalance;
     const textColor =
-      totalFlextimeBalance >= 0 ? theme.palette.success.main : theme.palette.error.main;
+      totalFlextimeBalance >= 0
+        ? theme.palette.foreground.positive
+        : theme.palette.foreground.negative;
     const hourLabel =
       totalFlextimeBalance === 1 ? strings.timeExpressions.hour : strings.timeExpressions.hours;
     return (
-      <Typography variant="body1">
-        {strings.balanceCard.totalFlextimeBalance}{" "}
-        <span style={{ color: textColor }}>{totalFlextimeBalance}</span> {hourLabel}
-      </Typography>
+      <Box>
+        <Typography variant="caption">
+          {strings.formatString(strings.balanceCard.atTheEndOf, yesterday.toLocaleString())}
+        </Typography>
+        <Typography fontStyle="body">{strings.balanceCard.totalFlextimeBalance}</Typography>
+        <Typography sx={{ color: textColor, fontWeight: 700 }}>
+          {totalFlextimeBalance} {hourLabel}
+        </Typography>
+      </Box>
     );
   };
 
-  if (adminMode) {
-    return (
-      <Card
-        sx={{
-          minHeight: 150,
-          cursor: "pointer",
-          transition: "all 0.2s ease-in-out"
-        }}
-        onClick={handleAdminCardClick}
-      >
-        <CardContent>
-          <Typography variant="h6" fontWeight={"bold"} style={{ marginTop: 6, marginBottom: 3 }}>
-            {strings.balanceCard.employeeBalances}
-          </Typography>
-          <Typography variant="body1">{strings.balanceCard.viewAllTimeEntries}</Typography>
-        </CardContent>
-      </Card>
-    );
-  }
-
   return (
-    <Link to="/balance" style={{ textDecoration: "none", color: "inherit" }}>
-      <Card
-        sx={{
-          minHeight: 150
-        }}
-      >
-        <CardContent>
-          <Typography variant="h6" fontWeight={"bold"} style={{ marginTop: 6, marginBottom: 3 }}>
-            {strings.balanceCard.balance}
-          </Typography>
-          <Grid container>
-            <Grid size={12}>
-              {strings.formatString(strings.balanceCard.atTheEndOf, yesterday.toLocaleString())}
-            </Grid>
-            <Grid style={{ marginBottom: 1 }} size={1}>
-              <ScheduleIcon style={{ marginTop: 1 }} />
-            </Grid>
-            <Grid size={11}>{loading ? <Skeleton /> : renderUserFlextime()}</Grid>
-          </Grid>
-        </CardContent>
-      </Card>
-    </Link>
+    <HomepageCard
+      title={strings.balanceCard.balance}
+      content={loading ? <Skeleton /> : renderUserFlextime()}
+      path={path}
+      hidden={hidden}
+      onToggleHidden={onToggleHidden}
+      editmode={editmode}
+    />
   );
 };
 

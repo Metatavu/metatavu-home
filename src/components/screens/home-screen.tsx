@@ -10,7 +10,7 @@ import type { User } from "src/generated/homeLambdasClient";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import { OnboardingScreen } from "src/types/index";
-import { groupCard, moveCard, renderCardWithSkeleton } from "src/utils/cardUtils";
+import { groupCard, moveCard, renderCardWithSkeleton, toggleCard } from "src/utils/cardUtils";
 import AppButton from "../generics/buttons/app-button";
 import BalanceCard from "../home/balance-card";
 import CardGridWrapper from "../home/common/card-grid-wrapper";
@@ -92,7 +92,13 @@ const HomeScreen = () => {
         element:
           isDeveloper &&
           (hasSeveraUserId ? (
-            <BalanceCard />
+            <BalanceCard
+              hidden={hiddenCards.includes("balance-card")}
+              onToggleHidden={(isVisible: boolean) =>
+                toggleCard("balance-card", isVisible, setHiddenCards)
+              }
+              editmode={editmode}
+            />
           ) : (
             renderCardWithSkeleton(strings.balanceCard.balance, hasSeveraUserId, theme)
           )),
@@ -113,7 +119,15 @@ const HomeScreen = () => {
       },
       {
         id: "questionnaires-card",
-        element: isDeveloper && <QuestionnaireCard />,
+        element: isDeveloper && (
+          <QuestionnaireCard
+            hidden={hiddenCards.includes("questionnaires-card")}
+            onToggleHidden={(isVisible: boolean) =>
+              toggleCard("questionnaires-card", isVisible, setHiddenCards)
+            }
+            editmode={editmode}
+          />
+        ),
         canGroup: true,
         group: undefined
       },
