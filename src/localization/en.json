@@ -24,8 +24,12 @@
     "changeLanguage": "Change language",
     "openSettings": "Open settings",
     "openUserMenu": "Open user menu",
-    "logoAlt": "Metatavu logo",
-    "welcomeBack": "Welcome back"
+    "logoAlt": "Metatavu logo"
+  },
+  "home": {
+  "goodMorning": "Good morning",
+  "goodDay": "Good day",
+  "goodEvening": "Good evening"
   },
   "error": {
     "oops": "Oops!",

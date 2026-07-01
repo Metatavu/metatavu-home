@@ -24,8 +24,12 @@
     "changeLanguage": "Vaihda kieltä",
     "openSettings": "Asetukset",
     "openUserMenu": "Käyttäjävalikko",
-    "logoAlt": "Metatavu logo",
-    "welcomeBack": "Tervetuloa takaisin"
+    "logoAlt": "Metatavu logo"
+  },
+  "home": {
+  "goodMorning": "Hyvää huomenta",
+  "goodDay": "Hyvää päivää",
+  "goodEvening": "Hyvää iltaa"
   },
   "error": {
     "oops": "Hups!",

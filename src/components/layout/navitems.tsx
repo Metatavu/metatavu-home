@@ -10,6 +10,17 @@ import strings from "src/localization/strings";
 import Logo from "../../../resources/img/Metatavu-icon.svg";
 
 /**
+ * NOTE: This component is currently unused.
+ *
+ * It was previously rendered in NavBar (logo + "Employee"/"Administration" navigation buttons),
+ * but was removed as part of the header redesign task since these buttons
+ * are no longer part of the new UI design.
+ *
+ * Kept in place in case this navigation is needed again in the future.
+ * If confirmed permanently unnecessary, this file can be deleted.
+ */
+
+/**
  * Navigation Items component
  */
 const NavItems = () => {

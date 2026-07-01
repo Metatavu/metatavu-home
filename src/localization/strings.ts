@@ -38,7 +38,14 @@ export interface Localized extends LocalizedStringsMethods {
     openSettings: string;
     openUserMenu: string;
     logoAlt: string;
-    welcomeBack: string;
+  };
+  /**
+   * Translations related to home screen
+   */
+  home: {
+    goodMorning: string;
+    goodDay: string;
+    goodEvening: string;
   };
   /**
    * Translations related to errors

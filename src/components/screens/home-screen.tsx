@@ -11,6 +11,8 @@ import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import { OnboardingScreen } from "src/types/index";
 import { groupCard, moveCard, renderCardWithSkeleton } from "src/utils/cardUtils";
+import { getTimeBasedGreeting } from "src/utils/time-utils";
+import { getDisplayName } from "src/utils/user-utils";
 import AppButton from "../generics/buttons/app-button";
 import BalanceCard from "../home/balance-card";
 import CardGridWrapper from "../home/common/card-grid-wrapper";
@@ -21,7 +23,6 @@ import SprintViewCard from "../home/sprint-view-card";
 import VacationsCard from "../home/vacations-card";
 import WikiDocumentationCard from "../home/wiki-documentation-card";
 import Onboarding from "../onboarding/Onboarding";
-import { getDisplayName } from "src/utils/user-utils";
 
 export type HomepageCardType = {
   id: string;
@@ -36,6 +37,7 @@ export type HomepageCardType = {
  * Defines homepage cards and their order.
  * Saves user's layout to local storage.
  * Handles drag and drop logic.
+ * Displays a time-based greeting with the user's display name.
  */
 const HomeScreen = () => {
   const theme = useTheme();
@@ -53,7 +55,7 @@ const HomeScreen = () => {
   const ORDER_KEY = "order";
   const hasSeveraUserId = !!loggedInUser?.attributes?.severaUserId;
   const displayName = getDisplayName(loggedInUser);
-  const greetingString = `${strings.header.welcomeBack}, ${displayName}!`;
+  const greetingString = `${getTimeBasedGreeting()}, ${displayName}!`;
 
   useEffect(() => {
     const previousOrder = localStorage.getItem(ORDER_KEY);
@@ -181,10 +183,9 @@ const HomeScreen = () => {
 
   return (
     <Box>
-
-<Typography variant="h3" sx={{ px: theme.spaces.m, pt: theme.spaces.m }}>
-  {greetingString}
-</Typography>
+      <Typography variant="h3" sx={{ px: theme.spaces.m, pt: theme.spaces.m }}>
+        {greetingString}
+      </Typography>
       <Box id="home-screen" display="flex" flexDirection="column" alignItems="end">
         <Box>
           <AppButton

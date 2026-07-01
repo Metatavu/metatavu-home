@@ -21,8 +21,11 @@ export const getSeveraUserId = (user: User | undefined): string => {
 
 /**
  * Extracts a display name from a user.
- * Falls back to deriving a name from the email if firstName is missing.
- *
+ * 
+ * Falls back to deriving a name from the email if firstName is missing,
+ * because the backend API does not reliably return firstName
+ * for all users
+ * 
  * @param user - The user object
  * @returns first name, or empty string if unavailable
  */
