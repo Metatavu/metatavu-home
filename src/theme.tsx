@@ -243,10 +243,7 @@ export const createAppTheme = (mode: "light" | "dark"): Theme =>
           root: ({ theme }) => ({
             backgroundColor: theme.palette.background.paper,
             color: theme.palette.text.primary,
-            transition: "background-color 0.2s ease",
-            "&:hover": {
-              backgroundColor: theme.palette.hover.secondary
-            }
+            transition: "background-color 0.2s ease"
           })
         }
       },

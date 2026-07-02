@@ -56,7 +56,7 @@ export const DraggableCard = ({ id, children, canGroup }: DragDropProps): JSX.El
     }
   });
   return (
-    <Grid container direction="row" ref={ref} wrap="nowrap">
+    <Grid container direction="row" ref={ref} wrap="nowrap" width="100%">
       <DragIndicator
         ref={handleRef}
         sx={{ marginTop: theme.spaces.xs, fontSize: 24, cursor: "grab" }}
