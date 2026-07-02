@@ -10,8 +10,11 @@ import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
 
 /**
- * Component to display user's questionnaire progress on home screen
- * Located in home folder as it's specific to the dashboard
+ * Questionnaire progress information.
+ *
+ * Shows user their questionnaire progress.
+ *
+ * @returns Content for questionnaire card
  */
 const QuestionnaireProgress = () => {
   const { questionnairesApi } = useLambdasApi();
@@ -19,6 +22,12 @@ const QuestionnaireProgress = () => {
   const users = useAtomValue(usersAtom);
   const [questionnaires, setQuestionnaires] = useState<Questionnaire[]>([]);
   const [loading, setLoading] = useState(false);
+
+  /**
+   * TODO: This works, but is worth revisiting if there's a better way
+   * to make placeholder bold, rather than this.
+   * See <Typography> below.
+   */
   const [before, after] = strings.questionnaireProgress.progressText.split("{0}");
   const theme = useTheme();
 

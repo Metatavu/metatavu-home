@@ -46,6 +46,7 @@ const HomeScreen = () => {
   const [savedOrder, setSavedOrder] = useState<string[]>([]);
   const [hiddenCards, setHiddenCards] = useState<string[]>([]);
   const [dragOverGroup, setDragOverGroup] = useState(false);
+  const [layoutLoaded, setLayoutLoaded] = useState(false);
 
   const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
   const HIDDEN_CARDS_KEY = "hiddenCards";
@@ -62,6 +63,8 @@ const HomeScreen = () => {
     if (previousHidden) {
       setHiddenCards(JSON.parse(previousHidden));
     }
+
+    setLayoutLoaded(true);
   }, []);
 
   const handleEdit = (action?: string) => {
@@ -150,7 +153,7 @@ const HomeScreen = () => {
         group: undefined
       }
     ],
-    [editmode, isTester, isDeveloper, hiddenCards, hasSeveraUserId, savedOrder]
+    [editmode, isTester, isDeveloper, hasSeveraUserId, hiddenCards]
   );
   const orderedCards = useMemo(() => {
     if (!savedOrder.length) {
@@ -182,13 +185,15 @@ const HomeScreen = () => {
             group: cardMap.get(groupId)
           };
         }
-
         return card;
       })
       .filter(Boolean) as HomepageCardType[];
 
     return sorted;
   }, [cards, savedOrder]);
+
+  //Cards won't render untill the save order is loaded
+  if (!layoutLoaded) return null;
 
   return (
     <Box>

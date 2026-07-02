@@ -12,9 +12,14 @@ import strings from "src/localization/strings";
 import { getSeveraUserId } from "src/utils/user-utils";
 import HomepageCard, { type CardProps } from "../generics/homepageCard";
 
-/**
- * Card component that displays either personal flextime balance for regular users
- * or provides admin access to view all employees' flextime data in the same tab.
+/**TODO: Once side navigation is implemented the path to adminside
+ * screen can be removed.
+ *
+ * Card component that displays personal flextime balance for users.
+ *
+ * @param props.hidden - Boolean defining if the card is visible
+ * @param props.onToggleHidden - functionality to hide the card
+ * @param props.editmode - Boolean defining if editmode is on
  *
  * @component
  * @returns React functional component that renders a balance card
@@ -39,7 +44,6 @@ const BalanceCard = ({ hidden, onToggleHidden, editmode }: CardProps) => {
 
   /**
    * Effect hook that fetches flextime data for the logged-in user.
-   * Only executes for non-admin users when flextime data is not yet available.
    */
   useEffect(() => {
     getUsersFlextimes();
@@ -53,7 +57,6 @@ const BalanceCard = ({ hidden, onToggleHidden, editmode }: CardProps) => {
    */
   const getUsersFlextimes = async () => {
     if (!loggedInUser || !severaUserId) return;
-    console.log(userProfile, users);
 
     setLoading(true);
     try {
