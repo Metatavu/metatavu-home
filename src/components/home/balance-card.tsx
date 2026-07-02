@@ -46,7 +46,9 @@ const BalanceCard = ({ hidden, onToggleHidden, editmode }: CardProps) => {
    * Effect hook that fetches flextime data for the logged-in user.
    */
   useEffect(() => {
-    getUsersFlextimes();
+    if (!usersFlextime) {
+      getUsersFlextimes();
+    }
   }, [users, userProfile]);
 
   /**
