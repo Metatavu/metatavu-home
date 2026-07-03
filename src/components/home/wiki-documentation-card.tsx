@@ -1,9 +1,6 @@
-import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
-import { Box, Card, Grid, Skeleton, Typography } from "@mui/material";
+import { Skeleton } from "@mui/material";
 import { useAtomValue, useSetAtom } from "jotai";
-import { DateTime } from "luxon";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { articleAtom, draftArticleAtom } from "src/atoms/article";
 import { errorAtom } from "src/atoms/error";
 import { usersAtom } from "src/atoms/user";
@@ -11,13 +8,13 @@ import type { ArticleMetadata } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
-import { formatDate } from "src/utils/time-utils";
-import { getLastActivityString } from "src/utils/wiki-utils";
+import HomepageCard, { type CardProps } from "../generics/homepageCard";
+import renderCardContent from "./renderWikiDocCard";
 
 /**
  * Card component for displaying last read, created or updated article for Wiki Documentation.
  */
-const WikiDocumentationCard = () => {
+const WikiDocumentationCard = ({ hidden, onToggleHidden, editmode }: CardProps) => {
   const { adminMode } = useUserRole();
   const setError = useSetAtom(errorAtom);
   const draftArticles = useAtomValue(draftArticleAtom);
@@ -29,7 +26,8 @@ const WikiDocumentationCard = () => {
   const { articleApi } = useLambdasApi();
   const users = useAtomValue(usersAtom);
   const [loading, setLoading] = useState(false);
-  const [lastUpdatedArticle, setLastUpdatedArticle] = useState<ArticleMetadata>();
+  const [lastUpdatedArticles, setLastUpdatedArticles] = useState<ArticleMetadata[]>([]);
+  const path = adminMode ? "/admin/wiki-documentation" : "/wiki-documentation";
 
   /**
    * Fetches the last updated article from the API.
@@ -37,7 +35,7 @@ const WikiDocumentationCard = () => {
    */
   useEffect(() => {
     if (!articlesAtom) getLastUpdatedArticle();
-    else setLastUpdatedArticle(articlesAtom[0]);
+    else setLastUpdatedArticles(articlesAtom);
   }, []);
   /**
    * Retrieves the list of articles from the API.
@@ -48,163 +46,24 @@ const WikiDocumentationCard = () => {
     setLoading(true);
     try {
       const fetchedArticles = await articleApi.getArticles(adminMode ? { draft: true } : {});
-      setLastUpdatedArticle(fetchedArticles[0]);
-      setArticlesAtom(fetchedArticles);
+      setLastUpdatedArticles(fetchedArticles.slice(0, 2));
+      setArticlesAtom(fetchedArticles.slice(0, 2));
     } catch (error: any) {
       const errorMessage = await error.response.json();
       setError(`${strings.error.fetchFailedWikiArticles}: ${errorMessage.message}`);
     }
     setLoading(false);
   };
-  /**
-   * Renders the card content for the last updated article.
-   * Displays the article title, last activity, and cover image.
-   */
-  const renderCardContent = () => {
-    if (!lastUpdatedArticle?.lastUpdatedAt) return;
-    const lastActivityData = getLastActivityString(lastUpdatedArticle, users);
-
-    return (
-      <>
-        <Grid container>
-          <Grid style={{ marginBottom: 1 }} size={1}>
-            <DescriptionOutlinedIcon style={{ marginTop: 1 }} />
-          </Grid>
-          <Grid size={11}>
-            {loading ? (
-              <Skeleton />
-            ) : (
-              <Typography variant="body1" sx={{ paddingTop: "2px" }}>
-                {strings.formatString(
-                  "{0} {1}",
-                  lastActivityData.action,
-                  strings.wikiDocumentation.article
-                )}
-              </Typography>
-            )}
-          </Grid>
-        </Grid>
-        <Grid container spacing={1} sx={{ marginTop: 1 }}>
-          <Grid
-            marginBottom={{ sm: 2, md: 0 }}
-            size={{
-              xs: 6,
-              sm: 12,
-              md: 5,
-              lg: 4
-            }}
-          >
-            <Box
-              component="img"
-              sx={{
-                width: {
-                  lg: "150px",
-                  md: "125px",
-                  sm: "100%",
-                  xs: "125px"
-                },
-                height: {
-                  lg: "120px",
-                  md: "100px",
-                  sm: "100%",
-                  xs: "100px"
-                },
-                borderRadius: "20px",
-                marginRight: "10px",
-                objectFit: "cover",
-                overflow: "hidden"
-              }}
-              alt="alternative text"
-              src={lastUpdatedArticle.coverImage}
-            />
-          </Grid>
-          <Grid
-            size={{
-              xs: 6,
-              sm: 12,
-              md: 7,
-              lg: 8
-            }}
-          >
-            <Typography
-              variant="h6"
-              sx={{
-                lineHeight: "1.2",
-                marginBottom: "10px",
-                fontSize: {
-                  lg: "24px",
-                  md: "20px",
-                  sm: "24px",
-                  xs: "20px"
-                },
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                whiteSpace: "normal",
-                wordBreak: "break-word",
-                display: "-webkit-box",
-                WebkitBoxOrient: "vertical",
-                WebkitLineClamp: { md: 2, sm: 2, xs: 2 }
-              }}
-            >
-              {lastUpdatedArticle.title}
-            </Typography>
-            <Typography variant="body1">
-              {strings.formatString(
-                "{0} {1}",
-                lastActivityData.action,
-                formatDate(DateTime.fromJSDate(lastUpdatedArticle.lastUpdatedAt || new Date()))
-              )}
-            </Typography>
-            <Typography variant="body1">
-              {strings.formatString("by {0}", lastActivityData.user ?? "")}
-            </Typography>
-          </Grid>
-        </Grid>
-      </>
-    );
-  };
-  /**
-   * Renders the admin card content.
-   * Displays the number of pending articles or a message when there are none.
-   */
-  const renderAdminCardContent = () => (
-    <Grid container>
-      <Grid style={{ marginBottom: 1 }} size={1}>
-        <DescriptionOutlinedIcon style={{ marginTop: 1 }} />
-      </Grid>
-      {loading ? (
-        <Skeleton />
-      ) : (
-        <Grid size={11}>
-          <Typography variant="body1" sx={{ paddingTop: "2px" }}>
-            {articlesAtom?.length === 0
-              ? strings.wikiDocumentation.noPendingArticles
-              : strings.formatString(
-                  strings.wikiDocumentation.pendingArticles,
-                  articlesAtom?.length ?? 0
-                )}
-          </Typography>
-        </Grid>
-      )}
-    </Grid>
-  );
 
   return (
-    <Link
-      to={adminMode ? "/admin/wiki-documentation" : "/wiki-documentation"}
-      style={{ textDecoration: "none" }}
-    >
-      <Card>
-        <Box sx={{ padding: 2 }}>
-          <Typography variant="h6" fontWeight={"bold"} style={{ marginTop: 6, marginBottom: 3 }}>
-            {strings.wikiDocumentation.cardTitle}
-          </Typography>
-          {loading && <Skeleton />}
-          {!loading && adminMode && renderAdminCardContent()}
-          {!loading && !adminMode && renderCardContent()}
-        </Box>
-      </Card>
-    </Link>
+    <HomepageCard
+      title={strings.wikiDocumentation.cardTitle}
+      content={loading ? <Skeleton /> : renderCardContent(lastUpdatedArticles, users, loading)}
+      path={path}
+      hidden={hidden}
+      onToggleHidden={onToggleHidden}
+      editmode={editmode}
+    />
   );
 };
 export default WikiDocumentationCard;

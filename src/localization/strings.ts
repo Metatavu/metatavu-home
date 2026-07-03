@@ -582,6 +582,7 @@ export interface Localized extends LocalizedStringsMethods {
    */
   wikiDocumentation: {
     cardTitle: string;
+    createdBy: string;
     article: string;
     lastUpdated: string;
     created: string;

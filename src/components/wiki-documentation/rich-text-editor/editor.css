@@ -73,14 +73,6 @@ li:has(> ul) {
   list-style-type: none;
 }
 
-.MuiCard-root a[href^="/wiki-documentation"] {
-  text-decoration: underline;
-  border-bottom: none;
-  transition: all 0.2s ease;
-  padding-bottom: 2px;
-  font-weight: 500;
-}
-
 .MuiCard-root a[href^="/wiki-documentation"]:hover {
  feature/topbar-language-dropdown
   color: #002a5c;

@@ -464,7 +464,8 @@
     "atTheEndOf": "At the end of {0}"
   },
   "wikiDocumentation": {
-    "cardTitle": "Wiki Documentation",
+    "cardTitle": "Last updated wiki documents",
+    "createdBy": "{0} by {1}",
     "article": "article:",
     "lastUpdated": "Last updated",
     "created": "Created",

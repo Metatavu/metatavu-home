@@ -452,7 +452,7 @@
   },
   "questionnaireProgress": {
     "title": "Kyselyt",
-    "progressText": "Olet läpäissyt {0} kyselyä {1} kyselystä",
+    "progressText": "Sinulla on {0} odottavaa kyselyä",
     "allCompleted": "Onnittelut! Olet suorittanut kaikki kyselyt!",
     "loading": "Ladataan kyselyitä..."
   },
@@ -464,7 +464,8 @@
     "atTheEndOf": "{0} lopussa"
   },
   "wikiDocumentation": {
-    "cardTitle": "Wikidokumentaatio",
+    "cardTitle": "Viimeisimmät wikiartikkelit",
+    "createdBy": "{0} luonut: {1}",
     "article": "artikkeli:",
     "lastUpdated": "Viimeksi päivitetty",
     "created": "Luotu",
