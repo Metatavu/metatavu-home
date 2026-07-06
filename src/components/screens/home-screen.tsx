@@ -116,7 +116,15 @@ const HomeScreen = () => {
       },
       {
         id: "vacations-card",
-        element: isDeveloper && <VacationsCard />,
+        element: isDeveloper && (
+          <VacationsCard
+            hidden={hiddenCards.includes("vacations-card")}
+            onToggleHidden={(isVisible: boolean) =>
+              toggleCard("vacations-card", isVisible, setHiddenCards)
+            }
+            editmode={editmode}
+          />
+        ),
         canGroup: false,
         group: undefined
       },
@@ -148,7 +156,15 @@ const HomeScreen = () => {
       },
       {
         id: "on-call-card",
-        element: isDeveloper && <OnCallCard />,
+        element: isDeveloper && (
+          <OnCallCard
+            hidden={hiddenCards.includes("on-call-card")}
+            onToggleHidden={(isVisible: boolean) =>
+              toggleCard("on-call-card", isVisible, setHiddenCards)
+            }
+            editmode={editmode}
+          />
+        ),
         canGroup: false,
         group: undefined
       }

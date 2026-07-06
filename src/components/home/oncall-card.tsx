@@ -1,19 +1,22 @@
-import { Card, CardContent, Typography } from "@mui/material";
+import { Grid, Typography, useTheme } from "@mui/material";
 import { useAtom, useSetAtom } from "jotai";
 import { DateTime } from "luxon";
 import { useEffect } from "react";
-import { Link } from "react-router-dom";
 import { errorAtom } from "src/atoms/error";
 import { onCallAtom } from "src/atoms/oncall";
 import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
+import { parseNameFromEmail } from "src/utils/user-name-utils";
+import HomepageCard, { type CardProps } from "../generics/homepageCard";
 
 /**
  * On-call card component
  */
-const OnCallCard = () => {
+const OnCallCard = ({ hidden, onToggleHidden, editmode }: CardProps) => {
   const { onCallApi } = useLambdasApi();
+  const theme = useTheme();
   const [onCallData, setOnCallData] = useAtom(onCallAtom);
+  const path = "oncall";
 
   const setError = useSetAtom(errorAtom);
 
@@ -36,37 +39,33 @@ const OnCallCard = () => {
     }
   };
 
-  /**
-   * Gets the current on-call person
-   *
-   * @returns JSX.Element containing current on-call person
-   */
-  const getCurrentOnCallPerson = () => {
+  const renderOnCallCard = () => {
     const currentWeek = DateTime.now().weekNumber;
-    const currentOnCallPerson = onCallData.find(
-      (item) => Number(item.week) === currentWeek
-    )?.username;
+    const currentOnCallPerson = onCallData.find((item) => Number(item.week) === currentWeek)?.email;
+    const onCallName = currentOnCallPerson && parseNameFromEmail(currentOnCallPerson);
+    const nameString = onCallName
+      ? `${onCallName.firstName} ${onCallName.lastName}`
+      : strings.oncall.noOnCallPerson;
 
-    if (currentOnCallPerson)
-      return (
-        <>
-          {strings.oncall.onCallPersonExists} <b>{currentOnCallPerson}</b>
-        </>
-      );
-    return <>{strings.oncall.noOnCallPerson}</>;
+    return (
+      <Grid container direction="column" pt={theme.spaces.s}>
+        <Typography variant="body" sx={{ fontWeight: 500 }}>
+          {nameString}
+        </Typography>
+        <Typography variant="body">{currentOnCallPerson}</Typography>
+      </Grid>
+    );
   };
 
   return (
-    <Link to={"oncall"} style={{ textDecoration: "none" }}>
-      <Card>
-        <CardContent>
-          <Typography variant="h6" fontWeight={"bold"} style={{ marginTop: 6, marginBottom: 3 }}>
-            {strings.oncall.title}
-          </Typography>
-          <Typography variant="body1">{getCurrentOnCallPerson()}</Typography>
-        </CardContent>
-      </Card>
-    </Link>
+    <HomepageCard
+      title={strings.oncall.title}
+      content={renderOnCallCard()}
+      path={path}
+      hidden={hidden}
+      onToggleHidden={onToggleHidden}
+      editmode={editmode}
+    />
   );
 };
 

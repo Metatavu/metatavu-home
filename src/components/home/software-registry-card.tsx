@@ -9,7 +9,10 @@ import { useLambdasApi } from "src/hooks/use-api";
 import useUserRole from "../../hooks/use-user-role";
 import strings from "../../localization/strings";
 
-/**
+/**TODO: FIGMA does not consist a card for software registry.
+ * Is this missing or should this card be removed? If the card is
+ * removed it should wait until sidebar is finished
+ *
  * SoftwareRegistry card component
  */
 const SoftwareRegistryCard = () => {

@@ -6,7 +6,7 @@ import strings from "src/localization/strings";
  * @param email - The user's email address.
  * @returns An object containing `firstName` and `lastName`
  */
-const parseNameFromEmail = (
+export const parseNameFromEmail = (
   email?: string
 ): {
   firstName: string;

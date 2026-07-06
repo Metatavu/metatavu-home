@@ -293,7 +293,7 @@ const VacationRequestsScreen = () => {
       });
       setVacationRequests([createdRequest, ...vacationRequests]);
       showSnackbar(strings.snackbar.vacationDraftSaved);
-    }  catch (error: any) {
+    } catch (error: any) {
       const errorMessage = await error?.response?.json();
       setError(
         `${strings.vacationRequestError.createRequestError}: ${errorMessage?.message || error}`
@@ -413,29 +413,31 @@ const VacationRequestsScreen = () => {
           }
         }
       }
+      const updatedVacationRequests: VacationRequest[] = [];
 
-      const updatedVacationRequests = await Promise.all(
-        selectedRowIds.map(async (vacationRequestId) => {
-          const vacationRequest = vacationRequests.find(
-            (vacationRequest) => vacationRequest.id === vacationRequestId
-          );
-          if (!vacationRequest) return;
+      for (const vacationRequestId of selectedRowIds) {
+        const vacationRequest = vacationRequests.find(
+          (vacationRequest) => vacationRequest.id === vacationRequestId
+        );
 
-          const newOrUpdatedStatus = {
-            status,
-            createdBy: loggedInUser.id,
-            updatedAt: new Date()
-          };
-          const updatedStatus = [newOrUpdatedStatus];
-          return vacationRequestsApi.updateVacationRequest({
-            id: vacationRequestId.toString(),
-            vacationRequest: {
-              ...vacationRequest,
-              status: updatedStatus
-            }
-          });
-        })
-      );
+        if (!vacationRequest) continue;
+
+        const newOrUpdatedStatus = {
+          status,
+          createdBy: loggedInUser.id,
+          updatedAt: new Date()
+        };
+
+        const updated = await vacationRequestsApi.updateVacationRequest({
+          id: vacationRequestId.toString(),
+          vacationRequest: {
+            ...vacationRequest,
+            status: [newOrUpdatedStatus]
+          }
+        });
+
+        updatedVacationRequests.push(updated);
+      }
 
       setVacationRequests((prevRequests) =>
         prevRequests.map(
@@ -447,7 +449,7 @@ const VacationRequestsScreen = () => {
       const updatedUser = await usersApi.findUser({ userId: loggedInUser.id });
       setUsers((prevUsers) => prevUsers.map((u) => (u.id === updatedUser.id ? updatedUser : u)));
       showSnackbar(strings.snackbar.vacationRequestStatusUpdated);
-    }  catch (error: any) {
+    } catch (error: any) {
       const errorMessage = await error?.response?.json();
       setError(
         `${strings.vacationRequestError.updateRequestError}: ${errorMessage?.message || error}`

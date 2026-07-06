@@ -1,10 +1,7 @@
-import EventAvailableIcon from "@mui/icons-material/EventAvailable";
-import PriorityHighIcon from "@mui/icons-material/PriorityHigh";
-import { Box, Card, CardContent, Grid, Skeleton, Typography, useTheme } from "@mui/material";
+import { Box, Grid, Skeleton, Typography, useTheme } from "@mui/material";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { DateTime } from "luxon";
 import { useMemo, useState } from "react";
-import { Link } from "react-router-dom";
 import { userProfileAtom } from "src/atoms/auth";
 import { errorAtom } from "src/atoms/error";
 import { usersAtom } from "src/atoms/user.ts";
@@ -18,15 +15,14 @@ import type { VacationInfoListItem } from "src/types";
 import { validateValueIsNotUndefinedNorNull } from "src/utils/check-utils";
 import LocalizationUtils from "src/utils/localization-utils";
 import { formatDate } from "src/utils/time-utils";
-import { renderVacationDaysTextForCard } from "src/utils/vacation-days-utils";
-import { getVacationRequestPersonFullName } from "src/utils/vacation-request-utils";
 import { getTotalVacationRequestStatus } from "src/utils/vacation-status-utils";
 import { PillBadge } from "../generics/badges";
+import HomepageCard, { type CardProps } from "../generics/homepageCard";
 
 /**
  * Vacations card component
  */
-const VacationsCard = () => {
+const VacationsCard = ({ hidden, onToggleHidden, editmode }: CardProps) => {
   const theme = useTheme();
   const { adminMode } = useUserRole();
   const { vacationRequestsApi } = useLambdasApi();
@@ -38,7 +34,7 @@ const VacationsCard = () => {
   const [loading, setLoading] = useState(false);
   const [users] = useAtom(usersAtom);
   const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
-
+  const path = adminMode ? "/admin/vacations" : "/vacations";
   /**
    * Fetch vacation requests
    */
@@ -106,13 +102,19 @@ const VacationsCard = () => {
    */
   const renderVacationInfoItem = (vacationInfoListItem: VacationInfoListItem, index: number) => (
     <Grid key={`vacations-info-list-item-${index}`} size={12}>
-      <Box sx={{ display: "flex" }}>
-        <Typography component="div" sx={{ flex: 1 }}>
+      <Box
+        sx={{
+          display: "flex",
+          direction: "row",
+          gap: theme.spaces.s,
+          mt: theme.spaces.xs,
+          alignItems: "center"
+        }}
+      >
+        <Typography component="div" variant="body" sx={{ fontWeight: 500 }}>
           {vacationInfoListItem.name}
         </Typography>
-        <Typography component="div" sx={{ flex: 1 }}>
-          {vacationInfoListItem.value}
-        </Typography>
+        <Typography component="div">{vacationInfoListItem.value}</Typography>
       </Box>
     </Grid>
   );
@@ -137,20 +139,6 @@ const VacationsCard = () => {
 
       const vacationInfoListItems: VacationInfoListItem[] = [
         {
-          name: strings.vacationsCard.vacationType,
-          value: LocalizationUtils.getLocalizedVacationRequestType(
-            earliestUpcomingVacationRequest.type
-          )
-        },
-        {
-          name: strings.vacationsCard.applicant,
-          value: getVacationRequestPersonFullName(
-            earliestUpcomingVacationRequest,
-            users,
-            userProfile
-          )
-        },
-        {
           name: strings.vacationsCard.timeOfVacation,
           value: `${formatDate(
             DateTime.fromJSDate(earliestUpcomingVacationRequest.startDate)
@@ -172,28 +160,16 @@ const VacationsCard = () => {
       ];
 
       return (
-        <>
-          <Grid size={1}>
-            <EventAvailableIcon />
-          </Grid>
-          <Grid size={11}>
-            <Box>
-              {earliestUpcomingVacationRequest &&
-                DateTime.fromJSDate(earliestUpcomingVacationRequest.startDate) > DateTime.now() && (
-                  <>
-                    <Typography fontWeight={"bold"}>
-                      {`${strings.vacationsCard.nextUpcomingVacation}`}
-                    </Typography>
-                    <Grid container>
-                      {vacationInfoListItems.map((vacationInfoListItem, index) =>
-                        renderVacationInfoItem(vacationInfoListItem, index)
-                      )}
-                    </Grid>
-                  </>
+        <Box>
+          {earliestUpcomingVacationRequest &&
+            DateTime.fromJSDate(earliestUpcomingVacationRequest.startDate) > DateTime.now() && (
+              <Grid container>
+                {vacationInfoListItems.map((vacationInfoListItem, index) =>
+                  renderVacationInfoItem(vacationInfoListItem, index)
                 )}
-            </Box>
-          </Grid>
-        </>
+              </Grid>
+            )}
+        </Box>
       );
     }
     return;
@@ -228,9 +204,7 @@ const VacationsCard = () => {
     if (loading) {
       return (
         <>
-          <Grid size={1}>
-            <PriorityHighIcon />
-          </Grid>
+          <Grid size={1}></Grid>
           <Grid size={11}>
             <Skeleton />
           </Grid>
@@ -238,33 +212,29 @@ const VacationsCard = () => {
       );
     }
 
+    return <Grid size={adminMode || vacationRequestsCount ? 11 : 12}>{message}</Grid>;
+  };
+
+  const renderVacationCard = () => {
     return (
-      <>
-        {adminMode || vacationRequestsCount ? (
-          <Grid size={1}>{vacationRequestsCount ? <PriorityHighIcon /> : null}</Grid>
-        ) : null}
-        <Grid size={adminMode || vacationRequestsCount ? 11 : 12}>{message}</Grid>
-      </>
+      <Grid container gap={theme.spaces.xs}>
+        <Typography variant="caption" sx={{ textWrap: "nowrap", pt: theme.spaces.s }}>
+          {renderUpcomingOrPendingVacationRequestsCount()}
+        </Typography>
+        {renderEarliestUpcomingVacationRequest()}
+      </Grid>
     );
   };
 
   return (
-    <Link to={adminMode ? "/admin/vacations" : "/vacations"} style={{ textDecoration: "none" }}>
-      <Card>
-        <CardContent>
-          <Typography variant="h6" fontWeight={"bold"} style={{ marginTop: 6, marginBottom: 3 }}>
-            {adminMode ? strings.tableToolbar.manageRequests : strings.tableToolbar.myRequests}
-          </Typography>
-          <Grid container>
-            <Box sx={{ width: "100%", display: "flex", flexDirection: "column", mb: 2 }}>
-              {loggedInUser && renderVacationDaysTextForCard(loggedInUser, theme)}
-            </Box>
-            {renderUpcomingOrPendingVacationRequestsCount()}
-            {renderEarliestUpcomingVacationRequest()}
-          </Grid>
-        </CardContent>
-      </Card>
-    </Link>
+    <HomepageCard
+      title={strings.vacationsCard.vacations}
+      content={renderVacationCard()}
+      path={path}
+      hidden={hidden}
+      onToggleHidden={onToggleHidden}
+      editmode={editmode}
+    />
   );
 };
 
