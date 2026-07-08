@@ -3,7 +3,7 @@ import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArro
 import { Box, Divider, IconButton, List, Typography } from "@mui/material";
 import { useState } from "react";
 
-import Logo from "@/resources/img/Metatavu-icon.svg";
+import Logo from "/resources/img/Metatavu-icon.svg";
 
 import SidebarItem from "./SidebarItem";
 import { employeeMenu, managementMenu } from "./sidebar-config";
