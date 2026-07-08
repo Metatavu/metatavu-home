@@ -23,7 +23,7 @@ const AppSidebar = () => {
         display: "flex",
         flexDirection: "column",
 
-        bgcolor: "#045E74",
+        bgcolor: "#00647F",
         color: "#FFFFFF",
 
         transition: "width .25s ease"
