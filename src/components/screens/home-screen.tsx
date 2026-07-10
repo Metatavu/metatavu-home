@@ -29,6 +29,7 @@ export type HomepageCardType = {
   canGroup: boolean;
   group: HomepageCardType | undefined;
 };
+
 /**TODO: cards array takes up space and makes this file confusing.
  * Consider moving it for clarity.
  *
@@ -111,7 +112,15 @@ const HomeScreen = () => {
       },
       {
         id: "sprint-view-card",
-        element: isDeveloper && <SprintViewCard />,
+        element: isDeveloper && (
+          <SprintViewCard
+            hidden={hiddenCards.includes("sprint-view-card")}
+            onToggleHidden={(isVisible: boolean) =>
+              toggleCard("sprint-view-card", isVisible, setHiddenCards)
+            }
+            editmode={editmode}
+          />
+        ),
         canGroup: false,
         group: undefined
       },
@@ -224,7 +233,7 @@ const HomeScreen = () => {
               height: 38,
               gap: theme.spaces.xs,
               margin: theme.spaces.s,
-              marginInline: theme.spaces.m
+              marginInline: theme.spaces.s
             }}
           />
           {editmode && (
@@ -237,7 +246,7 @@ const HomeScreen = () => {
                 height: 38,
                 gap: theme.spaces.xs,
                 margin: theme.spaces.s,
-                marginInline: theme.spaces.m
+                marginInline: theme.spaces.s
               }}
             />
           )}

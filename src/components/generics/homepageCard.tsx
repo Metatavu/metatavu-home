@@ -2,12 +2,15 @@ import { CheckCircleRounded } from "@mui/icons-material";
 import { Card, CardContent, Link, Switch, useTheme } from "@mui/material";
 
 export interface CardProps {
-  title?: string;
-  content?: JSX.Element;
-  path?: string;
   hidden: boolean;
-  onToggleHidden: (arg0: boolean) => void;
+  onToggleHidden: (hidden: boolean) => void;
   editmode: boolean;
+}
+
+interface RenderCardProps extends CardProps {
+  title: string;
+  content: JSX.Element;
+  path: string;
 }
 
 /**
@@ -23,7 +26,14 @@ export interface CardProps {
  * @returns Themed re-usable MUI Card component for homepage cards.
  */
 
-const HomepageCard = ({ title, content, path, hidden, onToggleHidden, editmode }: CardProps) => {
+const HomepageCard = ({
+  title,
+  content,
+  path,
+  hidden,
+  onToggleHidden,
+  editmode
+}: RenderCardProps) => {
   const theme = useTheme();
   const isExternal = path?.startsWith("https");
 
