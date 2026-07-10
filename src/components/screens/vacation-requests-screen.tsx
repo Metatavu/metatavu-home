@@ -293,7 +293,7 @@ const VacationRequestsScreen = () => {
       });
       setVacationRequests([createdRequest, ...vacationRequests]);
       showSnackbar(strings.snackbar.vacationDraftSaved);
-    }  catch (error: any) {
+    } catch (error: any) {
       const errorMessage = await error?.response?.json();
       setError(
         `${strings.vacationRequestError.createRequestError}: ${errorMessage?.message || error}`
@@ -447,7 +447,7 @@ const VacationRequestsScreen = () => {
       const updatedUser = await usersApi.findUser({ userId: loggedInUser.id });
       setUsers((prevUsers) => prevUsers.map((u) => (u.id === updatedUser.id ? updatedUser : u)));
       showSnackbar(strings.snackbar.vacationRequestStatusUpdated);
-    }  catch (error: any) {
+    } catch (error: any) {
       const errorMessage = await error?.response?.json();
       setError(
         `${strings.vacationRequestError.updateRequestError}: ${errorMessage?.message || error}`

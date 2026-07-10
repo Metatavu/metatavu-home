@@ -90,13 +90,16 @@ const BalanceCard = ({ hidden, onToggleHidden, editmode }: CardProps) => {
         : theme.palette.foreground.negative;
     const hourLabel =
       totalFlextimeBalance === 1 ? strings.timeExpressions.hour : strings.timeExpressions.hours;
+
     return (
       <Box>
         <Typography variant="caption">
           {strings.formatString(strings.balanceCard.atTheEndOf, yesterday.toLocaleString())}
         </Typography>
         <Typography fontStyle="body">{strings.balanceCard.totalFlextimeBalance}</Typography>
-        <Typography sx={{ color: textColor, fontWeight: 700 }}>
+        <Typography
+          sx={{ color: hidden ? theme.palette.text.disabled : textColor, fontWeight: 700 }}
+        >
           {totalFlextimeBalance} {hourLabel}
         </Typography>
       </Box>

@@ -25,6 +25,7 @@ export interface CardProps {
 
 const HomepageCard = ({ title, content, path, hidden, onToggleHidden, editmode }: CardProps) => {
   const theme = useTheme();
+  const isExternal = path?.startsWith("https");
 
   return (
     <Card
@@ -35,6 +36,8 @@ const HomepageCard = ({ title, content, path, hidden, onToggleHidden, editmode }
         color: hidden ? theme.palette.text.disabled : theme.palette.text.primary,
         marginBottom: theme.spaces.m,
         width: "100%",
+        minHeight: 160,
+        maxHeight: 488,
         mr: editmode ? theme.spaces.none : theme.spaces.m
       }}
       variant="outlined"
@@ -43,6 +46,8 @@ const HomepageCard = ({ title, content, path, hidden, onToggleHidden, editmode }
       <CardContent>
         <Link
           href={editmode ? undefined : path}
+          target={isExternal ? "_blank" : undefined}
+          rel={isExternal ? "noopener noreferrer" : undefined}
           variant="h4"
           sx={{
             ":hover": {
