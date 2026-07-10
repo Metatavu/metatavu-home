@@ -1,30 +1,29 @@
-import { Card, CardContent, Typography } from "@mui/material";
-import { Link } from "react-router-dom";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
+import HomepageCard, { type CardProps } from "../generics/homepageCard";
 import SprintViewCardContent from "./sprint-view-card-content/user-sprint-view-card";
 
 /**
- * SprintView card component
+ * Sprint view card component.
+ *
+ * @param props.hidden - Boolean indicating if the card is visible
+ * @param props.onToggleHidden - Functionality for changing visibility
+ *
+ * @returns Sprintview card component
  */
-const SprintViewCard = () => {
+const SprintViewCard = ({ hidden, onToggleHidden, editmode }: CardProps) => {
   const { adminMode } = useUserRole();
+  const path = adminMode ? "/admin/sprintview" : "/sprintview";
 
   return (
-    <Link to={adminMode ? "/admin/sprintview" : "/sprintview"} style={{ textDecoration: "none" }}>
-      <Card>
-        <CardContent>
-          <Typography
-            variant="h6"
-            fontWeight={"bold"}
-            style={{ marginTop: 6, marginBottom: "20px" }}
-          >
-            {strings.sprint.sprintview}
-          </Typography>
-          <SprintViewCardContent />
-        </CardContent>
-      </Card>
-    </Link>
+    <HomepageCard
+      title={strings.sprint.sprintviewCardTitle}
+      content={<SprintViewCardContent hidden={hidden} />}
+      path={path}
+      hidden={hidden}
+      onToggleHidden={onToggleHidden}
+      editmode={editmode}
+    />
   );
 };
 

@@ -114,17 +114,19 @@
     "unAllocated": "Unallocated Time:",
     "sprintDate": "Sprint",
     "completed": "Done",
-    "current": "Current: {0}-{1}",
+    "current": "{0}-{1}",
     "startDate": "Start Date",
     "deadLine": "Deadline",
-    "actualWorkHours": "Actual Work Hours",
+    "actualWorkHours": "Hours worked",
     "filter": "Filter by",
     "filterType": "Filter type",
     "project": "Project",
     "user": "User",
     "clear": "Clear",
     "searchBy": "Search by project or user",
-    "estimateHours": "Estimate Hours"
+    "estimateHours": "Estimated Hours",
+    "sprintviewCardTitle": "Your sprint",
+    "targetHours": "Target hours for today"
   },
   "softwareRegistry": {
     "softwareRegistry": "Software registry",

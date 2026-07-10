@@ -83,6 +83,7 @@ declare module "@mui/material/styles" {
     accentSecondary: string;
     selected: string;
     event: string;
+    tooltip: string;
   }
   interface PaletteOptions {
     foreground?: {
