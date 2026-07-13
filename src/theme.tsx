@@ -36,7 +36,8 @@ export const createAppTheme = (mode: "light" | "dark"): Theme =>
         accentSecondary: "#e6eff2",
         selected: "#99c1cc",
         event: "#f2f2f2",
-        paper: mode === "dark" ? "#1e1e1e" : "#ffffff"
+        paper: mode === "dark" ? "#1e1e1e" : "#ffffff",
+        tooltip: "#002833"
       },
       text: {
         primary: mode === "dark" ? "#ffffff" : "#222222",

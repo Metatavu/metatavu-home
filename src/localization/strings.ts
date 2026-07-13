@@ -151,6 +151,8 @@ export interface Localized extends LocalizedStringsMethods {
     clear: string;
     searchBy: string;
     estimateHours: string;
+    sprintviewCardTitle: string;
+    targetHours: string;
   };
   /**
    * Translations related to software registry

@@ -114,7 +114,7 @@
     "unAllocated": "Allokoimaton aika:",
     "sprintDate": "Sprintti",
     "completed": "Valmis",
-    "current": "Nykyinen: {0}-{1}",
+    "current": "{0}-{1}",
     "startDate": "Aloituspäivämäärä",
     "deadLine": "Määräaika",
     "actualWorkHours": "Toteutuneet tunnit",
@@ -124,7 +124,9 @@
     "user": "Käyttäjä",
     "clear": "Tyhjennä",
     "searchBy": "Hae nimellä {0}",
-    "estimateHours": "Arvioidut tunnit"
+    "estimateHours": "Arvioidut tunnit",
+    "sprintviewCardTitle": "Sprinttisi",
+    "targetHours": "Tavoitetunnit tänään"
   },
   "softwareRegistry": {
     "softwareRegistry": "Ohjelmistorekisteri",
