@@ -84,6 +84,29 @@ export interface Localized extends LocalizedStringsMethods {
     fi: string;
     time: string;
   };
+
+  /**
+   * Navigation translations
+   */
+
+  navigation: {
+    home: string;
+    sprint: string;
+    balance: string;
+    vacations: string;
+    wiki: string;
+    questionnaires: string;
+    applications: string;
+    onCall: string;
+    employees: string;
+    project: string;
+    employeeBalance: string;
+    vacationManager: string;
+    questionnarieBuilder: string;
+    applicationsManager: string;
+    collapse: string;
+    management: string;
+  };
   /**
    * Translations related to timebank
    */

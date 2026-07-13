@@ -1,4 +1,4 @@
-import { ListItemButton, ListItemIcon, ListItemText, Tooltip } from "@mui/material";
+import { ListItemButton, ListItemIcon, ListItemText, Tooltip, useTheme } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 
 interface SidebarItemProps {
@@ -11,6 +11,7 @@ interface SidebarItemProps {
 const SidebarItem = ({ title, route, icon: Icon, collapsed = false }: SidebarItemProps) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const theme = useTheme();
 
   const selected = location.pathname === route;
 
@@ -20,38 +21,38 @@ const SidebarItem = ({ title, route, icon: Icon, collapsed = false }: SidebarIte
         selected={selected}
         onClick={() => navigate(route)}
         sx={{
-          mx: 1,
-          mb: 0.5,
-          px: 1.5,
-          minHeight: 42,
-          borderRadius: "8px",
+          minHeight: collapsed ? 40 : 42,
+          width: collapsed ? 40 : "min-content",
+          borderRadius: theme.radius.s,
+          textWrap: "nowrap",
 
           justifyContent: collapsed ? "center" : "flex-start",
 
-          color: "#FFFFFF",
+          color: theme.palette.foreground.inversed,
 
           "&:hover": {
-            backgroundColor: "rgba(255,255,255,.08)"
+            color: theme.palette.hover.navigation,
+            backgroundColor: "transparent"
           },
 
           "&.Mui-selected": {
-            backgroundColor: "#A7D6DF",
-            color: "#045E74"
+            backgroundColor: theme.palette.background.selected,
+            color: theme.palette.text.accent
           },
 
           "&.Mui-selected:hover": {
-            backgroundColor: "#A7D6DF"
+            backgroundColor: theme.palette.background.selected,
+            color: theme.palette.foreground.inversed
           }
         }}
       >
         <ListItemIcon
           sx={{
             color: "inherit",
-            minWidth: collapsed ? 0 : 36,
-            justifyContent: "center"
+            minWidth: collapsed ? 0 : 36
           }}
         >
-          <Icon />
+          <Icon sx={{ fontSize: 24 }} />
         </ListItemIcon>
 
         {!collapsed && (
@@ -59,7 +60,7 @@ const SidebarItem = ({ title, route, icon: Icon, collapsed = false }: SidebarIte
             primary={title}
             primaryTypographyProps={{
               fontSize: 14,
-              fontWeight: 500,
+              fontWeight: 600,
               color: "inherit"
             }}
           />

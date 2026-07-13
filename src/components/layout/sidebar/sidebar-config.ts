@@ -1,83 +1,93 @@
-import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
-import App_registration from "@mui/icons-material/AppRegistration";
-import AppsOutlinedIcon from "@mui/icons-material/AppsOutlined";
-import AssessmentOutlinedIcon from "@mui/icons-material/AssessmentOutlined";
-import BeachAccessOutlinedIcon from "@mui/icons-material/BeachAccessOutlined";
-import Brows_galary from "@mui/icons-material/BrowseGallery";
-import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
-import Design_services from "@mui/icons-material/DesignServices";
-import home from "@mui/icons-material/Home";
-import PhoneOutlinedIcon from "@mui/icons-material/PhoneOutlined";
-import QuizOutlinedIcon from "@mui/icons-material/QuizOutlined";
-import ViewKanbanOutlinedIcon from "@mui/icons-material/ViewKanbanOutlined";
+import {
+  AccessTimeOutlined,
+  AnalyticsOutlined,
+  AppRegistration,
+  AppsOutlined,
+  BeachAccessOutlined,
+  BrowseGalleryOutlined,
+  DescriptionOutlined,
+  DesignServicesOutlined,
+  EditCalendarOutlined,
+  Groups3Outlined,
+  HomeOutlined,
+  QuizOutlined,
+  SettingsPhoneOutlined,
+  ViewKanbanOutlined
+} from "@mui/icons-material";
+import strings from "src/localization/strings";
 
-export const employeeMenu = [
+export const getEmployeeMenu = () => [
   {
-    title: "Home",
-    icon: home,
+    title: strings.navigation.home,
+    icon: HomeOutlined,
     route: "/"
   },
   {
-    title: "Sprint View",
-    icon: ViewKanbanOutlinedIcon,
+    title: strings.navigation.sprint,
+    icon: ViewKanbanOutlined,
     route: "/sprintview"
   },
   {
-    title: "Balance",
-    icon: AccessTimeOutlinedIcon,
+    title: strings.navigation.balance,
+    icon: AccessTimeOutlined,
     route: "/balance"
   },
   {
-    title: "Vacation Requests",
-    icon: BeachAccessOutlinedIcon,
+    title: strings.navigation.vacations,
+    icon: BeachAccessOutlined,
     route: "/vacations"
   },
   {
-    title: "Wiki Documentation",
-    icon: DescriptionOutlinedIcon,
+    title: strings.navigation.wiki,
+    icon: DescriptionOutlined,
     route: "/wiki-documentation"
   },
   {
-    title: "Questionnaires",
-    icon: QuizOutlinedIcon,
+    title: strings.navigation.questionnaires,
+    icon: QuizOutlined,
     route: "/questionnaire"
   },
   {
-    title: "Software Registry",
-    icon: AppsOutlinedIcon,
+    title: strings.navigation.onCall,
+    icon: SettingsPhoneOutlined,
+    route: "/oncall"
+  },
+  {
+    title: strings.navigation.applications,
+    icon: AppsOutlined,
     route: "/softwareregistry"
   },
   {
-    title: "On Call Calendar",
-    icon: PhoneOutlinedIcon,
-    route: "/oncall"
+    title: strings.navigation.employees,
+    icon: Groups3Outlined,
+    route: ""
   }
 ];
 
-export const managementMenu = [
+export const getManagementMenu = () => [
   {
-    title: "Project Overview",
-    icon: AssessmentOutlinedIcon,
+    title: strings.navigation.project,
+    icon: AnalyticsOutlined,
     route: "/admin"
   },
   {
-    title: "Employee Balance",
-    icon: Brows_galary,
+    title: strings.navigation.employeeBalance,
+    icon: BrowseGalleryOutlined,
     route: "/admin/severa/employee-flextime"
   },
   {
-    title: "Vacation Manager",
-    icon: BeachAccessOutlinedIcon,
-    route: "/admin/vacation-management"
+    title: strings.navigation.vacationManager,
+    icon: EditCalendarOutlined,
+    route: "/admin/vacations"
   },
   {
-    title: "Questionnaire Builder",
-    icon: Design_services,
+    title: strings.navigation.questionnarieBuilder,
+    icon: DesignServicesOutlined,
     route: "/admin/questionnaire"
   },
   {
-    title: "Application Manager",
-    icon: App_registration,
+    title: strings.navigation.applicationsManager,
+    icon: AppRegistration,
     route: "/admin/allsoftware"
   }
 ];
