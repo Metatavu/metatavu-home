@@ -163,12 +163,12 @@ const HomeScreen = () => {
         group: undefined
       },
       {
-        id: "calendar-card",
+        id: "schedule-card",
         element: isDeveloper && (
           <ScheduleCard
-            hidden={hiddenCards.includes("calendar-card")}
+            hidden={hiddenCards.includes("schedule-card")}
             onToggleHidden={(isVisible: boolean) =>
-              toggleCard("calendar-card", isVisible, setHiddenCards)
+              toggleCard("schedule-card", isVisible, setHiddenCards)
             }
             editmode={editmode}
           />

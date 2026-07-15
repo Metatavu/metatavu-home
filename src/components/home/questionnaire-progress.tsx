@@ -8,6 +8,7 @@ import { usersAtom } from "src/atoms/user";
 import type { Questionnaire, User } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
+import type { CardVisibilityProps } from "../generics/homepageCard";
 
 /**
  * Questionnaire progress information.
@@ -16,7 +17,7 @@ import strings from "src/localization/strings";
  *
  * @returns Content for questionnaire card
  */
-const QuestionnaireProgress = ({ hidden }) => {
+const QuestionnaireProgress = ({ hidden }: CardVisibilityProps) => {
   const { questionnairesApi } = useLambdasApi();
   const userProfile = useAtomValue(userProfileAtom);
   const users = useAtomValue(usersAtom);
