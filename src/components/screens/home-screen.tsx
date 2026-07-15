@@ -42,6 +42,7 @@ const HomeScreen = () => {
   const { isDeveloper, isTester } = useUserRole();
   const users = useAtomValue(usersAtom);
   const userProfile = useAtomValue(userProfileAtom);
+  const language = strings.getLanguage();
 
   const [editmode, setEditmode] = useState(false);
   const [savedOrder, setSavedOrder] = useState<string[]>([]);
@@ -178,7 +179,7 @@ const HomeScreen = () => {
         group: undefined
       }
     ],
-    [editmode, isTester, isDeveloper, hasSeveraUserId, hiddenCards]
+    [editmode, isTester, isDeveloper, hasSeveraUserId, hiddenCards, language]
   );
   const orderedCards = useMemo(() => {
     if (!savedOrder.length) {

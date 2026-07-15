@@ -150,6 +150,7 @@ const VacationsCard = ({ hidden, onToggleHidden, editmode }: CardProps) => {
             <PillBadge
               variant="approvalBadge"
               status={getTotalVacationRequestStatus(earliestUpcomingVacationRequest.status)}
+              hidden={hidden}
             >
               {LocalizationUtils.getLocalizedVacationRequestStatus(
                 getTotalVacationRequestStatus(earliestUpcomingVacationRequest.status)

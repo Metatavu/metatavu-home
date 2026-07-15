@@ -10,7 +10,15 @@ import { parseNameFromEmail } from "src/utils/user-name-utils";
 import HomepageCard, { type CardProps } from "../generics/homepageCard";
 
 /**
- * On-call card component
+ * On call card component.
+ *
+ * Shows name of the person currently on call with email adress.
+ *
+ * @param props.hidden - Boolean indicating if card is hidden
+ * @param props.onToggleHidden - Functionality for changing card visibility
+ * @param props.editmode - Boolean indicating if editmode is on
+ *
+ * @returns Styled card showing on call information for user
  */
 const OnCallCard = ({ hidden, onToggleHidden, editmode }: CardProps) => {
   const { onCallApi } = useLambdasApi();

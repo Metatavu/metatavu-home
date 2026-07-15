@@ -4,6 +4,7 @@ import { getBadgeColor } from "src/utils/badgeColorUtils";
 
 interface StatusIndicatorProps {
   statusColor: VacationRequestStatuses;
+  disabled?: string;
 }
 
 /**
@@ -17,9 +18,10 @@ interface StatusIndicatorProps {
  * of the indicator based on the status
  * @returns Themed MUI ToolTip component
  */
-const VacationStatusIndicator = ({ statusColor }: StatusIndicatorProps) => {
+const VacationStatusIndicator = ({ statusColor, disabled }: StatusIndicatorProps) => {
   const theme = useTheme();
-  const colors = getBadgeColor(statusColor, theme);
+  const color = disabled ? disabled : statusColor;
+  const colors = getBadgeColor(color, theme);
 
   return (
     <Tooltip title="status" placement="top">
@@ -29,7 +31,7 @@ const VacationStatusIndicator = ({ statusColor }: StatusIndicatorProps) => {
           height: 8,
           backgroundColor: colors?.indicatorColor,
           borderRadius: "50%",
-          animation: statusColor === "PENDING" ? "pulse 2s infinite" : "none",
+          animation: color === "PENDING" ? "pulse 2s infinite" : "none",
           "@keyframes pulse": {
             "0%, 100%": {
               opacity: 1
