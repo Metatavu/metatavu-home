@@ -18,31 +18,3 @@ export const getSeveraUserId = (user: User | undefined): string => {
   }
   return severaUserId;
 };
-
-/**
- * Extracts a display name from a user.
- *
- * Falls back to deriving a name from the email if firstName is missing,
- * because the backend API does not reliably return firstName
- * for all users
- *
- * @param user - The user object
- * @returns first name, or empty string if unavailable
- */
-export const getDisplayName = (user?: User): string => {
-  if (user?.firstName) {
-    return user.firstName;
-  }
-
-  if (user?.email) {
-    const localPart = user.email.split("@")[0];
-    const withoutPrefix = localPart.replace(/^ext-/i, "");
-    const firstPart = withoutPrefix.split(/[._]/)[0];
-    return firstPart
-      .split("-")
-      .map(part => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
-      .join("-");
-  }
-
-  return "";
-};

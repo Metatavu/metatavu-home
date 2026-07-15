@@ -12,7 +12,7 @@ import strings from "src/localization/strings";
 import { OnboardingScreen } from "src/types/index";
 import { groupCard, moveCard, renderCardWithSkeleton, toggleCard } from "src/utils/cardUtils";
 import { getTimeBasedGreeting } from "src/utils/time-utils";
-import { getDisplayName } from "src/utils/user-utils";
+import { getDisplayName } from "src/utils/user-name-utils";
 import AppButton from "../generics/buttons/app-button";
 import BalanceCard from "../home/balance-card";
 import CardGridWrapper from "../home/common/card-grid-wrapper";
