@@ -2,7 +2,7 @@ import { ChevronLeftRounded, ChevronRightRounded } from "@mui/icons-material";
 import { Box, Button, Typography, useTheme } from "@mui/material";
 import { DateTime } from "luxon";
 import type { Dispatch, SetStateAction } from "react";
-import type { MockCalendar } from "./renderCalendar";
+import type { MockCalendar } from "./renderSchecule";
 
 interface EventProps {
   event: MockCalendar;
@@ -74,7 +74,7 @@ interface CalendarProps {
  *
  * @returns Time area of the calendar including calendar elements.
  */
-export const CalendarTimeArea = ({
+export const ScheduleTimeArea = ({
   pixelsPerMinute,
   timeNow,
   hidden,
@@ -130,7 +130,7 @@ export const CalendarTimeArea = ({
           </Box>
         );
       })}
-      <CalendarElements
+      <ScheduleElements
         pixelsPerMinute={pixelsPerMinute}
         timeNow={timeNow}
         hidden={hidden}
@@ -151,7 +151,7 @@ export const CalendarTimeArea = ({
  *
  * @returns elements for calendar and their positions on time area.
  */
-const CalendarElements = ({ pixelsPerMinute, timeNow, hidden, calendarData }: CalendarProps) => {
+const ScheduleElements = ({ pixelsPerMinute, timeNow, hidden, calendarData }: CalendarProps) => {
   const theme = useTheme();
   const hourNow = timeNow.hour - 1;
   const nowTop = ((timeNow.hour - hourNow) * 60 + timeNow.minute) * pixelsPerMinute;
@@ -209,7 +209,7 @@ interface TopBarProps {
  *
  * @returns Styled component for the calendar top
  */
-export const CalendarTopBar = ({ hidden, timeNow, setTimeNow }: TopBarProps) => {
+export const ScheduleTopBar = ({ hidden, timeNow, setTimeNow }: TopBarProps) => {
   const theme = useTheme();
   const week = Array.from({ length: 5 }, (_, i) => timeNow.plus({ days: i - 2 }));
   const weekDays = week.map((day) => ({

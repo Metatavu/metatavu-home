@@ -138,6 +138,12 @@ export interface Localized extends LocalizedStringsMethods {
     holidayName: string;
   };
   /**
+   * Translations related to schedule
+   */
+  schedule: {
+    title: string;
+  };
+  /**
    * Translations related to sprint view
    */
   sprint: {

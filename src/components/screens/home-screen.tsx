@@ -13,10 +13,10 @@ import { OnboardingScreen } from "src/types/index";
 import { groupCard, moveCard, renderCardWithSkeleton, toggleCard } from "src/utils/cardUtils";
 import AppButton from "../generics/buttons/app-button";
 import BalanceCard from "../home/balance-card";
-import CalendarCard from "../home/calendarCard";
 import CardGridWrapper from "../home/common/card-grid-wrapper";
 import OnCallCard from "../home/oncall-card";
 import QuestionnaireCard from "../home/questionnaire-card";
+import ScheduleCard from "../home/scheduleCard/scheduleCard";
 import SoftwareRegistryCard from "../home/software-registry-card";
 import SprintViewCard from "../home/sprint-view-card";
 import VacationsCard from "../home/vacations-card";
@@ -165,7 +165,7 @@ const HomeScreen = () => {
       {
         id: "calendar-card",
         element: isDeveloper && (
-          <CalendarCard
+          <ScheduleCard
             hidden={hiddenCards.includes("calendar-card")}
             onToggleHidden={(isVisible: boolean) =>
               toggleCard("calendar-card", isVisible, setHiddenCards)

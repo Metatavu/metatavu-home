@@ -1,5 +1,6 @@
-import HomepageCard, { type CardProps } from "../generics/homepageCard";
-import { RenderCalendar } from "./renderCalendar";
+import strings from "src/localization/strings";
+import HomepageCard, { type CardProps } from "../../generics/homepageCard";
+import { RenderSchedule } from "./renderSchecule";
 
 /**
  * Schedule card for home page.
@@ -12,13 +13,13 @@ import { RenderCalendar } from "./renderCalendar";
  * @param props.editmode - Boolean indicating is editmode on
  * @returns
  */
-const CalendarCard = ({ hidden, onToggleHidden, editmode }: CardProps) => {
+const ScheduleCard = ({ hidden, onToggleHidden, editmode }: CardProps) => {
   const path = "https://calendar.google.com/";
 
   return (
     <HomepageCard
-      title="Schedule"
-      content={<RenderCalendar hidden={hidden} />}
+      title={strings.schedule.title}
+      content={<RenderSchedule hidden={hidden} />}
       path={path}
       hidden={hidden}
       onToggleHidden={onToggleHidden}
@@ -27,4 +28,4 @@ const CalendarCard = ({ hidden, onToggleHidden, editmode }: CardProps) => {
   );
 };
 
-export default CalendarCard;
+export default ScheduleCard;

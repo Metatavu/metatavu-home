@@ -1,6 +1,7 @@
 import { DateTime } from "luxon";
 import { useEffect, useState } from "react";
-import { CalendarTimeArea, CalendarTopBar } from "./renderCalendarEvent";
+import type { CardVisibilityProps } from "src/components/generics/homepageCard";
+import { ScheduleTimeArea, ScheduleTopBar } from "./scheduleContent";
 
 /**
  * TODO: Delete when real data is implemented
@@ -26,13 +27,13 @@ export interface MockCalendar {
  * @param props.hidden - Boolean indicating if card is hidden
  * @returns Calendar day view for schedule card with ineractive buttons to change date
  */
-export const RenderCalendar = ({ hidden }: { hidden: boolean }) => {
+export const RenderSchedule = ({ hidden }: CardVisibilityProps) => {
   const [timeNow, setTimeNow] = useState(DateTime.now());
   const today = DateTime.now();
   const yesterday = today.minus({ days: 1 });
   const tomorrow = today.plus({ days: 1 });
 
-  const pixelsPerMinute = 0.7;
+  const PIXELS_PER_MINUTE = 0.7;
   const UPDATE_INTERVAL = 15 * 60 * 1000;
 
   useEffect(() => {
@@ -95,11 +96,11 @@ export const RenderCalendar = ({ hidden }: { hidden: boolean }) => {
   ];
   return (
     <>
-      <CalendarTopBar hidden={hidden} timeNow={timeNow} setTimeNow={setTimeNow} />
-      <CalendarTimeArea
+      <ScheduleTopBar hidden={hidden} timeNow={timeNow} setTimeNow={setTimeNow} />
+      <ScheduleTimeArea
         hidden={hidden}
         timeNow={timeNow}
-        pixelsPerMinute={pixelsPerMinute}
+        pixelsPerMinute={PIXELS_PER_MINUTE}
         calendarData={calendarData}
       />
     </>
