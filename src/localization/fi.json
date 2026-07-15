@@ -26,6 +26,11 @@
     "openUserMenu": "Käyttäjävalikko",
     "logoAlt": "Metatavu logo"
   },
+  "home": {
+  "goodMorning": "Huomenta",
+  "goodDay": "Iltapäivää",
+  "goodEvening": "Iltaa"
+  },
   "error": {
     "oops": "Hups!",
     "generic": "Tapahtui odottamaton virhe",
@@ -63,8 +68,10 @@
   "localization": {
     "en": "EN",
     "fi": "FI",
-    "time": "fi-FI"
-  },
+    "time": "fi-FI",
+    "english": "English",
+    "finnish": "Suomi"
+},
   "navigation": {
     "home": "Koti",
     "sprint": "Sprinttinäkymä",

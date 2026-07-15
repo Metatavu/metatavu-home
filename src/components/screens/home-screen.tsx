@@ -1,7 +1,7 @@
 /** biome-ignore-all lint/correctness/useUniqueElementIds: Keep static id */
 import { DragDropProvider } from "@dnd-kit/react";
 import { EditOutlined } from "@mui/icons-material";
-import { Box, useTheme } from "@mui/material";
+import { Box, Typography, useTheme } from "@mui/material";
 import { useAtomValue } from "jotai";
 import { type ReactNode, useEffect, useMemo, useState } from "react";
 import { userProfileAtom } from "src/atoms/auth";
@@ -11,6 +11,8 @@ import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import { OnboardingScreen } from "src/types/index";
 import { groupCard, moveCard, renderCardWithSkeleton, toggleCard } from "src/utils/cardUtils";
+import { getTimeBasedGreeting } from "src/utils/time-utils";
+import { getDisplayName } from "src/utils/user-name-utils";
 import AppButton from "../generics/buttons/app-button";
 import BalanceCard from "../home/balance-card";
 import CardGridWrapper from "../home/common/card-grid-wrapper";
@@ -36,6 +38,7 @@ export type HomepageCardType = {
  * Defines homepage cards and their order.
  * Saves user's layout to local storage.
  * Handles drag and drop logic.
+ * Displays a time-based greeting with the user's display name.
  */
 const HomeScreen = () => {
   const theme = useTheme();
@@ -53,6 +56,8 @@ const HomeScreen = () => {
   const HIDDEN_CARDS_KEY = "hiddenCards";
   const ORDER_KEY = "order";
   const hasSeveraUserId = !!loggedInUser?.attributes?.severaUserId;
+  const displayName = getDisplayName(loggedInUser);
+  const greetingString = `${getTimeBasedGreeting()}, ${displayName}!`;
 
   useEffect(() => {
     const previousOrder = localStorage.getItem(ORDER_KEY);
@@ -206,6 +211,9 @@ const HomeScreen = () => {
 
   return (
     <Box>
+      <Typography variant="h3" sx={{ px: theme.spaces.m, pt: theme.spaces.m }}>
+        {greetingString}
+      </Typography>
       <Box id="home-screen" display="flex" flexDirection="column" alignItems="end">
         <Box>
           <AppButton

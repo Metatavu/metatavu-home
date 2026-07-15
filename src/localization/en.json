@@ -26,6 +26,11 @@
     "openUserMenu": "Open user menu",
     "logoAlt": "Metatavu logo"
   },
+  "home": {
+  "goodMorning": "Good morning",
+  "goodDay": "Good afternoon",
+  "goodEvening": "Good evening"
+  },
   "error": {
     "oops": "Oops!",
     "generic": "Unexpected error has occurred",
@@ -61,11 +66,13 @@
     "softwareRegistryUpdateFailed": "Error while updating software registry"
   },
   "localization": {
-    "en": "EN",
-    "fi": "FI",
-    "time": "en-GB"
-  },
-  "navigation": {
+  "en": "EN",
+  "fi": "FI",
+  "time": "fi-FI",
+  "english": "English",
+  "finnish": "Suomi"
+},
+"navigation": {
     "home": "Home",
     "sprint": "Sprint view",
     "balance": "Balance",
@@ -109,7 +116,7 @@
     "expectedHours": "Expected hours",
     "holidayName": "Holiday:"
   },
-  "sprint": {
+   "sprint": {
     "sprintview": "Sprint view",
     "myAllocation": "My allocations",
     "allocation": "Allocation",
@@ -472,7 +479,7 @@
   },
   "questionnaireProgress": {
     "title": "Questionnaires",
-    "progressText": "You have {0} open questionnaires",
+    "progressText": "You have passed {0} out of {1} questionnaires",
     "allCompleted": "Congratulations! You've completed all questionnaires!",
     "loading": "Loading questionnaires..."
   },

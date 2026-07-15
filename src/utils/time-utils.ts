@@ -1,6 +1,7 @@
 import type { Theme } from "@mui/material";
 import { DateTime, Duration } from "luxon";
 import type { User } from "src/generated/homeLambdasClient";
+import strings from "src/localization/strings";
 
 /**
  * Format date
@@ -291,4 +292,27 @@ export const contractedWeekToBoolean = (week: number[]): boolean[] => {
   });
 
   return result;
+};
+
+/**
+ * Returns a time-appropriate greeting based on the current hour.
+ *
+ * Morning: 05:00–11:59
+ * Day: 12:00–17:59
+ * Evening: 18:00–04:59
+ *
+ * @returns Localized greeting string
+ */
+export const getTimeBasedGreeting = (): string => {
+  const hour = new Date().getHours();
+
+  if (hour >= 5 && hour < 12) {
+    return strings.home.goodMorning;
+  }
+
+  if (hour >= 12 && hour < 18) {
+    return strings.home.goodDay;
+  }
+
+  return strings.home.goodEvening;
 };
