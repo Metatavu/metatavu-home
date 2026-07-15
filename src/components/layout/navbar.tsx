@@ -102,7 +102,7 @@ const NavBar = () => {
                 >
                   <Avatar
                     src={avatars?.image_original || ""}
-                    sx={{ bgcolor: theme.palette.primary.main }}
+                    sx={{ bgcolor: theme.palette.background.accent }}
                   >
                     {!avatars?.image_original &&
                       `${userProfile?.firstName?.[0] ?? ""}${userProfile?.lastName?.[0] ?? ""}`}
