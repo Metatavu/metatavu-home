@@ -65,6 +65,24 @@
     "fi": "FI",
     "time": "fi-FI"
   },
+  "navigation": {
+    "home": "Koti",
+    "sprint": "Sprinttinäkymä",
+    "balance": "Saldo",
+    "vacations": "Lomahakemukset",
+    "wiki": "Wikidokumentaatio",
+    "questionnaires": "Kyselyt",
+    "applications": "Sovellukset",
+    "onCall": "Päivystyskalenteri",
+    "employees": "Työntekijät",
+    "project": "Projektinäkymä",
+    "employeeBalance": "Työntekijöiden saldot",
+    "vacationManager": "Lomahallinta",
+    "questionnarieBuilder": "Kyselyeditori",
+    "applicationsManager": "Sovellusten hallinta",
+    "collapse": "Kutista",
+    "management": "Hallinta"
+  },
   "timebank": {
     "balance": "Saldo",
     "yourBalanceIs": "Saldosi on",
