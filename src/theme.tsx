@@ -36,7 +36,8 @@ export const createAppTheme = (mode: "light" | "dark"): Theme =>
         accentSecondary: "#e6eff2",
         selected: "#99c1cc",
         event: "#f2f2f2",
-        paper: mode === "dark" ? "#1e1e1e" : "#ffffff"
+        paper: mode === "dark" ? "#1e1e1e" : "#ffffff",
+        tooltip: "#002833"
       },
       text: {
         primary: mode === "dark" ? "#ffffff" : "#222222",
@@ -246,10 +247,7 @@ export const createAppTheme = (mode: "light" | "dark"): Theme =>
           root: ({ theme }) => ({
             backgroundColor: theme.palette.background.paper,
             color: theme.palette.text.primary,
-            transition: "background-color 0.2s ease",
-            "&:hover": {
-              backgroundColor: theme.palette.hover.secondary
-            }
+            transition: "background-color 0.2s ease"
           })
         }
       },

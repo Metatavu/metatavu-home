@@ -10,7 +10,7 @@ import type { User } from "src/generated/homeLambdasClient";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import { OnboardingScreen } from "src/types/index";
-import { groupCard, moveCard, renderCardWithSkeleton } from "src/utils/cardUtils";
+import { groupCard, moveCard, renderCardWithSkeleton, toggleCard } from "src/utils/cardUtils";
 import { getTimeBasedGreeting } from "src/utils/time-utils";
 import { getDisplayName } from "src/utils/user-utils";
 import AppButton from "../generics/buttons/app-button";
@@ -30,6 +30,7 @@ export type HomepageCardType = {
   canGroup: boolean;
   group: HomepageCardType | undefined;
 };
+
 /**TODO: cards array takes up space and makes this file confusing.
  * Consider moving it for clarity.
  *
@@ -49,6 +50,7 @@ const HomeScreen = () => {
   const [savedOrder, setSavedOrder] = useState<string[]>([]);
   const [hiddenCards, setHiddenCards] = useState<string[]>([]);
   const [dragOverGroup, setDragOverGroup] = useState(false);
+  const [layoutLoaded, setLayoutLoaded] = useState(false);
 
   const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
   const HIDDEN_CARDS_KEY = "hiddenCards";
@@ -67,6 +69,8 @@ const HomeScreen = () => {
     if (previousHidden) {
       setHiddenCards(JSON.parse(previousHidden));
     }
+
+    setLayoutLoaded(true);
   }, []);
 
   const handleEdit = (action?: string) => {
@@ -97,7 +101,13 @@ const HomeScreen = () => {
         element:
           isDeveloper &&
           (hasSeveraUserId ? (
-            <BalanceCard />
+            <BalanceCard
+              hidden={hiddenCards.includes("balance-card")}
+              onToggleHidden={(isVisible: boolean) =>
+                toggleCard("balance-card", isVisible, setHiddenCards)
+              }
+              editmode={editmode}
+            />
           ) : (
             renderCardWithSkeleton(strings.balanceCard.balance, hasSeveraUserId, theme)
           )),
@@ -106,7 +116,15 @@ const HomeScreen = () => {
       },
       {
         id: "sprint-view-card",
-        element: isDeveloper && <SprintViewCard />,
+        element: isDeveloper && (
+          <SprintViewCard
+            hidden={hiddenCards.includes("sprint-view-card")}
+            onToggleHidden={(isVisible: boolean) =>
+              toggleCard("sprint-view-card", isVisible, setHiddenCards)
+            }
+            editmode={editmode}
+          />
+        ),
         canGroup: false,
         group: undefined
       },
@@ -118,7 +136,15 @@ const HomeScreen = () => {
       },
       {
         id: "questionnaires-card",
-        element: isDeveloper && <QuestionnaireCard />,
+        element: isDeveloper && (
+          <QuestionnaireCard
+            hidden={hiddenCards.includes("questionnaires-card")}
+            onToggleHidden={(isVisible: boolean) =>
+              toggleCard("questionnaires-card", isVisible, setHiddenCards)
+            }
+            editmode={editmode}
+          />
+        ),
         canGroup: true,
         group: undefined
       },
@@ -141,7 +167,7 @@ const HomeScreen = () => {
         group: undefined
       }
     ],
-    [editmode, isTester, isDeveloper, hiddenCards, hasSeveraUserId, savedOrder]
+    [editmode, isTester, isDeveloper, hasSeveraUserId, hiddenCards]
   );
   const orderedCards = useMemo(() => {
     if (!savedOrder.length) {
@@ -173,13 +199,15 @@ const HomeScreen = () => {
             group: cardMap.get(groupId)
           };
         }
-
         return card;
       })
       .filter(Boolean) as HomepageCardType[];
 
     return sorted;
   }, [cards, savedOrder]);
+
+  //Cards won't render untill the save order is loaded
+  if (!layoutLoaded) return null;
 
   return (
     <Box>
@@ -198,7 +226,7 @@ const HomeScreen = () => {
               height: 38,
               gap: theme.spaces.xs,
               margin: theme.spaces.s,
-              marginInline: theme.spaces.m
+              marginInline: theme.spaces.s
             }}
           />
           {editmode && (
@@ -211,7 +239,7 @@ const HomeScreen = () => {
                 height: 38,
                 gap: theme.spaces.xs,
                 margin: theme.spaces.s,
-                marginInline: theme.spaces.m
+                marginInline: theme.spaces.s
               }}
             />
           )}

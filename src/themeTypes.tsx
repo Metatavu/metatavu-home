@@ -83,6 +83,7 @@ declare module "@mui/material/styles" {
     accentSecondary: string;
     selected: string;
     event: string;
+    tooltip: string;
   }
   interface PaletteOptions {
     foreground?: {
@@ -198,5 +199,12 @@ declare module "@mui/material/styles" {
     captionSmall?: React.CSSProperties;
     body?: React.CSSProperties;
     bodySmall?: React.CSSProperties;
+  }
+}
+declare module "@mui/material/Typography" {
+  interface TypographyPropsVariantOverrides {
+    captionSmall: true;
+    body: true;
+    bodySmall: true;
   }
 }

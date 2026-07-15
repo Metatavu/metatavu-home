@@ -1,4 +1,5 @@
-import { Box, CircularProgress, Typography } from "@mui/material";
+import { DoneOutlineRounded, PriorityHighRounded } from "@mui/icons-material";
+import { Box, CircularProgress, Typography, useTheme } from "@mui/material";
 import { useAtomValue, useSetAtom } from "jotai";
 import { useEffect, useState } from "react";
 import { userProfileAtom } from "src/atoms/auth";
@@ -9,8 +10,11 @@ import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
 
 /**
- * Component to display user's questionnaire progress on home screen
- * Located in home folder as it's specific to the dashboard
+ * Questionnaire progress information.
+ *
+ * Shows user their questionnaire progress.
+ *
+ * @returns Content for questionnaire card
  */
 const QuestionnaireProgress = () => {
   const { questionnairesApi } = useLambdasApi();
@@ -18,6 +22,14 @@ const QuestionnaireProgress = () => {
   const users = useAtomValue(usersAtom);
   const [questionnaires, setQuestionnaires] = useState<Questionnaire[]>([]);
   const [loading, setLoading] = useState(false);
+
+  /**
+   * TODO: This works, but is worth revisiting if there's a better way
+   * to make placeholder bold, rather than this.
+   * See <Typography> below.
+   */
+  const [before, after] = strings.questionnaireProgress.progressText.split("{0}");
+  const theme = useTheme();
 
   const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
   const setError = useSetAtom(errorAtom);
@@ -42,7 +54,7 @@ const QuestionnaireProgress = () => {
     q.passedUsers?.includes(loggedInUser?.id || "")
   ).length;
 
-  const totalCount = questionnaires.length;
+  const remaining = Math.max(questionnaires.length - passedCount, 0);
 
   if (loading) {
     return (
@@ -53,14 +65,32 @@ const QuestionnaireProgress = () => {
   }
 
   return (
-    <Typography>
-      {strings.formatString(
-        strings.questionnaireProgress?.progressText ||
-          "You have passed {0} out of {1} questionnaires",
-        passedCount,
-        totalCount
-      )}
-    </Typography>
+    <Box display="flex" flexDirection="row" marginTop={theme.spaces.m}>
+      {" "}
+      {remaining > 0 ? (
+        <PriorityHighRounded
+          sx={{
+            color: theme.palette.foreground.negative,
+            height: 24,
+            width: 24,
+            mr: theme.spaces.s
+          }}
+        />
+      ) : (
+        <DoneOutlineRounded
+          sx={{
+            color: theme.palette.foreground.positive,
+            height: 24,
+            width: 24,
+            mr: theme.spaces.s
+          }}
+        />
+      )}{" "}
+      <Typography fontStyle="body">
+        {" "}
+        {before} <span style={{ fontWeight: 700 }}>{remaining}</span> {after}{" "}
+      </Typography>{" "}
+    </Box>
   );
 };
 

@@ -72,6 +72,24 @@
   "english": "English",
   "finnish": "Suomi"
 },
+"navigation": {
+    "home": "Home",
+    "sprint": "Sprint view",
+    "balance": "Balance",
+    "vacations": "Vacation request",
+    "wiki": "Wiki Documentation",
+    "questionnaires": "Questionnaires",
+    "applications": "Applications",
+    "onCall": "On call calendar",
+    "employees": "Employees",
+    "project": "Project overview",
+    "employeeBalance": "Employee balance",
+    "vacationManager": "Vacation manager",
+    "questionnarieBuilder": "Questionnaire builder",
+    "applicationsManager": "Application manager",
+    "collapse": "Collapse sidebar",
+    "management": "Management"
+  },
   "timebank": {
     "balance": "Balance",
     "yourBalanceIs": "Your balance is",

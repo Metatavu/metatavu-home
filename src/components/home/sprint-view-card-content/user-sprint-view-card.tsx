@@ -1,4 +1,4 @@
-import { Box, CardContent, Skeleton, Typography } from "@mui/material";
+import { Box, Skeleton, Typography } from "@mui/material";
 import { useAtomValue, useSetAtom } from "jotai";
 import { useEffect, useState } from "react";
 import { userProfileAtom } from "src/atoms/auth";
@@ -13,11 +13,19 @@ import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import type { SprintViewChartData } from "src/types";
 import { getSeveraUserId, getTotalEstimatedHours } from "src/utils/sprint-utils";
+import { getSprintEnd, getSprintStart } from "src/utils/time-utils";
+
+export interface SprintProps {
+  hidden: boolean;
+}
 
 /**
- * Sprint card component for users
+ * Renders content of the sprintview card
+ *
+ * @param props.hidden - Boolean indicating if the card is hidden
+ * @returns Content for sprint view card
  */
-const SprintViewCardContent = () => {
+const SprintViewCardContent = ({ hidden }: SprintProps) => {
   const { filterAllocations } = useSprintViewHandlers();
   const { adminMode } = useUserRole();
   const [loading, setLoading] = useState(false);
@@ -26,6 +34,9 @@ const SprintViewCardContent = () => {
   const loggedInUser = users.find((users: User) => users.id === userProfile?.id);
   const [resourceAllocations, setResourceAllocations] = useState<ResourceAllocations[]>([]);
   const [workHours, setWorkHours] = useState<WorkHours[]>([]);
+  const todaysDate = new Date().toISOString();
+  const sprintStartDate = getSprintStart(todaysDate);
+  const sprintEndDate = getSprintEnd(todaysDate);
 
   const { resourceAllocationsApi, workHoursApi } = useLambdasApi();
   const setError = useSetAtom(errorAtom);
@@ -88,21 +99,27 @@ const SprintViewCardContent = () => {
     });
     return mapping;
   };
-
   /**
    * Renders sprint view bar chart
    */
   const renderBarChart = () => (
     <>
       {resourceAllocations.length ? (
-        <CardContent>
-          <SprintViewBarChart chartData={createChartData()} />
-          <Box sx={{ ml: 21, display: "flex" }}>
-            <SprintViewLegend />
+        <Box mr={0}>
+          <Typography variant="caption">
+            {strings.formatString(
+              strings.sprint.current,
+              sprintStartDate.toLocaleString(),
+              sprintEndDate.toLocaleString()
+            )}
+          </Typography>
+          <SprintViewBarChart chartData={createChartData()} hidden={hidden} />
+          <Box sx={{ ml: 10 }}>
+            <SprintViewLegend hidden={hidden} />
           </Box>
-        </CardContent>
+        </Box>
       ) : (
-        <Typography style={{ paddingLeft: "0" }}>{strings.sprint.noAllocation}</Typography>
+        <Typography variant="caption">{strings.sprint.noAllocation}</Typography>
       )}
     </>
   );

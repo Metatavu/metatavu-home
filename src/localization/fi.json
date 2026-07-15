@@ -72,6 +72,24 @@
     "english": "English",
     "finnish": "Suomi"
 },
+  "navigation": {
+    "home": "Koti",
+    "sprint": "Sprinttinäkymä",
+    "balance": "Saldo",
+    "vacations": "Lomahakemukset",
+    "wiki": "Wikidokumentaatio",
+    "questionnaires": "Kyselyt",
+    "applications": "Sovellukset",
+    "onCall": "Päivystyskalenteri",
+    "employees": "Työntekijät",
+    "project": "Projektinäkymä",
+    "employeeBalance": "Työntekijöiden saldot",
+    "vacationManager": "Lomahallinta",
+    "questionnarieBuilder": "Kyselyeditori",
+    "applicationsManager": "Sovellusten hallinta",
+    "collapse": "Kutista",
+    "management": "Hallinta"
+  },
   "timebank": {
     "balance": "Saldo",
     "yourBalanceIs": "Saldosi on",
@@ -121,7 +139,7 @@
     "unAllocated": "Allokoimaton aika:",
     "sprintDate": "Sprintti",
     "completed": "Valmis",
-    "current": "Nykyinen: {0}-{1}",
+    "current": "{0}-{1}",
     "startDate": "Aloituspäivämäärä",
     "deadLine": "Määräaika",
     "actualWorkHours": "Toteutuneet tunnit",
@@ -131,7 +149,9 @@
     "user": "Käyttäjä",
     "clear": "Tyhjennä",
     "searchBy": "Hae nimellä {0}",
-    "estimateHours": "Arvioidut tunnit"
+    "estimateHours": "Arvioidut tunnit",
+    "sprintviewCardTitle": "Sprinttisi",
+    "targetHours": "Tavoitetunnit tänään"
   },
   "softwareRegistry": {
     "softwareRegistry": "Ohjelmistorekisteri",
