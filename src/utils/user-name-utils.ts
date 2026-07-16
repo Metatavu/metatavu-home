@@ -22,7 +22,7 @@ export const getDisplayName = (user?: User): string => {
     const firstPart = withoutPrefix.split(/[._]/)[0];
     return firstPart
       .split("-")
-      .map(part => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
+      .map((part) => capitalize(part))
       .join("-");
   }
 
@@ -30,24 +30,24 @@ export const getDisplayName = (user?: User): string => {
 };
 
 /**
- * Extracts a user's first and last name from an email address. Only processes emails in the format: `firstname.lastname@`. If has ext-firstname.lastname@ returns Ext-firstname and Lastname as username
+ * Extracts a user's first and last name from an email address. Only processes emails in the format: `firstname.lastname@`.
  * @param email - The user's email address.
  * @returns An object containing `firstName` and `lastName`
  */
-const parseNameFromEmail = (
-  email?: string
+const parseFullNameFromEmail = (
+  user?: User
 ): {
   firstName: string;
   lastName: string;
 } => {
-  if (!email) {
+  if (!user?.email) {
     return {
       firstName: "",
       lastName: ""
     };
   }
 
-  const [usernamePart] = email.split("@");
+  const [usernamePart] = user.email.split("@");
   if (!usernamePart) {
     return {
       firstName: "",
@@ -57,9 +57,10 @@ const parseNameFromEmail = (
   // split "firstname.lastname"
   const nameSegments = usernamePart.split(".").filter(Boolean);
   if (nameSegments.length < 2) {
-    return { firstName: capitalize(nameSegments[0]), lastName: "" };
+    return { firstName: capitalize(getDisplayName(user)), lastName: "" };
   }
-  const [firstName, lastName] = nameSegments;
+  const firstName = getDisplayName(user);
+  const lastName = nameSegments[1];
 
   return {
     firstName: capitalize(firstName),
@@ -93,7 +94,7 @@ export const getFullUserName = (user: User | undefined): string => {
     return `${user.firstName.trim()} ${user.lastName.trim()}`;
   }
 
-  const { firstName, lastName } = parseNameFromEmail(user.email);
+  const { firstName, lastName } = parseFullNameFromEmail(user);
   if (firstName && lastName) {
     return `${firstName} ${lastName}`;
   }
@@ -111,7 +112,7 @@ export const userWithParsedName = (user: User) => {
   if (user.firstName && user.lastName) {
     return user;
   }
-  const { firstName, lastName } = parseNameFromEmail(user.email);
+  const { firstName, lastName } = parseFullNameFromEmail(user);
 
   return {
     ...user,

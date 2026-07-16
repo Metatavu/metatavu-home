@@ -157,7 +157,15 @@ const HomeScreen = () => {
       },
       {
         id: "wiki-documentation-card",
-        element: isTester && <WikiDocumentationCard />,
+        element: isTester && (
+          <WikiDocumentationCard
+            hidden={hiddenCards.includes("wiki-documentation-card")}
+            onToggleHidden={(isVisible: boolean) =>
+              toggleCard("wiki-documentation-card", isVisible, setHiddenCards)
+            }
+            editmode={editmode}
+          />
+        ),
         canGroup: false,
         group: undefined
       },

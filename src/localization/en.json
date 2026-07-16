@@ -482,7 +482,7 @@
   },
   "questionnaireProgress": {
     "title": "Questionnaires",
-    "progressText": "You have passed {0} out of {1} questionnaires",
+    "progressText": "You have {0} open questionnaires",
     "allCompleted": "Congratulations! You've completed all questionnaires!",
     "loading": "Loading questionnaires..."
   },
@@ -494,7 +494,8 @@
     "atTheEndOf": "At the end of {0}"
   },
   "wikiDocumentation": {
-    "cardTitle": "Wiki Documentation",
+    "cardTitle": "Last updated wiki documents",
+    "createdBy": "{0} by {1}",
     "article": "article:",
     "lastUpdated": "Last updated",
     "created": "Created",
