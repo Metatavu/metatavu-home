@@ -117,7 +117,7 @@
     "holidayName": "Holiday:"
   },
   "schedule": {
-    "schedule": "Schedule"
+    "title": "Schedule"
   },
   "sprint": {
     "sprintview": "Sprint view",
