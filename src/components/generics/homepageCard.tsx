@@ -1,8 +1,11 @@
 import { CheckCircleRounded } from "@mui/icons-material";
 import { Card, CardContent, Link, Switch, useTheme } from "@mui/material";
 
-export interface CardProps {
+export interface CardVisibilityProps {
   hidden: boolean;
+}
+
+export interface CardProps extends CardVisibilityProps {
   onToggleHidden: (hidden: boolean) => void;
   editmode: boolean;
 }
@@ -35,6 +38,7 @@ const HomepageCard = ({
   editmode
 }: RenderCardProps) => {
   const theme = useTheme();
+  const isExternal = path?.startsWith("https");
 
   return (
     <Card
@@ -45,6 +49,8 @@ const HomepageCard = ({
         color: hidden ? theme.palette.text.disabled : theme.palette.text.primary,
         marginBottom: theme.spaces.m,
         width: "100%",
+        minHeight: 160,
+        maxHeight: 488,
         mr: editmode ? theme.spaces.none : theme.spaces.m
       }}
       variant="outlined"
@@ -53,6 +59,8 @@ const HomepageCard = ({
       <CardContent>
         <Link
           href={editmode ? undefined : path}
+          target={isExternal ? "_blank" : undefined}
+          rel={isExternal ? "noopener noreferrer" : undefined}
           variant="h4"
           sx={{
             ":hover": {
