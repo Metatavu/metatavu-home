@@ -2,6 +2,34 @@ import type { User } from "src/generated/homeLambdasClient";
 import strings from "src/localization/strings";
 
 /**
+ * Extracts a display name from a user.
+ *
+ * Falls back to deriving a name from the email if firstName is missing,
+ * because the backend API does not reliably return firstName
+ * for all users
+ *
+ * @param user - The user object
+ * @returns first name, or empty string if unavailable
+ */
+export const getDisplayName = (user?: User): string => {
+  if (user?.firstName) {
+    return user.firstName;
+  }
+
+  if (user?.email) {
+    const localPart = user.email.split("@")[0];
+    const withoutPrefix = localPart.replace(/^ext-/i, "");
+    const firstPart = withoutPrefix.split(/[._]/)[0];
+    return firstPart
+      .split("-")
+      .map(part => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
+      .join("-");
+  }
+
+  return "";
+};
+
+/**
  * Extracts a user's first and last name from an email address. Only processes emails in the format: `firstname.lastname@`. If has ext-firstname.lastname@ returns Ext-firstname and Lastname as username
  * @param email - The user's email address.
  * @returns An object containing `firstName` and `lastName`

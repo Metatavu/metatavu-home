@@ -48,7 +48,7 @@ const Dropdown = ({ displayOption, handleDisplayOptionChange, displayOptions }: 
           borderWidth: theme.borders.s
         },
         "& .MuiSelect-icon": {
-          color: theme.palette.icons.primary,
+          color: theme.palette.text.primary,
           minHeight: 24,
           minWidth: 24
         }

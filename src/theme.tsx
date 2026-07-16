@@ -196,12 +196,15 @@ export const createAppTheme = (mode: "light" | "dark"): Theme =>
       },
       MuiAppBar: {
         defaultProps: {
-          color: "default"
+          
         },
         styleOverrides: {
           root: {
-            top: "1em",
-            borderRadius: 15
+            top: 0,
+            borderRadius: 0,
+            boxShadow: "none",
+            borderBottom: "none",
+            backgroundImage: "none"
           }
         }
       },

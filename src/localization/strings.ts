@@ -40,6 +40,14 @@ export interface Localized extends LocalizedStringsMethods {
     logoAlt: string;
   };
   /**
+   * Translations related to home screen
+   */
+  home: {
+    goodMorning: string;
+    goodDay: string;
+    goodEvening: string;
+  };
+  /**
    * Translations related to errors
    */
   error: {
@@ -83,6 +91,8 @@ export interface Localized extends LocalizedStringsMethods {
     en: string;
     fi: string;
     time: string;
+    english: string;
+    finnish: string;
   };
 
   /**
