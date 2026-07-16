@@ -1,6 +1,6 @@
 import { Box, Typography, useTheme } from "@mui/material";
+import type { CardVisibilityProps } from "src/components/generics/homepageCard";
 import strings from "src/localization/strings";
-import type { SprintProps } from "../home/sprint-view-card-content/user-sprint-view-card";
 
 /**
  * Renders legend for sprint view bar chart
@@ -8,7 +8,7 @@ import type { SprintProps } from "../home/sprint-view-card-content/user-sprint-v
  * @param props.hidden - Boolean indicating if card is hidden
  * @returns Legend for sprint view bar chart
  */
-const SprintViewLegend = ({ hidden }: SprintProps) => {
+const SprintViewLegend = ({ hidden }: CardVisibilityProps) => {
   const theme = useTheme();
 
   const colors = hidden

@@ -57,7 +57,7 @@ const parseFullNameFromEmail = (
   // split "firstname.lastname"
   const nameSegments = usernamePart.split(".").filter(Boolean);
   if (nameSegments.length < 2) {
-    return { firstName: getDisplayName(user), lastName: "" };
+    return { firstName: capitalize(getDisplayName(user)), lastName: "" };
   }
   const firstName = getDisplayName(user);
   const lastName = nameSegments[1];

@@ -9,7 +9,7 @@ import { useLambdasApi } from "src/hooks/use-api";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import HomepageCard, { type CardProps } from "../generics/homepageCard";
-import renderCardContent from "./renderWikiDocCard";
+import RenderCardContent from "./renderWikiDocCard";
 
 /**
  * Card component for displaying the last updated articles in the wiki documentation.
@@ -65,7 +65,18 @@ const WikiDocumentationCard = ({ hidden, onToggleHidden, editmode }: CardProps) 
   return (
     <HomepageCard
       title={strings.wikiDocumentation.cardTitle}
-      content={loading ? <Skeleton /> : renderCardContent(lastUpdatedArticles, users, loading)}
+      content={
+        loading ? (
+          <Skeleton />
+        ) : (
+          <RenderCardContent
+            lastUpdatedArticles={lastUpdatedArticles}
+            users={users}
+            loading={loading}
+            hidden={hidden}
+          />
+        )
+      }
       path={path}
       hidden={hidden}
       onToggleHidden={onToggleHidden}

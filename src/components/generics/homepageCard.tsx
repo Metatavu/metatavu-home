@@ -1,8 +1,11 @@
 import { CheckCircleRounded } from "@mui/icons-material";
 import { Card, CardContent, Link, Switch, useTheme } from "@mui/material";
 
-export interface CardProps {
+export interface CardVisibilityProps {
   hidden: boolean;
+}
+
+export interface CardProps extends CardVisibilityProps {
   onToggleHidden: (hidden: boolean) => void;
   editmode: boolean;
 }
