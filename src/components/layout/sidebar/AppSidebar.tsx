@@ -3,6 +3,7 @@ import { Box, Divider, List, Typography, useTheme } from "@mui/material";
 import { useState } from "react";
 import AppButton from "src/components/generics/buttons/app-button";
 import AppIconButton from "src/components/generics/buttons/app-icon-button";
+import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import Logo from "/resources/img/Metatavu-icon.svg";
 import SidebarItem from "./SidebarItem";
@@ -11,7 +12,8 @@ import { getEmployeeMenu, getManagementMenu } from "./sidebar-config";
 const AppSidebar = () => {
   const theme = useTheme();
   const employeeMenu = getEmployeeMenu();
-  const managementMenu = getManagementMenu();;
+  const { isAdmin } = useUserRole();
+  const managementMenu = getManagementMenu();
   const [collapsed, setCollapsed] = useState(false);
 
   return (
@@ -35,7 +37,6 @@ const AppSidebar = () => {
       }}
     >
       {/* Logo */}
-
       <Box
         sx={{
           height: 72,
@@ -53,7 +54,6 @@ const AppSidebar = () => {
           }}
         />
       </Box>
-
       <List>
         {employeeMenu.map((item) => (
           <SidebarItem
@@ -65,49 +65,46 @@ const AppSidebar = () => {
           />
         ))}
       </List>
-
-      {/* Divider */}
-
-      <Divider
-        sx={{
-          width: collapsed ? 40 : 196,
-          py: theme.spaces.m,
-          borderColor: theme.palette.foreground.inversed
-        }}
-      />
-
       {/* Management */}
-
-      {!collapsed && (
-        <Typography
-          variant="body"
-          sx={{
-            pt: theme.spaces.xxl,
-            color: theme.palette.foreground.inversed
-          }}
-        >
-          {strings.navigation.management}
-        </Typography>
+      {isAdmin && (
+        <>
+          {/* Divider */}
+          <Divider
+            sx={{
+              width: collapsed ? 40 : 196,
+              py: theme.spaces.m,
+              borderColor: theme.palette.foreground.inversed
+            }}
+          />
+          {!collapsed && (
+            <Typography
+              variant="body"
+              sx={{
+                pt: theme.spaces.xxl,
+                color: theme.palette.foreground.inversed
+              }}
+            >
+              {strings.navigation.management}
+            </Typography>
+          )}
+          <List>
+            {managementMenu.map((item) => (
+              <SidebarItem
+                key={item.route}
+                title={item.title}
+                route={item.route}
+                icon={item.icon}
+                collapsed={collapsed}
+              />
+            ))}
+          </List>
+        </>
       )}
 
-      <List>
-        {managementMenu.map((item) => (
-          <SidebarItem
-            key={item.route}
-            title={item.title}
-            route={item.route}
-            icon={item.icon}
-            collapsed={collapsed}
-          />
-        ))}
-      </List>
-
       {/* Push collapse button to bottom */}
-
       <Box sx={{ flexGrow: 1 }} />
 
       {/* Collapse button */}
-
       <Box
         sx={{
           height: 24,
