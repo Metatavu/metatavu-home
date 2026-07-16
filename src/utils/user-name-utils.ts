@@ -2,51 +2,69 @@ import type { User } from "src/generated/homeLambdasClient";
 import strings from "src/localization/strings";
 
 /**
- * Extracts a user's first and last name from an email address. Only processes emails in the format: `firstname.lastname@`. If has ext-firstname.lastname@ returns Ext-firstname and Lastname as username
+ * Extracts a firstname from a user.
+ *
+ * Falls back to deriving a name from the email if firstName is missing,
+ * because the backend API does not reliably return firstName
+ * for all users
+ *
+ * @param user - The user object
+ * @returns first name, or empty string if unavailable
+ */
+export const getDisplayName = (user?: User): string => {
+  if (user?.firstName) {
+    return user.firstName;
+  }
+
+  if (user?.email) {
+    const firstPart = parseFromEmail(user.email)[0];
+    return firstPart;
+  }
+
+  return "";
+};
+
+export const parseFromEmail = (email: string) => {
+  const localPart = email.split("@")[0];
+  const withoutPrefix = localPart.replace(/^ext-/i, "");
+  const firstName = withoutPrefix.split(/[._]/)[0];
+  const lastName = withoutPrefix.split(/[._]/)[1] || "";
+  const nameArray = [firstName, lastName].map((name) => capitalize(name));
+
+  return nameArray;
+};
+
+/**
+ * Extracts a user's first and last name from an email address. Only processes emails in the format: `firstname.lastname@`.
  * @param email - The user's email address.
  * @returns An object containing `firstName` and `lastName`
  */
-export const parseNameFromEmail = (
-  email?: string
-): {
-  firstName: string;
-  lastName: string;
-} => {
+export const parseFullNameFromEmail = (email?: string) => {
   if (!email) {
     return {
       firstName: "",
       lastName: ""
     };
   }
-
-  const [usernamePart] = email.split("@");
-  if (!usernamePart) {
-    return {
-      firstName: "",
-      lastName: ""
-    };
-  }
-  // split "firstname.lastname"
-  const nameSegments = usernamePart.split(".").filter(Boolean);
-  if (nameSegments.length < 2) {
-    return { firstName: capitalize(nameSegments[0]), lastName: "" };
-  }
-  const [firstName, lastName] = nameSegments;
+  const [firstName, lastName] = parseFromEmail(email);
 
   return {
-    firstName: capitalize(firstName),
-    lastName: capitalize(lastName)
+    firstName,
+    lastName
   };
 };
-
 /**
- * Capializes first letter of sting and lowercases the rest. To handle special case like "Ext-firstName lastName"
+ * Capializes first letter of name and lowercases the rest.
  * @param text- Text to capitalize
  * @returns Capitalized firstName
  */
 const capitalize = (text: string) => {
   if (!text) return "";
-  return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
+
+  return text
+    .split("-")
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
+    .join("-");
 };
 
 /**
@@ -65,7 +83,7 @@ export const getFullUserName = (user: User | undefined): string => {
     return `${user.firstName.trim()} ${user.lastName.trim()}`;
   }
 
-  const { firstName, lastName } = parseNameFromEmail(user.email);
+  const { firstName, lastName } = parseFullNameFromEmail(user.email);
   if (firstName && lastName) {
     return `${firstName} ${lastName}`;
   }
@@ -83,7 +101,7 @@ export const userWithParsedName = (user: User) => {
   if (user.firstName && user.lastName) {
     return user;
   }
-  const { firstName, lastName } = parseNameFromEmail(user.email);
+  const { firstName, lastName } = parseFullNameFromEmail(user.email);
 
   return {
     ...user,

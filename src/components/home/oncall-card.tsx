@@ -6,7 +6,7 @@ import { errorAtom } from "src/atoms/error";
 import { onCallAtom } from "src/atoms/oncall";
 import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
-import { parseNameFromEmail } from "src/utils/user-name-utils";
+import { parseFullNameFromEmail } from "src/utils/user-name-utils";
 import HomepageCard, { type CardProps } from "../generics/homepageCard";
 
 /**
@@ -50,9 +50,9 @@ const OnCallCard = ({ hidden, onToggleHidden, editmode }: CardProps) => {
   const renderOnCallCard = () => {
     const currentWeek = DateTime.now().weekNumber;
     const currentOnCallPerson = onCallData.find((item) => Number(item.week) === currentWeek)?.email;
-    const onCallName = currentOnCallPerson && parseNameFromEmail(currentOnCallPerson);
+    const onCallName = currentOnCallPerson && parseFullNameFromEmail(currentOnCallPerson);
     const nameString = onCallName
-      ? `${onCallName.firstName} ${onCallName.lastName}`
+      ? `${onCallName?.firstName} ${onCallName?.lastName}`
       : strings.oncall.noOnCallPerson;
 
     return (

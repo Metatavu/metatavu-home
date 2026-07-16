@@ -1,7 +1,7 @@
 /** biome-ignore-all lint/correctness/useUniqueElementIds: Keep static id */
 import { DragDropProvider } from "@dnd-kit/react";
 import { EditOutlined } from "@mui/icons-material";
-import { Box, useTheme } from "@mui/material";
+import { Box, Typography, useTheme } from "@mui/material";
 import { useAtomValue } from "jotai";
 import { type ReactNode, useEffect, useMemo, useState } from "react";
 import { userProfileAtom } from "src/atoms/auth";
@@ -11,11 +11,14 @@ import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import { OnboardingScreen } from "src/types/index";
 import { groupCard, moveCard, renderCardWithSkeleton, toggleCard } from "src/utils/cardUtils";
+import { getTimeBasedGreeting } from "src/utils/time-utils";
+import { getDisplayName } from "src/utils/user-name-utils";
 import AppButton from "../generics/buttons/app-button";
 import BalanceCard from "../home/balance-card";
 import CardGridWrapper from "../home/common/card-grid-wrapper";
 import OnCallCard from "../home/oncall-card";
 import QuestionnaireCard from "../home/questionnaire-card";
+import ScheduleCard from "../home/scheduleCard/scheduleCard";
 import SoftwareRegistryCard from "../home/software-registry-card";
 import SprintViewCard from "../home/sprint-view-card";
 import VacationsCard from "../home/vacations-card";
@@ -36,6 +39,7 @@ export type HomepageCardType = {
  * Defines homepage cards and their order.
  * Saves user's layout to local storage.
  * Handles drag and drop logic.
+ * Displays a time-based greeting with the user's display name.
  */
 const HomeScreen = () => {
   const theme = useTheme();
@@ -54,6 +58,8 @@ const HomeScreen = () => {
   const HIDDEN_CARDS_KEY = "hiddenCards";
   const ORDER_KEY = "order";
   const hasSeveraUserId = !!loggedInUser?.attributes?.severaUserId;
+  const displayName = getDisplayName(loggedInUser);
+  const greetingString = `${getTimeBasedGreeting()}, ${displayName}!`;
 
   useEffect(() => {
     const previousOrder = localStorage.getItem(ORDER_KEY);
@@ -84,7 +90,7 @@ const HomeScreen = () => {
 
     const previousCards = localStorage.getItem(HIDDEN_CARDS_KEY);
     const previousOrder = localStorage.getItem(ORDER_KEY);
-    previousCards && setHiddenCards(JSON.parse(previousCards));
+    setHiddenCards(previousCards ? JSON.parse(previousCards) : []);
     previousOrder
       ? setSavedOrder(JSON.parse(previousOrder))
       : setSavedOrder(cards.map((item) => (item.group ? `${item.id}|${item.group?.id}` : item.id)));
@@ -160,7 +166,15 @@ const HomeScreen = () => {
       },
       {
         id: "wiki-documentation-card",
-        element: isTester && <WikiDocumentationCard />,
+        element: isTester && (
+          <WikiDocumentationCard
+            hidden={hiddenCards.includes("wiki-documentation-card")}
+            onToggleHidden={(isVisible: boolean) =>
+              toggleCard("wiki-documentation-card", isVisible, setHiddenCards)
+            }
+            editmode={editmode}
+          />
+        ),
         canGroup: false,
         group: undefined
       },
@@ -171,6 +185,20 @@ const HomeScreen = () => {
             hidden={hiddenCards.includes("on-call-card")}
             onToggleHidden={(isVisible: boolean) =>
               toggleCard("on-call-card", isVisible, setHiddenCards)
+            }
+            editmode={editmode}
+          />
+        ),
+        canGroup: false,
+        group: undefined
+      },
+      {
+        id: "schedule-card",
+        element: isDeveloper && (
+          <ScheduleCard
+            hidden={hiddenCards.includes("schedule-card")}
+            onToggleHidden={(isVisible: boolean) =>
+              toggleCard("schedule-card", isVisible, setHiddenCards)
             }
             editmode={editmode}
           />
@@ -216,13 +244,16 @@ const HomeScreen = () => {
       .filter(Boolean) as HomepageCardType[];
 
     return sorted;
-  }, [cards, savedOrder]);
+  }, [cards, savedOrder, hiddenCards]);
 
   //Cards won't render untill the save order is loaded
   if (!layoutLoaded) return null;
 
   return (
     <Box>
+      <Typography variant="h3" sx={{ px: theme.spaces.m, pt: theme.spaces.m }}>
+        {greetingString}
+      </Typography>
       <Box id="home-screen" display="flex" flexDirection="column" alignItems="end">
         <Box>
           <AppButton

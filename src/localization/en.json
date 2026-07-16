@@ -26,6 +26,11 @@
     "openUserMenu": "Open user menu",
     "logoAlt": "Metatavu logo"
   },
+  "home": {
+    "goodMorning": "Good morning",
+    "goodDay": "Good afternoon",
+    "goodEvening": "Good evening"
+  },
   "error": {
     "oops": "Oops!",
     "generic": "Unexpected error has occurred",
@@ -63,7 +68,27 @@
   "localization": {
     "en": "EN",
     "fi": "FI",
-    "time": "en-GB"
+    "time": "fi-FI",
+    "english": "English",
+    "finnish": "Suomi"
+  },
+  "navigation": {
+    "home": "Home",
+    "sprint": "Sprint view",
+    "balance": "Balance",
+    "vacations": "Vacation request",
+    "wiki": "Wiki Documentation",
+    "questionnaires": "Questionnaires",
+    "applications": "Applications",
+    "onCall": "On call calendar",
+    "employees": "Employees",
+    "project": "Project overview",
+    "employeeBalance": "Employee balance",
+    "vacationManager": "Vacation manager",
+    "questionnarieBuilder": "Questionnaire builder",
+    "applicationsManager": "Application manager",
+    "collapse": "Collapse sidebar",
+    "management": "Management"
   },
   "timebank": {
     "balance": "Balance",
@@ -90,6 +115,9 @@
     "enteredHours": "Logged hours",
     "expectedHours": "Expected hours",
     "holidayName": "Holiday:"
+  },
+  "schedule": {
+    "title": "Schedule"
   },
   "sprint": {
     "sprintview": "Sprint view",
@@ -466,7 +494,8 @@
     "atTheEndOf": "At the end of {0}"
   },
   "wikiDocumentation": {
-    "cardTitle": "Wiki Documentation",
+    "cardTitle": "Last updated wiki documents",
+    "createdBy": "{0} by {1}",
     "article": "article:",
     "lastUpdated": "Last updated",
     "created": "Created",

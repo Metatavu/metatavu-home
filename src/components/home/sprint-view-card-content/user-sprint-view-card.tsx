@@ -6,6 +6,7 @@ import { errorAtom } from "src/atoms/error";
 import { usersAtom } from "src/atoms/user";
 import SprintViewBarChart from "src/components/charts/sprint-view-bar-chart";
 import SprintViewLegend from "src/components/charts/sprint-view-legend";
+import type { CardVisibilityProps } from "src/components/generics/homepageCard";
 import type { ResourceAllocations, User, WorkHours } from "src/generated/homeLambdasClient";
 import useSprintViewHandlers from "src/hooks/sprint-custom-hooks";
 import { useLambdasApi } from "src/hooks/use-api";
@@ -15,17 +16,13 @@ import type { SprintViewChartData } from "src/types";
 import { getSeveraUserId, getTotalEstimatedHours } from "src/utils/sprint-utils";
 import { getSprintEnd, getSprintStart } from "src/utils/time-utils";
 
-export interface SprintProps {
-  hidden: boolean;
-}
-
 /**
  * Renders content of the sprintview card
  *
  * @param props.hidden - Boolean indicating if the card is hidden
  * @returns Content for sprint view card
  */
-const SprintViewCardContent = ({ hidden }: SprintProps) => {
+const SprintViewCardContent = ({ hidden }: CardVisibilityProps) => {
   const { filterAllocations } = useSprintViewHandlers();
   const { adminMode } = useUserRole();
   const [loading, setLoading] = useState(false);

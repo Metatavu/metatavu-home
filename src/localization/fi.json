@@ -26,6 +26,11 @@
     "openUserMenu": "Käyttäjävalikko",
     "logoAlt": "Metatavu logo"
   },
+  "home": {
+  "goodMorning": "Huomenta",
+  "goodDay": "Iltapäivää",
+  "goodEvening": "Iltaa"
+  },
   "error": {
     "oops": "Hups!",
     "generic": "Tapahtui odottamaton virhe",
@@ -63,7 +68,27 @@
   "localization": {
     "en": "EN",
     "fi": "FI",
-    "time": "fi-FI"
+    "time": "fi-FI",
+    "english": "English",
+    "finnish": "Suomi"
+},
+  "navigation": {
+    "home": "Koti",
+    "sprint": "Sprinttinäkymä",
+    "balance": "Saldo",
+    "vacations": "Lomahakemukset",
+    "wiki": "Wikidokumentaatio",
+    "questionnaires": "Kyselyt",
+    "applications": "Sovellukset",
+    "onCall": "Päivystyskalenteri",
+    "employees": "Työntekijät",
+    "project": "Projektinäkymä",
+    "employeeBalance": "Työntekijöiden saldot",
+    "vacationManager": "Lomahallinta",
+    "questionnarieBuilder": "Kyselyeditori",
+    "applicationsManager": "Sovellusten hallinta",
+    "collapse": "Kutista",
+    "management": "Hallinta"
   },
   "timebank": {
     "balance": "Saldo",
@@ -90,6 +115,9 @@
     "enteredHours": "Kirjatut tunnit",
     "expectedHours": "Odotetut tunnit",
     "holidayName": "Lomapäivä:"
+  },
+  "schedule": {
+    "title": "Aikataulu"
   },
   "sprint": {
     "sprintview": "Sprinttinäkymä",
@@ -454,7 +482,7 @@
   },
   "questionnaireProgress": {
     "title": "Kyselyt",
-    "progressText": "Olet läpäissyt {0} kyselyä {1} kyselystä",
+    "progressText": "Sinulla on {0} odottavaa kyselyä",
     "allCompleted": "Onnittelut! Olet suorittanut kaikki kyselyt!",
     "loading": "Ladataan kyselyitä..."
   },
@@ -466,7 +494,8 @@
     "atTheEndOf": "{0} lopussa"
   },
   "wikiDocumentation": {
-    "cardTitle": "Wikidokumentaatio",
+    "cardTitle": "Viimeisimmät wikiartikkelit",
+    "createdBy": "{0} luonut: {1}",
     "article": "artikkeli:",
     "lastUpdated": "Viimeksi päivitetty",
     "created": "Luotu",

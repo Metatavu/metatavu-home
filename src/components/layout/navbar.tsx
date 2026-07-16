@@ -5,7 +5,6 @@ import {
   Avatar,
   Box,
   Container,
-  IconButton,
   Menu,
   MenuItem,
   Toolbar,
@@ -16,15 +15,13 @@ import {
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { type MouseEvent, useEffect, useId, useState } from "react";
 import { useNavigate } from "react-router-dom";
-//import { avatarsAtom, personsAtom } from "src/atoms/person";
-//import type { Person } from "src/generated/client";
 import { authAtom, userProfileAtom } from "src/atoms/auth";
 import { avatarsAtom } from "src/atoms/avatar";
 import { errorAtom } from "src/atoms/error";
 import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
 import LocalizationButtons from "../layout-components/localization-buttons";
-import NavItems from "./navitems";
+import KeyboardArrowDown from "@mui/icons-material/KeyboardArrowDown";
 
 /**
  * NavBar component
@@ -35,47 +32,28 @@ const NavBar = () => {
   const menuId = useId();
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
   const [avatars, setAvatars] = useAtom(avatarsAtom);
-  // NOTE: The Person type cannot be used here because it was previously imported from the removed timebank client.
-  //const persons: Person[] = useAtomValue(personsAtom);
   const userProfile = useAtomValue(userProfileAtom);
   const setError = useSetAtom(errorAtom);
   const { slackAvatarsApi } = useLambdasApi();
   const navigate = useNavigate();
   const loggedInUserEmail = userProfile?.email || undefined;
 
-  /**
-   * Handles opening user menu
-   *
-   * @param event mouse event
-   */
   const handleOpenUserMenu = (event: MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
   };
 
-  /**
-   * Handles closing user menu
-   */
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
 
-  /**
-   * Handles logging out
-   */
   const handleClickLogOut = () => {
     auth?.logout();
   };
 
-  /**
-   * handles open settings screen
-   */
   const handleSettingsClick = () => {
     navigate("/settings");
   };
 
-  /**
-   * Fetch Slack avatars for logged in user
-   */
   const getSlackAvatars = async () => {
     if (avatars?.image_original) return;
     try {
@@ -99,13 +77,13 @@ const NavBar = () => {
     <AppBar
       position="relative"
       sx={{
-        backgroundColor: theme.palette.background.paper,
-        color: theme.palette.text.primary
+        backgroundColor: theme.palette.background.default,
+        color: theme.palette.text.primary,
+        boxShadow: "none"
       }}
     >
       <Container maxWidth="xl">
         <Toolbar disableGutters sx={{ display: "flex" }}>
-          <NavItems />
           <Box sx={{ flexGrow: 1 }} />
           <Box
             sx={{
@@ -118,9 +96,19 @@ const NavBar = () => {
 
             <Box>
               <Tooltip title={strings.header.openUserMenu}>
-                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  {<Avatar src={avatars?.image_original || ""} />}
-                </IconButton>
+                <Box
+                  onClick={handleOpenUserMenu}
+                  sx={{ display: "flex", alignItems: "center", cursor: "pointer" }}
+                >
+                  <Avatar
+                    src={avatars?.image_original || ""}
+                    sx={{ bgcolor: theme.palette.background.accent }}
+                  >
+                    {!avatars?.image_original &&
+                      `${userProfile?.firstName?.[0] ?? ""}${userProfile?.lastName?.[0] ?? ""}`}
+                  </Avatar>
+                  <KeyboardArrowDown sx={{ color: theme.palette.text.primary }} />
+                </Box>
               </Tooltip>
             </Box>
             <Menu
