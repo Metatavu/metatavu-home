@@ -40,6 +40,14 @@ export interface Localized extends LocalizedStringsMethods {
     logoAlt: string;
   };
   /**
+   * Translations related to home screen
+   */
+  home: {
+    goodMorning: string;
+    goodDay: string;
+    goodEvening: string;
+  };
+  /**
    * Translations related to errors
    */
   error: {
@@ -83,6 +91,31 @@ export interface Localized extends LocalizedStringsMethods {
     en: string;
     fi: string;
     time: string;
+    english: string;
+    finnish: string;
+  };
+
+  /**
+   * Navigation translations
+   */
+
+  navigation: {
+    home: string;
+    sprint: string;
+    balance: string;
+    vacations: string;
+    wiki: string;
+    questionnaires: string;
+    applications: string;
+    onCall: string;
+    employees: string;
+    project: string;
+    employeeBalance: string;
+    vacationManager: string;
+    questionnarieBuilder: string;
+    applicationsManager: string;
+    collapse: string;
+    management: string;
   };
   /**
    * Translations related to timebank
@@ -113,6 +146,12 @@ export interface Localized extends LocalizedStringsMethods {
     enteredHours: string;
     expectedHours: string;
     holidayName: string;
+  };
+  /**
+   * Translations related to schedule
+   */
+  schedule: {
+    title: string;
   };
   /**
    * Translations related to sprint view
@@ -584,6 +623,7 @@ export interface Localized extends LocalizedStringsMethods {
    */
   wikiDocumentation: {
     cardTitle: string;
+    createdBy: string;
     article: string;
     lastUpdated: string;
     created: string;

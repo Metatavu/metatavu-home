@@ -8,6 +8,7 @@ import { usersAtom } from "src/atoms/user";
 import type { Questionnaire, User } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
+import type { CardVisibilityProps } from "../generics/homepageCard";
 
 /**
  * Questionnaire progress information.
@@ -16,7 +17,7 @@ import strings from "src/localization/strings";
  *
  * @returns Content for questionnaire card
  */
-const QuestionnaireProgress = () => {
+const QuestionnaireProgress = ({ hidden }: CardVisibilityProps) => {
   const { questionnairesApi } = useLambdasApi();
   const userProfile = useAtomValue(userProfileAtom);
   const users = useAtomValue(usersAtom);
@@ -70,7 +71,7 @@ const QuestionnaireProgress = () => {
       {remaining > 0 ? (
         <PriorityHighRounded
           sx={{
-            color: theme.palette.foreground.negative,
+            color: hidden ? theme.palette.icons.disabled : theme.palette.foreground.negative,
             height: 24,
             width: 24,
             mr: theme.spaces.s
@@ -79,7 +80,7 @@ const QuestionnaireProgress = () => {
       ) : (
         <DoneOutlineRounded
           sx={{
-            color: theme.palette.foreground.positive,
+            color: hidden ? theme.palette.icons.disabled : theme.palette.foreground.positive,
             height: 24,
             width: 24,
             mr: theme.spaces.s

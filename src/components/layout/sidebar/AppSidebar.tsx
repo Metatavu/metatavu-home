@@ -1,41 +1,47 @@
-import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
-import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
-import { Box, Divider, IconButton, List, Typography } from "@mui/material";
+import { KeyboardTabOutlined } from "@mui/icons-material";
+import { Box, Divider, List, Typography, useTheme } from "@mui/material";
 import { useState } from "react";
-
+import AppButton from "src/components/generics/buttons/app-button";
+import AppIconButton from "src/components/generics/buttons/app-icon-button";
+import useUserRole from "src/hooks/use-user-role";
+import strings from "src/localization/strings";
 import Logo from "/resources/img/Metatavu-icon.svg";
-
 import SidebarItem from "./SidebarItem";
-import { employeeMenu, managementMenu } from "./sidebar-config";
+import { getEmployeeMenu, getManagementMenu } from "./sidebar-config";
 
 const AppSidebar = () => {
+  const theme = useTheme();
+  const employeeMenu = getEmployeeMenu();
+  const { isAdmin } = useUserRole();
+  const managementMenu = getManagementMenu();
   const [collapsed, setCollapsed] = useState(false);
 
   return (
     <Box
       sx={{
-        width: collapsed ? 72 : 220,
+        width: collapsed ? 72 : 260,
         height: "100vh",
+        p: collapsed ? theme.spaces.s : theme.spaces.l,
+        rowGap: theme.spaces.m,
         position: "sticky",
         top: 0,
         flexShrink: 0,
 
         display: "flex",
         flexDirection: "column",
+        alignItems: collapsed ? "center" : "unset",
 
-        bgcolor: "#00647F",
-        color: "#FFFFFF",
+        bgcolor: theme.palette.background.accent,
 
         transition: "width .25s ease"
       }}
     >
       {/* Logo */}
-
       <Box
         sx={{
           height: 72,
           display: "flex",
-          justifyContent: "center",
+          justifyContent: "flex-start",
           alignItems: "center"
         }}
       >
@@ -43,36 +49,12 @@ const AppSidebar = () => {
           src={Logo}
           alt="Metatavu"
           style={{
-            width: 38,
-            height: 38
+            width: 52,
+            height: 40
           }}
         />
       </Box>
-
-      {/* Employee */}
-
-      {!collapsed && (
-        <Typography
-          sx={{
-            px: 3,
-            pt: 1,
-            pb: 1,
-            fontSize: 11,
-            fontWeight: 700,
-            letterSpacing: 1,
-            color: "rgba(255,255,255,.65)"
-          }}
-        >
-          EMPLOYEE
-        </Typography>
-      )}
-
-      <List
-        sx={{
-          px: 1,
-          py: 0
-        }}
-      >
+      <List>
         {employeeMenu.map((item) => (
           <SidebarItem
             key={item.route}
@@ -83,96 +65,93 @@ const AppSidebar = () => {
           />
         ))}
       </List>
-
-      {/* Divider */}
-
-      <Divider
-        sx={{
-          mx: 2,
-          my: 2,
-          borderColor: "rgba(255,255,255,.18)"
-        }}
-      />
-
       {/* Management */}
-
-      {!collapsed && (
-        <Typography
-          sx={{
-            px: 3,
-            pb: 1,
-            fontSize: 11,
-            fontWeight: 700,
-            letterSpacing: 1,
-            color: "rgba(255,255,255,.65)"
-          }}
-        >
-          MANAGEMENT
-        </Typography>
+      {isAdmin && (
+        <>
+          {/* Divider */}
+          <Divider
+            sx={{
+              width: collapsed ? 40 : 196,
+              py: theme.spaces.m,
+              borderColor: theme.palette.foreground.inversed
+            }}
+          />
+          {!collapsed && (
+            <Typography
+              variant="body"
+              sx={{
+                pt: theme.spaces.xxl,
+                color: theme.palette.foreground.inversed
+              }}
+            >
+              {strings.navigation.management}
+            </Typography>
+          )}
+          <List>
+            {managementMenu.map((item) => (
+              <SidebarItem
+                key={item.route}
+                title={item.title}
+                route={item.route}
+                icon={item.icon}
+                collapsed={collapsed}
+              />
+            ))}
+          </List>
+        </>
       )}
 
-      <List
-        sx={{
-          px: 1,
-          py: 0
-        }}
-      >
-        {managementMenu.map((item) => (
-          <SidebarItem
-            key={item.route}
-            title={item.title}
-            route={item.route}
-            icon={item.icon}
-            collapsed={collapsed}
-          />
-        ))}
-      </List>
-
       {/* Push collapse button to bottom */}
-
       <Box sx={{ flexGrow: 1 }} />
 
-      <Divider
-        sx={{
-          mx: 2,
-          borderColor: "rgba(255,255,255,.18)"
-        }}
-      />
-
       {/* Collapse button */}
-
       <Box
         sx={{
-          height: 58,
+          height: 24,
           display: "flex",
           alignItems: "center",
-          justifyContent: collapsed ? "center" : "flex-start",
-          px: collapsed ? 0 : 2
+          justifyContent: collapsed ? "center" : "unset",
+          p: collapsed ? theme.spaces.none : theme.spaces.l,
+          pb: theme.spaces.xxxl
         }}
       >
-        <IconButton
-          onClick={() => setCollapsed(!collapsed)}
-          sx={{
-            color: "#FFFFFF",
-
-            "&:hover": {
-              backgroundColor: "rgba(255,255,255,.12)"
-            }
-          }}
-        >
-          {collapsed ? <KeyboardDoubleArrowRightIcon /> : <KeyboardDoubleArrowLeftIcon />}
-        </IconButton>
-
-        {!collapsed && (
-          <Typography
+        {!collapsed ? (
+          <AppButton
+            onClick={() => setCollapsed(!collapsed)}
             sx={{
-              ml: 1,
-              fontSize: 13,
-              color: "rgba(255,255,255,.8)"
+              color: theme.palette.foreground.inversed,
+              width: 152,
+              fontFamily: theme.typography.body,
+              fontWeight: 400,
+              textWrap: "nowrap",
+              justifyContent: "flex-start",
+              "&:hover": {
+                backgroundColor: "transparent",
+                color: theme.palette.hover.navigation
+              }
             }}
-          >
-            Collapse sidebar
-          </Typography>
+            text={strings.navigation.collapse}
+            disabled={false}
+            startIcon={<KeyboardTabOutlined sx={{ transform: "scale(1.2) rotate(180deg)" }} />}
+            variant="borderless"
+          />
+        ) : (
+          <AppIconButton
+            icon={
+              <KeyboardTabOutlined
+                sx={{
+                  fontSize: 24,
+                  color: theme.palette.foreground.inversed,
+                  "&:hover": {
+                    color: theme.palette.hover.navigation
+                  }
+                }}
+              />
+            }
+            onClick={() => setCollapsed(!collapsed)}
+            disabled={false}
+            variant="small"
+          />
         )}
       </Box>
     </Box>
