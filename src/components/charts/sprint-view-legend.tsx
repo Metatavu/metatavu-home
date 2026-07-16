@@ -1,6 +1,6 @@
 import { Box, Typography, useTheme } from "@mui/material";
-import type { CardVisibilityProps } from "src/components/generics/homepageCard";
 import strings from "src/localization/strings";
+import type { CardVisibilityProps } from "../generics/homepageCard";
 
 /**
  * Renders legend for sprint view bar chart

@@ -23,7 +23,7 @@ const QuestionnaireCard = ({ hidden, onToggleHidden, editmode }: CardProps) => {
           ? strings.questionnaireCard.questionnairesBuilder
           : strings.questionnaireProgress.title
       }
-      content={<QuestionnaireProgress />}
+      content={<QuestionnaireProgress hidden={hidden} />}
       path={linkTarget}
       hidden={hidden}
       onToggleHidden={onToggleHidden}

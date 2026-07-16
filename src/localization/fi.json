@@ -116,6 +116,9 @@
     "expectedHours": "Odotetut tunnit",
     "holidayName": "Lomapäivä:"
   },
+  "schedule": {
+    "title": "Aikataulu"
+  },
   "sprint": {
     "sprintview": "Sprinttinäkymä",
     "myAllocation": "Omat allokaatiot",

@@ -18,6 +18,7 @@ import BalanceCard from "../home/balance-card";
 import CardGridWrapper from "../home/common/card-grid-wrapper";
 import OnCallCard from "../home/oncall-card";
 import QuestionnaireCard from "../home/questionnaire-card";
+import ScheduleCard from "../home/scheduleCard/scheduleCard";
 import SoftwareRegistryCard from "../home/software-registry-card";
 import SprintViewCard from "../home/sprint-view-card";
 import VacationsCard from "../home/vacations-card";
@@ -88,7 +89,7 @@ const HomeScreen = () => {
 
     const previousCards = localStorage.getItem(HIDDEN_CARDS_KEY);
     const previousOrder = localStorage.getItem(ORDER_KEY);
-    previousCards && setHiddenCards(JSON.parse(previousCards));
+    setHiddenCards(previousCards ? JSON.parse(previousCards) : []);
     previousOrder
       ? setSavedOrder(JSON.parse(previousOrder))
       : setSavedOrder(cards.map((item) => (item.group ? `${item.id}|${item.group?.id}` : item.id)));
@@ -173,6 +174,20 @@ const HomeScreen = () => {
         element: isDeveloper && <OnCallCard />,
         canGroup: false,
         group: undefined
+      },
+      {
+        id: "schedule-card",
+        element: isDeveloper && (
+          <ScheduleCard
+            hidden={hiddenCards.includes("schedule-card")}
+            onToggleHidden={(isVisible: boolean) =>
+              toggleCard("schedule-card", isVisible, setHiddenCards)
+            }
+            editmode={editmode}
+          />
+        ),
+        canGroup: false,
+        group: undefined
       }
     ],
     [editmode, isTester, isDeveloper, hasSeveraUserId, hiddenCards]
@@ -212,7 +227,7 @@ const HomeScreen = () => {
       .filter(Boolean) as HomepageCardType[];
 
     return sorted;
-  }, [cards, savedOrder]);
+  }, [cards, savedOrder, hiddenCards]);
 
   //Cards won't render untill the save order is loaded
   if (!layoutLoaded) return null;
