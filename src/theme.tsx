@@ -36,7 +36,8 @@ export const createAppTheme = (mode: "light" | "dark"): Theme =>
         accentSecondary: "#e6eff2",
         selected: "#99c1cc",
         event: "#f2f2f2",
-        paper: mode === "dark" ? "#1e1e1e" : "#ffffff"
+        paper: mode === "dark" ? "#1e1e1e" : "#ffffff",
+        tooltip: "#002833"
       },
       text: {
         primary: mode === "dark" ? "#ffffff" : "#222222",
@@ -195,12 +196,15 @@ export const createAppTheme = (mode: "light" | "dark"): Theme =>
       },
       MuiAppBar: {
         defaultProps: {
-          color: "default"
+          
         },
         styleOverrides: {
           root: {
-            top: "1em",
-            borderRadius: 15
+            top: 0,
+            borderRadius: 0,
+            boxShadow: "none",
+            borderBottom: "none",
+            backgroundImage: "none"
           }
         }
       },

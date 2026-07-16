@@ -26,6 +26,11 @@
     "openUserMenu": "Open user menu",
     "logoAlt": "Metatavu logo"
   },
+  "home": {
+    "goodMorning": "Good morning",
+    "goodDay": "Good afternoon",
+    "goodEvening": "Good evening"
+  },
   "error": {
     "oops": "Oops!",
     "generic": "Unexpected error has occurred",
@@ -63,7 +68,27 @@
   "localization": {
     "en": "EN",
     "fi": "FI",
-    "time": "en-GB"
+    "time": "fi-FI",
+    "english": "English",
+    "finnish": "Suomi"
+  },
+  "navigation": {
+    "home": "Home",
+    "sprint": "Sprint view",
+    "balance": "Balance",
+    "vacations": "Vacation request",
+    "wiki": "Wiki Documentation",
+    "questionnaires": "Questionnaires",
+    "applications": "Applications",
+    "onCall": "On call calendar",
+    "employees": "Employees",
+    "project": "Project overview",
+    "employeeBalance": "Employee balance",
+    "vacationManager": "Vacation manager",
+    "questionnarieBuilder": "Questionnaire builder",
+    "applicationsManager": "Application manager",
+    "collapse": "Collapse sidebar",
+    "management": "Management"
   },
   "timebank": {
     "balance": "Balance",
@@ -114,17 +139,19 @@
     "unAllocated": "Unallocated Time:",
     "sprintDate": "Sprint",
     "completed": "Done",
-    "current": "Current: {0}-{1}",
+    "current": "{0}-{1}",
     "startDate": "Start Date",
     "deadLine": "Deadline",
-    "actualWorkHours": "Actual Work Hours",
+    "actualWorkHours": "Hours worked",
     "filter": "Filter by",
     "filterType": "Filter type",
     "project": "Project",
     "user": "User",
     "clear": "Clear",
     "searchBy": "Search by project or user",
-    "estimateHours": "Estimate Hours"
+    "estimateHours": "Estimated Hours",
+    "sprintviewCardTitle": "Your sprint",
+    "targetHours": "Target hours for today"
   },
   "softwareRegistry": {
     "softwareRegistry": "Software registry",

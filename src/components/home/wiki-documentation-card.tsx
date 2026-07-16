@@ -12,7 +12,14 @@ import HomepageCard, { type CardProps } from "../generics/homepageCard";
 import renderCardContent from "./renderWikiDocCard";
 
 /**
- * Card component for displaying last read, created or updated article for Wiki Documentation.
+ * Card component for displaying the last updated articles in the wiki documentation.
+ *
+ * @param props.hidden - Boolean indicating if the card is visible
+ * @param props.onToggleHidden - Functionality for changing visibility
+ * @param props.editmode - Boolean indicating if the card is in edit mode
+ *
+ * @returns Wiki documentation card component for homepage, showing the last updated
+ * articles and allowing navigation to the wiki documentation page.
  */
 const WikiDocumentationCard = ({ hidden, onToggleHidden, editmode }: CardProps) => {
   const { adminMode } = useUserRole();

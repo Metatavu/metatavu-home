@@ -1,4 +1,4 @@
-import { Box, Card, Chip, Grid, Skeleton, Typography, useTheme } from "@mui/material";
+import { Box, Card, Grid, Skeleton, Typography, useTheme } from "@mui/material";
 import { DateTime } from "luxon";
 import type { ArticleMetadata, User } from "src/generated/homeLambdasClient";
 import strings from "src/localization/strings";
