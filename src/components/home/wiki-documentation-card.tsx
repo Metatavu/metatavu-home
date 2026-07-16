@@ -42,7 +42,7 @@ const WikiDocumentationCard = ({ hidden, onToggleHidden, editmode }: CardProps) 
    */
   useEffect(() => {
     if (!articlesAtom) getLastUpdatedArticle();
-    else setLastUpdatedArticles(articlesAtom);
+    else setLastUpdatedArticles(articlesAtom.slice(0, 2));
   }, []);
   /**
    * Retrieves the list of articles from the API.
@@ -53,8 +53,8 @@ const WikiDocumentationCard = ({ hidden, onToggleHidden, editmode }: CardProps) 
     setLoading(true);
     try {
       const fetchedArticles = await articleApi.getArticles(adminMode ? { draft: true } : {});
+      setArticlesAtom(fetchedArticles);
       setLastUpdatedArticles(fetchedArticles.slice(0, 2));
-      setArticlesAtom(fetchedArticles.slice(0, 2));
     } catch (error: any) {
       const errorMessage = await error.response.json();
       setError(`${strings.error.fetchFailedWikiArticles}: ${errorMessage.message}`);

@@ -116,6 +116,9 @@
     "expectedHours": "Expected hours",
     "holidayName": "Holiday:"
   },
+  "schedule": {
+    "schedule": "Schedule"
+  },
   "sprint": {
     "sprintview": "Sprint view",
     "myAllocation": "My allocations",
