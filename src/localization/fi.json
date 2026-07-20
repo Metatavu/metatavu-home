@@ -27,9 +27,9 @@
     "logoAlt": "Metatavu logo"
   },
   "home": {
-  "goodMorning": "Huomenta",
-  "goodDay": "Iltapäivää",
-  "goodEvening": "Iltaa"
+    "goodMorning": "Huomenta",
+    "goodDay": "Iltapäivää",
+    "goodEvening": "Iltaa"
   },
   "error": {
     "oops": "Hups!",
@@ -71,7 +71,7 @@
     "time": "fi-FI",
     "english": "English",
     "finnish": "Suomi"
-},
+  },
   "navigation": {
     "home": "Koti",
     "sprint": "Sprinttinäkymä",
@@ -285,6 +285,8 @@
     "pending": "Odottaa",
     "approved": "Hyväksytty",
     "declined": "Hylätty",
+    "ongoing": "Meneillään",
+    "completed": "Päättynyt",
     "draft": "Luonnos",
     "vacation": "Loma",
     "maternityPaternityLeave": "Vanhempainvapaa",

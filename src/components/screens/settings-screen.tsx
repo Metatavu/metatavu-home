@@ -296,9 +296,10 @@ const SettingsScreen = ({ screenColorMode, setScreenColorMode }: SettingsScreenP
    * Determines whether the currently selected roles differ from the
    * roles originally loaded or most recently saved.
    */
-  // NEW
+  const sortRoles = (roles: Role[]) => [...roles].sort((a, b) => a.localeCompare(b));
+
   const hasRoleChanges =
-    JSON.stringify([...selectedRoles].sort()) !== JSON.stringify([...initialRoles].sort());
+    JSON.stringify(sortRoles(selectedRoles)) !== JSON.stringify(sortRoles(initialRoles));
 
   return (
     <Box p={2}>

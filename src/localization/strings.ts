@@ -327,6 +327,8 @@ export interface Localized extends LocalizedStringsMethods {
     pending: string;
     approved: string;
     declined: string;
+    ongoing: string;
+    completed: string;
     draft: string;
     vacation: string;
     maternityPaternityLeave: string;

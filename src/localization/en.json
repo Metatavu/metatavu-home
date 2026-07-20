@@ -285,6 +285,8 @@
     "pending": "Pending",
     "approved": "Approved",
     "declined": "Declined",
+    "ongoing": "Ongoing",
+    "completed": "Completed",
     "draft": "Draft",
     "vacation": "Vacation",
     "maternityPaternityLeave": "Parental leave",
