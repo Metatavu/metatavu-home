@@ -1,3 +1,5 @@
+/*TODO: This card is un-used. Should it be removed?
+
 import { Card, CardContent, CardMedia, Grid, Skeleton, Typography } from "@mui/material";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { useEffect, useMemo, useState } from "react";
@@ -9,9 +11,6 @@ import { useLambdasApi } from "src/hooks/use-api";
 import useUserRole from "../../hooks/use-user-role";
 import strings from "../../localization/strings";
 
-/**
- * SoftwareRegistry card component
- */
 const SoftwareRegistryCard = () => {
   const { adminMode } = useUserRole();
   const { softwareApi } = useLambdasApi();
@@ -39,9 +38,7 @@ const SoftwareRegistryCard = () => {
     fetchSoftware();
   }, []);
 
-  /**
-   * Filter pending software (admin mode) or recommended software (user mode)
-   */
+  
   const pendingSoftware = useMemo(() => {
     return applications.filter((app) => app.status === "PENDING");
   }, [applications]);
@@ -49,10 +46,7 @@ const SoftwareRegistryCard = () => {
   const recommendedSoftware = useMemo(() => {
     return applications.filter((app) => app.recommend?.includes(loggedUserId));
   }, [applications]);
-
-  /**
-   * Render the card content, showing different details based on admin/user mode
-   */
+<w
   const renderSoftwareDetails = () => {
     if (loading) {
       return (
@@ -140,3 +134,4 @@ const SoftwareRegistryCard = () => {
 };
 
 export default SoftwareRegistryCard;
+ */

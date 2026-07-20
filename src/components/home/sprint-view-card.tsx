@@ -1,4 +1,3 @@
-import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import HomepageCard, { type CardProps } from "../generics/homepageCard";
 import SprintViewCardContent from "./sprint-view-card-content/user-sprint-view-card";
@@ -12,8 +11,7 @@ import SprintViewCardContent from "./sprint-view-card-content/user-sprint-view-c
  * @returns Sprintview card component
  */
 const SprintViewCard = ({ hidden, onToggleHidden, editmode }: CardProps) => {
-  const { adminMode } = useUserRole();
-  const path = adminMode ? "/admin/sprintview" : "/sprintview";
+  const path = "/sprintview";
 
   return (
     <HomepageCard

@@ -1,12 +1,10 @@
+/*TODO: this card is un-used. Should it be removed?
+
 import { Box, Card, CardContent, Typography, useTheme } from "@mui/material";
 import { Link } from "react-router-dom";
 import strings from "../../localization/strings";
 
-/**
- * Clickable card linking to the admin vacation management page.
- * Used on the admin dashboard to navigate to vacation day management.
- * @returns React element for the vacation management card.
- */
+
 const VacationManagementCard = () => {
   const theme = useTheme();
   return (
@@ -40,3 +38,4 @@ const VacationManagementCard = () => {
 };
 
 export default VacationManagementCard;
+ */
