@@ -20,7 +20,7 @@ interface StatusIndicatorProps {
  */
 const VacationStatusIndicator = ({ statusColor, disabled }: StatusIndicatorProps) => {
   const theme = useTheme();
-  const color = disabled ? disabled : statusColor;
+  const color = disabled || statusColor;
   const colors = getBadgeColor(color, theme);
 
   return (
