@@ -1,9 +1,9 @@
 /** biome-ignore-all lint/correctness/useUniqueElementIds: Keep static id */
 import { DragDropProvider } from "@dnd-kit/react";
 import { EditOutlined } from "@mui/icons-material";
-import { Box, type Theme, Typography, useTheme } from "@mui/material";
+import { Box, Typography, useTheme } from "@mui/material";
 import { useAtomValue } from "jotai";
-import { type Dispatch, type SetStateAction, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { userProfileAtom } from "src/atoms/auth";
 import { usersAtom } from "src/atoms/user";
 import type { User } from "src/generated/homeLambdasClient";
@@ -15,7 +15,7 @@ import { getDisplayName } from "src/utils/user-name-utils";
 import AppButton from "../generics/buttons/app-button";
 import CardGridWrapper from "../home/common/card-grid-wrapper";
 import Onboarding from "../onboarding/Onboarding";
-import { cardMemo, type HomepageCardType } from "./createHomeCards";
+import { type HomepageCardType, useCardMemo } from "./createHomeCards";
 
 /**
  * Home screen component.
@@ -40,7 +40,7 @@ const HomeScreen = () => {
   const ORDER_KEY = "order";
   const displayName = getDisplayName(loggedInUser);
   const greetingString = `${getTimeBasedGreeting()}, ${displayName}!`;
-  const cards = cardMemo(loggedInUser, hiddenCards, setHiddenCards, editmode, theme);
+  const cards = useCardMemo(loggedInUser, hiddenCards, setHiddenCards, editmode, theme);
 
   useEffect(() => {
     const previousOrder = localStorage.getItem(ORDER_KEY);

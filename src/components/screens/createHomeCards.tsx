@@ -30,7 +30,7 @@ export type HomepageCardType = {
  *
  * @returns An array of homepage card configurations, each containing an ID, React element, grouping capability, and group reference.
  */
-export const cardMemo = (
+export const useCardMemo = (
   loggedInUser: User | undefined,
   hiddenCards: string[],
   setHiddenCards: Dispatch<SetStateAction<string[]>>,
