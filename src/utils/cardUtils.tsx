@@ -3,7 +3,7 @@ import { useDraggable, useDroppable } from "@dnd-kit/react";
 import { DragIndicator } from "@mui/icons-material";
 import { Box, Grid, Skeleton, type Theme, useTheme } from "@mui/material";
 import type { Dispatch, ReactNode, SetStateAction } from "react";
-import type { HomepageCardType } from "src/components/screens/home-screen";
+import type { HomepageCardType } from "src/components/screens/createHomeCards";
 import strings from "src/localization/strings";
 
 /**
