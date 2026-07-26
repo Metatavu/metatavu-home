@@ -56,3 +56,48 @@ export const uploadFile = async (file: File, articleApi: ArticleApi): Promise<st
 
   return getHttpsUrlFromS3(filePath);
 };
+
+/**
+ * Imports a PDF playbook into the system by uploading it to S3 and then registering it via the article API.
+ *
+ * @param file - The PDF file to import.
+ * @param title - The title to assign to the imported document. If not provided, the file name (without .pdf) will be used.
+ * @param articleApi - The article API instance used for uploading and importing the document.
+ * @returns An object containing the path of the imported article.
+ * @throws Error if the file is not provided, is not a PDF, if the upload fails, or if the import does not return an article path.
+ */
+export const importPlaybook = async (
+  file: File,
+  title: string,
+  articleApi: ArticleApi
+): Promise<{ articlePath: string }> => {
+  if (!file) throw new Error("File is required");
+  if (file.type !== "application/pdf") throw new Error("Only PDF files are supported");
+  const documentTitle = title?.trim() || file.name.replace(/\.pdf$/i, "");
+  const filePath = `${Date.now()}-${file.name}`;
+  const { data: presignedUrl } = await articleApi.uploadFileForArticle({
+    fileMetadata: { path: filePath, contentType: "application/pdf" }
+  });
+
+  const uploadResponse = await fetch(presignedUrl, {
+    method: "PUT",
+    headers: { "Content-Type": "application/pdf" },
+    body: file
+  });
+
+  if (!uploadResponse.ok) {
+    throw new Error(`PDF upload failed: ${uploadResponse.status} ${uploadResponse.statusText}`);
+  }
+
+  const result = await articleApi.importDocument({
+    documentImportRequest: {
+      path: filePath,
+      documentTitle
+    }
+  });
+
+  const articlePath = result.basePath;
+  if (!articlePath) throw new Error("Import succeeded but no article path returned");
+
+  return { articlePath };
+};
