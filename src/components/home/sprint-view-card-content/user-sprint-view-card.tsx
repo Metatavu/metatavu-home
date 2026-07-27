@@ -10,7 +10,6 @@ import type { CardVisibilityProps } from "src/components/generics/homepageCard";
 import type { ResourceAllocations, User, WorkHours } from "src/generated/homeLambdasClient";
 import useSprintViewHandlers from "src/hooks/sprint-custom-hooks";
 import { useLambdasApi } from "src/hooks/use-api";
-import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import type { SprintViewChartData } from "src/types";
 import { getSeveraUserId, getTotalEstimatedHours } from "src/utils/sprint-utils";
@@ -24,7 +23,6 @@ import { getSprintEnd, getSprintStart } from "src/utils/time-utils";
  */
 const SprintViewCardContent = ({ hidden }: CardVisibilityProps) => {
   const { filterAllocations } = useSprintViewHandlers();
-  const { adminMode } = useUserRole();
   const [loading, setLoading] = useState(false);
   const users = useAtomValue(usersAtom);
   const userProfile = useAtomValue(userProfileAtom);
@@ -37,7 +35,7 @@ const SprintViewCardContent = ({ hidden }: CardVisibilityProps) => {
 
   const { resourceAllocationsApi, workHoursApi } = useLambdasApi();
   const setError = useSetAtom(errorAtom);
-  const filteredAllocations = filterAllocations(resourceAllocations, adminMode);
+  const filteredAllocations = filterAllocations(resourceAllocations, false);
 
   useEffect(() => {
     getAllocationsAndProjects();
@@ -52,9 +50,7 @@ const SprintViewCardContent = ({ hidden }: CardVisibilityProps) => {
       try {
         const severaUserId = getSeveraUserId(loggedInUser);
         const [fetchedResourceAllocations, fetchedWorkHours] = await Promise.all([
-          adminMode
-            ? resourceAllocationsApi.getAllResourceAllocations()
-            : resourceAllocationsApi.getAllResourceAllocations({ severaUserId }),
+          resourceAllocationsApi.getAllResourceAllocations({ severaUserId }),
           workHoursApi.getAllWorkHours({ severaUserId })
         ]);
 

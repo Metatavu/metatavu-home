@@ -7,14 +7,11 @@ import { errorAtom } from "src/atoms/error";
 import { usersAtom } from "src/atoms/user";
 import type { Flextime, User } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
-import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import { getSeveraUserId } from "src/utils/user-utils";
 import HomepageCard, { type CardProps } from "../generics/homepageCard";
 
-/**TODO: Once side navigation is implemented the path to adminside
- * screen can be removed.
- *
+/**
  * Card component that displays personal flextime balance for users.
  *
  * @param props.hidden - Boolean defining if the card is visible
@@ -33,14 +30,13 @@ const BalanceCard = ({ hidden, onToggleHidden, editmode }: CardProps) => {
   const userProfile = useAtomValue(userProfileAtom);
   const setError = useSetAtom(errorAtom);
   const [loading, setLoading] = useState(false);
-  const { adminMode } = useUserRole();
   const [usersFlextime, setUsersFlextime] = useState<Flextime>();
   const yesterday = DateTime.now().minus({ days: 1 });
   const { flexTimeApi } = useLambdasApi();
   const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
   const severaUserId = getSeveraUserId(loggedInUser);
   const theme = useTheme();
-  const path = adminMode ? "/admin/severa/employee-flextime" : "/balance";
+  const path = "/balance";
 
   /**
    * Effect hook that fetches flextime data for the logged-in user.
