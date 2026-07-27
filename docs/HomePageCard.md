@@ -8,14 +8,15 @@ For more information regarding the design of the component, please see [figma](h
 ## Dos and Don'ts
 
 ### Do
+
 - Use clear hierarchy with concise titles, values, and supporting details
 - Keep cards focused on the most important information
 
 ### Don't
+
 - Place cards next to each other that can't do that
 - Overload cards with too much content
 - Use inconsistent card sizes or layouts without purpose
-
 
 ## Properties
 
@@ -27,7 +28,6 @@ For more information regarding the design of the component, please see [figma](h
 |`hidden`         | boolean                 |Defines if the card is hidden or not. Changed with `onToggleHidden` |
 |`onToggleHidden` | (arg0: boolean) => void |Changes value of `hidden`                                           |
 |`editmode`       | boolean                 |Defines if edit mode is on                                          |
-
 
 ## Usage example
 
