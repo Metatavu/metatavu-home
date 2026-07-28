@@ -1,4 +1,4 @@
-import { Box, CircularProgress, Divider, Switch, Typography, useTheme } from "@mui/material";
+import { Box, CircularProgress, Divider, Typography, useTheme } from "@mui/material";
 import { useSetAtom } from "jotai";
 import type { KeycloakProfile } from "keycloak-js";
 import { useEffect, useState } from "react";
