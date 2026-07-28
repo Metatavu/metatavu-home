@@ -124,7 +124,7 @@ export const createAppTheme = (mode: "light" | "dark"): Theme =>
       h1: {
         fontWeight: 600,
         fontSize: 40,
-        lineHeight: "115%"
+        lineHeight: "125%" // Doesn't match the Figma line height, but prevents descenders (e.g. "g") from being clipped.
       },
       h2: {
         fontWeight: 600,
@@ -195,9 +195,6 @@ export const createAppTheme = (mode: "light" | "dark"): Theme =>
       `
       },
       MuiAppBar: {
-        defaultProps: {
-          
-        },
         styleOverrides: {
           root: {
             top: 0,

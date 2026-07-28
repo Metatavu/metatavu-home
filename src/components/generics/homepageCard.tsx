@@ -1,5 +1,6 @@
-import { CheckCircleRounded } from "@mui/icons-material";
-import { Card, CardContent, Link, Switch, useTheme } from "@mui/material";
+import { Card, CardContent, Link, useTheme } from "@mui/material";
+import strings from "src/localization/strings";
+import AppToggle from "./appToggle";
 
 export interface CardVisibilityProps {
   hidden: boolean;
@@ -73,20 +74,12 @@ const HomepageCard = ({
           {title}
         </Link>
         {editmode && (
-          <Switch
-            sx={{ float: "right" }}
-            checkedIcon={
-              <CheckCircleRounded
-                sx={{
-                  width: 22,
-                  height: 22,
-                  gap: 0,
-                  transform: "scale(1.2)"
-                }}
-              />
-            }
+          <AppToggle
             checked={!hidden}
             onChange={(e) => onToggleHidden(e.target.checked)}
+            ariaLabel={`${title}-${strings.home.visibilityToggle}`}
+            disabled={!editmode}
+            sx={{ float: "right" }}
           />
         )}
         {content}

@@ -2,7 +2,8 @@
   "placeHolder": {
     "notYetImplemented": "Not yet implemented",
     "pleaseWait": "Please wait, this could take a moment...",
-    "search": "Search..."
+    "search": "Search...",
+    "saving": "Saving..."
   },
   "label": {
     "currentLocaleLabel": "Current Locale:",
@@ -29,7 +30,8 @@
   "home": {
     "goodMorning": "Good morning",
     "goodDay": "Good afternoon",
-    "goodEvening": "Good evening"
+    "goodEvening": "Good evening",
+    "visibilityToggle": "card visibility"
   },
   "error": {
     "oops": "Oops!",
@@ -63,7 +65,9 @@
     "softwareSaveFailed": "Error saving the software.",
     "softwareDeleteFailed": "Error deleting the software.",
     "softwareRegistryFetchFailed": "Error while fetching software registry data",
-    "softwareRegistryUpdateFailed": "Error while updating software registry"
+    "softwareRegistryUpdateFailed": "Error while updating software registry",
+    "fetchRolesError": "Failed to load roles",
+    "rolesError": "Error updating roles: "
   },
   "localization": {
     "en": "EN",
@@ -578,16 +582,30 @@
     "vacationRequestCreated": "Vacation request created successfully!",
     "vacationRequestUpdated": "Vacation request updated successfully!",
     "vacationRequestDeleted": "Vacation request deleted successfully!",
-    "vacationRequestStatusUpdated": "Vacation request status updated successfully!"
+    "vacationRequestStatusUpdated": "Vacation request status updated successfully!",
+    "rolesUpdated": "Selected roles updated succesfully!"
   },
   "settingsScreen": {
     "saveSettings": "Save settings",
     "accept": "Yes",
     "decline": "No",
-    "consentToDataProcessing": "Activate account",
-    "lightOrDarkMode": "Mode",
-    "light": "Light",
-    "dark": "Dark"
+    "connections": "Connections",
+    "connectSevera": "Connect Severa account",
+    "severaDescription": "Connect to Severa to see all available information",
+    "appearance": "Appearance",
+    "dark": "Dark mode",
+    "darkModeToggle": "Darkmode toggle",
+    "jobs": "Job description",
+    "jobsDescription": "Select the roles that apply to you to get personalized recommendations",
+    "descriptionsLoading": "Loading roles..."
+  },
+  "roles": {
+    "role": "role",
+    "developer": "Developer",
+    "designer": "Designer",
+    "architect": "Architect",
+    "management": "Management",
+    "trainee": "Trainee"
   },
   "notOptedInDescription": {
     "description": "Activate your account to view this section."
