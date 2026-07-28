@@ -594,7 +594,7 @@
     "severaDescription": "Connect to Severa to see all available information",
     "appearance": "Appearance",
     "dark": "Dark mode",
-    "darkModeToggle": "Darkmode toggle",
+    "darkMode": "Darkmode toggle",
     "jobs": "Job description",
     "jobsDescription": "Select the roles that apply to you to get personalized recommendations",
     "descriptionsLoading": "Loading roles..."
