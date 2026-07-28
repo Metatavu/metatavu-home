@@ -1,4 +1,4 @@
-import { Box, CircularProgress, Divider, Typography, useTheme } from "@mui/material";
+import { Box, CircularProgress, Divider, FormGroup, Typography, useTheme } from "@mui/material";
 import { useSetAtom } from "jotai";
 import type { KeycloakProfile } from "keycloak-js";
 import { useEffect, useState } from "react";
@@ -199,16 +199,18 @@ export const RoleSettings = ({ userProfile }: { userProfile?: KeycloakProfile })
         </Box>
       ) : (
         <Box sx={{ ml: theme.spaces.xl }}>
-          {SELECTABLE_ROLES.map((role) => (
-            <AppCheckbox
-              key={role}
-              label={getRoleLabels(role)}
-              checked={selectedRoles.includes(role)}
-              onChange={() => handleRoleToggle(role)}
-              disabled={rolesSaving}
-              ariaLabel={`${getRoleLabels(role)}-${strings.roles.role}`}
-            />
-          ))}
+          <FormGroup>
+            {SELECTABLE_ROLES.map((role) => (
+              <AppCheckbox
+                key={role}
+                label={getRoleLabels(role)}
+                checked={selectedRoles.includes(role)}
+                onChange={() => handleRoleToggle(role)}
+                disabled={rolesSaving}
+                ariaLabel={`${getRoleLabels(role)}-${strings.roles.role}`}
+              />
+            ))}
+          </FormGroup>
 
           <AppButton
             variant="primary"

@@ -23,34 +23,32 @@ const AppCheckbox = ({ checked, label, disabled, onChange, ariaLabel }: Checkbox
   const theme = useTheme();
   console.log(label);
   return (
-    <FormGroup>
-      <FormControlLabel
-        label={label}
-        control={
-          <Checkbox
-            disableRipple
-            checked={checked}
-            onChange={onChange}
-            disabled={disabled}
-            slotProps={{ input: { "aria-label": ariaLabel } }}
-            sx={{
-              color: theme.palette.border.strong,
-              "&:hover": {
-                bgcolor: "transparent",
+    <FormControlLabel
+      label={label}
+      control={
+        <Checkbox
+          disableRipple
+          checked={checked}
+          onChange={onChange}
+          disabled={disabled}
+          slotProps={{ input: { "aria-label": ariaLabel } }}
+          sx={{
+            color: theme.palette.border.strong,
+            "&:hover": {
+              bgcolor: "transparent",
 
-                ".MuiSvgIcon-root": {
-                  backgroundColor: theme.palette.background.accentSecondary,
-                  borderRadius: theme.radius.xs
-                }
-              },
-              "&.Mui-checked": {
-                color: theme.palette.background.accent
+              ".MuiSvgIcon-root": {
+                backgroundColor: theme.palette.background.accentSecondary,
+                borderRadius: theme.radius.xs
               }
-            }}
-          />
-        }
-      />
-    </FormGroup>
+            },
+            "&.Mui-checked": {
+              color: theme.palette.background.accent
+            }
+          }}
+        />
+      }
+    />
   );
 };
 
