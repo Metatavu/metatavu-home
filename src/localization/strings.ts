@@ -13,6 +13,7 @@ export interface Localized extends LocalizedStringsMethods {
     notYetImplemented: string;
     pleaseWait: string;
     search: string;
+    saving: string;
   };
   label: {
     currentLocaleLabel: string;
@@ -46,6 +47,7 @@ export interface Localized extends LocalizedStringsMethods {
     goodMorning: string;
     goodDay: string;
     goodEvening: string;
+    visibilityToggle: string;
   };
   /**
    * Translations related to errors
@@ -83,6 +85,8 @@ export interface Localized extends LocalizedStringsMethods {
     softwareDeleteFailed: string;
     softwareRegistryFetchFailed: string;
     softwareRegistryUpdateFailed: string;
+    fetchRolesError: string;
+    rolesError: string;
   };
   /**
    * Translations related to localization
@@ -327,6 +331,8 @@ export interface Localized extends LocalizedStringsMethods {
     pending: string;
     approved: string;
     declined: string;
+    ongoing: string;
+    completed: string;
     draft: string;
     vacation: string;
     maternityPaternityLeave: string;
@@ -708,6 +714,7 @@ export interface Localized extends LocalizedStringsMethods {
     vacationRequestUpdated: string;
     vacationRequestDeleted: string;
     vacationRequestStatusUpdated: string;
+    rolesUpdated: string;
   };
   /**
    * Translation related settings screen
@@ -716,10 +723,27 @@ export interface Localized extends LocalizedStringsMethods {
     saveSettings: string;
     accept: string;
     decline: string;
-    consentToDataProcessing: string;
-    lightOrDarkMode: string;
-    light: string;
+    connections: string;
+    connectSevera: string;
+    severaDescription: string;
+    appearance: string;
     dark: string;
+    darkMode: string;
+    jobs: string;
+    jobsDescription: string;
+    descriptionsLoading: string;
+  };
+
+  /**
+   * Translation related to user roles
+   */
+  roles: {
+    role: string;
+    developer: string;
+    designer: string;
+    architect: string;
+    management: string;
+    trainee: string;
   };
   /**
    * Translations related to if user is not Severa Opt in

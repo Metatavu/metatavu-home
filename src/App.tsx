@@ -12,7 +12,6 @@ import AuthenticationProvider from "./components/providers/authentication-provid
 import RestrictedContentProvider from "./components/providers/restricted-content-provider";
 import NewQuestionnaireBuilder from "./components/questionnaire/new-questionnaire-builder";
 import QuestionnaireManager from "./components/questionnaire/questionnaire-manager";
-import AdminScreen from "./components/screens/admin-screen";
 import AdminVacationManagementScreen from "./components/screens/admin-vacation-management/admin-vacation-management-screen";
 import AllSoftwareScreen from "./components/screens/all-software-screen";
 import BalanceScreen from "./components/screens/balance-screen";
@@ -147,7 +146,7 @@ const App = () => {
       children: [
         {
           path: "/admin",
-          element: <AdminScreen />
+          element: <HomeScreen />
         },
         {
           path: "/admin/vacations",

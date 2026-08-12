@@ -1,4 +1,3 @@
-import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import HomepageCard, { type CardProps } from "../generics/homepageCard";
 import QuestionnaireProgress from "./questionnaire-progress";
@@ -13,16 +12,11 @@ import QuestionnaireProgress from "./questionnaire-progress";
  * @returns Card component showing user their questionnair progress.
  */
 const QuestionnaireCard = ({ hidden, onToggleHidden, editmode }: CardProps) => {
-  const { adminMode } = useUserRole();
-  const linkTarget = adminMode ? "/admin/questionnaire" : "/questionnaire";
+  const linkTarget = "/questionnaire";
 
   return (
     <HomepageCard
-      title={
-        adminMode
-          ? strings.questionnaireCard.questionnairesBuilder
-          : strings.questionnaireProgress.title
-      }
+      title={strings.questionnaireProgress.title}
       content={<QuestionnaireProgress hidden={hidden} />}
       path={linkTarget}
       hidden={hidden}

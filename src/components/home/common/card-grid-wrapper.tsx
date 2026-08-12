@@ -1,7 +1,7 @@
 import Masonry from "@mui/lab/Masonry";
 import { Box, Grid } from "@mui/material";
 import type { ReactNode } from "react";
-import type { HomepageCardType } from "src/components/screens/home-screen";
+import type { HomepageCardType } from "src/components/screens/createHomeCards";
 import { DraggableCard, DroppableCard } from "src/utils/cardUtils";
 
 /**
