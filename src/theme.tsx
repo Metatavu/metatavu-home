@@ -5,6 +5,16 @@ import PoppinsMedium from "../resources/fonts/poppins/Poppins-Medium.ttf";
 import PoppinsRegular from "../resources/fonts/poppins/Poppins-Regular.ttf";
 import PoppinsSemiBold from "../resources/fonts/poppins/Poppins-SemiBold.ttf";
 
+/**
+ * Builds the color palette for the given theme mode.
+ *
+ * Single source of truth for both light and dark palettes - fields that
+ * differ between modes use a ternary, fields that are identical in both
+ * modes are written once.
+ *
+ * @param mode - Theme mode ("light" | "dark")
+ * @returns Palette object to pass to createTheme
+ */
 const createPalette = (mode: "light" | "dark") => {
   const isDark = mode === "dark";
 
@@ -83,6 +93,218 @@ const createPalette = (mode: "light" | "dark") => {
   };
 };
 
+const spaces = {
+  none: "0px",
+  xxs: "2px",
+  xs: "4px",
+  s: "8px",
+  m: "16px",
+  l: "24px",
+  xl: "32px",
+  xxl: "40px",
+  xxxl: "56px",
+  negative: "-16px"
+};
+
+const radius = {
+  xs: "4px",
+  s: "8px",
+  m: "16px",
+  full: "999px"
+};
+
+const borders = {
+  xs: "0.5px",
+  s: "1px",
+  m: "3px"
+};
+
+const typography = {
+  fontFamily: "Poppins, Arial, Helvetica, sans-serif",
+  fontWeightRegular: 400,
+  fontSize: 16,
+  h1: {
+    fontWeight: 600,
+    fontSize: 40,
+    lineHeight: "115%"
+  },
+  h2: {
+    fontWeight: 600,
+    fontSize: 32,
+    lineHeight: "120%"
+  },
+  h3: {
+    fontWeight: 600,
+    fontSize: 24,
+    lineHeight: "125%"
+  },
+  h4: {
+    fontWeight: 600,
+    fontSize: 20,
+    lineHeight: "130%"
+  },
+  h5: {
+    fontWeight: 500,
+    fontSize: 20,
+    lineHeight: "130%"
+  },
+  body: {
+    fontSize: 16,
+    lineHeight: "160%"
+  },
+  bodySmall: {
+    fontSize: 14,
+    lineHeight: "160%"
+  },
+  caption: {
+    fontSize: 12,
+    lineHeight: "150%"
+  },
+  captionSmall: {
+    fontSize: 10,
+    lineHeight: "150%"
+  }
+};
+
+const cssBaselineFontFaces = `
+  @font-face {
+    font-family: "Poppins";
+    src: local("Poppins"), url(${PoppinsRegular}) format("truetype");
+    font-weight: 400;
+    font-style: normal;
+  }
+    @font-face {
+    font-family: "Poppins";
+    src: local("Poppins"), url(${PoppinsMedium}) format("truetype");
+    font-weight: 500;
+  }
+    @font-face {
+    font-family: "Poppins";
+    src: local("Poppins"), url(${PoppinsSemiBold}) format("truetype");
+    font-weight: 600;
+  }
+    @font-face {
+    font-family: "Poppins";
+    src: local("Poppins"), url(${PoppinsBold}) format("truetype");
+    font-weight: 700;
+  }
+  @font-face {
+    font-family: "Poppins";
+    src: local("Poppins"), url(${PoppinsBlack}) format("truetype");
+    font-weight: 900;
+  }
+`;
+
+const muiAppBarOverrides = {
+  defaultProps: {},
+  styleOverrides: {
+    root: {
+      top: 0,
+      borderRadius: 0,
+      boxShadow: "none",
+      borderBottom: "none",
+      backgroundImage: "none"
+    }
+  }
+};
+
+const muiTooltipStyleOverrides = {
+  tooltip: ({ theme }: { theme: Theme }) => ({
+    backgroundColor: theme.palette.background.tooltip,
+    color: theme.palette.foreground.inversed,
+    borderRadius: theme.radius.s,
+    padding: `${theme.spaces.s} ${theme.spaces.s}`,
+    display: "flex",
+    flexDirection: "column" as const,
+    justifyContent: "center",
+    alignItems: "flex-start",
+    gap: theme.spaces.s,
+    ...theme.typography.caption,
+    fontWeight: 400
+  }),
+  arrow: ({ theme }: { theme: Theme }) => ({
+    color: theme.palette.background.tooltip
+  })
+};
+
+const muiAvatarOverrides = {
+  styleOverrides: {
+    root: {
+      height: 48,
+      width: 48
+    }
+  }
+};
+
+const muiCardStyleOverrides = {
+  root: ({ theme }: { theme: Theme }) => ({
+    backgroundColor: theme.palette.background.paper,
+    color: theme.palette.text.primary,
+    transition: "background-color 0.2s ease"
+  })
+};
+
+const muiPaperStyleOverrides = {
+  root: ({ theme }: { theme: Theme }) => ({
+    backgroundColor: theme.palette.background.paper,
+    color: theme.palette.text.primary
+  })
+};
+
+const muiButtonOverrides = {
+  styleOverrides: {
+    root: {
+      fontWeight: "bold"
+    }
+  }
+};
+
+const muiMenuStyleOverrides = {
+  paper: ({ theme }: { theme: Theme }) => ({
+    boxShadow: "0px 6px 24px rgba(0, 0, 0, 0.12)",
+    borderRadius: theme.radius.s
+  })
+};
+
+const muiSwitchStyleOverrides = {
+  root: ({ theme }: { theme: Theme }) => ({
+    width: 48,
+    height: 26,
+    padding: 0,
+    "& .MuiSwitch-switchBase": {
+      padding: theme.spaces.xxs,
+      margin: 0,
+      "&.Mui-checked": {
+        transform: "translateX(22px)",
+        color: theme.palette.background.default,
+        "& + .MuiSwitch-track": {
+          backgroundColor: theme.toggle.on,
+          opacity: 1,
+          border: 0
+        },
+        "&.Mui-disabled + .MuiSwitch-track": {
+          opacity: 0.5
+        }
+      },
+      "&.Mui-focusVisible .MuiSwitch-thumb": {
+        color: theme.toggle.on
+      },
+      "&.Mui-disabled + .MuiSwitch-track": {
+        opacity: 0.5
+      }
+    },
+    "& .MuiSwitch-thumb": {
+      width: 22,
+      height: 22
+    },
+    "& .MuiSwitch-track": {
+      borderRadius: theme.radius.m,
+      backgroundColor: theme.toggle.off,
+      opacity: 1
+    }
+  })
+};
+
 /**
  * Creates MUI theme for the application.
  *
@@ -104,224 +326,38 @@ export const createAppTheme = (mode: "light" | "dark"): Theme => {
 
   return createTheme({
     palette: createPalette(mode),
-    spaces: {
-      none: "0px",
-      xxs: "2px",
-      xs: "4px",
-      s: "8px",
-      m: "16px",
-      l: "24px",
-      xl: "32px",
-      xxl: "40px",
-      xxxl: "56px",
-      negative: "-16px"
-    },
-    radius: {
-      xs: "4px",
-      s: "8px",
-      m: "16px",
-      full: "999px"
-    },
-    borders: {
-      xs: "0.5px",
-      s: "1px",
-      m: "3px"
-    },
+    spaces,
+    radius,
+    borders,
     toggle,
-    typography: {
-      fontFamily: "Poppins, Arial, Helvetica, sans-serif",
-      fontWeightRegular: 400,
-      fontSize: 16,
-      h1: {
-        fontWeight: 600,
-        fontSize: 40,
-        lineHeight: "115%"
-      },
-      h2: {
-        fontWeight: 600,
-        fontSize: 32,
-        lineHeight: "120%"
-      },
-      h3: {
-        fontWeight: 600,
-        fontSize: 24,
-        lineHeight: "125%"
-      },
-      h4: {
-        fontWeight: 600,
-        fontSize: 20,
-        lineHeight: "130%"
-      },
-      h5: {
-        fontWeight: 500,
-        fontSize: 20,
-        lineHeight: "130%"
-      },
-      body: {
-        fontSize: 16,
-        lineHeight: "160%"
-      },
-      bodySmall: {
-        fontSize: 14,
-        lineHeight: "160%"
-      },
-      caption: {
-        fontSize: 12,
-        lineHeight: "150%"
-      },
-      captionSmall: {
-        fontSize: 10,
-        lineHeight: "150%"
-      }
-    },
+    typography,
     components: {
       MuiCssBaseline: {
-        styleOverrides: `
-        @font-face {
-          font-family: "Poppins";
-          src: local("Poppins"), url(${PoppinsRegular}) format("truetype");
-          font-weight: 400;
-          font-style: normal;
-        }
-          @font-face {
-          font-family: "Poppins";
-          src: local("Poppins"), url(${PoppinsMedium}) format("truetype");
-          font-weight: 500;
-        }
-          @font-face {
-          font-family: "Poppins";
-          src: local("Poppins"), url(${PoppinsSemiBold}) format("truetype");
-          font-weight: 600;
-        }
-          @font-face {
-          font-family: "Poppins";
-          src: local("Poppins"), url(${PoppinsBold}) format("truetype");
-          font-weight: 700;
-        }
-        @font-face {
-          font-family: "Poppins";
-          src: local("Poppins"), url(${PoppinsBlack}) format("truetype");
-          font-weight: 900;
-        }
-      `
+        styleOverrides: cssBaselineFontFaces
       },
-      MuiAppBar: {
-        defaultProps: {},
-        styleOverrides: {
-          root: {
-            top: 0,
-            borderRadius: 0,
-            boxShadow: "none",
-            borderBottom: "none",
-            backgroundImage: "none"
-          }
-        }
-      },
+      MuiAppBar: muiAppBarOverrides,
       MuiTooltip: {
         defaultProps: {
           arrow: true
         },
-        styleOverrides: {
-          tooltip: ({ theme }) => ({
-            backgroundColor: theme.palette.background.tooltip,
-            color: theme.palette.foreground.inversed,
-            borderRadius: theme.radius.s,
-            padding: `${theme.spaces.s} ${theme.spaces.s}`,
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "flex-start",
-            gap: theme.spaces.s,
-            ...theme.typography.caption,
-            fontWeight: 400
-          }),
-          arrow: ({ theme }) => ({
-            color: theme.palette.background.tooltip
-          })
-        }
+        styleOverrides: muiTooltipStyleOverrides
       },
-      MuiAvatar: {
-        styleOverrides: {
-          root: {
-            height: 48,
-            width: 48
-          }
-        }
-      },
+      MuiAvatar: muiAvatarOverrides,
       MuiCard: {
         defaultProps: {
           elevation: 4
         },
-        styleOverrides: {
-          root: ({ theme }) => ({
-            backgroundColor: theme.palette.background.paper,
-            color: theme.palette.text.primary,
-            transition: "background-color 0.2s ease"
-          })
-        }
+        styleOverrides: muiCardStyleOverrides
       },
       MuiPaper: {
-        styleOverrides: {
-          root: ({ theme }) => ({
-            backgroundColor: theme.palette.background.paper,
-            color: theme.palette.text.primary
-          })
-        }
+        styleOverrides: muiPaperStyleOverrides
       },
-      MuiButton: {
-        styleOverrides: {
-          root: {
-            fontWeight: "bold"
-          }
-        }
-      },
+      MuiButton: muiButtonOverrides,
       MuiMenu: {
-        styleOverrides: {
-          paper: ({ theme }) => ({
-            boxShadow: "0px 6px 24px rgba(0, 0, 0, 0.12)",
-            borderRadius: theme.radius.s
-          })
-        }
+        styleOverrides: muiMenuStyleOverrides
       },
       MuiSwitch: {
-        styleOverrides: {
-          root: ({ theme }) => ({
-            width: 48,
-            height: 26,
-            padding: 0,
-            "& .MuiSwitch-switchBase": {
-              padding: theme.spaces.xxs,
-              margin: 0,
-              "&.Mui-checked": {
-                transform: "translateX(22px)",
-                color: theme.palette.background.default,
-                "& + .MuiSwitch-track": {
-                  backgroundColor: theme.toggle.on,
-                  opacity: 1,
-                  border: 0
-                },
-                "&.Mui-disabled + .MuiSwitch-track": {
-                  opacity: 0.5
-                }
-              },
-              "&.Mui-focusVisible .MuiSwitch-thumb": {
-                color: theme.toggle.on
-              },
-              "&.Mui-disabled + .MuiSwitch-track": {
-                opacity: 0.5
-              }
-            },
-            "& .MuiSwitch-thumb": {
-              width: 22,
-              height: 22
-            },
-            "& .MuiSwitch-track": {
-              borderRadius: theme.radius.m,
-              backgroundColor: theme.toggle.off,
-              opacity: 1
-            }
-          })
-        }
+        styleOverrides: muiSwitchStyleOverrides
       }
     }
   });
