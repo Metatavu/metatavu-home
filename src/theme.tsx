@@ -5,6 +5,154 @@ import PoppinsMedium from "../resources/fonts/poppins/Poppins-Medium.ttf";
 import PoppinsRegular from "../resources/fonts/poppins/Poppins-Regular.ttf";
 import PoppinsSemiBold from "../resources/fonts/poppins/Poppins-SemiBold.ttf";
 
+const lightPalette = {
+  mode: "light" as const,
+  foreground: {
+    inversed: "#ffffff",
+    positive: "#66ad66",
+    negative: "#dd6666"
+  },
+  background: {
+    default: "#ffffff",
+    secondary: "#dadada",
+    disabled: "#c2c2c2",
+    accent: "#00647f",
+    accentSecondary: "#e6eff2",
+    selected: "#99c1cc",
+    event: "#f2f2f2",
+    paper: "#ffffff",
+    tooltip: "#002833"
+  },
+  text: {
+    primary: "#222222",
+    disabled: "#919191",
+    accent: "#005066",
+    accentSecondary: "#003c4c"
+  },
+  icons: {
+    primary: "#222222",
+    empty: "#494949",
+    disabled: "#c2c2c2"
+  },
+  border: {
+    primary: "#c2c2c2",
+    accent: "#005066",
+    subtle: "#f2f2f2",
+    strong: "#181818",
+    disabled: "#dadada",
+    badgePrimary: "#494949"
+  },
+  hover: {
+    primary: "#494949",
+    secondary: "#f2f2f2",
+    tag: "#99c1cc",
+    navigation: "#66a2b2"
+  },
+  chart: {
+    primary: "#66a2b2",
+    secondary: "#003c4c",
+    accent: "#e77f3a",
+    disabledPrimary: "#a9a9a9",
+    disabledAccent: "#797979",
+    disabledSecondary: "#494949"
+  },
+  buttons: {
+    primary: "#e77f3a",
+    hover: "#b9662e",
+    secondaryBg: "#fae5d8",
+    secondaryHover: "#f7ccb0",
+    accent: "#f1b289",
+    toggleThumb: "#ffffff",
+    disabledBg: "#f2f2f2"
+  },
+  badges: {
+    statusPending: "#ffca1a",
+    stuckBg: "#f9e6e6",
+    reviewBg: "#fff4d1",
+    reviewAccent: "#66510a",
+    deploymentBg: "#efe9f8",
+    deploymentAccent: "#5b21b6",
+    progressBg: "#eaf5f5",
+    progressBgStrong: "#abd8d5",
+    progressAccent: "#1a5f5a",
+    completedBg: "#cce4cc"
+  }
+};
+
+const darkPalette = {
+  mode: "dark" as const,
+  foreground: {
+    inversed: "#ffffff",
+    positive: "#66ad66",
+    negative: "#dd6666"
+  },
+  background: {
+    default: "#181818",
+    secondary: "#dadada",
+    disabled: "#797979",
+    accent: "#002833",
+    accentSecondary: "#005066",
+    selected: "#002833",
+    event: "#616161",
+    paper: "#303030",
+    tooltip: "#003c4c"
+  },
+  text: {
+    primary: "#ffffff",
+    disabled: "#919191",
+    accent: "#99c1cc",
+    accentSecondary: "#003c4c"
+  },
+  icons: {
+    primary: "#ffffff",
+    empty: "#a9a9a9",
+    disabled: "#616161"
+  },
+  border: {
+    primary: "#616161",
+    accent: "#99c1cc",
+    subtle: "#494949",
+    strong: "#f2f2f2",
+    disabled: "#a9a9a9",
+    badgePrimary: "#a9a9a9"
+  },
+  hover: {
+    primary: "#919191",
+    secondary: "#616161",
+    tag: "#338399",
+    navigation: "#338399"
+  },
+  chart: {
+    primary: "#99c1cc",
+    secondary: "#338399",
+    accent: "#b9662e",
+    disabledPrimary: "#c2c2c2",
+    disabledAccent: "#181818",
+    disabledSecondary: "#919191"
+  },
+  buttons: {
+    primary: "#ec9961",
+    hover: "#e77f3a",
+    secondaryBg: "#fae5d8",
+    secondaryHover: "#f7ccb0",
+    accent: "#f1b289",
+    toggleThumb: "#ffffff",
+    disabledBg: "#a9a9a9"
+  },
+  badges: {
+    statusPending: "#ffca1a",
+    stuckBg: "#f9e6e6",
+    reviewBg: "#fff4d1",
+    reviewAccent: "#66510a",
+    deploymentBg: "#efe9f8",
+    deploymentAccent: "#5b21b6",
+    progressBg: "#eaf5f5",
+    progressBgStrong: "#abd8d5",
+    progressAccent: "#1a5f5a",
+    completedBg: "#cce4cc"
+  }
+};
+
 /**
  * Creates MUI theme for the application.
  *
@@ -13,87 +161,19 @@ import PoppinsSemiBold from "../resources/fonts/poppins/Poppins-SemiBold.ttf";
  * - Typography system
  * - Component-level style overrides (requires further work, not updated yet)
  *
- * Light mode is fully supported.
- * Dark mode not implemented yet.
+ * Light and dark mode are both supported via lightPalette/darkPalette.
  *
  * @param mode - Theme mode ("light | "dark")
  * @returns Configured MUI Theme object
  */
-export const createAppTheme = (mode: "light" | "dark"): Theme =>
-  createTheme({
-    palette: {
-      mode,
-      foreground: {
-        inversed: "#ffffff",
-        positive: "#005e00",
-        negative: "#c60000"
-      },
-      background: {
-        default: mode === "dark" ? "#121212" : "#ffffff",
-        secondary: "#dadada",
-        disabled: "#c2c2c2",
-        accent: "#00647f",
-        accentSecondary: "#e6eff2",
-        selected: "#99c1cc",
-        event: "#f2f2f2",
-        paper: mode === "dark" ? "#1e1e1e" : "#ffffff",
-        tooltip: "#002833"
-      },
-      text: {
-        primary: mode === "dark" ? "#ffffff" : "#222222",
-        disabled: "#919191",
-        accent: "#005066",
-        accentSecondary: "#003c4c"
-      },
-      icons: {
-        primary: "#222222",
-        empty: "#494949",
-        disabled: "#c2c2c2"
-      },
-      border: {
-        primary: "#c2c2c2",
-        accent: "#005066",
-        subtle: "#f2f2f2",
-        strong: "#181818",
-        disabled: "#dadada",
-        badgePrimary: "#494949"
-      },
-      hover: {
-        primary: "#494949",
-        secondary: "#f2f2f2",
-        tag: "#99c1cc",
-        navigation: "#66a2b2"
-      },
-      chart: {
-        primary: "#66a2b2",
-        secondary: "#003c4c",
-        accent: "#e77f3a",
-        disabledPrimary: "#a9a9a9",
-        disabledAccent: "#797979",
-        disabledSecondary: "#494949"
-      },
-      buttons: {
-        primary: "#e77f3a",
-        hover: "#b9662e",
-        secondaryBg: "#fae5d8",
-        secondaryHover: "#f7ccb0",
-        accent: "#f1b289",
-        toggleThumb: "#ffffff",
-        disabledBg: "#f2f2f2"
-      },
-      badges: {
-        statusPending: "#ffca1a",
-        stuckBg: "#f9e6e6",
-        reviewBg: "#fff4d1",
-        reviewAccent: "#66510a",
-        deploymentBg: "#efe9f8",
-        deploymentAccent: "#5b21b6",
-        progressBg: "#eaf5f5",
-        progressBgStrong: "#abd8d5",
-        progressAccent: "#1a5f5a",
-        completedBg: "#cce4cc"
-      }
-    },
+export const createAppTheme = (mode: "light" | "dark"): Theme => {
+  const toggle = {
+    on: "#00647f",
+    off: mode === "light" ? "#c2c2c2" : "#797979"
+  };
+
+  return createTheme({
+    palette: mode === "dark" ? darkPalette : lightPalette,
     spaces: {
       none: "0px",
       xxs: "2px",
@@ -117,6 +197,7 @@ export const createAppTheme = (mode: "light" | "dark"): Theme =>
       s: "1px",
       m: "3px"
     },
+    toggle,
     typography: {
       fontFamily: "Poppins, Arial, Helvetica, sans-serif",
       fontWeightRegular: 400,
@@ -124,7 +205,7 @@ export const createAppTheme = (mode: "light" | "dark"): Theme =>
       h1: {
         fontWeight: 600,
         fontSize: 40,
-        lineHeight: "125%" // Doesn't match the Figma line height, but prevents descenders (e.g. "g") from being clipped.
+        lineHeight: "115%"
       },
       h2: {
         fontWeight: 600,
@@ -195,6 +276,7 @@ export const createAppTheme = (mode: "light" | "dark"): Theme =>
       `
       },
       MuiAppBar: {
+        defaultProps: {},
         styleOverrides: {
           root: {
             top: 0,
@@ -211,7 +293,7 @@ export const createAppTheme = (mode: "light" | "dark"): Theme =>
         },
         styleOverrides: {
           tooltip: ({ theme }) => ({
-            backgroundColor: "#002833",
+            backgroundColor: theme.palette.background.tooltip,
             color: theme.palette.foreground.inversed,
             borderRadius: theme.radius.s,
             padding: `${theme.spaces.s} ${theme.spaces.s}`,
@@ -223,8 +305,8 @@ export const createAppTheme = (mode: "light" | "dark"): Theme =>
             ...theme.typography.caption,
             fontWeight: 400
           }),
-          arrow: () => ({
-            color: "#002833"
+          arrow: ({ theme }) => ({
+            color: theme.palette.background.tooltip
           })
         }
       },
@@ -284,7 +366,7 @@ export const createAppTheme = (mode: "light" | "dark"): Theme =>
                 transform: "translateX(22px)",
                 color: theme.palette.background.default,
                 "& + .MuiSwitch-track": {
-                  backgroundColor: theme.palette.background.accent,
+                  backgroundColor: theme.toggle.on,
                   opacity: 1,
                   border: 0
                 },
@@ -293,7 +375,7 @@ export const createAppTheme = (mode: "light" | "dark"): Theme =>
                 }
               },
               "&.Mui-focusVisible .MuiSwitch-thumb": {
-                color: theme.palette.background.accent
+                color: theme.toggle.on
               },
               "&.Mui-disabled + .MuiSwitch-track": {
                 opacity: 0.5
@@ -305,7 +387,7 @@ export const createAppTheme = (mode: "light" | "dark"): Theme =>
             },
             "& .MuiSwitch-track": {
               borderRadius: theme.radius.m,
-              backgroundColor: theme.palette.background.disabled,
+              backgroundColor: theme.toggle.off,
               opacity: 1
             }
           })
@@ -313,6 +395,7 @@ export const createAppTheme = (mode: "light" | "dark"): Theme =>
       }
     }
   });
+};
 
 /**
  * Color tokens for wiki screen UI.
