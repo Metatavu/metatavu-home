@@ -1,9 +1,10 @@
-import { Alert, Snackbar } from "@mui/material";
+import { Alert, Snackbar, useTheme } from "@mui/material";
 import { useAtom } from "jotai";
 import { snackbarAtom } from "src/atoms/snackbar";
 
 const GlobalSnackbar = () => {
   const [snackbar, setSnackbar] = useAtom(snackbarAtom);
+  const theme = useTheme();
 
   const handleClose = () => setSnackbar((prev) => ({ ...prev, open: false }));
 
@@ -33,7 +34,11 @@ const GlobalSnackbar = () => {
           py: 3,
           px: 4,
           borderRadius: 2,
-          backgroundColor: snackbar.severity === "success" ? "#D0F0C0" : "#f44336",
+          backgroundColor:
+            snackbar.severity === "success"
+              ? theme.palette.foreground.positive
+              : theme.palette.foreground.negative,
+          color: theme.palette.text.primary,
           fontWeight: 600
         }}
       >
