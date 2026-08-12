@@ -17,7 +17,9 @@ export default class LocalizationUtils {
     ({
       [VacationRequestStatuses.PENDING]: strings.vacationRequest.pending,
       [VacationRequestStatuses.APPROVED]: strings.vacationRequest.approved,
-      [VacationRequestStatuses.DECLINED]: strings.vacationRequest.declined
+      [VacationRequestStatuses.DECLINED]: strings.vacationRequest.declined,
+      [VacationRequestStatuses.ONGOING]: strings.vacationRequest.ongoing,
+      [VacationRequestStatuses.COMPLETED]: strings.vacationRequest.completed
     })[vacationRequestStatus];
 
   /**

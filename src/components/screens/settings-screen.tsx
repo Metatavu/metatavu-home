@@ -1,4 +1,4 @@
-import { Box, CircularProgress, Switch, Typography, useTheme } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { useAtom, useSetAtom } from "jotai";
 import { useEffect, useState } from "react";
 import { userProfileAtom } from "src/atoms/auth";
@@ -8,17 +8,22 @@ import { useLambdasApi } from "src/hooks/use-api";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import { type ThemeMode, ThemeModes } from "src/types/index";
+import { RoleSettings, ToggleBox } from "./settingsComponents";
 
 type SettingsScreenProps = {
   screenColorMode: ThemeMode;
   setScreenColorMode: (screenColorMode: ThemeMode) => void;
 };
 
-/**
+/**TODO: revokeSeveraOptIn and grantSeveraOptInConsent have repetitive code.
+ * Could these be revisited and maybe combined to make this file more clear?
+ *
  * Settings screen component
+ *
+ * @param screenColorMode - Colormode of the screen (light/dark)
+ * @returns Screen consisting all user settings such as severa opt in, darkmode toggle and roles.
  */
 const SettingsScreen = ({ screenColorMode, setScreenColorMode }: SettingsScreenProps) => {
-  const theme = useTheme();
   const { isDeveloper } = useUserRole();
   const [userProfile, setUserProfile] = useAtom(userProfileAtom);
   const { usersApi } = useLambdasApi();
@@ -41,7 +46,6 @@ const SettingsScreen = ({ screenColorMode, setScreenColorMode }: SettingsScreenP
     if (!isDeveloper) {
       return;
     }
-
     if (isConsentGiven) {
       revokeSeveraOptIn();
     } else {
@@ -122,78 +126,25 @@ const SettingsScreen = ({ screenColorMode, setScreenColorMode }: SettingsScreenP
   };
 
   return (
-    <Box p={2}>
-      <Box
-        p={2}
-        borderRadius={2}
-        sx={{
-          bgcolor: theme.palette.background.paper,
-          "&:hover": {
-            bgcolor: theme.palette.action.hover
-          },
-          transition: "background-color 0.2s ease"
-        }}
-      >
-        <Typography variant="h5" gutterBottom>
-          {strings.settingsScreen.consentToDataProcessing}
-        </Typography>
-        <Box display="flex" alignItems="center" mt={2}>
-          <Typography variant="body1" sx={{ marginRight: 2 }}>
-            {strings.settingsScreen.decline}
-          </Typography>
-          <Box display="flex" alignItems="center">
-            <Switch
-              checked={isConsentGiven}
-              onChange={handleToggleChange}
-              inputProps={{ "aria-label": "severa-opt-in" }}
-              disabled={loading || !isDeveloper}
-            />
-            {loading && (
-              <Box ml={1}>
-                <CircularProgress size={20} />
-              </Box>
-            )}
-          </Box>
-          <Typography variant="body1" sx={{ marginLeft: 2 }}>
-            {strings.settingsScreen.accept}
-          </Typography>
-        </Box>
-      </Box>
-      <Box
-        p={2}
-        borderRadius={2}
-        sx={{
-          bgcolor: theme.palette.background.paper,
-          "&:hover": {
-            bgcolor: theme.palette.action.hover
-          },
-          transition: "background-color 0.2s ease"
-        }}
-      >
-        <Typography variant="h5" gutterBottom>
-          {strings.settingsScreen.lightOrDarkMode}
-        </Typography>
-        <Box display="flex" alignItems="center" mt={2}>
-          <Typography variant="body1" sx={{ marginRight: 2 }}>
-            {strings.settingsScreen.light}
-          </Typography>
-          <Box display="flex" alignItems="center">
-            <Switch
-              checked={screenColorMode === ThemeModes.DARK}
-              onChange={handleModeToggle}
-              inputProps={{ "aria-label": "dark-mode-toggle" }}
-            />
-            {loading && (
-              <Box ml={1}>
-                <CircularProgress size={20} />
-              </Box>
-            )}
-          </Box>
-          <Typography variant="body1" sx={{ marginLeft: 2 }}>
-            {strings.settingsScreen.dark}
-          </Typography>
-        </Box>
-      </Box>
+    <Box display="flex" flexDirection="column">
+      <Typography alignSelf="center" variant="h1">
+        {strings.header.settings}
+      </Typography>
+      <ToggleBox
+        isConsentGiven={isConsentGiven}
+        loading={loading}
+        isDeveloper={isDeveloper}
+        handleChange={handleToggleChange}
+        variant="connections"
+      />
+      <ToggleBox
+        isConsentGiven={isConsentGiven}
+        loading={loading}
+        isDeveloper={isDeveloper}
+        handleChange={handleModeToggle}
+        variant="appearance"
+      />
+      <RoleSettings userProfile={userProfile} />
     </Box>
   );
 };

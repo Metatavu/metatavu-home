@@ -1,6 +1,6 @@
 import { Box } from "@mui/material";
 import { Outlet } from "react-router-dom";
-
+import GlobalSnackbar from "../generics/global-snackbar";
 import NavBar from "./navbar";
 import AppSidebar from "./sidebar/AppSidebar";
 
@@ -15,6 +15,7 @@ const Layout = () => {
         <Box sx={{ p: 4 }}>
           <Outlet />
         </Box>
+        <GlobalSnackbar />
       </Box>
     </Box>
   );
