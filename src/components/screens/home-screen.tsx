@@ -28,7 +28,6 @@ const HomeScreen = () => {
   const theme = useTheme();
   const users = useAtomValue(usersAtom);
   const userProfile = useAtomValue(userProfileAtom);
-  const language = strings.getLanguage();
 
   const [editmode, setEditmode] = useState(false);
   const [savedOrder, setSavedOrder] = useState<string[]>([]);

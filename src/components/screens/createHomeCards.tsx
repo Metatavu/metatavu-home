@@ -39,6 +39,7 @@ export const useCardMemo = (
 ) => {
   const { isDeveloper, isTester } = useUserRole();
   const hasSeveraUserId = !!loggedInUser?.attributes?.severaUserId;
+  const language = strings.getLanguage();
 
   const cardsConfig = [
     {
@@ -109,7 +110,7 @@ export const useCardMemo = (
         canGroup: card.canGroup,
         group: card.group
       })),
-    [editmode, isTester, isDeveloper, hasSeveraUserId, hiddenCards]
+    [editmode, isTester, isDeveloper, hasSeveraUserId, hiddenCards, language]
   );
 
   return cards;
