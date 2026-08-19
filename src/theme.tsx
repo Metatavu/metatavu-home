@@ -5,12 +5,93 @@ import PoppinsMedium from "../resources/fonts/poppins/Poppins-Medium.ttf";
 import PoppinsRegular from "../resources/fonts/poppins/Poppins-Regular.ttf";
 import PoppinsSemiBold from "../resources/fonts/poppins/Poppins-SemiBold.ttf";
 
+const createForeground = () => ({
+  inversed: "#ffffff",
+  positive: "#66ad66",
+  negative: "#dd6666"
+});
+
+const createBackground = (isDark: boolean) => ({
+  default: isDark ? "#181818" : "#ffffff",
+  secondary: "#dadada",
+  disabled: isDark ? "#797979" : "#c2c2c2",
+  accent: isDark ? "#002833" : "#00647f",
+  accentSecondary: isDark ? "#005066" : "#e6eff2",
+  selected: isDark ? "#002833" : "#99c1cc",
+  event: isDark ? "#616161" : "#f2f2f2",
+  paper: isDark ? "#303030" : "#ffffff",
+  tooltip: isDark ? "#003c4c" : "#002833"
+});
+
+const createText = (isDark: boolean) => ({
+  primary: isDark ? "#ffffff" : "#222222",
+  disabled: "#919191",
+  accent: isDark ? "#99c1cc" : "#005066",
+  accentSecondary: "#003c4c"
+});
+
+const createIcons = (isDark: boolean) => ({
+  primary: isDark ? "#ffffff" : "#222222",
+  empty: isDark ? "#a9a9a9" : "#494949",
+  disabled: isDark ? "#616161" : "#c2c2c2"
+});
+
+const createBorder = (isDark: boolean) => ({
+  primary: isDark ? "#616161" : "#c2c2c2",
+  accent: isDark ? "#99c1cc" : "#005066",
+  subtle: isDark ? "#494949" : "#f2f2f2",
+  strong: isDark ? "#f2f2f2" : "#181818",
+  disabled: isDark ? "#a9a9a9" : "#dadada",
+  badgePrimary: isDark ? "#a9a9a9" : "#494949"
+});
+
+const createHover = (isDark: boolean) => ({
+  primary: isDark ? "#919191" : "#494949",
+  secondary: isDark ? "#616161" : "#f2f2f2",
+  tag: isDark ? "#338399" : "#99c1cc",
+  navigation: isDark ? "#338399" : "#66a2b2"
+});
+
+const createChart = (isDark: boolean) => ({
+  primary: isDark ? "#99c1cc" : "#66a2b2",
+  secondary: isDark ? "#338399" : "#003c4c",
+  accent: isDark ? "#b9662e" : "#e77f3a",
+  disabledPrimary: isDark ? "#c2c2c2" : "#a9a9a9",
+  disabledAccent: isDark ? "#181818" : "#797979",
+  disabledSecondary: isDark ? "#919191" : "#494949"
+});
+
+const createButtons = (isDark: boolean) => ({
+  primary: isDark ? "#ec9961" : "#e77f3a",
+  hover: isDark ? "#e77f3a" : "#b9662e",
+  secondaryBg: "#fae5d8",
+  secondaryHover: "#f7ccb0",
+  accent: "#f1b289",
+  toggleThumb: "#ffffff",
+  disabledBg: isDark ? "#a9a9a9" : "#f2f2f2"
+});
+
+const createBadges = () => ({
+  statusPending: "#ffca1a",
+  stuckBg: "#f9e6e6",
+  reviewBg: "#fff4d1",
+  reviewAccent: "#66510a",
+  deploymentBg: "#efe9f8",
+  deploymentAccent: "#5b21b6",
+  progressBg: "#eaf5f5",
+  progressBgStrong: "#abd8d5",
+  progressAccent: "#1a5f5a",
+  completedBg: "#cce4cc"
+});
+
 /**
  * Builds the color palette for the given theme mode.
  *
- * Single source of truth for both light and dark palettes - fields that
- * differ between modes use a ternary, fields that are identical in both
- * modes are written once.
+ * Delegates to per-category factory functions (createForeground,
+ * createBackground, etc.) fields that differ between modes
+ * use a ternary within those functions, fields that are identical in both
+ * modes are written once. Splitting by category keeps each function's
+ * complexity low instead of one large palette object.
  *
  * @param mode - Theme mode ("light" | "dark")
  * @returns Palette object to pass to createTheme
@@ -20,76 +101,15 @@ const createPalette = (mode: "light" | "dark") => {
 
   return {
     mode,
-    foreground: {
-      inversed: "#ffffff",
-      positive: "#66ad66",
-      negative: "#dd6666"
-    },
-    background: {
-      default: isDark ? "#181818" : "#ffffff",
-      secondary: "#dadada",
-      disabled: isDark ? "#797979" : "#c2c2c2",
-      accent: isDark ? "#002833" : "#00647f",
-      accentSecondary: isDark ? "#005066" : "#e6eff2",
-      selected: isDark ? "#002833" : "#99c1cc",
-      event: isDark ? "#616161" : "#f2f2f2",
-      paper: isDark ? "#303030" : "#ffffff",
-      tooltip: isDark ? "#003c4c" : "#002833"
-    },
-    text: {
-      primary: isDark ? "#ffffff" : "#222222",
-      disabled: "#919191",
-      accent: isDark ? "#99c1cc" : "#005066",
-      accentSecondary: "#003c4c"
-    },
-    icons: {
-      primary: isDark ? "#ffffff" : "#222222",
-      empty: isDark ? "#a9a9a9" : "#494949",
-      disabled: isDark ? "#616161" : "#c2c2c2"
-    },
-    border: {
-      primary: isDark ? "#616161" : "#c2c2c2",
-      accent: isDark ? "#99c1cc" : "#005066",
-      subtle: isDark ? "#494949" : "#f2f2f2",
-      strong: isDark ? "#f2f2f2" : "#181818",
-      disabled: isDark ? "#a9a9a9" : "#dadada",
-      badgePrimary: isDark ? "#a9a9a9" : "#494949"
-    },
-    hover: {
-      primary: isDark ? "#919191" : "#494949",
-      secondary: isDark ? "#616161" : "#f2f2f2",
-      tag: isDark ? "#338399" : "#99c1cc",
-      navigation: isDark ? "#338399" : "#66a2b2"
-    },
-    chart: {
-      primary: isDark ? "#99c1cc" : "#66a2b2",
-      secondary: isDark ? "#338399" : "#003c4c",
-      accent: isDark ? "#b9662e" : "#e77f3a",
-      disabledPrimary: isDark ? "#c2c2c2" : "#a9a9a9",
-      disabledAccent: isDark ? "#181818" : "#797979",
-      disabledSecondary: isDark ? "#919191" : "#494949"
-    },
-    buttons: {
-      primary: isDark ? "#ec9961" : "#e77f3a",
-      hover: isDark ? "#e77f3a" : "#b9662e",
-      secondaryBg: "#fae5d8",
-      secondaryHover: "#f7ccb0",
-      accent: "#f1b289",
-      toggleThumb: "#ffffff",
-      disabledBg: isDark ? "#a9a9a9" : "#f2f2f2"
-    },
-    badges: {
-      statusPending: "#ffca1a",
-      stuckBg: "#f9e6e6",
-      reviewBg: "#fff4d1",
-      reviewAccent: "#66510a",
-      deploymentBg: "#efe9f8",
-      deploymentAccent: "#5b21b6",
-      progressBg: "#eaf5f5",
-      progressBgStrong: "#abd8d5",
-      progressAccent: "#1a5f5a",
-      completedBg: "#cce4cc"
-    }
+    foreground: createForeground(),
+    background: createBackground(isDark),
+    text: createText(isDark),
+    icons: createIcons(isDark),
+    border: createBorder(isDark),
+    hover: createHover(isDark),
+    chart: createChart(isDark),
+    buttons: createButtons(isDark),
+    badges: createBadges()
   };
 };
 
