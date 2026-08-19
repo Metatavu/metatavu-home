@@ -130,7 +130,7 @@ const HomeScreen = () => {
       <Box id="home-screen" display="flex" flexDirection="column" alignItems="end">
         <Box>
           <AppButton
-            variant="tertiary"
+            variant="secondary"
             text={editmode ? strings.label.cancel : strings.label.customize}
             startIcon={!editmode && <EditOutlined />}
             onClick={() => handleEdit()}
