@@ -9,7 +9,9 @@ import { Chip, Icon, type SxProps, type Theme, useTheme } from "@mui/material";
 import type React from "react";
 import type { VacationRequestStatuses } from "src/generated/homeLambdasClient";
 import { getBadgeColor } from "src/utils/badgeColorUtils";
-import VacationStatusIndicator from "../vacation-requests-table/vacationStatusIndicator";
+import VacationStatusIndicator, {
+  type IndicatorColor
+} from "../vacation-requests-table/vacationStatusIndicator";
 
 export type IconBadgeVariant = "empty" | "success" | "failed";
 
@@ -99,7 +101,7 @@ export const PillBadge = ({ variant, status, children, hidden }: PillBadgeProps)
 
   const approvalIcon =
     variant === "approvalBadge" ? (
-      <VacationStatusIndicator statusColor={status} disabled={color} />
+      <VacationStatusIndicator status={color as IndicatorColor} />
     ) : undefined;
 
   const icons: Partial<Record<PillBadgeVariant, React.ReactElement>> = {

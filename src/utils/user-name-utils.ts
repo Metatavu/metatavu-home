@@ -24,6 +24,12 @@ export const getDisplayName = (user?: User): string => {
   return "";
 };
 
+/**
+ * Parse name fro email
+ *
+ * @param email -user email
+ * @returns name in array
+ */
 export const parseFromEmail = (email: string) => {
   const localPart = email.split("@")[0];
   const withoutPrefix = localPart.replace(/^ext-/i, "");

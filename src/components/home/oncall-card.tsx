@@ -49,8 +49,10 @@ const OnCallCard = ({ hidden, onToggleHidden, editmode }: CardProps) => {
 
   const renderOnCallCard = () => {
     const currentWeek = DateTime.now().weekNumber;
-    const currentOnCallPerson = onCallData.find((item) => Number(item.week) === currentWeek)?.email;
-    const onCallName = currentOnCallPerson && parseFullNameFromEmail(currentOnCallPerson);
+    const currentOnCallPersonEmail = onCallData.find(
+      (item) => Number(item.week) === currentWeek
+    )?.email;
+    const onCallName = currentOnCallPersonEmail && parseFullNameFromEmail(currentOnCallPersonEmail);
     const nameString = onCallName
       ? `${onCallName?.firstName} ${onCallName?.lastName}`
       : strings.oncall.noOnCallPerson;
@@ -60,7 +62,7 @@ const OnCallCard = ({ hidden, onToggleHidden, editmode }: CardProps) => {
         <Typography variant="body" sx={{ fontWeight: 500 }}>
           {nameString}
         </Typography>
-        <Typography variant="body">{currentOnCallPerson}</Typography>
+        <Typography variant="body">{currentOnCallPersonEmail}</Typography>
       </Grid>
     );
   };
