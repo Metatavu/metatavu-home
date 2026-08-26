@@ -1,4 +1,3 @@
-import { Card, useTheme } from "@mui/material";
 import type { GridRowId } from "@mui/x-data-grid";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { useEffect, useMemo, useState } from "react";
@@ -17,10 +16,8 @@ import { useLambdasApi } from "src/hooks/use-api";
 import { useSnackbar } from "src/hooks/use-snackbar";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
-import { renderVacationDaysTextForScreen } from "src/utils/vacation-days-utils";
 import type { FilterType } from "src/utils/vacation-filter-type";
 import { getVacationYear, validateUserVacationRequest } from "src/utils/vacations-utils";
-import BackButton from "../generics/back-button";
 import type { Tab } from "../generics/tabBar";
 import VacationRequestsTable from "../vacation-requests-table/vacation-requests-table";
 
@@ -58,7 +55,6 @@ const VacationRequestsScreen = () => {
   const [filters, setFilters] = useState<FilterType[]>(["ALL"]);
   const [currentTab, setCurrentTab] = useState<string>(adminMode ? "vacations" : "upcoming");
   const currentYear = getVacationYear().toString();
-  const theme = useTheme();
 
   const tabs: Tab[] = adminMode
     ? [
@@ -153,50 +149,6 @@ const VacationRequestsScreen = () => {
   }, [loggedInUser, isUpcoming]);
 
   /**
-   * Fetch a single vacation request by ID for the logged-in user (or admin)
-   *
-   * @param vacationRequestId string ID of the vacation request
-   * @returns VacationRequest | null
-   */
-  const fetchVacationRequestById = async (
-    vacationRequestId: string
-  ): Promise<VacationRequest | null> => {
-    if (!loggedInUser) return null;
-    setLoading(true);
-    try {
-      // Fetch all requests (or admin/all)
-      let fetchedVacationRequests: VacationRequest[] = [];
-      if (adminMode) {
-        fetchedVacationRequests = await vacationRequestsApi.listVacationRequests({});
-      } else {
-        fetchedVacationRequests = await vacationRequestsApi.listVacationRequests({
-          userId: loggedInUser.id
-        });
-      }
-
-      // Find the request by ID
-      const vacationRequest = fetchedVacationRequests.find(
-        (request) => request.id === vacationRequestId
-      );
-
-      if (!vacationRequest) {
-        setError(strings.vacationRequestError.fetchRequestError);
-        return null;
-      }
-
-      return vacationRequest;
-    } catch (error: any) {
-      const errorMessage = await error?.response?.json();
-      setError(
-        `${strings.vacationRequestError.fetchRequestError}: ${errorMessage?.message || error}`
-      );
-      return null;
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  /**
    * Delete vacation requests
    *
    * @param selectedRowIds GridRowId[] a list of Ids of selected rows (vacation requests)
@@ -272,52 +224,6 @@ const VacationRequestsScreen = () => {
       });
       setVacationRequests([createdRequest, ...vacationRequests]);
       showSnackbar(strings.snackbar.vacationRequestCreated);
-    } catch (error: any) {
-      const errorMessage = await error?.response?.json();
-      setError(
-        `${strings.vacationRequestError.createRequestError}: ${errorMessage?.message || error}`
-      );
-    }
-    setLoading(false);
-  };
-
-  /**
-   * Create a draft vacation request
-   *
-   * @param vacationRequestData vacation data from the create form
-   */
-  const createDraftVacationRequest = async (vacationRequestData: VacationRequest) => {
-    if (!loggedInUser) return;
-    try {
-      setLoading(true);
-      if (
-        !validateUserVacationRequest(
-          loggedInUser,
-          vacationRequestData,
-          currentYear,
-          setError,
-          setLoading
-        )
-      ) {
-        return;
-      }
-      const createdRequest = await vacationRequestsApi.createVacationRequest({
-        vacationRequest: {
-          userId: loggedInUser.id,
-          startDate: vacationRequestData.startDate,
-          endDate: vacationRequestData.endDate,
-          type: vacationRequestData.type,
-          message: vacationRequestData.message,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          createdBy: loggedInUser?.id,
-          days: vacationRequestData.days,
-          draft: true,
-          status: []
-        }
-      });
-      setVacationRequests([createdRequest, ...vacationRequests]);
-      showSnackbar(strings.snackbar.vacationDraftSaved);
     } catch (error: any) {
       const errorMessage = await error?.response?.json();
       setError(
