@@ -357,15 +357,15 @@
     "noRows": "No Rows"
   },
   "vacationsCard": {
-    "vacations": "Vacations",
-    "noUpcomingVacations": "No upcoming vacations",
+    "vacations": "Your next vacation",
+    "noUpcomingVacations": "You don't have any upcoming vacations",
     "noPendingVacations": "No pending vacation requests",
     "upComingVacations": "You have {0} upcoming vacations",
     "pendingVacations": "You have {0} pending vacation requests",
     "nextUpcomingVacation": "Next upcoming vacation:",
     "vacationType": "Vacation Type:",
     "applicant": "Applicant:",
-    "timeOfVacation": "Time of Vacation:",
+    "timeOfVacation": "Vacation time:",
     "status": "Status:",
     "vacationDays": "Total vacation days: ",
     "unspentVacationDays": "Unspent vacation days: ",
@@ -641,7 +641,7 @@
     "ariaLabel": "Page navigation"
   },
   "oncall": {
-    "title": "On call calendar",
+    "title": "Currently on call",
     "previousYear": "Previous year",
     "nextYear": "Next year",
     "oncallShifts": "On call weeks",

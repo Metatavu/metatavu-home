@@ -27,6 +27,12 @@ export const getBadgeColor = (status: string, theme: Theme) =>
       backgroundColor: "transparent",
       indicatorColor: theme.palette.badges.statusPending
     },
+    disabled: {
+      color: theme.palette.text.disabled,
+      borderColor: theme.palette.border.disabled,
+      backgroundColor: "transparent",
+      indicatorColor: theme.palette.icons.disabled
+    },
     toDo: {
       color: theme.palette.border.badgePrimary,
       borderColor: theme.palette.border.badgePrimary,
