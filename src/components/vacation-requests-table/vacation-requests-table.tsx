@@ -1,68 +1,33 @@
-import { Inventory } from "@mui/icons-material";
-import { Box, styled } from "@mui/material";
-import { DataGrid, type GridRowId, type GridRowSelectionModel } from "@mui/x-data-grid";
+import { Box } from "@mui/material";
+import type { GridRowId, GridRowSelectionModel } from "@mui/x-data-grid";
 import { useAtomValue } from "jotai";
 import { DateTime } from "luxon";
-import { useMemo, useState } from "react";
-import { userProfileAtom } from "src/atoms/auth";
+import { type Dispatch, type SetStateAction, useEffect, useMemo, useState } from "react";
 import { usersAtom } from "src/atoms/user";
 import { displayedVacationRequestsAtom } from "src/atoms/vacation";
 import { type VacationRequest, VacationRequestStatuses } from "src/generated/homeLambdasClient";
 import strings from "src/localization/strings";
-import type { VacationsDataGridRow } from "src/types";
+import { DeleteItemType, ToolbarFormModes, type VacationsDataGridRow } from "src/types";
 import LocalizationUtils from "src/utils/localization-utils";
 import type { FilterType } from "src/utils/vacation-filter-type";
 import { getVacationRequestPersonFullName } from "src/utils/vacation-request-utils";
 import { getTotalVacationRequestStatus } from "src/utils/vacation-status-utils";
-import SkeletonTableRows from "./skeleton-table-rows/skeleton-table-rows";
+import DeleteConfirmationDialog from "../contexts/delete-confirmation-dialog";
+import type { Tab } from "../generics/tabBar";
+import AppTable from "../generics/table/appTable";
 import VacationRequestsTableColumns from "./vacation-requests-table-columns";
 import TableToolbar from "./vacation-requests-table-toolbar/vacation-requests-table-toolbar";
-
-const StyledGridOverlay = styled("div")(() => ({
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  justifyContent: "center",
-  height: "100%"
-}));
-
-const CustomNoRowsOverlay = () => (
-  <StyledGridOverlay>
-    <Inventory />
-    <Box sx={{ mt: 1 }}>{strings.dataGrid.noRows}</Box>
-  </StyledGridOverlay>
-);
-
-interface CustomSkeletonTableRowsProps {
-  dataGridHeight: number;
-  dataGridRowHeight: number;
-  dataGridColumnHeaderHeight: number;
-}
-
-const CustomSkeletonTableRows = ({
-  dataGridHeight,
-  dataGridRowHeight,
-  dataGridColumnHeaderHeight
-}: CustomSkeletonTableRowsProps) => (
-  <SkeletonTableRows
-    dataGridHeight={dataGridHeight}
-    dataGridRowHeight={dataGridRowHeight}
-    dataGridColumnHeaderHeight={dataGridColumnHeaderHeight}
-  />
-);
 
 /**
  * Component properties
  */
 interface Props {
-  isUpcoming: boolean;
   toggleIsUpcoming: () => void;
   deleteVacationRequests: (
     selectedRowIds: GridRowId[],
     rows: VacationsDataGridRow[]
   ) => Promise<void>;
   createVacationRequest: (vacationRequestData: VacationRequest) => Promise<void>;
-  createDraftVacationRequest: (vacationRequestData: VacationRequest) => Promise<void>;
   updateVacationRequest: (
     vacationRequestData: VacationRequest,
     vacationRequestId: string
@@ -71,29 +36,51 @@ interface Props {
     updatedVacationRequestStatus: VacationRequestStatuses,
     selectedRowIds: GridRowId[]
   ) => Promise<void>;
-  fetchVacationRequestById: (vacationRequestId: string) => Promise<VacationRequest | null>;
   loading: boolean;
-  filter: FilterType;
-  setFilter: React.Dispatch<React.SetStateAction<FilterType>>;
+  filter: FilterType[];
+  setFilter: React.Dispatch<React.SetStateAction<FilterType[]>>;
+  tabs: Tab[];
+  currentTab: string;
+  setCurrentTab: Dispatch<SetStateAction<string>>;
+  adminMode: boolean;
 }
 
 /**
- * Vacation requests table component
+ * Displays a table of vacation requests with filtering, selection,
+ * creation, editing, deletion, and status management functionality.
  *
- * @param props component properties
+ * The component transforms vacation request data into rows suitable
+ * for the data grid and resolves related user information for display.
+ * Administrators have additional controls for managing request statuses.
+ *
+ * @param props.toggleIsUpcoming - Toggles between upcoming and previous vacation requests.
+ * @param props.deleteVacationRequests - Deletes selected vacation requests.
+ * @param props.createVacationRequest - Creates a new vacation request.
+ * @param props.updateVacationRequest - Updates an existing vacation request.
+ * @param props.updateVacationRequestStatus - Updates the status of selected requests.
+ * @param props.loading - Indicates whether table data is loading.
+ * @param props.filter - Currently selected filters.
+ * @param props.setFilter - Updates the selected filters.
+ * @param props.tabs - Available navigation tabs.
+ * @param props.currentTab - Currently selected tab.
+ * @param props.setCurrentTab - Updates the selected tab.
+ * @param props.adminMode - Determines whether administrator functionality is enabled.
+ *
+ * @returns A vacation requests table with its toolbar and dialogs.
  */
 const VacationRequestsTable = ({
-  isUpcoming,
   toggleIsUpcoming,
   deleteVacationRequests,
   createVacationRequest,
-  createDraftVacationRequest,
   updateVacationRequest,
   updateVacationRequestStatus,
-  fetchVacationRequestById,
   loading,
   filter,
-  setFilter
+  setFilter,
+  tabs,
+  currentTab,
+  setCurrentTab,
+  adminMode
 }: Props) => {
   const vacationRequests = useAtomValue(displayedVacationRequestsAtom) || [];
   const [formOpen, setFormOpen] = useState(false);
@@ -101,27 +88,13 @@ const VacationRequestsTable = ({
     type: "include",
     ids: new Set([])
   });
-  const [rows, setRows] = useState<VacationsDataGridRow[]>([]);
-  const columns = VacationRequestsTableColumns();
+  const [toolbarFormMode, setToolbarFormMode] = useState<ToolbarFormModes>(ToolbarFormModes.NONE);
+  const [deleteRowId, setDeleteRowId] = useState<GridRowId | null>(null);
+  const [confirmationOpen, setConfirmationOpen] = useState(false);
   const users = useAtomValue(usersAtom) || [];
-  const userProfile = useAtomValue(userProfileAtom);
   const dataGridHeight = 700;
   const dataGridRowHeight = 52;
   const dataGridColumnHeaderHeight = 56;
-
-  /**
-   * Loading overlay component for DataGrid
-   */
-  const LoadingOverlay = useMemo(
-    () => () => (
-      <CustomSkeletonTableRows
-        dataGridHeight={dataGridHeight}
-        dataGridRowHeight={dataGridRowHeight}
-        dataGridColumnHeaderHeight={dataGridColumnHeaderHeight}
-      />
-    ),
-    [dataGridHeight, dataGridRowHeight, dataGridColumnHeaderHeight]
-  );
 
   /**
    * Create a single vacation request data grid row
@@ -129,29 +102,29 @@ const VacationRequestsTable = ({
    * @param vacationRequest vacation request
    * @returns dataGridRow
    */
-  const createDataGridRow = (vacationRequest: VacationRequest) => {
-    const user = users.find((user) => user.id === vacationRequest.userId);
-    const usersFullName = user
-      ? `${user.firstName} ${user.lastName}`
-      : strings.vacationRequest.noPersonFullName;
-
-    const row: VacationsDataGridRow = {
+  const createDataGridRow = (vacationRequest: VacationRequest): VacationsDataGridRow => {
+    return {
       id: vacationRequest.id,
       type: LocalizationUtils.getLocalizedVacationRequestType(vacationRequest.type),
-      personFullName: usersFullName,
+      personFullName: getVacationRequestPersonFullName(vacationRequest, users),
       userId: vacationRequest.userId,
       updatedAt: DateTime.fromJSDate(vacationRequest.updatedAt),
       startDate: DateTime.fromJSDate(vacationRequest.startDate),
       endDate: DateTime.fromJSDate(vacationRequest.endDate),
       days: vacationRequest.days,
       message: vacationRequest.message || strings.vacationRequest.noMessage,
-      status: VacationRequestStatuses.PENDING,
+      status: getRowStatus(vacationRequest),
       draft: vacationRequest.draft || false,
-      vacationRequest: vacationRequest
+      vacationRequest
     };
-    return row;
   };
 
+  const handleDeleteRow = (id: GridRowId) => {
+    setDeleteRowId(id);
+    setConfirmationOpen(true);
+  };
+
+  const columns = VacationRequestsTableColumns();
   /**
    * Get row status
    * @param vacationRequest vacation request
@@ -167,62 +140,41 @@ const VacationRequestsTable = ({
     return draft ? strings.vacationRequest.draft : VacationRequestStatuses.PENDING;
   };
 
-  /**
-   * Create vacation requests data grid rows
-   *
-   * @param vacationRequests vacation requests
-   */
-  const createDataGridRows = (vacationRequests: VacationRequest[]) => {
-    const rows: VacationsDataGridRow[] = [];
-    if (Array.isArray(vacationRequests) && vacationRequests.length > 0) {
-      vacationRequests.forEach((vacationRequest) => {
-        if (!vacationRequest) return;
-        const row = createDataGridRow(vacationRequest);
-        row.status = getRowStatus(vacationRequest);
-        if (vacationRequest.message?.length) {
-          row.message = vacationRequest.message;
-        }
-        if (vacationRequest.userId) {
-          row.personFullName = getVacationRequestPersonFullName(
-            vacationRequest,
-            users,
-            userProfile
-          );
-        }
-        rows.push(row);
-      });
-    }
-    return rows;
-  };
+  const rows = useMemo(() => vacationRequests.map(createDataGridRow), [vacationRequests, users]);
 
   // Reset selection after deletion
-  useMemo(() => {
+  useEffect(() => {
     setSelectedRowIds({ type: "include", ids: new Set([]) });
   }, [deleteVacationRequests]);
 
-  useMemo(() => {
-    try {
-      setRows(createDataGridRows(vacationRequests));
-    } catch (error: any) {
-      const errorMessage = error?.response?.json();
-      console.error(
-        ` ${strings.vacationRequestError.failedToLoad}: ${errorMessage?.message || error}`
-      );
-      setRows([]);
-    }
-  }, [vacationRequests, formOpen]);
+  const onRowClick = (rowId: string) => {
+    setSelectedRowIds({ type: "include", ids: new Set([rowId]) });
+    setFormOpen(true);
+    setToolbarFormMode(adminMode ? ToolbarFormModes.APPROVE : ToolbarFormModes.EDIT);
+  };
 
   return (
     <Box>
+      <DeleteConfirmationDialog
+        open={confirmationOpen}
+        setOpen={setConfirmationOpen}
+        onConfirm={async () => {
+          if (deleteRowId === null) return;
+
+          await deleteVacationRequests([deleteRowId], rows);
+
+          setDeleteRowId(null);
+          setConfirmationOpen(false);
+          setFormOpen(false);
+        }}
+        deleteType={DeleteItemType.VACATION}
+      />
       <TableToolbar
-        isUpcoming={isUpcoming}
         toggleIsUpcoming={toggleIsUpcoming}
-        deleteVacationRequests={deleteVacationRequests}
+        handleDeleteRow={handleDeleteRow}
         createVacationRequest={createVacationRequest}
-        createDraftVacationRequest={createDraftVacationRequest}
         updateVacationRequest={updateVacationRequest}
         updateVacationRequestStatus={updateVacationRequestStatus}
-        fetchVacationRequestById={fetchVacationRequestById}
         setFormOpen={setFormOpen}
         formOpen={formOpen}
         selectedRowIds={selectedRowIds}
@@ -230,30 +182,22 @@ const VacationRequestsTable = ({
         setSelectedRowIds={setSelectedRowIds}
         filter={filter}
         setFilter={setFilter}
+        toolbarFormMode={toolbarFormMode}
+        setToolbarFormMode={setToolbarFormMode}
+        tabs={tabs}
+        currentTab={currentTab}
+        setCurrentTab={setCurrentTab}
       />
-      <DataGrid
-        sx={{ height: dataGridHeight }}
-        rowHeight={dataGridRowHeight}
-        columnHeaderHeight={dataGridColumnHeaderHeight}
-        autoPageSize
-        onRowSelectionModelChange={(model: GridRowSelectionModel) => {
-          setSelectedRowIds(model);
-        }}
+      <AppTable
+        dataGridHeight={dataGridHeight}
+        dataGridRowHeight={dataGridRowHeight}
+        dataGridColumnHeaderHeight={dataGridColumnHeaderHeight}
         rows={rows}
-        loading={loading && !rows.length}
-        slots={{
-          loadingOverlay: LoadingOverlay,
-          noRowsOverlay: CustomNoRowsOverlay
-        }}
         columns={columns}
-        checkboxSelection
-        rowSelectionModel={selectedRowIds}
-        isRowSelectable={() => !formOpen}
-        initialState={{
-          sorting: {
-            sortModel: [{ field: "updatedAt", sort: "asc" }]
-          }
-        }}
+        loading={loading}
+        selectedRowIds={selectedRowIds}
+        setSelectedRowIds={setSelectedRowIds}
+        onRowClick={onRowClick}
       />
     </Box>
   );

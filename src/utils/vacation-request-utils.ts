@@ -1,4 +1,3 @@
-import type { KeycloakProfile } from "keycloak-js";
 import type { User } from "src/generated/homeLambdasClient";
 import type { VacationRequest } from "../generated/homeLambdasClient";
 import { getFullUserName } from "./user-name-utils";
@@ -14,8 +13,7 @@ import { getFullUserName } from "./user-name-utils";
  */
 export const getVacationRequestPersonFullName = (
   vacationRequest: VacationRequest,
-  users: User[],
-  userProfile?: KeycloakProfile | undefined
+  users: User[]
 ) => {
   const user = users.find((user) => user.id === vacationRequest?.userId);
 

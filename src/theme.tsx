@@ -310,6 +310,27 @@ export const createAppTheme = (mode: "light" | "dark"): Theme =>
             }
           })
         }
+      },
+      MuiTextField: {
+        styleOverrides: {
+          root: ({ theme }) => ({
+            "& .MuiOutlinedInput-root": {
+              borderRadius: theme.radius.s,
+
+              "& fieldset": {
+                borderColor: theme.palette.border.primary
+              },
+
+              "&:hover fieldset": {
+                borderColor: theme.palette.border.accent
+              },
+
+              "&.Mui-focused fieldset": {
+                borderColor: theme.palette.border.primary
+              }
+            }
+          })
+        }
       }
     }
   });
