@@ -288,7 +288,7 @@ const AllSoftwareScreen = () => {
             searchInput={inputValue}
             handleSearchInputChange={(_event, newInputValue) => setInputValue(newInputValue)}
             tags={Array.from(new Set(software.flatMap((app) => app.tags ?? [])))}
-            handleSelectedTagChange={(newSelectedTags) => setSearchTerms(newSelectedTags)}
+            handleSelectedTagChange={(newSelectedTags) => setSearchTerms([newSelectedTags])}
             autoCompleteId="software-registry-search-tags"
             styles={{ width: { lg: "55%", md: "55%", xs: "100%" } }}
             placeholder={strings.softwareRegistry.searchBy}
