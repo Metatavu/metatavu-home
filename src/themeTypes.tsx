@@ -164,6 +164,10 @@ declare module "@mui/material/styles" {
       s: string;
       m: string;
     };
+    toggle: {
+      on: string;
+      off: string;
+    };
   }
   interface ThemeOptions {
     spaces?: {
@@ -189,6 +193,10 @@ declare module "@mui/material/styles" {
       s?: string;
       m?: string;
     };
+    toggle: {
+    on: string;
+    off: string;
+  };
   }
   interface TypographyVariants {
     captionSmall: React.CSSProperties;

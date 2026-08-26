@@ -1,4 +1,4 @@
-import { Box, Collapse } from "@mui/material";
+import { Box } from "@mui/material";
 import type { GridRowId, GridRowSelectionModel } from "@mui/x-data-grid";
 import { type Dispatch, type SetStateAction, useState } from "react";
 import EditConfirmationDialog from "src/components/contexts/edit-confirmation-dialog";
