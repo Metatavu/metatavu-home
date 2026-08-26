@@ -69,49 +69,28 @@ export const CustomDatePicker = ({
   sx
 }: DatePickerProps) => {
   const [open, setOpen] = useState(false);
-  const theme = useTheme();
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", width: "49%" }}>
-      <Typography variant="body" sx={{ mb: 0.5, fontWeight: 500 }}>
-        {label}*
-      </Typography>
-
-      <DatePicker
-        sx={sx}
-        open={open}
-        onClose={() => setOpen(false)}
-        slotProps={{
-          textField: {
-            size: "small",
-            onMouseDown: (e) => {
-              e.preventDefault();
-              setOpen(true);
-            },
-            sx: {
-              "& .MuiPickersOutlinedInput-root": {
-                borderRadius: theme.radius.s,
-
-                "& fieldset": {
-                  borderWidth: theme.borders.s,
-                  borderColor: theme.palette.border.primary
-                },
-
-                "&:hover fieldset": {
-                  borderColor: theme.palette.border.accent
-                }
-              }
-            }
-          },
-          openPickerButton: {
-            onClick: () => setOpen(true)
+    <DatePicker
+      sx={sx}
+      open={open}
+      onClose={() => setOpen(false)}
+      slotProps={{
+        textField: {
+          onMouseDown: (e) => {
+            e.preventDefault();
+            setOpen(true);
           }
-        }}
-        onChange={(value: DateTime | null) => value && onChange(value)}
-        value={value}
-        minDate={minDate}
-        maxDate={maxDate}
-      />
-    </Box>
+        },
+        openPickerButton: {
+          onClick: () => setOpen(true)
+        }
+      }}
+      label={label}
+      onChange={(value: DateTime | null) => value && onChange(value)}
+      value={value}
+      minDate={minDate}
+      maxDate={maxDate}
+    />
   );
 };

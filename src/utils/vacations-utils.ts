@@ -1,3 +1,4 @@
+import { getDays } from "src/components/screens/admin-vacation-management/UserRow";
 import type { User } from "src/generated/homeLambdasClient/models/User";
 import type { YearlyVacationDays } from "src/generated/homeLambdasClient/models/YearlyVacationDays";
 import strings from "src/localization/strings";
@@ -21,40 +22,6 @@ export const getVacationYear = (date: Date = new Date()): number => {
   }
 
   return year;
-};
-
-/**
- * Gets the vacation days string for a given year from an array of "year:value" strings.
- * @param arr - Array of strings in the format "year:value".
- * @param year - Year to look up.
- * @returns Number of days as string or "0" if not found.
- */
-export const getDays = (arr: string[] | undefined, year: string): string => {
-  if (!arr) return "0";
-  const found = arr.find((s) => s.startsWith(`${year}:`));
-  return found ? found.split(":")[1] : "0";
-};
-
-/**
- * Validates the vacation days ensuring:
- * - Total is not zero when remaining is positive.
- * - Remaining does not exceed total.
- *
- * @param vacDays Vacation days keyed by year.
- * @returns True if valid; false otherwise.
- */
-export const isVacationDaysValid = (vacDays: VacationDays): boolean => {
-  for (const year in vacDays) {
-    const total = Number(vacDays[year].total);
-    const remaining = Number(vacDays[year].remaining);
-    if (total === 0 && remaining > 0) {
-      return false;
-    }
-    if (remaining > total) {
-      return false;
-    }
-  }
-  return true;
 };
 
 /**

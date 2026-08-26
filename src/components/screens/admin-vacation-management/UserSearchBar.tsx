@@ -17,7 +17,7 @@ interface UserSearchBarProps {
 const UserSearchBar = ({ value, onChange }: UserSearchBarProps) => {
   return (
     <TextField
-      size="small"
+      fullWidth
       placeholder={strings.userSearch.placeholder}
       variant="outlined"
       value={value}
@@ -29,7 +29,6 @@ const UserSearchBar = ({ value, onChange }: UserSearchBarProps) => {
           </InputAdornment>
         )
       }}
-      sx={{ float: "inline-end", mb: 2, width: 300 }}
     />
   );
 };

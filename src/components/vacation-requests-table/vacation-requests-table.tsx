@@ -150,7 +150,7 @@ const VacationRequestsTable = ({
   const onRowClick = (rowId: string) => {
     setSelectedRowIds({ type: "include", ids: new Set([rowId]) });
     setFormOpen(true);
-    setToolbarFormMode(adminMode ? ToolbarFormModes.APPROVE : ToolbarFormModes.EDIT);
+    setToolbarFormMode(ToolbarFormModes.EDIT);
   };
 
   return (

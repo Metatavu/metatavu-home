@@ -109,7 +109,7 @@ const VacationRequestForm = ({
   const { adminMode } = useUserRole();
   const vacationRequests = useAtomValue(displayedVacationRequestsAtom);
   const [title, setTitle] = useState(strings.tableToolbar.create);
-  const editMode = adminMode ? ToolbarFormModes.APPROVE : ToolbarFormModes.EDIT;
+  const editMode = ToolbarFormModes.EDIT;
 
   /**
    * Reset vacation data

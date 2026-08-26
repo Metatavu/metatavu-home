@@ -40,12 +40,11 @@ const DateRangePicker = ({ dateTimeTomorrow, dateRange, setDateRange }: Props) =
       sx={{
         display: "flex",
         alignContent: "center",
-        alignItems: "center",
-        justifyContent: "space-between"
+        alignItems: "center"
       }}
     >
       <CustomDatePicker
-        sx={{ width: "100%", padding: "0 5px 4 5" }}
+        sx={{ width: "100%", padding: "0 5px 0 0" }}
         label={strings.vacationRequest.startDate}
         value={dateRange.start}
         minDate={dateTimeTomorrow}

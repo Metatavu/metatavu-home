@@ -12,6 +12,7 @@ import AuthenticationProvider from "./components/providers/authentication-provid
 import RestrictedContentProvider from "./components/providers/restricted-content-provider";
 import NewQuestionnaireBuilder from "./components/questionnaire/new-questionnaire-builder";
 import QuestionnaireManager from "./components/questionnaire/questionnaire-manager";
+import AdminVacationManagementScreen from "./components/screens/admin-vacation-management/admin-vacation-management-screen";
 import AllSoftwareScreen from "./components/screens/all-software-screen";
 import BalanceScreen from "./components/screens/balance-screen";
 import EmployeeFlextimeScreen from "./components/screens/employee-flextime-screen";
@@ -150,6 +151,10 @@ const App = () => {
         {
           path: "/admin/vacations",
           element: <VacationRequestsScreen />
+        },
+        {
+          path: "/admin/vacation-management",
+          element: <AdminVacationManagementScreen />
         },
         {
           path: "/admin/severa/employee-flextime",

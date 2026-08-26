@@ -144,7 +144,11 @@ const VacationsCard = () => {
         },
         {
           name: strings.vacationsCard.applicant,
-          value: getVacationRequestPersonFullName(earliestUpcomingVacationRequest, users)
+          value: getVacationRequestPersonFullName(
+            earliestUpcomingVacationRequest,
+            users,
+            userProfile
+          )
         },
         {
           name: strings.vacationsCard.timeOfVacation,

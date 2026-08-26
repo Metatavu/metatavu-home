@@ -30,7 +30,6 @@ import LocalizationUtils from "src/utils/localization-utils";
 import { calculateTotalVacationDays, contractedWeekToBoolean } from "src/utils/time-utils";
 import { renderVacationDaysTextForScreen } from "src/utils/vacation-days-utils";
 import DateRangePicker from "../../generics/date-range-picker";
-import AdminVacationFormFields from "./admin-vacation-request-form";
 
 /**
  * Component properties
@@ -104,8 +103,7 @@ const VacationRequestFormFields = ({
   const originalEndDateRef = useRef<DateTime | null>(null);
   const originalStartDateRef = useRef<DateTime | null>(null);
   const theme = useTheme();
-  const initialEditMode =
-    toolbarFormMode === ToolbarFormModes.APPROVE || toolbarFormMode === ToolbarFormModes.EDIT;
+  const initialEditMode = toolbarFormMode === ToolbarFormModes.EDIT;
   const adminEditmode = toolbarFormMode === ToolbarFormModes.EDIT && adminMode;
 
   const vacationTypes = [
@@ -313,27 +311,17 @@ const VacationRequestFormFields = ({
               )}
             </Box>
           )}
-          {adminMode ? (
-            <AdminVacationFormFields
-              handleUpdateVacationRequestStatus={handleUpdateVacationRequestStatus}
-              toolbarFormMode={toolbarFormMode}
-              setToolbarFormMode={setToolbarFormMode}
-              defaultDays={vacationRequestData.days}
-              handleDaysChange={handleDaysChange}
-              handleRestoreDefaultDays={handleRestoreDefaultDays}
-            />
-          ) : (
-            <AppButton
-              disabled={
-                !adminMode &&
-                (!hasAllPropsDefined(vacationRequestData) || !vacationRequestData.message?.length)
-              }
-              variant="primary"
-              sx={{ height: "min-content", ml: "auto", mt: theme.spaces.xxl }}
-              onClick={handleEdit}
-              text={strings.form.update}
-            />
-          )}
+
+          <AppButton
+            disabled={
+              !adminMode &&
+              (!hasAllPropsDefined(vacationRequestData) || !vacationRequestData.message?.length)
+            }
+            variant="primary"
+            sx={{ height: "min-content", ml: "auto", mt: theme.spaces.xxl }}
+            onClick={handleEdit}
+            text={strings.form.update}
+          />
         </Box>
       )}
     </FormControl>

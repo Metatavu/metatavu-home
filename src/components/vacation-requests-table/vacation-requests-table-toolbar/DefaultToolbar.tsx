@@ -209,7 +209,6 @@ const DefaultToolbar = ({
                     disabled={false}
                     onChange={() => handleTag(option.value.toUpperCase() as FilterType)}
                     ariaLabel={option.label}
-                    sx={{ ml: 3 }}
                   />
                 ))}
             </Box>

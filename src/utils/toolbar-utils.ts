@@ -1,3 +1,4 @@
+import type { GridRowId } from "@mui/x-data-grid";
 import strings from "../localization/strings";
 import { ToolbarFormModes } from "../types";
 
@@ -9,16 +10,16 @@ import { ToolbarFormModes } from "../types";
  * @param setToolbarFormMode set toolbar form mode function
  */
 export const determineToolbarFormMode = (
-  action: string,
+  selectedRowIds: GridRowId[],
   formOpen: boolean,
   setToolbarFormMode: (toolbarFormMode: ToolbarFormModes) => void
 ) => {
-  if (formOpen) {
+  if (selectedRowIds) {
     switch (true) {
-      case action === "create":
+      case selectedRowIds.length === 0 && formOpen:
         setToolbarFormMode(ToolbarFormModes.CREATE);
         break;
-      case action === "edit":
+      case selectedRowIds.length === 1:
         setToolbarFormMode(ToolbarFormModes.EDIT);
         break;
       default:
@@ -36,7 +37,6 @@ export const determineToolbarFormMode = (
 export const getToolbarTitle = (toolbarFormMode: ToolbarFormModes) =>
   ({
     [ToolbarFormModes.CREATE]: strings.tableToolbar.createRequests,
-    [ToolbarFormModes.APPROVE]: strings.tableToolbar.manageRequests,
     [ToolbarFormModes.EDIT]: strings.tableToolbar.editRequests,
     [ToolbarFormModes.NONE]: strings.tableToolbar.myRequests
   })[toolbarFormMode];
