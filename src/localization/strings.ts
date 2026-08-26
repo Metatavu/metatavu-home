@@ -385,6 +385,9 @@ export interface Localized extends LocalizedStringsMethods {
     create: string;
     submit: string;
     update: string;
+    advancedOptions: string;
+    daysConsumed: string;
+    daysConsumedDescription: string;
     restoreDefault: string;
   };
   /**
@@ -761,7 +764,9 @@ export interface Localized extends LocalizedStringsMethods {
     buttonLabel: string;
     editTitle: string;
     totalDays: string;
+    totalDescription: string;
     remainingDays: string;
+    remainingDescription: string;
     selectYear: string;
     currentYear: string;
     vacationFor: string;

@@ -334,7 +334,10 @@
     "create": "Create",
     "submit": "Submit",
     "update": "Update",
-    "restoreDefault": "Restore default holiday days consumed"
+    "advancedOptions": "Advanced options",
+    "daysConsumed": "Days consumed",
+    "daysConsumedDescription": "Edit the total number of days vacation consumes",
+    "restoreDefault": "Restore default days"
   },
   "tableToolbar": {
     "delete": "Delete",
@@ -611,19 +614,21 @@
     "description": "Activate your account to view this section."
   },
   "adminVacationManagement": {
-    "heading": "Admin Vacation Management",
+    "heading": "Employee vacation days",
     "title": "User Vacation Management",
     "description": "View and update individual user vacation day allocations and remaining days.",
     "buttonLabel": "Manage User Vacation Days",
     "editTitle": "Edit Vacation Days",
     "totalDays": "Total Days",
+    "totalDescription": "Total number of vacation days this year",
     "remainingDays": "Remaining Days",
-    "selectYear": "Select Year",
+    "remainingDescription": "Number of remaining vacation days this year",
+    "selectYear": "Select a year",
     "currentYear": "Vacation Year",
     "vacationFor": "Vacation Days for"
   },
   "userSearch": {
-    "placeholder": "Search users by name or email"
+    "placeholder": "Search"
   },
   "userRow": {
     "day": "Day"

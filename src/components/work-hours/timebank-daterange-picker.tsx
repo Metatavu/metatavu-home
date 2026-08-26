@@ -1,4 +1,4 @@
-import type { SxProps } from "@mui/material";
+import { Box, type SxProps, Typography, useTheme } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import type { DateTime } from "luxon";
 import { useState } from "react";
@@ -69,28 +69,49 @@ export const CustomDatePicker = ({
   sx
 }: DatePickerProps) => {
   const [open, setOpen] = useState(false);
+  const theme = useTheme();
 
   return (
-    <DatePicker
-      sx={sx}
-      open={open}
-      onClose={() => setOpen(false)}
-      slotProps={{
-        textField: {
-          onMouseDown: (e) => {
-            e.preventDefault();
-            setOpen(true);
+    <Box sx={{ display: "flex", flexDirection: "column", width: "49%" }}>
+      <Typography variant="body" sx={{ mb: 0.5, fontWeight: 500 }}>
+        {label}*
+      </Typography>
+
+      <DatePicker
+        sx={sx}
+        open={open}
+        onClose={() => setOpen(false)}
+        slotProps={{
+          textField: {
+            size: "small",
+            onMouseDown: (e) => {
+              e.preventDefault();
+              setOpen(true);
+            },
+            sx: {
+              "& .MuiPickersOutlinedInput-root": {
+                borderRadius: theme.radius.s,
+
+                "& fieldset": {
+                  borderWidth: theme.borders.s,
+                  borderColor: theme.palette.border.primary
+                },
+
+                "&:hover fieldset": {
+                  borderColor: theme.palette.border.accent
+                }
+              }
+            }
+          },
+          openPickerButton: {
+            onClick: () => setOpen(true)
           }
-        },
-        openPickerButton: {
-          onClick: () => setOpen(true)
-        }
-      }}
-      label={label}
-      onChange={(value: DateTime | null) => value && onChange(value)}
-      value={value}
-      minDate={minDate}
-      maxDate={maxDate}
-    />
+        }}
+        onChange={(value: DateTime | null) => value && onChange(value)}
+        value={value}
+        minDate={minDate}
+        maxDate={maxDate}
+      />
+    </Box>
   );
 };

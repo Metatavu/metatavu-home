@@ -1,18 +1,20 @@
-import { Box, Grid } from "@mui/material";
+import { Grid } from "@mui/material";
 import type { GridRowId } from "@mui/x-data-grid";
 import { useAtomValue } from "jotai";
 import { DateTime } from "luxon";
-import { useEffect, useState } from "react";
-import { allVacationRequestsAtom, vacationRequestsAtom } from "src/atoms/vacation";
+import { type Dispatch, type SetStateAction, useEffect, useState } from "react";
+import { displayedVacationRequestsAtom } from "src/atoms/vacation";
+import AppOverlay from "src/components/generics/appOverlay";
 import {
   type VacationRequest,
   VacationRequestStatuses,
   VacationType
 } from "src/generated/homeLambdasClient";
 import useUserRole from "src/hooks/use-user-role";
+import strings from "src/localization/strings";
 import { type DateRange, ToolbarFormModes, type VacationsDataGridRow } from "src/types";
-import { determineToolbarFormMode } from "src/utils/toolbar-utils";
-import ToolbarFormFields from "./toolbar-form-fields";
+import { getToolbarTitle } from "src/utils/toolbar-utils";
+import VacationRequestFormFields from "./vacation-request-form-fields";
 
 /**
  * Component properties
@@ -25,31 +27,54 @@ interface Props {
     vacationRequestId: string
   ) => Promise<void>;
   createVacationRequest: (vacationRequestData: VacationRequest) => Promise<void>;
-  createDraftVacationRequest: (vacationRequestData: VacationRequest) => Promise<void>;
   selectedRowIds: GridRowId[];
   rows: VacationsDataGridRow[];
   toolbarFormMode: ToolbarFormModes;
-  setToolbarFormMode: (toolbarFormMode: ToolbarFormModes) => void;
+  setToolbarFormMode: Dispatch<SetStateAction<ToolbarFormModes>>;
   setSelectedRowIds: (selectedRowIds: GridRowId[]) => void;
+  handleDeleteRow: (id: GridRowId) => void;
+  handleUpdateVacationRequestStatus: (buttonType: VacationRequestStatuses) => void;
   onSaveClick?: (data: VacationRequest) => void;
 }
 
 /**
- * Toolbar form component
+ * Form for creating and editing vacation requests.
  *
- * @param props component properties
+ * Displays the vacation request form inside an overlay and manages
+ * the form's local state, including the selected dates, vacation request
+ * data, and selected request ID.
+ *
+ * The form supports creating new requests and editing existing requests.
+ * Editing behavior depends on the current user's role and the status
+ * of the selected vacation request.
+ *
+ * @param props.formOpen - Controls whether the form is displayed.
+ * @param props.setFormOpen - Updates the visibility of the form.
+ * @param props.createVacationRequest - Creates a new vacation request.
+ * @param props.updateVacationRequest - Updates an existing vacation request.
+ * @param props.selectedRowIds - IDs of the currently selected table rows.
+ * @param props.rows - Rows displayed in the vacation requests table.
+ * @param props.toolbarFormMode - Current mode of the toolbar form.
+ * @param props.setToolbarFormMode - Updates the toolbar form mode.
+ * @param props.setSelectedRowIds - Updates the selected table rows.
+ * @param props.handleDeleteRow - Deletes a selected vacation request.
+ * @param props.handleUpdateVacationRequestStatus - Updates the selected request's status.
+ * @param props.onSaveClick - Optional callback invoked when an edited request is saved.
+ *
+ * @returns A modal form for creating and editing vacation requests.
  */
-const ToolbarForm = ({
+const VacationRequestForm = ({
   formOpen,
   setFormOpen,
   createVacationRequest,
-  createDraftVacationRequest,
   updateVacationRequest,
   selectedRowIds,
   setSelectedRowIds,
   rows,
   toolbarFormMode,
   setToolbarFormMode,
+  handleDeleteRow,
+  handleUpdateVacationRequestStatus,
   onSaveClick
 }: Props) => {
   const defaultDateRange = {
@@ -82,7 +107,9 @@ const ToolbarForm = ({
   );
   const [selectedVacationRequestId, setSelectedVacationRequestId] = useState("");
   const { adminMode } = useUserRole();
-  const vacationRequests = useAtomValue(adminMode ? allVacationRequestsAtom : vacationRequestsAtom);
+  const vacationRequests = useAtomValue(displayedVacationRequestsAtom);
+  const [title, setTitle] = useState(strings.tableToolbar.create);
+  const editMode = adminMode ? ToolbarFormModes.APPROVE : ToolbarFormModes.EDIT;
 
   /**
    * Reset vacation data
@@ -96,8 +123,8 @@ const ToolbarForm = ({
    * Determine toolbar form mode
    */
   useEffect(() => {
-    determineToolbarFormMode(selectedRowIds, formOpen, setToolbarFormMode);
-  }, [selectedRowIds, formOpen]);
+    setTitle(getToolbarTitle(toolbarFormMode));
+  }, [selectedRowIds, formOpen, adminMode]);
 
   /**
    * Get vacation data from row
@@ -108,7 +135,6 @@ const ToolbarForm = ({
       const selectedVacationRequest = vacationRequests.find(
         (vacationRequest) => vacationRequest.id === selectedVacationRow.id
       );
-
       if (selectedVacationRequest?.id) {
         const startDate = DateTime.fromJSDate(selectedVacationRequest.startDate);
         const endDate = DateTime.fromJSDate(selectedVacationRequest.endDate);
@@ -136,12 +162,12 @@ const ToolbarForm = ({
    * Set vacation data from selected row if toolbar is in edit mode
    */
   useEffect(() => {
-    if (toolbarFormMode === ToolbarFormModes.EDIT && selectedRowIds?.length && rows?.length) {
+    if (toolbarFormMode === editMode && selectedRowIds?.length && rows?.length) {
       getVacationRequestDataFromRow();
     } else {
       resetVacationRequestData();
     }
-  }, [toolbarFormMode]);
+  }, [formOpen]);
 
   const dateTimeTomorrow = DateTime.now().plus({ days: 1 });
 
@@ -174,32 +200,35 @@ const ToolbarForm = ({
   };
 
   /**
-   *  Handle draft vacation request creation
+   * Handle canceling/closing the form
    */
-  const handleDraft = async () => {
+  const handleCancel = () => {
     setFormOpen(false);
-    await createDraftVacationRequest(vacationRequestData);
   };
 
   return (
-    <Box sx={{ padding: "10px", width: "100%" }}>
+    <AppOverlay open={formOpen} onClose={handleCancel} title={title}>
       <Grid container>
         <Grid size={12}>
-          <ToolbarFormFields
+          <VacationRequestFormFields
             dateTimeTomorrow={dateTimeTomorrow}
             setVacationRequestData={setVacationRequestData}
             vacationRequestData={vacationRequestData}
             toolbarFormMode={toolbarFormMode}
+            setToolbarFormMode={setToolbarFormMode}
             dateRange={dateRange}
             setDateRange={setDateRange}
             handleCreate={handleCreate}
             handleEdit={handleEdit}
-            handleDraft={handleDraft}
+            handleCancel={handleCancel}
+            handleDeleteRow={handleDeleteRow}
+            selectedVacationRequestId={selectedVacationRequestId}
+            handleUpdateVacationRequestStatus={handleUpdateVacationRequestStatus}
           />
         </Grid>
       </Grid>
-    </Box>
+    </AppOverlay>
   );
 };
 
-export default ToolbarForm;
+export default VacationRequestForm;

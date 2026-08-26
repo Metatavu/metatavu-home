@@ -1,20 +1,11 @@
-import {
-  Box,
-  Button,
-  CircularProgress,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
-  Typography
-} from "@mui/material";
-import { useId, useState } from "react";
+import { Box, Typography } from "@mui/material";
+import { useState } from "react";
+import AppNumberInput from "src/components/generics/appNumberInput";
+import AppOverlay from "src/components/generics/appOverlay";
+import AppButton from "src/components/generics/buttons/app-button";
+import Dropdown from "src/components/generics/dropdown";
 import type { User } from "src/generated/homeLambdasClient/models/User";
+import { getFullUserName } from "src/utils/user-name-utils";
 import { getVacationYear } from "src/utils/vacations-utils";
 import type { YearlyVacationDays } from "../../../generated/homeLambdasClient/models/YearlyVacationDays";
 import strings from "../../../localization/strings";
@@ -23,10 +14,10 @@ type VacationDaysMap = Record<string, YearlyVacationDays>;
 interface EditVacationDialogProps {
   open: boolean;
   user: User | null;
-  vacationDays: Record<string, any>;
+  vacationDays: VacationDaysMap;
   loading: boolean;
   onClose: () => void;
-  onVacationDaysChange: (year: string, field: keyof YearlyVacationDays, value: string) => void;
+  onVacationDaysChange: (year: string, field: keyof YearlyVacationDays, value: number) => void;
   onSave: () => void;
   disableSave: boolean;
 }
@@ -45,7 +36,7 @@ const generateYearOptions = (): string[] => {
  * @param input - Vacation days input object with year keys.
  * @returns A normalized VacationDaysMap with numbers for total and remaining days.
  */
-const normalizeVacationDays = (input: Record<string, any>): VacationDaysMap => {
+const normalizeVacationDays = (input: VacationDaysMap): VacationDaysMap => {
   const result: VacationDaysMap = {};
   for (const [year, data] of Object.entries(input)) {
     result[year] = {
@@ -69,6 +60,7 @@ const normalizeVacationDays = (input: Record<string, any>): VacationDaysMap => {
  * @param onChange - Callback when vacation days change.
  * @param onSave - Callback to save vacation days.
  * @param disableSave - Whether the save button should be disabled.
+ *
  * @returns A MUI Dialog element or null if no user is provided.
  */
 const EditVacationDialog = ({
@@ -84,89 +76,73 @@ const EditVacationDialog = ({
   const currentYear = getVacationYear().toString();
   const [selectedYear, setSelectedYear] = useState(currentYear);
   const availableYears = generateYearOptions();
-  const yearSelectedYear = useId();
-  const yearSelectedLabel = useId();
 
   if (!user) return null;
 
   const normalizedVacationDays = normalizeVacationDays(vacationDays);
-
+  const userFullname = getFullUserName(user);
+  const title = `${strings.adminVacationManagement.editTitle}: ${userFullname}`;
   const selectedYearData = normalizedVacationDays[selectedYear] || { total: 0, remaining: 0 };
-
+  const years = availableYears.map((year) => ({
+    value: String(year),
+    label: String(year)
+  }));
   /**
    * Updates the selected year in state when the user changes the selection.@param year - The year value selected from the dropdown.
    */
-
   const handleYearChange = (year: string) => {
     setSelectedYear(year);
   };
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>
-        {strings.adminVacationManagement.editTitle}: {user.firstName} {user.lastName}
-      </DialogTitle>
-      <DialogContent dividers>
-        <Box sx={{ mb: 3 }}>
-          <FormControl fullWidth sx={{ mb: 3 }}>
-            <InputLabel id={yearSelectedLabel}>
-              {strings.adminVacationManagement.selectYear}
-            </InputLabel>
-            <Select
-              labelId="year-select-label"
-              id={yearSelectedYear}
-              value={selectedYear}
-              label={strings.adminVacationManagement.selectYear}
-              onChange={(e) => handleYearChange(e.target.value)}
-            >
-              {availableYears.map((year) => (
-                <MenuItem key={year} value={year}>
-                  {year}
-                  {year === currentYear && ` (${strings.adminVacationManagement.currentYear})`}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-
-          <Typography variant="h6" sx={{ mb: 2 }}>
-            {strings.adminVacationManagement.vacationFor} {selectedYear}
+    <AppOverlay open={open} onClose={onClose} title={title}>
+      <Box sx={{ width: 729 }}>
+        <Box display="flex" flexDirection="column" sx={{ my: 3 }}>
+          <Typography variant="body" fontWeight={500}>
+            {strings.adminVacationManagement.selectYear}
           </Typography>
-
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-            <TextField
-              label={strings.adminVacationManagement.totalDays}
-              type="number"
-              value={selectedYearData.total === 0 ? "" : selectedYearData.total}
-              onChange={(e) => {
-                const value = e.target.value;
-                if (value === "" || Number(value) >= 0) {
-                  onVacationDaysChange(selectedYear, "total", value);
-                }
-              }}
-            />
-            <TextField
-              label={strings.adminVacationManagement.remainingDays}
-              type="number"
-              value={selectedYearData.remaining === 0 ? "" : selectedYearData.remaining}
-              onChange={(e) => {
-                const value = e.target.value;
-                if (value === "" || Number(value) >= 0) {
-                  onVacationDaysChange(selectedYear, "remaining", value);
-                }
-              }}
-            />
-          </Box>
+          <Dropdown
+            displayOption={selectedYear}
+            handleDisplayOptionChange={(e) => handleYearChange(e.target.value)}
+            displayOptions={years}
+          />
         </Box>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose} color="inherit">
-          {strings.label.cancel}
-        </Button>
-        <Button variant="contained" onClick={onSave} disabled={loading || disableSave}>
-          {loading ? <CircularProgress size={24} /> : strings.label.save}
-        </Button>
-      </DialogActions>
-    </Dialog>
+
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 5 }}>
+          <AppNumberInput
+            label={strings.adminVacationManagement.totalDays}
+            value={selectedYearData.total}
+            onChange={(e) => onVacationDaysChange(selectedYear, "total", e)}
+            min={0}
+            max={100}
+            helperText={strings.adminVacationManagement.totalDescription}
+          />
+          <AppNumberInput
+            label={strings.adminVacationManagement.remainingDays}
+            value={selectedYearData.remaining}
+            onChange={(e) => onVacationDaysChange(selectedYear, "remaining", e)}
+            min={0}
+            max={normalizedVacationDays[currentYear]?.total ?? 0}
+            helperText={strings.adminVacationManagement.remainingDescription}
+          />
+        </Box>
+      </Box>
+      <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between", mt: 5 }}>
+        <AppButton
+          variant="secondary"
+          onClick={onClose}
+          text={strings.label.cancel}
+          sx={{ height: "min-content" }}
+        />
+        <AppButton
+          variant="primary"
+          onClick={onSave}
+          disabled={loading || disableSave}
+          text={strings.label.save}
+          sx={{ height: "min-content" }}
+        />
+      </Box>
+    </AppOverlay>
   );
 };
 

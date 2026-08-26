@@ -1,11 +1,12 @@
-import { Checkbox, FormControlLabel, FormGroup, useTheme } from "@mui/material";
+import { Checkbox, FormControlLabel, type SxProps, useTheme } from "@mui/material";
 
 interface CheckboxProps {
   checked: boolean;
   label: string;
   disabled: boolean;
-  onChange: () => void;
+  onChange: (arg?: any) => void;
   ariaLabel: string;
+  sx?: SxProps;
 }
 
 /**
@@ -16,12 +17,13 @@ interface CheckboxProps {
  * @param props.disabled - Boolean indicating if the box is disabled or not
  * @param props.onChange - Functionality to tick on/off the boxes
  * @param props.ariaLabel - Textual context for accessibility
+ * @param props.sx - Styling
  *
  * @returns Checkbox with a label, styled to match the theme.
  */
-const AppCheckbox = ({ checked, label, disabled, onChange, ariaLabel }: CheckboxProps) => {
+const AppCheckbox = ({ checked, label, disabled, onChange, ariaLabel, sx }: CheckboxProps) => {
   const theme = useTheme();
-  console.log(label);
+
   return (
     <FormControlLabel
       label={label}
@@ -48,6 +50,14 @@ const AppCheckbox = ({ checked, label, disabled, onChange, ariaLabel }: Checkbox
           }}
         />
       }
+      sx={{
+        ...sx,
+        "& .MuiFormControlLabel-label": {
+          fontFamily: theme.typography.body.fontFamily,
+          fontSize: theme.typography.body.fontSize,
+          fontWeight: theme.typography.body.fontWeight
+        }
+      }}
     />
   );
 };
