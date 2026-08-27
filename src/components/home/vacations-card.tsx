@@ -194,7 +194,9 @@ const VacationsCard = ({ hidden, onToggleHidden, editmode }: CardProps) => {
 
   const renderVacationCard = () => {
     return (
-      <Grid container gap={theme.spaces.xs}>
+      <Grid container sx={{
+        gap: theme.spaces.xs
+      }}>
         <Typography variant="caption" sx={{ textWrap: "nowrap", pt: theme.spaces.s }}>
           {renderUpcomingOrPendingVacationRequestsCount()}
         </Typography>

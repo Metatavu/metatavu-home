@@ -69,10 +69,18 @@ const SoftwareRegistryCard = () => {
       <>
         {!adminMode && recommendedSoftware.length > 0 && (
           <>
-            <Typography fontWeight="bold" gutterBottom>
+            <Typography gutterBottom sx={{
+              fontWeight: "bold"
+            }}>
               {strings.softwareRegistry.recommendations}
             </Typography>
-            <Grid display="flex" container alignItems="center" m={1}>
+            <Grid
+              container
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                m: 1
+              }}>
               {recommendedSoftware.map((app) => (
                 <Grid key={app.id}>
                   <CardMedia
@@ -95,10 +103,18 @@ const SoftwareRegistryCard = () => {
         )}
         {adminMode && pendingSoftware.length > 0 && (
           <>
-            <Typography fontWeight="bold" gutterBottom>
+            <Typography gutterBottom sx={{
+              fontWeight: "bold"
+            }}>
               {strings.softwareRegistry.newSoftware}
             </Typography>
-            <Grid display="flex" container alignItems="center" m={1}>
+            <Grid
+              container
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                m: 1
+              }}>
               {pendingSoftware.map((app) => (
                 <Grid key={app.id}>
                   <CardMedia
@@ -130,7 +146,9 @@ const SoftwareRegistryCard = () => {
     >
       <Card>
         <CardContent>
-          <Typography variant="h6" fontWeight={"bold"} style={{ marginTop: 6, marginBottom: 3 }}>
+          <Typography variant="h6" style={{ marginTop: 6, marginBottom: 3 }} sx={{
+            fontWeight: "bold"
+          }}>
             {adminMode
               ? strings.softwareRegistry.softwareRegistryAdmin
               : strings.softwareRegistry.softwareRegistry}

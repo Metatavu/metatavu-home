@@ -58,13 +58,18 @@ const AppCard = ({ id, image, name, description, tags = [], isGridView }: AppCar
               <Typography
                 gutterBottom
                 variant="h6"
-                overflow={"hidden"}
-                textOverflow={"ellipsis"}
-                whiteSpace={"nowrap"}
-              >
+                sx={{
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap"
+                }}>
                 {name}
               </Typography>
-              <Box sx={{ minHeight: "90px" }} marginBottom={2}>
+              <Box
+                sx={{
+                  marginBottom: 2,
+                  minHeight: "90px"
+                }}>
                 <Typography
                   variant="body1"
                   sx={{
@@ -79,17 +84,16 @@ const AppCard = ({ id, image, name, description, tags = [], isGridView }: AppCar
                 </Typography>
               </Box>
               <Box
-                display="flex"
-                alignItems="center"
-                justifyContent="flex-start"
-                flexWrap="nowrap"
-                width="100%"
                 sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "flex-start",
+                  flexWrap: "nowrap",
+                  width: "100%",
                   height: "30px",
                   gap: 2,
                   marginTop: "-8px"
-                }}
-              >
+                }}>
                 {tags.slice(0, 3).map((tag) => (
                   <Chip
                     key={tag}
@@ -189,11 +193,13 @@ const AppCard = ({ id, image, name, description, tags = [], isGridView }: AppCar
                 </Typography>
               </Box>
               <Box
-                display="flex"
-                alignItems="center"
-                gap={0.5}
-                sx={{ flexWrap: "wrap", marginTop: "8px" }}
-              >
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 0.5,
+                  flexWrap: "wrap",
+                  marginTop: "8px"
+                }}>
                 {tags.slice(0, 3).map((tag) => (
                   <Chip
                     key={tag}

@@ -359,10 +359,11 @@ const MainCard = ({
               <Typography
                 gutterBottom
                 variant="h6"
-                overflow={"hidden"}
-                textOverflow={"ellipsis"}
-                whiteSpace={"nowrap"}
-              >
+                sx={{
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap"
+                }}>
                 {name}
               </Typography>
               <Box sx={{ minHeight: "70px" }}>
@@ -379,7 +380,13 @@ const MainCard = ({
                   {description}
                 </Typography>
               </Box>
-              <Box alignItems="center" flexWrap="wrap" sx={{ gap: 0.5, height: "60px" }}>
+              <Box
+                sx={{
+                  alignItems: "center",
+                  flexWrap: "wrap",
+                  gap: 0.5,
+                  height: "60px"
+                }}>
                 {renderTags()}
               </Box>
             </CardContent>
@@ -473,10 +480,13 @@ const MainCard = ({
                   </Typography>
                 </Box>
                 <Box
-                  alignItems="center"
-                  flexWrap="wrap"
-                  sx={{ gap: 0.5, height: "30px", marginTop: "10px" }}
-                >
+                  sx={{
+                    alignItems: "center",
+                    flexWrap: "wrap",
+                    gap: 0.5,
+                    height: "30px",
+                    marginTop: "10px"
+                  }}>
                   {renderTags()}
                 </Box>
               </CardContent>

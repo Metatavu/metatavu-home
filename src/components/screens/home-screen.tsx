@@ -127,7 +127,13 @@ const HomeScreen = () => {
       <Typography variant="h3" sx={{ px: theme.spaces.m, pt: theme.spaces.m }}>
         {greetingString}
       </Typography>
-      <Box id="home-screen" display="flex" flexDirection="column" alignItems="end">
+      <Box
+        id="home-screen"
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "end"
+        }}>
         <Box>
           <AppButton
             variant="secondary"

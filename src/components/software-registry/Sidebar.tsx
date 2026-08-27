@@ -123,7 +123,13 @@ const Sidebar = ({
             boxShadow: theme.shadows[3]
           }}
         >
-          <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              mb: 2
+            }}>
             <Typography variant="subtitle2">{strings.softwareRegistry.filter}</Typography>
             <IconButton onClick={toggleSidebar}>
               <CloseIcon />
@@ -160,7 +166,13 @@ const Sidebar = ({
           <Typography variant="subtitle2" gutterBottom>
             {strings.softwareRegistry.tags}
           </Typography>
-          <Box display="flex" flexWrap="wrap" gap={1} mb={2}>
+          <Box
+            sx={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: 1,
+              mb: 2
+            }}>
             {filteredTags.map((tag) => {
               const isSelected = selectedTags.includes(tag);
               return (

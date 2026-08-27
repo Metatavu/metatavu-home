@@ -108,10 +108,11 @@ const ArticleListItem = ({ article, adminMode = false, onDeleteClick }: Props) =
             </Typography>
             <Grid
               container
-              justifyContent={"space-between"}
-              sx={{ marginTop: { lg: 1.5, md: 2, sm: 1.5 } }}
               direction={{ xs: "column", md: "row" }}
-            >
+              sx={{
+                justifyContent: "space-between",
+                marginTop: { lg: 1.5, md: 2, sm: 1.5 }
+              }}>
               <Grid sx={{ order: { xs: 2, md: 1 } }}>
                 <Box
                   sx={{

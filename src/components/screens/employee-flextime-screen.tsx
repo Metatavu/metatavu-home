@@ -115,8 +115,12 @@ const EmployeeFlextimeScreen = () => {
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-      <Box mb={4}>
-        <Typography variant="h3" component="h1" gutterBottom fontWeight="bold">
+      <Box sx={{
+        mb: 4
+      }}>
+        <Typography variant="h3" component="h1" gutterBottom sx={{
+          fontWeight: "bold"
+        }}>
           {strings.employeeFlextime.title}
         </Typography>
         <Typography variant="h6" color="textSecondary" gutterBottom>
@@ -126,13 +130,20 @@ const EmployeeFlextimeScreen = () => {
           {strings.employeeFlextime.lastUpdated.replace("{0}", currentDate)}
         </Typography>
       </Box>
-      <Box mb={4} display="flex" gap={2}>
+      <Box
+        sx={{
+          mb: 4,
+          display: "flex",
+          gap: 2
+        }}>
         <Card sx={{ minWidth: 200 }}>
           <CardContent>
             <Typography variant="h6" color="primary">
               {strings.employeeFlextime.totalEmployees}
             </Typography>
-            <Typography variant="h4" fontWeight="bold">
+            <Typography variant="h4" sx={{
+              fontWeight: "bold"
+            }}>
               {usersFlextime.length}
             </Typography>
           </CardContent>
@@ -144,9 +155,10 @@ const EmployeeFlextimeScreen = () => {
             </Typography>
             <Typography
               variant="h4"
-              fontWeight="bold"
-              sx={{ color: getFlextimeColor(getTotalBalance()) }}
-            >
+              sx={{
+                fontWeight: "bold",
+                color: getFlextimeColor(getTotalBalance())
+              }}>
               {formatFlextimeHours(getTotalBalance())}
             </Typography>
           </CardContent>
@@ -155,7 +167,9 @@ const EmployeeFlextimeScreen = () => {
       {usersFlextime.length === 0 ? (
         <Card>
           <CardContent>
-            <Typography variant="h6" textAlign="center" color="textSecondary">
+            <Typography variant="h6" color="textSecondary" sx={{
+              textAlign: "center"
+            }}>
               {strings.employeeFlextime.noDataFound}
             </Typography>
           </CardContent>
@@ -166,27 +180,37 @@ const EmployeeFlextimeScreen = () => {
             <TableHead>
               <TableRow sx={{ backgroundColor: theme.palette.action.selected }}>
                 <TableCell>
-                  <Typography variant="h6" fontWeight="bold">
+                  <Typography variant="h6" sx={{
+                    fontWeight: "bold"
+                  }}>
                     {strings.employeeFlextime.employee}
                   </Typography>
                 </TableCell>
                 <TableCell>
-                  <Typography variant="h6" fontWeight="bold">
+                  <Typography variant="h6" sx={{
+                    fontWeight: "bold"
+                  }}>
                     {strings.employeeFlextime.email}
                   </Typography>
                 </TableCell>
                 <TableCell align="right">
-                  <Typography variant="h6" fontWeight="bold">
+                  <Typography variant="h6" sx={{
+                    fontWeight: "bold"
+                  }}>
                     {strings.employeeFlextime.totalFlextimeBalance}
                   </Typography>
                 </TableCell>
                 <TableCell align="right">
-                  <Typography variant="h6" fontWeight="bold">
+                  <Typography variant="h6" sx={{
+                    fontWeight: "bold"
+                  }}>
                     {strings.employeeFlextime.currentMonthBalance}
                   </Typography>
                 </TableCell>
                 <TableCell align="center">
-                  <Typography variant="h6" fontWeight="bold">
+                  <Typography variant="h6" sx={{
+                    fontWeight: "bold"
+                  }}>
                     {strings.employeeFlextime.status}
                   </Typography>
                 </TableCell>
@@ -213,7 +237,9 @@ const EmployeeFlextimeScreen = () => {
                   >
                     <TableCell>
                       <Box>
-                        <Typography variant="body1" fontWeight="medium">
+                        <Typography variant="body1" sx={{
+                          fontWeight: "medium"
+                        }}>
                           {userData.user.firstName} {userData.user.lastName}
                         </Typography>
                       </Box>

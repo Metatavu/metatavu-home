@@ -74,7 +74,12 @@ const EditConfirmationDialog = ({
       title={strings.confirmationHandler.title}
       loading={loading}
     >
-      <Typography marginBottom={3} sx={{ fontSize: 16, fontWeight: "bold" }}>
+      <Typography
+        sx={{
+          marginBottom: 3,
+          fontSize: 16,
+          fontWeight: "bold"
+        }}>
         {getConfirmationMessage()}
       </Typography>
       <Divider />

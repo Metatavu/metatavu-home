@@ -293,7 +293,12 @@ const Onboarding = ({ screen }: OnboardingProps) => {
             boxShadow: (theme) => `0 8px 32px ${theme.palette.primary.main}66`
           }}
         >
-          <Box display="flex" justifyContent="space-between" alignItems="center">
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center"
+            }}>
             <Typography variant="subtitle1">{step.title}</Typography>
             <IconButton size="small" onClick={handleClose}>
               <CloseIcon fontSize="small" />
@@ -304,7 +309,13 @@ const Onboarding = ({ screen }: OnboardingProps) => {
             {step.content}
           </Typography>
 
-          <Box display="flex" justifyContent="space-between" alignItems="center" mt={2}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              mt: 2
+            }}>
             <Button
               size="small"
               onClick={handlePrev}

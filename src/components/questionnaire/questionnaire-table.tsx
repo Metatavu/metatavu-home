@@ -457,7 +457,12 @@ const QuestionnaireTable = () => {
             }}
           />
         )}
-        <Typography sx={{ margin: 2 }} variant="h4" justifyContent={"center"}>
+        <Typography
+          variant="h4"
+          sx={{
+            justifyContent: "center",
+            margin: 2
+          }}>
           {selectedQuestionnaire
             ? selectedQuestionnaire.title
             : strings.questionnaireScreen.currentQuestionnaires}

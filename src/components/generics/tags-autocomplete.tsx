@@ -62,7 +62,9 @@ const TagsAutocomplete = ({
       multiple
       disableClearable
       freeSolo
-      PopperComponent={CustomPopper}
+      slots={{
+        popper: CustomPopper
+      }}
       options={tags}
       sx={{ width: "100%" }}
       inputValue={tag}
@@ -89,8 +91,8 @@ const TagsAutocomplete = ({
         >
           <Checkbox sx={{ marginRight: 2 }} checked={selected} />
           <Box
-            minWidth="5px"
             sx={{
+              minWidth: "5px",
               marginRight: "10px",
               height: 40,
               borderRadius: "5px"

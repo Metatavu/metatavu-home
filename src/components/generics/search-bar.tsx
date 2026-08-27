@@ -90,7 +90,9 @@ const SearchBar = ({
         }}
       >
         <Autocomplete
-          PopperComponent={CustomPopper}
+          slots={{
+            popper: CustomPopper
+          }}
           multiple
           disableCloseOnSelect
           id={autoCompleteId}
@@ -117,10 +119,10 @@ const SearchBar = ({
                 checked={selected}
               />
               <Box
-                minWidth="5px"
                 style={{ marginRight: "10px" }}
                 component="span"
                 sx={{
+                  minWidth: "5px",
                   height: 40,
                   borderRadius: "5px"
                 }}
@@ -152,14 +154,16 @@ const SearchBar = ({
               }}
             />
           )}
-          ListboxProps={{
-            sx: {
-              display: "grid",
-              columnGap: 3,
-              rowGap: 1,
-              gridTemplateColumns: {
-                xs: "repeat(2, 1fr)",
-                md: "repeat(3, 1fr)"
+          slotProps={{
+            listbox: {
+              sx: {
+                display: "grid",
+                columnGap: 3,
+                rowGap: 1,
+                gridTemplateColumns: {
+                  xs: "repeat(2, 1fr)",
+                  md: "repeat(3, 1fr)"
+                }
               }
             }
           }}

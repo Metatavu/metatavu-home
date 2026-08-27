@@ -116,7 +116,9 @@ const NavItems = () => {
             </MenuItem>
           )}
         </Menu>
-        <Typography variant="button" marginTop={1.5}>
+        <Typography variant="button" sx={{
+          marginTop: 1.5
+        }}>
           {currentPage}
         </Typography>
       </Box>

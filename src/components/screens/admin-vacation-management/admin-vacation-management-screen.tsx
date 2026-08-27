@@ -240,7 +240,12 @@ const AdminVacationManagementScreen = () => {
       <UserTable users={paginatedUsers} loading={loadingUsers} onEdit={handleEditUser} />
       {/* Only shows pagination after loading of users */}
       {shouldPaginate && !loadingUsers && (
-        <Box display="flex" justifyContent="center" mt={2}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            mt: 2
+          }}>
           <TablePagination
             component="div"
             count={filteredUsers.length}

@@ -49,7 +49,13 @@ const RenderCardContent = ({
   });
 
   return (
-    <Box display="flex" flexDirection="column" rowGap={theme.spaces.s} mt={theme.spaces.m}>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        rowGap: theme.spaces.s,
+        mt: theme.spaces.m
+      }}>
       {loading ? (
         <Skeleton />
       ) : (
@@ -94,11 +100,12 @@ const RenderCardContent = ({
                 </PillBadge>
               </Box>
               <Box
-                display="flex"
-                flexDirection="column"
-                rowGap={theme.spaces.xs}
-                p={theme.spaces.s}
-              >
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  rowGap: theme.spaces.xs,
+                  p: theme.spaces.s
+                }}>
                 <Typography variant="captionSmall">
                   {strings.formatString(
                     strings.wikiDocumentation.createdBy,

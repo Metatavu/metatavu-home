@@ -97,7 +97,9 @@ const RangeControls = ({
             {`${strings.timeExpressions.month}: ${chartData[0].month}`}
           </Typography>
         ) : (
-          <Typography variant="h6" color="text.secondary">
+          <Typography variant="h6" sx={{
+            color: "text.secondary"
+          }}>
             {strings.timebank.noData}
           </Typography>
         )}

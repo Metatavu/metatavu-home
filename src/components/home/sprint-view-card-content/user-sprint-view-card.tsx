@@ -98,7 +98,9 @@ const SprintViewCardContent = ({ hidden }: CardVisibilityProps) => {
   const renderBarChart = () => (
     <>
       {resourceAllocations.length ? (
-        <Box mr={0}>
+        <Box sx={{
+          mr: 0
+        }}>
           <Typography variant="caption">
             {strings.formatString(
               strings.sprint.current,

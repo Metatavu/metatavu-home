@@ -504,7 +504,12 @@ const ToolBar = () => {
         onSelectArticle={handleArticleLinkSelect}
         selectedText={selectedText}
       />
-      <Grid container justifyContent={"space-between"} sx={{ marginBottom: 1 }}>
+      <Grid
+        container
+        sx={{
+          justifyContent: "space-between",
+          marginBottom: 1
+        }}>
         {commands.map((command) => (
           <IconButton
             key={`inline-command-${command.key}`}

@@ -43,7 +43,9 @@ const FormToggleButton = ({
   >
     {ButtonIcon && <ButtonIcon />}
     {title && (
-      <Typography variant={titleVariant ? titleVariant : "body1"} marginLeft={1}>
+      <Typography variant={titleVariant ? titleVariant : "body1"} sx={{
+        marginLeft: 1
+      }}>
         {title}
       </Typography>
     )}

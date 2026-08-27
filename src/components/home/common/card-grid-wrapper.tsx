@@ -14,7 +14,11 @@ import { DraggableCard, DroppableCard } from "src/utils/cardUtils";
 const renderCardContent = (card: HomepageCardType, editmode: boolean): JSX.Element | ReactNode => {
   if (card.group) {
     return (
-      <Box display="flex" flexDirection="row">
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "row"
+        }}>
         {editmode ? (
           <>
             <DraggableCard id={card.id} canGroup={card.canGroup}>

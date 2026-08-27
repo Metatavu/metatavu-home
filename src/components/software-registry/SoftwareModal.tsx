@@ -201,7 +201,9 @@ const SoftwareModal = ({
         >
           <CloseIcon />
         </IconButton>
-        <Typography variant="h6" marginBottom={4}>
+        <Typography variant="h6" sx={{
+          marginBottom: 4
+        }}>
           {softwareData
             ? strings.softwareRegistry.editApplication
             : strings.softwareRegistry.addApplication}
@@ -336,7 +338,13 @@ const SoftwareModal = ({
               )}
             />
           </Grid>
-          <Grid container justifyContent="right" mt={4} size={12}>
+          <Grid
+            container
+            size={12}
+            sx={{
+              justifyContent: "right",
+              mt: 4
+            }}>
             <Button
               onClick={() => {
                 handleClose();

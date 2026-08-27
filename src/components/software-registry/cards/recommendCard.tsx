@@ -93,39 +93,38 @@ const RecommendCard = ({
           <Typography
             gutterBottom
             variant="h6"
-            whiteSpace={"nowrap"}
-            overflow={"hidden"}
-            textOverflow={"ellipsis"}
-            mt={1}
-          >
+            sx={{
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              mt: 1
+            }}>
             {app.name}
           </Typography>
           <Box>
             <Typography
-              mt={1}
               sx={{
+                mt: 1,
                 fontSize: "16px",
                 color: theme.palette.secondary.main,
                 fontWeight: "600"
-              }}
-            >
+              }}>
               {loadingUsers[app.createdBy]
                 ? strings.softwareRegistry.loading
                 : userNames[app.createdBy] || strings.softwareRegistry.errorUnknownUser}
             </Typography>
           </Box>
           <Box
-            display="flex"
-            alignItems="center"
-            justifyContent="flex-start"
-            flexWrap="nowrap"
-            width="100%"
             sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "flex-start",
+              flexWrap: "nowrap",
+              width: "100%",
               height: "30px",
               gap: 0.5,
               marginTop: "8px"
-            }}
-          >
+            }}>
             {app.tags?.slice(0, 3).map((tag) => (
               <Chip
                 key={tag}

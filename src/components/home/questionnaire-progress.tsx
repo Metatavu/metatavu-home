@@ -66,7 +66,12 @@ const QuestionnaireProgress = ({ hidden }: CardVisibilityProps) => {
   }
 
   return (
-    <Box display="flex" flexDirection="row" marginTop={theme.spaces.m}>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "row",
+        marginTop: theme.spaces.m
+      }}>
       {" "}
       {remaining > 0 ? (
         <PriorityHighRounded
@@ -87,7 +92,9 @@ const QuestionnaireProgress = ({ hidden }: CardVisibilityProps) => {
           }}
         />
       )}{" "}
-      <Typography fontStyle="body">
+      <Typography sx={{
+        fontStyle: "body"
+      }}>
         {" "}
         {before} <span style={{ fontWeight: 700 }}>{remaining}</span> {after}{" "}
       </Typography>{" "}
