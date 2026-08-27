@@ -1,6 +1,4 @@
-import { Box, useTheme } from "@mui/material";
-import { useLayoutEffect, useRef, useState } from "react";
-import AppButton from "./buttons/app-button";
+import { Box, Tab as MuiTab, Tabs, useTheme } from "@mui/material";
 
 export interface Tab {
   id: string;
@@ -24,73 +22,52 @@ interface TabProps {
  */
 const TabBar = ({ switchTab, chosenTab, tabNames }: TabProps) => {
   const theme = useTheme();
-  const chosenIndex = tabNames.findIndex((tab) => tab.id === chosenTab);
-  const [indicator, setIndicator] = useState({
-    left: 0,
-    width: 0
-  });
-  const tabRefs = useRef<(HTMLDivElement | null)[]>([]);
-
-  useLayoutEffect(() => {
-    const activeButton = tabRefs.current[chosenIndex];
-    const firstButton = tabRefs.current[0];
-
-    if (!activeButton || !firstButton) {
-      return;
-    }
-
-    setIndicator({
-      left: activeButton.offsetLeft - firstButton.offsetLeft,
-      width: activeButton.offsetWidth
-    });
-  }, [chosenIndex, tabNames]);
 
   return (
     <Box sx={{ mb: theme.spaces.l }}>
-      <Box sx={{ display: "flex" }}>
-        {tabNames.map((tab, index) => (
-          <Box
-            key={tab.id}
-            ref={(el: HTMLDivElement | null) => {
-              tabRefs.current[index] = el;
-            }}
-          >
-            <AppButton
-              variant="borderless"
-              text={tab.title}
-              onClick={() => switchTab(tab.id)}
-              sx={{
-                fontWeight: 500,
-                color:
-                  tab.id === chosenTab ? theme.palette.text.accent : theme.palette.text.secondary,
-                "&:hover": {
-                  textDecoration: "none"
-                }
-              }}
-            />
-          </Box>
-        ))}
-      </Box>
-
-      <Box sx={{ position: "relative" }}>
-        <Box
-          sx={{
-            height: "1px",
-            maxWidth: 1100,
-            backgroundColor: theme.palette.text.secondary
-          }}
-        />
-        <Box
-          sx={{
-            position: "absolute",
-            top: -2,
-            left: indicator.left,
-            width: indicator.width,
+      <Tabs
+        value={chosenTab}
+        onChange={(_, value: string) => switchTab(value)}
+        sx={{
+          minHeight: 0,
+          "& .MuiTabs-indicator": {
             height: 3,
             backgroundColor: theme.palette.text.accent
-          }}
-        />
-      </Box>
+          }
+        }}
+      >
+        {tabNames.map((tab) => (
+          <MuiTab
+            key={tab.id}
+            value={tab.id}
+            label={tab.title}
+            sx={{
+              minHeight: 0,
+              minWidth: 0,
+              pb: theme.spaces.s,
+              marginRight: theme.spaces.m,
+              typography: "body",
+              fontWeight: 500,
+              textTransform: "none",
+              color: theme.palette.text.secondary,
+              "&.Mui-selected": {
+                color: theme.palette.text.accent
+              },
+              "&:hover": {
+                textDecoration: "none"
+              }
+            }}
+          />
+        ))}
+      </Tabs>
+
+      <Box
+        sx={{
+          height: "1px",
+          maxWidth: 1100,
+          backgroundColor: theme.palette.text.secondary
+        }}
+      />
     </Box>
   );
 };
