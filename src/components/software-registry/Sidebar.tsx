@@ -129,7 +129,8 @@ const Sidebar = ({
               justifyContent: "space-between",
               alignItems: "center",
               mb: 2
-            }}>
+            }}
+          >
             <Typography variant="subtitle2">{strings.softwareRegistry.filter}</Typography>
             <IconButton onClick={toggleSidebar}>
               <CloseIcon />
@@ -174,7 +175,8 @@ const Sidebar = ({
               flexWrap: "wrap",
               gap: 1,
               mb: 2
-            }}>
+            }}
+          >
             {filteredTags.map((tag) => {
               const isSelected = selectedTags.includes(tag);
               return (

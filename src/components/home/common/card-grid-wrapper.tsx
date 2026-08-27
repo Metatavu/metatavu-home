@@ -18,7 +18,8 @@ const renderCardContent = (card: HomepageCardType, editmode: boolean): JSX.Eleme
         sx={{
           display: "flex",
           flexDirection: "row"
-        }}>
+        }}
+      >
         {editmode ? (
           <>
             <DraggableCard id={card.id} canGroup={card.canGroup}>

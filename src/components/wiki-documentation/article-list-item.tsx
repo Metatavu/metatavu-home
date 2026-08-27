@@ -52,7 +52,8 @@ const ArticleListItem = ({ article, adminMode = false, onDeleteClick }: Props) =
               md: 3.5,
               sm: 5,
               xs: 12
-            }}>
+            }}
+          >
             <Box
               component="img"
               sx={{
@@ -73,7 +74,8 @@ const ArticleListItem = ({ article, adminMode = false, onDeleteClick }: Props) =
               md: 8,
               sm: 6,
               xs: 12
-            }}>
+            }}
+          >
             <Typography
               variant="h6"
               sx={{
@@ -106,13 +108,14 @@ const ArticleListItem = ({ article, adminMode = false, onDeleteClick }: Props) =
             >
               {article.description}
             </Typography>
-            <Grid
-              container
-              direction={{ xs: "column", md: "row" }}
+            <Box
               sx={{
+                display: "flex",
+                flexDirection: { xs: "column", md: "row" },
                 justifyContent: "space-between",
                 marginTop: { lg: 1.5, md: 2, sm: 1.5 }
-              }}>
+              }}
+            >
               <Grid sx={{ order: { xs: 2, md: 1 } }}>
                 <Box
                   sx={{
@@ -145,7 +148,7 @@ const ArticleListItem = ({ article, adminMode = false, onDeleteClick }: Props) =
                   )}
                 </Typography>
               </Grid>
-            </Grid>
+            </Box>
             {adminMode && onDeleteClick && (
               <Button
                 variant="outlined"

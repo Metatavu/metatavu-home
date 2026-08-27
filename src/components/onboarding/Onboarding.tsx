@@ -298,7 +298,8 @@ const Onboarding = ({ screen }: OnboardingProps) => {
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center"
-            }}>
+            }}
+          >
             <Typography variant="subtitle1">{step.title}</Typography>
             <IconButton size="small" onClick={handleClose}>
               <CloseIcon fontSize="small" />
@@ -315,7 +316,8 @@ const Onboarding = ({ screen }: OnboardingProps) => {
               justifyContent: "space-between",
               alignItems: "center",
               mt: 2
-            }}>
+            }}
+          >
             <Button
               size="small"
               onClick={handlePrev}

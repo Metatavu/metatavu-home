@@ -65,9 +65,12 @@ const ChartTooltip = ({ active, payload, label, strings }: any) => {
         borderRadius: 1
       }}
     >
-      <Typography variant="body2" sx={{
-        fontWeight: "bold"
-      }}>
+      <Typography
+        variant="body2"
+        sx={{
+          fontWeight: "bold"
+        }}
+      >
         {label}
       </Typography>
       {data.holidayName && (

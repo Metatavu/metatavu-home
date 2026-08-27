@@ -33,9 +33,12 @@ const ToolbarDeleteButton = ({ setConfirmationHandlerOpen }: Props) => {
       }}
     >
       <Delete />
-      <Typography variant="body1" sx={{
-        marginLeft: 1
-      }}>
+      <Typography
+        variant="body1"
+        sx={{
+          marginLeft: 1
+        }}
+      >
         {strings.tableToolbar.delete}
       </Typography>
     </Button>

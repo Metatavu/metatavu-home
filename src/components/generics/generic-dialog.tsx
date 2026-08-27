@@ -88,7 +88,8 @@ const GenericDialog = ({
               justifyContent: "center",
               alignItems: "center",
               p: 4
-            }}>
+            }}
+          >
             <CircularProgress size={36} />
           </Box>
         </DialogContent>
@@ -102,9 +103,13 @@ const GenericDialog = ({
           </DialogTitle>
 
           <DialogContent>
-            <Box sx={{
-              p: 3
-            }}>{children}</Box>
+            <Box
+              sx={{
+                p: 3
+              }}
+            >
+              {children}
+            </Box>
           </DialogContent>
         </>
       )}

@@ -74,7 +74,8 @@ const ErrorHandler = ({ children }: Props) => {
               marginBottom: 3,
               fontSize: 16,
               fontWeight: "bold"
-            }}>
+            }}
+          >
             {error}
           </Typography>
         }

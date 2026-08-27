@@ -98,7 +98,8 @@ const RecommendCard = ({
               overflow: "hidden",
               textOverflow: "ellipsis",
               mt: 1
-            }}>
+            }}
+          >
             {app.name}
           </Typography>
           <Box>
@@ -108,7 +109,8 @@ const RecommendCard = ({
                 fontSize: "16px",
                 color: theme.palette.secondary.main,
                 fontWeight: "600"
-              }}>
+              }}
+            >
               {loadingUsers[app.createdBy]
                 ? strings.softwareRegistry.loading
                 : userNames[app.createdBy] || strings.softwareRegistry.errorUnknownUser}
@@ -124,7 +126,8 @@ const RecommendCard = ({
               height: "30px",
               gap: 0.5,
               marginTop: "8px"
-            }}>
+            }}
+          >
             {app.tags?.slice(0, 3).map((tag) => (
               <Chip
                 key={tag}

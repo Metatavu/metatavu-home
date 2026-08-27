@@ -509,7 +509,8 @@ const ToolBar = () => {
         sx={{
           justifyContent: "space-between",
           marginBottom: 1
-        }}>
+        }}
+      >
         {commands.map((command) => (
           <IconButton
             key={`inline-command-${command.key}`}

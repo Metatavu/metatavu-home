@@ -192,9 +192,12 @@ const WorkDaysChart = ({ selectedEmployee }: { selectedEmployee?: User }) => {
         >
           {balance}
         </Box>{" "}
-        <Box component="span" sx={{
-          ml: 1
-        }}>
+        <Box
+          component="span"
+          sx={{
+            ml: 1
+          }}
+        >
           {balance === 1 ? strings.timeExpressions.hour : strings.timeExpressions.hours}
         </Box>
       </Typography>

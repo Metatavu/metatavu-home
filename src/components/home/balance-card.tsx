@@ -78,9 +78,13 @@ const BalanceCard = ({ hidden, onToggleHidden, editmode }: CardProps) => {
   const renderUserFlextime = () => {
     if (!usersFlextime?.totalFlextimeBalance) {
       return (
-        <Typography sx={{
-          fontStyle: "body"
-        }}>{strings.error.noFlextimeData}</Typography>
+        <Typography
+          sx={{
+            fontStyle: "body"
+          }}
+        >
+          {strings.error.noFlextimeData}
+        </Typography>
       );
     }
     const totalFlextimeBalance = usersFlextime.totalFlextimeBalance;
@@ -96,9 +100,13 @@ const BalanceCard = ({ hidden, onToggleHidden, editmode }: CardProps) => {
         <Typography variant="caption">
           {strings.formatString(strings.balanceCard.atTheEndOf, yesterday.toLocaleString())}
         </Typography>
-        <Typography sx={{
-          fontStyle: "body"
-        }}>{strings.balanceCard.totalFlextimeBalance}</Typography>
+        <Typography
+          sx={{
+            fontStyle: "body"
+          }}
+        >
+          {strings.balanceCard.totalFlextimeBalance}
+        </Typography>
         <Typography
           sx={{ color: hidden ? theme.palette.text.disabled : textColor, fontWeight: 700 }}
         >

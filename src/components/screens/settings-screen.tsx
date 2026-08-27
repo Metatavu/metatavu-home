@@ -130,10 +130,14 @@ const SettingsScreen = ({ screenColorMode, setScreenColorMode }: SettingsScreenP
       sx={{
         display: "flex",
         flexDirection: "column"
-      }}>
-      <Typography variant="h1" sx={{
-        alignSelf: "center"
-      }}>
+      }}
+    >
+      <Typography
+        variant="h1"
+        sx={{
+          alignSelf: "center"
+        }}
+      >
         {strings.header.settings}
       </Typography>
       <ToggleBox

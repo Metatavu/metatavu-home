@@ -226,14 +226,16 @@ const SoftwareDetails = () => {
         sx={{
           my: 4,
           textAlign: "center"
-        }}>
+        }}
+      >
         <Typography variant="h2">{strings.softwareRegistry.application}</Typography>
       </Box>
       <Box
         sx={{
           textAlign: "center",
           mb: 4
-        }}>
+        }}
+      >
         {software.image && (
           <img
             src={software.image}
@@ -251,7 +253,8 @@ const SoftwareDetails = () => {
             flexWrap: "wrap",
             gap: 1,
             mb: 2
-          }}>
+          }}
+        >
           {software.tags?.map((tag) => (
             <Box
               key={tag}
@@ -282,9 +285,13 @@ const SoftwareDetails = () => {
           {software.url}
         </Link>
       </Box>
-      <Grid container spacing={4} sx={{
-        mb: 4
-      }}>
+      <Grid
+        container
+        spacing={4}
+        sx={{
+          mb: 4
+        }}
+      >
         <Grid
           size={{
             xs: 12,
@@ -334,7 +341,8 @@ const SoftwareDetails = () => {
         sx={{
           textAlign: "center",
           m: 4
-        }}>
+        }}
+      >
         {isUserInList ? (
           <Button
             variant="outlined"

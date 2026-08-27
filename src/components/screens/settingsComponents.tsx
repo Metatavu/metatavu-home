@@ -184,9 +184,11 @@ export const RoleSettings = ({ userProfile }: { userProfile?: KeycloakProfile })
   } */
 
   return (
-    <Box sx={{
-      m: theme.spaces.xl
-    }}>
+    <Box
+      sx={{
+        m: theme.spaces.xl
+      }}
+    >
       <Typography variant="h4">{strings.settingsScreen.jobs}</Typography>
 
       <Typography sx={{ ml: theme.spaces.xl, lineHeight: theme.spaces.xxxl }} variant="caption">
@@ -199,7 +201,8 @@ export const RoleSettings = ({ userProfile }: { userProfile?: KeycloakProfile })
             display: "flex",
             alignItems: "center",
             gap: 1
-          }}>
+          }}
+        >
           <CircularProgress size={24} />
 
           <Typography variant="body2">{strings.settingsScreen.descriptionsLoading}</Typography>
@@ -282,7 +285,8 @@ export const ToggleBox = ({
             flexWrap: "wrap",
             maxHeight: 50,
             width: 400
-          }}>
+          }}
+        >
           <Typography variant="body" sx={{ fontWeight: 500 }}>
             {content.toggleHeader}
           </Typography>
@@ -292,7 +296,8 @@ export const ToggleBox = ({
               display: "flex",
               alignItems: "center",
               justifyContent: "flex-end"
-            }}>
+            }}
+          >
             <AppToggle
               checked={content.checked}
               onChange={handleChange}

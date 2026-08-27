@@ -33,7 +33,8 @@ const createSprintViewProjectsColumns = ({ resourceAllocations }: Props) => {
             display: "flex",
             alignItems: "center",
             justifyContent: "left"
-          }}>
+          }}
+        >
           {params.row?.project ? getProjectName(params.row.project, resourceAllocations) : ""}
         </Box>
       )
@@ -56,7 +57,8 @@ const createSprintViewProjectsColumns = ({ resourceAllocations }: Props) => {
             alignItems: "center",
             justifyContent: "left",
             ml: 5
-          }}>
+          }}
+        >
           {params.row?.project
             ? getTotalEstimatedHours(resourceAllocations, params.row.project)
             : ""}
@@ -80,7 +82,8 @@ const createSprintViewProjectsColumns = ({ resourceAllocations }: Props) => {
             display: "flex",
             alignItems: "center",
             justifyContent: "left"
-          }}>
+          }}
+        >
           {params.row?.project ? getAssigneName(resourceAllocations, params.row.project) : ""}
         </Box>
       )

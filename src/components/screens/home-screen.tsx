@@ -133,7 +133,8 @@ const HomeScreen = () => {
           display: "flex",
           flexDirection: "column",
           alignItems: "end"
-        }}>
+        }}
+      >
         <Box>
           <AppButton
             variant="secondary"

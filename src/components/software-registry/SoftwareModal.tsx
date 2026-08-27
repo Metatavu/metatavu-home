@@ -201,9 +201,12 @@ const SoftwareModal = ({
         >
           <CloseIcon />
         </IconButton>
-        <Typography variant="h6" sx={{
-          marginBottom: 4
-        }}>
+        <Typography
+          variant="h6"
+          sx={{
+            marginBottom: 4
+          }}
+        >
           {softwareData
             ? strings.softwareRegistry.editApplication
             : strings.softwareRegistry.addApplication}
@@ -344,7 +347,8 @@ const SoftwareModal = ({
             sx={{
               justifyContent: "right",
               mt: 4
-            }}>
+            }}
+          >
             <Button
               onClick={() => {
                 handleClose();

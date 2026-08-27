@@ -28,7 +28,8 @@ const QuestionnaireScreen = () => {
             alignItems: "center",
             justifyContent: "flex-end",
             mb: 2
-          }}>
+          }}
+        >
           {adminMode && (
             <Link to="/admin/newQuestionnaire" style={{ textDecoration: "none" }}>
               <Button variant="contained" color="primary" size="large">

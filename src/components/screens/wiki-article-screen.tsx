@@ -304,7 +304,8 @@ const ArticleScreen = () => {
                   sx={{
                     color: "text.secondary",
                     mb: 2
-                  }}>
+                  }}
+                >
                   {article?.createdAt &&
                     `${strings.wikiDocumentation.created}: ${formatDate(DateTime.fromJSDate(article.createdAt))}`}
                   {article?.lastUpdatedAt &&

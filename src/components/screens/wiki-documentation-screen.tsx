@@ -324,7 +324,8 @@ const WikiDocumentationScreen = () => {
         justifyContent: "space-between",
         marginTop: articles && articles.length !== 0 ? 4 : 2,
         marginBottom: 2
-      }}>
+      }}
+    >
       <SearchBar
         searchInput={searchInput}
         handleSearchInputChange={handleSearchInputChange}
@@ -442,7 +443,8 @@ const WikiDocumentationScreen = () => {
                 sx={{
                   justifyContent: "center",
                   color: colors.button.text
-                }}>
+                }}
+              >
                 <SearchOffIcon />
                 <Typography variant="body1">{strings.wikiDocumentation.noArticlesFound}</Typography>
               </Grid>
@@ -454,7 +456,8 @@ const WikiDocumentationScreen = () => {
               sx={{
                 justifyContent: "center",
                 marginBottom: 3
-              }}>
+              }}
+            >
               <Pagination
                 size="large"
                 count={Math.floor(displayedArticles?.length / itemsPerPage) + 1}

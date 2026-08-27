@@ -462,7 +462,8 @@ const QuestionnaireTable = () => {
           sx={{
             justifyContent: "center",
             margin: 2
-          }}>
+          }}
+        >
           {selectedQuestionnaire
             ? selectedQuestionnaire.title
             : strings.questionnaireScreen.currentQuestionnaires}

@@ -96,7 +96,8 @@ const OnCallPaidStatusDialog = ({ open, setOpen, onCallEntry, updatePaidStatus }
               sx={{
                 fontWeight: "bold",
                 display: "inline"
-              }}>
+              }}
+            >
               {strings.oncall.person}:
             </Typography>
             <Typography
@@ -115,7 +116,8 @@ const OnCallPaidStatusDialog = ({ open, setOpen, onCallEntry, updatePaidStatus }
               sx={{
                 fontWeight: "bold",
                 display: "inline"
-              }}>
+              }}
+            >
               {strings.oncall.paidStatus}:
             </Typography>
             <Chip
@@ -135,12 +137,16 @@ const OnCallPaidStatusDialog = ({ open, setOpen, onCallEntry, updatePaidStatus }
               sx={{
                 fontWeight: "bold",
                 display: "inline"
-              }}>
+              }}
+            >
               {strings.oncall.date}:
             </Typography>
-            <Typography variant="subtitle1" sx={{
-              display: "inline"
-            }}>
+            <Typography
+              variant="subtitle1"
+              sx={{
+                display: "inline"
+              }}
+            >
               {weekRange}
             </Typography>
           </Box>

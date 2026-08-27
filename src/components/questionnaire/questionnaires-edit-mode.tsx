@@ -492,7 +492,6 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
         </CardContent>
       </Card>
       <BackButton styles={{ mt: 3, marginBottom: 2 }} />
-
     </>
   );
 };

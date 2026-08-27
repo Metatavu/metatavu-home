@@ -124,9 +124,13 @@ const SprintViewScreen = () => {
             <Stack spacing={3}>
               {adminMode && (
                 <>
-                  <Typography variant="h5" color="primary" sx={{
-                    fontWeight: "bold"
-                  }}>
+                  <Typography
+                    variant="h5"
+                    color="primary"
+                    sx={{
+                      fontWeight: "bold"
+                    }}
+                  >
                     {strings.sprint.allocation}
                   </Typography>
                   <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
@@ -135,7 +139,8 @@ const SprintViewScreen = () => {
                       sx={{
                         fontWeight: "medium",
                         color: "text.secondary"
-                      }}>
+                      }}
+                    >
                       {strings.sprint.filter}
                     </Typography>
                     <FormControl sx={{ minWidth: 140 }}>
@@ -205,9 +210,12 @@ const SprintViewScreen = () => {
                     textAlign: "right"
                   }}
                 >
-                  <Typography variant="body2" sx={{
-                    color: "text.primary"
-                  }}>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color: "text.primary"
+                    }}
+                  >
                     {strings.formatString(
                       strings.sprint.current,
                       sprintStartDate.toLocaleString(),

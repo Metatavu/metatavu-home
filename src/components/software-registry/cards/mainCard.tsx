@@ -363,7 +363,8 @@ const MainCard = ({
                   overflow: "hidden",
                   textOverflow: "ellipsis",
                   whiteSpace: "nowrap"
-                }}>
+                }}
+              >
                 {name}
               </Typography>
               <Box sx={{ minHeight: "70px" }}>
@@ -386,7 +387,8 @@ const MainCard = ({
                   flexWrap: "wrap",
                   gap: 0.5,
                   height: "60px"
-                }}>
+                }}
+              >
                 {renderTags()}
               </Box>
             </CardContent>
@@ -486,7 +488,8 @@ const MainCard = ({
                     gap: 0.5,
                     height: "30px",
                     marginTop: "10px"
-                  }}>
+                  }}
+                >
                   {renderTags()}
                 </Box>
               </CardContent>

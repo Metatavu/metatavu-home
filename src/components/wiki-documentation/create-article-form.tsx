@@ -274,7 +274,8 @@ const CreateOrEditArticleForm = ({
             display: "flex",
             justifyContent: "center",
             p: 3
-          }}>
+          }}
+        >
           <CircularProgress />
         </Box>
       );

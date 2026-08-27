@@ -69,9 +69,12 @@ const SoftwareRegistryCard = () => {
       <>
         {!adminMode && recommendedSoftware.length > 0 && (
           <>
-            <Typography gutterBottom sx={{
-              fontWeight: "bold"
-            }}>
+            <Typography
+              gutterBottom
+              sx={{
+                fontWeight: "bold"
+              }}
+            >
               {strings.softwareRegistry.recommendations}
             </Typography>
             <Grid
@@ -80,7 +83,8 @@ const SoftwareRegistryCard = () => {
                 display: "flex",
                 alignItems: "center",
                 m: 1
-              }}>
+              }}
+            >
               {recommendedSoftware.map((app) => (
                 <Grid key={app.id}>
                   <CardMedia
@@ -103,9 +107,12 @@ const SoftwareRegistryCard = () => {
         )}
         {adminMode && pendingSoftware.length > 0 && (
           <>
-            <Typography gutterBottom sx={{
-              fontWeight: "bold"
-            }}>
+            <Typography
+              gutterBottom
+              sx={{
+                fontWeight: "bold"
+              }}
+            >
               {strings.softwareRegistry.newSoftware}
             </Typography>
             <Grid
@@ -114,7 +121,8 @@ const SoftwareRegistryCard = () => {
                 display: "flex",
                 alignItems: "center",
                 m: 1
-              }}>
+              }}
+            >
               {pendingSoftware.map((app) => (
                 <Grid key={app.id}>
                   <CardMedia
@@ -146,9 +154,13 @@ const SoftwareRegistryCard = () => {
     >
       <Card>
         <CardContent>
-          <Typography variant="h6" style={{ marginTop: 6, marginBottom: 3 }} sx={{
-            fontWeight: "bold"
-          }}>
+          <Typography
+            variant="h6"
+            style={{ marginTop: 6, marginBottom: 3 }}
+            sx={{
+              fontWeight: "bold"
+            }}
+          >
             {adminMode
               ? strings.softwareRegistry.softwareRegistryAdmin
               : strings.softwareRegistry.softwareRegistry}

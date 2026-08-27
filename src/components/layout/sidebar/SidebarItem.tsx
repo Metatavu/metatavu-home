@@ -60,9 +60,11 @@ const SidebarItem = ({ title, route, icon: Icon, collapsed = false }: SidebarIte
             primary={title}
             slotProps={{
               primary: {
-                fontSize: 14,
-                fontWeight: 600,
-                color: "inherit"
+                sx: {
+                  fontSize: 14,
+                  fontWeight: 600,
+                  color: "inherit"
+                }
               }
             }}
           />

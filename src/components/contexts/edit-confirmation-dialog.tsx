@@ -79,7 +79,8 @@ const EditConfirmationDialog = ({
           marginBottom: 3,
           fontSize: 16,
           fontWeight: "bold"
-        }}>
+        }}
+      >
         {getConfirmationMessage()}
       </Typography>
       <Divider />

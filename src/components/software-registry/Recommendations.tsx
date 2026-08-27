@@ -188,7 +188,8 @@ const Recommendations = ({ applications, onAddUser }: RecommendationsProps) => {
           display: "flex",
           justifyContent: "center",
           mt: 2
-        }}>
+        }}
+      >
         <Button
           variant="contained"
           color="secondary"

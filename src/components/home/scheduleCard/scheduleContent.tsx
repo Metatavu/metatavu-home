@@ -47,7 +47,8 @@ const Event = ({ event, hourNow, pixels }: EventProps) => {
         ml: theme.spaces.xxxl,
         borderRadius: theme.radius.s,
         overflow: "hidden"
-      }}>
+      }}
+    >
       <Typography variant="caption">{timing}</Typography>
       <Typography variant="body">{event.summary}</Typography>
     </Box>
@@ -243,9 +244,11 @@ export const ScheduleTopBar = ({ hidden, timeNow, setTimeNow }: TopBarProps) => 
       }}
     >
       {timeNow.monthLong}
-      <Box sx={{
-        display: "flex"
-      }}>
+      <Box
+        sx={{
+          display: "flex"
+        }}
+      >
         <Button
           startIcon={<ChevronLeftRounded sx={{ color: theme.palette.icons.primary }} />}
           onClick={() => handleDayChange("back", setTimeNow)}
@@ -257,7 +260,8 @@ export const ScheduleTopBar = ({ hidden, timeNow, setTimeNow }: TopBarProps) => 
               display: "flex",
               flex: 1,
               justifyContent: "center"
-            }}>
+            }}
+          >
             <Box
               sx={{
                 backgroundColor: day.today ? colors.accent : "transparent",

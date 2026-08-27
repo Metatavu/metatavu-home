@@ -271,11 +271,12 @@ const AllSoftwareScreen = () => {
     <Container>
       <Grid
         container
-        direction="column"
         sx={{
+          flexDirection: "column",
           alignItems: "stretch",
           mt: 4
-        }}>
+        }}
+      >
         <Grid
           container
           sx={{
@@ -283,7 +284,8 @@ const AllSoftwareScreen = () => {
             alignItems: "center",
             mb: 2,
             mt: 4
-          }}>
+          }}
+        >
           <Typography variant="h3">{strings.softwareRegistry.allApplications}</Typography>
         </Grid>
 
@@ -327,14 +329,16 @@ const AllSoftwareScreen = () => {
             mt: 2,
             mb: 6,
             width: "100%"
-          }}>
+          }}
+        >
           <Grid size="grow">
             {error && (
               <Box
                 sx={{
                   mb: 2,
                   width: "100%"
-                }}>
+                }}
+              >
                 <Alert severity="error">{error}</Alert>
               </Box>
             )}
@@ -352,7 +356,8 @@ const AllSoftwareScreen = () => {
                 sx={{
                   textAlign: "center",
                   mt: 3
-                }}>
+                }}
+              >
                 <Button
                   variant="contained"
                   color="secondary"

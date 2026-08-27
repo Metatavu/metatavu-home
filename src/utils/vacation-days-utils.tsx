@@ -20,9 +20,13 @@ export const renderVacationDaysTextForCard = (user: User, theme: Theme) => {
   if (user) {
     return (
       <Grid>
-        <Grid container spacing={2} sx={{
-          alignItems: "center"
-        }}>
+        <Grid
+          container
+          spacing={2}
+          sx={{
+            alignItems: "center"
+          }}
+        >
           <Grid size={6}>{strings.vacationsCard.vacationDays}</Grid>
           <Grid size={6}>
             <Typography color={vacationDaysByYearColor}>
@@ -32,9 +36,13 @@ export const renderVacationDaysTextForCard = (user: User, theme: Theme) => {
             </Typography>
           </Grid>
         </Grid>
-        <Grid container spacing={2} sx={{
-          alignItems: "center"
-        }}>
+        <Grid
+          container
+          spacing={2}
+          sx={{
+            alignItems: "center"
+          }}
+        >
           <Grid size={6}>{strings.vacationsCard.unspentVacationDays}</Grid>
           <Grid size={6}>
             <Typography color={unspentVacationDaysByYearColor}>
@@ -64,9 +72,12 @@ export const renderVacationDaysTextForScreen = (user: User, theme: Theme) => {
 
   if (user) {
     return (
-      <Grid container sx={{
-        justifyContent: "space-around"
-      }}>
+      <Grid
+        container
+        sx={{
+          justifyContent: "space-around"
+        }}
+      >
         <Grid style={{ display: "flex", alignItems: "center" }}>
           {strings.vacationsCard.vacationDays}
           <Typography color={vacationDaysByYearColor} style={{ marginLeft: "8px" }}>
