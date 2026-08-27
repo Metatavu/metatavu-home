@@ -21,9 +21,7 @@ export const renderVacationDaysTextForCard = (user: User, theme: Theme) => {
     return (
       <Grid>
         <Grid container spacing={2} alignItems="center">
-          <Grid size={6}>
-            {strings.vacationsCard.vacationDays}
-          </Grid>
+          <Grid size={6}>{strings.vacationsCard.vacationDays}</Grid>
           <Grid size={6}>
             <Typography color={vacationDaysByYearColor}>
               {user.attributes?.vacationDaysByYear
@@ -33,9 +31,7 @@ export const renderVacationDaysTextForCard = (user: User, theme: Theme) => {
           </Grid>
         </Grid>
         <Grid container spacing={2} alignItems="center">
-          <Grid size={6}>
-            {strings.vacationsCard.unspentVacationDays}
-          </Grid>
+          <Grid size={6}>{strings.vacationsCard.unspentVacationDays}</Grid>
           <Grid size={6}>
             <Typography color={unspentVacationDaysByYearColor}>
               {user.attributes?.unspentVacationDaysByYear

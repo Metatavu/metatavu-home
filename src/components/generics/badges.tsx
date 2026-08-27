@@ -9,7 +9,9 @@ import { Chip, Icon, type SxProps, type Theme, useTheme } from "@mui/material";
 import type React from "react";
 import type { VacationRequestStatuses } from "src/generated/homeLambdasClient";
 import { getBadgeColor } from "src/utils/badgeColorUtils";
-import VacationStatusIndicator from "../vacation-requests-table/vacationStatusIndicator";
+import VacationStatusIndicator, {
+  type IndicatorColor
+} from "../vacation-requests-table/vacationStatusIndicator";
 
 export type IconBadgeVariant = "empty" | "success" | "failed";
 
@@ -55,27 +57,28 @@ export const IconBadge = ({ variant }: IconBadgeProps) => {
 
 type PillBadgeVariant = "approvalBadge" | "statusBadge" | "wikiBadge";
 
+interface PillBadgeBaseProps {
+  children: React.ReactNode;
+  hidden?: boolean;
+}
 /**
  * TODO: status for "statusBadge" and "wikiBadge" were set to "string" for
  * testing purposes. As these variants are not yet fully implemented, type must
  * be changed once the screens are updated.
  */
 type PillBadgeProps =
-  | {
+  | (PillBadgeBaseProps & {
       variant: "approvalBadge";
       status: VacationRequestStatuses;
-      children: React.ReactNode;
-    }
-  | {
+    })
+  | (PillBadgeBaseProps & {
       variant: "statusBadge";
       status: string;
-      children: React.ReactNode;
-    }
-  | {
+    })
+  | (PillBadgeBaseProps & {
       variant: "wikiBadge";
       status: string;
-      children: React.ReactNode;
-    };
+    });
 
 /**
  * Pillbadge with different variants.
@@ -92,11 +95,14 @@ type PillBadgeProps =
  *
  * @returns Themed MUI Chip component.
  */
-export const PillBadge = ({ variant, status, children }: PillBadgeProps) => {
+export const PillBadge = ({ variant, status, children, hidden }: PillBadgeProps) => {
   const theme = useTheme();
+  const color = hidden ? "disabled" : status;
 
   const approvalIcon =
-    variant === "approvalBadge" ? <VacationStatusIndicator statusColor={status} /> : undefined;
+    variant === "approvalBadge" ? (
+      <VacationStatusIndicator status={color as IndicatorColor} />
+    ) : undefined;
 
   const icons: Partial<Record<PillBadgeVariant, React.ReactElement>> = {
     approvalBadge: approvalIcon,
@@ -105,12 +111,12 @@ export const PillBadge = ({ variant, status, children }: PillBadgeProps) => {
 
   const VariantStyles: Record<PillBadgeVariant, SxProps<Theme>> = {
     approvalBadge: {
-      borderColor: getBadgeColor(status, theme),
+      borderColor: getBadgeColor(color, theme),
       borderWidth: theme.borders.s,
       borderRadius: theme.radius.m
     },
     statusBadge: {
-      color: getBadgeColor(status, theme),
+      color: getBadgeColor(color, theme),
       borderWidth: theme.borders.s,
       borderRadius: theme.radius.m,
       fontWeight: 500
