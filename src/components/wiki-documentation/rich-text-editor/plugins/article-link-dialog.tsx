@@ -94,10 +94,12 @@ const ArticleLinkDialog = ({ open, onClose, onSelectArticle, selectedText = "" }
       onClose={handleClose}
       maxWidth="md"
       fullWidth
-      PaperProps={{
-        sx: {
-          borderRadius: 3,
-          maxHeight: "80vh"
+      slotProps={{
+        paper: {
+          sx: {
+            borderRadius: 3,
+            maxHeight: "80vh"
+          }
         }
       }}
     >

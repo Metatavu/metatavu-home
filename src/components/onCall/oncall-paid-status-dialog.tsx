@@ -153,7 +153,9 @@ const OnCallPaidStatusDialog = ({ open, setOpen, onCallEntry, updatePaidStatus }
               onChange={handlePaidStatusChange}
               color="success"
               disabled={loading}
-              inputProps={{ "aria-label": "Paid status switch" }}
+              slotProps={{
+                input: { "aria-label": "Paid status switch" }
+              }}
             />
             {loading && (
               <CircularProgress

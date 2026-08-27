@@ -58,10 +58,12 @@ const SidebarItem = ({ title, route, icon: Icon, collapsed = false }: SidebarIte
         {!collapsed && (
           <ListItemText
             primary={title}
-            primaryTypographyProps={{
-              fontSize: 14,
-              fontWeight: 600,
-              color: "inherit"
+            slotProps={{
+              primary: {
+                fontSize: 14,
+                fontWeight: 600,
+                color: "inherit"
+              }
             }}
           />
         )}

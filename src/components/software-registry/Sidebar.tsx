@@ -144,13 +144,6 @@ const Sidebar = ({
             value={searchValue}
             onChange={handleSearchChange}
             fullWidth
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <SearchIcon sx={{ color: theme.palette.text.secondary }} />
-                </InputAdornment>
-              )
-            }}
             sx={{
               "& fieldset": { borderColor: theme.palette.divider },
               "& .MuiInputBase-root": {
@@ -161,6 +154,15 @@ const Sidebar = ({
               },
               "& .MuiInputBase-input": { color: theme.palette.text.primary },
               mb: 2
+            }}
+            slotProps={{
+              input: {
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <SearchIcon sx={{ color: theme.palette.text.secondary }} />
+                  </InputAdornment>
+                )
+              }
             }}
           />
           <Typography variant="subtitle2" gutterBottom>
