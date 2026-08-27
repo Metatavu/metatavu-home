@@ -21,7 +21,7 @@ interface CheckboxProps {
  */
 const AppCheckbox = ({ checked, label, disabled, onChange, ariaLabel }: CheckboxProps) => {
   const theme = useTheme();
-  console.log(label);
+
   return (
     <FormControlLabel
       label={label}
