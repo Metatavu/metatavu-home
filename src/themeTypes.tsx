@@ -168,6 +168,12 @@ declare module "@mui/material/styles" {
       on: string;
       off: string;
     };
+    segmentedControl: {
+    default: string;
+    selected: string;
+    hover: string;
+    border: string;
+  };
   }
   interface ThemeOptions {
     spaces?: {
@@ -196,7 +202,13 @@ declare module "@mui/material/styles" {
     toggle: {
     on: string;
     off: string;
-  };
+    };
+    segmentedControl?: {
+      default?: string;
+      selected?: string;
+      hover?: string;
+      border?: string;
+    };
   }
   interface TypographyVariants {
     captionSmall: React.CSSProperties;

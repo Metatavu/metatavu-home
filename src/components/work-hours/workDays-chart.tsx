@@ -14,13 +14,10 @@ import {
   getWeekData,
   getYearData
 } from "src/utils/workDay-utils";
-import BackButton from "../generics/back-button";
-import RangeControls from "./range-controls";
+import PeriodNavigator from "./period-navigator";
+import RangeTypeSelector from "./range-type-selector";
 import WorkDaysRechart from "./workDays-rechart-components";
 
-/**
- * Data point structure for the work days chart
- */
 export interface ChartDataPoint {
   period: string;
   hours: number;
@@ -32,39 +29,31 @@ export interface ChartDataPoint {
   targetWeek?: Date;
 }
 
-/**
- * Range key type definition
- */
 type RangeKey = "week" | "month" | "year";
 
-/**
- * Y-axis domain settings for different range selections
- */
 const YAXIS_DOMAIN: Record<RangeKey, [number, number]> = {
   week: [0, 12],
   month: [0, 60],
   year: [0, 240]
 };
 
-/** 
+/**
  * Work days chart component
- * 
+ *
  * @param selectedEmployee - The employee whose work days are to be displayed
-
  */
 const WorkDaysChart = ({ selectedEmployee }: { selectedEmployee?: User }) => {
   const theme = useTheme();
-  const [selectedRange, setSelectedRange] = useState<RangeKey>("month");
+  const [selectedRange, setSelectedRange] = useState<RangeKey>("week");
   const [weekOffset, setWeekOffset] = useState(0);
   const [monthOffset, setMonthOffset] = useState(0);
+  const [yearOffset, setYearOffset] = useState(0);
   const [usersFlextime, setUsersFlextime] = useState<Flextime>();
   const [loading, setLoading] = useState(false);
   const setError = useSetAtom(errorAtom);
   const [workdays, setWorkdays] = useAtom(workDayAtom);
   const [language] = useAtom(languageAtom);
   const locale = language === "fi" ? "fi-FI" : "en-US";
-  const resetWeekOffset = useCallback(() => setWeekOffset(0), []);
-  const resetMonthOffset = useCallback(() => setMonthOffset(0), []);
 
   const severaUserId = getSeveraUserId(selectedEmployee);
   const { flexTimeApi, workDaysApi } = useLambdasApi();
@@ -73,19 +62,14 @@ const WorkDaysChart = ({ selectedEmployee }: { selectedEmployee?: User }) => {
     if (!severaUserId) return;
     fetchFlextime();
     // biome(suppressions/react-hooks/exhaustive-deps)
-    // fetchFlextime is intentionally omitted from dependencies to avoid redefining on every render
   }, [severaUserId]);
 
   useEffect(() => {
     if (!severaUserId) return;
     fetchWorkdays();
     // biome(suppressions/react-hooks/exhaustive-deps)
-    // fetchWorkdays is intentionally omitted from dependencies to avoid redefining on every render
   }, [severaUserId]);
 
-  /**
-   * Fetches the current user's flextime from the API.
-   */
   const fetchFlextime = async () => {
     try {
       setLoading(true);
@@ -98,11 +82,6 @@ const WorkDaysChart = ({ selectedEmployee }: { selectedEmployee?: User }) => {
     }
   };
 
-  /**
-   * Fetches workdays for the current user from the API.
-   *
-   * @returns Returns Array of workday entries for current year's worth of data.
-   */
   const fetchWorkdays = async () => {
     const { startDate, endDate } = getCurrentYearRange();
     try {
@@ -122,11 +101,6 @@ const WorkDaysChart = ({ selectedEmployee }: { selectedEmployee?: User }) => {
     }
   };
 
-  /**
-   *  Memoized computation of chart data based on selected range and offsets.
-   *
-   * @returns Array of ChartDataPoint objects for the chart.
-   */
   const chartData: ChartDataPoint[] = useMemo(() => {
     const today = new Date();
     const selectedDate = new Date(today.getFullYear(), today.getMonth() + monthOffset, 1);
@@ -139,88 +113,92 @@ const WorkDaysChart = ({ selectedEmployee }: { selectedEmployee?: User }) => {
       case "month":
         return getMonthData(workdays, targetMonth, targetYear, locale);
       case "year":
-        return getYearData(workdays, locale);
+        return getYearData(workdays, locale, yearOffset);
       default:
         return [];
     }
-  }, [workdays, selectedRange, weekOffset, monthOffset, locale]);
+  }, [workdays, selectedRange, weekOffset, monthOffset, yearOffset, locale]);
 
-  /**
-   * Handles changes to the week offset for week range selection.
-   *
-   * @param delta - The change in week offset (positive or negative).
-   */
   const handleWeekOffsetChange = useCallback(
     (delta: number) => setWeekOffset((prev) => prev + delta),
     []
   );
-
-  /**
-   * Handles changes to the month offset for month range selection.
-   *
-   * @param delta - The change in month offset (positive or negative).
-   */
   const handleMonthOffsetChange = useCallback(
     (delta: number) => setMonthOffset((prev) => prev + delta),
     []
   );
+  const handleYearOffsetChange = useCallback(
+    (delta: number) => setYearOffset((prev) => prev + delta),
+    []
+  );
 
-  /**
-   * Determines the color of the bars in the chart based on hours entered vs expected.
-   *
-   * @param hours - The number of hours entered.
-   * @param expected - The number of expected hours.
-   * @returns A string representing the color code for the bar.
-   */
-  const getBarColor = (hours: number, expected: number) =>
-    hours >= expected ? theme.palette.success.main : theme.palette.error.main;
+  const getBarColor = () => theme.palette.chart.primary;
 
-  /**
-   * Renders the user's total flextime balance with proper color coding.
-   */
   const renderUserFlextime = () => {
-    if (!usersFlextime?.totalFlextimeBalance && usersFlextime?.totalFlextimeBalance !== 0) {
-      return <Typography variant="h4">{strings.error.noFlextimeData}</Typography>;
-    }
-    const balance = usersFlextime.totalFlextimeBalance;
-    return (
-      <Typography variant="h4">
-        {strings.balanceCard.totalFlextimeBalance}{" "}
-        <Box
-          component="span"
-          sx={{ color: balance >= 0 ? theme.palette.success.main : theme.palette.error.main }}
-        >
-          {balance}
-        </Box>{" "}
-        <Box component="span" ml={1}>
-          {balance === 1 ? strings.timeExpressions.hour : strings.timeExpressions.hours}
-        </Box>
+  if (!usersFlextime?.totalFlextimeBalance && usersFlextime?.totalFlextimeBalance !== 0) {
+    return <Typography variant="h4">{strings.error.noFlextimeData}</Typography>;
+  }
+  const balance = usersFlextime.totalFlextimeBalance;
+
+  return (
+    <Box
+      sx={{
+        backgroundColor: theme.palette.background.accentSecondary,
+        border: `${theme.borders.s} solid`,
+        borderColor: theme.palette.border.subtle,
+        borderRadius: theme.radius.s,
+        paddingBlock: theme.spaces.m,
+        paddingInline: theme.spaces.xl,
+        textAlign: "center"
+      }}
+    >
+      <Typography variant="body">{strings.balanceCard.totalFlextimeBalance}</Typography>
+      <Typography variant="h3" sx={{ mt: theme.spaces.xs }}>
+        {balance >= 0 ? "+" : ""}
+        {balance}h
       </Typography>
-    );
+      <Typography variant="caption" sx={{ color: theme.palette.text.disabled }}>
+        {strings.balanceCard.atTheEndOf.replace("{0}", new Date().toLocaleDateString(locale))}
+      </Typography>
+    </Box>
+  );
+};
+
+  const periodLabel = (() => {
+    if (selectedRange === "week") return chartData[0]?.week ?? "";
+    if (selectedRange === "month") return chartData[0]?.month ?? "";
+    return String(new Date().getFullYear() + yearOffset);
+  })();
+
+  const handlePrevious = () => {
+    if (selectedRange === "week") handleWeekOffsetChange(-1);
+    else if (selectedRange === "month") handleMonthOffsetChange(-1);
+    else handleYearOffsetChange(-1);
   };
+
+  const handleNext = () => {
+    if (selectedRange === "week") handleWeekOffsetChange(1);
+    else if (selectedRange === "month") handleMonthOffsetChange(1);
+    else handleYearOffsetChange(1);
+  };
+
+  const nextDisabled =
+    selectedRange === "week"
+      ? weekOffset === 0
+      : selectedRange === "month"
+        ? monthOffset === 0
+        : yearOffset === 0;
 
   return (
     <>
-      {/* Flextime balance header */}
-      <Box sx={{ display: "flex", justifyContent: "center", mb: -3, mt: 7, height: "75px" }}>
+      <Box sx={{ display: "flex", justifyContent: "center", mt: 7, mb: theme.spaces.l }}>
         {loading ? <CircularProgress /> : renderUserFlextime()}
       </Box>
 
-      {/* Range controls */}
-      <RangeControls
-        selectedRange={selectedRange}
-        chartData={chartData}
-        weekOffset={weekOffset}
-        monthOffset={monthOffset}
-        onWeekOffsetChange={handleWeekOffsetChange}
-        onMonthOffsetChange={handleMonthOffsetChange}
-        setSelectedRange={setSelectedRange}
-        strings={strings}
-        resetWeekOffset={resetWeekOffset}
-        resetMonthOffset={resetMonthOffset}
-      />
+      <Box sx={{ display: "flex", justifyContent: "center", mb: theme.spaces.l }}>
+        <RangeTypeSelector selectedRange={selectedRange} onChange={setSelectedRange} />
+      </Box>
 
-      {/* Chart */}
       <WorkDaysRechart
         chartData={chartData}
         selectedRange={selectedRange}
@@ -229,7 +207,14 @@ const WorkDaysChart = ({ selectedEmployee }: { selectedEmployee?: User }) => {
         YAXIS_DOMAIN={YAXIS_DOMAIN}
       />
 
-      <BackButton />
+      <Box sx={{ display: "flex", justifyContent: "center", mt: theme.spaces.l }}>
+        <PeriodNavigator
+          label={periodLabel}
+          onPrevious={handlePrevious}
+          onNext={handleNext}
+          nextDisabled={nextDisabled}
+        />
+      </Box>
     </>
   );
 };

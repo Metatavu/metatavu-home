@@ -136,7 +136,7 @@ const WorkDaysRechart = ({
           <Bar
             dataKey="hours"
             name={strings.timebank.logged}
-            fill={theme.palette.primary.main}
+            fill={theme.palette.chart.primary}
             isAnimationActive
             shape={renderBarShape(getBarColor)}
           />
@@ -144,9 +144,9 @@ const WorkDaysRechart = ({
             type="monotone"
             dataKey="expected"
             name={strings.timebank.expected}
-            stroke={theme.palette.text.primary}
+            stroke={theme.palette.chart.accent}
             strokeWidth={2}
-            dot={{ r: 6 }}
+            dot={false}
           />
         </ComposedChart>
       </ResponsiveContainer>

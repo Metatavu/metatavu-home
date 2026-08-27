@@ -230,11 +230,21 @@ export const getMonthData = (
 /**
  * Aggregates workdays by year for charting.
  *
+ * Always returns all 12 months (Jan-Dec) for the target year, even if
+ * some months have no entries yet - months without data get 0 hours,
+ * so the x-axis always shows the full year with gaps for missing months.
+ *
  * @param entries - Array of workday entries to aggregate.
- * @returns An array of ChartDataPoint objects representing monthly aggregated workdays for the current year.
+ * @param locale - The locale string for month name formatting.
+ * @param yearOffset - The year offset from the current year (0 = current year).
+ * @returns An array of 12 ChartDataPoint objects, one per month.
  */
-export const getYearData = (entries: ListWorkdaysForUser[], locale: string): ChartDataPoint[] => {
-  const year = new Date().getFullYear();
+export const getYearData = (
+  entries: ListWorkdaysForUser[],
+  locale: string,
+  yearOffset = 0
+): ChartDataPoint[] => {
+  const year = new Date().getFullYear() + yearOffset;
   const grouped: Record<number, { hours: number; expected: number }> = {};
 
   entries.forEach((e) => {
@@ -247,11 +257,12 @@ export const getYearData = (entries: ListWorkdaysForUser[], locale: string): Cha
     }
   });
 
-  return Object.entries(grouped)
-    .sort(([a], [b]) => Number(a) - Number(b))
-    .map(([month, values]) => ({
-      period: getMonthLabel(new Date(year, Number(month)), locale),
+  return Array.from({ length: 12 }, (_, month) => {
+    const values = grouped[month] ?? { hours: 0, expected: 0 };
+    return {
+      period: getMonthLabel(new Date(year, month), locale),
       hours: values.hours,
       expected: values.expected
-    }));
+    };
+  });
 };
