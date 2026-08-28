@@ -249,7 +249,11 @@ const VacationRequestFormFields = ({
         dateRange={dateRange}
         setDateRange={setDateRange}
       />
-      <Box display="flex" flexDirection="column">
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column"
+        }}>
         <FormLabel>{strings.vacationRequest.message}*</FormLabel>
         <TextField
           required
@@ -268,7 +272,11 @@ const VacationRequestFormFields = ({
         displayOptions={vacationTypes}
       />
       {toolbarFormMode === ToolbarFormModes.CREATE && (
-        <Box display="flex" justifyContent="space-between">
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between"
+          }}>
           <AppButton
             disabled={
               !adminMode &&
@@ -292,9 +300,18 @@ const VacationRequestFormFields = ({
         </Box>
       )}
       {initialEditMode && (
-        <Box display="flex" flexDirection="row" justifyContent="space-between">
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between"
+          }}>
           {!adminEditmode && (
-            <Box display="flex" flexDirection="row">
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row"
+              }}>
               <AppIconButton
                 variant="small"
                 onClick={() => handleDeleteRow(selectedVacationRequestId)}

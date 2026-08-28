@@ -178,7 +178,12 @@ const DefaultToolbar = ({
   return (
     <ToolbarGridContainer container spacing={0}>
       <AppOverlay open={openFilter} onClose={handleCancel} title="Filters">
-        <Box display="flex" flexDirection="column" width={470}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            width: 470
+          }}>
           <SearchBar
             handleSelectedTagChange={handleSearchTag}
             tags={tags.map((tag) => tag.label)}
@@ -187,13 +192,24 @@ const DefaultToolbar = ({
               .filter((label): label is string => Boolean(label))}
           />
           {filters.map((category) => (
-            <Box key={category.title} display="flex" flexDirection="column">
-              <Box display="flex" flexDirection="row">
+            <Box
+              key={category.title}
+              sx={{
+                display: "flex",
+                flexDirection: "column"
+              }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "row"
+                }}>
                 <KeyboardArrowDown
                   onClick={() => handleDropdown(category.title)}
                   sx={{ rotate: dropdown.includes(category.title) ? "180deg" : "none" }}
                 />
-                <Typography variant="body" fontWeight={500}>
+                <Typography variant="body" sx={{
+                  fontWeight: 500
+                }}>
                   {category.title}
                 </Typography>
               </Box>
@@ -213,7 +229,12 @@ const DefaultToolbar = ({
                 ))}
             </Box>
           ))}
-          <Box display="flex" justifyContent="space-between" sx={{ mt: 2 }}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              mt: 2
+            }}>
             <AppButton
               variant="secondary"
               text="Clear all"

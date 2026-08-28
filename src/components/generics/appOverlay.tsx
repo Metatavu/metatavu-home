@@ -37,7 +37,12 @@ const AppOverlay = ({ children, open, onClose, title }: AppOverlayProps) => {
           minWidth: 300
         }}
       >
-        <Box display="flex" flexDirection="row" justifyContent="space-between">
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between"
+          }}>
           <Typography variant="h3" sx={{ mb: 2 }}>
             {title}
           </Typography>
