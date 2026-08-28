@@ -1,7 +1,8 @@
 import type { UniqueIdentifier } from "@dnd-kit/abstract";
 import { useDraggable, useDroppable } from "@dnd-kit/react";
 import { DragIndicator } from "@mui/icons-material";
-import { Box, Grid, Skeleton, type Theme, useTheme } from "@mui/material";
+import { Skeleton, type Theme, useTheme } from "@mui/material";
+import { Box, Grid } from "@mui/system";
 import type { Dispatch, ReactNode, SetStateAction } from "react";
 import type { HomepageCardType } from "src/components/screens/createHomeCards";
 import strings from "src/localization/strings";
@@ -56,7 +57,15 @@ export const DraggableCard = ({ id, children, canGroup }: DragDropProps): JSX.El
     }
   });
   return (
-    <Grid container direction="row" ref={ref} wrap="nowrap" width="100%">
+    <Grid
+      container
+      direction="row"
+      ref={ref}
+      wrap="nowrap"
+      sx={{
+        width: "100%"
+      }}
+    >
       <DragIndicator
         ref={handleRef}
         sx={{ marginTop: theme.spaces.xs, fontSize: 24, cursor: "grab" }}

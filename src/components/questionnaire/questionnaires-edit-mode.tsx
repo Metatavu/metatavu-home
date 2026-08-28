@@ -324,7 +324,9 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
             onChange={handleChange}
             fullWidth
             sx={{ mt: 3, mb: 2 }}
-            InputLabelProps={{ style: { color: theme.palette.text.secondary } }}
+            slotProps={{
+              inputLabel: { style: { color: theme.palette.text.secondary } }
+            }}
           />
           <TextField
             label={strings.questionnaireEdit.descriptionLabel}
@@ -333,7 +335,9 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
             onChange={handleChange}
             fullWidth
             sx={{ mb: 2 }}
-            InputLabelProps={{ style: { color: theme.palette.text.secondary } }}
+            slotProps={{
+              inputLabel: { style: { color: theme.palette.text.secondary } }
+            }}
           />
 
           {/* Tags Section */}
@@ -364,7 +368,9 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
                 fullWidth
                 margin="normal"
                 required
-                InputLabelProps={{ style: { color: theme.palette.text.secondary } }}
+                slotProps={{
+                  inputLabel: { style: { color: theme.palette.text.secondary } }
+                }}
               />
 
               <Typography variant="subtitle2" sx={{ mt: 2, mb: 1 }}>
@@ -447,18 +453,20 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
                 const value = Number.parseInt(e.target.value, 10) || 0;
                 handlePassScoreChange(value > maxCorrectAnswers ? maxCorrectAnswers : value);
               }}
-              InputProps={{
-                inputProps: {
-                  min: 0,
-                  max: maxCorrectAnswers
-                }
-              }}
               onKeyDown={(e) => {
                 if (["e", "E", "+", "-", ".", ","].includes(e.key)) {
                   e.preventDefault();
                 }
               }}
               helperText={`${strings.questionnaireEdit.passScoreMax} ${maxCorrectAnswers}`}
+              slotProps={{
+                input: {
+                  inputProps: {
+                    min: 0,
+                    max: maxCorrectAnswers
+                  }
+                }
+              }}
             />
             <FormControlLabel
               control={
@@ -484,7 +492,6 @@ const QuestionnairesEditMode = ({ questionnaire }: Props) => {
         </CardContent>
       </Card>
       <BackButton styles={{ mt: 3, marginBottom: 2 }} />
-
     </>
   );
 };

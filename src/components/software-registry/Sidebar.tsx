@@ -123,7 +123,14 @@ const Sidebar = ({
             boxShadow: theme.shadows[3]
           }}
         >
-          <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              mb: 2
+            }}
+          >
             <Typography variant="subtitle2">{strings.softwareRegistry.filter}</Typography>
             <IconButton onClick={toggleSidebar}>
               <CloseIcon />
@@ -138,13 +145,6 @@ const Sidebar = ({
             value={searchValue}
             onChange={handleSearchChange}
             fullWidth
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <SearchIcon sx={{ color: theme.palette.text.secondary }} />
-                </InputAdornment>
-              )
-            }}
             sx={{
               "& fieldset": { borderColor: theme.palette.divider },
               "& .MuiInputBase-root": {
@@ -156,11 +156,27 @@ const Sidebar = ({
               "& .MuiInputBase-input": { color: theme.palette.text.primary },
               mb: 2
             }}
+            slotProps={{
+              input: {
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <SearchIcon sx={{ color: theme.palette.text.secondary }} />
+                  </InputAdornment>
+                )
+              }
+            }}
           />
           <Typography variant="subtitle2" gutterBottom>
             {strings.softwareRegistry.tags}
           </Typography>
-          <Box display="flex" flexWrap="wrap" gap={1} mb={2}>
+          <Box
+            sx={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: 1,
+              mb: 2
+            }}
+          >
             {filteredTags.map((tag) => {
               const isSelected = selectedTags.includes(tag);
               return (

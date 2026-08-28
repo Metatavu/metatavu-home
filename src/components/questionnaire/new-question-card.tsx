@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/correctness/useUniqueElementIds: <keep static id> */
 import {
   Box,
   Button,

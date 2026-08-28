@@ -94,21 +94,40 @@ const ArticleLinkDialog = ({ open, onClose, onSelectArticle, selectedText = "" }
       onClose={handleClose}
       maxWidth="md"
       fullWidth
-      PaperProps={{
-        sx: {
-          borderRadius: 3,
-          maxHeight: "80vh"
+      slotProps={{
+        paper: {
+          sx: {
+            borderRadius: 3,
+            maxHeight: "80vh"
+          }
         }
       }}
     >
       <DialogTitle sx={{ pb: 1 }}>
-        <Box display="flex" alignItems="center" gap={1}>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: 1
+          }}
+        >
           <LinkIcon sx={{ color: "primary.main" }} />
-          <Typography variant="h6" fontWeight={600}>
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: 600
+            }}
+          >
             {strings.wikiDocumentation.linkToArticle}
           </Typography>
         </Box>
-        <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+        <Typography
+          variant="body2"
+          sx={{
+            color: "text.secondary",
+            mt: 0.5
+          }}
+        >
           {strings.wikiDocumentation.searchAndSelectArticle}
         </Typography>
       </DialogTitle>
@@ -141,21 +160,44 @@ const ArticleLinkDialog = ({ open, onClose, onSelectArticle, selectedText = "" }
                   }
                 }}
               >
-                <Box display="flex" alignItems="center" gap={1} mb={0.5}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1,
+                    mb: 0.5
+                  }}
+                >
                   <ArticleIcon sx={{ fontSize: 18, color: "text.secondary" }} />
-                  <Typography variant="body1" fontWeight={500}>
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      fontWeight: 500
+                    }}
+                  >
                     {option.title}
                   </Typography>
                 </Box>
                 <Typography
                   variant="caption"
-                  color="text.secondary"
-                  sx={{ pl: 3, display: "block" }}
+                  sx={{
+                    color: "text.secondary",
+                    pl: 3,
+                    display: "block"
+                  }}
                 >
                   {option.path}
                 </Typography>
                 {option.tags && option.tags.length > 0 && (
-                  <Box display="flex" gap={0.5} mt={1} pl={3} flexWrap="wrap">
+                  <Box
+                    sx={{
+                      display: "flex",
+                      gap: 0.5,
+                      mt: 1,
+                      pl: 3,
+                      flexWrap: "wrap"
+                    }}
+                  >
                     {option.tags.slice(0, 3).map((tag) => (
                       <Chip
                         key={tag}
@@ -170,7 +212,9 @@ const ArticleLinkDialog = ({ open, onClose, onSelectArticle, selectedText = "" }
             </li>
           )}
           noOptionsText={strings.wikiDocumentation.noArticlesFound}
-          PaperComponent={ArticleSearchPaper}
+          slots={{
+            paper: ArticleSearchPaper
+          }}
         />
 
         {selectedArticle && (
@@ -196,13 +240,31 @@ const ArticleLinkDialog = ({ open, onClose, onSelectArticle, selectedText = "" }
                 borderRadius: 2
               }}
             >
-              <Typography variant="caption" color="text.secondary" fontWeight={600}>
+              <Typography
+                variant="caption"
+                sx={{
+                  color: "text.secondary",
+                  fontWeight: 600
+                }}
+              >
                 {strings.wikiDocumentation.selectedArticle}
               </Typography>
-              <Typography variant="body1" fontWeight={600} sx={{ mt: 1 }}>
+              <Typography
+                variant="body1"
+                sx={{
+                  fontWeight: 600,
+                  mt: 1
+                }}
+              >
                 {selectedArticle.title}
               </Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+              <Typography
+                variant="body2"
+                sx={{
+                  color: "text.secondary",
+                  mt: 0.5
+                }}
+              >
                 {selectedArticle.description || strings.wikiDocumentation.noDescriptionAvailable}
               </Typography>
             </Paper>

@@ -1,4 +1,4 @@
-import { Checkbox, FormControlLabel, FormGroup, useTheme } from "@mui/material";
+import { Checkbox, FormControlLabel, useTheme } from "@mui/material";
 
 interface CheckboxProps {
   checked: boolean;
@@ -21,7 +21,7 @@ interface CheckboxProps {
  */
 const AppCheckbox = ({ checked, label, disabled, onChange, ariaLabel }: CheckboxProps) => {
   const theme = useTheme();
-  console.log(label);
+
   return (
     <FormControlLabel
       label={label}

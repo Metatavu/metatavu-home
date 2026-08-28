@@ -320,8 +320,8 @@ const WikiDocumentationScreen = () => {
   const renderToolBar = () => (
     <Grid
       container
-      justifyContent={"space-between"}
       sx={{
+        justifyContent: "space-between",
         marginTop: articles && articles.length !== 0 ? 4 : 2,
         marginBottom: 2
       }}
@@ -407,7 +407,9 @@ const WikiDocumentationScreen = () => {
                 id="wiki-articles-list"
                 container
                 spacing={adminMode ? 4 : 3}
-                textAlign={"center"}
+                sx={{
+                  textAlign: "center"
+                }}
               >
                 {displayedArticlesOnPage.map((article) => (
                   <Grid
@@ -436,14 +438,26 @@ const WikiDocumentationScreen = () => {
                 ))}
               </Grid>
             ) : (
-              <Grid container justifyContent="center" sx={{ color: colors.button.text }}>
+              <Grid
+                container
+                sx={{
+                  justifyContent: "center",
+                  color: colors.button.text
+                }}
+              >
                 <SearchOffIcon />
                 <Typography variant="body1">{strings.wikiDocumentation.noArticlesFound}</Typography>
               </Grid>
             )}
           </Box>
           {displayedArticles.length > itemsPerPage && (
-            <Grid container justifyContent="center" sx={{ marginBottom: 3 }}>
+            <Grid
+              container
+              sx={{
+                justifyContent: "center",
+                marginBottom: 3
+              }}
+            >
               <Pagination
                 size="large"
                 count={Math.floor(displayedArticles?.length / itemsPerPage) + 1}

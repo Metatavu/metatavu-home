@@ -31,7 +31,12 @@ const ToolbarSubmitButton = ({ onClick }: Props) => {
       onClick={onClick}
     >
       <Send />
-      <Typography variant="body1" marginLeft={1}>
+      <Typography
+        variant="body1"
+        sx={{
+          marginLeft: 1
+        }}
+      >
         {strings.tableToolbar.submitforApproval}
       </Typography>
     </Button>

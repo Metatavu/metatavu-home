@@ -198,8 +198,10 @@ const ToolbarFormFields = ({
               onChange={(event: ChangeEvent<HTMLInputElement>) =>
                 handleDaysChange(event.target.value)
               }
-              inputProps={{ min: 0 }}
               sx={{ flexGrow: 1 }}
+              slotProps={{
+                htmlInput: { min: 0 }
+              }}
             />
             <Button variant="outlined" size="medium" onClick={handleRestoreDefaultDays}>
               {strings.form.restoreDefault}

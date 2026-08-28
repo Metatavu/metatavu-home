@@ -194,9 +194,9 @@ declare module "@mui/material/styles" {
       m?: string;
     };
     toggle: {
-    on: string;
-    off: string;
-  };
+      on: string;
+      off: string;
+    };
   }
   interface TypographyVariants {
     captionSmall: React.CSSProperties;
