@@ -70,6 +70,7 @@ export const renderVacationDaysTextForScreen = (user: User, theme: Theme) => {
     return (
       <Grid
         sx={{
+          display: "flex",
           justifyContent: "space-around",
           backgroundColor: theme.palette.background.accentSecondary,
           borderRadius: theme.radius.s,
