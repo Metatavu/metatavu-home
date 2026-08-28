@@ -10,9 +10,9 @@ import {
   displayedVacationRequestsAtom,
   vacationRequestsAtom,
 } from "src/atoms/vacation";
-import type { User } from "src/generated/homeLambdasClient";
 import {
   type VacationRequest,
+  type User,
   VacationRequestStatuses,
 } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
