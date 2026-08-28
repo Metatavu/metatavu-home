@@ -138,15 +138,19 @@ const SearchBar = ({
                   marginBottom: "20px",
                 },
               }}
-              InputProps={{
-                ...params.InputProps,
-                endAdornment: null,
-                startAdornment: (
-                  <>
-                    <Search />
-                    {params.InputProps?.startAdornment}
-                  </>
-                ),
+              slotProps={{
+                ...params.slotProps,
+
+                input: {
+                  ...params.slotProps?.input,
+                  endAdornment: null,
+                  startAdornment: (
+                    <>
+                      <Search />
+                      {params.slotProps?.input?.startAdornment}
+                    </>
+                  ),
+                },
               }}
             />
           )}
