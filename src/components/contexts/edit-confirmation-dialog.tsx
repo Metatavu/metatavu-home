@@ -10,7 +10,6 @@ interface Props {
   open: boolean;
   setOpen: (confirmation: boolean) => void;
   onConfirm: () => Promise<void>;
-  isDraft: boolean;
   isAdmin: boolean;
   setFormOpen: (formOpen: boolean) => void;
 }
@@ -20,14 +19,7 @@ interface Props {
  *
  * @param props component properties
  */
-const EditConfirmationDialog = ({
-  open,
-  setOpen,
-  onConfirm,
-  isDraft,
-  isAdmin,
-  setFormOpen
-}: Props) => {
+const EditConfirmationDialog = ({ open, setOpen, onConfirm, isAdmin, setFormOpen }: Props) => {
   const [loading, setLoading] = useState(false);
 
   /** Handler for confirm click
@@ -57,9 +49,7 @@ const EditConfirmationDialog = ({
     if (isAdmin) {
       return strings.confirmationHandler.update;
     }
-    return isDraft
-      ? strings.confirmationHandler.edit.draft
-      : strings.confirmationHandler.edit.reviewed;
+    return strings.confirmationHandler.edit.reviewed;
   };
 
   return (

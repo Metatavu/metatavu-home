@@ -1,5 +1,5 @@
 import { Box, Grid } from "@mui/material";
-import VacationRequestsTableColumns from "../vacation-requests-table-columns";
+import type { GridColDef } from "@mui/x-data-grid";
 import SkeletonTableItem from "./skeleton-table-row";
 import SkeletonTableRowCheckbox from "./skeleton-table-row-checkbox";
 
@@ -10,6 +10,7 @@ interface Props {
   dataGridHeight: number;
   dataGridRowHeight: number;
   dataGridColumnHeaderHeight: number;
+  columns: GridColDef[];
 }
 
 /**
@@ -20,9 +21,9 @@ interface Props {
 const SkeletonTableRows = ({
   dataGridHeight,
   dataGridRowHeight,
-  dataGridColumnHeaderHeight
+  dataGridColumnHeaderHeight,
+  columns
 }: Props) => {
-  const columns = VacationRequestsTableColumns();
   const rowCount = Math.floor((dataGridHeight - dataGridColumnHeaderHeight) / dataGridRowHeight);
 
   return (

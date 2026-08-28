@@ -4,8 +4,7 @@ import {
   Autocomplete,
   Box,
   Card,
-  Checkbox,
-  IconButton,
+  Chip,
   Popper,
   type PopperProps,
   type SxProps,
@@ -38,13 +37,14 @@ const CustomPopper = styled((props: PopperProps) => <Popper {...props} placement
  * @param autoCompleteId Optional HTML id attribute for the Autocomplete element.
  */
 interface SearchBarProps {
-  searchInput: string;
-  handleSearchInputChange: (event: React.SyntheticEvent, value: string) => void;
+  handleSearchInputChange?: (event: React.SyntheticEvent, value: string) => void;
+  searchInput?: string;
   tags?: string[];
-  handleSelectedTagChange?: (values: string[]) => void;
+  handleSelectedTagChange?: (values: string) => void;
   autoCompleteId?: string;
   styles?: SxProps<Theme>;
   placeholder?: string;
+  selectedTags?: string[];
 }
 
 /**
@@ -63,30 +63,36 @@ const SearchBar = ({
   handleSelectedTagChange,
   autoCompleteId,
   styles,
-  placeholder
+  placeholder,
+  selectedTags
 }: SearchBarProps): JSX.Element => {
   const theme = useTheme();
 
   return (
-    // biome-ignore lint/correctness/useUniqueElementIds: keeping static id
-    <Card
-      id="wiki-article-search-bar"
+    <Box
       sx={{
-        width: {
-          lg: "73%",
-          md: "calc(100% - 80px)",
-          xs: "calc(100% - 80px)"
-        },
-        boxShadow: 2,
-        marginBottom: { xs: 2 },
-        ...styles
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        backgroundColor: theme.palette.background.paper
       }}
     >
-      <Box
+      {/* biome-ignore lint/correctness/useUniqueElementIds: keeping static id */}
+      <Card
+        id="wiki-article-search-bar"
         sx={{
-          display: "flex",
-          justifyContent: "center",
-          backgroundColor: theme.palette.background.paper
+          width: {
+            lg: "100%",
+            md: "calc(100% - 80px)",
+            xs: "calc(100% - 80px)"
+          },
+          borderRadius: theme.radius.s,
+          borderWidth: theme.borders.s,
+          borderStyle: "solid",
+          borderColor: theme.palette.border.primary,
+          boxShadow: "none",
+          marginBottom: { xs: 2 },
+          ...styles
         }}
       >
         <Autocomplete
@@ -101,35 +107,21 @@ const SearchBar = ({
           clearOnBlur={false}
           inputValue={searchInput}
           onInputChange={handleSearchInputChange}
-          onChange={(_event, values) => {
-            handleSelectedTagChange?.(values);
+          onChange={(_event, _values, reason, details) => {
+            if ((reason === "selectOption" || reason === "removeOption") && details?.option) {
+              handleSelectedTagChange?.(details.option);
+            }
+          }}
+          filterOptions={(options, { inputValue }) => {
+            if (!inputValue.trim()) {
+              return [];
+            }
+            return options.filter((option) =>
+              option.toLowerCase().includes(inputValue.toLowerCase())
+            );
           }}
           size="small"
-          renderOption={(props, option, { selected }) => (
-            <li
-              {...props}
-              style={{ display: "flex", alignItems: "center" }}
-              key={`tags-option-${option}`}
-            >
-              <Checkbox
-                sx={{
-                  color: theme.palette.text.primary,
-                  marginRight: 2
-                }}
-                checked={selected}
-              />
-              <Box
-                style={{ marginRight: "10px" }}
-                component="span"
-                sx={{
-                  minWidth: "5px",
-                  height: 40,
-                  borderRadius: "5px"
-                }}
-              />
-              {option}
-            </li>
-          )}
+          renderValue={() => null}
           renderInput={(params) => (
             <TextField
               {...params}
@@ -148,9 +140,7 @@ const SearchBar = ({
                   endAdornment: null,
                   startAdornment: (
                     <>
-                      <IconButton>
-                        <Search />
-                      </IconButton>
+                      <Search />
                       {params.slotProps.input.startAdornment}
                     </>
                   )
@@ -158,22 +148,24 @@ const SearchBar = ({
               }}
             />
           )}
-          slotProps={{
-            listbox: {
-              sx: {
-                display: "grid",
-                columnGap: 3,
-                rowGap: 1,
-                gridTemplateColumns: {
-                  xs: "repeat(2, 1fr)",
-                  md: "repeat(3, 1fr)"
-                }
-              }
-            }
-          }}
         />
-      </Box>
-    </Card>
+      </Card>
+      {selectedTags && selectedTags.length > 0 && (
+        <Box
+          sx={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: 1,
+            px: 1,
+            pb: 1
+          }}
+        >
+          {selectedTags.map((tag) => (
+            <Chip key={tag} label={tag} onDelete={() => handleSelectedTagChange?.(tag)} />
+          ))}
+        </Box>
+      )}
+    </Box>
   );
 };
 

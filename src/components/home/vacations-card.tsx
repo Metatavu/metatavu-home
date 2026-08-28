@@ -111,10 +111,6 @@ const VacationsCard = ({ hidden, onToggleHidden, editmode }: CardProps) => {
     let earliestUpcomingVacationRequest: VacationRequest | undefined;
     let upcomingVacationRequests = getUpcomingVacationRequests();
 
-    const isInFuture =
-      earliestUpcomingVacationRequest &&
-      DateTime.fromJSDate(earliestUpcomingVacationRequest.startDate) > DateTime.now();
-
     if (upcomingVacationRequests.length) {
       upcomingVacationRequests = upcomingVacationRequests.filter(
         validateValueIsNotUndefinedNorNull
@@ -125,6 +121,10 @@ const VacationsCard = ({ hidden, onToggleHidden, editmode }: CardProps) => {
           ? vacationB
           : vacationA
       );
+
+      const isInFuture =
+        earliestUpcomingVacationRequest &&
+        DateTime.fromJSDate(earliestUpcomingVacationRequest.startDate) > DateTime.now();
 
       const vacationInfoListItems: VacationInfoListItem[] = [
         {

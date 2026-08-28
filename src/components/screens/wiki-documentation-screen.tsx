@@ -262,8 +262,8 @@ const WikiDocumentationScreen = () => {
    *
    * @param {string[]} values - The array of selected tag strings.
    */
-  const handleSelectedTagChange = (values: string[]) => {
-    setSelectedTags(values);
+  const handleSelectedTagChange = (values: string) => {
+    setSelectedTags([values]);
     const articlesToFilter = getArticlesToFilter(
       adminMode,
       displayOption,
@@ -273,7 +273,7 @@ const WikiDocumentationScreen = () => {
     const filteredArticles = articlesToFilter.filter(
       (article) =>
         article.title.toLowerCase().includes(searchInput.toLowerCase()) &&
-        values.every((tag) => article.tags?.includes(tag))
+        [values].every((tag) => article.tags?.includes(tag))
     );
     setDisplayedArticles(filteredArticles);
   };
