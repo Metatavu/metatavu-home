@@ -10,22 +10,22 @@ import {
   type SxProps,
   styled,
   TextField,
-  useTheme
+  useTheme,
 } from "@mui/material";
 import strings from "src/localization/strings";
 
-const CustomPopper = styled((props: PopperProps) => <Popper {...props} placement="bottom" />)(
-  ({ theme }) => ({
-    "& .MuiAutocomplete-noOptions": {
-      display: "none"
-    },
-    "& .MuiAutocomplete-paper": {
-      marginTop: "10px",
-      backgroundColor: theme.palette.background.paper,
-      color: theme.palette.text.primary
-    }
-  })
-);
+const CustomPopper = styled((props: PopperProps) => (
+  <Popper {...props} placement="bottom" />
+))(({ theme }) => ({
+  "& .MuiAutocomplete-noOptions": {
+    display: "none",
+  },
+  "& .MuiAutocomplete-paper": {
+    marginTop: "10px",
+    backgroundColor: theme.palette.background.paper,
+    color: theme.palette.text.primary,
+  },
+}));
 
 /**
  * Props for the SearchBar component.
@@ -37,7 +37,10 @@ const CustomPopper = styled((props: PopperProps) => <Popper {...props} placement
  * @param autoCompleteId Optional HTML id attribute for the Autocomplete element.
  */
 interface SearchBarProps {
-  handleSearchInputChange?: (event: React.SyntheticEvent, value: string) => void;
+  handleSearchInputChange?: (
+    event: React.SyntheticEvent,
+    value: string,
+  ) => void;
   searchInput?: string;
   tags?: string[];
   handleSelectedTagChange?: (values: string) => void;
@@ -64,7 +67,7 @@ const SearchBar = ({
   autoCompleteId,
   styles,
   placeholder,
-  selectedTags
+  selectedTags,
 }: SearchBarProps): JSX.Element => {
   const theme = useTheme();
 
@@ -74,7 +77,7 @@ const SearchBar = ({
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
-        backgroundColor: theme.palette.background.paper
+        backgroundColor: theme.palette.background.paper,
       }}
     >
       {/* biome-ignore lint/correctness/useUniqueElementIds: keeping static id */}
@@ -84,7 +87,7 @@ const SearchBar = ({
           width: {
             lg: "100%",
             md: "calc(100% - 80px)",
-            xs: "calc(100% - 80px)"
+            xs: "calc(100% - 80px)",
           },
           borderRadius: theme.radius.s,
           borderWidth: theme.borders.s,
@@ -92,12 +95,12 @@ const SearchBar = ({
           borderColor: theme.palette.border.primary,
           boxShadow: "none",
           marginBottom: { xs: 2 },
-          ...styles
+          ...styles,
         }}
       >
         <Autocomplete
           slots={{
-            popper: CustomPopper
+            popper: CustomPopper,
           }}
           multiple
           disableCloseOnSelect
@@ -108,7 +111,10 @@ const SearchBar = ({
           inputValue={searchInput}
           onInputChange={handleSearchInputChange}
           onChange={(_event, _values, reason, details) => {
-            if ((reason === "selectOption" || reason === "removeOption") && details?.option) {
+            if (
+              (reason === "selectOption" || reason === "removeOption") &&
+              details?.option
+            ) {
               handleSelectedTagChange?.(details.option);
             }
           }}
@@ -117,7 +123,7 @@ const SearchBar = ({
               return [];
             }
             return options.filter((option) =>
-              option.toLowerCase().includes(inputValue.toLowerCase())
+              option.toLowerCase().includes(inputValue.toLowerCase()),
             );
           }}
           size="small"
@@ -129,22 +135,18 @@ const SearchBar = ({
               sx={{
                 "& fieldset": {
                   border: "none",
-                  marginBottom: "20px"
-                }
+                  marginBottom: "20px",
+                },
               }}
-              slotProps={{
-                ...params.slotProps,
-
-                input: {
-                  ...params.slotProps.input,
-                  endAdornment: null,
-                  startAdornment: (
-                    <>
-                      <Search />
-                      {params.slotProps.input.startAdornment}
-                    </>
-                  )
-                }
+              InputProps={{
+                ...params.InputProps,
+                endAdornment: null,
+                startAdornment: (
+                  <>
+                    <Search />
+                    {params.InputProps?.startAdornment}
+                  </>
+                ),
               }}
             />
           )}
@@ -157,11 +159,15 @@ const SearchBar = ({
             flexWrap: "wrap",
             gap: 1,
             px: 1,
-            pb: 1
+            pb: 1,
           }}
         >
           {selectedTags.map((tag) => (
-            <Chip key={tag} label={tag} onDelete={() => handleSelectedTagChange?.(tag)} />
+            <Chip
+              key={tag}
+              label={tag}
+              onDelete={() => handleSelectedTagChange?.(tag)}
+            />
           ))}
         </Box>
       )}

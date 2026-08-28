@@ -8,16 +8,22 @@ import { usersAtom } from "src/atoms/user";
 import {
   allVacationRequestsAtom,
   displayedVacationRequestsAtom,
-  vacationRequestsAtom
+  vacationRequestsAtom,
 } from "src/atoms/vacation";
 import type { User } from "src/generated/homeLambdasClient";
-import { type VacationRequest, VacationRequestStatuses } from "src/generated/homeLambdasClient";
+import {
+  type VacationRequest,
+  VacationRequestStatuses,
+} from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
 import { useSnackbar } from "src/hooks/use-snackbar";
 import useUserRole from "src/hooks/use-user-role";
 import strings from "src/localization/strings";
 import type { FilterType } from "src/utils/vacation-filter-type";
-import { getVacationYear, validateUserVacationRequest } from "src/utils/vacations-utils";
+import {
+  getVacationYear,
+  validateUserVacationRequest,
+} from "src/utils/vacations-utils";
 import type { Tab } from "../generics/tabBar";
 import VacationRequestsTable from "../vacation-requests-table/vacation-requests-table";
 
@@ -33,38 +39,58 @@ const VacationRequestsScreen = () => {
   const loggedInUser = users.find((user: User) => user.id === userProfile?.id);
   const setError = useSetAtom(errorAtom);
   const [vacationRequests, setVacationRequests] = useAtom(
-    adminMode ? allVacationRequestsAtom : vacationRequestsAtom
+    adminMode ? allVacationRequestsAtom : vacationRequestsAtom,
   );
-  const setDisplayedVacationRequests = useSetAtom(displayedVacationRequestsAtom);
+  const setDisplayedVacationRequests = useSetAtom(
+    displayedVacationRequestsAtom,
+  );
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const selectedId = params.get("selectedId");
   const showSnackbar = useSnackbar();
 
   const upcomingVacationRequests = useMemo(
-    () => vacationRequests.filter((request) => request.endDate.getTime() > Date.now()),
-    [vacationRequests]
+    () =>
+      vacationRequests.filter(
+        (request) => request.endDate.getTime() > Date.now(),
+      ),
+    [vacationRequests],
   );
   const pastVacationRequests = useMemo(
-    () => vacationRequests.filter((request) => request.endDate.getTime() <= Date.now()),
-    [vacationRequests]
+    () =>
+      vacationRequests.filter(
+        (request) => request.endDate.getTime() <= Date.now(),
+      ),
+    [vacationRequests],
   );
 
   const [loading, setLoading] = useState(false);
   const [isUpcoming, setIsUpcoming] = useState(true);
   const [filters, setFilters] = useState<FilterType[]>(["ALL"]);
-  const [currentTab, setCurrentTab] = useState<string>(adminMode ? "vacations" : "upcoming");
+  const [currentTab, setCurrentTab] = useState<string>(
+    adminMode ? "vacations" : "upcoming",
+  );
   const currentYear = getVacationYear().toString();
 
   const tabs: Tab[] = adminMode
     ? [
         { id: "vacations", title: `${strings.tableToolbar.myRequests} ` },
-        { id: "days", title: strings.adminVacationManagement.heading }
+        { id: "days", title: strings.adminVacationManagement.heading },
       ]
     : [
         { id: "upcoming", title: strings.tableToolbar.future },
-        { id: "past", title: strings.tableToolbar.past }
+        { id: "past", title: strings.tableToolbar.past },
       ];
+
+  /**
+   * Guards against a stale currentTab value momentarily not matching
+   * the current tabs list (e.g. right after adminMode changes, before
+   * the effect below has a chance to reset currentTab). Falls back to
+   * the first available tab id instead of an invalid value.
+   */
+  const safeCurrentTab = tabs.some((tab) => tab.id === currentTab)
+    ? currentTab
+    : tabs[0].id;
 
   useEffect(() => {
     setCurrentTab(adminMode ? "vacations" : "upcoming");
@@ -72,7 +98,7 @@ const VacationRequestsScreen = () => {
 
   useEffect(() => {
     fetchVacationsRequests();
-  }, [currentTab, loggedInUser]);
+  }, [safeCurrentTab, loggedInUser]);
 
   /**
    * Handler for upcoming/ past vacations toggle click
@@ -91,7 +117,10 @@ const VacationRequestsScreen = () => {
    *   - A specific `VacationRequestStatuses` value: Returns requests matching that status.
    * @returns The filtered list of vacation requests.
    */
-  const filterVacationRequests = (requests: VacationRequest[], filters: FilterType[]) => {
+  const filterVacationRequests = (
+    requests: VacationRequest[],
+    filters: FilterType[],
+  ) => {
     return requests.filter((request) => {
       if (filters.includes("ALL")) {
         return adminMode ? request.draft !== true : true;
@@ -109,11 +138,15 @@ const VacationRequestsScreen = () => {
    * Decide if we show upcoming or past vacations and apply the selected filter
    */
   useEffect(() => {
-    const baseRequests = isUpcoming ? upcomingVacationRequests : pastVacationRequests;
+    const baseRequests = isUpcoming
+      ? upcomingVacationRequests
+      : pastVacationRequests;
     let filteredRequests = filterVacationRequests(baseRequests, filters);
 
     if (selectedId) {
-      filteredRequests = filteredRequests.filter((req) => req.id === selectedId);
+      filteredRequests = filteredRequests.filter(
+        (req) => req.id === selectedId,
+      );
     }
 
     setDisplayedVacationRequests(filteredRequests);
@@ -128,17 +161,19 @@ const VacationRequestsScreen = () => {
     try {
       let fetchedVacationRequests: VacationRequest[];
       if (adminMode) {
-        fetchedVacationRequests = await vacationRequestsApi.listVacationRequests({});
+        fetchedVacationRequests =
+          await vacationRequestsApi.listVacationRequests({});
       } else {
-        fetchedVacationRequests = await vacationRequestsApi.listVacationRequests({
-          userId: loggedInUser.id
-        });
+        fetchedVacationRequests =
+          await vacationRequestsApi.listVacationRequests({
+            userId: loggedInUser.id,
+          });
       }
       setVacationRequests(fetchedVacationRequests);
     } catch (error: any) {
       const errorMessage = await error?.response?.json();
       setError(
-        `${strings.vacationRequestError.fetchRequestError}: ${errorMessage?.message || error}`
+        `${strings.vacationRequestError.fetchRequestError}: ${errorMessage?.message || error}`,
       );
     }
     setLoading(false);
@@ -161,19 +196,19 @@ const VacationRequestsScreen = () => {
           try {
             setLoading(true);
             await vacationRequestsApi.deleteVacationRequest({
-              id: selectedRowId as string
+              id: selectedRowId as string,
             });
             updatedVacationRequests = updatedVacationRequests.filter(
-              (vacationRequest) => vacationRequest.id !== selectedRowId
+              (vacationRequest) => vacationRequest.id !== selectedRowId,
             );
           } catch (error: any) {
             const errorMessage = await error?.response?.json();
             setError(
-              `${strings.vacationRequestError.deleteRequestError}: ${errorMessage?.message || error}`
+              `${strings.vacationRequestError.deleteRequestError}: ${errorMessage?.message || error}`,
             );
           }
           setLoading(false);
-        })
+        }),
       );
       setVacationRequests(updatedVacationRequests);
 
@@ -186,7 +221,9 @@ const VacationRequestsScreen = () => {
    *
    * @param vacationRequestData vacation data from the create form
    */
-  const createVacationRequest = async (vacationRequestData: VacationRequest) => {
+  const createVacationRequest = async (
+    vacationRequestData: VacationRequest,
+  ) => {
     if (!loggedInUser) return;
     try {
       setLoading(true);
@@ -196,7 +233,7 @@ const VacationRequestsScreen = () => {
           vacationRequestData,
           currentYear,
           setError,
-          setLoading
+          setLoading,
         )
       ) {
         return;
@@ -217,17 +254,17 @@ const VacationRequestsScreen = () => {
             {
               createdBy: loggedInUser.id,
               updatedAt: new Date(),
-              status: VacationRequestStatuses.PENDING
-            }
-          ]
-        }
+              status: VacationRequestStatuses.PENDING,
+            },
+          ],
+        },
       });
       setVacationRequests([createdRequest, ...vacationRequests]);
       showSnackbar(strings.snackbar.vacationRequestCreated);
     } catch (error: any) {
       const errorMessage = await error?.response?.json();
       setError(
-        `${strings.vacationRequestError.createRequestError}: ${errorMessage?.message || error}`
+        `${strings.vacationRequestError.createRequestError}: ${errorMessage?.message || error}`,
       );
     }
     setLoading(false);
@@ -241,13 +278,13 @@ const VacationRequestsScreen = () => {
    */
   const updateVacationRequest = async (
     vacationRequestData: VacationRequest,
-    vacationRequestId: string
+    vacationRequestId: string,
   ) => {
     if (!loggedInUser) return;
     try {
       setLoading(true);
       const vacationRequest = vacationRequests.find(
-        (vacationRequest) => vacationRequest.id === vacationRequestId
+        (vacationRequest) => vacationRequest.id === vacationRequestId,
       );
       if (!vacationRequest) return;
 
@@ -255,16 +292,21 @@ const VacationRequestsScreen = () => {
       if (!latestStatus) {
         setError(strings.vacationRequestError.noVacationRequestsStatusFound);
       }
-      if ((!adminMode && latestStatus === "APPROVED") || latestStatus === "DECLINED") {
+      if (
+        (!adminMode && latestStatus === "APPROVED") ||
+        latestStatus === "DECLINED"
+      ) {
         latestStatus = "PENDING";
       }
       const newOrUpdatedStatus = {
         status: latestStatus,
         createdBy: loggedInUser.id,
-        updatedAt: new Date()
+        updatedAt: new Date(),
       };
       const updatedStatus = [newOrUpdatedStatus];
-      const selectedUser = await usersApi.findUser({ userId: vacationRequest.userId });
+      const selectedUser = await usersApi.findUser({
+        userId: vacationRequest.userId,
+      });
 
       if (
         !validateUserVacationRequest(
@@ -273,7 +315,7 @@ const VacationRequestsScreen = () => {
           currentYear,
           setError,
           setLoading,
-          adminMode
+          adminMode,
         )
       ) {
         return;
@@ -290,18 +332,20 @@ const VacationRequestsScreen = () => {
           updatedAt: new Date(),
           days: vacationRequestData.days,
           status: updatedStatus,
-          draft: false
-        }
+          draft: false,
+        },
       });
       const updatedVacationRequests = vacationRequests.map((vacationRequest) =>
-        vacationRequest.id === updatedRequest.id ? updatedRequest : vacationRequest
+        vacationRequest.id === updatedRequest.id
+          ? updatedRequest
+          : vacationRequest,
       );
       setVacationRequests(updatedVacationRequests);
       showSnackbar(strings.snackbar.vacationRequestUpdated);
     } catch (error: any) {
       const errorMessage = await error?.response?.json();
       setError(
-        `${strings.vacationRequestError.updateRequestError}: ${errorMessage?.message || error}`
+        `${strings.vacationRequestError.updateRequestError}: ${errorMessage?.message || error}`,
       );
     }
     setLoading(false);
@@ -315,7 +359,7 @@ const VacationRequestsScreen = () => {
    */
   const updateVacationRequestStatus = async (
     status: VacationRequestStatuses,
-    selectedRowIds: GridRowId[]
+    selectedRowIds: GridRowId[],
   ) => {
     if (!loggedInUser) return;
 
@@ -324,11 +368,15 @@ const VacationRequestsScreen = () => {
 
       if (status === VacationRequestStatuses.APPROVED) {
         for (const vacationRequestId of selectedRowIds) {
-          const vacationRequest = vacationRequests.find((req) => req.id === vacationRequestId);
+          const vacationRequest = vacationRequests.find(
+            (req) => req.id === vacationRequestId,
+          );
 
           if (!vacationRequest) continue;
 
-          const selectedUser = await usersApi.findUser({ userId: vacationRequest.userId });
+          const selectedUser = await usersApi.findUser({
+            userId: vacationRequest.userId,
+          });
 
           const isValid = validateUserVacationRequest(
             selectedUser,
@@ -336,7 +384,7 @@ const VacationRequestsScreen = () => {
             currentYear,
             setError,
             setLoading,
-            adminMode
+            adminMode,
           );
 
           if (!isValid) {
@@ -348,7 +396,7 @@ const VacationRequestsScreen = () => {
 
       for (const vacationRequestId of selectedRowIds) {
         const vacationRequest = vacationRequests.find(
-          (vacationRequest) => vacationRequest.id === vacationRequestId
+          (vacationRequest) => vacationRequest.id === vacationRequestId,
         );
 
         if (!vacationRequest) continue;
@@ -356,15 +404,15 @@ const VacationRequestsScreen = () => {
         const newOrUpdatedStatus = {
           status,
           createdBy: loggedInUser.id,
-          updatedAt: new Date()
+          updatedAt: new Date(),
         };
 
         const updated = await vacationRequestsApi.updateVacationRequest({
           id: vacationRequestId.toString(),
           vacationRequest: {
             ...vacationRequest,
-            status: [newOrUpdatedStatus]
-          }
+            status: [newOrUpdatedStatus],
+          },
         });
 
         updatedVacationRequests.push(updated);
@@ -373,17 +421,21 @@ const VacationRequestsScreen = () => {
       setVacationRequests((prevRequests) =>
         prevRequests.map(
           (vacationRequest) =>
-            updatedVacationRequests.find((req) => req?.id === vacationRequest.id) || vacationRequest
-        )
+            updatedVacationRequests.find(
+              (req) => req?.id === vacationRequest.id,
+            ) || vacationRequest,
+        ),
       );
       // Refresh user data to get updated remaining vacation days.
       const updatedUser = await usersApi.findUser({ userId: loggedInUser.id });
-      setUsers((prevUsers) => prevUsers.map((u) => (u.id === updatedUser.id ? updatedUser : u)));
+      setUsers((prevUsers) =>
+        prevUsers.map((u) => (u.id === updatedUser.id ? updatedUser : u)),
+      );
       showSnackbar(strings.snackbar.vacationRequestStatusUpdated);
     } catch (error: any) {
       const errorMessage = await error?.response?.json();
       setError(
-        `${strings.vacationRequestError.updateRequestError}: ${errorMessage?.message || error}`
+        `${strings.vacationRequestError.updateRequestError}: ${errorMessage?.message || error}`,
       );
     }
     setLoading(false);
@@ -400,7 +452,7 @@ const VacationRequestsScreen = () => {
       filter={filters}
       setFilter={setFilters}
       tabs={tabs}
-      currentTab={currentTab}
+      currentTab={safeCurrentTab}
       setCurrentTab={setCurrentTab}
       adminMode={adminMode}
     />
