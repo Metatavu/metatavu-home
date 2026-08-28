@@ -226,8 +226,8 @@ export const validateQuestionnaire = (
     return { isValid: false, condition: "noQuestions" };
   }
 
-  const hasAnyCorrectAnswers = questionnaire.questions.some(
-    (q) => q.answerOptions && q.answerOptions.some((opt) => opt.isCorrect)
+  const hasAnyCorrectAnswers = questionnaire.questions.some((q) =>
+    q.answerOptions?.some((opt) => opt.isCorrect)
   );
   if (!hasAnyCorrectAnswers) {
     return { isValid: false, condition: "noCorrectAnswers" };

@@ -40,7 +40,13 @@ const CreateButton = ({ id, onClick, styles, text }: CreateButtonProps): JSX.Ele
         ...styles
       }}
     >
-      <Typography variant={"body1"} marginLeft={1} sx={{ fontWeight: "bold" }}>
+      <Typography
+        variant={"body1"}
+        sx={{
+          marginLeft: 1,
+          fontWeight: "bold"
+        }}
+      >
         {text || strings.form.create}
       </Typography>
     </Button>

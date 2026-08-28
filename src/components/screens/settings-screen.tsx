@@ -126,8 +126,18 @@ const SettingsScreen = ({ screenColorMode, setScreenColorMode }: SettingsScreenP
   };
 
   return (
-    <Box display="flex" flexDirection="column">
-      <Typography alignSelf="center" variant="h1">
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column"
+      }}
+    >
+      <Typography
+        variant="h1"
+        sx={{
+          alignSelf: "center"
+        }}
+      >
         {strings.header.settings}
       </Typography>
       <ToggleBox

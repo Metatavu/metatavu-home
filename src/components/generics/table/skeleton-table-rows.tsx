@@ -36,7 +36,13 @@ const SkeletonTableRows = ({
               borderBottom: "1px solid lightgrey"
             }}
           >
-            <Grid container alignItems="center" key={`skeleton-row-grid-container${idx}`}>
+            <Grid
+              container
+              key={`skeleton-row-grid-container${idx}`}
+              sx={{
+                alignItems: "center"
+              }}
+            >
               {columns.map((column, idx) => (
                 <Box
                   key={`skeleton-row-grid-item-box${idx}`}

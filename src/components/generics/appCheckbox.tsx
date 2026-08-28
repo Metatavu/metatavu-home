@@ -1,4 +1,4 @@
-import { Checkbox, FormControlLabel, FormGroup, useTheme } from "@mui/material";
+import { Checkbox, FormControlLabel, useTheme } from "@mui/material";
 
 interface CheckboxProps {
   checked: boolean;

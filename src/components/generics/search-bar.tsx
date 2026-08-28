@@ -96,7 +96,9 @@ const SearchBar = ({
         }}
       >
         <Autocomplete
-          PopperComponent={CustomPopper}
+          slots={{
+            popper: CustomPopper
+          }}
           multiple
           disableCloseOnSelect
           id={autoCompleteId}
@@ -119,7 +121,7 @@ const SearchBar = ({
             );
           }}
           size="small"
-          renderTags={() => null}
+          renderValue={() => null}
           renderInput={(params) => (
             <TextField
               {...params}
@@ -130,15 +132,19 @@ const SearchBar = ({
                   marginBottom: "20px"
                 }
               }}
-              InputProps={{
-                ...params.InputProps,
-                endAdornment: null,
-                startAdornment: (
-                  <>
-                    <Search />
-                    {params.InputProps.startAdornment}
-                  </>
-                )
+              slotProps={{
+                ...params.slotProps,
+
+                input: {
+                  ...params.slotProps.input,
+                  endAdornment: null,
+                  startAdornment: (
+                    <>
+                      <Search />
+                      {params.slotProps.input.startAdornment}
+                    </>
+                  )
+                }
               }}
             />
           )}

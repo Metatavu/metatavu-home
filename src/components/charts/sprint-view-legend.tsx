@@ -45,9 +45,21 @@ const SprintViewLegend = ({ hidden }: CardVisibilityProps) => {
   ];
 
   return (
-    <Box display="flex" gap={1} flexWrap="wrap">
+    <Box
+      sx={{
+        display: "flex",
+        gap: 1,
+        flexWrap: "wrap"
+      }}
+    >
       {legends.map((legend) => (
-        <Box key={legend.label} display="flex" alignItems="center">
+        <Box
+          key={legend.label}
+          sx={{
+            display: "flex",
+            alignItems: "center"
+          }}
+        >
           <Box
             sx={{
               width: legend.width,

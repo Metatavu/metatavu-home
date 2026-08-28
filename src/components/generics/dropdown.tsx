@@ -62,11 +62,13 @@ const Dropdown = ({ displayOption, handleDisplayOptionChange, displayOptions }: 
           vertical: "top",
           horizontal: "right"
         },
-        PaperProps: {
-          variant: "outlined",
-          elevation: 0,
-          sx: {
-            marginTop: theme.spaces.xs
+        slotProps: {
+          paper: {
+            variant: "outlined",
+            elevation: 0,
+            sx: {
+              marginTop: theme.spaces.xs
+            }
           }
         }
       }}

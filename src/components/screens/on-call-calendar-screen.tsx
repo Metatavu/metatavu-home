@@ -13,7 +13,7 @@ import {
   useTheme
 } from "@mui/material";
 
-import { DateCalendar, PickersDay, type PickersDayProps } from "@mui/x-date-pickers";
+import { DateCalendar, PickerDay, type PickerDayProps } from "@mui/x-date-pickers";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { DateTime } from "luxon";
 import { useEffect, useId, useMemo, useState } from "react";
@@ -239,7 +239,7 @@ const OnCallCalendarScreen = () => {
    *
    * @param props - Properties for rendering a calendar day
    */
-  const fillCalendarDays = (props: PickersDayProps) => {
+  const fillCalendarDays = (props: PickerDayProps) => {
     const { day, outsideCurrentMonth, ...other } = props;
     const weekNumber = day.weekNumber;
     const onCallDayData = onCallByWeek.get(weekNumber);
@@ -372,7 +372,7 @@ const OnCallCalendarScreen = () => {
 
   const DAY_WIDTH = 56; // width of each day cell in the calendar
 
-  const StyledPickersDay = styled(PickersDay)(({ theme }) => ({
+  const StyledPickersDay = styled(PickerDay)(({ theme }) => ({
     width: DAY_WIDTH,
     height: DAY_WIDTH,
     fontSize: 18,

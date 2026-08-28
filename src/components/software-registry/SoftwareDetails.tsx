@@ -222,10 +222,20 @@ const SoftwareDetails = () => {
 
   return (
     <Container sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-      <Box my={4} textAlign="center">
+      <Box
+        sx={{
+          my: 4,
+          textAlign: "center"
+        }}
+      >
         <Typography variant="h2">{strings.softwareRegistry.application}</Typography>
       </Box>
-      <Box textAlign="center" mb={4}>
+      <Box
+        sx={{
+          textAlign: "center",
+          mb: 4
+        }}
+      >
         {software.image && (
           <img
             src={software.image}
@@ -236,7 +246,15 @@ const SoftwareDetails = () => {
         <Typography gutterBottom variant="h3">
           {software.name}
         </Typography>
-        <Box display="flex" justifyContent="center" flexWrap="wrap" gap={1} mb={2}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            flexWrap: "wrap",
+            gap: 1,
+            mb: 2
+          }}
+        >
           {software.tags?.map((tag) => (
             <Box
               key={tag}
@@ -267,7 +285,13 @@ const SoftwareDetails = () => {
           {software.url}
         </Link>
       </Box>
-      <Grid container spacing={4} mb={4}>
+      <Grid
+        container
+        spacing={4}
+        sx={{
+          mb: 4
+        }}
+      >
         <Grid
           size={{
             xs: 12,
@@ -313,7 +337,12 @@ const SoftwareDetails = () => {
           </Typography>
         </Grid>
       </Grid>
-      <Box textAlign="center" m={4}>
+      <Box
+        sx={{
+          textAlign: "center",
+          m: 4
+        }}
+      >
         {isUserInList ? (
           <Button
             variant="outlined"
