@@ -10,10 +10,14 @@ import {
   styled,
   Tooltip,
   Typography,
-  useTheme
+  useTheme,
 } from "@mui/material";
 
-import { DateCalendar, PickersDay, type PickersDayProps } from "@mui/x-date-pickers";
+import {
+  DateCalendar,
+  PickersDay,
+  type PickersDayProps,
+} from "@mui/x-date-pickers";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { DateTime } from "luxon";
 import { useEffect, useId, useMemo, useState } from "react";
@@ -51,7 +55,9 @@ const OnCallCalendarScreen = () => {
   const [open, setOpen] = useState(false);
   const [isCalendarView, setIsCalendarView] = useState(validateJSONString());
   const [selectedDate, setSelectedDate] = useState<DateTime>(DateTime.now());
-  const [onCallPerson, setOnCallPerson] = useState<string | undefined>(undefined);
+  const [onCallPerson, setOnCallPerson] = useState<string | undefined>(
+    undefined,
+  );
   const [selectedOnCallWeek, setSelectedOnCallWeek] = useState<OnCallWeek>();
   const { isAccountant } = useUserRole();
   const setError = useSetAtom(errorAtom);
@@ -75,12 +81,16 @@ const OnCallCalendarScreen = () => {
   const getOnCallData = async (year: number) => {
     setLoading(true);
     try {
-      const fetchedData = await onCallApi.listOnCallData({ year: year.toString() });
+      const fetchedData = await onCallApi.listOnCallData({
+        year: year.toString(),
+      });
       setOnCallData(fetchedData);
     } catch (error: any) {
       if (!(error instanceof SyntaxError)) {
         const errorMessage = await error?.response?.json();
-        setError(`${strings.oncall.fetchFailed}: ${errorMessage?.message || error}`);
+        setError(
+          `${strings.oncall.fetchFailed}: ${errorMessage?.message || error}`,
+        );
       }
       setOnCallData([]);
     } finally {
@@ -95,12 +105,18 @@ const OnCallCalendarScreen = () => {
     const currentYear = DateTime.now().year;
     const currentWeek = DateTime.now().weekNumber;
     try {
-      const fetchedData = await onCallApi.listOnCallData({ year: currentYear.toString() });
-      const currentOnCallPerson = fetchedData.find((item) => item.week === currentWeek)?.username;
+      const fetchedData = await onCallApi.listOnCallData({
+        year: currentYear.toString(),
+      });
+      const currentOnCallPerson = fetchedData.find(
+        (item) => item.week === currentWeek,
+      )?.username;
       setOnCallPerson(currentOnCallPerson ?? undefined);
     } catch (error: any) {
       const errorMessage = await error?.response?.json();
-      setError(`${strings.oncall.fetchFailed}: ${errorMessage?.message || error}`);
+      setError(
+        `${strings.oncall.fetchFailed}: ${errorMessage?.message || error}`,
+      );
     }
   };
 
@@ -111,22 +127,30 @@ const OnCallCalendarScreen = () => {
    * @param weekNumber - Week number to update
    * @param paid - Current paid status (will be toggled)
    */
-  const updatePaidStatus = async (year: number, weekNumber: number, paid: boolean) => {
+  const updatePaidStatus = async (
+    year: number,
+    weekNumber: number,
+    paid: boolean,
+  ) => {
     const updateParameters: OnCallPaid = {
       year: year,
       week: weekNumber,
-      paid: !paid
+      paid: !paid,
     };
     try {
       await onCallApi.updatePaid({ onCallPaid: updateParameters });
       setOnCallData((prev) =>
         prev.map((item) =>
-          item.year === year && item.week === weekNumber ? { ...item, paid: !paid } : item
-        )
+          item.year === year && item.week === weekNumber
+            ? { ...item, paid: !paid }
+            : item,
+        ),
       );
     } catch (error: any) {
       const errorMessage = await error?.response?.json();
-      setError(`${strings.oncall.errorUpdatingPaidStatus}: ${errorMessage?.message || error}`);
+      setError(
+        `${strings.oncall.errorUpdatingPaidStatus}: ${errorMessage?.message || error}`,
+      );
     }
   };
   const theme = useTheme();
@@ -147,13 +171,22 @@ const OnCallCalendarScreen = () => {
         <Box sx={customTheme(theme).customStyles.onCallBox}>
           <Typography
             variant="h5"
-            sx={{ display: "block", mb: 1, fontWeight: "bold", color: theme.palette.text.primary }}
+            sx={{
+              display: "block",
+              mb: 1,
+              fontWeight: "bold",
+              color: theme.palette.text.primary,
+            }}
           >
             {strings.oncall.onCallPersonExists}
           </Typography>
           <Typography
             variant="h5"
-            sx={{ display: "block", color: theme.palette.text.primary, fontWeight: "bold" }}
+            sx={{
+              display: "block",
+              color: theme.palette.text.primary,
+              fontWeight: "bold",
+            }}
           >
             {formatUsername(onCallPerson)}
           </Typography>
@@ -165,7 +198,11 @@ const OnCallCalendarScreen = () => {
       <Box sx={customTheme(theme).customStyles.onCallBox}>
         <Typography
           variant="h5"
-          sx={{ display: "block", color: theme.palette.error.main, fontWeight: "bold" }}
+          sx={{
+            display: "block",
+            color: theme.palette.error.main,
+            fontWeight: "bold",
+          }}
         >
           {strings.oncall.noOnCallPerson}
         </Typography>
@@ -268,7 +305,7 @@ const OnCallCalendarScreen = () => {
           date: day.toISODate(),
           username: onCallDayData.username,
           paid: onCallDayData.paid,
-          badgeColor: stringToColor(onCallDayData.username)
+          badgeColor: stringToColor(onCallDayData.username),
         });
         setOpen(true);
       }
@@ -287,7 +324,9 @@ const OnCallCalendarScreen = () => {
                     ? customTheme(theme).colors.onCallHighlight
                     : badgeColor,
                   color: theme.palette.getContrastText(
-                    whenUserIsOnCall ? customTheme(theme).colors.onCallHighlight : badgeColor
+                    whenUserIsOnCall
+                      ? customTheme(theme).colors.onCallHighlight
+                      : badgeColor,
                   ),
                   right: 60,
                   top: 10,
@@ -303,20 +342,20 @@ const OnCallCalendarScreen = () => {
                   position: "absolute",
                   overflow: "visible",
                   ...(whenUserIsOnCall && {
-                    animation: "pulseGlow 1.5s ease-in-out 4"
-                  })
+                    animation: "pulseGlow 1.5s ease-in-out 4",
+                  }),
                 },
                 "@keyframes pulseGlow": {
                   "0%": {
-                    boxShadow: "0 0 0 0 rgba(150, 96, 15, 0.7)"
+                    boxShadow: "0 0 0 0 rgba(150, 96, 15, 0.7)",
                   },
                   "70%": {
-                    boxShadow: "0 0 0 8px rgba(255, 152, 0, 0)"
+                    boxShadow: "0 0 0 8px rgba(255, 152, 0, 0)",
                   },
                   "100%": {
-                    boxShadow: "0 0 0 0 rgba(255, 152, 0, 0)"
-                  }
-                }
+                    boxShadow: "0 0 0 0 rgba(255, 152, 0, 0)",
+                  },
+                },
               }}
             >
               <StyledPickersDay
@@ -329,13 +368,13 @@ const OnCallCalendarScreen = () => {
                     ? {
                         color: theme.palette.text.primary,
                         fontWeight: "bold",
-                        border: `2px solid ${customTheme(theme).colors.paidGreen}`
+                        border: `2px solid ${customTheme(theme).colors.paidGreen}`,
                       }
                     : {}),
                   background: outsideCurrentMonth
                     ? theme.palette.action.disabledBackground
                     : theme.palette.background.paper,
-                  cursor: "pointer"
+                  cursor: "pointer",
                 }}
                 onClick={handleDayClick}
               />
@@ -353,13 +392,13 @@ const OnCallCalendarScreen = () => {
                 ? {
                     color: theme.palette.text.primary,
                     fontWeight: "bold",
-                    border: `2px solid ${customTheme(theme).colors.paidGreen}`
+                    border: `2px solid ${customTheme(theme).colors.paidGreen}`,
                   }
                 : {}),
               background: outsideCurrentMonth
                 ? theme.palette.action.disabledBackground
                 : theme.palette.background.paper,
-              cursor: onCallDayData ? "pointer" : "default"
+              cursor: onCallDayData ? "pointer" : "default",
             }}
             onClick={handleDayClick}
           />
@@ -383,8 +422,8 @@ const OnCallCalendarScreen = () => {
     backgroundColor: theme.palette.background.paper,
     "&:hover": {
       border: `2px solid ${theme.palette.primary.main}`,
-      background: theme.palette.action.hover
-    }
+      background: theme.palette.action.hover,
+    },
   }));
 
   const CalendarContainer = styled(Box)(({ theme }) => ({
@@ -400,27 +439,33 @@ const OnCallCalendarScreen = () => {
     background: theme.palette.background.paper,
     boxShadow: theme.shadows[2],
     padding: theme.spacing(2),
-    overflow: "auto"
+    overflow: "auto",
   }));
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+      }}
+    >
       {/* Global styles for correct calendar layout */}
       <GlobalStyles
         styles={{
           // Container for the week
           ".MuiDayCalendar-weekContainer": {
-            minHeight: DAY_WIDTH + 8
+            minHeight: DAY_WIDTH + 8,
           },
           // Root container for the day
           ".MuiDayCalendar-root": {
             minWidth: WEEK_NUMBER_WIDTH + DAY_WIDTH * 7 + 32,
-            maxWidth: "none"
+            maxWidth: "none",
           },
           // Container for the days (to prevent clipping)
           ".MuiPickersSlideTransition-root": {
             minHeight: (DAY_WIDTH + 8) * 6,
-            height: (DAY_WIDTH + 8) * 6
+            height: (DAY_WIDTH + 8) * 6,
           },
           // Container for the calendar
           ".MuiDateCalendar-root": {
@@ -428,7 +473,7 @@ const OnCallCalendarScreen = () => {
             maxWidth: "none",
             minHeight: (DAY_WIDTH + 8) * 6 + 50,
             height: (DAY_WIDTH + 8) * 6 + 50,
-            marginBottom: 3
+            marginBottom: 3,
           },
           // Header for days of the week (Mon, Tue, ...)
           ".MuiDayCalendar-header": {
@@ -437,7 +482,7 @@ const OnCallCalendarScreen = () => {
             display: "grid",
             gridTemplateColumns: `${WEEK_NUMBER_WIDTH}px repeat(7, ${DAY_WIDTH}px)`,
             marginLeft: 0,
-            marginRight: 0
+            marginRight: 0,
           },
           // Cell with headers of days of the week
           ".MuiDayCalendar-weekDayLabel": {
@@ -446,7 +491,7 @@ const OnCallCalendarScreen = () => {
             maxWidth: DAY_WIDTH,
             fontSize: 16,
             textAlign: "center",
-            padding: 0
+            padding: 0,
           },
           // Cell with week number
           ".MuiDayCalendar-weekNumberLabel": {
@@ -455,7 +500,7 @@ const OnCallCalendarScreen = () => {
             maxWidth: WEEK_NUMBER_WIDTH,
             fontSize: 14,
             textAlign: "center",
-            padding: 0
+            padding: 0,
           },
           // Cell with week number
           ".MuiDayCalendar-weekNumber": {
@@ -464,8 +509,8 @@ const OnCallCalendarScreen = () => {
             maxWidth: WEEK_NUMBER_WIDTH,
             fontSize: 14,
             textAlign: "center",
-            padding: 0
-          }
+            padding: 0,
+          },
         }}
       />
       <FormControl
@@ -473,26 +518,34 @@ const OnCallCalendarScreen = () => {
           width: "50%",
           textAlign: "center",
           margin: "auto",
-          "& .MuiInputLabel-root": { color: theme.palette.text.primary }
+          "& .MuiInputLabel-root": { color: theme.palette.text.primary },
         }}
       >
-        <InputLabel id={calendarSelectId}>{strings.oncall.selectView}</InputLabel>
+        <InputLabel id={calendarSelectId}>
+          {strings.oncall.selectView}
+        </InputLabel>
         <Select
           sx={{
             color: theme.palette.text.primary,
             ".MuiOutlinedInput-notchedOutline": {
-              borderColor: theme.palette.divider
-            }
+              borderColor: theme.palette.divider,
+            },
           }}
           labelId={calendarSelectId}
           id={`${calendarSelectId}-select`}
           label={strings.oncall.selectView}
           value={isCalendarView ? "Calendar" : "List"}
         >
-          <MenuItem value={"Calendar"} onClick={() => handleCalendarViewChange(true)}>
+          <MenuItem
+            value={"Calendar"}
+            onClick={() => handleCalendarViewChange(true)}
+          >
             {strings.oncall.calendar}
           </MenuItem>
-          <MenuItem value={"List"} onClick={() => handleCalendarViewChange(false)}>
+          <MenuItem
+            value={"List"}
+            onClick={() => handleCalendarViewChange(false)}
+          >
             {strings.oncall.list}
           </MenuItem>
         </Select>
@@ -511,10 +564,10 @@ const OnCallCalendarScreen = () => {
             ? {
                 width: "50%",
                 textAlign: "center",
-                margin: "auto"
+                margin: "auto",
               }
             : {
-                mb: 2
+                mb: 2,
               }
         }
       />

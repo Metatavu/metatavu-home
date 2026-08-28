@@ -183,7 +183,13 @@ const Recommendations = ({ applications, onAddUser }: RecommendationsProps) => {
           {strings.softwareRegistry.noRecommendations}
         </Typography>
       )}
-      <Box display="flex" justifyContent="center" mt={2}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          mt: 2
+        }}
+      >
         <Button
           variant="contained"
           color="secondary"

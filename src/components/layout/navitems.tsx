@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/correctness/useUniqueElementIds: <keep static id> */
 import MenuIcon from "@mui/icons-material/Menu";
 import { Box, IconButton, Menu, MenuItem } from "@mui/material";
 import Button from "@mui/material/Button";
@@ -116,7 +117,12 @@ const NavItems = () => {
             </MenuItem>
           )}
         </Menu>
-        <Typography variant="button" marginTop={1.5}>
+        <Typography
+          variant="button"
+          sx={{
+            marginTop: 1.5
+          }}
+        >
           {currentPage}
         </Typography>
       </Box>

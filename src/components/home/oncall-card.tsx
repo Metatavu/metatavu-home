@@ -1,4 +1,4 @@
-import { Grid, Typography, useTheme } from "@mui/material";
+import { Stack, Typography, useTheme } from "@mui/material";
 import { useAtom, useSetAtom } from "jotai";
 import { DateTime } from "luxon";
 import { useEffect } from "react";
@@ -58,12 +58,16 @@ const OnCallCard = ({ hidden, onToggleHidden, editmode }: CardProps) => {
       : strings.oncall.noOnCallPerson;
 
     return (
-      <Grid container direction="column" pt={theme.spaces.s}>
+      <Stack
+        sx={{
+          pt: theme.spaces.s
+        }}
+      >
         <Typography variant="body" sx={{ fontWeight: 500 }}>
           {nameString}
         </Typography>
         <Typography variant="body">{currentOnCallPersonEmail}</Typography>
-      </Grid>
+      </Stack>
     );
   };
 

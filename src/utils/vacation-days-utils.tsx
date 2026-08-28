@@ -20,7 +20,13 @@ export const renderVacationDaysTextForCard = (user: User, theme: Theme) => {
   if (user) {
     return (
       <Grid>
-        <Grid container spacing={2} alignItems="center">
+        <Grid
+          container
+          spacing={2}
+          sx={{
+            alignItems: "center"
+          }}
+        >
           <Grid size={6}>{strings.vacationsCard.vacationDays}</Grid>
           <Grid size={6}>
             <Typography color={vacationDaysByYearColor}>
@@ -30,7 +36,13 @@ export const renderVacationDaysTextForCard = (user: User, theme: Theme) => {
             </Typography>
           </Grid>
         </Grid>
-        <Grid container spacing={2} alignItems="center">
+        <Grid
+          container
+          spacing={2}
+          sx={{
+            alignItems: "center"
+          }}
+        >
           <Grid size={6}>{strings.vacationsCard.unspentVacationDays}</Grid>
           <Grid size={6}>
             <Typography color={unspentVacationDaysByYearColor}>
@@ -52,26 +64,49 @@ export const renderVacationDaysTextForCard = (user: User, theme: Theme) => {
  * @param user Keycloak user
  */
 export const renderVacationDaysTextForScreen = (user: User, theme: Theme) => {
-  const { vacationDaysByYearColor, unspentVacationDaysByYearColor } = getVacationColors(
-    user,
-    theme
-  );
   const currentYear = getVacationYear();
 
   if (user) {
     return (
-      <Grid container justifyContent="space-around">
-        <Grid style={{ display: "flex", alignItems: "center" }}>
-          {strings.vacationsCard.vacationDays}
-          <Typography color={vacationDaysByYearColor} style={{ marginLeft: "8px" }}>
+      <Grid
+        sx={{
+          display: "flex",
+          justifyContent: "space-around",
+          backgroundColor: theme.palette.background.accentSecondary,
+          borderRadius: theme.radius.s,
+          height: 48,
+          my: theme.spaces.xl,
+          py: theme.spaces.s,
+          px: theme.spaces.m
+        }}
+      >
+        <Grid
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: 1
+          }}
+        >
+          <Typography variant="body" sx={{ fontWeight: 500 }}>
+            {strings.vacationsCard.vacationDays}
+          </Typography>
+          <Typography variant="body" sx={{ fontWeight: 500 }}>
             {user.attributes?.vacationDaysByYear
               ? parseVacationDays(user.attributes?.vacationDaysByYear)[currentYear]
               : strings.vacationsCard.vacationDaysNotFound}
           </Typography>
         </Grid>
-        <Grid style={{ display: "flex", alignItems: "center" }}>
-          {strings.vacationsCard.unspentVacationDays}
-          <Typography color={unspentVacationDaysByYearColor} style={{ marginLeft: "8px" }}>
+        <Grid
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: 1
+          }}
+        >
+          <Typography variant="body" sx={{ fontWeight: 500 }}>
+            {strings.vacationsCard.unspentVacationDays}
+          </Typography>
+          <Typography variant="body" sx={{ fontWeight: 500 }}>
             {user.attributes?.unspentVacationDaysByYear
               ? parseVacationDays(user.attributes?.unspentVacationDaysByYear)[currentYear]
               : strings.vacationsCard.unspentVacationDaysNotFound}

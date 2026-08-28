@@ -169,11 +169,11 @@ declare module "@mui/material/styles" {
       off: string;
     };
     segmentedControl: {
-    default: string;
-    selected: string;
-    hover: string;
-    border: string;
-  };
+      default: string;
+      selected: string;
+      hover: string;
+      border: string;
+    };
   }
   interface ThemeOptions {
     spaces?: {
@@ -200,8 +200,8 @@ declare module "@mui/material/styles" {
       m?: string;
     };
     toggle: {
-    on: string;
-    off: string;
+      on: string;
+      off: string;
     };
     segmentedControl?: {
       default?: string;

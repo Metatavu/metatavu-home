@@ -28,7 +28,13 @@ const createSprintViewProjectsColumns = ({ resourceAllocations }: Props) => {
         row?.project ? getProjectName(row.project, resourceAllocations) : "",
 
       renderCell: (params) => (
-        <Box display="flex" alignItems="center" justifyContent="left">
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "left"
+          }}
+        >
           {params.row?.project ? getProjectName(params.row.project, resourceAllocations) : ""}
         </Box>
       )
@@ -45,7 +51,14 @@ const createSprintViewProjectsColumns = ({ resourceAllocations }: Props) => {
         row?.project ? getTotalEstimatedHours(resourceAllocations, row.project) : "",
 
       renderCell: (params) => (
-        <Box display="flex" alignItems="center" justifyContent="left" ml={5}>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "left",
+            ml: 5
+          }}
+        >
           {params.row?.project
             ? getTotalEstimatedHours(resourceAllocations, params.row.project)
             : ""}
@@ -64,7 +77,13 @@ const createSprintViewProjectsColumns = ({ resourceAllocations }: Props) => {
         row?.project ? getAssigneName(resourceAllocations, row.project) : "",
 
       renderCell: (params) => (
-        <Box display="flex" alignItems="center" justifyContent="left">
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "left"
+          }}
+        >
           {params.row?.project ? getAssigneName(resourceAllocations, params.row.project) : ""}
         </Box>
       )

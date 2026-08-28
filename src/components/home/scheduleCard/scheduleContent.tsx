@@ -33,14 +33,14 @@ const Event = ({ event, hourNow, pixels }: EventProps) => {
 
   return (
     <Box
-      position="absolute"
-      height={height}
-      display="flex"
-      justifyContent="start"
-      gap={theme.spaces.m}
-      p={theme.spaces.m}
-      alignItems="center"
       sx={{
+        position: "absolute",
+        height: height,
+        display: "flex",
+        justifyContent: "start",
+        gap: theme.spaces.m,
+        p: theme.spaces.m,
+        alignItems: "center",
         top: position,
         paddingX: theme.spaces.xxl,
         backgroundColor: "background.event",
@@ -244,13 +244,24 @@ export const ScheduleTopBar = ({ hidden, timeNow, setTimeNow }: TopBarProps) => 
       }}
     >
       {timeNow.monthLong}
-      <Box display="flex">
+      <Box
+        sx={{
+          display: "flex"
+        }}
+      >
         <Button
           startIcon={<ChevronLeftRounded sx={{ color: theme.palette.icons.primary }} />}
           onClick={() => handleDayChange("back", setTimeNow)}
         />
         {weekDays.map((day) => (
-          <Box key={day.number} display="flex" flex={1} justifyContent="center">
+          <Box
+            key={day.number}
+            sx={{
+              display: "flex",
+              flex: 1,
+              justifyContent: "center"
+            }}
+          >
             <Box
               sx={{
                 backgroundColor: day.today ? colors.accent : "transparent",

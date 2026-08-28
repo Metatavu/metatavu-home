@@ -334,6 +334,9 @@
     "create": "Luo",
     "submit": "Lähetä",
     "update": "Päivitä",
+    "advancedOptions": "Edistyneet asetukset",
+    "daysConsumed": "Loman kuluttamat päivät",
+    "daysConsumedDescription": "Muokkaa loman kuluttamia päiviä",
     "restoreDefault": "Palauta alkuperäiset päivät"
   },
   "tableToolbar": {
@@ -611,19 +614,21 @@
     "description": "Aktivoi tilisi, jotta voit nähdä tämän osion"
   },
   "adminVacationManagement": {
-    "heading": "Ylläpitäjän lomahallinta",
+    "heading": "Työntekijöiden lomapäivät",
     "title": "Käyttäjän lomahallinta",
     "description": "Näytä ja päivitä yksittäisten käyttäjien lomapäivien määrät ja jäljellä olevat päivät.",
     "buttonLabel": "Hallitse käyttäjän lomapäiviä",
     "editTitle": "Muokkaa lomapäiviä",
     "totalDays": "Lomapäivät yhteensä",
+    "totalDescription": "Lomapäivät yhteensä tänä vuonna",
     "remainingDays": "Jäljellä olevat päivät",
+    "remainingDescription": "Jäljellä olevat lomapäivät tänä vuonna",
     "selectYear": "Valitse vuosi",
     "currentYear": "Lomavuosi",
     "vacationFor": "Lomapäivät vuodelle"
   },
   "userSearch": {
-    "placeholder": "Hae käyttäjiä nimellä tai sähköpostilla"
+    "placeholder": "Hae"
   },
   "userRow": {
     "day": "päivää"

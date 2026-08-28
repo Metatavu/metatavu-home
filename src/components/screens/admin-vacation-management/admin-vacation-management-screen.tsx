@@ -69,7 +69,7 @@ const AdminVacationManagementScreen = () => {
         setLoadingUsers(true);
         const fetchedUsers = await usersApi.listUsers();
         setUsers(fetchedUsers);
-      } catch (error:any) {
+      } catch (error: any) {
         const errorMessage = await error?.response?.json();
         setError(`${strings.vacationRequestError.failedToLoad}: ${errorMessage?.message || error}`);
       } finally {
@@ -195,7 +195,7 @@ const AdminVacationManagementScreen = () => {
       );
 
       handleCloseDialog();
-    } catch (error:any) {
+    } catch (error: any) {
       const errorMessage = await error?.response?.json();
       setError(`${strings.vacationRequestError.failedToLoad}: ${errorMessage?.message || error}`);
     } finally {
@@ -240,7 +240,13 @@ const AdminVacationManagementScreen = () => {
       <UserTable users={paginatedUsers} loading={loadingUsers} onEdit={handleEditUser} />
       {/* Only shows pagination after loading of users */}
       {shouldPaginate && !loadingUsers && (
-        <Box display="flex" justifyContent="center" mt={2}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            mt: 2
+          }}
+        >
           <TablePagination
             component="div"
             count={filteredUsers.length}

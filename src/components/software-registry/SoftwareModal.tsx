@@ -201,7 +201,12 @@ const SoftwareModal = ({
         >
           <CloseIcon />
         </IconButton>
-        <Typography variant="h6" marginBottom={4}>
+        <Typography
+          variant="h6"
+          sx={{
+            marginBottom: 4
+          }}
+        >
           {softwareData
             ? strings.softwareRegistry.editApplication
             : strings.softwareRegistry.addApplication}
@@ -310,9 +315,9 @@ const SoftwareModal = ({
                   recommend: newValue.map((user) => user.id)
                 }));
               }}
-              renderTags={(value, getTagProps) =>
+              renderValue={(value, getItemProps) =>
                 value.map((option, index) => {
-                  const { key, ...tagProps } = getTagProps({ index });
+                  const { key, ...tagProps } = getItemProps({ index });
                   return (
                     <Chip
                       key={key}
@@ -336,7 +341,14 @@ const SoftwareModal = ({
               )}
             />
           </Grid>
-          <Grid container justifyContent="right" mt={4} size={12}>
+          <Grid
+            container
+            size={12}
+            sx={{
+              justifyContent: "right",
+              mt: 4
+            }}
+          >
             <Button
               onClick={() => {
                 handleClose();

@@ -201,9 +201,23 @@ const SoftwareScreen = () => {
 
   return (
     <Container>
-      <Grid container direction="column" alignItems="stretch" mt={4}>
+      <Grid
+        container
+        sx={{
+          flexDirection: "column",
+          alignItems: "stretch",
+          mt: 4
+        }}
+      >
         {recommendedApplications.length > 0 && (
-          <Grid container justifyContent="center" alignItems="center" mb={4}>
+          <Grid
+            container
+            sx={{
+              justifyContent: "center",
+              alignItems: "center",
+              mb: 4
+            }}
+          >
             <Typography sx={{ fontWeight: 600, fontSize: 18, color: theme.palette.primary.main }}>
               {strings.softwareRegistry.recommendationMessage.replace(
                 "{recommendationCount}",
@@ -242,7 +256,7 @@ const SoftwareScreen = () => {
             handleSearchInputChange={(_event: any, newInputValue: string) =>
               setSearchValue(newInputValue)
             }
-            handleSelectedTagChange={(newSelectedTags) => setSelectedTags(newSelectedTags)}
+            handleSelectedTagChange={(newSelectedTags) => setSelectedTags([newSelectedTags])}
             placeholder={strings.softwareRegistry.searchBy}
           />
           <ListViewButton listView={listView} setListView={setListView} />
@@ -252,10 +266,20 @@ const SoftwareScreen = () => {
           />
         </Box>
 
-        <Grid container justifyContent="flex-start" mt={2}>
+        <Grid
+          container
+          sx={{
+            justifyContent: "flex-start",
+            mt: 2
+          }}
+        >
           <Grid size="grow">
             {loading ? (
-              <Box textAlign="center">
+              <Box
+                sx={{
+                  textAlign: "center"
+                }}
+              >
                 <CircularProgress size={50} sx={{ mt: 2 }} />
               </Box>
             ) : (
@@ -265,7 +289,12 @@ const SoftwareScreen = () => {
               />
             )}
             {filteredSoftware.length > 4 && (
-              <Box textAlign="center" mt={3}>
+              <Box
+                sx={{
+                  textAlign: "center",
+                  mt: 3
+                }}
+              >
                 <Button
                   variant="contained"
                   color="secondary"
@@ -283,7 +312,15 @@ const SoftwareScreen = () => {
           </Grid>
         </Grid>
       </Grid>
-      <Grid container direction="column" alignItems="center" mt={4} ref={recommendationRef}>
+      <Grid
+        container
+        ref={recommendationRef}
+        sx={{
+          flexDirection: "column",
+          alignItems: "center",
+          mt: 4
+        }}
+      >
         <Recommendations applications={recommendedApplications} onAddUser={handleUserUpdate} />
       </Grid>
       <AddSoftwareModal

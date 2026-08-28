@@ -325,6 +325,26 @@ const muiSwitchStyleOverrides = {
   })
 };
 
+const muiTextFieldOverriedes = {
+  root: ({ theme }: { theme: Theme }) => ({
+    "& .MuiOutlinedInput-root": {
+      borderRadius: theme.radius.s,
+
+      "& fieldset": {
+        borderColor: theme.palette.border.primary
+      },
+
+      "&:hover fieldset": {
+        borderColor: theme.palette.border.accent
+      },
+
+      "&.Mui-focused fieldset": {
+        borderColor: theme.palette.border.primary
+      }
+    }
+  })
+};
+
 /**
  * Creates MUI theme for the application.
  *
@@ -386,6 +406,9 @@ export const createAppTheme = (mode: "light" | "dark"): Theme => {
       },
       MuiSwitch: {
         styleOverrides: muiSwitchStyleOverrides
+      },
+      MuiTextField: {
+        styleOverrides: muiTextFieldOverriedes
       }
     }
   });
