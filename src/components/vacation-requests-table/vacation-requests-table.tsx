@@ -37,8 +37,8 @@ interface Props {
     selectedRowIds: GridRowId[]
   ) => Promise<void>;
   loading: boolean;
-  filter: FilterType[];
-  setFilter: React.Dispatch<React.SetStateAction<FilterType[]>>;
+  filters: FilterType[];
+  setFilters: React.Dispatch<React.SetStateAction<FilterType[]>>;
   tabs: Tab[];
   currentTab: string;
   setCurrentTab: Dispatch<SetStateAction<string>>;
@@ -60,7 +60,7 @@ interface Props {
  * @param props.updateVacationRequestStatus - Updates the status of selected requests.
  * @param props.loading - Indicates whether table data is loading.
  * @param props.filter - Currently selected filters.
- * @param props.setFilter - Updates the selected filters.
+ * @param props.setFilters - Updates the selected filters.
  * @param props.tabs - Available navigation tabs.
  * @param props.currentTab - Currently selected tab.
  * @param props.setCurrentTab - Updates the selected tab.
@@ -75,8 +75,8 @@ const VacationRequestsTable = ({
   updateVacationRequest,
   updateVacationRequestStatus,
   loading,
-  filter,
-  setFilter,
+  filters,
+  setFilters,
   tabs,
   currentTab,
   setCurrentTab,
@@ -150,7 +150,7 @@ const VacationRequestsTable = ({
   const onRowClick = (rowId: string) => {
     setSelectedRowIds({ type: "include", ids: new Set([rowId]) });
     setFormOpen(true);
-    setToolbarFormMode(ToolbarFormModes.EDIT);
+    setToolbarFormMode(adminMode ? ToolbarFormModes.APPROVE : ToolbarFormModes.EDIT);
   };
 
   return (
@@ -180,8 +180,8 @@ const VacationRequestsTable = ({
         selectedRowIds={selectedRowIds}
         rows={rows}
         setSelectedRowIds={setSelectedRowIds}
-        filter={filter}
-        setFilter={setFilter}
+        filters={filters}
+        setFilters={setFilters}
         toolbarFormMode={toolbarFormMode}
         setToolbarFormMode={setToolbarFormMode}
         tabs={tabs}

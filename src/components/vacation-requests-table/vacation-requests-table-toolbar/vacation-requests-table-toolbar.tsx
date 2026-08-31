@@ -30,8 +30,8 @@ interface Props {
   selectedRowIds: GridRowSelectionModel;
   rows: VacationsDataGridRow[];
   setSelectedRowIds: (selectedRowIds: GridRowSelectionModel) => void;
-  filter: FilterType[];
-  setFilter: React.Dispatch<React.SetStateAction<FilterType[]>>;
+  filters: FilterType[];
+  setFilters: React.Dispatch<React.SetStateAction<FilterType[]>>;
   toolbarFormMode: ToolbarFormModes;
   setToolbarFormMode: Dispatch<SetStateAction<ToolbarFormModes>>;
   tabs: Tab[];
@@ -57,8 +57,8 @@ const TableToolbar = ({
   selectedRowIds,
   rows,
   setSelectedRowIds,
-  filter,
-  setFilter,
+  filters,
+  setFilters,
   toolbarFormMode,
   setToolbarFormMode,
   tabs,
@@ -107,8 +107,8 @@ const TableToolbar = ({
       <DefaultToolbar
         formOpen={formOpen}
         adminMode={adminMode}
-        filter={filter}
-        setFilter={setFilter}
+        filters={filters}
+        setFilters={setFilters}
         toggleIsUpcoming={toggleIsUpcoming}
         setFormOpen={setFormOpen}
         tabs={tabs}

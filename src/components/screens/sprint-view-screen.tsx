@@ -118,7 +118,7 @@ const SprintViewScreen = () => {
         </Card>
       ) : (
         /* TODO: Need to fetch the status from home-lambdas first for phases, then recreate filter in metatavu-home */
-        /* <TaskStatusFilter setFilter={setFilter} /> */
+        /* <TaskStatusFilter setFilters={setFilters} /> */
         <Container maxWidth="lg" sx={{ mt: 4 }}>
           <Paper elevation={3} sx={{ padding: 4, borderRadius: 3 }}>
             <Stack spacing={3}>

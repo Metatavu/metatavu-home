@@ -6,7 +6,7 @@ import { STATUS } from "../constants";
  * Component properties
  */
 interface Props {
-  setFilter: (string: string) => void;
+  setFilters: (string: string) => void;
 }
 
 /**
@@ -14,7 +14,7 @@ interface Props {
  *
  * @param props Component properties
  */
-export const TaskStatusFilter = ({ setFilter }: Props) => {
+export const TaskStatusFilter = ({ setFilters }: Props) => {
   const statusFilters = [
     { key: 1, value: STATUS.TODO, label: strings.sprint.toDo },
     { key: 2, value: STATUS.INPROGRESS, label: strings.sprint.inProgress },
@@ -35,7 +35,7 @@ export const TaskStatusFilter = ({ setFilter }: Props) => {
         label={strings.sprint.taskStatus}
       >
         {statusFilters.map((filter) => (
-          <MenuItem key={filter.key} value={filter.label} onClick={() => setFilter(filter.value)}>
+          <MenuItem key={filter.key} value={filter.label} onClick={() => setFilters(filter.value)}>
             {filter.label}
           </MenuItem>
         ))}
