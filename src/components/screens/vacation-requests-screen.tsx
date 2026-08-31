@@ -63,13 +63,21 @@ const VacationRequestsScreen = () => {
         { id: "past", title: strings.tableToolbar.past }
       ];
 
+  /**
+   * Guards against a stale currentTab value momentarily not matching
+   * the current tabs list (e.g. right after adminMode changes, before
+   * the effect below has a chance to reset currentTab). Falls back to
+   * the first available tab id instead of an invalid value.
+   */
+  const safeCurrentTab = tabs.some((tab) => tab.id === currentTab) ? currentTab : tabs[0].id;
+
   useEffect(() => {
     setCurrentTab(adminMode ? "vacations" : "upcoming");
   }, [adminMode]);
 
   useEffect(() => {
     fetchVacationsRequests();
-  }, [loggedInUser, currentTab]);
+  }, [safeCurrentTab, loggedInUser]);
 
   /**
    * Handler for upcoming/ past vacations toggle click
@@ -152,7 +160,7 @@ const VacationRequestsScreen = () => {
           filters={filters}
           setFilters={setFilters}
           tabs={tabs}
-          currentTab={currentTab}
+          currentTab={safeCurrentTab}
           setCurrentTab={setCurrentTab}
           adminMode={adminMode}
         />

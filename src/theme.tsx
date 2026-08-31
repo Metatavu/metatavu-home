@@ -364,12 +364,20 @@ export const createAppTheme = (mode: "light" | "dark"): Theme => {
     off: mode === "light" ? "#c2c2c2" : "#797979"
   };
 
+  const segmentedControl = {
+  default: "#fae5d8",
+  selected: "#f1b289",
+  hover: "#f7ccb0",
+  border: "#f1b289"
+};
+
   return createTheme({
     palette: createPalette(mode),
     spaces,
     radius,
     borders,
     toggle,
+    segmentedControl,
     typography,
     components: {
       MuiCssBaseline: {

@@ -75,7 +75,9 @@ const OnCallCalendarScreen = () => {
   const getOnCallData = async (year: number) => {
     setLoading(true);
     try {
-      const fetchedData = await onCallApi.listOnCallData({ year: year.toString() });
+      const fetchedData = await onCallApi.listOnCallData({
+        year: year.toString()
+      });
       setOnCallData(fetchedData);
     } catch (error: any) {
       if (!(error instanceof SyntaxError)) {
@@ -95,7 +97,9 @@ const OnCallCalendarScreen = () => {
     const currentYear = DateTime.now().year;
     const currentWeek = DateTime.now().weekNumber;
     try {
-      const fetchedData = await onCallApi.listOnCallData({ year: currentYear.toString() });
+      const fetchedData = await onCallApi.listOnCallData({
+        year: currentYear.toString()
+      });
       const currentOnCallPerson = fetchedData.find((item) => item.week === currentWeek)?.username;
       setOnCallPerson(currentOnCallPerson ?? undefined);
     } catch (error: any) {
@@ -147,13 +151,22 @@ const OnCallCalendarScreen = () => {
         <Box sx={customTheme(theme).customStyles.onCallBox}>
           <Typography
             variant="h5"
-            sx={{ display: "block", mb: 1, fontWeight: "bold", color: theme.palette.text.primary }}
+            sx={{
+              display: "block",
+              mb: 1,
+              fontWeight: "bold",
+              color: theme.palette.text.primary
+            }}
           >
             {strings.oncall.onCallPersonExists}
           </Typography>
           <Typography
             variant="h5"
-            sx={{ display: "block", color: theme.palette.text.primary, fontWeight: "bold" }}
+            sx={{
+              display: "block",
+              color: theme.palette.text.primary,
+              fontWeight: "bold"
+            }}
           >
             {formatUsername(onCallPerson)}
           </Typography>
@@ -165,7 +178,11 @@ const OnCallCalendarScreen = () => {
       <Box sx={customTheme(theme).customStyles.onCallBox}>
         <Typography
           variant="h5"
-          sx={{ display: "block", color: theme.palette.error.main, fontWeight: "bold" }}
+          sx={{
+            display: "block",
+            color: theme.palette.error.main,
+            fontWeight: "bold"
+          }}
         >
           {strings.oncall.noOnCallPerson}
         </Typography>
@@ -404,7 +421,13 @@ const OnCallCalendarScreen = () => {
   }));
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center"
+      }}
+    >
       {/* Global styles for correct calendar layout */}
       <GlobalStyles
         styles={{

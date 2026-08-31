@@ -2,8 +2,30 @@ import { Add, Remove } from "@mui/icons-material";
 import { Box, TextField, Typography } from "@mui/material";
 import AppIconButton from "./buttons/app-icon-button";
 
+interface InputRowProps {
+  label?: string;
+  helperText?: string;
+  children: React.ReactNode;
+}
+
+export const InputRow = ({ label, helperText, children }: InputRowProps) => {
+  return (
+    <Box sx={{ display: "flex", justifyContent: "space-between", gap: 5 }}>
+      <Box sx={{ display: "flex", flexDirection: "column" }}>
+        <Typography variant="body" sx={{ fontWeight: 500 }}>
+          {label}
+        </Typography>
+
+        {helperText && <Typography variant="caption">{helperText}</Typography>}
+      </Box>
+
+      {children}
+    </Box>
+  );
+};
+
 interface NumberInputProps {
-  label: string;
+  label?: string;
   value: number;
   onChange: (value: number) => void;
   min?: number;
@@ -55,13 +77,7 @@ const AppNumberInput = ({
   };
 
   return (
-    <Box sx={{ display: "flex", justifyContent: "space-between", gap: 5 }}>
-      <Box sx={{ display: "flex", flexDirection: "column" }}>
-        <Typography variant="body" sx={{ fontWeight: 500 }}>
-          {label}
-        </Typography>
-        {helperText && <Typography variant="caption">{helperText}</Typography>}
-      </Box>
+    <InputRow label={label} helperText={helperText}>
       <TextField
         value={value}
         onChange={handleInputChange}
@@ -93,7 +109,7 @@ const AppNumberInput = ({
           }
         }}
       />
-    </Box>
+    </InputRow>
   );
 };
 

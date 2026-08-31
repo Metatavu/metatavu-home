@@ -1,3 +1,7 @@
+/**
+ * This file is deprecated and will be removed in a future release. Please use the new `SegmentedControl` component instead.
+ */
+
 import { ArrowBack, ArrowForward, CalendarToday } from "@mui/icons-material";
 import {
   Box,
@@ -5,7 +9,7 @@ import {
   ButtonGroup,
   IconButton,
   Tooltip as MuiTooltip,
-  Typography
+  Typography,
 } from "@mui/material";
 import type { ChartDataPoint } from "./workDays-chart";
 
@@ -38,7 +42,7 @@ const RangeControls = ({
   setSelectedRange,
   strings,
   resetWeekOffset,
-  resetMonthOffset
+  resetMonthOffset,
 }: RangeControlsProps) => (
   <Box
     sx={{
@@ -46,7 +50,7 @@ const RangeControls = ({
       alignItems: "center",
       justifyContent: "center",
       marginBottom: "30px",
-      position: "relative"
+      position: "relative",
     }}
   >
     {/* WEEK CONTROLS */}
@@ -58,7 +62,7 @@ const RangeControls = ({
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          width: "250px"
+          width: "250px",
         }}
       >
         <MuiTooltip title={`${chartData[0].week}: ${chartData[0].period}`}>
@@ -69,7 +73,10 @@ const RangeControls = ({
             <ArrowBack />
           </IconButton>
 
-          <IconButton disabled={weekOffset === 0} onClick={() => onWeekOffsetChange(1)}>
+          <IconButton
+            disabled={weekOffset === 0}
+            onClick={() => onWeekOffsetChange(1)}
+          >
             <ArrowForward />
           </IconButton>
 
@@ -89,7 +96,7 @@ const RangeControls = ({
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          width: "250px"
+          width: "250px",
         }}
       >
         {chartData[0] ? (
@@ -100,7 +107,7 @@ const RangeControls = ({
           <Typography
             variant="h6"
             sx={{
-              color: "text.secondary"
+              color: "text.secondary",
             }}
           >
             {strings.timebank.noData}
@@ -108,11 +115,17 @@ const RangeControls = ({
         )}
 
         <ButtonGroup sx={{ mt: 1 }}>
-          <IconButton disabled={monthOffset === -12} onClick={() => onMonthOffsetChange(-1)}>
+          <IconButton
+            disabled={monthOffset === -12}
+            onClick={() => onMonthOffsetChange(-1)}
+          >
             <ArrowBack />
           </IconButton>
 
-          <IconButton disabled={monthOffset === 0} onClick={() => onMonthOffsetChange(1)}>
+          <IconButton
+            disabled={monthOffset === 0}
+            onClick={() => onMonthOffsetChange(1)}
+          >
             <ArrowForward />
           </IconButton>
 
