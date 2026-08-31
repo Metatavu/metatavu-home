@@ -8,6 +8,7 @@ import type { VacationRequest, VacationType } from "../generated/homeLambdasClie
  */
 export enum ToolbarFormModes {
   CREATE = "CREATE",
+  APPROVE = "APPROVE",
   EDIT = "EDIT",
   NONE = "NONE"
 }
@@ -38,6 +39,17 @@ export interface VacationsDataGridRow {
   status: string;
   draft: boolean;
   vacationRequest?: VacationRequest;
+}
+
+/**
+ * Type describing row for users data grid table
+ */
+export interface UserDataGridRow {
+  id: string;
+  name: string;
+  email: string | undefined;
+  total: number;
+  remaining: number;
 }
 
 /**

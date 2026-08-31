@@ -93,7 +93,20 @@ const ChartTooltip = ({ active, payload, label, strings }: any) => {
  */
 const CustomBarShape = ({ x, y, width, height, payload, getBarColor }: any) => {
   const color = getBarColor(payload.hours, payload.expected);
-  return <rect x={x} y={y} width={width} height={height} fill={color} />;
+  if (height <= 0) return null;
+  const radius = 8;
+
+  const path = `
+    M ${x} ${y + radius}
+    Q ${x} ${y} ${x + radius} ${y}
+    L ${x + width - radius} ${y}
+    Q ${x + width} ${y} ${x + width} ${y + radius}
+    L ${x + width} ${y + height}
+    L ${x} ${y + height}
+    Z
+  `;
+
+  return <path d={path} fill={color} />;
 };
 
 /**

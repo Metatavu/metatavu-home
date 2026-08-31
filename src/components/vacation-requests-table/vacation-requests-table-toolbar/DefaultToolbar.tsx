@@ -21,18 +21,18 @@ const ToolbarGridContainer = styled(Grid)({
 
 interface DefaultToolbarProps {
   adminMode: boolean;
-  filter: FilterType[];
-  setFilter: React.Dispatch<React.SetStateAction<FilterType[]>>;
+  filters: FilterType[];
+  setFilters: React.Dispatch<React.SetStateAction<FilterType[]>>;
   tabs: Tab[];
-  currentTab: any;
-  setCurrentTab: any;
+  currentTab: string;
+  setCurrentTab: Dispatch<SetStateAction<string>>;
   formOpen?: boolean;
   toggleIsUpcoming?: () => void;
   setFormOpen?: (open: boolean) => void;
   setToolbarFormMode?: Dispatch<SetStateAction<ToolbarFormModes>>;
 }
 
-const filters = [
+const vacationFilters = [
   {
     title: "Status",
     options: [
@@ -74,7 +74,7 @@ const filters = [
  *
  * @param props.adminMode - Determines whether the toolbar is displayed in administrator mode.
  * @param props.filter - Currently selected filters.
- * @param props.setFilter - Updates the selected filters.
+ * @param props.setFilters - Updates the selected filters.
  * @param props.tabs - Available navigation tabs.
  * @param props.currentTab - Currently selected tab.
  * @param props.setCurrentTab - Updates the selected tab.
@@ -88,8 +88,8 @@ const filters = [
 const DefaultToolbar = ({
   formOpen,
   adminMode,
-  filter,
-  setFilter,
+  filters,
+  setFilters,
   toggleIsUpcoming,
   setFormOpen,
   tabs,
@@ -99,15 +99,15 @@ const DefaultToolbar = ({
 }: DefaultToolbarProps) => {
   const theme = useTheme();
   const [openFilter, setOpenFilter] = useState(false);
-  const tags = filters.flatMap((item) =>
+  const tags = vacationFilters.flatMap((item) =>
     item.options.map((option) => ({
       label: option.label,
       value: option.value,
       category: item.title
     }))
   );
-  const [dropdown, setDropdown] = useState<string[]>(filters.map((item) => item.title));
-  const [chosenFilters, setChosenFilters] = useState(filter);
+  const [dropdown, setDropdown] = useState<string[]>(vacationFilters.map((item) => item.title));
+  const [chosenFilters, setChosenFilters] = useState(filters);
 
   const handleSearchTag = (label: string) => {
     const option = tags.find((option) => option.label === label);
@@ -151,13 +151,13 @@ const DefaultToolbar = ({
   };
 
   const handleApply = () => {
-    setFilter(chosenFilters);
+    setFilters(chosenFilters);
     setOpenFilter(false);
   };
 
   const handleCancel = () => {
     setOpenFilter(false);
-    setChosenFilters(filter);
+    setChosenFilters(filters);
   };
 
   /**
@@ -183,7 +183,8 @@ const DefaultToolbar = ({
             display: "flex",
             flexDirection: "column",
             width: 470
-          }}>
+          }}
+        >
           <SearchBar
             handleSelectedTagChange={handleSearchTag}
             tags={tags.map((tag) => tag.label)}
@@ -191,25 +192,30 @@ const DefaultToolbar = ({
               .map((value) => tags.find((option) => option.value === value)?.label)
               .filter((label): label is string => Boolean(label))}
           />
-          {filters.map((category) => (
+          {vacationFilters.map((category) => (
             <Box
               key={category.title}
               sx={{
                 display: "flex",
                 flexDirection: "column"
-              }}>
+              }}
+            >
               <Box
                 sx={{
                   display: "flex",
                   flexDirection: "row"
-                }}>
+                }}
+              >
                 <KeyboardArrowDown
                   onClick={() => handleDropdown(category.title)}
                   sx={{ rotate: dropdown.includes(category.title) ? "180deg" : "none" }}
                 />
-                <Typography variant="body" sx={{
-                  fontWeight: 500
-                }}>
+                <Typography
+                  variant="body"
+                  sx={{
+                    fontWeight: 500
+                  }}
+                >
                   {category.title}
                 </Typography>
               </Box>
@@ -234,7 +240,8 @@ const DefaultToolbar = ({
               display: "flex",
               justifyContent: "space-between",
               mt: 2
-            }}>
+            }}
+          >
             <AppButton
               variant="secondary"
               text="Clear all"

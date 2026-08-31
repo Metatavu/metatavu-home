@@ -4,11 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { errorAtom } from "src/atoms/error";
 import { languageAtom } from "src/atoms/language";
 import { workDayAtom } from "src/atoms/workDay";
-import type {
-  Flextime,
-  ListWorkdaysForUser,
-  User,
-} from "src/generated/homeLambdasClient";
+import type { Flextime, ListWorkdaysForUser, User } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
 import { getSeveraUserId } from "src/utils/user-utils";
@@ -16,7 +12,7 @@ import {
   getCurrentYearRange,
   getMonthData,
   getWeekData,
-  getYearData,
+  getYearData
 } from "src/utils/workDay-utils";
 import PeriodNavigator from "./period-navigator";
 import RangeTypeSelector from "./range-type-selector";
@@ -38,7 +34,7 @@ type RangeKey = "week" | "month" | "year";
 const YAXIS_DOMAIN: Record<RangeKey, [number, number]> = {
   week: [0, 12],
   month: [0, 60],
-  year: [0, 240],
+  year: [0, 240]
 };
 
 /**
@@ -78,7 +74,7 @@ const WorkDaysChart = ({ selectedEmployee }: { selectedEmployee?: User }) => {
     try {
       setLoading(true);
       const data = await flexTimeApi.getFlextimeBySeveraUserId({
-        userId: severaUserId,
+        userId: severaUserId
       });
       setUsersFlextime(data);
     } catch (err) {
@@ -94,7 +90,7 @@ const WorkDaysChart = ({ selectedEmployee }: { selectedEmployee?: User }) => {
       const result = await workDaysApi.listWorkdaysForUser({
         severaUserId,
         startDate,
-        endDate,
+        endDate
       });
       const mapped: ListWorkdaysForUser[] = result.map((w) => ({
         date: w.date,
@@ -102,7 +98,7 @@ const WorkDaysChart = ({ selectedEmployee }: { selectedEmployee?: User }) => {
         enteredHours: w.enteredHours ?? 0,
         expectedHours: w.expectedHours ?? 0,
         isHoliday: w.isHoliday ?? false,
-        holidayName: w.holidayName ?? null,
+        holidayName: w.holidayName ?? null
       }));
       setWorkdays(mapped);
     } catch (error: any) {
@@ -113,11 +109,7 @@ const WorkDaysChart = ({ selectedEmployee }: { selectedEmployee?: User }) => {
 
   const chartData: ChartDataPoint[] = useMemo(() => {
     const today = new Date();
-    const selectedDate = new Date(
-      today.getFullYear(),
-      today.getMonth() + monthOffset,
-      1,
-    );
+    const selectedDate = new Date(today.getFullYear(), today.getMonth() + monthOffset, 1);
     const targetMonth = selectedDate.getMonth();
     const targetYear = selectedDate.getFullYear();
 
@@ -135,27 +127,22 @@ const WorkDaysChart = ({ selectedEmployee }: { selectedEmployee?: User }) => {
 
   const handleWeekOffsetChange = useCallback(
     (delta: number) => setWeekOffset((prev) => prev + delta),
-    [],
+    []
   );
   const handleMonthOffsetChange = useCallback(
     (delta: number) => setMonthOffset((prev) => prev + delta),
-    [],
+    []
   );
   const handleYearOffsetChange = useCallback(
     (delta: number) => setYearOffset((prev) => prev + delta),
-    [],
+    []
   );
 
   const getBarColor = () => theme.palette.chart.primary;
 
   const renderUserFlextime = () => {
-    if (
-      !usersFlextime?.totalFlextimeBalance &&
-      usersFlextime?.totalFlextimeBalance !== 0
-    ) {
-      return (
-        <Typography variant="h4">{strings.error.noFlextimeData}</Typography>
-      );
+    if (!usersFlextime?.totalFlextimeBalance && usersFlextime?.totalFlextimeBalance !== 0) {
+      return <Typography variant="h4">{strings.error.noFlextimeData}</Typography>;
     }
     const balance = usersFlextime.totalFlextimeBalance;
 
@@ -169,23 +156,16 @@ const WorkDaysChart = ({ selectedEmployee }: { selectedEmployee?: User }) => {
           paddingBlock: theme.spaces.m,
           paddingInline: theme.spaces.xl,
           textAlign: "center",
+          width: 458
         }}
       >
-        <Typography variant="body">
-          {strings.balanceCard.totalFlextimeBalance}
-        </Typography>
-        <Typography variant="h3" sx={{ mt: theme.spaces.xs }}>
+        <Typography variant="body">{strings.balanceCard.totalFlextimeBalance}</Typography>
+        <Typography variant="h3" sx={{ my: theme.spaces.m }}>
           {balance >= 0 ? "+" : ""}
           {balance}h
         </Typography>
-        <Typography
-          variant="caption"
-          sx={{ color: theme.palette.text.disabled }}
-        >
-          {strings.balanceCard.atTheEndOf.replace(
-            "{0}",
-            new Date().toLocaleDateString(locale),
-          )}
+        <Typography variant="caption" sx={{ color: theme.palette.text.primary }}>
+          {strings.balanceCard.atTheEndOf.replace("{0}", new Date().toLocaleDateString(locale))}
         </Typography>
       </Box>
     );
@@ -222,19 +202,14 @@ const WorkDaysChart = ({ selectedEmployee }: { selectedEmployee?: User }) => {
           display: "flex",
           justifyContent: "center",
           mt: 7,
-          mb: theme.spaces.l,
+          mb: theme.spaces.l
         }}
       >
         {loading ? <CircularProgress /> : renderUserFlextime()}
       </Box>
 
-      <Box
-        sx={{ display: "flex", justifyContent: "center", mb: theme.spaces.l }}
-      >
-        <RangeTypeSelector
-          selectedRange={selectedRange}
-          onChange={setSelectedRange}
-        />
+      <Box sx={{ display: "flex", justifyContent: "center", mb: theme.spaces.l }}>
+        <RangeTypeSelector selectedRange={selectedRange} onChange={setSelectedRange} />
       </Box>
 
       <WorkDaysRechart
@@ -245,9 +220,7 @@ const WorkDaysChart = ({ selectedEmployee }: { selectedEmployee?: User }) => {
         YAXIS_DOMAIN={YAXIS_DOMAIN}
       />
 
-      <Box
-        sx={{ display: "flex", justifyContent: "center", mt: theme.spaces.l }}
-      >
+      <Box sx={{ display: "flex", justifyContent: "center", mt: theme.spaces.l }}>
         <PeriodNavigator
           label={periodLabel}
           onPrevious={handlePrevious}

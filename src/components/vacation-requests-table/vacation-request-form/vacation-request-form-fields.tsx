@@ -30,6 +30,7 @@ import LocalizationUtils from "src/utils/localization-utils";
 import { calculateTotalVacationDays, contractedWeekToBoolean } from "src/utils/time-utils";
 import { renderVacationDaysTextForScreen } from "src/utils/vacation-days-utils";
 import DateRangePicker from "../../generics/date-range-picker";
+import AdminVacationFormFields from "./admin-vacation-request-form";
 
 /**
  * Component properties
@@ -103,7 +104,8 @@ const VacationRequestFormFields = ({
   const originalEndDateRef = useRef<DateTime | null>(null);
   const originalStartDateRef = useRef<DateTime | null>(null);
   const theme = useTheme();
-  const initialEditMode = toolbarFormMode === ToolbarFormModes.EDIT;
+  const initialEditMode =
+    toolbarFormMode === ToolbarFormModes.APPROVE || toolbarFormMode === ToolbarFormModes.EDIT;
   const adminEditmode = toolbarFormMode === ToolbarFormModes.EDIT && adminMode;
 
   const vacationTypes = [
@@ -249,11 +251,7 @@ const VacationRequestFormFields = ({
         dateRange={dateRange}
         setDateRange={setDateRange}
       />
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column"
-        }}>
+      <Box sx={{ display: "flex", flexDirection: "column" }}>
         <FormLabel>{strings.vacationRequest.message}*</FormLabel>
         <TextField
           required
@@ -272,11 +270,7 @@ const VacationRequestFormFields = ({
         displayOptions={vacationTypes}
       />
       {toolbarFormMode === ToolbarFormModes.CREATE && (
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between"
-          }}>
+        <Box sx={{ display: "flex", justifyContent: "space-between" }}>
           <AppButton
             disabled={
               !adminMode &&
@@ -300,18 +294,9 @@ const VacationRequestFormFields = ({
         </Box>
       )}
       {initialEditMode && (
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between"
-          }}>
+        <Box sx={{ display: "flex", justifyContent: "space-between", flexDirection: "row" }}>
           {!adminEditmode && (
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "row"
-              }}>
+            <Box sx={{ display: "flex", flexDirection: "row" }}>
               <AppIconButton
                 variant="small"
                 onClick={() => handleDeleteRow(selectedVacationRequestId)}
@@ -328,17 +313,28 @@ const VacationRequestFormFields = ({
               )}
             </Box>
           )}
-
-          <AppButton
-            disabled={
-              !adminMode &&
-              (!hasAllPropsDefined(vacationRequestData) || !vacationRequestData.message?.length)
-            }
-            variant="primary"
-            sx={{ height: "min-content", ml: "auto", mt: theme.spaces.xxl }}
-            onClick={handleEdit}
-            text={strings.form.update}
-          />
+          {adminMode ? (
+            <AdminVacationFormFields
+              handleUpdateVacationRequestStatus={handleUpdateVacationRequestStatus}
+              toolbarFormMode={toolbarFormMode}
+              setToolbarFormMode={setToolbarFormMode}
+              defaultDays={vacationRequestData.days}
+              handleDaysChange={handleDaysChange}
+              handleRestoreDefaultDays={handleRestoreDefaultDays}
+              handleEdit={handleEdit}
+            />
+          ) : (
+            <AppButton
+              disabled={
+                !adminMode &&
+                (!hasAllPropsDefined(vacationRequestData) || !vacationRequestData.message?.length)
+              }
+              variant="primary"
+              sx={{ height: "min-content", ml: "auto", mt: theme.spaces.xxl }}
+              onClick={handleEdit}
+              text={strings.form.update}
+            />
+          )}
         </Box>
       )}
     </FormControl>
