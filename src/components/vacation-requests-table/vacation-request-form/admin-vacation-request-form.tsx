@@ -3,7 +3,7 @@ import { Box, Typography, useTheme } from "@mui/material";
 import { type Dispatch, type SetStateAction, useState } from "react";
 import AppNumberInput from "src/components/generics/appNumberInput";
 import AppButton from "src/components/generics/buttons/app-button";
-import { VacationRequestStatuses } from "src/generated/homeLambdasClient";
+import { type VacationRequest, VacationRequestStatuses } from "src/generated/homeLambdasClient";
 import strings from "src/localization/strings";
 import { ToolbarFormModes } from "src/types/index";
 
@@ -14,6 +14,7 @@ interface FormFieldProps {
   defaultDays: number;
   handleDaysChange: (value: number) => void;
   handleRestoreDefaultDays: () => void;
+  handleEdit: () => void;
 }
 
 /**
@@ -40,21 +41,22 @@ const AdminVacationFormFields = ({
   setToolbarFormMode,
   defaultDays,
   handleDaysChange,
-  handleRestoreDefaultDays
+  handleRestoreDefaultDays,
+  handleEdit
 }: FormFieldProps) => {
   const [options, setOptions] = useState(false);
   const theme = useTheme();
 
   return (
-    <Box width="100%">
+    <Box sx={{ width: "100%" }}>
       {toolbarFormMode === ToolbarFormModes.EDIT && (
         <>
-          <Box display="flex" flexDirection="row" sx={{ mb: theme.spaces.m }}>
+          <Box sx={{ display: "flex", flexDirection: "row", mb: theme.spaces.m }}>
             <KeyboardArrowDown
               onClick={() => setOptions(!options)}
               sx={{ rotate: options ? "180deg" : "none" }}
             />
-            <Typography variant="body" fontWeight={500}>
+            <Typography variant="body" sx={{ fontWeight: 500 }}>
               {strings.form.advancedOptions}
             </Typography>
           </Box>
@@ -80,7 +82,7 @@ const AdminVacationFormFields = ({
         </>
       )}
 
-      <Box display="flex" width="100%" alignItems="center">
+      <Box sx={{ display: "flex", width: "100%", alignItems: "center" }}>
         {toolbarFormMode === ToolbarFormModes.EDIT && (
           <AppButton
             variant="tertiary"
@@ -93,11 +95,13 @@ const AdminVacationFormFields = ({
           />
         )}
 
-        <Box display="flex" ml="auto" gap={2}>
+        <Box sx={{ display: "flex", ml: "auto", gap: 2 }}>
           <AppButton
             variant="secondary"
             text={strings.toolbarUpdateStatusButton.decline}
-            onClick={() => handleUpdateVacationRequestStatus(VacationRequestStatuses.DECLINED)}
+            onClick={() => {
+              handleUpdateVacationRequestStatus(VacationRequestStatuses.DECLINED);
+            }}
             sx={{
               height: "min-content",
               mt: theme.spaces.xxl
@@ -107,7 +111,10 @@ const AdminVacationFormFields = ({
           <AppButton
             variant="primary"
             text={strings.toolbarUpdateStatusButton.approve}
-            onClick={() => handleUpdateVacationRequestStatus(VacationRequestStatuses.APPROVED)}
+            onClick={() => {
+              handleEdit();
+              handleUpdateVacationRequestStatus(VacationRequestStatuses.APPROVED);
+            }}
             sx={{
               height: "min-content",
               mt: theme.spaces.xxl

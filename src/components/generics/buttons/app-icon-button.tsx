@@ -74,21 +74,23 @@ const AppIconButton = ({
 
   return (
     <Tooltip title={tooltip}>
-      <IconButton
-        onClick={onClick}
-        disabled={disabled}
-        sx={{
-          width: 40,
-          height: 40,
-          borderRadius: theme.radius.s,
-          color: theme.palette.text.primary,
+      <span>
+        <IconButton
+          onClick={onClick}
+          disabled={disabled}
+          sx={{
+            width: 40,
+            height: 40,
+            borderRadius: theme.radius.s,
+            color: theme.palette.text.primary,
 
-          ...variantStyles,
-          ...sx
-        }}
-      >
-        {icon}
-      </IconButton>
+            ...variantStyles,
+            ...sx
+          }}
+        >
+          {icon}
+        </IconButton>
+      </span>
     </Tooltip>
   );
 };

@@ -10,7 +10,7 @@ import strings from "src/localization/strings";
 import type { FilterType } from "src/utils/vacation-filter-type";
 import type { Tab } from "../generics/tabBar";
 import VacationRequestsTable from "../vacation-requests-table/vacation-requests-table";
-import AdminVacationManagementScreen from "./admin-vacation-management/admin-vacation-management-table";
+import AdminVacationManagementTable from "./admin-vacation-management/admin-vacation-management-table";
 
 /**
  * Vacation requests screen
@@ -49,8 +49,8 @@ const VacationRequestsScreen = () => {
     [vacationRequests]
   );
   const [isUpcoming, setIsUpcoming] = useState(true);
-  const [filter, setFilter] = useState<FilterType[]>(["ALL"]);
-  const [currentTab, setCurrentTab] = useState<string>(adminMode ? "vacations" : "upcoming");
+  const [filters, setFilters] = useState<FilterType[]>(["ALL"]);
+  const [currentTab, setCurrentTab] = useState(adminMode ? "days" : "upcoming");
   const showManagement = adminMode && currentTab === "days";
   const adminNotification = pending > 0 ? `(${pending})` : "";
   const tabs: Tab[] = adminMode
@@ -69,7 +69,7 @@ const VacationRequestsScreen = () => {
 
   useEffect(() => {
     fetchVacationsRequests();
-  }, [currentTab, loggedInUser]);
+  }, [loggedInUser, currentTab]);
 
   /**
    * Handler for upcoming/ past vacations toggle click
@@ -79,10 +79,10 @@ const VacationRequestsScreen = () => {
   };
 
   /**
-   * Filters a list of vacation requests based on the given filter.
+   * Filters a list of vacation requests based on the given filters.
    *
-   * @param requests - The list of vacation requests to filter.
-   * @param filter - The filter criteria.
+   * @param requests - The list of vacation requests to filters.
+   * @param filters - The filters criteria.
    *   - `"ALL"`: Returns all requests (excluding drafts in admin mode).
    *   - `"DRAFT"`: Returns only draft requests.
    *   - A specific `VacationRequestStatuses` value: Returns requests matching that status.
@@ -103,7 +103,7 @@ const VacationRequestsScreen = () => {
     });
   };
   /**
-   * Decide if we show upcoming or past vacations and apply the selected filter
+   * Decide if we show upcoming or past vacations and apply the selected filters
    */
   useEffect(() => {
     const baseRequests = adminMode
@@ -112,14 +112,14 @@ const VacationRequestsScreen = () => {
         ? upcomingVacationRequests
         : pastVacationRequests;
 
-    let filteredRequests = filterVacationRequests(baseRequests, filter);
+    let filteredRequests = filterVacationRequests(baseRequests, filters);
 
     if (selectedId) {
       filteredRequests = filteredRequests.filter((req) => req.id === selectedId);
     }
 
     setDisplayedVacationRequests(filteredRequests);
-  }, [isUpcoming, filter, upcomingVacationRequests, pastVacationRequests, selectedId, adminMode]);
+  }, [isUpcoming, filters, upcomingVacationRequests, pastVacationRequests, selectedId, adminMode]);
 
   return (
     <Box
@@ -129,10 +129,10 @@ const VacationRequestsScreen = () => {
       }}
     >
       {showManagement ? (
-        <AdminVacationManagementScreen
+        <AdminVacationManagementTable
           adminMode={adminMode}
-          filter={filter}
-          setFilter={setFilter}
+          filters={filters}
+          setFilters={setFilters}
           tabs={tabs}
           currentTab={currentTab}
           setCurrentTab={setCurrentTab}
@@ -145,8 +145,8 @@ const VacationRequestsScreen = () => {
           updateVacationRequest={updateVacationRequest}
           updateVacationRequestStatus={updateVacationRequestStatus}
           loading={loading}
-          filter={filter}
-          setFilter={setFilter}
+          filters={filters}
+          setFilters={setFilters}
           tabs={tabs}
           currentTab={currentTab}
           setCurrentTab={setCurrentTab}

@@ -22,7 +22,14 @@ const QuestionnaireScreen = () => {
           height: "100"
         }}
       >
-        <Grid container alignItems="center" justifyContent="flex-end" sx={{ mb: 2 }}>
+        <Grid
+          container
+          sx={{
+            alignItems: "center",
+            justifyContent: "flex-end",
+            mb: 2
+          }}
+        >
           {adminMode && (
             <Link to="/admin/newQuestionnaire" style={{ textDecoration: "none" }}>
               <Button variant="contained" color="primary" size="large">

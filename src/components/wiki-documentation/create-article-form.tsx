@@ -269,7 +269,13 @@ const CreateOrEditArticleForm = ({
   const renderMediaFiles = () => {
     if (loadingMedia) {
       return (
-        <Box display="flex" justifyContent="center" p={3}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            p: 3
+          }}
+        >
           <CircularProgress />
         </Box>
       );

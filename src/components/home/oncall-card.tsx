@@ -1,19 +1,30 @@
-import { Card, CardContent, Typography } from "@mui/material";
+import { Stack, Typography, useTheme } from "@mui/material";
 import { useAtom, useSetAtom } from "jotai";
 import { DateTime } from "luxon";
 import { useEffect } from "react";
-import { Link } from "react-router-dom";
 import { errorAtom } from "src/atoms/error";
 import { onCallAtom } from "src/atoms/oncall";
 import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
+import { parseFullNameFromEmail } from "src/utils/user-name-utils";
+import HomepageCard, { type CardProps } from "../generics/homepageCard";
 
 /**
- * On-call card component
+ * On call card component.
+ *
+ * Shows name of the person currently on call with email adress.
+ *
+ * @param props.hidden - Boolean indicating if card is hidden
+ * @param props.onToggleHidden - Functionality for changing card visibility
+ * @param props.editmode - Boolean indicating if editmode is on
+ *
+ * @returns Styled card showing on call information for user
  */
-const OnCallCard = () => {
+const OnCallCard = ({ hidden, onToggleHidden, editmode }: CardProps) => {
   const { onCallApi } = useLambdasApi();
+  const theme = useTheme();
   const [onCallData, setOnCallData] = useAtom(onCallAtom);
+  const path = "oncall";
 
   const setError = useSetAtom(errorAtom);
 
@@ -36,37 +47,39 @@ const OnCallCard = () => {
     }
   };
 
-  /**
-   * Gets the current on-call person
-   *
-   * @returns JSX.Element containing current on-call person
-   */
-  const getCurrentOnCallPerson = () => {
+  const renderOnCallCard = () => {
     const currentWeek = DateTime.now().weekNumber;
-    const currentOnCallPerson = onCallData.find(
+    const currentOnCallPersonEmail = onCallData.find(
       (item) => Number(item.week) === currentWeek
-    )?.username;
+    )?.email;
+    const onCallName = currentOnCallPersonEmail && parseFullNameFromEmail(currentOnCallPersonEmail);
+    const nameString = onCallName
+      ? `${onCallName?.firstName} ${onCallName?.lastName}`
+      : strings.oncall.noOnCallPerson;
 
-    if (currentOnCallPerson)
-      return (
-        <>
-          {strings.oncall.onCallPersonExists} <b>{currentOnCallPerson}</b>
-        </>
-      );
-    return <>{strings.oncall.noOnCallPerson}</>;
+    return (
+      <Stack
+        sx={{
+          pt: theme.spaces.s
+        }}
+      >
+        <Typography variant="body" sx={{ fontWeight: 500 }}>
+          {nameString}
+        </Typography>
+        <Typography variant="body">{currentOnCallPersonEmail}</Typography>
+      </Stack>
+    );
   };
 
   return (
-    <Link to={"oncall"} style={{ textDecoration: "none" }}>
-      <Card>
-        <CardContent>
-          <Typography variant="h6" fontWeight={"bold"} style={{ marginTop: 6, marginBottom: 3 }}>
-            {strings.oncall.title}
-          </Typography>
-          <Typography variant="body1">{getCurrentOnCallPerson()}</Typography>
-        </CardContent>
-      </Card>
-    </Link>
+    <HomepageCard
+      title={strings.oncall.title}
+      content={renderOnCallCard()}
+      path={path}
+      hidden={hidden}
+      onToggleHidden={onToggleHidden}
+      editmode={editmode}
+    />
   );
 };
 

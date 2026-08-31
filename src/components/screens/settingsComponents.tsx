@@ -184,7 +184,11 @@ export const RoleSettings = ({ userProfile }: { userProfile?: KeycloakProfile })
   } */
 
   return (
-    <Box m={theme.spaces.xl}>
+    <Box
+      sx={{
+        m: theme.spaces.xl
+      }}
+    >
       <Typography variant="h4">{strings.settingsScreen.jobs}</Typography>
 
       <Typography sx={{ ml: theme.spaces.xl, lineHeight: theme.spaces.xxxl }} variant="caption">
@@ -192,7 +196,13 @@ export const RoleSettings = ({ userProfile }: { userProfile?: KeycloakProfile })
       </Typography>
 
       {rolesLoading ? (
-        <Box display="flex" alignItems="center" gap={1}>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: 1
+          }}
+        >
           <CircularProgress size={24} />
 
           <Typography variant="body2">{strings.settingsScreen.descriptionsLoading}</Typography>
@@ -267,19 +277,27 @@ export const ToggleBox = ({
           {content.header}
         </Typography>
         <Box
-          ml={theme.spaces.xxxl}
-          mb={theme.spaces.xl}
-          display="flex"
-          flexDirection="column"
-          flexWrap="wrap"
-          maxHeight={50}
-          width={400}
+          sx={{
+            ml: theme.spaces.xxxl,
+            mb: theme.spaces.xl,
+            display: "flex",
+            flexDirection: "column",
+            flexWrap: "wrap",
+            maxHeight: 50,
+            width: 400
+          }}
         >
           <Typography variant="body" sx={{ fontWeight: 500 }}>
             {content.toggleHeader}
           </Typography>
           <Typography variant="caption">{content.description}</Typography>
-          <Box display="flex" alignItems="center" justifyContent="flex-end">
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "flex-end"
+            }}
+          >
             <AppToggle
               checked={content.checked}
               onChange={handleChange}

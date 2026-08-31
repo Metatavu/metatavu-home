@@ -269,8 +269,23 @@ const AllSoftwareScreen = () => {
 
   return (
     <Container>
-      <Grid container direction="column" alignItems="stretch" mt={4}>
-        <Grid container justifyContent="space-between" alignItems="center" mb={2} mt={4}>
+      <Grid
+        container
+        sx={{
+          flexDirection: "column",
+          alignItems: "stretch",
+          mt: 4
+        }}
+      >
+        <Grid
+          container
+          sx={{
+            justifyContent: "space-between",
+            alignItems: "center",
+            mb: 2,
+            mt: 4
+          }}
+        >
           <Typography variant="h3">{strings.softwareRegistry.allApplications}</Typography>
         </Grid>
 
@@ -288,7 +303,7 @@ const AllSoftwareScreen = () => {
             searchInput={inputValue}
             handleSearchInputChange={(_event, newInputValue) => setInputValue(newInputValue)}
             tags={Array.from(new Set(software.flatMap((app) => app.tags ?? [])))}
-            handleSelectedTagChange={(newSelectedTags) => setSearchTerms(newSelectedTags)}
+            handleSelectedTagChange={(newSelectedTags) => setSearchTerms([newSelectedTags])}
             autoCompleteId="software-registry-search-tags"
             styles={{ width: { lg: "55%", md: "55%", xs: "100%" } }}
             placeholder={strings.softwareRegistry.searchBy}
@@ -307,10 +322,23 @@ const AllSoftwareScreen = () => {
           />
         </Box>
 
-        <Grid container justifyContent="flex-start" mt={2} mb={6} width="100%">
+        <Grid
+          container
+          sx={{
+            justifyContent: "flex-start",
+            mt: 2,
+            mb: 6,
+            width: "100%"
+          }}
+        >
           <Grid size="grow">
             {error && (
-              <Box mb={2} width="100%">
+              <Box
+                sx={{
+                  mb: 2,
+                  width: "100%"
+                }}
+              >
                 <Alert severity="error">{error}</Alert>
               </Box>
             )}
@@ -324,7 +352,12 @@ const AllSoftwareScreen = () => {
               loggedUserId={loggedUserId}
             />
             {filteredApplications.length > 4 && (
-              <Box textAlign="center" mt={3}>
+              <Box
+                sx={{
+                  textAlign: "center",
+                  mt: 3
+                }}
+              >
                 <Button
                   variant="contained"
                   color="secondary"

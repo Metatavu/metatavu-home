@@ -35,8 +35,8 @@ type VacationDays = Record<string, YearlyVacationDays>;
 
 interface ManagementProps {
   adminMode: boolean;
-  filter: FilterType[];
-  setFilter: Dispatch<SetStateAction<FilterType[]>>;
+  filters: FilterType[];
+  setFilters: Dispatch<SetStateAction<FilterType[]>>;
   tabs: Tab[];
   currentTab: string;
   setCurrentTab: Dispatch<SetStateAction<string>>;
@@ -52,7 +52,7 @@ interface ManagementProps {
  *
  * @param props.adminMode - Determines whether the table is displayed in administrator mode.
  * @param props.filter - Currently selected vacation request filters.
- * @param props.setFilter - Updates the selected vacation request filters.
+ * @param props.setFilters - Updates the selected vacation request filters.
  * @param props.tabs - Available tabs displayed in the toolbar.
  * @param props.currentTab - Identifier of the currently selected tab.
  * @param props.setCurrentTab - Updates the currently selected tab.
@@ -62,8 +62,8 @@ interface ManagementProps {
  */
 const AdminVacationManagementTable = ({
   adminMode,
-  filter,
-  setFilter,
+  filters,
+  setFilters,
   tabs,
   currentTab,
   setCurrentTab
@@ -249,8 +249,8 @@ const AdminVacationManagementTable = ({
     <Box>
       <DefaultToolbar
         adminMode={adminMode}
-        filter={filter}
-        setFilter={setFilter}
+        filters={filters}
+        setFilters={setFilters}
         tabs={tabs}
         currentTab={currentTab}
         setCurrentTab={setCurrentTab}
@@ -264,6 +264,7 @@ const AdminVacationManagementTable = ({
         setSelectedRowIds={setSelectedRowIds}
         onRowClick={onRowClick}
       />
+
       <EditVacationDialog
         open={editDialogOpen}
         user={currentUser}

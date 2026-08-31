@@ -97,8 +97,8 @@ const EditVacationDialog = ({
   return (
     <AppOverlay open={open} onClose={onClose} title={title}>
       <Box sx={{ width: 729 }}>
-        <Box display="flex" flexDirection="column" sx={{ my: 3 }}>
-          <Typography variant="body" fontWeight={500}>
+        <Box sx={{ display: "flex", flexDirection: "column", my: 3 }}>
+          <Typography variant="body" sx={{ fontWeight: 500 }}>
             {strings.adminVacationManagement.selectYear}
           </Typography>
           <Dropdown

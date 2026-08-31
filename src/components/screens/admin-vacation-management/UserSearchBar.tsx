@@ -22,12 +22,14 @@ const UserSearchBar = ({ value, onChange }: UserSearchBarProps) => {
       variant="outlined"
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      InputProps={{
-        startAdornment: (
-          <InputAdornment position="start">
-            <SearchIcon />
-          </InputAdornment>
-        )
+      slotProps={{
+        input: {
+          startAdornment: (
+            <InputAdornment position="start">
+              <SearchIcon />
+            </InputAdornment>
+          )
+        }
       }}
       sx={{ float: "inline-end", mb: 2, width: 300 }}
     />

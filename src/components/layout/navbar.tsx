@@ -1,3 +1,4 @@
+import KeyboardArrowDown from "@mui/icons-material/KeyboardArrowDown";
 import LogoutIcon from "@mui/icons-material/Logout";
 import SettingsIcon from "@mui/icons-material/Settings";
 import {
@@ -21,7 +22,6 @@ import { errorAtom } from "src/atoms/error";
 import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
 import LocalizationButtons from "../layout-components/localization-buttons";
-import KeyboardArrowDown from "@mui/icons-material/KeyboardArrowDown";
 
 /**
  * NavBar component

@@ -2,8 +2,9 @@ import { Box, Tooltip, useTheme } from "@mui/material";
 import type { VacationRequestStatuses } from "src/generated/homeLambdasClient";
 import { getBadgeColor } from "src/utils/badgeColorUtils";
 
+export type IndicatorColor = VacationRequestStatuses | "disabled";
 interface StatusIndicatorProps {
-  statusColor: VacationRequestStatuses;
+  status: IndicatorColor;
 }
 
 /**
@@ -17,9 +18,9 @@ interface StatusIndicatorProps {
  * of the indicator based on the status
  * @returns Themed MUI ToolTip component
  */
-const VacationStatusIndicator = ({ statusColor }: StatusIndicatorProps) => {
+const VacationStatusIndicator = ({ status }: StatusIndicatorProps) => {
   const theme = useTheme();
-  const colors = getBadgeColor(statusColor, theme);
+  const colors = getBadgeColor(status, theme);
 
   return (
     <Tooltip title="status" placement="top">
@@ -29,7 +30,7 @@ const VacationStatusIndicator = ({ statusColor }: StatusIndicatorProps) => {
           height: 8,
           backgroundColor: colors?.indicatorColor,
           borderRadius: "50%",
-          animation: statusColor === "PENDING" ? "pulse 2s infinite" : "none",
+          animation: status === "PENDING" ? "pulse 2s infinite" : "none",
           "@keyframes pulse": {
             "0%, 100%": {
               opacity: 1

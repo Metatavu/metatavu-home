@@ -91,19 +91,33 @@ const OnCallPaidStatusDialog = ({ open, setOpen, onCallEntry, updatePaidStatus }
       <DialogContent dividers>
         <Box sx={{ mb: 2 }}>
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <Typography variant="subtitle1" fontWeight="bold" display="inline">
+            <Typography
+              variant="subtitle1"
+              sx={{
+                fontWeight: "bold",
+                display: "inline"
+              }}
+            >
               {strings.oncall.person}:
             </Typography>
             <Typography
               variant="subtitle1"
-              display="inline"
               color={hasUsername ? "textPrimary" : "error"}
+              sx={{
+                display: "inline"
+              }}
             >
               {hasUsername ? onCallEntry.username : strings.oncall.noUsernameOnCall}
             </Typography>
           </Box>
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <Typography variant="subtitle1" fontWeight="bold" display="inline">
+            <Typography
+              variant="subtitle1"
+              sx={{
+                fontWeight: "bold",
+                display: "inline"
+              }}
+            >
               {strings.oncall.paidStatus}:
             </Typography>
             <Chip
@@ -118,10 +132,21 @@ const OnCallPaidStatusDialog = ({ open, setOpen, onCallEntry, updatePaidStatus }
             />
           </Box>
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <Typography variant="subtitle1" fontWeight="bold" display="inline">
+            <Typography
+              variant="subtitle1"
+              sx={{
+                fontWeight: "bold",
+                display: "inline"
+              }}
+            >
               {strings.oncall.date}:
             </Typography>
-            <Typography variant="subtitle1" display="inline">
+            <Typography
+              variant="subtitle1"
+              sx={{
+                display: "inline"
+              }}
+            >
               {weekRange}
             </Typography>
           </Box>
@@ -134,7 +159,9 @@ const OnCallPaidStatusDialog = ({ open, setOpen, onCallEntry, updatePaidStatus }
               onChange={handlePaidStatusChange}
               color="success"
               disabled={loading}
-              inputProps={{ "aria-label": "Paid status switch" }}
+              slotProps={{
+                input: { "aria-label": "Paid status switch" }
+              }}
             />
             {loading && (
               <CircularProgress

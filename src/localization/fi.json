@@ -360,8 +360,8 @@
     "noRows": "Ei rivejä"
   },
   "vacationsCard": {
-    "vacations": "Lomat",
-    "noUpcomingVacations": "Ei tulevia lomia",
+    "vacations": "Seuraava lomasi",
+    "noUpcomingVacations": "Sinulla ei ole tulevia lomia",
     "noPendingVacations": "Ei odottavia lomahakemuksia",
     "upComingVacations": "Sinulla on {0} tulevaa lomaa",
     "pendingVacations": "Sinulla on {0} odottavaa lomahakemusta",
