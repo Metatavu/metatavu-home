@@ -3,7 +3,7 @@ import { Box, Typography, useTheme } from "@mui/material";
 import { type Dispatch, type SetStateAction, useState } from "react";
 import AppNumberInput from "src/components/generics/appNumberInput";
 import AppButton from "src/components/generics/buttons/app-button";
-import { type VacationRequest, VacationRequestStatuses } from "src/generated/homeLambdasClient";
+import { VacationRequestStatuses } from "src/generated/homeLambdasClient";
 import strings from "src/localization/strings";
 import { ToolbarFormModes } from "src/types/index";
 

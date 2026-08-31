@@ -106,11 +106,15 @@ const VacationRequestsScreen = () => {
    * Decide if we show upcoming or past vacations and apply the selected filters
    */
   useEffect(() => {
-    const baseRequests = adminMode
-      ? vacationRequests
-      : isUpcoming
-        ? upcomingVacationRequests
-        : pastVacationRequests;
+    let baseRequests: VacationRequest[];
+
+    if (adminMode) {
+      baseRequests = vacationRequests;
+    } else if (isUpcoming) {
+      baseRequests = upcomingVacationRequests;
+    } else {
+      baseRequests = pastVacationRequests;
+    }
 
     let filteredRequests = filterVacationRequests(baseRequests, filters);
 
