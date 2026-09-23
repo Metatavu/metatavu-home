@@ -112,6 +112,26 @@ const VacationRequestFormFields = ({
     {
       value: VacationType.VACATION,
       label: LocalizationUtils.getLocalizedVacationRequestType(VacationType.VACATION)
+    },
+    {
+      value: VacationType.SICKNESS,
+      label: LocalizationUtils.getLocalizedVacationRequestType(VacationType.SICKNESS)
+    },
+    {
+      value: VacationType.PARENTAL_LEAVE,
+      label: LocalizationUtils.getLocalizedVacationRequestType(VacationType.PARENTAL_LEAVE)
+    },
+    {
+      value: VacationType.UNPAID_TIME_OFF,
+      label: LocalizationUtils.getLocalizedVacationRequestType(VacationType.UNPAID_TIME_OFF)
+    },
+    {
+      value: VacationType.PERSONAL_DAYS,
+      label: LocalizationUtils.getLocalizedVacationRequestType(VacationType.PERSONAL_DAYS)
+    },
+    {
+      value: VacationType.CHILD_SICKNESS,
+      label: LocalizationUtils.getLocalizedVacationRequestType(VacationType.CHILD_SICKNESS)
     }
   ];
   /**
