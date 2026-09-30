@@ -13,7 +13,8 @@ import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
 import type { UserDataGridRow } from "src/types/index";
 import { getFullUserName } from "src/utils/user-name-utils";
-import type { FilterType } from "src/utils/vacation-filter-type";
+import type { StatusFilter, TypeFilter } from "src/utils/vacation-filter-type";
+// import type { FilterType } from "src/utils/vacation-filter-type";
 import {
   formatVacationDaysPayload,
   getDays,
@@ -35,8 +36,10 @@ type VacationDays = Record<string, YearlyVacationDays>;
 
 interface ManagementProps {
   adminMode: boolean;
-  filters: FilterType[];
-  setFilters: Dispatch<SetStateAction<FilterType[]>>;
+  statusFilter: StatusFilter[];
+  setStatusFilter: React.Dispatch<React.SetStateAction<StatusFilter[]>>;
+  typeFilter: TypeFilter[];
+  setTypeFilter: React.Dispatch<React.SetStateAction<TypeFilter[]>>;
   tabs: Tab[];
   currentTab: string;
   setCurrentTab: Dispatch<SetStateAction<string>>;
@@ -62,8 +65,10 @@ interface ManagementProps {
  */
 const AdminVacationManagementTable = ({
   adminMode,
-  filters,
-  setFilters,
+  statusFilter,
+  setStatusFilter,
+  typeFilter,
+  setTypeFilter,
   tabs,
   currentTab,
   setCurrentTab
@@ -249,8 +254,10 @@ const AdminVacationManagementTable = ({
     <Box>
       <DefaultToolbar
         adminMode={adminMode}
-        filters={filters}
-        setFilters={setFilters}
+        statusFilter={statusFilter}
+        setStatusFilter={setStatusFilter}
+        typeFilter={typeFilter}
+        setTypeFilter={setTypeFilter}
         tabs={tabs}
         currentTab={currentTab}
         setCurrentTab={setCurrentTab}

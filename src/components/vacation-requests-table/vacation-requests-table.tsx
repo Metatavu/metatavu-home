@@ -9,7 +9,8 @@ import { type VacationRequest, VacationRequestStatuses } from "src/generated/hom
 import strings from "src/localization/strings";
 import { DeleteItemType, ToolbarFormModes, type VacationsDataGridRow } from "src/types";
 import LocalizationUtils from "src/utils/localization-utils";
-import type { FilterType } from "src/utils/vacation-filter-type";
+import type { StatusFilter, TypeFilter } from "src/utils/vacation-filter-type";
+// import type { FilterType } from "src/utils/vacation-filter-type";
 import { getVacationRequestPersonFullName } from "src/utils/vacation-request-utils";
 import { getTotalVacationRequestStatus } from "src/utils/vacation-status-utils";
 import DeleteConfirmationDialog from "../contexts/delete-confirmation-dialog";
@@ -37,8 +38,10 @@ interface Props {
     selectedRowIds: GridRowId[]
   ) => Promise<void>;
   loading: boolean;
-  filters: FilterType[];
-  setFilters: React.Dispatch<React.SetStateAction<FilterType[]>>;
+  statusFilter: StatusFilter[];
+  setStatusFilter: React.Dispatch<React.SetStateAction<StatusFilter[]>>;
+  typeFilter: TypeFilter[];
+  setTypeFilter: React.Dispatch<React.SetStateAction<TypeFilter[]>>;
   tabs: Tab[];
   currentTab: string;
   setCurrentTab: Dispatch<SetStateAction<string>>;
@@ -75,8 +78,10 @@ const VacationRequestsTable = ({
   updateVacationRequest,
   updateVacationRequestStatus,
   loading,
-  filters,
-  setFilters,
+  typeFilter,
+  setTypeFilter,
+  statusFilter,
+  setStatusFilter,
   tabs,
   currentTab,
   setCurrentTab,
@@ -180,8 +185,10 @@ const VacationRequestsTable = ({
         selectedRowIds={selectedRowIds}
         rows={rows}
         setSelectedRowIds={setSelectedRowIds}
-        filters={filters}
-        setFilters={setFilters}
+        typeFilter={typeFilter}
+        setTypeFilter={setTypeFilter}
+        statusFilter={statusFilter}
+        setStatusFilter={setStatusFilter}
         toolbarFormMode={toolbarFormMode}
         setToolbarFormMode={setToolbarFormMode}
         tabs={tabs}
