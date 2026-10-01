@@ -6,7 +6,7 @@ import type { Tab } from "src/components/generics/tabBar";
 import type { VacationRequest, VacationRequestStatuses } from "src/generated/homeLambdasClient";
 import useUserRole from "src/hooks/use-user-role";
 import type { ToolbarFormModes, VacationsDataGridRow } from "src/types";
-import type { StatusFilter, TypeFilter } from "src/utils/vacation-filter-type";
+import type { FilterType, StatusFilter, TypeFilter } from "src/utils/vacation-filter-type";
 import VacationRequestForm from "../vacation-request-form/vacation-request-form";
 import DefaultToolbar from "./DefaultToolbar";
 
@@ -30,10 +30,8 @@ interface Props {
   selectedRowIds: GridRowSelectionModel;
   rows: VacationsDataGridRow[];
   setSelectedRowIds: (selectedRowIds: GridRowSelectionModel) => void;
-  statusFilter: StatusFilter[];
-  setStatusFilter: React.Dispatch<React.SetStateAction<StatusFilter[]>>;
-  typeFilter: TypeFilter[];
-  setTypeFilter: React.Dispatch<React.SetStateAction<TypeFilter[]>>;
+  filters: FilterType[];
+  setFilters: React.Dispatch<React.SetStateAction<FilterType[]>>;
   toolbarFormMode: ToolbarFormModes;
   setToolbarFormMode: Dispatch<SetStateAction<ToolbarFormModes>>;
   tabs: Tab[];
@@ -59,10 +57,8 @@ const TableToolbar = ({
   selectedRowIds,
   rows,
   setSelectedRowIds,
-  typeFilter,
-  setTypeFilter,
-  statusFilter,
-  setStatusFilter,
+  filters,
+  setFilters,
   toolbarFormMode,
   setToolbarFormMode,
   tabs,
@@ -110,11 +106,9 @@ const TableToolbar = ({
       />
       <DefaultToolbar
         formOpen={formOpen}
-        adminMode={adminMode}        
-        statusFilter={statusFilter}
-        setStatusFilter={setStatusFilter}
-        typeFilter={typeFilter}
-        setTypeFilter={setTypeFilter}
+        adminMode={adminMode}
+        filters={filters}
+        setFilters={setFilters}
         toggleIsUpcoming={toggleIsUpcoming}
         setFormOpen={setFormOpen}
         tabs={tabs}
