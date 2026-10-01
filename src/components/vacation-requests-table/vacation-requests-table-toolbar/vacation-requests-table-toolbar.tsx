@@ -7,6 +7,7 @@ import type { VacationRequest, VacationRequestStatuses } from "src/generated/hom
 import useUserRole from "src/hooks/use-user-role";
 import type { ToolbarFormModes, VacationsDataGridRow } from "src/types";
 import type { FilterType } from "src/utils/vacation-filter-type";
+// import type { StatusFilter, TypeFilter } from "src/utils/vacation-filter-type";
 import VacationRequestForm from "../vacation-request-form/vacation-request-form";
 import DefaultToolbar from "./DefaultToolbar";
 
