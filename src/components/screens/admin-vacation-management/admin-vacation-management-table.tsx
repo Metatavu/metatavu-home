@@ -13,7 +13,8 @@ import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
 import type { UserDataGridRow } from "src/types/index";
 import { getFullUserName } from "src/utils/user-name-utils";
-import type { FilterType, StatusFilter, TypeFilter } from "src/utils/vacation-filter-type";
+import type { FilterType } from "src/utils/vacation-filter-type";
+// import type { StatusFilter, TypeFilter } from "src/utils/vacation-filter-type";
 import {
   formatVacationDaysPayload,
   getDays,
