@@ -7,7 +7,7 @@ import { type VacationRequest, VacationRequestStatuses } from "src/generated/hom
 import useUserRole from "src/hooks/use-user-role";
 import useVacationRequests from "src/hooks/useVacationRequests";
 import strings from "src/localization/strings";
-import type { FilterType } from "src/utils/vacation-filter-type";
+import type { VacationFilters } from "src/utils/vacation-filter-type";
 import type { Tab } from "../generics/tabBar";
 import VacationRequestsTable from "../vacation-requests-table/vacation-requests-table";
 import AdminVacationManagementTable from "./admin-vacation-management/admin-vacation-management-table";
@@ -49,7 +49,10 @@ const VacationRequestsScreen = () => {
     [vacationRequests]
   );
   const [isUpcoming, setIsUpcoming] = useState(true);
-  const [filters, setFilters] = useState<FilterType[]>(["ALL"]);
+  const [filters, setFilters] = useState<VacationFilters>({
+    status: ["ALL"],
+    type: ["ALL"]
+  });
   const [currentTab, setCurrentTab] = useState(adminMode ? "days" : "upcoming");
   const showManagement = adminMode && currentTab === "days";
   const adminNotification = pending > 0 ? `(${pending})` : "";
@@ -96,18 +99,22 @@ const VacationRequestsScreen = () => {
    *   - A specific `VacationRequestStatuses` value: Returns requests matching that status.
    * @returns The filtered list of vacation requests.
    */
-  const filterVacationRequests = (requests: VacationRequest[], filters: FilterType[]) => {
+  const filterVacationRequests = (requests: VacationRequest[], filters: VacationFilters) => {
     return requests.filter((request) => {
-      if (filters.includes("ALL")) {
-        return adminMode ? request.draft !== true : true;
-      }
+      // Draft handeling
       if (request.draft) {
-        return filters.includes("DRAFT");
+        return filters.status.includes("ALL") || filters.status.includes("DRAFT");
       }
-
+      // Status filtering
       const status = request.status?.[0]?.status;
+      const matchesStatus =
+        filters.status.includes("ALL") || (status && filters.status.includes(status));
 
-      return status ? filters.includes(status as FilterType) : false;
+      // Type filtering
+      const type = request.type;
+      const matchesType = filters.type.includes("ALL") || (type && filters.type.includes(type));
+
+      return matchesStatus && matchesType;
     });
   };
   /**
