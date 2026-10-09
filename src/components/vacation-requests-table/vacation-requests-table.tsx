@@ -9,7 +9,7 @@ import { type VacationRequest, VacationRequestStatuses } from "src/generated/hom
 import strings from "src/localization/strings";
 import { DeleteItemType, ToolbarFormModes, type VacationsDataGridRow } from "src/types";
 import LocalizationUtils from "src/utils/localization-utils";
-import type { FilterType } from "src/utils/vacation-filter-type";
+import type { VacationFilters } from "src/utils/vacation-filter-type";
 import { getVacationRequestPersonFullName } from "src/utils/vacation-request-utils";
 import { getTotalVacationRequestStatus } from "src/utils/vacation-status-utils";
 import DeleteConfirmationDialog from "../contexts/delete-confirmation-dialog";
@@ -37,8 +37,8 @@ interface Props {
     selectedRowIds: GridRowId[]
   ) => Promise<void>;
   loading: boolean;
-  filters: FilterType[];
-  setFilters: React.Dispatch<React.SetStateAction<FilterType[]>>;
+  filters: VacationFilters;
+  setFilters: React.Dispatch<React.SetStateAction<VacationFilters>>;
   tabs: Tab[];
   currentTab: string;
   setCurrentTab: Dispatch<SetStateAction<string>>;

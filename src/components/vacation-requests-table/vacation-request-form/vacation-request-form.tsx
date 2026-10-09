@@ -146,6 +146,7 @@ const VacationRequestForm = ({
           startDate: startDate.toJSDate(),
           endDate: endDate.toJSDate(),
           days: days,
+          type: selectedVacationRequest.type,
           status: selectedVacationRequest.status ?? defaultVacationRequestData.status
         });
 

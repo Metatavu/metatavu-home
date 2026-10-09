@@ -12,7 +12,7 @@ import { VacationRequestStatuses, VacationType } from "src/generated/homeLambdas
 import strings from "src/localization/strings";
 import { ToolbarFormModes } from "src/types/index";
 import LocalizationUtils from "src/utils/localization-utils";
-import type { FilterType } from "src/utils/vacation-filter-type";
+import type { StatusFilter, TypeFilter, VacationFilters } from "src/utils/vacation-filter-type";
 
 const ToolbarGridContainer = styled(Grid)({
   alignContent: "space-around",
@@ -21,8 +21,8 @@ const ToolbarGridContainer = styled(Grid)({
 
 interface DefaultToolbarProps {
   adminMode: boolean;
-  filters: FilterType[];
-  setFilters: React.Dispatch<React.SetStateAction<FilterType[]>>;
+  filters: VacationFilters;
+  setFilters: React.Dispatch<React.SetStateAction<VacationFilters>>;
   tabs: Tab[];
   currentTab: string;
   setCurrentTab: Dispatch<SetStateAction<string>>;
@@ -57,6 +57,26 @@ const vacationFilters = [
       {
         value: VacationType.VACATION,
         label: LocalizationUtils.getLocalizedVacationRequestType(VacationType.VACATION)
+      },
+      {
+        value: VacationType.PARENTAL_LEAVE,
+        label: LocalizationUtils.getLocalizedVacationRequestType(VacationType.PARENTAL_LEAVE)
+      },
+      {
+        value: VacationType.SICKNESS,
+        label: LocalizationUtils.getLocalizedVacationRequestType(VacationType.SICKNESS)
+      },
+      {
+        value: VacationType.PERSONAL_DAYS,
+        label: LocalizationUtils.getLocalizedVacationRequestType(VacationType.PERSONAL_DAYS)
+      },
+      {
+        value: VacationType.UNPAID_TIME_OFF,
+        label: LocalizationUtils.getLocalizedVacationRequestType(VacationType.UNPAID_TIME_OFF)
+      },
+      {
+        value: VacationType.CHILD_SICKNESS,
+        label: LocalizationUtils.getLocalizedVacationRequestType(VacationType.CHILD_SICKNESS)
       }
     ]
   }
@@ -113,7 +133,7 @@ const DefaultToolbar = ({
     const option = tags.find((option) => option.label === label);
 
     if (option) {
-      handleTag(option.value as FilterType);
+      handleTag(option.value, option.category);
     }
   };
 
@@ -126,19 +146,33 @@ const DefaultToolbar = ({
    *
    * @param value - Filter value to toggle.
    */
-  const handleTag = (value: FilterType) => {
-    setChosenFilters((current) => {
+  const handleTag = <T extends StatusFilter | TypeFilter>(
+    value: T,
+    category: "status" | "type"
+  ) => {
+    setFilters((current) => {
+      const selected = current[category];
+
       if (value === "ALL") {
-        return current.includes("ALL") ? [] : ["ALL"];
+        return {
+          ...current,
+          [category]: selected.includes("ALL") ? [] : ["ALL"]
+        };
       }
 
-      if (current.includes("ALL")) {
-        return [value];
+      if (selected.includes("ALL")) {
+        return {
+          ...current,
+          [category]: [value]
+        };
       }
 
-      return current.includes(value)
-        ? current.filter((item) => item !== value)
-        : [...current, value];
+      return {
+        ...current,
+        [category]: selected.includes(value)
+          ? selected.filter((item) => item !== value)
+          : [...selected, value]
+      };
     });
   };
 
@@ -188,9 +222,10 @@ const DefaultToolbar = ({
           <SearchBar
             handleSelectedTagChange={handleSearchTag}
             tags={tags.map((tag) => tag.label)}
-            selectedTags={chosenFilters
-              .map((value) => tags.find((option) => option.value === value)?.label)
-              .filter((label): label is string => Boolean(label))}
+            selectedTags={tags
+              .filter((tag) => filters[tag.title].includes(tag.value))
+
+              .map((tag) => tag.label)}
           />
           {vacationFilters.map((category) => (
             <Box
@@ -224,12 +259,16 @@ const DefaultToolbar = ({
                   <AppCheckbox
                     key={option.value}
                     checked={
-                      chosenFilters.includes(option.value.toUpperCase() as FilterType) ||
-                      chosenFilters.includes("ALL")
+                      chosenFilters[category.title === "Status" ? "status" : "type"].includes(
+                        option.value.toUpperCase()
+                      ) ||
+                      chosenFilters[category.title === "Status" ? "status" : "type"].includes("ALL")
                     }
                     label={option.label}
                     disabled={false}
-                    onChange={() => handleTag(option.value.toUpperCase() as FilterType)}
+                    onChange={() =>
+                      handleTag(option.value, category.title === "Status" ? "status" : "type")
+                    }
                     ariaLabel={option.label}
                   />
                 ))}
@@ -245,8 +284,8 @@ const DefaultToolbar = ({
             <AppButton
               variant="secondary"
               text="Clear all"
-              onClick={() => setChosenFilters([])}
-              disabled={!chosenFilters.length}
+              onClick={() => setChosenFilters({ status: ["ALL"], type: ["ALL"] })}
+              disabled={!chosenFilters}
               sx={{
                 px: theme.spaces.m,
                 py: theme.spaces.s,
