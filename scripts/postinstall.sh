@@ -13,7 +13,7 @@ if ! command -v java >/dev/null 2>&1; then
     archive="$(mktemp)"
     trap 'rm -f "$archive"' EXIT
 
-    curl -fLsS --retry 3 \
+    curl --proto '=https' -fLsS --retry 3 \
       "https://api.adoptium.net/v3/binary/latest/17/ga/linux/x64/jre/hotspot/normal/eclipse" \
       -o "$archive"
 
