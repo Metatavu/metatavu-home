@@ -161,7 +161,18 @@ const DefaultToolbar = ({
    *
    * @param value - Filter value to toggle.
    */
+  // supporting structure for handleTag
+  const toggleFilterValue = <T,>(selected: T[], value: T, allValue: T): T[] => {
+    if (selected.includes(allValue)) {
+      return [value];
+    }
 
+    if (selected.includes(value)) {
+      return selected.filter((item) => item !== value);
+    }
+
+    return [...selected, value];
+  };
   const handleTag = <T extends StatusFilter | TypeFilter>(
     value: T,
     category: "status" | "type"
@@ -170,39 +181,27 @@ const DefaultToolbar = ({
       if (category === "status") {
         const selected = current.status;
 
-        if (value === ALL_STATUSES) {
-          return {
-            ...current,
-            status: selected.includes(ALL_STATUSES) ? [] : [ALL_STATUSES]
-          };
-        }
-
         return {
           ...current,
-          status: selected.includes(ALL_STATUSES)
-            ? [value as StatusFilter]
-            : selected.includes(value as StatusFilter)
-              ? selected.filter((item) => item !== value)
-              : [...selected, value as StatusFilter]
+          status:
+            value === ALL_STATUSES
+              ? selected.includes(ALL_STATUSES)
+                ? []
+                : [ALL_STATUSES]
+              : toggleFilterValue(selected, value as StatusFilter, ALL_STATUSES)
         };
       }
 
       const selected = current.type;
 
-      if (value === ALL_TYPES) {
-        return {
-          ...current,
-          type: selected.includes(ALL_TYPES) ? [] : [ALL_TYPES]
-        };
-      }
-
       return {
         ...current,
-        type: selected.includes(ALL_TYPES)
-          ? [value as TypeFilter]
-          : selected.includes(value as TypeFilter)
-            ? selected.filter((item) => item !== value)
-            : [...selected, value as TypeFilter]
+        type:
+          value === ALL_TYPES
+            ? selected.includes(ALL_TYPES)
+              ? []
+              : [ALL_TYPES]
+            : toggleFilterValue(selected, value as TypeFilter, ALL_TYPES)
       };
     });
   };
