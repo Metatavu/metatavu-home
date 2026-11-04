@@ -139,7 +139,7 @@ const DefaultToolbar = ({
     item.options.map((option) => ({
       label: option.label,
       value: option.value,
-      category: item.category
+      category: item.category as "status" | "type"
     }))
   );
   const [dropdown, setDropdown] = useState<string[]>(vacationFilters.map((item) => item.title));
@@ -206,6 +206,14 @@ const DefaultToolbar = ({
       };
     });
   };
+  // This fixes the type of tags avoiding the "not assignable to type 'never' " error
+  const isTagSelected = (tag: (typeof tags)[number]) => {
+    if (tag.category === "status") {
+      return chosenFilters.status.includes(tag.value as StatusFilter);
+    }
+
+    return chosenFilters.type.includes(tag.value as TypeFilter);
+  };
 
   const handleDropdown = (value: string) => {
     setDropdown((current) => {
@@ -256,9 +264,7 @@ const DefaultToolbar = ({
           <SearchBar
             handleSelectedTagChange={handleSearchTag}
             tags={tags.map((tag) => tag.label)}
-            selectedTags={tags
-              .filter((tag) => chosenFilters[tag.category].includes(tag.value))
-              .map((tag) => tag.label)}
+            selectedTags={tags.filter(isTagSelected).map((tag) => tag.label)}
           />
           {vacationFilters.map((category) => (
             <Box
