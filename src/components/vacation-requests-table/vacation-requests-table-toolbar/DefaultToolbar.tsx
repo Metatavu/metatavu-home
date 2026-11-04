@@ -165,26 +165,43 @@ const DefaultToolbar = ({
     value: T,
     category: "status" | "type"
   ) => {
-    setFilters((current) => {
-      const selected = current[category] ?? [];
-      const allValue = category === "status" ? ALL_STATUSES : ALL_TYPES;
+    setChosenFilters((current) => {
+      if (category === "status") {
+        const selected = current.status;
 
-      if (value === allValue) {
+        if (value === ALL_STATUSES) {
+          return {
+            ...current,
+            status: selected.includes(ALL_STATUSES) ? [] : [ALL_STATUSES]
+          };
+        }
+
         return {
           ...current,
-          [category]: selected.includes(allValue) ? [] : [allValue]
+          status: selected.includes(ALL_STATUSES)
+            ? [value as StatusFilter]
+            : selected.includes(value as StatusFilter)
+              ? selected.filter((item) => item !== value)
+              : [...selected, value as StatusFilter]
         };
       }
 
-      const updated = selected.includes(allValue)
-        ? [value]
-        : selected.includes(value)
-          ? selected.filter((item) => item !== value)
-          : [...selected, value];
+      const selected = current.type;
+
+      if (value === ALL_TYPES) {
+        return {
+          ...current,
+          type: selected.includes(ALL_TYPES) ? [] : [ALL_TYPES]
+        };
+      }
 
       return {
         ...current,
-        [category]: updated
+        type: selected.includes(ALL_TYPES)
+          ? [value as TypeFilter]
+          : selected.includes(value as TypeFilter)
+            ? selected.filter((item) => item !== value)
+            : [...selected, value as TypeFilter]
       };
     });
   };
@@ -239,7 +256,7 @@ const DefaultToolbar = ({
             handleSelectedTagChange={handleSearchTag}
             tags={tags.map((tag) => tag.label)}
             selectedTags={tags
-              .filter((tag) => filters[tag.category].includes(tag.value))
+              .filter((tag) => chosenFilters[tag.category].includes(tag.value))
               .map((tag) => tag.label)}
           />
           {vacationFilters.map((category) => (
@@ -274,12 +291,11 @@ const DefaultToolbar = ({
                   const isStatus = category.title === "Status";
 
                   const selectedFilters = isStatus ? chosenFilters.status : chosenFilters.type;
-                  /*  //this is logic for ALL to check all checkboxes
+
                   const allValue = isStatus ? ALL_STATUSES : ALL_TYPES;
-                  const isChecked = selectedFilters.includes(option.value) || selectedFilters.includes(allValue);;
-                  */
-                  //below is logic to not check all checkboxes when ALL is clicked
-                  const isChecked = selectedFilters.includes(option.value);
+                  const isChecked =
+                    selectedFilters.includes(option.value) || selectedFilters.includes(allValue);
+
                   return (
                     <AppCheckbox
                       key={option.value}
