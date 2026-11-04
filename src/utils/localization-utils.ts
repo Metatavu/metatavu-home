@@ -30,9 +30,9 @@ export default class LocalizationUtils {
   public static getLocalizedVacationRequestType = (vacationType: VacationType) =>
     ({
       [VacationType.VACATION]: strings.vacationRequest.vacation,
-      [VacationType.PARENTAL_LEAVE]: strings.vacationRequest.maternityPaternityLeave,
       [VacationType.PERSONAL_DAYS]: strings.vacationRequest.personalDays,
       [VacationType.UNPAID_TIME_OFF]: strings.vacationRequest.unpaidTimeOff,
+      [VacationType.PARENTAL_LEAVE]: strings.vacationRequest.maternityPaternityLeave,
       [VacationType.SICKNESS]: strings.vacationRequest.sickness,
       [VacationType.CHILD_SICKNESS]: strings.vacationRequest.childSickness
     })[vacationType];
