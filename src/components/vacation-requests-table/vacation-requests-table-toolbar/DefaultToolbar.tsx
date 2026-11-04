@@ -12,7 +12,13 @@ import { VacationRequestStatuses, VacationType } from "src/generated/homeLambdas
 import strings from "src/localization/strings";
 import { ToolbarFormModes } from "src/types/index";
 import LocalizationUtils from "src/utils/localization-utils";
-import type { StatusFilter, TypeFilter, VacationFilters } from "src/utils/vacation-filter-type";
+import {
+  ALL_STATUSES,
+  ALL_TYPES,
+  type StatusFilter,
+  type TypeFilter,
+  type VacationFilters
+} from "src/utils/vacation-filter-type";
 
 const ToolbarGridContainer = styled(Grid)({
   alignContent: "space-around",
@@ -35,8 +41,9 @@ interface DefaultToolbarProps {
 const vacationFilters = [
   {
     title: "Status",
+    category: "status",
     options: [
-      { value: "ALL", label: strings.tableToolbar.all },
+      { value: ALL_STATUSES, label: strings.tableToolbar.all },
       {
         value: VacationRequestStatuses.PENDING,
         label: strings.vacationRequest.pending
@@ -53,7 +60,12 @@ const vacationFilters = [
   },
   {
     title: "Vacation type",
+    category: "type",
     options: [
+      {
+        value: ALL_TYPES,
+        label: strings.tableToolbar.all
+      },
       {
         value: VacationType.VACATION,
         label: LocalizationUtils.getLocalizedVacationRequestType(VacationType.VACATION)
@@ -119,15 +131,18 @@ const DefaultToolbar = ({
 }: DefaultToolbarProps) => {
   const theme = useTheme();
   const [openFilter, setOpenFilter] = useState(false);
+  const [chosenFilters, setChosenFilters] = useState<VacationFilters>({
+    status: [...filters.status],
+    type: [...filters.type]
+  });
   const tags = vacationFilters.flatMap((item) =>
     item.options.map((option) => ({
       label: option.label,
       value: option.value,
-      category: item.title
+      category: item.category
     }))
   );
   const [dropdown, setDropdown] = useState<string[]>(vacationFilters.map((item) => item.title));
-  const [chosenFilters, setChosenFilters] = useState(filters);
 
   const handleSearchTag = (label: string) => {
     const option = tags.find((option) => option.label === label);
@@ -151,27 +166,25 @@ const DefaultToolbar = ({
     category: "status" | "type"
   ) => {
     setFilters((current) => {
-      const selected = current[category];
+      const selected = current[category] ?? [];
+      const allValue = category === "status" ? ALL_STATUSES : ALL_TYPES;
 
-      if (value === "ALL") {
+      if (value === allValue) {
         return {
           ...current,
-          [category]: selected.includes("ALL") ? [] : ["ALL"]
+          [category]: selected.includes(allValue) ? [] : [allValue]
         };
       }
 
-      if (selected.includes("ALL")) {
-        return {
-          ...current,
-          [category]: [value]
-        };
-      }
+      const updated = selected.includes(allValue)
+        ? [value]
+        : selected.includes(value)
+          ? selected.filter((item) => item !== value)
+          : [...selected, value];
 
       return {
         ...current,
-        [category]: selected.includes(value)
-          ? selected.filter((item) => item !== value)
-          : [...selected, value]
+        [category]: updated
       };
     });
   };
@@ -185,7 +198,10 @@ const DefaultToolbar = ({
   };
 
   const handleApply = () => {
-    setFilters(chosenFilters);
+    setFilters({
+      status: [...chosenFilters.status],
+      type: [...chosenFilters.type]
+    });
     setOpenFilter(false);
   };
 
@@ -223,8 +239,7 @@ const DefaultToolbar = ({
             handleSelectedTagChange={handleSearchTag}
             tags={tags.map((tag) => tag.label)}
             selectedTags={tags
-              .filter((tag) => filters[tag.title].includes(tag.value))
-
+              .filter((tag) => filters[tag.category].includes(tag.value))
               .map((tag) => tag.label)}
           />
           {vacationFilters.map((category) => (
@@ -255,23 +270,27 @@ const DefaultToolbar = ({
                 </Typography>
               </Box>
               {dropdown.includes(category.title) &&
-                category.options.map((option) => (
-                  <AppCheckbox
-                    key={option.value}
-                    checked={
-                      chosenFilters[category.title === "Status" ? "status" : "type"].includes(
-                        option.value.toUpperCase()
-                      ) ||
-                      chosenFilters[category.title === "Status" ? "status" : "type"].includes("ALL")
-                    }
-                    label={option.label}
-                    disabled={false}
-                    onChange={() =>
-                      handleTag(option.value, category.title === "Status" ? "status" : "type")
-                    }
-                    ariaLabel={option.label}
-                  />
-                ))}
+                category.options.map((option) => {
+                  const isStatus = category.title === "Status";
+
+                  const selectedFilters = isStatus ? chosenFilters.status : chosenFilters.type;
+                  /*  //this is logic for ALL to check all checkboxes
+                  const allValue = isStatus ? ALL_STATUSES : ALL_TYPES;
+                  const isChecked = selectedFilters.includes(option.value) || selectedFilters.includes(allValue);;
+                  */
+                  //below is logic to not check all checkboxes when ALL is clicked
+                  const isChecked = selectedFilters.includes(option.value);
+                  return (
+                    <AppCheckbox
+                      key={option.value}
+                      checked={isChecked}
+                      label={option.label}
+                      disabled={false}
+                      onChange={() => handleTag(option.value, isStatus ? "status" : "type")}
+                      ariaLabel={option.label}
+                    />
+                  );
+                })}
             </Box>
           ))}
           <Box
@@ -284,7 +303,7 @@ const DefaultToolbar = ({
             <AppButton
               variant="secondary"
               text="Clear all"
-              onClick={() => setChosenFilters({ status: ["ALL"], type: ["ALL"] })}
+              onClick={() => setChosenFilters({ status: [ALL_STATUSES], type: [ALL_TYPES] })}
               disabled={!chosenFilters}
               sx={{
                 px: theme.spaces.m,

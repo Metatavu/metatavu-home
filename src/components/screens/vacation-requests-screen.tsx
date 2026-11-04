@@ -7,7 +7,7 @@ import { type VacationRequest, VacationRequestStatuses } from "src/generated/hom
 import useUserRole from "src/hooks/use-user-role";
 import useVacationRequests from "src/hooks/useVacationRequests";
 import strings from "src/localization/strings";
-import type { VacationFilters } from "src/utils/vacation-filter-type";
+import { ALL_STATUSES, ALL_TYPES, type VacationFilters } from "src/utils/vacation-filter-type";
 import type { Tab } from "../generics/tabBar";
 import VacationRequestsTable from "../vacation-requests-table/vacation-requests-table";
 import AdminVacationManagementTable from "./admin-vacation-management/admin-vacation-management-table";
@@ -50,8 +50,8 @@ const VacationRequestsScreen = () => {
   );
   const [isUpcoming, setIsUpcoming] = useState(true);
   const [filters, setFilters] = useState<VacationFilters>({
-    status: ["ALL"],
-    type: ["ALL"]
+    status: [ALL_STATUSES],
+    type: [ALL_TYPES]
   });
   const [currentTab, setCurrentTab] = useState(adminMode ? "days" : "upcoming");
   const showManagement = adminMode && currentTab === "days";
@@ -103,16 +103,23 @@ const VacationRequestsScreen = () => {
     return requests.filter((request) => {
       // Draft handeling
       if (request.draft) {
-        return filters.status.includes("ALL") || filters.status.includes("DRAFT");
+        const matchesStatus =
+          filters.status.includes(ALL_STATUSES) || filters.status.includes("DRAFT");
+
+        const matchesType =
+          filters.type.includes(ALL_TYPES) ||
+          (request.type != null && filters.type.includes(request.type));
+
+        return matchesStatus && matchesType;
       }
       // Status filtering
       const status = request.status?.[0]?.status;
       const matchesStatus =
-        filters.status.includes("ALL") || (status && filters.status.includes(status));
+        filters.status.includes(ALL_STATUSES) || (status && filters.status.includes(status));
 
       // Type filtering
       const type = request.type;
-      const matchesType = filters.type.includes("ALL") || (type && filters.type.includes(type));
+      const matchesType = filters.type.includes(ALL_TYPES) || (type && filters.type.includes(type));
 
       return matchesStatus && matchesType;
     });
