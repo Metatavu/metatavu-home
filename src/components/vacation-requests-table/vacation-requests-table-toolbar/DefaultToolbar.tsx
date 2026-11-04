@@ -295,12 +295,12 @@ const DefaultToolbar = ({
               {dropdown.includes(category.title) &&
                 category.options.map((option) => {
                   const isStatus = category.title === "Status";
-                  const isChecked = isStatus
-                    ? filters.status.includes(option.value as StatusFilter) ||
-                      filters.status.includes(ALL_STATUSES)
-                    : filters.type.includes(option.value as TypeFilter) ||
-                      filters.type.includes(ALL_TYPES);
 
+                  const isChecked = isStatus
+                    ? chosenFilters.status.includes(option.value as StatusFilter) ||
+                      chosenFilters.status.includes(ALL_STATUSES)
+                    : chosenFilters.type.includes(option.value as TypeFilter) ||
+                      chosenFilters.type.includes(ALL_TYPES);
                   return (
                     <AppCheckbox
                       key={option.value}
