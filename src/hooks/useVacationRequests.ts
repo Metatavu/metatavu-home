@@ -308,6 +308,12 @@ const useVacationRequests = () => {
       const updatedStatus = [newOrUpdatedStatus];
       const selectedUser = await usersApi.findUser({ userId: vacationRequest.userId });
 
+      // Making extending "Approved" vacations possible
+      const previouslyApprovedDays =
+        vacationRequest.status?.[0]?.status === VacationRequestStatuses.APPROVED
+          ? Number(vacationRequest.days)
+          : 0;
+
       if (
         !validateUserVacationRequest(
           selectedUser,
@@ -315,7 +321,8 @@ const useVacationRequests = () => {
           currentYear,
           setError,
           setLoading,
-          adminMode
+          adminMode,
+          previouslyApprovedDays
         )
       ) {
         return;

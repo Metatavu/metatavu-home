@@ -182,16 +182,17 @@ export const validateUserVacationRequest = (
   currentYear: string,
   setError: (msg: string) => void,
   setLoading: (loading: boolean) => void,
-  isUserAdmin?: boolean
+  isUserAdmin?: boolean,
+  previouslyApprovedDays = 0 // used to make extending "Approved" vacations possible
 ): boolean => {
   const unspentDays = Number(
     getDays(userToValidate?.attributes?.unspentVacationDaysByYear, currentYear)
   );
   const requestedDays = Number(vacationRequestData.days ?? 0);
-
+  const availableDays = unspentDays + previouslyApprovedDays;
   const { valid, errorMessage } = validateVacationRequestDays(
     requestedDays,
-    unspentDays,
+    availableDays,
     isUserAdmin
   );
 
