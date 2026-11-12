@@ -3,7 +3,8 @@ import type { GridRowId, GridRowSelectionModel } from "@mui/x-data-grid";
 import { type Dispatch, type SetStateAction, useState } from "react";
 import EditConfirmationDialog from "src/components/contexts/edit-confirmation-dialog";
 import type { Tab } from "src/components/generics/tabBar";
-import type { VacationRequest, VacationRequestStatuses } from "src/generated/homeLambdasClient";
+import type { VacationRequest } from "src/generated/homeLambdasClient";
+import { VacationRequestStatuses } from "src/generated/homeLambdasClient";
 import useUserRole from "src/hooks/use-user-role";
 import type { ToolbarFormModes, VacationsDataGridRow } from "src/types";
 import type { FilterType } from "src/utils/vacation-filter-type";
@@ -84,8 +85,8 @@ const TableToolbar = ({
    */
   const handleEditConfirm = async () => {
     if (!editVacationsData?.id) return;
-
     await updateVacationRequest(editVacationsData, editVacationsData.id);
+    await updateVacationRequestStatus(VacationRequestStatuses.APPROVED, [editVacationsData.id]);
     setSelectedRowIds(EMPTY_SELECTION);
     setFormOpen(false);
   };
