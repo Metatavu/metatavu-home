@@ -12,7 +12,13 @@ import { VacationRequestStatuses, VacationType } from "src/generated/homeLambdas
 import strings from "src/localization/strings";
 import { ToolbarFormModes } from "src/types/index";
 import LocalizationUtils from "src/utils/localization-utils";
-import type { FilterType } from "src/utils/vacation-filter-type";
+import {
+  ALL_STATUSES,
+  ALL_TYPES,
+  type StatusFilter,
+  type TypeFilter,
+  type VacationFilters
+} from "src/utils/vacation-filter-type";
 
 const ToolbarGridContainer = styled(Grid)({
   alignContent: "space-around",
@@ -21,8 +27,8 @@ const ToolbarGridContainer = styled(Grid)({
 
 interface DefaultToolbarProps {
   adminMode: boolean;
-  filters: FilterType[];
-  setFilters: React.Dispatch<React.SetStateAction<FilterType[]>>;
+  filters: VacationFilters;
+  setFilters: React.Dispatch<React.SetStateAction<VacationFilters>>;
   tabs: Tab[];
   currentTab: string;
   setCurrentTab: Dispatch<SetStateAction<string>>;
@@ -35,8 +41,9 @@ interface DefaultToolbarProps {
 const vacationFilters = [
   {
     title: "Status",
+    category: "status",
     options: [
-      { value: "ALL", label: strings.tableToolbar.all },
+      { value: ALL_STATUSES, label: strings.tableToolbar.all },
       {
         value: VacationRequestStatuses.PENDING,
         label: strings.vacationRequest.pending
@@ -53,10 +60,35 @@ const vacationFilters = [
   },
   {
     title: "Vacation type",
+    category: "type",
     options: [
+      {
+        value: ALL_TYPES,
+        label: strings.tableToolbar.all
+      },
       {
         value: VacationType.VACATION,
         label: LocalizationUtils.getLocalizedVacationRequestType(VacationType.VACATION)
+      },
+      {
+        value: VacationType.PARENTAL_LEAVE,
+        label: LocalizationUtils.getLocalizedVacationRequestType(VacationType.PARENTAL_LEAVE)
+      },
+      {
+        value: VacationType.SICKNESS,
+        label: LocalizationUtils.getLocalizedVacationRequestType(VacationType.SICKNESS)
+      },
+      {
+        value: VacationType.PERSONAL_DAYS,
+        label: LocalizationUtils.getLocalizedVacationRequestType(VacationType.PERSONAL_DAYS)
+      },
+      {
+        value: VacationType.UNPAID_TIME_OFF,
+        label: LocalizationUtils.getLocalizedVacationRequestType(VacationType.UNPAID_TIME_OFF)
+      },
+      {
+        value: VacationType.CHILD_SICKNESS,
+        label: LocalizationUtils.getLocalizedVacationRequestType(VacationType.CHILD_SICKNESS)
       }
     ]
   }
@@ -99,21 +131,24 @@ const DefaultToolbar = ({
 }: DefaultToolbarProps) => {
   const theme = useTheme();
   const [openFilter, setOpenFilter] = useState(false);
+  const [chosenFilters, setChosenFilters] = useState<VacationFilters>({
+    status: [...filters.status],
+    type: [...filters.type]
+  });
   const tags = vacationFilters.flatMap((item) =>
     item.options.map((option) => ({
       label: option.label,
       value: option.value,
-      category: item.title
+      category: item.category as "status" | "type"
     }))
   );
   const [dropdown, setDropdown] = useState<string[]>(vacationFilters.map((item) => item.title));
-  const [chosenFilters, setChosenFilters] = useState(filters);
 
   const handleSearchTag = (label: string) => {
     const option = tags.find((option) => option.label === label);
 
     if (option) {
-      handleTag(option.value as FilterType);
+      handleTag(option.value, option.category);
     }
   };
 
@@ -126,20 +161,57 @@ const DefaultToolbar = ({
    *
    * @param value - Filter value to toggle.
    */
-  const handleTag = (value: FilterType) => {
+  // supporting structure for handleTag
+  const toggleFilterValue = <T,>(selected: T[], value: T, allValue: T): T[] => {
+    if (selected.includes(allValue)) {
+      return [value];
+    }
+
+    if (selected.includes(value)) {
+      return selected.filter((item) => item !== value);
+    }
+
+    return [...selected, value];
+  };
+  const handleTag = <T extends StatusFilter | TypeFilter>(
+    value: T,
+    category: "status" | "type"
+  ) => {
     setChosenFilters((current) => {
-      if (value === "ALL") {
-        return current.includes("ALL") ? [] : ["ALL"];
+      if (category === "status") {
+        const selected = current.status;
+
+        return {
+          ...current,
+          status:
+            value === ALL_STATUSES
+              ? selected.includes(ALL_STATUSES)
+                ? []
+                : [ALL_STATUSES]
+              : toggleFilterValue(selected, value as StatusFilter, ALL_STATUSES)
+        };
       }
 
-      if (current.includes("ALL")) {
-        return [value];
-      }
+      const selected = current.type;
 
-      return current.includes(value)
-        ? current.filter((item) => item !== value)
-        : [...current, value];
+      return {
+        ...current,
+        type:
+          value === ALL_TYPES
+            ? selected.includes(ALL_TYPES)
+              ? []
+              : [ALL_TYPES]
+            : toggleFilterValue(selected, value as TypeFilter, ALL_TYPES)
+      };
     });
+  };
+  // This fixes the type of tags avoiding the "not assignable to type 'never' " error
+  const isTagSelected = (tag: (typeof tags)[number]) => {
+    if (tag.category === "status") {
+      return chosenFilters.status.includes(tag.value as StatusFilter);
+    }
+
+    return chosenFilters.type.includes(tag.value as TypeFilter);
   };
 
   const handleDropdown = (value: string) => {
@@ -151,7 +223,10 @@ const DefaultToolbar = ({
   };
 
   const handleApply = () => {
-    setFilters(chosenFilters);
+    setFilters({
+      status: [...chosenFilters.status],
+      type: [...chosenFilters.type]
+    });
     setOpenFilter(false);
   };
 
@@ -188,9 +263,7 @@ const DefaultToolbar = ({
           <SearchBar
             handleSelectedTagChange={handleSearchTag}
             tags={tags.map((tag) => tag.label)}
-            selectedTags={chosenFilters
-              .map((value) => tags.find((option) => option.value === value)?.label)
-              .filter((label): label is string => Boolean(label))}
+            selectedTags={tags.filter(isTagSelected).map((tag) => tag.label)}
           />
           {vacationFilters.map((category) => (
             <Box
@@ -220,19 +293,25 @@ const DefaultToolbar = ({
                 </Typography>
               </Box>
               {dropdown.includes(category.title) &&
-                category.options.map((option) => (
-                  <AppCheckbox
-                    key={option.value}
-                    checked={
-                      chosenFilters.includes(option.value.toUpperCase() as FilterType) ||
-                      chosenFilters.includes("ALL")
-                    }
-                    label={option.label}
-                    disabled={false}
-                    onChange={() => handleTag(option.value.toUpperCase() as FilterType)}
-                    ariaLabel={option.label}
-                  />
-                ))}
+                category.options.map((option) => {
+                  const isStatus = category.title === "Status";
+
+                  const isChecked = isStatus
+                    ? chosenFilters.status.includes(option.value as StatusFilter) ||
+                      chosenFilters.status.includes(ALL_STATUSES)
+                    : chosenFilters.type.includes(option.value as TypeFilter) ||
+                      chosenFilters.type.includes(ALL_TYPES);
+                  return (
+                    <AppCheckbox
+                      key={option.value}
+                      checked={isChecked}
+                      label={option.label}
+                      disabled={false}
+                      onChange={() => handleTag(option.value, isStatus ? "status" : "type")}
+                      ariaLabel={option.label}
+                    />
+                  );
+                })}
             </Box>
           ))}
           <Box
@@ -245,8 +324,8 @@ const DefaultToolbar = ({
             <AppButton
               variant="secondary"
               text="Clear all"
-              onClick={() => setChosenFilters([])}
-              disabled={!chosenFilters.length}
+              onClick={() => setChosenFilters({ status: [ALL_STATUSES], type: [ALL_TYPES] })}
+              disabled={!chosenFilters}
               sx={{
                 px: theme.spaces.m,
                 py: theme.spaces.s,
