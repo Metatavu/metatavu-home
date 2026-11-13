@@ -1,3 +1,15 @@
+import h3Icon from "../../../../../resources/img/wiki/editor/h3.svg";
+import h2Icon from "../../../../../resources/img/wiki/editor/h2.svg";
+import insertPhotoIcon from "../../../../../resources/img/wiki/editor/image.svg";
+import articleIcon from "../../../../../resources/img/wiki/editor/article-link.svg";
+import insertLinkIcon from "../../../../../resources/img/wiki/editor/link.svg";
+import codeIcon from "../../../../../resources/img/wiki/editor/code.svg";
+import formatListNumberedIcon from "../../../../../resources/img/wiki/editor/numbers.svg";
+import formatListBulletedIcon from "../../../../../resources/img/wiki/editor/bullets.svg";
+import formatQuoteSharpIcon from "../../../../../resources/img/wiki/editor/quote.svg";
+import formatUnderlinedIcon from "../../../../../resources/img/wiki/editor/underline.svg";
+import formatItalicIcon from "../../../../../resources/img/wiki/editor/italic.svg";
+import formatBoldIcon from "../../../../../resources/img/wiki/editor/bold.svg";
 import { $createCodeNode } from "@lexical/code";
 import { $isLinkNode, TOGGLE_LINK_COMMAND } from "@lexical/link";
 import {
@@ -6,21 +18,15 @@ import {
   type ListType
 } from "@lexical/list";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
-import { $createHeadingNode, $createQuoteNode, type HeadingTagType } from "@lexical/rich-text";
+import {
+  $createHeadingNode,
+  $createQuoteNode,
+  $isHeadingNode,
+  type HeadingTagType
+} from "@lexical/rich-text";
 import { $setBlocksType } from "@lexical/selection";
-import ArticleIcon from "@mui/icons-material/Article";
-import CodeIcon from "@mui/icons-material/Code";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
-import FormatBoldIcon from "@mui/icons-material/FormatBold";
-import FormatItalicIcon from "@mui/icons-material/FormatItalic";
-import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
-import FormatListNumberedIcon from "@mui/icons-material/FormatListNumbered";
-import FormatQuoteSharpIcon from "@mui/icons-material/FormatQuoteSharp";
-import FormatUnderlinedIcon from "@mui/icons-material/FormatUnderlined";
-import InsertLinkIcon from "@mui/icons-material/InsertLink";
-import InsertPhotoIcon from "@mui/icons-material/InsertPhoto";
 import LinkOffIcon from "@mui/icons-material/LinkOff";
-import TitleIcon from "@mui/icons-material/Title";
 import {
   Box,
   Button,
@@ -92,20 +98,43 @@ const ToolBar = () => {
 
   const commands: TextCommand[] = useMemo(
     () => [
-      { key: "paragraph", icon: <TitleIcon />, handler: () => formatParagraph() },
-      { key: "bold", icon: <FormatBoldIcon />, handler: () => formatText("bold") },
-      { key: "italic", icon: <FormatItalicIcon />, handler: () => formatText("italic") },
-      { key: "underline", icon: <FormatUnderlinedIcon />, handler: () => formatText("underline") },
-      { key: "h1", icon: <>H1</>, handler: () => formatHeading("h1") },
-      { key: "h2", icon: <>H2</>, handler: () => formatHeading("h2") },
-      { key: "h3", icon: <>H3</>, handler: () => formatHeading("h3") },
-      { key: "Quote", icon: <FormatQuoteSharpIcon />, handler: () => formatQuote() },
-      { key: "UL", icon: <FormatListBulletedIcon />, handler: () => formatList("bullet") },
-      { key: "OL", icon: <FormatListNumberedIcon />, handler: () => formatList("number") },
-      { key: "Code Block", style: "code-block", icon: <CodeIcon />, handler: () => formatCode() },
+      { key: "bold", icon: <img src={formatBoldIcon} alt="" />, handler: () => formatText("bold") },
+      {
+        key: "italic",
+        icon: <img src={formatItalicIcon} alt="" />,
+        handler: () => formatText("italic")
+      },
+      {
+        key: "underline",
+        icon: <img src={formatUnderlinedIcon} alt="" />,
+        handler: () => formatText("underline")
+      },
+      { key: "h2", icon: <img src={h2Icon} alt="" />, handler: () => formatHeading("h2") },
+      { key: "h3", icon: <img src={h3Icon} alt="" />, handler: () => formatHeading("h3") },
+      {
+        key: "Quote",
+        icon: <img src={formatQuoteSharpIcon} alt="" />,
+        handler: () => formatQuote()
+      },
+      {
+        key: "UL",
+        icon: <img src={formatListBulletedIcon} alt="" />,
+        handler: () => formatList("bullet")
+      },
+      {
+        key: "OL",
+        icon: <img src={formatListNumberedIcon} alt="" />,
+        handler: () => formatList("number")
+      },
+      {
+        key: "Code Block",
+        style: "code-block",
+        icon: <img src={codeIcon} alt="" />,
+        handler: () => formatCode()
+      },
       {
         key: "add-link",
-        icon: isLinkSelcted ? <LinkOffIcon /> : <InsertLinkIcon />,
+        icon: isLinkSelcted ? <LinkOffIcon /> : <img src={insertLinkIcon} alt="" />,
         handler: isLinkSelcted
           ? () => editor.dispatchCommand(TOGGLE_LINK_COMMAND, null)
           : () => {
@@ -116,7 +145,7 @@ const ToolBar = () => {
       },
       {
         key: "link-article",
-        icon: <ArticleIcon />,
+        icon: <img src={articleIcon} alt="" />,
         handler: () => {
           editor.getEditorState().read(() => {
             const selection = $getSelection();
@@ -131,7 +160,7 @@ const ToolBar = () => {
       },
       {
         key: "add-image",
-        icon: <InsertPhotoIcon />,
+        icon: <img src={insertPhotoIcon} alt="" />,
         handler: () => {
           setImageDialogOpen(!imageDialogOpen);
           setLinkDialogOpen(false);
@@ -147,22 +176,17 @@ const ToolBar = () => {
     editor.dispatchCommand(FORMAT_TEXT_COMMAND, command);
   };
 
-  const formatParagraph = () => {
+  const formatHeading = (tag: HeadingTagType) => {
     editor.update(() => {
       const selection = $getSelection();
-      if (isLinkSelcted) editor.dispatchCommand(TOGGLE_LINK_COMMAND, null);
-      $setBlocksType(selection, () => $createParagraphNode());
+      if (!$isRangeSelection(selection)) return;
+      const block = selection.anchor.getNode().getTopLevelElement();
+      const isSameHeading = $isHeadingNode(block) && block.getTag() === tag;
+      $setBlocksType(selection, () =>
+        isSameHeading ? $createParagraphNode() : $createHeadingNode(tag)
+      );
     });
   };
-
-  const formatHeading = (tag: HeadingTagType) => [
-    editor.update(() => {
-      const selection = $getSelection();
-      if ($isRangeSelection(selection)) {
-        $setBlocksType(selection, () => $createHeadingNode(tag));
-      }
-    })
-  ];
 
   const formatList = (type: ListType) => {
     if (!type) return;
@@ -489,11 +513,7 @@ const ToolBar = () => {
   return (
     <Box
       sx={{
-        position: "sticky",
-        top: "20px",
-        zIndex: 10,
-        backgroundColor: "inherit",
-        paddingTop: 1
+        backgroundColor: "inherit"
       }}
     >
       {linkDialogOpen && !imageDialogOpen && renderLinkInput()}
@@ -508,14 +528,16 @@ const ToolBar = () => {
         container
         sx={{
           justifyContent: "space-between",
-          marginBottom: 1
+          px: 1
         }}
       >
         {commands.map((command) => (
           <IconButton
             key={`inline-command-${command.key}`}
             onClick={() => command.handler()}
-            sx={{ fontSize: "21px", fontWeight: "bold" }}
+            aria-label={command.key}
+            size="small"
+            sx={{ width: 40, height: 44, fontSize: 14, fontWeight: 600 }}
             id={getCommandId(command.key)}
           >
             {command.icon}

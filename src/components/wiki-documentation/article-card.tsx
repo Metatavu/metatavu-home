@@ -2,6 +2,9 @@ import { Box, Button, Card, Chip, Typography, useTheme } from "@mui/material";
 import { useAtomValue } from "jotai";
 import { DateTime } from "luxon";
 import { Link } from "react-router-dom";
+import bestPracticeIcon from "../../../resources/img/wiki/best-practice.svg";
+import coverPlaceholder from "../../../resources/img/wiki/cover-placeholder.png";
+import mandatoryRuleIcon from "../../../resources/img/wiki/mandatory-rule.svg";
 import { usersAtom } from "src/atoms/user";
 import type { ArticleMetadata } from "src/generated/homeLambdasClient";
 import strings from "src/localization/strings";
@@ -11,17 +14,10 @@ import { getLastActivityString } from "src/utils/wiki-utils";
 interface Props {
   article: ArticleMetadata;
   adminMode: boolean;
+  featured?: boolean;
   onDeleteClick?: () => void;
 }
-/**
- * Displays an article summary card with image, title, activity info, tags,
- * and optionally a delete button in admin mode.
- *
- * @param article - Article metadata to display.
- * @param adminMode - Flag to show admin controls like delete button.
- * @param onDeleteClick - Callback function to open the delete confirmation dialog.
- */
-const ArticleCard = ({ article, adminMode, onDeleteClick }: Props) => {
+const ArticleCard = ({ article, adminMode, featured = false, onDeleteClick }: Props) => {
   const users = useAtomValue(usersAtom);
   const theme = useTheme();
 
@@ -31,6 +27,141 @@ const ArticleCard = ({ article, adminMode, onDeleteClick }: Props) => {
   const tags = article.tags || [];
   const visibleTags = tags.slice(0, 2);
   const hiddenCount = tags.length - visibleTags.length;
+
+  if (!adminMode) {
+    const activityDate =
+      (lastActivityData.action === strings.wikiDocumentation.lastRead && article.lastReadAt) ||
+      article.lastUpdatedAt ||
+      article.createdAt;
+    const dateLabel = activityDate ? formatDate(DateTime.fromJSDate(activityDate)) : "";
+    const activityLabel = lastActivityData.user
+      ? strings.formatString(strings.wikiDocumentation.createdBy, dateLabel, lastActivityData.user)
+      : dateLabel;
+
+    return (
+      <Card
+        component={Link}
+        to={article.path}
+        variant="outlined"
+        sx={{
+          display: "flex",
+          flexDirection: featured ? { xs: "column", sm: "row" } : "column",
+          alignItems: featured ? { xs: "stretch", sm: "center" } : "stretch",
+          boxSizing: "border-box",
+          minHeight: featured ? 228 : 268,
+          height: "100%",
+          gap: theme.spaces.m,
+          p: theme.spaces.m,
+          borderColor: theme.palette.border.primary,
+          borderRadius: theme.radius.s,
+          textDecoration: "none",
+          textAlign: "left",
+          color: "text.primary",
+          "&:hover": { bgcolor: theme.palette.hover.secondary }
+        }}
+      >
+        <Box
+          sx={{
+            position: "relative",
+            flexShrink: 0,
+            width: featured ? { xs: "100%", sm: "min(34%, 170px)" } : "100%",
+            height: featured ? { xs: 161, sm: 196 } : 161,
+            overflow: "hidden",
+            borderRadius: theme.radius.s
+          }}
+        >
+          <Box
+            component="img"
+            src={article.coverImage || coverPlaceholder}
+            alt=""
+            onError={(event) => {
+              if (event.currentTarget.getAttribute("src") !== coverPlaceholder) {
+                event.currentTarget.src = coverPlaceholder;
+              }
+            }}
+            sx={{
+              display: "block",
+              width: "100%",
+              height: "100%",
+              objectFit: "cover"
+            }}
+          />
+          <Box
+            sx={{
+              position: "absolute",
+              insetInline: theme.spaces.s,
+              bottom: theme.spaces.s,
+              display: "flex",
+              gap: theme.spaces.xs
+            }}
+          >
+            {visibleTags.map((tag) => {
+              const name = tag.toLowerCase().trim();
+              const badgeIcon =
+                name === "mandatory rule"
+                  ? mandatoryRuleIcon
+                  : name === "best practice"
+                    ? bestPracticeIcon
+                    : undefined;
+              return (
+                <Chip
+                  key={tag}
+                  title={tag}
+                  label={tag}
+                  icon={badgeIcon ? <img src={badgeIcon} alt="" /> : undefined}
+                  size="small"
+                  sx={{
+                    minWidth: 0,
+                    height: 20,
+                    fontSize: 12,
+                    bgcolor: "background.paper",
+                    "& .MuiChip-icon": { flexShrink: 0, ml: 0.5, mr: -0.5 }
+                  }}
+                />
+              );
+            })}
+            {hiddenCount > 0 && (
+              <Chip
+                size="small"
+                label={`+${hiddenCount}`}
+                sx={{ height: 20, bgcolor: "background.paper" }}
+              />
+            )}
+          </Box>
+        </Box>
+        <Box sx={{ minWidth: 0, flex: featured ? 1 : undefined }}>
+          <Typography variant="body2" noWrap sx={{ mb: 1, fontSize: 14, lineHeight: 1.6 }} title={String(activityLabel)}>
+            {activityLabel}
+          </Typography>
+          <Typography
+            component="h3"
+            variant="h4"
+            noWrap
+            title={article.title}
+            sx={{ fontWeight: 500 }}
+          >
+            {article.title}
+          </Typography>
+          {featured && (
+            <Typography
+              variant="body2"
+              sx={{
+                mt: 1,
+                fontSize: 14,
+                lineHeight: 1.6,
+                display: "-webkit-box",
+                WebkitBoxOrient: "vertical",
+                WebkitLineClamp: 3,
+                overflow: "hidden"
+              }}
+            >
+              {article.description}
+            </Typography>
+          )}
+        </Box>
+      </Card>
+    );
+  }
 
   return (
     <Link to={article.path} style={{ textDecoration: "none", color: "inherit" }}>
@@ -47,9 +178,7 @@ const ArticleCard = ({ article, adminMode, onDeleteClick }: Props) => {
           maxWidth: { md: "360px", sm: "400px" },
           display: "flex",
           flexDirection: "column",
-          height: adminMode
-            ? { lg: "394px", md: "414px", sm: "420px", xs: "530px" }
-            : { lg: "354px", md: "374px", sm: "380px", xs: "485px" },
+          height: { lg: "394px", md: "414px", sm: "420px", xs: "530px" },
           ":hover": {
             boxShadow: theme.shadows[6],
             backgroundColor: theme.palette.action.hover

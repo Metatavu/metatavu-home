@@ -1,16 +1,27 @@
 import SearchOffIcon from "@mui/icons-material/SearchOff";
 import {
   Box,
+  Button,
   Card,
   CircularProgress,
   Grid,
+  IconButton,
+  Menu,
+  MenuItem,
   Pagination,
   type SelectChangeEvent,
+  ToggleButton,
+  ToggleButtonGroup,
   Typography,
   useTheme
 } from "@mui/material";
 import { useAtomValue, useSetAtom } from "jotai";
-import { type SyntheticEvent, useEffect, useId, useState } from "react";
+import { type MouseEvent, type SyntheticEvent, useEffect, useId, useState } from "react";
+import addIcon from "../../../resources/img/wiki/add.svg";
+import filterIcon from "../../../resources/img/wiki/filter.svg";
+import gridIcon from "../../../resources/img/wiki/grid.svg";
+import listIcon from "../../../resources/img/wiki/list.svg";
+import searchIcon from "../../../resources/img/wiki/search.svg";
 import { articleAtom, draftArticleAtom, tagsAtom } from "src/atoms/article";
 import { errorAtom } from "src/atoms/error";
 import type { ArticleMetadata } from "src/generated/homeLambdasClient";
@@ -30,16 +41,11 @@ import SearchBar from "../generics/search-bar";
 import Onboarding from "../onboarding/Onboarding";
 import ArticleCard from "../wiki-documentation/article-card";
 import ArticleListItem from "../wiki-documentation/article-list-item";
-import CarouselArticleCards from "../wiki-documentation/carousel-article-cards";
 import CreateOrEditArticleForm from "../wiki-documentation/create-article-form";
 
-const itemsPerPage = 12;
-
-/**
- * Wiki documentation screen component displaying a list of articles.
- */
 const WikiDocumentationScreen = () => {
   const { adminMode } = useUserRole();
+  const itemsPerPage = adminMode ? 12 : 9;
   const setError = useSetAtom(errorAtom);
   const setArticlesAtom = useSetAtom(articleAtom);
   const setDraftArticlesAtom = useSetAtom(draftArticleAtom);
@@ -56,7 +62,9 @@ const WikiDocumentationScreen = () => {
   const [displayedArticlesOnPage, setDisplayedArticlesOnPage] = useState<ArticleMetadata[]>(
     articles?.slice(0, itemsPerPage) ?? []
   );
-  const [lastUpdatedArticles, setlastUpdatedArticles] = useState<ArticleMetadata[]>([]);
+  const lastUpdatedArticles = sortArticlesByDate(articles ?? []).slice(0, 2);
+  const [filterAnchor, setFilterAnchor] = useState<HTMLElement | null>(null);
+  const filterId = useId();
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [searchInput, setSearchInput] = useState("");
   const [displayOption, setDisplayOption] = useState("all");
@@ -83,7 +91,6 @@ const WikiDocumentationScreen = () => {
           setDisplayedArticles(draftArticles ?? []);
         }
       } else {
-        getLastUpdatedArticles(articles);
         getTags(articles);
         setDisplayedArticles(articles);
       }
@@ -94,12 +101,12 @@ const WikiDocumentationScreen = () => {
     setDisplayedArticlesOnPage(
       displayedArticles.slice((pageNumber - 1) * itemsPerPage, itemsPerPage * pageNumber)
     );
-  }, [pageNumber, displayedArticles]);
+  }, [pageNumber, displayedArticles, itemsPerPage]);
 
   /**
    * Fetches all articles from the API and updates the relevant atoms.
    * If the user is in admin mode, it also fetches draft articles.
-   * Additionally, updates the tag list and retrieves the last updated articles.
+   * Additionally, updates the tag list.
    */
   const getArticles = async () => {
     try {
@@ -107,7 +114,9 @@ const WikiDocumentationScreen = () => {
       setArticlesAtom(fetchedArticles);
 
       if (adminMode) {
-        const fetchedDraftArticles = await articleApi.getArticles({ draft: true });
+        const fetchedDraftArticles = await articleApi.getArticles({
+          draft: true
+        });
         setDraftArticlesAtom(fetchedDraftArticles);
         const allArticles = sortArticlesByDate([
           ...(fetchedArticles ?? []),
@@ -117,7 +126,6 @@ const WikiDocumentationScreen = () => {
         setDisplayedArticlesOnPage(allArticles.slice(0, itemsPerPage));
         getTags(allArticles);
       } else {
-        getLastUpdatedArticles(fetchedArticles);
         setDisplayedArticles(fetchedArticles ?? []);
         setDisplayedArticlesOnPage((fetchedArticles ?? []).slice(0, itemsPerPage));
         getTags(fetchedArticles ?? []);
@@ -131,57 +139,12 @@ const WikiDocumentationScreen = () => {
     }, 1000);
   };
 
-  /**
-   * Extracts unique tags from the provided articles and updates the tags atom.
-   *
-   * @param {ArticleMetadata[]} articles - The list of articles to extract tags from.
-   */
   const getTags = (articles: ArticleMetadata[]) => {
     const allTags = articles.flatMap((article) => article.tags ?? []);
     const uniqueTags = [...new Set(allTags)];
     setTags(uniqueTags);
   };
 
-  /**
-   * Retrieves the most recently created, updated, and read articles from the provided list.
-   * Updates the lastUpdatedArticles state with these selected articles.
-   *
-   * @param {ArticleMetadata[]} articles - The list of articles to process.
-   */
-  const getLastUpdatedArticles = (articles: ArticleMetadata[]) => {
-    let lastCreatedArticleFound = false;
-    let lastUpdatedArticleFound = false;
-    let lastReadArticleFound = false;
-    const lastUpdatedArticles = [];
-    let i = 0;
-    while (
-      (!lastCreatedArticleFound || !lastUpdatedArticleFound || !lastReadArticleFound) &&
-      i < articles.length
-    ) {
-      const lastUpdatedAt = articles[i].lastUpdatedAt?.getTime();
-      const createdAt = articles[i].createdAt?.getTime();
-      const lastReadAt = articles[i].lastReadAt?.getTime();
-      if (!lastCreatedArticleFound && lastUpdatedAt === createdAt) {
-        lastUpdatedArticles.push(articles[i]);
-        lastCreatedArticleFound = true;
-      } else if (!lastReadArticleFound && lastUpdatedAt === lastReadAt) {
-        lastUpdatedArticles.push(articles[i]);
-        lastReadArticleFound = true;
-      } else if (!lastUpdatedArticleFound) {
-        lastUpdatedArticles.push(articles[i]);
-        lastUpdatedArticleFound = true;
-      }
-      i++;
-    }
-    setlastUpdatedArticles(lastUpdatedArticles);
-  };
-
-  /**
-   * Opens the delete confirmation dialog.
-   *
-   * @param {string | undefined} articleId - The ID of the article to be deleted.
-   * @param {string | undefined} articleTitle - The title of the article to be deleted.
-   */
   const handleDeleteDialogOpen = (
     articleId: string | undefined,
     articleTitle: string | undefined
@@ -191,18 +154,9 @@ const WikiDocumentationScreen = () => {
     setDeleteDialogOpen(true);
   };
 
-  /**
-   * Returns a function that opens the delete confirmation dialog for the specified article.
-   *
-   * @param {ArticleMetadata} article - The article for which to get the delete click handler.
-   * @returns A function that opens the delete confirmation dialog when called.
-   */
   const getOnDeleteClick = (article: ArticleMetadata) =>
     article.id ? () => handleDeleteDialogOpen(article.id, article.title) : undefined;
 
-  /**
-   * Handles the confirmation of article deletion.
-   */
   const handleConfirmDelete = () => {
     if (!selectedArticleId) return;
     handleDelete(selectedArticleId);
@@ -210,11 +164,6 @@ const WikiDocumentationScreen = () => {
     setDeleteDialogOpen(false);
   };
 
-  /**
-   * Deletes the specified article by its ID and updates the articles atom.
-   *
-   * @param {string} selectedArticleId - The ID of the article to delete.
-   */
   const handleDelete = async (selectedArticleId: string) => {
     if (!selectedArticleId) return;
     try {
@@ -229,14 +178,6 @@ const WikiDocumentationScreen = () => {
     }
   };
 
-  /**
-   * Handles changes in the search input field.
-   * Filters articles based on the search query and selected tags.
-   *
-   * @param {SyntheticEvent} _event - The input change event containing the search query.
-   * @param {string} value - Search query
-   *
-   */
   const handleSearchInputChange = (_event: SyntheticEvent, value: string) => {
     const newSearchInput = value;
     setSearchInput(newSearchInput ?? "");
@@ -254,16 +195,14 @@ const WikiDocumentationScreen = () => {
         selectedTags.every((tag) => article.tags?.includes(tag))
     );
     setDisplayedArticles(filteredArticles);
+    setPageNumber(1);
   };
 
-  /**
-   * Handles the selection of tags from the autocomplete component.
-   * Filters the articles based on the selected tags and search input.
-   *
-   * @param {string[]} values - The array of selected tag strings.
-   */
-  const handleSelectedTagChange = (values: string) => {
-    setSelectedTags([values]);
+  const handleSelectedTagChange = (tag: string) => {
+    const nextTags = selectedTags.includes(tag)
+      ? selectedTags.filter((value) => value !== tag)
+      : [...selectedTags, tag];
+    setSelectedTags(nextTags);
     const articlesToFilter = getArticlesToFilter(
       adminMode,
       displayOption,
@@ -272,18 +211,13 @@ const WikiDocumentationScreen = () => {
     );
     const filteredArticles = articlesToFilter.filter(
       (article) =>
-        article.title.toLowerCase().includes(searchInput.toLowerCase()) &&
-        [values].every((tag) => article.tags?.includes(tag))
+        article.title.toLowerCase().includes(searchInput.toLowerCase().trim()) &&
+        nextTags.every((value) => article.tags?.includes(value))
     );
     setDisplayedArticles(filteredArticles);
+    setPageNumber(1);
   };
 
-  /**
-   * Handles the change of the display option between all articles and draft articles.
-   * Updates the displayed articles based on the selected option.
-   *
-   * @param {SelectChangeEvent<string>} event - The change event triggered by the select input.
-   */
   const handleDisplayOptionChange = (event: SelectChangeEvent<string>) => {
     const newOption = event.target.value;
     setDisplayOption(newOption);
@@ -305,16 +239,134 @@ const WikiDocumentationScreen = () => {
     setPageNumber(1);
   };
 
-  const renderTitle = (text: string) => (
-    <Typography
-      variant="h3"
+  const renderEmployeeToolbar = () => (
+    <Box
       sx={{
-        marginTop: 4,
-        marginBottom: 1
+        display: "flex",
+        flexWrap: "wrap",
+        alignItems: "center",
+        justifyContent: "space-between",
+        gap: theme.spaces.m,
+        mb: theme.spaces.xl
       }}
     >
-      {text}
-    </Typography>
+      {/* biome-ignore lint/correctness/useUniqueElementIds: Wiki onboarding targets this ID */}
+      <Button
+        id="wiki-create-article-button"
+        variant="contained"
+        disableElevation
+        onClick={() => setFormOpen(true)}
+        sx={{
+          gap: theme.spaces.xs,
+          minHeight: 38,
+          px: theme.spaces.m,
+          py: theme.spaces.s,
+          borderRadius: theme.radius.s,
+          bgcolor: theme.palette.buttons.primary,
+          color: "#222",
+          fontSize: 14,
+          fontWeight: 600,
+          textTransform: "none",
+          lineHeight: 1.6,
+          "&:hover": { bgcolor: theme.palette.buttons.hover }
+        }}
+      >
+        <img src={addIcon} alt="" />
+        {strings.wikiDocumentation.createNew}
+      </Button>
+      <Box
+        sx={{
+          display: "flex",
+          flexWrap: "wrap",
+          alignItems: "center",
+          gap: theme.spaces.l
+        }}
+      >
+        <SearchBar
+          searchInput={searchInput}
+          handleSearchInputChange={handleSearchInputChange}
+          tags={tags}
+          handleSelectedTagChange={handleSelectedTagChange}
+          autoCompleteId={autoCompleteId}
+          placeholder={strings.placeHolder.search}
+          searchIcon={searchIcon}
+          styles={{
+            width: { xs: 180, sm: 240 },
+            mb: 0,
+            "& .MuiAutocomplete-inputRoot": {
+              height: 36,
+              p: "4px 8px",
+              gap: "4px"
+            },
+            "& .MuiAutocomplete-input": { fontSize: 14 }
+          }}
+        />
+        <IconButton
+          aria-label={strings.wikiDocumentation.labelTags}
+          aria-haspopup="menu"
+          aria-controls={filterAnchor ? filterId : undefined}
+          aria-expanded={Boolean(filterAnchor)}
+          disabled={!tags.length}
+          onClick={(event: MouseEvent<HTMLButtonElement>) => setFilterAnchor(event.currentTarget)}
+          sx={{
+            p: theme.spaces.s,
+            borderRadius: theme.radius.s,
+            bgcolor: selectedTags.length
+              ? theme.palette.buttons.accent
+              : theme.palette.buttons.secondaryBg,
+            "&:hover": { bgcolor: theme.palette.buttons.secondaryHover }
+          }}
+        >
+          <img src={filterIcon} alt="" />
+        </IconButton>
+        <Menu
+          id={filterId}
+          anchorEl={filterAnchor}
+          open={Boolean(filterAnchor)}
+          onClose={() => setFilterAnchor(null)}
+        >
+          {tags.map((tag) => (
+            <MenuItem
+              key={tag}
+              role="menuitemcheckbox"
+              aria-checked={selectedTags.includes(tag)}
+              selected={selectedTags.includes(tag)}
+              onClick={() => handleSelectedTagChange(tag)}
+            >
+              {tag}
+            </MenuItem>
+          ))}
+        </Menu>
+        <ToggleButtonGroup
+          exclusive
+          value={listView ? "list" : "grid"}
+          onChange={(_event, view: "list" | "grid" | null) => {
+            if (view) setListView(view === "list");
+          }}
+          sx={{
+            bgcolor: theme.palette.buttons.secondaryBg,
+            borderRadius: theme.radius.s,
+            "& .MuiToggleButtonGroup-grouped": {
+              p: theme.spaces.s,
+              border: 0,
+              borderRadius: theme.radius.s,
+              m: 0,
+              "&.Mui-selected": { bgcolor: theme.palette.buttons.accent },
+              "&:hover, &.Mui-selected:hover": {
+                bgcolor: theme.palette.buttons.secondaryHover
+              }
+            }
+          }}
+        >
+          <ToggleButton value="list" aria-label={strings.wikiDocumentation.listView}>
+            <img src={listIcon} alt="" />
+          </ToggleButton>
+          <ToggleButton value="grid" aria-label={strings.wikiDocumentation.gridView}>
+            <img src={gridIcon} alt="" />
+          </ToggleButton>
+        </ToggleButtonGroup>
+      </Box>
+    </Box>
   );
 
   const renderToolBar = () => (
@@ -347,13 +399,16 @@ const WikiDocumentationScreen = () => {
           handleDisplayOptionChange={handleDisplayOptionChange}
           displayOptions={[
             { value: "all", label: strings.wikiDocumentation.allArticles },
-            { value: "approved", label: strings.wikiDocumentation.approvedArticles },
+            {
+              value: "approved",
+              label: strings.wikiDocumentation.approvedArticles
+            },
             { value: "draft", label: strings.wikiDocumentation.draft }
           ]}
         />
       )}
       <ListViewButton listView={listView} setListView={setListView} />
-      {/* biome-ignore lint/correctness/useUniqueElementIds: keeping static id */}
+      {/* biome-ignore lint/correctness/useUniqueElementIds: Wiki onboarding targets this ID */}
       <CreateButton id="wiki-create-article-button" onClick={() => setFormOpen(true)} />
     </Grid>
   );
@@ -382,27 +437,41 @@ const WikiDocumentationScreen = () => {
           adminMode={adminMode}
         />
       ) : (
-        // biome-ignore lint/correctness/useUniqueElementIds: keeping static id
-        <Box id="wiki-card-title" sx={{ width: "100%" }}>
+        // biome-ignore lint/correctness/useUniqueElementIds: Wiki onboarding targets this ID
+        <Box
+          id="wiki-card-title"
+          sx={adminMode ? { width: "100%" } : { maxWidth: 1100, mx: "auto" }}
+        >
           {!adminMode && (
             <>
-              {renderTitle(strings.wikiDocumentation.cardTitle)}
-              {/* biome-ignore lint/correctness/useUniqueElementIds: keeping static id */}
-              <Box id="wiki-latest-updated-articles">
-                <CarouselArticleCards articles={lastUpdatedArticles} />
-              </Box>
+              <Typography component="h1" variant="h1" align="center" sx={{ mb: theme.spaces.xxl }}>
+                {strings.navigation.wiki}
+              </Typography>
+              {lastUpdatedArticles.length > 0 && (
+                // biome-ignore lint/correctness/useUniqueElementIds: Wiki onboarding targets this ID
+                <Box
+                  component="section"
+                  id="wiki-latest-updated-articles"
+                  sx={{ mb: theme.spaces.xxxl }}
+                >
+                  <Typography component="h2" variant="h4" sx={{ mb: theme.spaces.l }}>
+                    {strings.wikiDocumentation.lastUpdated}
+                  </Typography>
+                  <Grid container spacing={4}>
+                    {lastUpdatedArticles.map((article) => (
+                      <Grid key={article.id ?? article.path} size={{ xs: 12, md: 6 }}>
+                        <ArticleCard article={article} adminMode={false} featured />
+                      </Grid>
+                    ))}
+                  </Grid>
+                </Box>
+              )}
             </>
           )}
-          <Box
-            sx={
-              adminMode
-                ? { marginTop: 4, marginBottom: 4 }
-                : { paddingLeft: 2, paddingRight: 2, marginBottom: 4 }
-            }
-          >
-            {renderToolBar()}
+          <Box sx={adminMode ? { marginTop: 4, marginBottom: 4 } : { marginBottom: 4 }}>
+            {adminMode ? renderToolBar() : renderEmployeeToolbar()}
             {displayedArticlesOnPage.length !== 0 ? (
-              // biome-ignore lint/correctness/useUniqueElementIds: keeping static id
+              // biome-ignore lint/correctness/useUniqueElementIds: Wiki onboarding targets this ID
               <Grid
                 id="wiki-articles-list"
                 container
@@ -415,7 +484,7 @@ const WikiDocumentationScreen = () => {
                   <Grid
                     key={`article-grid-item-${article.id}`}
                     size={{
-                      lg: listView ? 12 : 3,
+                      lg: listView ? 12 : adminMode ? 3 : 4,
                       md: listView ? 12 : 4,
                       sm: listView ? 12 : 6,
                       xs: 12
@@ -459,14 +528,24 @@ const WikiDocumentationScreen = () => {
               }}
             >
               <Pagination
-                size="large"
-                count={Math.floor(displayedArticles?.length / itemsPerPage) + 1}
+                size={adminMode ? "large" : "small"}
+                count={Math.ceil(displayedArticles.length / itemsPerPage)}
+                sx={
+                  adminMode
+                    ? undefined
+                    : {
+                        "& .MuiPaginationItem-root": { fontSize: 14 },
+                        "& .MuiPaginationItem-root.Mui-selected": {
+                          bgcolor: theme.palette.background.selected
+                        }
+                      }
+                }
                 onChange={(_event, page) => setPageNumber(page)}
                 page={pageNumber}
               />
             </Grid>
           )}
-          <BackButton styles={{ marginBottom: 2 }} />
+          {adminMode && <BackButton styles={{ marginBottom: 2 }} />}
         </Box>
       )}
       <DeleteConfirmationDialog

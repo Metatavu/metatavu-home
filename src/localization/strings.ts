@@ -631,6 +631,30 @@ export interface Localized extends LocalizedStringsMethods {
    * Translations related to Wiki Documentation service
    */
   wikiDocumentation: {
+    addCoverImage: string;
+    dropCoverImage: string;
+    browseCoverFiles: string;
+    coverFileTypes: string;
+    coverOr: string;
+    coverLinkLabel: string;
+    coverLinkPlaceholder: string;
+    coverGallery: string;
+    invalidCoverFile: string;
+    coverUploadFailed: string;
+    closeCoverDialog: string;
+    createWikiTitle: string;
+    editWikiTitle: string;
+    submitForReview: string;
+    titlePlaceholder: string;
+    descriptionPlaceholder: string;
+    addTags: string;
+    addImage: string;
+    articleContent: string;
+    contentPlaceholder: string;
+    removeCover: string;
+    createNew: string;
+    listView: string;
+    gridView: string;
     cardTitle: string;
     createdBy: string;
     article: string;

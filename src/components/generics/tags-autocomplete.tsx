@@ -33,6 +33,7 @@ interface TagsAutocompleteProps {
   handleEnter: (event: KeyboardEvent<HTMLInputElement>) => void;
   styles?: SxProps<Theme>;
   size?: "small" | "medium";
+  hideSelectedTags?: boolean;
 }
 
 const CustomPopper = styled((props: PopperProps) => <Popper {...props} placement="bottom" />)({
@@ -55,7 +56,8 @@ const TagsAutocomplete = ({
   handleSelectedTagChange,
   handleEnter,
   styles,
-  size = "medium"
+  size = "medium",
+  hideSelectedTags = false
 }: TagsAutocompleteProps) => {
   return (
     <Autocomplete
@@ -71,6 +73,7 @@ const TagsAutocomplete = ({
       value={selectedTags}
       onInputChange={handleTagChange}
       onChange={handleSelectedTagChange}
+      renderValue={hideSelectedTags ? () => null : undefined}
       renderInput={(params) => (
         <TextField
           {...params}

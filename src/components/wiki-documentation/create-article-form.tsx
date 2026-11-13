@@ -1,28 +1,25 @@
 /** biome-ignore-all lint/correctness/useUniqueElementIds: used for onboarding */
 
-import ClearIcon from "@mui/icons-material/Clear";
-import FileUploadIcon from "@mui/icons-material/FileUpload";
-import ImageIcon from "@mui/icons-material/Image";
 import {
   Box,
   Button,
-  Card,
-  CircularProgress,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
+  Chip,
+  Collapse,
   Grid,
   IconButton,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemText,
-  TextField
+  TextField,
+  Typography,
+  useTheme
 } from "@mui/material";
 import { useAtomValue, useSetAtom } from "jotai";
 import { type ChangeEvent, type KeyboardEvent, type SyntheticEvent, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import addIcon from "../../../resources/img/wiki/editor/add.svg";
+import coverAddIcon from "../../../resources/img/wiki/editor/cover-add.svg";
+import removeCoverIcon from "../../../resources/img/wiki/editor/remove-cover.svg";
+import removeTagIcon from "../../../resources/img/wiki/editor/remove-tag.svg";
+import collapseIcon from "../../../resources/img/wiki/editor/collapse.svg";
+import expandIcon from "../../../resources/img/wiki/editor/expand.svg";
 import { articleAtom, draftArticleAtom, tagsAtom } from "src/atoms/article";
 import { userProfileAtom } from "src/atoms/auth";
 import { errorAtom } from "src/atoms/error";
@@ -32,12 +29,20 @@ import { useLambdasApi } from "src/hooks/use-api";
 import { useSnackbar } from "src/hooks/use-snackbar";
 import strings from "src/localization/strings";
 import { OnboardingScreen } from "src/types/index";
-import { getHttpsUrlFromS3, listMediaFiles, uploadFile } from "src/utils/s3-file-utils";
-import BackButton from "../generics/back-button";
 import TagsAutocomplete from "../generics/tags-autocomplete";
 import Onboarding from "../onboarding/Onboarding";
-import ActionButton from "./action-button";
+import CoverImageDialog from "./cover-image-dialog";
 import RichTextEditorLexical from "./rich-text-editor/rich-text-editor";
+
+const getCoverImageName = (image: string) => {
+  try {
+    const { pathname, hostname } = new URL(image);
+    const name = pathname.split("/").filter(Boolean).pop();
+    return name ? decodeURIComponent(name) : hostname;
+  } catch {
+    return image;
+  }
+};
 
 interface Props {
   handleClose: () => void;
@@ -48,16 +53,8 @@ interface Props {
 }
 
 interface EditorRef {
-  getMarkdownContent: () => string;
+  getMarkdownContent: () => string | undefined;
 }
-/**
- * Form for creating or editing an article.
- *
- * @param action - "create" or "edit" mode (default: "create").
- * @param article - Article data for editing (optional).
- * @param setArticle - Updates article state externally.
- * @param adminMode - Enables admin-specific features (optional).
- */
 const CreateOrEditArticleForm = ({
   handleClose,
   action = "create",
@@ -65,6 +62,12 @@ const CreateOrEditArticleForm = ({
   setArticle,
   adminMode
 }: Props) => {
+  const theme = useTheme();
+  const [showTags, setShowTags] = useState(false);
+  const [showCover, setShowCover] = useState(false);
+  const [showAdvanced, setShowAdvanced] = useState(true);
+  const [customPath, setCustomPath] = useState(action === "edit");
+  const [hasContent, setHasContent] = useState(Boolean(article?.content?.trim()));
   const { articleApi } = useLambdasApi();
   const setError = useSetAtom(errorAtom);
   const setArticlesAtom = useSetAtom(articleAtom);
@@ -77,25 +80,16 @@ const CreateOrEditArticleForm = ({
   const [path, setPath] = useState(article ? article.path : "");
   const [coverImage, setCoverImage] = useState(article ? article.coverImage : "");
   const [description, setDescription] = useState(article ? article.description : "");
-  const [imagePreview, setImagePreview] = useState(false);
   const [selectedTags, setSelectedTags] = useState<string[]>(article ? article.tags || [] : []);
   const [tag, setTag] = useState("");
-  const [mediaFiles, setMediaFiles] = useState<string[]>([]);
-  const [showMediaSelector, setShowMediaSelector] = useState(false);
-  const [loadingMedia, setLoadingMedia] = useState(false);
   const users = useAtomValue(usersAtom);
   const userProfile = useAtomValue(userProfileAtom);
   const loggedInUser = users.find((users: User) => users.id === userProfile?.id);
   const showSnackbar = useSnackbar();
 
-  /**
-   * Handles creating a new article using the editor content and form state.
-   * Sends the article data to the API and updates local state accordingly.
-   * Closes the form on success or sets an error message on failure.
-   */
   const handleCreate = async () => {
-    if (!editorRef.current) return;
     const content = editorRef.current?.getMarkdownContent();
+    if (!isFormValid || !content?.trim()) return;
     const newArticle = {
       path: path,
       title: title,
@@ -185,33 +179,21 @@ const CreateOrEditArticleForm = ({
     }
   };
 
-  const handleTitleChange = (event: any) => {
+  const getDefaultPath = (value: string) =>
+    value.replace(/\s+/g, "_").replace(/[^a-zA-Z0-9\-_]/g, "");
+
+  const handleTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const newInput = event.target.value;
     setTitle(newInput);
-    if (action === "create") {
-      setPath(`${newInput.replace(/\s+/g, "_").replace(/[^a-zA-Z0-9\-_]/g, "")}`);
+    if (!customPath) {
+      setPath(getDefaultPath(newInput));
     }
   };
 
   const handlePathChange = (event: ChangeEvent<HTMLInputElement>) => {
     const newInput = event.target.value;
-    setPath(newInput);
-  };
-
-  const [isUploadingCover, setIsUploadingCover] = useState(false);
-
-  const handleFileChange = async (event: any) => {
-    const file = event.target.files[0];
-    if (file.type?.includes("image/")) {
-      setIsUploadingCover(true);
-      try {
-        const imageUrl = await uploadFile(file, articleApi);
-        setCoverImage(imageUrl || "");
-        setImagePreview(true);
-      } finally {
-        setIsUploadingCover(false);
-      }
-    }
+    setCustomPath(Boolean(newInput.trim()));
+    setPath(newInput || getDefaultPath(title));
   };
 
   const handleDescriptionChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -224,91 +206,6 @@ const CreateOrEditArticleForm = ({
   const handleSelectedTagChange = (_event: SyntheticEvent<Element, Event>, value: string[]) =>
     setSelectedTags(value);
 
-  const handleImageLinkChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const newInput = event.target.value;
-    setCoverImage(newInput);
-  };
-
-  /**
-   * Opens the media selector dialog and fetches the list of available media files from S3.
-   * Shows a snackbar error if the files fail to load.
-   */
-  const handleOpenMediaSelector = async () => {
-    setShowMediaSelector(true);
-    setLoadingMedia(true);
-    try {
-      const files = await listMediaFiles(articleApi);
-      setMediaFiles(files || []);
-    } catch (error) {
-      console.error(strings.wikiDocumentation.errorLoadingMediaFiles, error);
-    } finally {
-      setLoadingMedia(false);
-    }
-  };
-
-  /**
-   * Handles selecting a media file from the S3 media selector dialog.
-   * Converts the S3 file name to an HTTPS URL, sets it as the cover image,
-   * enables the image preview, and closes the media selector dialog.
-   *
-   * @param fileName - The S3 file name of the selected media file.
-   */
-  const handleSelectMediaFile = (fileName: string) => {
-    const httpsUrl = getHttpsUrlFromS3(fileName);
-    setCoverImage(httpsUrl);
-    setImagePreview(true);
-    setShowMediaSelector(false);
-  };
-
-  /**
-   * Renders the content of the media file selector dialog.
-   * Shows a loading spinner while files are being fetched,
-   * a "no files found" message if the list is empty,
-   * or a list of selectable media files.
-   */
-  const renderMediaFiles = () => {
-    if (loadingMedia) {
-      return (
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            p: 3
-          }}
-        >
-          <CircularProgress />
-        </Box>
-      );
-    }
-
-    if (mediaFiles.length === 0) {
-      return (
-        <List>
-          <ListItem>
-            <ListItemText primary={strings.wikiDocumentation.noFilesFound} />
-          </ListItem>
-        </List>
-      );
-    }
-
-    return (
-      <List>
-        {mediaFiles.map((fileName) => (
-          <ListItem key={fileName} disablePadding>
-            <ListItemButton onClick={() => handleSelectMediaFile(fileName)}>
-              <ImageIcon sx={{ mr: 2 }} />
-              <ListItemText primary={fileName} secondary={getHttpsUrlFromS3(fileName)} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-    );
-  };
-  /**
-   * Handles the "Enter" key press in the tag input.
-   * Adds the current tag to the list if it is not empty and not already selected,
-   * then clears the input value.
-   */
   const handleEnter = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key !== "Enter") return;
     if (tag && !selectedTags.includes(tag)) setSelectedTags([...selectedTags, tag]);
@@ -320,216 +217,278 @@ const CreateOrEditArticleForm = ({
       path.trim() &&
       coverImage?.trim() &&
       description?.trim() &&
-      editorRef.current?.getMarkdownContent()?.trim()
+      selectedTags.length &&
+      hasContent
   );
+  const labels = strings.wikiDocumentation;
+  const fieldLabel = { fontWeight: 500, lineHeight: 1.6 };
+  const fieldStyles = {
+    "& .MuiOutlinedInput-root": { borderRadius: theme.radius.s, fontSize: 14 },
+    "& .MuiOutlinedInput-notchedOutline": { borderColor: theme.palette.border.primary }
+  };
+  const buttonStyles = {
+    borderRadius: theme.radius.s,
+    px: theme.spaces.m,
+    py: theme.spaces.s,
+    gap: theme.spaces.xs,
+    fontSize: 14,
+    fontWeight: 600,
+    lineHeight: 1.6,
+    textTransform: "none",
+    color: "#222",
+    "&.Mui-disabled": { bgcolor: theme.palette.buttons.disabledBg }
+  };
+  const addButtonStyles = {
+    ...buttonStyles,
+    borderColor: theme.palette.buttons.primary,
+    color: theme.palette.text.primary
+  };
+
   return (
     <>
       <Onboarding screen={OnboardingScreen.WikiCreate} />
-      <Box id="wiki-create-form-container">
-        <Grid container spacing={1.5} sx={{ marginBottom: 3, marginTop: 0.5 }}>
-          <Grid size={6}>
-            <BackButton onClick={handleClose} styles={{ padding: "6px" }} />
-          </Grid>
-          <Grid size={6}>
-            {action === "create" ? (
-              <ActionButton
-                id="wiki-article-action-button"
-                onClick={handleCreate}
-                disabled={!isFormValid}
-              >
-                {strings.wikiDocumentation.create}
-              </ActionButton>
-            ) : (
-              <ActionButton id="wiki-article-action-button" onClick={handleEdit}>
-                {adminMode && article?.draft
-                  ? strings.wikiDocumentation.confirm
-                  : strings.wikiDocumentation.save}
-              </ActionButton>
-            )}
-          </Grid>
-        </Grid>
-        <Card sx={{ padding: 2.5, overflow: "visible", marginBottom: 4 }}>
-          <TextField
-            id="wiki-article-title-field"
-            sx={{ width: "100%" }}
-            size="small"
-            value={title}
-            onChange={handleTitleChange}
-            label={strings.wikiDocumentation.labelTitle}
-            required
-          />
-          <Grid container spacing={1.5}>
-            <Grid
-              size={{
-                md: 6,
-                xs: 12
-              }}
-            >
-              <TextField
-                id="wiki-article-path-field"
-                sx={{ width: "100%", marginTop: 3 }}
-                size="small"
-                value={path}
-                onChange={handlePathChange}
-                label={strings.wikiDocumentation.labelPath}
-                required
-              />
-            </Grid>
-            <Grid
-              size={{
-                md: 6,
-                xs: 12
-              }}
-            >
-              <TagsAutocomplete
-                tags={tags}
-                tag={tag}
-                selectedTags={selectedTags}
-                handleTagChange={handleTagChange}
-                handleSelectedTagChange={handleSelectedTagChange}
-                handleEnter={handleEnter}
-                size="small"
-                styles={{ marginTop: 3 }}
-              />
-            </Grid>
-          </Grid>
-          <Grid container spacing={1.5}>
-            <Grid
-              size={{
-                md: 6,
-                xs: 12
-              }}
-            >
-              <TextField
-                id="wiki-article-image-field"
-                sx={{ width: "100%", marginTop: 3 }}
-                size="small"
-                value={coverImage}
-                onInput={handleImageLinkChange}
-                label={strings.wikiDocumentation.labelImage}
-                required
-              />
-              {imagePreview && coverImage?.length !== 0 && (
-                <Grid container>
-                  <img
-                    style={{
-                      height: "150px",
-                      borderRadius: "15px",
-                      marginTop: "16px",
-                      marginLeft: 3
-                    }}
-                    src={coverImage}
-                    alt={strings.wikiDocumentation.coverImageAlt}
-                  />
-                  <Grid sx={{ position: "relative" }}>
-                    <IconButton
-                      sx={{
-                        position: "absolute",
-                        top: "50%",
-                        transform: "translateY(-50%)"
-                      }}
-                      onClick={() => {
-                        setCoverImage("");
-                        setImagePreview(false);
-                      }}
-                    >
-                      <ClearIcon />
-                    </IconButton>
-                  </Grid>
-                </Grid>
-              )}
-              {!coverImage && (
-                <>
-                  <Button
-                    variant="outlined"
-                    component="label"
-                    startIcon={
-                      isUploadingCover ? (
-                        <CircularProgress size={16} thickness={4} />
-                      ) : (
-                        <FileUploadIcon />
-                      )
-                    }
-                    sx={{
-                      marginTop: 1.5,
-                      marginBottom: 1,
-                      width: "100%",
-                      pointerEvents: isUploadingCover ? "none" : "auto"
-                    }}
-                  >
-                    {strings.wikiDocumentation.uploadImage}
-                    <input
-                      style={{ width: "100%" }}
-                      type="file"
-                      hidden
-                      onChange={handleFileChange}
-                    />
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    startIcon={<ImageIcon />}
-                    sx={{ marginTop: 0.5, marginBottom: 1, width: "100%" }}
-                    onClick={handleOpenMediaSelector}
-                  >
-                    {strings.wikiDocumentation.selectFromExistingFiles}
-                  </Button>
-                </>
-              )}
-              {coverImage && !imagePreview && (
-                <Button
-                  variant="outlined"
-                  sx={{ marginTop: 1, marginBottom: 1, width: "100%" }}
-                  onClick={() => setImagePreview(true)}
-                >
-                  {strings.wikiDocumentation.imagePreview}
-                </Button>
-              )}
-            </Grid>
-            <Grid
-              size={{
-                md: 6,
-                xs: 12
-              }}
-            >
-              <TextField
-                id="wiki-article-description-field"
-                sx={{ width: "100%", marginTop: 3 }}
-                size="small"
-                multiline
-                rows={3}
-                value={description}
-                onInput={handleDescriptionChange}
-                label={strings.wikiDocumentation.labelDescription}
-                required
-              />
-            </Grid>
-          </Grid>
+      <Box id="wiki-create-form-container" sx={{ maxWidth: 1100, mx: "auto", pb: theme.spaces.s }}>
+        <Typography component="h1" variant="h2" sx={{ mb: theme.spaces.l }}>
+          {action === "create" ? labels.createWikiTitle : labels.editWikiTitle}
+        </Typography>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "flex-end",
+            flexWrap: "wrap",
+            gap: theme.spaces.l,
+            mb: theme.spaces.l
+          }}
+        >
+          <Button
+            onClick={handleClose}
+            sx={{
+              ...buttonStyles,
+              bgcolor: theme.palette.buttons.secondaryBg,
+              "&:hover": { bgcolor: theme.palette.buttons.secondaryHover }
+            }}
+          >
+            {labels.cancel}
+          </Button>
+          <Button
+            id="wiki-article-action-button"
+            onClick={action === "create" ? handleCreate : handleEdit}
+            disabled={action === "create" && !isFormValid}
+            disableElevation
+            variant="contained"
+            sx={{
+              ...buttonStyles,
+              bgcolor: theme.palette.buttons.primary,
+              "&:hover": { bgcolor: theme.palette.buttons.hover }
+            }}
+          >
+            {action === "create"
+              ? adminMode
+                ? strings.form.create
+                : labels.submitForReview
+              : adminMode && article?.draft
+                ? labels.confirm
+                : labels.save}
+          </Button>
+        </Box>
 
-          <Box id="wiki-article-content-editor">
-            <RichTextEditorLexical
-              ref={editorRef}
-              markdownContent={article?.content || strings.wikiDocumentation.articleContentRequired}
+        <Box sx={{ display: "grid", gap: theme.spaces.l }}>
+          <Box>
+            <Typography component="label" htmlFor="wiki-article-title-field" sx={fieldLabel}>
+              {labels.labelTitle} *
+            </Typography>
+            <TextField
+              id="wiki-article-title-field"
+              value={title}
+              onChange={handleTitleChange}
+              placeholder={labels.titlePlaceholder}
+              fullWidth
+              size="small"
+              required
+              sx={{ ...fieldStyles, mt: theme.spaces.xs }}
             />
           </Box>
-        </Card>
+          <Box>
+            <Typography component="label" htmlFor="wiki-article-description-field" sx={fieldLabel}>
+              {labels.labelDescription} *
+            </Typography>
+            <TextField
+              id="wiki-article-description-field"
+              value={description}
+              onChange={handleDescriptionChange}
+              placeholder={labels.descriptionPlaceholder}
+              fullWidth
+              size="small"
+              multiline
+              rows={3}
+              required
+              sx={{ ...fieldStyles, mt: theme.spaces.xs }}
+            />
+          </Box>
+
+          <Grid container columnSpacing={{ xs: 0, md: 12 }} rowSpacing={3}>
+            <Grid size={{ xs: 12, md: 6 }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "flex-start",
+                  gap: 1
+                }}
+              >
+                <Typography sx={{ ...fieldLabel, pt: theme.spaces.s }}>
+                  {labels.labelTags} *
+                </Typography>
+                <Button
+                  id="wiki-article-tags-field"
+                  variant="outlined"
+                  aria-expanded={showTags}
+                  onClick={() => setShowTags(!showTags)}
+                  sx={addButtonStyles}
+                >
+                  <img src={addIcon} alt="" />
+                  {labels.addTags}
+                </Button>
+              </Box>
+              {selectedTags.length > 0 && (
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    gap: theme.spaces.s,
+                    maxWidth: 262,
+                    mt: theme.spaces.xs
+                  }}
+                >
+                  {selectedTags.map((value) => (
+                    <Chip
+                      key={value}
+                      label={value}
+                      title={value}
+                      onDelete={() =>
+                        setSelectedTags((current) => current.filter((item) => item !== value))
+                      }
+                      deleteIcon={<img src={removeTagIcon} alt="" />}
+                      sx={{
+                        maxWidth: "100%",
+                        height: 26,
+                        borderRadius: theme.radius.m,
+                        bgcolor: "#cce0e5",
+                        color: theme.palette.text.accentSecondary,
+                        fontSize: 14,
+                        fontWeight: 500,
+                        "& .MuiChip-label": { px: theme.spaces.s },
+                        "& .MuiChip-deleteIcon": { m: 0, mr: theme.spaces.s, flexShrink: 0 }
+                      }}
+                    />
+                  ))}
+                </Box>
+              )}
+              {showTags && (
+                <TagsAutocomplete
+                  tags={tags}
+                  tag={tag}
+                  selectedTags={selectedTags}
+                  handleTagChange={handleTagChange}
+                  handleSelectedTagChange={handleSelectedTagChange}
+                  handleEnter={handleEnter}
+                  hideSelectedTags
+                  size="small"
+                  styles={{ ...fieldStyles, mt: theme.spaces.m }}
+                />
+              )}
+            </Grid>
+            <Grid size={{ xs: 12, md: 6 }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "flex-start",
+                  gap: 1
+                }}
+              >
+                <Typography sx={{ ...fieldLabel, pt: theme.spaces.s }}>
+                  {labels.coverImageAlt} *
+                </Typography>
+                <Button
+                  id="wiki-article-image-field"
+                  variant="outlined"
+                  aria-haspopup="dialog"
+                  onClick={() => setShowCover(true)}
+                  sx={addButtonStyles}
+                >
+                  <img src={coverAddIcon} alt="" />
+                  {labels.addImage}
+                </Button>
+              </Box>
+              {coverImage && (
+                <Box sx={{ display: "flex", alignItems: "center", gap: theme.spaces.s }}>
+                  <Typography noWrap title={coverImage} sx={{ fontSize: 14 }}>
+                    {getCoverImageName(coverImage)}
+                  </Typography>
+                  <IconButton
+                    aria-label={labels.removeCover}
+                    onClick={() => setCoverImage("")}
+                    size="small"
+                    sx={{ p: theme.spaces.xs }}
+                  >
+                    <img src={removeCoverIcon} alt="" />
+                  </IconButton>
+                </Box>
+              )}
+            </Grid>
+          </Grid>
+
+          <Box>
+            <Button
+              aria-expanded={showAdvanced}
+              aria-controls="wiki-advanced-options"
+              onClick={() => setShowAdvanced(!showAdvanced)}
+              sx={{ ...buttonStyles, px: 0, color: "text.primary", fontWeight: 500 }}
+            >
+              <img src={showAdvanced ? collapseIcon : expandIcon} alt="" />
+              {strings.form.advancedOptions}
+            </Button>
+            <Collapse in={showAdvanced} id="wiki-advanced-options">
+              <Box sx={{ mt: theme.spaces.m }}>
+                <Typography component="label" htmlFor="wiki-article-path-field" sx={fieldLabel}>
+                  {labels.labelPath}
+                </Typography>
+                <TextField
+                  id="wiki-article-path-field"
+                  value={customPath ? path : ""}
+                  onChange={handlePathChange}
+                  fullWidth
+                  size="small"
+                  sx={{ ...fieldStyles, mt: theme.spaces.xs }}
+                />
+              </Box>
+            </Collapse>
+          </Box>
+
+          <Box id="wiki-article-content-editor" sx={{ mt: theme.spaces.m }}>
+            <Typography id="wiki-article-content-label" sx={{ ...fieldLabel, mb: theme.spaces.m }}>
+              {labels.articleContent} *
+            </Typography>
+            <RichTextEditorLexical
+              ref={editorRef}
+              markdownContent={article?.content ?? ""}
+              onContentChange={setHasContent}
+            />
+          </Box>
+        </Box>
       </Box>
 
-      {/* Media File Selector Dialog */}
-      <Dialog
-        open={showMediaSelector}
-        onClose={() => setShowMediaSelector(false)}
-        maxWidth="sm"
-        fullWidth
-        disableRestoreFocus
-      >
-        <DialogTitle>{strings.wikiDocumentation.selectImageFromS3}</DialogTitle>
-        <DialogContent>{renderMediaFiles()}</DialogContent>
-        <DialogActions>
-          <Button onClick={() => setShowMediaSelector(false)}>
-            {strings.wikiDocumentation.cancel}
-          </Button>
-        </DialogActions>
-      </Dialog>
+      {showCover && (
+        <CoverImageDialog
+          currentImage={coverImage ?? ""}
+          onClose={() => setShowCover(false)}
+          onSave={(image) => {
+            setCoverImage(image);
+            setShowCover(false);
+          }}
+        />
+      )}
     </>
   );
 };

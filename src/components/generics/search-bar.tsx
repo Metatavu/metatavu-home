@@ -48,17 +48,9 @@ interface SearchBarProps {
   styles?: SxProps<Theme>;
   placeholder?: string;
   selectedTags?: string[];
+  searchIcon?: string;
 }
 
-/**
- * Generic search bar component with autocomplete and tag selection.
- *
- * Renders a card-based search interface with MUI Autocomplete, supporting both input text search
- * and multiple tag selection via checkboxes.
- *
- * @param props - SearchBarProps configuration object
- * @returns JSX.Element containing the search bar Card
- */
 const SearchBar = ({
   searchInput,
   handleSearchInputChange,
@@ -68,6 +60,7 @@ const SearchBar = ({
   styles,
   placeholder,
   selectedTags,
+  searchIcon,
 }: SearchBarProps): JSX.Element => {
   const theme = useTheme();
 
@@ -80,7 +73,7 @@ const SearchBar = ({
         backgroundColor: theme.palette.background.paper,
       }}
     >
-      {/* biome-ignore lint/correctness/useUniqueElementIds: keeping static id */}
+      {/* biome-ignore lint/correctness/useUniqueElementIds: Wiki onboarding targets this ID */}
       <Card
         id="wiki-article-search-bar"
         sx={{
@@ -146,7 +139,7 @@ const SearchBar = ({
                   endAdornment: null,
                   startAdornment: (
                     <>
-                      <Search />
+                      {searchIcon ? <img src={searchIcon} alt="" /> : <Search />}
                       {params.slotProps?.input?.startAdornment}
                     </>
                   ),
