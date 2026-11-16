@@ -6,6 +6,8 @@ import {
   CardContent,
   CircularProgress,
   Container,
+  Menu,
+  MenuItem,
   Paper,
   Table,
   TableBody,
@@ -13,24 +15,101 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TableSortLabel,
   Typography,
   useTheme
 } from "@mui/material";
+import KeyboardArrowDown from "@mui/icons-material/KeyboardArrowDown";
 import FilterListIcon from "@mui/icons-material/FilterList";
+import AppOverlay from "src/components/generics/appOverlay";
+import AppCheckbox from "src/components/generics/appCheckbox";
+import AppButton from "src/components/generics/buttons/app-button";
+
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { useSetAtom } from "jotai";
 import { DateTime } from "luxon";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { errorAtom } from "src/atoms/error";
 import type { UserFlextime } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
-import BackButton from "../generics/back-button";
+
+type StatusFilter = "all" | "active" | "inactive";
+type SortKey = "name" | "totalBalance" | "monthBalance";
+type SortDirection = "asc" | "desc";
 
 const EmployeeFlextimeScreen = () => {
   const { resourceAllocationsApi } = useLambdasApi();
   const [usersFlextime, setUsersFlextime] = useState<UserFlextime[]>([]);
   const [loading, setLoading] = useState(false);
+
+  const [openFilter, setOpenFilter] = useState(false);
+  const [dropdown, setDropdown] = useState<string[]>(["Status"]);
+
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
+  const [chosenStatusFilters, setChosenStatusFilters] =
+    useState<StatusFilter[]>(["all"]);
+
+  const handleDropdown = (category: string) => {
+  setDropdown((previous) =>
+    previous.includes(category)
+      ? previous.filter((item) => item !== category)
+      : [...previous, category]
+  );
+  };
+
+  const handleStatusFilterChange = (filter: StatusFilter) => {
+    setChosenStatusFilters((previous) => {
+      if (filter === "all") {
+        return ["all", "active", "inactive"];
+      }
+
+      const updated = previous.includes(filter)
+        ? previous.filter((item) => item !== filter)
+        : [...previous.filter((item) => item !== "all"), filter];
+
+      const hasBothStatuses =
+        updated.includes("active") && updated.includes("inactive");
+
+      return hasBothStatuses
+        ? ["all", "active", "inactive"]
+        : updated.length === 0
+          ? []
+          : updated;
+    });
+  };
+
+  const handleClearFilters = () => {
+    setChosenStatusFilters(["all"]);
+  };
+
+  const handleApplyFilters = () => {
+    if (
+      chosenStatusFilters.includes("all") ||
+      (chosenStatusFilters.includes("active") &&
+        chosenStatusFilters.includes("inactive")) ||
+      chosenStatusFilters.length === 0
+    ) {
+      setStatusFilter("all");
+    } else {
+      setStatusFilter(chosenStatusFilters[0]);
+    }
+
+    setOpenFilter(false);
+  };
+
+  const handleCancel = () => {
+    setChosenStatusFilters(
+      statusFilter === "all" ? ["all"] : [statusFilter]
+    );
+    setOpenFilter(false);
+  };
+
+  const [statusAnchor, setStatusAnchor] = useState<null | HTMLElement>(null);
+
+  const [sortKey, setSortKey] = useState<SortKey>("name");
+  const [sortDirection, setSortDirection] =
+    useState<SortDirection>("asc");
 
   const setError = useSetAtom(errorAtom);
   const theme = useTheme();
@@ -62,7 +141,9 @@ const EmployeeFlextimeScreen = () => {
     }
   };
 
-  const formatFlextimeHours = (hours: number | null | undefined): string => {
+  const formatFlextimeHours = (
+    hours: number | null | undefined
+  ): string => {
     if (hours === null || hours === undefined) {
       return strings.employeeFlextime.notAvailable;
     }
@@ -71,7 +152,9 @@ const EmployeeFlextimeScreen = () => {
     return `${sign}${hours.toFixed(2)}h`;
   };
 
-  const getFlextimeColor = (hours: number | null | undefined): string => {
+  const getFlextimeColor = (
+    hours: number | null | undefined
+  ): string => {
     if (hours === null || hours === undefined) {
       return theme.palette.text.secondary;
     }
@@ -81,16 +164,111 @@ const EmployeeFlextimeScreen = () => {
       : theme.palette.error.main;
   };
 
+  const getInitials = (
+    firstName?: string,
+    lastName?: string
+  ): string => {
+    return `${firstName?.charAt(0) ?? ""}${lastName?.charAt(0) ?? ""}`
+      .toUpperCase();
+  };
+
   const totalBalance = usersFlextime.reduce(
     (sum, user) =>
       sum + (user.flextime?.totalFlextimeBalance ?? 0),
     0
   );
 
-  const getInitials = (firstName?: string, lastName?: string): string => {
-    return `${firstName?.charAt(0) ?? ""}${lastName?.charAt(0) ?? ""}`
-      .toUpperCase();
+  const filteredAndSortedUsers = useMemo(() => {
+    const filteredUsers = usersFlextime.filter((userData) => {
+      const isActive = Boolean(userData.user.attributes?.isActive);
+
+      if (statusFilter === "active") {
+        return isActive;
+      }
+
+      if (statusFilter === "inactive") {
+        return !isActive;
+      }
+
+      return true;
+    });
+
+    return [...filteredUsers].sort((a, b) => {
+      let comparison = 0;
+
+      switch (sortKey) {
+        case "name": {
+          const nameA =
+            `${a.user.lastName ?? ""} ${a.user.firstName ?? ""}`;
+          const nameB =
+            `${b.user.lastName ?? ""} ${b.user.firstName ?? ""}`;
+
+          comparison = nameA.localeCompare(nameB);
+          break;
+        }
+
+        case "totalBalance": {
+          const balanceA =
+            a.flextime?.totalFlextimeBalance ?? 0;
+          const balanceB =
+            b.flextime?.totalFlextimeBalance ?? 0;
+
+          comparison = balanceA - balanceB;
+          break;
+        }
+
+        case "monthBalance": {
+          const balanceA =
+            a.flextime?.monthFlextimeBalance ?? 0;
+          const balanceB =
+            b.flextime?.monthFlextimeBalance ?? 0;
+
+          comparison = balanceA - balanceB;
+          break;
+        }
+      }
+
+      return sortDirection === "asc" ? comparison : -comparison;
+    });
+  }, [usersFlextime, statusFilter, sortKey, sortDirection]);
+
+  const handleSort = (key: SortKey) => {
+    if (sortKey === key) {
+      setSortDirection((previous) =>
+        previous === "asc" ? "desc" : "asc"
+      );
+    } else {
+      setSortKey(key);
+      setSortDirection("asc");
+    }
   };
+
+  const handleStatusMenuClose = () => {
+    setStatusAnchor(null);
+  };
+
+  const renderSortLabel = (
+    label: string,
+    key: SortKey,
+    align: "left" | "right" = "left"
+  ) => (
+    <TableSortLabel
+      active={sortKey === key}
+      direction={sortKey === key ? sortDirection : "asc"}
+      onClick={() => handleSort(key)}
+      sx={{
+        color: "#333 !important",
+        fontSize: 13,
+        fontWeight: 600,
+        justifyContent: align === "right" ? "flex-end" : "flex-start",
+        "& .MuiTableSortLabel-icon": {
+          color: "#333 !important"
+        }
+      }}
+    >
+      {label}
+    </TableSortLabel>
+  );
 
   if (loading) {
     return (
@@ -240,7 +418,116 @@ const EmployeeFlextimeScreen = () => {
         </Paper>
       ) : (
         <>
-          {/* Filter button - visual only in phase 1 */}
+          {/* Status filter */}
+      <AppOverlay
+        open={openFilter}
+        onClose={handleCancel}
+        title="Filters"
+      >
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            width: { xs: "100%", sm: 470 },
+            maxWidth: "100%"
+          }}
+        >
+          {/* Status category */}
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column"
+            }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                flexDirection: "row",
+                cursor: "pointer"
+              }}
+              onClick={() => handleDropdown("Status")}
+            >
+              <KeyboardArrowDown
+                sx={{
+                  rotate: dropdown.includes("Status")
+                    ? "180deg"
+                    : "none"
+                }}
+              />
+
+              <Typography
+                variant="body1"
+                sx={{ fontWeight: 500 }}
+              >
+                Status
+              </Typography>
+            </Box>
+
+            {dropdown.includes("Status") && (
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                pl: 2
+              }}
+            >
+              <AppCheckbox
+                checked={chosenStatusFilters.includes("all")}
+                label="All"
+                disabled={false}
+                onChange={() => handleStatusFilterChange("all")}
+                ariaLabel="All employees"
+              />
+
+              <AppCheckbox
+                checked={chosenStatusFilters.includes("active")}
+                label={strings.employeeFlextime.active}
+                disabled={false}
+                onChange={() => handleStatusFilterChange("active")}
+                ariaLabel="Active employees"
+              />
+
+              <AppCheckbox
+                checked={chosenStatusFilters.includes("inactive")}
+                label={strings.employeeFlextime.inactive}
+                disabled={false}
+                onChange={() => handleStatusFilterChange("inactive")}
+                ariaLabel="Inactive employees"
+              />
+            </Box>
+            )}
+          </Box>
+
+              {/* Actions */}
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  mt: 2
+                }}
+              >
+                <AppButton
+                  variant="secondary"
+                  text="Clear all"
+                  onClick={handleClearFilters}
+                  sx={{
+                    width: "max-content"
+                  }}
+                />
+
+                <AppButton
+                  variant="primary"
+                  text="Apply"
+                  onClick={handleApplyFilters}
+                  sx={{
+                    width: "max-content"
+                  }}
+                />
+              </Box>
+            </Box>
+          </AppOverlay>
+
           <Box
             sx={{
               display: "flex",
@@ -253,6 +540,8 @@ const EmployeeFlextimeScreen = () => {
               variant="contained"
               disableElevation
               startIcon={<FilterListIcon />}
+              onClick={() => setOpenFilter(true)}
+              disabled={openFilter}
               sx={{
                 minWidth: 42,
                 width: 42,
@@ -309,7 +598,10 @@ const EmployeeFlextimeScreen = () => {
                   }}
                 >
                   <TableCell>
-                    {strings.employeeFlextime.employee}
+                    {renderSortLabel(
+                      strings.employeeFlextime.employee,
+                      "name"
+                    )}
                   </TableCell>
 
                   <TableCell>
@@ -317,11 +609,19 @@ const EmployeeFlextimeScreen = () => {
                   </TableCell>
 
                   <TableCell align="right">
-                    {strings.employeeFlextime.totalFlextimeBalance}
+                    {renderSortLabel(
+                      strings.employeeFlextime.totalFlextimeBalance,
+                      "totalBalance",
+                      "right"
+                    )}
                   </TableCell>
 
                   <TableCell align="right">
-                    {strings.employeeFlextime.currentMonthBalance}
+                    {renderSortLabel(
+                      strings.employeeFlextime.currentMonthBalance,
+                      "monthBalance",
+                      "right"
+                    )}
                   </TableCell>
 
                   <TableCell align="center">
@@ -331,20 +631,28 @@ const EmployeeFlextimeScreen = () => {
               </TableHead>
 
               <TableBody>
-                {[...usersFlextime]
-                  .sort((a, b) =>
-                    `${a.user.lastName} ${a.user.firstName}`.localeCompare(
-                      `${b.user.lastName} ${b.user.firstName}`
-                    )
-                  )
-                  .map((userData, index) => {
-                    const isActive =
-                      Boolean(userData.user.attributes?.isActive);
+                {filteredAndSortedUsers.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={5} align="center">
+                      <Typography
+                        color="text.secondary"
+                        sx={{ py: 3 }}
+                      >
+                        No employees found for this filter.
+                      </Typography>
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  filteredAndSortedUsers.map((userData, index) => {
+                    const isActive = Boolean(
+                      userData.user.attributes?.isActive
+                    );
 
                     return (
                       <TableRow
                         key={
-                          userData.user.attributes?.severaUserId || index
+                          userData.user.attributes?.severaUserId ||
+                          index
                         }
                         hover
                         sx={{
@@ -443,13 +751,16 @@ const EmployeeFlextimeScreen = () => {
                           </Typography>
                         </TableCell>
 
-                        {/* Status - visual only in phase 1 */}
+                        {/* Status dropdown - temporary, no status changes */}
                         <TableCell align="center">
                           <Button
                             type="button"
                             variant="outlined"
                             size="small"
                             endIcon={<KeyboardArrowDownIcon />}
+                            onClick={(event) =>
+                              setStatusAnchor(event.currentTarget)
+                            }
                             sx={{
                               minWidth: 95,
                               height: 29,
@@ -475,17 +786,34 @@ const EmployeeFlextimeScreen = () => {
                               ? strings.employeeFlextime.active
                               : strings.employeeFlextime.inactive}
                           </Button>
+
+                          <Menu
+                            anchorEl={statusAnchor}
+                            open={Boolean(statusAnchor)}
+                            onClose={handleStatusMenuClose}
+                          >
+                            <MenuItem
+                              onClick={handleStatusMenuClose}
+                            >
+                              {strings.employeeFlextime.active}
+                            </MenuItem>
+
+                            <MenuItem
+                              onClick={handleStatusMenuClose}
+                            >
+                              {strings.employeeFlextime.inactive}
+                            </MenuItem>
+                          </Menu>
                         </TableCell>
                       </TableRow>
                     );
-                  })} 
+                  })
+                )}
               </TableBody>
             </Table>
           </TableContainer>
         </>
       )}
-
-      <BackButton styles={{ mt: 3, mb: 2 }} />
     </Container>
   );
 };
