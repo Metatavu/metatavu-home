@@ -1,8 +1,9 @@
 import {
+  Avatar,
   Box,
+  Button,
   Card,
   CardContent,
-  Chip,
   CircularProgress,
   Container,
   Paper,
@@ -15,6 +16,8 @@ import {
   Typography,
   useTheme
 } from "@mui/material";
+import FilterListIcon from "@mui/icons-material/FilterList";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { useSetAtom } from "jotai";
 import { DateTime } from "luxon";
 import { useEffect, useState } from "react";
@@ -24,24 +27,20 @@ import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
 import BackButton from "../generics/back-button";
 
-/**
- * Full-screen view for displaying flextime data for all employees.
- */
 const EmployeeFlextimeScreen = () => {
   const { resourceAllocationsApi } = useLambdasApi();
   const [usersFlextime, setUsersFlextime] = useState<UserFlextime[]>([]);
   const [loading, setLoading] = useState(false);
+
   const setError = useSetAtom(errorAtom);
-  const currentDate = DateTime.now().toLocaleString(DateTime.DATE_FULL);
   const theme = useTheme();
+
+  const currentDate = DateTime.now().toLocaleString(DateTime.DATE_SHORT);
 
   useEffect(() => {
     loadFlextimeData();
   }, []);
 
-  /**
-   * Loads flextime data from the backend and handles loading/error state.
-   */
   const loadFlextimeData = async () => {
     if (!resourceAllocationsApi) {
       setError(strings.error.fetchFailedFlextime);
@@ -55,39 +54,42 @@ const EmployeeFlextimeScreen = () => {
       setUsersFlextime(data);
     } catch (error: any) {
       const errorMessage = await error?.response?.json();
-      setError(`${strings.error.fetchFailedFlextime}: ${errorMessage?.message || error}`);
+      setError(
+        `${strings.error.fetchFailedFlextime}: ${errorMessage?.message || error}`
+      );
     } finally {
       setLoading(false);
     }
   };
 
-  /**
-   * Formats a flextime balance in hours with appropriate sign.
-   * @param hours - The number of hours.
-   * @returns A string representation of the formatted balance.
-   */
   const formatFlextimeHours = (hours: number | null | undefined): string => {
-    if (hours === null || hours === undefined) return strings.employeeFlextime.notAvailable;
+    if (hours === null || hours === undefined) {
+      return strings.employeeFlextime.notAvailable;
+    }
+
     const sign = hours >= 0 ? "+" : "";
     return `${sign}${hours.toFixed(2)}h`;
   };
 
-  /**
-   * Determines the color to use for a flextime balance value.
-   * @param hours - The flextime balance.
-   * @returns A string hex color.
-   */
   const getFlextimeColor = (hours: number | null | undefined): string => {
-    if (hours === null || hours === undefined) return theme.palette.text.secondary;
-    return hours >= 0 ? theme.palette.success.main : theme.palette.error.main;
+    if (hours === null || hours === undefined) {
+      return theme.palette.text.secondary;
+    }
+
+    return hours >= 0
+      ? theme.palette.success.dark
+      : theme.palette.error.main;
   };
 
-  /**
-   * Calculates the total flextime balance of all users.
-   * @returns The numeric total balance.
-   */
-  const getTotalBalance = (): number => {
-    return usersFlextime.reduce((sum, user) => sum + (user.flextime?.totalFlextimeBalance || 0), 0);
+  const totalBalance = usersFlextime.reduce(
+    (sum, user) =>
+      sum + (user.flextime?.totalFlextimeBalance ?? 0),
+    0
+  );
+
+  const getInitials = (firstName?: string, lastName?: string): string => {
+    return `${firstName?.charAt(0) ?? ""}${lastName?.charAt(0) ?? ""}`
+      .toUpperCase();
   };
 
   if (loading) {
@@ -100,236 +102,389 @@ const EmployeeFlextimeScreen = () => {
         }}
       >
         <Box sx={{ textAlign: "center" }}>
-          <Typography>{strings.employeeFlextime.loading}</Typography>
-          <CircularProgress
-            sx={{
-              scale: "150%",
-              mt: "5%",
-              mb: "5%"
-            }}
-          />
+          <Typography>
+            {strings.employeeFlextime.loading}
+          </Typography>
+          <CircularProgress sx={{ mt: 2 }} />
         </Box>
       </Card>
     );
   }
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+    <Container
+      maxWidth="xl"
+      sx={{
+        mt: 5,
+        mb: 4,
+        px: { xs: 2, md: 4 }
+      }}
+    >
+      {/* Page title */}
       <Box
         sx={{
-          mb: 4
+          textAlign: "center",
+          mb: 3
         }}
       >
         <Typography
-          variant="h3"
+          variant="h4"
           component="h1"
-          gutterBottom
           sx={{
-            fontWeight: "bold"
+            fontWeight: 700,
+            color: theme.palette.text.primary
           }}
         >
-          {strings.employeeFlextime.title}
-        </Typography>
-        <Typography variant="h6" color="textSecondary" gutterBottom>
-          {strings.employeeFlextime.subtitle}
-        </Typography>
-        <Typography variant="body2" color="textSecondary">
-          {strings.employeeFlextime.lastUpdated.replace("{0}", currentDate)}
+          Employee balance
         </Typography>
       </Box>
+
+      {/* Summary cards */}
       <Box
         sx={{
-          mb: 4,
           display: "flex",
-          gap: 2
+          justifyContent: "center",
+          gap: 3,
+          mb: 2,
+          flexWrap: "wrap"
         }}
       >
-        <Card sx={{ minWidth: 200 }}>
-          <CardContent>
-            <Typography variant="h6" color="primary">
+        <Card
+          elevation={0}
+          sx={{
+            width: { xs: "100%", sm: 255 },
+            backgroundColor: "#e4eff3",
+            borderRadius: 2
+          }}
+        >
+          <CardContent
+            sx={{
+              textAlign: "center",
+              py: 1.5,
+              "&:last-child": { pb: 1.5 }
+            }}
+          >
+            <Typography variant="body2">
               {strings.employeeFlextime.totalEmployees}
             </Typography>
+
             <Typography
-              variant="h4"
-              sx={{
-                fontWeight: "bold"
-              }}
+              variant="h6"
+              sx={{ fontWeight: 700, mt: 0.5 }}
             >
               {usersFlextime.length}
             </Typography>
           </CardContent>
         </Card>
-        <Card sx={{ minWidth: 200 }}>
-          <CardContent>
-            <Typography variant="h6" color="primary">
+
+        <Card
+          elevation={0}
+          sx={{
+            width: { xs: "100%", sm: 255 },
+            backgroundColor: "#e4eff3",
+            borderRadius: 2
+          }}
+        >
+          <CardContent
+            sx={{
+              textAlign: "center",
+              py: 1.5,
+              "&:last-child": { pb: 1.5 }
+            }}
+          >
+            <Typography variant="body2">
               {strings.employeeFlextime.combinedBalance}
             </Typography>
+
             <Typography
-              variant="h4"
+              variant="h6"
               sx={{
-                fontWeight: "bold",
-                color: getFlextimeColor(getTotalBalance())
+                fontWeight: 700,
+                mt: 0.5,
+                color: getFlextimeColor(totalBalance)
               }}
             >
-              {formatFlextimeHours(getTotalBalance())}
+              {formatFlextimeHours(totalBalance)}
             </Typography>
           </CardContent>
         </Card>
       </Box>
+
+      {/* Last updated */}
+      <Typography
+        variant="caption"
+        sx={{
+          display: "block",
+          textAlign: "center",
+          mb: 3,
+          color: theme.palette.text.secondary
+        }}
+      >
+        {strings.employeeFlextime.lastUpdated.replace(
+          "{0}",
+          currentDate
+        )}
+      </Typography>
+
       {usersFlextime.length === 0 ? (
-        <Card>
-          <CardContent>
-            <Typography
-              variant="h6"
-              color="textSecondary"
+        <Paper
+          elevation={0}
+          sx={{
+            p: 4,
+            textAlign: "center"
+          }}
+        >
+          <Typography color="text.secondary">
+            {strings.employeeFlextime.noDataFound}
+          </Typography>
+        </Paper>
+      ) : (
+        <>
+          {/* Filter button - visual only in phase 1 */}
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "flex-end",
+              mb: 1.5
+            }}
+          >
+            <Button
+              type="button"
+              variant="contained"
+              disableElevation
+              startIcon={<FilterListIcon />}
               sx={{
-                textAlign: "center"
+                minWidth: 42,
+                width: 42,
+                height: 42,
+                backgroundColor: "#f9e5d9",
+                color: "#333",
+                borderRadius: 2,
+                "&:hover": {
+                  backgroundColor: "#f2d6c5"
+                },
+                "& .MuiButton-startIcon": {
+                  margin: 0
+                }
+              }}
+              aria-label="Filter employees by status"
+            />
+          </Box>
+
+          {/* Employee table */}
+          <TableContainer
+            component={Paper}
+            elevation={0}
+            sx={{
+              backgroundColor: "transparent",
+              overflowX: "auto"
+            }}
+          >
+            <Table
+              sx={{
+                minWidth: 750,
+                borderCollapse: "separate",
+                borderSpacing: "0 0"
               }}
             >
-              {strings.employeeFlextime.noDataFound}
-            </Typography>
-          </CardContent>
-        </Card>
-      ) : (
-        <TableContainer component={Paper} elevation={2}>
-          <Table>
-            <TableHead>
-              <TableRow sx={{ backgroundColor: theme.palette.action.selected }}>
-                <TableCell>
-                  <Typography
-                    variant="h6"
-                    sx={{
-                      fontWeight: "bold"
-                    }}
-                  >
+              <TableHead>
+                <TableRow
+                  sx={{
+                    backgroundColor: "#dedede",
+                    "& .MuiTableCell-root": {
+                      borderBottom: "none",
+                      py: 1,
+                      fontSize: 13,
+                      fontWeight: 600,
+                      color: "#333"
+                    },
+                    "& .MuiTableCell:first-of-type": {
+                      borderTopLeftRadius: 7,
+                      borderBottomLeftRadius: 7
+                    },
+                    "& .MuiTableCell:last-of-type": {
+                      borderTopRightRadius: 7,
+                      borderBottomRightRadius: 7
+                    }
+                  }}
+                >
+                  <TableCell>
                     {strings.employeeFlextime.employee}
-                  </Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography
-                    variant="h6"
-                    sx={{
-                      fontWeight: "bold"
-                    }}
-                  >
+                  </TableCell>
+
+                  <TableCell>
                     {strings.employeeFlextime.email}
-                  </Typography>
-                </TableCell>
-                <TableCell align="right">
-                  <Typography
-                    variant="h6"
-                    sx={{
-                      fontWeight: "bold"
-                    }}
-                  >
+                  </TableCell>
+
+                  <TableCell align="right">
                     {strings.employeeFlextime.totalFlextimeBalance}
-                  </Typography>
-                </TableCell>
-                <TableCell align="right">
-                  <Typography
-                    variant="h6"
-                    sx={{
-                      fontWeight: "bold"
-                    }}
-                  >
+                  </TableCell>
+
+                  <TableCell align="right">
                     {strings.employeeFlextime.currentMonthBalance}
-                  </Typography>
-                </TableCell>
-                <TableCell align="center">
-                  <Typography
-                    variant="h6"
-                    sx={{
-                      fontWeight: "bold"
-                    }}
-                  >
+                  </TableCell>
+
+                  <TableCell align="center">
                     {strings.employeeFlextime.status}
-                  </Typography>
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {usersFlextime
-                .sort((a, b) =>
-                  `${a.user.lastName} ${a.user.firstName}`.localeCompare(
-                    `${b.user.lastName} ${b.user.firstName}`
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+
+              <TableBody>
+                {[...usersFlextime]
+                  .sort((a, b) =>
+                    `${a.user.lastName} ${a.user.firstName}`.localeCompare(
+                      `${b.user.lastName} ${b.user.firstName}`
+                    )
                   )
-                )
-                .map((userData, index) => (
-                  <TableRow
-                    key={userData.user.attributes?.severaUserId || index}
-                    hover
-                    sx={{
-                      backgroundColor:
-                        index % 2 === 0
-                          ? theme.palette.background.default
-                          : theme.palette.background.paper,
-                      borderBottom: `3px solid ${theme.palette.divider}`
-                    }}
-                  >
-                    <TableCell>
-                      <Box>
-                        <Typography
-                          variant="body1"
-                          sx={{
-                            fontWeight: "medium"
-                          }}
-                        >
-                          {userData.user.firstName} {userData.user.lastName}
-                        </Typography>
-                      </Box>
-                    </TableCell>
-                    <TableCell>
-                      <Typography variant="body2">
-                        {userData.user.email || strings.employeeFlextime.notAvailable}
-                      </Typography>
-                    </TableCell>
-                    <TableCell align="right">
-                      <Typography
-                        variant="h6"
-                        sx={{
-                          color: getFlextimeColor(userData.flextime?.totalFlextimeBalance),
-                          fontWeight: "bold"
-                        }}
-                      >
-                        {formatFlextimeHours(userData.flextime?.totalFlextimeBalance)}
-                      </Typography>
-                    </TableCell>
-                    <TableCell align="right">
-                      <Typography
-                        variant="h6"
-                        sx={{
-                          color: getFlextimeColor(userData.flextime?.monthFlextimeBalance),
-                          fontWeight: "bold"
-                        }}
-                      >
-                        {formatFlextimeHours(userData.flextime?.monthFlextimeBalance)}
-                      </Typography>
-                    </TableCell>
-                    <TableCell align="center">
-                      <Chip
-                        label={
-                          userData.user.attributes?.isActive
-                            ? strings.employeeFlextime.active
-                            : strings.employeeFlextime.inactive
+                  .map((userData, index) => {
+                    const isActive =
+                      Boolean(userData.user.attributes?.isActive);
+
+                    return (
+                      <TableRow
+                        key={
+                          userData.user.attributes?.severaUserId || index
                         }
-                        color={userData.user.attributes?.isActive ? "success" : "default"}
-                        variant="outlined"
-                        sx={
-                          userData.user.attributes?.isActive
-                            ? {}
-                            : {
-                                borderColor: theme.palette.action.disabled,
-                                color: theme.palette.text.disabled
+                        hover
+                        sx={{
+                          "& .MuiTableCell-root": {
+                            py: 1.2,
+                            borderBottom: `1px solid ${theme.palette.divider}`,
+                            fontSize: 12
+                          },
+                          "&:hover": {
+                            backgroundColor: theme.palette.action.hover
+                          }
+                        }}
+                      >
+                        {/* Employee name and avatar */}
+                        <TableCell>
+                          <Box
+                            sx={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: 1
+                            }}
+                          >
+                            <Avatar
+                              sx={{
+                                width: 23,
+                                height: 23,
+                                fontSize: 10,
+                                fontWeight: 600,
+                                backgroundColor: "#006b80"
+                              }}
+                            >
+                              {getInitials(
+                                userData.user.firstName,
+                                userData.user.lastName
+                              )}
+                            </Avatar>
+
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                fontSize: 12,
+                                whiteSpace: "nowrap"
+                              }}
+                            >
+                              {userData.user.firstName}{" "}
+                              {userData.user.lastName}
+                            </Typography>
+                          </Box>
+                        </TableCell>
+
+                        {/* Email */}
+                        <TableCell>
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              fontSize: 12,
+                              whiteSpace: "nowrap"
+                            }}
+                          >
+                            {userData.user.email ||
+                              strings.employeeFlextime.notAvailable}
+                          </Typography>
+                        </TableCell>
+
+                        {/* Total balance */}
+                        <TableCell align="right">
+                          <Typography
+                            sx={{
+                              fontSize: 12,
+                              fontWeight: 700,
+                              color: getFlextimeColor(
+                                userData.flextime?.totalFlextimeBalance
+                              )
+                            }}
+                          >
+                            {formatFlextimeHours(
+                              userData.flextime?.totalFlextimeBalance
+                            )}
+                          </Typography>
+                        </TableCell>
+
+                        {/* Current month balance */}
+                        <TableCell align="right">
+                          <Typography
+                            sx={{
+                              fontSize: 12,
+                              fontWeight: 700,
+                              color: getFlextimeColor(
+                                userData.flextime?.monthFlextimeBalance
+                              )
+                            }}
+                          >
+                            {formatFlextimeHours(
+                              userData.flextime?.monthFlextimeBalance
+                            )}
+                          </Typography>
+                        </TableCell>
+
+                        {/* Status - visual only in phase 1 */}
+                        <TableCell align="center">
+                          <Button
+                            type="button"
+                            variant="outlined"
+                            size="small"
+                            endIcon={<KeyboardArrowDownIcon />}
+                            sx={{
+                              minWidth: 95,
+                              height: 29,
+                              px: 1,
+                              py: 0,
+                              borderRadius: 1.5,
+                              borderColor: "#ccc",
+                              color: isActive ? "#167b28" : "#999",
+                              fontSize: 11,
+                              fontWeight: 400,
+                              textTransform: "none",
+                              backgroundColor: "#fff",
+                              "&:hover": {
+                                borderColor: "#aaa",
+                                backgroundColor: "#fafafa"
+                              },
+                              "& .MuiButton-endIcon": {
+                                marginLeft: 0.5
                               }
-                        }
-                      />
-                    </TableCell>
-                  </TableRow>
-                ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+                            }}
+                          >
+                            {isActive
+                              ? strings.employeeFlextime.active
+                              : strings.employeeFlextime.inactive}
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })} 
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </>
       )}
+
       <BackButton styles={{ mt: 3, mb: 2 }} />
     </Container>
   );
