@@ -1,5 +1,4 @@
 import FilterListIcon from "@mui/icons-material/FilterList";
-import KeyboardArrowDown from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import {
   Avatar,
@@ -44,20 +43,9 @@ const EmployeeFlextimeScreen = () => {
   const { resourceAllocationsApi } = useLambdasApi();
   const [usersFlextime, setUsersFlextime] = useState<UserFlextime[]>([]);
   const [loading, setLoading] = useState(false);
-
   const [openFilter, setOpenFilter] = useState(false);
-  const [dropdown, setDropdown] = useState<string[]>(["Status"]);
-
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [chosenStatusFilters, setChosenStatusFilters] = useState<StatusFilter[]>(["all"]);
-
-  const handleDropdown = (category: string) => {
-    setDropdown((previous) =>
-      previous.includes(category)
-        ? previous.filter((item) => item !== category)
-        : [...previous, category]
-    );
-  };
 
   const handleStatusFilterChange = (filter: StatusFilter) => {
     setChosenStatusFilters((previous) => {
@@ -402,65 +390,46 @@ const EmployeeFlextimeScreen = () => {
                   flexDirection: "column"
                 }}
               >
+                <Typography variant="body1" sx={{ fontWeight: 500, mb: 1 }}>
+                  Status
+                </Typography>
+
                 <Box
                   sx={{
                     display: "flex",
-                    alignItems: "center",
-                    flexDirection: "row",
-                    cursor: "pointer"
+                    flexDirection: "column",
+                    pl: 2
                   }}
-                  onClick={() => handleDropdown("Status")}
                 >
-                  <KeyboardArrowDown
-                    sx={{
-                      rotate: dropdown.includes("Status") ? "180deg" : "none"
-                    }}
+                  <AppCheckbox
+                    checked={chosenStatusFilters.includes("all")}
+                    label="All"
+                    disabled={false}
+                    onChange={() => handleStatusFilterChange("all")}
+                    ariaLabel="All employees"
                   />
 
-                  <Typography variant="body1" sx={{ fontWeight: 500 }}>
-                    Status
-                  </Typography>
+                  <AppCheckbox
+                    checked={
+                      chosenStatusFilters.includes("all") || chosenStatusFilters.includes("active")
+                    }
+                    label={strings.employeeFlextime.active}
+                    disabled={false}
+                    onChange={() => handleStatusFilterChange("active")}
+                    ariaLabel="Active employees"
+                  />
+
+                  <AppCheckbox
+                    checked={
+                      chosenStatusFilters.includes("all") ||
+                      chosenStatusFilters.includes("inactive")
+                    }
+                    label={strings.employeeFlextime.inactive}
+                    disabled={false}
+                    onChange={() => handleStatusFilterChange("inactive")}
+                    ariaLabel="Inactive employees"
+                  />
                 </Box>
-
-                {dropdown.includes("Status") && (
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      pl: 2
-                    }}
-                  >
-                    <AppCheckbox
-                      checked={chosenStatusFilters.includes("all")}
-                      label="All"
-                      disabled={false}
-                      onChange={() => handleStatusFilterChange("all")}
-                      ariaLabel="All employees"
-                    />
-
-                    <AppCheckbox
-                      checked={
-                        chosenStatusFilters.includes("all") ||
-                        chosenStatusFilters.includes("active")
-                      }
-                      label={strings.employeeFlextime.active}
-                      disabled={false}
-                      onChange={() => handleStatusFilterChange("active")}
-                      ariaLabel="Active employees"
-                    />
-
-                    <AppCheckbox
-                      checked={
-                        chosenStatusFilters.includes("all") ||
-                        chosenStatusFilters.includes("inactive")
-                      }
-                      label={strings.employeeFlextime.inactive}
-                      disabled={false}
-                      onChange={() => handleStatusFilterChange("inactive")}
-                      ariaLabel="Inactive employees"
-                    />
-                  </Box>
-                )}
               </Box>
 
               {/* Actions */}
@@ -687,53 +656,27 @@ const EmployeeFlextimeScreen = () => {
                           </Typography>
                         </TableCell>
 
-                        {/* Status dropdown - temporary, no status changes */}
+                        {/* Status display */}
                         <TableCell align="center">
-                          <Button
-                            type="button"
-                            variant="outlined"
-                            size="small"
-                            endIcon={<KeyboardArrowDownIcon />}
-                            onClick={(event) => setStatusAnchor(event.currentTarget)}
+                          <Box
                             sx={{
+                              display: "inline-flex",
+                              alignItems: "center",
+                              justifyContent: "center",
                               minWidth: 95,
                               height: 29,
                               px: 1,
-                              py: 0,
+                              border: "1px solid #ccc",
                               borderRadius: 1.5,
-                              borderColor: "#ccc",
                               color: isActive ? "#167b28" : "#999",
                               fontSize: 11,
-                              fontWeight: 400,
-                              textTransform: "none",
-                              backgroundColor: "#fff",
-                              "&:hover": {
-                                borderColor: "#aaa",
-                                backgroundColor: "#fafafa"
-                              },
-                              "& .MuiButton-endIcon": {
-                                marginLeft: 0.5
-                              }
+                              backgroundColor: "#fff"
                             }}
                           >
                             {isActive
                               ? strings.employeeFlextime.active
                               : strings.employeeFlextime.inactive}
-                          </Button>
-
-                          <Menu
-                            anchorEl={statusAnchor}
-                            open={Boolean(statusAnchor)}
-                            onClose={handleStatusMenuClose}
-                          >
-                            <MenuItem onClick={handleStatusMenuClose}>
-                              {strings.employeeFlextime.active}
-                            </MenuItem>
-
-                            <MenuItem onClick={handleStatusMenuClose}>
-                              {strings.employeeFlextime.inactive}
-                            </MenuItem>
-                          </Menu>
+                          </Box>
                         </TableCell>
                       </TableRow>
                     );
