@@ -1,3 +1,6 @@
+import FilterListIcon from "@mui/icons-material/FilterList";
+import KeyboardArrowDown from "@mui/icons-material/KeyboardArrowDown";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import {
   Avatar,
   Box,
@@ -19,17 +22,13 @@ import {
   Typography,
   useTheme
 } from "@mui/material";
-import KeyboardArrowDown from "@mui/icons-material/KeyboardArrowDown";
-import FilterListIcon from "@mui/icons-material/FilterList";
-import AppOverlay from "src/components/generics/appOverlay";
-import AppCheckbox from "src/components/generics/appCheckbox";
-import AppButton from "src/components/generics/buttons/app-button";
-
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { useSetAtom } from "jotai";
 import { DateTime } from "luxon";
 import { useEffect, useMemo, useState } from "react";
 import { errorAtom } from "src/atoms/error";
+import AppCheckbox from "src/components/generics/appCheckbox";
+import AppOverlay from "src/components/generics/appOverlay";
+import AppButton from "src/components/generics/buttons/app-button";
 import type { UserFlextime } from "src/generated/homeLambdasClient";
 import { useLambdasApi } from "src/hooks/use-api";
 import strings from "src/localization/strings";
@@ -47,35 +46,33 @@ const EmployeeFlextimeScreen = () => {
   const [dropdown, setDropdown] = useState<string[]>(["Status"]);
 
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
-  const [chosenStatusFilters, setChosenStatusFilters] =
-    useState<StatusFilter[]>(["all"]);
+  const [chosenStatusFilters, setChosenStatusFilters] = useState<StatusFilter[]>(["all"]);
 
   const handleDropdown = (category: string) => {
-  setDropdown((previous) =>
-    previous.includes(category)
-      ? previous.filter((item) => item !== category)
-      : [...previous, category]
-  );
+    setDropdown((previous) =>
+      previous.includes(category)
+        ? previous.filter((item) => item !== category)
+        : [...previous, category]
+    );
   };
 
   const handleStatusFilterChange = (filter: StatusFilter) => {
     setChosenStatusFilters((previous) => {
+      // Clicking All toggles between selecting everything and nothing
       if (filter === "all") {
-        return ["all", "active", "inactive"];
+        return previous.includes("all") ? [] : ["all"];
       }
 
-      const updated = previous.includes(filter)
+      // If All was selected, selecting an individual filter
+      // removes All and selects only that filter
+      if (previous.includes("all")) {
+        return [filter];
+      }
+
+      // Otherwise, toggle the individual filter
+      return previous.includes(filter)
         ? previous.filter((item) => item !== filter)
-        : [...previous.filter((item) => item !== "all"), filter];
-
-      const hasBothStatuses =
-        updated.includes("active") && updated.includes("inactive");
-
-      return hasBothStatuses
-        ? ["all", "active", "inactive"]
-        : updated.length === 0
-          ? []
-          : updated;
+        : [...previous, filter];
     });
   };
 
@@ -86,8 +83,7 @@ const EmployeeFlextimeScreen = () => {
   const handleApplyFilters = () => {
     if (
       chosenStatusFilters.includes("all") ||
-      (chosenStatusFilters.includes("active") &&
-        chosenStatusFilters.includes("inactive")) ||
+      (chosenStatusFilters.includes("active") && chosenStatusFilters.includes("inactive")) ||
       chosenStatusFilters.length === 0
     ) {
       setStatusFilter("all");
@@ -99,17 +95,14 @@ const EmployeeFlextimeScreen = () => {
   };
 
   const handleCancel = () => {
-    setChosenStatusFilters(
-      statusFilter === "all" ? ["all"] : [statusFilter]
-    );
+    setChosenStatusFilters(statusFilter === "all" ? ["all"] : [statusFilter]);
     setOpenFilter(false);
   };
 
   const [statusAnchor, setStatusAnchor] = useState<null | HTMLElement>(null);
 
   const [sortKey, setSortKey] = useState<SortKey>("name");
-  const [sortDirection, setSortDirection] =
-    useState<SortDirection>("asc");
+  const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
 
   const setError = useSetAtom(errorAtom);
   const theme = useTheme();
@@ -133,17 +126,13 @@ const EmployeeFlextimeScreen = () => {
       setUsersFlextime(data);
     } catch (error: any) {
       const errorMessage = await error?.response?.json();
-      setError(
-        `${strings.error.fetchFailedFlextime}: ${errorMessage?.message || error}`
-      );
+      setError(`${strings.error.fetchFailedFlextime}: ${errorMessage?.message || error}`);
     } finally {
       setLoading(false);
     }
   };
 
-  const formatFlextimeHours = (
-    hours: number | null | undefined
-  ): string => {
+  const formatFlextimeHours = (hours: number | null | undefined): string => {
     if (hours === null || hours === undefined) {
       return strings.employeeFlextime.notAvailable;
     }
@@ -152,29 +141,20 @@ const EmployeeFlextimeScreen = () => {
     return `${sign}${hours.toFixed(2)}h`;
   };
 
-  const getFlextimeColor = (
-    hours: number | null | undefined
-  ): string => {
+  const getFlextimeColor = (hours: number | null | undefined): string => {
     if (hours === null || hours === undefined) {
       return theme.palette.text.secondary;
     }
 
-    return hours >= 0
-      ? theme.palette.success.dark
-      : theme.palette.error.main;
+    return hours >= 0 ? theme.palette.success.dark : theme.palette.error.main;
   };
 
-  const getInitials = (
-    firstName?: string,
-    lastName?: string
-  ): string => {
-    return `${firstName?.charAt(0) ?? ""}${lastName?.charAt(0) ?? ""}`
-      .toUpperCase();
+  const getInitials = (firstName?: string, lastName?: string): string => {
+    return `${firstName?.charAt(0) ?? ""}${lastName?.charAt(0) ?? ""}`.toUpperCase();
   };
 
   const totalBalance = usersFlextime.reduce(
-    (sum, user) =>
-      sum + (user.flextime?.totalFlextimeBalance ?? 0),
+    (sum, user) => sum + (user.flextime?.totalFlextimeBalance ?? 0),
     0
   );
 
@@ -198,30 +178,24 @@ const EmployeeFlextimeScreen = () => {
 
       switch (sortKey) {
         case "name": {
-          const nameA =
-            `${a.user.lastName ?? ""} ${a.user.firstName ?? ""}`;
-          const nameB =
-            `${b.user.lastName ?? ""} ${b.user.firstName ?? ""}`;
+          const nameA = `${a.user.lastName ?? ""} ${a.user.firstName ?? ""}`;
+          const nameB = `${b.user.lastName ?? ""} ${b.user.firstName ?? ""}`;
 
           comparison = nameA.localeCompare(nameB);
           break;
         }
 
         case "totalBalance": {
-          const balanceA =
-            a.flextime?.totalFlextimeBalance ?? 0;
-          const balanceB =
-            b.flextime?.totalFlextimeBalance ?? 0;
+          const balanceA = a.flextime?.totalFlextimeBalance ?? 0;
+          const balanceB = b.flextime?.totalFlextimeBalance ?? 0;
 
           comparison = balanceA - balanceB;
           break;
         }
 
         case "monthBalance": {
-          const balanceA =
-            a.flextime?.monthFlextimeBalance ?? 0;
-          const balanceB =
-            b.flextime?.monthFlextimeBalance ?? 0;
+          const balanceA = a.flextime?.monthFlextimeBalance ?? 0;
+          const balanceB = b.flextime?.monthFlextimeBalance ?? 0;
 
           comparison = balanceA - balanceB;
           break;
@@ -234,9 +208,7 @@ const EmployeeFlextimeScreen = () => {
 
   const handleSort = (key: SortKey) => {
     if (sortKey === key) {
-      setSortDirection((previous) =>
-        previous === "asc" ? "desc" : "asc"
-      );
+      setSortDirection((previous) => (previous === "asc" ? "desc" : "asc"));
     } else {
       setSortKey(key);
       setSortDirection("asc");
@@ -247,11 +219,7 @@ const EmployeeFlextimeScreen = () => {
     setStatusAnchor(null);
   };
 
-  const renderSortLabel = (
-    label: string,
-    key: SortKey,
-    align: "left" | "right" = "left"
-  ) => (
+  const renderSortLabel = (label: string, key: SortKey, align: "left" | "right" = "left") => (
     <TableSortLabel
       active={sortKey === key}
       direction={sortKey === key ? sortDirection : "asc"}
@@ -280,9 +248,7 @@ const EmployeeFlextimeScreen = () => {
         }}
       >
         <Box sx={{ textAlign: "center" }}>
-          <Typography>
-            {strings.employeeFlextime.loading}
-          </Typography>
+          <Typography>{strings.employeeFlextime.loading}</Typography>
           <CircularProgress sx={{ mt: 2 }} />
         </Box>
       </Card>
@@ -342,14 +308,9 @@ const EmployeeFlextimeScreen = () => {
               "&:last-child": { pb: 1.5 }
             }}
           >
-            <Typography variant="body2">
-              {strings.employeeFlextime.totalEmployees}
-            </Typography>
+            <Typography variant="body2">{strings.employeeFlextime.totalEmployees}</Typography>
 
-            <Typography
-              variant="h6"
-              sx={{ fontWeight: 700, mt: 0.5 }}
-            >
+            <Typography variant="h6" sx={{ fontWeight: 700, mt: 0.5 }}>
               {usersFlextime.length}
             </Typography>
           </CardContent>
@@ -370,9 +331,7 @@ const EmployeeFlextimeScreen = () => {
               "&:last-child": { pb: 1.5 }
             }}
           >
-            <Typography variant="body2">
-              {strings.employeeFlextime.combinedBalance}
-            </Typography>
+            <Typography variant="body2">{strings.employeeFlextime.combinedBalance}</Typography>
 
             <Typography
               variant="h6"
@@ -398,10 +357,7 @@ const EmployeeFlextimeScreen = () => {
           color: theme.palette.text.secondary
         }}
       >
-        {strings.employeeFlextime.lastUpdated.replace(
-          "{0}",
-          currentDate
-        )}
+        {strings.employeeFlextime.lastUpdated.replace("{0}", currentDate)}
       </Typography>
 
       {usersFlextime.length === 0 ? (
@@ -412,92 +368,87 @@ const EmployeeFlextimeScreen = () => {
             textAlign: "center"
           }}
         >
-          <Typography color="text.secondary">
-            {strings.employeeFlextime.noDataFound}
-          </Typography>
+          <Typography color="text.secondary">{strings.employeeFlextime.noDataFound}</Typography>
         </Paper>
       ) : (
         <>
           {/* Status filter */}
-      <AppOverlay
-        open={openFilter}
-        onClose={handleCancel}
-        title="Filters"
-      >
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            width: { xs: "100%", sm: 470 },
-            maxWidth: "100%"
-          }}
-        >
-          {/* Status category */}
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column"
-            }}
-          >
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                flexDirection: "row",
-                cursor: "pointer"
-              }}
-              onClick={() => handleDropdown("Status")}
-            >
-              <KeyboardArrowDown
-                sx={{
-                  rotate: dropdown.includes("Status")
-                    ? "180deg"
-                    : "none"
-                }}
-              />
-
-              <Typography
-                variant="body1"
-                sx={{ fontWeight: 500 }}
-              >
-                Status
-              </Typography>
-            </Box>
-
-            {dropdown.includes("Status") && (
+          <AppOverlay open={openFilter} onClose={handleCancel} title="Filters">
             <Box
               sx={{
                 display: "flex",
                 flexDirection: "column",
-                pl: 2
+                width: { xs: "100%", sm: 470 },
+                maxWidth: "100%"
               }}
             >
-              <AppCheckbox
-                checked={chosenStatusFilters.includes("all")}
-                label="All"
-                disabled={false}
-                onChange={() => handleStatusFilterChange("all")}
-                ariaLabel="All employees"
-              />
+              {/* Status category */}
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column"
+                }}
+              >
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    flexDirection: "row",
+                    cursor: "pointer"
+                  }}
+                  onClick={() => handleDropdown("Status")}
+                >
+                  <KeyboardArrowDown
+                    sx={{
+                      rotate: dropdown.includes("Status") ? "180deg" : "none"
+                    }}
+                  />
 
-              <AppCheckbox
-                checked={chosenStatusFilters.includes("active")}
-                label={strings.employeeFlextime.active}
-                disabled={false}
-                onChange={() => handleStatusFilterChange("active")}
-                ariaLabel="Active employees"
-              />
+                  <Typography variant="body1" sx={{ fontWeight: 500 }}>
+                    Status
+                  </Typography>
+                </Box>
 
-              <AppCheckbox
-                checked={chosenStatusFilters.includes("inactive")}
-                label={strings.employeeFlextime.inactive}
-                disabled={false}
-                onChange={() => handleStatusFilterChange("inactive")}
-                ariaLabel="Inactive employees"
-              />
-            </Box>
-            )}
-          </Box>
+                {dropdown.includes("Status") && (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      pl: 2
+                    }}
+                  >
+                    <AppCheckbox
+                      checked={chosenStatusFilters.includes("all")}
+                      label="All"
+                      disabled={false}
+                      onChange={() => handleStatusFilterChange("all")}
+                      ariaLabel="All employees"
+                    />
+
+                    <AppCheckbox
+                      checked={
+                        chosenStatusFilters.includes("all") ||
+                        chosenStatusFilters.includes("active")
+                      }
+                      label={strings.employeeFlextime.active}
+                      disabled={false}
+                      onChange={() => handleStatusFilterChange("active")}
+                      ariaLabel="Active employees"
+                    />
+
+                    <AppCheckbox
+                      checked={
+                        chosenStatusFilters.includes("all") ||
+                        chosenStatusFilters.includes("inactive")
+                      }
+                      label={strings.employeeFlextime.inactive}
+                      disabled={false}
+                      onChange={() => handleStatusFilterChange("inactive")}
+                      ariaLabel="Inactive employees"
+                    />
+                  </Box>
+                )}
+              </Box>
 
               {/* Actions */}
               <Box
@@ -598,15 +549,10 @@ const EmployeeFlextimeScreen = () => {
                   }}
                 >
                   <TableCell>
-                    {renderSortLabel(
-                      strings.employeeFlextime.employee,
-                      "name"
-                    )}
+                    {renderSortLabel(strings.employeeFlextime.employee, "name")}
                   </TableCell>
 
-                  <TableCell>
-                    {strings.employeeFlextime.email}
-                  </TableCell>
+                  <TableCell>{strings.employeeFlextime.email}</TableCell>
 
                   <TableCell align="right">
                     {renderSortLabel(
@@ -624,9 +570,7 @@ const EmployeeFlextimeScreen = () => {
                     )}
                   </TableCell>
 
-                  <TableCell align="center">
-                    {strings.employeeFlextime.status}
-                  </TableCell>
+                  <TableCell align="center">{strings.employeeFlextime.status}</TableCell>
                 </TableRow>
               </TableHead>
 
@@ -634,26 +578,18 @@ const EmployeeFlextimeScreen = () => {
                 {filteredAndSortedUsers.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={5} align="center">
-                      <Typography
-                        color="text.secondary"
-                        sx={{ py: 3 }}
-                      >
+                      <Typography color="text.secondary" sx={{ py: 3 }}>
                         No employees found for this filter.
                       </Typography>
                     </TableCell>
                   </TableRow>
                 ) : (
                   filteredAndSortedUsers.map((userData, index) => {
-                    const isActive = Boolean(
-                      userData.user.attributes?.isActive
-                    );
+                    const isActive = Boolean(userData.user.attributes?.isActive);
 
                     return (
                       <TableRow
-                        key={
-                          userData.user.attributes?.severaUserId ||
-                          index
-                        }
+                        key={userData.user.attributes?.severaUserId || index}
                         hover
                         sx={{
                           "& .MuiTableCell-root": {
@@ -684,10 +620,7 @@ const EmployeeFlextimeScreen = () => {
                                 backgroundColor: "#006b80"
                               }}
                             >
-                              {getInitials(
-                                userData.user.firstName,
-                                userData.user.lastName
-                              )}
+                              {getInitials(userData.user.firstName, userData.user.lastName)}
                             </Avatar>
 
                             <Typography
@@ -697,8 +630,7 @@ const EmployeeFlextimeScreen = () => {
                                 whiteSpace: "nowrap"
                               }}
                             >
-                              {userData.user.firstName}{" "}
-                              {userData.user.lastName}
+                              {userData.user.firstName} {userData.user.lastName}
                             </Typography>
                           </Box>
                         </TableCell>
@@ -712,8 +644,7 @@ const EmployeeFlextimeScreen = () => {
                               whiteSpace: "nowrap"
                             }}
                           >
-                            {userData.user.email ||
-                              strings.employeeFlextime.notAvailable}
+                            {userData.user.email || strings.employeeFlextime.notAvailable}
                           </Typography>
                         </TableCell>
 
@@ -723,14 +654,10 @@ const EmployeeFlextimeScreen = () => {
                             sx={{
                               fontSize: 12,
                               fontWeight: 700,
-                              color: getFlextimeColor(
-                                userData.flextime?.totalFlextimeBalance
-                              )
+                              color: getFlextimeColor(userData.flextime?.totalFlextimeBalance)
                             }}
                           >
-                            {formatFlextimeHours(
-                              userData.flextime?.totalFlextimeBalance
-                            )}
+                            {formatFlextimeHours(userData.flextime?.totalFlextimeBalance)}
                           </Typography>
                         </TableCell>
 
@@ -740,14 +667,10 @@ const EmployeeFlextimeScreen = () => {
                             sx={{
                               fontSize: 12,
                               fontWeight: 700,
-                              color: getFlextimeColor(
-                                userData.flextime?.monthFlextimeBalance
-                              )
+                              color: getFlextimeColor(userData.flextime?.monthFlextimeBalance)
                             }}
                           >
-                            {formatFlextimeHours(
-                              userData.flextime?.monthFlextimeBalance
-                            )}
+                            {formatFlextimeHours(userData.flextime?.monthFlextimeBalance)}
                           </Typography>
                         </TableCell>
 
@@ -758,9 +681,7 @@ const EmployeeFlextimeScreen = () => {
                             variant="outlined"
                             size="small"
                             endIcon={<KeyboardArrowDownIcon />}
-                            onClick={(event) =>
-                              setStatusAnchor(event.currentTarget)
-                            }
+                            onClick={(event) => setStatusAnchor(event.currentTarget)}
                             sx={{
                               minWidth: 95,
                               height: 29,
@@ -792,15 +713,11 @@ const EmployeeFlextimeScreen = () => {
                             open={Boolean(statusAnchor)}
                             onClose={handleStatusMenuClose}
                           >
-                            <MenuItem
-                              onClick={handleStatusMenuClose}
-                            >
+                            <MenuItem onClick={handleStatusMenuClose}>
                               {strings.employeeFlextime.active}
                             </MenuItem>
 
-                            <MenuItem
-                              onClick={handleStatusMenuClose}
-                            >
+                            <MenuItem onClick={handleStatusMenuClose}>
                               {strings.employeeFlextime.inactive}
                             </MenuItem>
                           </Menu>
