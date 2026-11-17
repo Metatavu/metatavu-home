@@ -37,6 +37,9 @@ type StatusFilter = "all" | "active" | "inactive";
 type SortKey = "name" | "totalBalance" | "monthBalance";
 type SortDirection = "asc" | "desc";
 
+/**
+ * Full-screen view for displaying flextime data for all employees.
+ */
 const EmployeeFlextimeScreen = () => {
   const { resourceAllocationsApi } = useLambdasApi();
   const [usersFlextime, setUsersFlextime] = useState<UserFlextime[]>([]);
@@ -58,18 +61,14 @@ const EmployeeFlextimeScreen = () => {
 
   const handleStatusFilterChange = (filter: StatusFilter) => {
     setChosenStatusFilters((previous) => {
-      // Clicking All toggles between selecting everything and nothing
       if (filter === "all") {
         return previous.includes("all") ? [] : ["all"];
       }
 
-      // If All was selected, selecting an individual filter
-      // removes All and selects only that filter
       if (previous.includes("all")) {
         return [filter];
       }
 
-      // Otherwise, toggle the individual filter
       return previous.includes(filter)
         ? previous.filter((item) => item !== filter)
         : [...previous, filter];
@@ -113,6 +112,9 @@ const EmployeeFlextimeScreen = () => {
     loadFlextimeData();
   }, []);
 
+  /**
+   * Loads flextime data from the backend and handles loading/error state.
+   */
   const loadFlextimeData = async () => {
     if (!resourceAllocationsApi) {
       setError(strings.error.fetchFailedFlextime);
@@ -132,15 +134,23 @@ const EmployeeFlextimeScreen = () => {
     }
   };
 
+  /**
+   * Formats a flextime balance in hours with appropriate sign.
+   * @param hours - The number of hours.
+   * @returns A string representation of the formatted balance.
+   */
   const formatFlextimeHours = (hours: number | null | undefined): string => {
-    if (hours === null || hours === undefined) {
-      return strings.employeeFlextime.notAvailable;
-    }
+    if (hours === null || hours === undefined) return strings.employeeFlextime.notAvailable;
 
     const sign = hours >= 0 ? "+" : "";
     return `${sign}${hours.toFixed(2)}h`;
   };
 
+  /**
+   * Determines the color to use for a flextime balance value.
+   * @param hours - The flextime balance.
+   * @returns A string hex color.
+   */
   const getFlextimeColor = (hours: number | null | undefined): string => {
     if (hours === null || hours === undefined) {
       return theme.palette.text.secondary;
@@ -153,6 +163,9 @@ const EmployeeFlextimeScreen = () => {
     return `${firstName?.charAt(0) ?? ""}${lastName?.charAt(0) ?? ""}`.toUpperCase();
   };
 
+  /**
+   * Calculates the total flextime balance of all users.
+   */
   const totalBalance = usersFlextime.reduce(
     (sum, user) => sum + (user.flextime?.totalFlextimeBalance ?? 0),
     0
